@@ -1,0 +1,28 @@
+ArtPaint Filters
+
+Artpaint filters must have the following properties:
+
+	-	Must be able to use multiple processors
+	-	Size and shape of filter matrix must be freely adjustable
+	-	Can be applied to any bitmap
+	-	Filtered area must be freely selectable (including free lines)
+	-	Feather in / out at the edges of area
+	-	Must be able to handle image edges
+
+
+Things concerning filter UI design:
+	
+	-	Fast (real-time) preview option
+	-	User must be able to select filtered area with a rectangle and a free  	
+		line
+	-	Must be possible to combine selected areas with boolean
+		operations
+	-	Possible to adjust parameters of a filter
+	-	A progress bar for filters required (in bigger images)
+
+Things that affect other program design:
+
+	-	Bitmap must have extra space around edges to make it possible to
+		handle full images. Extra space will be filled with copies of the edge
+	-	Filters will be used by passing a pointer to bitmap and area to be 
+		filtered 

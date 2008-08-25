@@ -1,0 +1,8 @@
+ArtPaint Magnifying
+
+How shold zooming in be implemented:
+	-	First calculate the area of buffer that needs to be displayed
+	-	Then calculate the area that it is to be displayed in
+	-	Finally draw proper part of bitmap in proper part of the view
+
+

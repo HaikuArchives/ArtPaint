@@ -1,0 +1,12 @@
+Ideas for utility functions and classes
+
+
+1.	BRect return_image_rectangle(BPoint center,int width,int height)
+
+	This function would return a rectangle from the image that matches the above
+	parameters best. width and height should not be altered unless the image is
+	smaller than them.
+
+
+2.	An image-processing library that contains standard functions like blur, gaussian,
+	blur,…. These can be used in add-ons to preprocess the image as needed.

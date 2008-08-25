@@ -1,0 +1,197 @@
+Ideas for Future Versions
+
+
+This document contains some ideas that can not be implemented in the first realease version, but might be intresting to implement in later versions.
+
+
+	1.	Input manipulators. These would handle the drawing input, and they could be put in line one 
+		handling the input after the other. e.g:
+			Input--->Grid---->Pressure Quantizer---->Color fader---->Drawing tool
+
+	3.	More that 24-bits per pixel. Nonlinear color-mapping.
+
+	4.	Masks for layers
+
+	5.	Names for layers
+
+	6.	Multiple default-settings for manipulators and user storable settings too
+
+	7.	Possibility to use any convolution filter with a tool, like with Blur. The filter function could 
+		come from an add-on.
+
+	8.	Tool add-ons.
+
+	9.	Different kinds of mixing between layers. Add-ons for this too.
+
+	10.	New types of gradient fills with more control over the result.
+
+	11.	Painting with textures
+
+	12.	Selection -> Brush, like in Deluxe Paint and Brilliance
+
+	13.	Antialiasing to all of the tools (where it is applicible)
+
+	14.	Improvements to selections. 
+		-	Possibility to drag and rotate easily. 
+		-	Possibility to have fuzzy selections (i.e. a level of selectedness). 
+		-	Smoother edges for selections (i.e. antialiasing)
+		-	Draggable to other applications or to brush-window
+
+	15.	Dockable tool-bars and tool-setup view.
+
+	16.	Numeric controls for color-selection.
+
+	17.	Buttons with pictures to replace some checkboxes and radio-buttons
+
+	18.	Guides over the image and snap-to guides. Each guideline adjustable independently
+
+	19.	Better drawing of lines over the image. Instead of B_OP_INVERT use some better
+		labeling technique.
+
+	20.	Multiple views of the same document.
+
+	21.	CMYK color-model. Notice the K.
+
+	22.	Internal handling of images in other than just BGRA format (see idea 3) 
+
+	23.	Better use of memory.
+		-	Get rid of the extra copies of each layer if possible
+		-	Layer divided into smaller areas and only some of them allocated
+		-	Undo-queue stores the oldest events automatically to disk
+		-	Very large images loaded only partially (requires a special fileformat)
+			FlashPix?
+	
+	24.	Auto-save and exporting (get rid of current save as and save)
+
+	25.	Better interoperability with other applications (copy-paste and drag-n-drop)
+	
+	26.	A clipboard manager with a window to allow a 'clippings desk'
+
+	27.	Ability for add-ons to draw over the background too
+
+	28.	Possibility to create scripts of actions.
+
+	29.	Finishing of effects in a background thread while allowing editing of the image at the same 
+		time.
+
+	30.	A free transform tool for individual layers and selections (rotate,translate,scale)
+ 
+	31.	Cross hair that extends from cursor to the edges.
+
+	32.	Watercolor like painting tool
+
+	33.	Adjustable width for the edge lines in rectangel-tool and ellipse tool
+
+	34.	Rotation for ellipse-tool
+
+	35.	Better brush editor that is incorporated into the brush-window
+
+	36.	All tools should have live data control hooks so that external thread can adjust the 
+		properties for a tool. This should for example allow pressure sensitive pens and some 
+		other input methods that control other than the cursor position. 
+
+	37.	A good gradient editor with saveable and loadable gradients.
+
+	38.	Gradient to be used in every tool and not just the fill-tool.
+
+	39.	Smooth spline interpolation for tools like brush-tool and free-hand tool
+
+	40.	Improvements to text-tool
+		-	Faster operation
+		-	Possibility to individually position and rotate each letter
+		-	Possibility to have different font for each letter
+		-	Saveable settings
+	
+	41.	Improvements to undo-system
+		-	Possibility to turn off any event in the buffer (not just the latest)
+		-	Possibility to change the parameters for any event in the buffer
+		-	Possibility to form a script from the events in the buffer
+		-	Undo painter tool.	
+
+	42.	Script recording and execution. Same operations can be performed on multiple images.
+		Saveable scripts and a batch processing mode.
+
+	43.	 Possibility to add comments to the project-file (perhaps an indexed attribute?)
+
+	44.	Saving some of the preferences along with the project-file. On option whether to use
+		projects own settings or the global settings (applies at least to text-tool and perhaps add
+		-ons).
+
+	45.	Compression for project-files. Perhaps a block-model with Lempel-Ziv variant coding. 
+		Lossless.
+
+	46.	Better shortcut keys for the paint-window. Shortcuts should work event if some other 
+		window in ArtPaint is active. In this case the shortcuts would be directed to the window
+		that was last active.
+
+	47.	New and better looking icons for all purposes within the program. Icons should have a 
+		consistent style and they should be quite simple. 
+
+	48.	Thumbnail preview when loading images and projects. The preview-image could be stored 
+		as an attribute to the files.
+
+	49.	Preview when saving an image so that the change of format and its parameters can be
+		easily seen.
+
+	50.	Possibility to draw (GUI)lines that go across the image and continue over the background.
+
+	51.	New manipulator add-ons
+		-	Painter
+		-	Gaussian blur
+		-	Lens flare
+		-	Motion blur (with freely adjustable blur path and highlight control)
+		-	Mosaic
+		-	Texture generator (like PerlinWood but with many adjustable parameters)
+		-	Lighting system
+		-	Render system
+		-	Lightning generator (adjustable end-points and degree of complexity)
+		-	L-system generator
+		-	Better add-on for adjusting colors, tones and levels
+		-	Warping
+		-	Ripple generator
+		-	Controllable halftone add-on with artistic halftones (artistic screening)			
+
+	52.	Interpolation and extrapolation between layers.
+		
+	53.	Preview when dragging and dropping a clipping or another image over the image.
+ 
+	54.	Customizable tool-bars, where a button for any operation can be put (including but not
+		limited to manipulator add-ons).
+
+	55.	Different painting modes:
+		-	add
+		-	subtract
+		-	lighten
+		-	darken
+		-	min
+		-	max
+		-	blend
+		-	invert
+		-	replace (normal)
+
+	56.	Remember parts of the image that go out of the actual bounds in some transformation.
+
+	57.	Multiple types of layers
+		-	Normal
+		-	Text layer
+		-	Effect layer
+
+	58.	Tool for drawing arcs. First define the radius and one endpoint and then define the angle.
+
+	59.	Multiple units when setting the image size and also in the coordinate display box.
+
+	60.	Euclidian distance display in the coordinate display box in addition to manhattan distance.
+
+	61.	Possibility to easily save any part of the image. See also ideas 12 and 14.
+
+	62.	Nonrectangular images.	For example ellipse shaped image that could be exported as such
+		to some other programs and they would realize it is an ellipse shaped image.
+
+	63.	Possibility to add vector graphics objects to any layer. These could be importable from 
+		some vector drawing program.
+
+	64.	A tool for drawing polygons and triangles, and possibility to make also selections polygon
+		shaped.
+
+	65.	
+	

@@ -1,0 +1,15 @@
+LayerWindow
+
+LayerWindow displays the layers of an image:
+
+	-	Layers of one image are displayed at a time
+	-	The image to be displayed is that of last active paint-window 
+		or some other paint-window if last active was closed and no 
+		other paint-window was activated since
+	-	The image must be able to inform layer-window whenever
+		it has been changed.
+	-	Layer-window must inform the image if it is going to shut down.
+	-	Layer-window must inform the image that is the new target image.
+	-	Operations in a layer-window might affect the image.
+	-	All messaging that concerns the existence of layer-window should
+		be synchronous.

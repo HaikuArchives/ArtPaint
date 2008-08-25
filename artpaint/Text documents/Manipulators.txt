@@ -1,0 +1,138 @@
+ArtPaint Manipulator API
+
+
+Manipulators are used to modify the contents of the bitmap. Manipulators can either have no UI at all or have a small UI in the status-bar or a full-fledged UI in a separate window. The following class hierarchy is introduced to make use of the common properties of manipulators.
+
+
+					Manipulator
+						|
+						*
+					GUIManipulator
+					/		    \
+				        /			     \
+				      *			      *
+			StatusBarGUIManipulator	WindowGUIManipulator	
+	
+
+The manipulator classes have the following API:
+
+Manipulator:
+
+	virtual	BBitmap*	ManipulateBitmap(BBitmap *bm, Selection *sel, BStatusBar *sb)
+
+This method returns a pointer to the manipulated bitmap. The manipulated bitmap may be the original bitmap bm or it may be a new that has been created. The caller of this function retains the ownership of bm and the returned bitmap. The bitmap should only be manipulated for the part that the parameter sel defines. During the manipulation the value of supplied status-bar sb should be increased by 100.
+
+
+
+
+GUIManipulator:
+
+	GUIManipulator(BBitmap *preview_map)
+
+If the parameter preview_map is not NULL, it will be recorded as the bitmap the manipulator should do the preview to. A copy of that bitmap is also made as the source for the preview.
+
+
+
+	~GUIManipulator()
+
+ The destructor is used to get rid of the copy of preview-bitmap that we might have.
+
+
+
+	virtual	void	MouseDown(BPoint point, uint32 buttons, BView *view)
+
+This method is called whenever mouse is pressed down in the view, where the manipulated image resides. The parameter point indicates the pixel in the image that the mouse was last on and the parameter buttons indicate what mouse-buttons were pressed down. The parameter view is the view where the mouse was pressed down. The view is supplied in case the manipulator needs some other information, for example the modifier keys that were down at the time the mouse was pressed. The window where view resides is locked when this function is called. This function should not poll the mouse, but instead it should return as quickly as possible. When the mouse is held down this function will be called repeatedly. The default version of this function is empty and it can be overriden to record for example the center of the manipulation or the amount of translation.
+
+
+
+	virtual	uchar	PreviewBitmap(Selection *sel,bool full_quality=FALSE)
+
+This method is called always after the calling the MouseDown-method. The parameter sel is the selection that defines what part of the bitmap the preview should be done for. If the parameter full_quality is TRUE, the preview should be done at the highest possible preview quality. Otherwise the quality should be decided in this method. The quality is determined by how many pixels are grouped into one block. The lowest allowed quality is 16x16 pixel blocks. This means that only 1/64th of pixels need to be calculated. The highest quality is 1x1 pixel blocks where value for every pixel is calculated. The other available qualities are 4x4 and 2x2. If the parameters for the effect have changed since the last time this method was called, the calculation should be done at the lowest used quality (which does not need to be 16x16). If the parameters have not changed the calculation should be done at the next highest quality in the scale. The pixels that have already been calculated should not be recalculated. This method can be seen as incrementally improving the image quality. The following example helps.
+
+At first we have calculated the image in 8x8 pixel blocks, here is one of those blocks:
+
+		A A A A A A A A
+		A A A A A A A A
+		A A A A A A A A
+		A A A A A A A A
+		A A A A A A A A
+		A A A A A A A A
+		A A A A A A A A
+		A A A A A A A A
+
+ 	 
+
+Then we calculate it in 4x4 blocks, but we only need to calculate 3 blocks for the part of this 8x8 block:
+
+
+		A A A A B B B B
+		A A A A B B B B
+		A A A A B B B B
+		A A A A B B B B
+		B B B B B B B B
+		B B B B B B B B
+		B B B B B B B B
+		B B B B B B B B
+
+
+
+The next time this function is called we calculate in 2x2 blocks with the following result:
+
+		A A C C B B C C
+		A A C C B B C C
+		C C C C C C C C
+		C C C C C C C C
+		B B C C B B C C
+		B B C C B B C C
+		C C C C C C C C
+		C C C C C C C C
+
+
+
+As we can see, in each phase the resolution doubles in each direction.
+
+This method should only set the left-top pixel of each block to the desired color. The value that is returned indicates what pixels have been set. The first four bits of the returned value indicate how big blocks were used. The last four bits indicate how big the blocks were in the previoius run. The coordinates of starting pixel should be divisible by the block size in both directions.
+
+
+	virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings *settings,BBitmap *bm , Selection *sel, BStatusBar *sb)
+  
+This method manipulates the parameter bitmap bm and returns a pointer to bm or to a new bitmap. The calling function retains the ownership of both bm and the returned bitmap. The parameter sel is used to determine what part of the bitmap will be manipulated. The parameter settings is used to tell the manipulator at what parameters the bitmap should be manipulated. The parameter sb is a status-bar that should be updated with 100 steps during the manipulation. This method is a pure virtual method, so it must be overriden when creating a manipulator. If the parameter bm is the same bitmap as was set through the SetPreviewBitmap-function the bitmap most likely contains what we have last put into it in the  PreviewBitmap-function.
+
+
+	virtual	void	Draw(BView *view, float scale)
+
+This method can be used to draw some kind of user-interface over the image. The parameter view is the view that the drawing should be done to. The parameter scale is the magnification scale of the image and it can be used to convert the bitmap coordinates to view's coordinates. This method is called every time after the image has been drawn, and that does not happen necessarily during an update.
+
+
+	virtual	void	Reset(Selection *sel)
+
+This method should reset the preview-bitmap to its original state. If this method has changed the selection in some way it should also reset the parameter sel back to its original state.
+
+
+	virtual	void	SetPreviewBitmap(BBitmap *bm)
+
+This method changes the bitmap that will be used in preview. A copy of this bitmap is made if required. If the parameter bm is NULL, the previously used preview bitmap will be freed.
+
+
+	virtual	void*	ManipulatorCursor()
+
+This returns a pointer to data that defines the cursor-shape that is to be used when this manipulator is active. The cursor will be changed to this whenever the mouse is over the image. If no special cursor is needed, this function returns NULL.
+
+
+
+
+StatusBarGUIManipulator:
+
+	virtual	BView*	MakeConfigurationView(float width,float height,BMessenger *messenger)
+
+This method makes a view that can be used to display some information regarding to the status of the manipulator. It can also contain some controls that can be used to control the manipulator. The maximum size of this view is given in the parameters width and height. The dimensions are quite small and height is typically about 15 to 20 pixels. The parameter messenger is used when some parameters in this configuration view are changed by the user. Two kind of messages are sent through the messenger: a message that indicates that adusting has started and a message that indicates that adjusting has ended. The corresponding message constants are HS_MANIPULATOR_ADJUSTING_STARTED and HS_MANIPULATOR_ADJUSTING_FINISHED. The start message must always be followed by finishing message. Multiple finishing messages can be sent without sending a start message.
+
+
+
+
+
+WindowGUIManipulator:
+
+	virtual	BView*	MakeConfigurationView(BMessenger *messenger)
+
+This method makes a configuration view that controls the parameters of the manipulator. The view can contain as many controls as are needed. Whenever one of the controls is invoked, its value should be recorded in the corresponding data structures of the manipulator. The messenger is used in the same way as in  StatusBarGUIManipulator.

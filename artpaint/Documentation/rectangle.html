@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint: Rectangle-tool
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+<TD>
+<H2>Rectangle-tool</H2>
+The rectangle-tool is used to draw filled and outlined rectangles to the image. It is used by pressing down the mouse-button and dragging the mouse around. A preview of the rectangle is rendered on the screen and when the mouse-button is released, the actual rectangle is drawn.
+
+<H3>Settings</H3>
+Figure 1 shows the contents of the tool-setup-window when it is displaying the setup for the rectangle-tool.
+<DIV ALIGN=CENTER>
+<TABLE>
+<CAPTION ALIGN=BOTTOM>
+Figure 1: Setup view for the rectangle-tool.
+</CAPTION>
+<TR>
+<TD><IMG SRC="./images/rectangle_tool.gif">
+</TABLE>
+</DIV> 
+<P>
+<DL>
+<DT><STRONG>Fill Rectangle</STRONG>
+<DD>When this option is enabled, the rectangle will be filled with the foreground-color. Otherwise only the outline of the rectangle will be drawn.
+<DT><STRONG>Corner To Corner</STRONG>
+<DD>When this option is selected, the first click will set one corner of the rectangle and releasing the mouse-button will set the opposite corner.
+<DT><STRONG>Center To Corner</STRONG>
+<DD>When this option is selected, the first click will set the center for the rectangle and releasing the mouse-button will set one of the corners.
+<DT><STRONG>Enable Rotation</STRONG>
+<DD>When this option is set, the rectangle can be rotated after its size has been set. The rotation can be done by moving the mouse around and then pressing the mouse-button to finish the rotation.
+<DT><STRONG>Enable Anti-Aliasing</STRONG>
+<DD>When this option is enabled, the edges of the rectangle will be antialiased to avoid a step-like effect. Currently this option has only meaning if Enable Rotation is also selected. 
+</DL>
+<H3>Keyboard Modifiers</H3>
+<UL>
+<LI>Pressing down left control while setting the size of the rectangle forces the rectangle to be a square.
+<LI>Pressing down left control while rotating the rectangle constrains the rotation to 5 degree steps.
+</UL>
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

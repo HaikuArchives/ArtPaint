@@ -1,0 +1,24 @@
+THIS FILE CONTAINS OUTDATED INFORMATION
+Storing the Settings
+
+
+Settings for many different purposes need to be stored. Both runtime storage and storage in files must be used. All settings must be given an initial value on startup. This value might be some default value or it might be loaded from global settings file. Some settings might also be loaded from an opened project-file, or even an image-file that has been edited before with this program. In the latter case the settings would be stored as the image's attributes. Settings might be divided into the following categories:
+
+		1.	Global settings
+		2.	Project- / image-specific settings
+		3.	Object-specific settings
+
+The global settings store information such as the directories where various open-panels will be opened into, which palette-sets are loaded, window positions for various global windows, which tools are being used, what colors are selected, …
+
+The project- or image-specific settings store information such as the current zoom-level, the filename and path for the files, the file-format, the size of undo-buffer (although this might be global as well), window-position, …
+
+The place to store the global settings at runtime is the be_app-object. In persistent memory the place to store them is the application's settings-file. Some of the image-specific settings should be stored as file's attributes (i.e. the window's position and such) and some of the information is stored naturally (i.e. the file's type, name and path). When these are stored at runtime the logical place for them is the PaintWindow-object. At this point it seems logical that ImageView-object should not store any of the settings. Object specific settings are contained within that object and are saved when (and if) that object saved to disk. At least ColorSet-objects are stored on disk along with global settings.
+
+When program is started the first thing to do is to load the global-settings file and then initialize various objects according to it. When an image is loaded it's file-type and path are recorded and then if any attributes are found they are used to initialize the window's position and the undo-buffer size and some other things as well. If attributes are not found we use the defaults which are stored in the be_app-object.
+
+The global settings are saved when the program is quit if user wants them to be saved automatically, The global settings are also saved whenever user explicitily requests that. The image- or project specific settings are saved whenever user saves the image/project.
+
+Whenever one of the global window's is closed it stores it's frame rectangle in to global settings. That rectangle is then used the next time that same window is opened.
+
+
+ 

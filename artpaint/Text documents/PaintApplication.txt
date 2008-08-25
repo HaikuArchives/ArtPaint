@@ -1,0 +1,9 @@
+ArtPaint PaintApplication
+
+Functionality that is in this class:
+
+	-	Handles communication between windows
+	-	Handles global settings
+	-	Opens up necessary windows on startup
+	-	Cleans up on exit
+	-	Handles image loading

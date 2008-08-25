@@ -1,0 +1,11 @@
+Layer offsets
+
+Layers can have bigger images than what will fit on canvas. In that case layers will have an offset-rectangle that is the same size as the canvas and is positioned so within layer's coordinate-system that it identifies the part that is to be shown on canvas. Each layer calculates it's own offset-rectangle when given an amount of offset that is wanted. It then possibly creates a new bitmap if the offset-rectangle exceeds the bounds of it's bitmap. Data from that old bitmap is then copied to correct position.	The size of that bitmap is never reduced automatically. It is up to the user to request it explicitely. 
+
+Things that are affected by the fact that layers can have offsets:
+
+	-	The function that makes the composite-picture
+	-	All functions that draw to the bitmaps
+	-	Functions that calculate or compare view's and bitmap's rectangles
+	-	The Draw-function of ImageView
+	-	The function that calculates layer's miniatire image

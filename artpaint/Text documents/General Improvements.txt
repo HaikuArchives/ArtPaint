@@ -1,0 +1,12 @@
+General Improvements
+
+This lists some things that should be improved. This does not list things that can be seen as bugs. This files also describes the methods that were used to improve the situation.
+
+
+-	The mechanism that tells the window or the view that a layer has been updated.	
+	-	This was improved by making the layer tell the window when certain operations were done on it. In such situation the layer should also initiate the calculation of miniature-images by itself.
+	
+
+-	Better naming convention for images, not necessarily the file-names
+
+-	Indication of how saving has progressed and especially when it has ended.

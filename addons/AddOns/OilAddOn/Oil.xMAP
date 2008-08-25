@@ -1,0 +1,175 @@
+File:    0	"/boot/home/ArtPaintAddOns/AddOns/OilAddOn/OilAddOn.cpp"
+File:    2	"/src/exp/src/kit/glue/common/global_destructor_chain.c"
+File:    3	"/src/exp/src/kit/glue/ppc/runtime.c"
+File:    6	"/src/exp/src/kit/glue/common/init_term_dyn.c"
+File:    8	"libbe.so"
+File:    9	"libroot.so"
+File:   12	"/boot/home/projects/ArtPaint/sources/viewmanipulators/Manipulator.cpp"
+File:   13	"/boot/home/projects/ArtPaint/sources/application/Selection.cpp"
+File:   15	"/boot/home/projects/ArtPaint/sources/tools/BitmapDrawer.cpp"
+
+Files that were not referenced:
+"start_dyn.c"
+"ArtPaint"
+
+Code section, size = 6732 bytes
+000000	PR 	.__sinit									file = "*Linker-Generated*"
+00001C	PR 	.instantiate_add_on							file = "OilAddOn.cpp"
+000084	PR 	.__ct__14OilManipulatorFP7BBitmap
+0000A0	PR 	.__dt__14OilManipulatorFv
+000100	PR 	.ManipulateBitmap__14OilManipulatorFP7BBitmapP9SelectionP10BStatusBar
+000DF0	PR 	.ReturnName__14OilManipulatorFv
+000DF8	PR 	.ReturnSettings__11ManipulatorFv
+000E00	PR 	.__dt__11ManipulatorFv
+000E54	PR 	.__destroy_global_chain						file = "global_destructor_chain.c"
+000EA8	PR 	.__RTOC										file = "init_term_dyn.c"
+000EB0	PR 	._init_routine_
+000F00	PR 	._term_routine_
+000F30	PR 	.DuplicateBitmap__11ManipulatorFP7BBitmaplb	file = "Manipulator.cpp"
+0013C8	PR 	.IsEmpty__9SelectionFv						file = "Selection.cpp"
+0013DC	PR 	.__ct__12BitmapDrawerFP7BBitmap				file = "BitmapDrawer.cpp"
+001494	PR 	.SetPixel__12BitmapDrawerF6BPointUl
+001544	PR 	.SetPixel__12BitmapDrawerF6BPointUlP9Selection
+001698	PR 	.GetPixel__12BitmapDrawerF6BPoint
+001750	GL 	.__register_fragment						file = "*Linker-Generated*"
+001768	GL 	.__unregister_fragment
+001780	GL 	.__dl__FPv
+001798	GL 	.__nw__FUl
+0017B0	GL 	.Window__5BViewCFv
+0017C8	GL 	.Bounds__7BBitmapCFv
+0017E0	GL 	.InsetBy__5BRectFff
+0017F8	GL 	.__ct__7BBitmapF5BRect11color_spacebb
+001810	GL 	.IsValid__7BBitmapCFv
+001828	GL 	.__ct__9bad_allocFv
+001840	GL 	.__ct__9bad_allocFRC9bad_alloc
+001858	GL 	.__throw
+001870	GL 	.__dt__9bad_allocFv
+001888	GL 	.Bits__7BBitmapCFv
+0018A0	GL 	.BitsLength__7BBitmapCFv
+0018B8	GL 	.BytesPerRow__7BBitmapCFv
+0018D0	GL 	.__ct__8BMessageFUl
+0018E8	GL 	.__ct__8BMessageFRC8BMessage
+001900	GL 	.__dt__8BMessageFv
+001918	GL 	.AddFloat__8BMessageFPCcf
+001930	GL 	.random
+001948	GL 	.rand
+001960	GL 	.Contains__5BRectCF6BPoint
+001978	GL 	.LockWithTimeout__7BLooperFx
+001990	GL 	.Unlock__7BLooperFv
+0019A8	GL 	.__ptr_glue									file = "runtime.c"
+0019BC	TI 	@74											file = "OilAddOn.cpp"
+0019C8	TI 	@82
+0019D4	TI 	@303
+0019E0	TI 	@312
+0019EC	TI 	@7											file = "global_destructor_chain.c"
+0019F8	TI 	@2											file = "init_term_dyn.c"
+001A04	TI 	@4
+001A10	TI 	@184										file = "Manipulator.cpp"
+001A1C	TI 	@73											file = "BitmapDrawer.cpp"
+001A28	TI 	@2704
+001A34	TI 	@2728
+001A40	TI 	@2744
+
+Data section, size = 1044 bytes (TOC anchor = 000000)
+000000	TC 	__ct__7BBitmapF5BRect11color_spacebb		file = "*Linker-Generated*"
+000004	TC 	__ct__8BMessageFRC8BMessage
+000008	TC 	BytesPerRow__7BBitmapCFv
+00000C	TC 	Unlock__7BLooperFv
+000010	TC 	LockWithTimeout__7BLooperFx
+000014	TC 	__ct__8BMessageFUl
+000018	TC 	Contains__5BRectCF6BPoint
+00001C	TC 	BitsLength__7BBitmapCFv
+000020	TC 	Window__5BViewCFv
+000024	TC 	AddFloat__8BMessageFPCcf
+000028	TC 	Bits__7BBitmapCFv
+00002C	TC 	__dt__8BMessageFv
+000030	TC 	Bounds__7BBitmapCFv
+000034	TC 	InsetBy__5BRectFff
+000038	TC 	IsValid__7BBitmapCFv
+00003C	TC 	__dl__FPv
+000040	TC 	__register_fragment
+000044	TC 	rand
+000048	TC 	__throw
+00004C	TC 	random
+000050	TC 	__ct__9bad_allocFv
+000054	TC 	__unregister_fragment
+000058	TC 	__dt__9bad_allocFv
+00005C	TC 	__nw__FUl
+000060	TC 	__ct__9bad_allocFRC9bad_alloc
+000064	TC 	__vt__14OilManipulator
+000068	TC 	__vt__11Manipulator
+00006C	TC 	__global_destructor_chain
+000070	TC 	__exception_table_end__
+000074	TC 	__exception_table_start__
+000078	TC 	__data_end__
+00007C	TC 	__data_start__
+000080	TC 	__code_end__
+000084	TC 	__code_start__
+000088	TC 	@281										file = "OilAddOn.cpp"
+00008C	TC 	@179										file = "Manipulator.cpp"
+000090	TD 	@308										file = "OilAddOn.cpp"
+000098	TD 	@286
+0000A0	TD 	@282
+0000A8	TD 	@280
+0000B0	TD 	@279
+0000B8	TD 	@278
+0000BC	TD 	fragmentID									file = "init_term_dyn.c"
+0000C0	TD 	@181										file = "Manipulator.cpp"
+0000C8	TD 	@72											file = "BitmapDrawer.cpp"
+0000CC	TD 	@71
+0000D0	DS 	__dt__11ManipulatorFv						file = "OilAddOn.cpp"
+0000D8	DS 	ReturnName__14OilManipulatorFv
+0000E0	DS 	ReturnSettings__11ManipulatorFv
+0000E8	DS 	ManipulateBitmap__14OilManipulatorFP7BBitmapP9SelectionP10BStatusBar
+0000F0	DS 	__dt__14OilManipulatorFv
+0000F8	DS 	instantiate_add_on
+000100	DS 	_term_routine_								file = "init_term_dyn.c"
+000108	DS 	_init_routine_
+000110	TB 	@73											file = "OilAddOn.cpp"
+000122	TB 	@302
+00015E	TB 	@183										file = "Manipulator.cpp"
+00017E	RW 	name										file = "OilAddOn.cpp"
+00027D	RW 	menu_help_string
+00037C	RW 	add_on_api_version
+000380	RW 	add_on_type
+000384	RW 	@281
+00038A	RW 	@304
+000399	RW 	@306
+0003A8	RW 	__RTTI__11Manipulator
+0003B0	RW 	@305
+0003BC	RW 	__RTTI__14OilManipulator
+0003C4	RW 	__vt__14OilManipulator
+0003DC	RW 	__vt__11Manipulator
+0003F4	RW 	@179										file = "Manipulator.cpp"
+00040C	RW 	__global_destructor_chain					file = "global_destructor_chain.c"
+
+Import container "libbe.so"
+Current Version = 00000000, Old Implementation = 00000000
+000000	DS 	__ct__7BBitmapF5BRect11color_spacebb
+000001	DS 	__ct__8BMessageFRC8BMessage
+000002	DS 	BytesPerRow__7BBitmapCFv
+000003	DS 	Unlock__7BLooperFv
+000004	DS 	LockWithTimeout__7BLooperFx
+000005	DS 	__ct__8BMessageFUl
+000006	DS 	Contains__5BRectCF6BPoint
+000007	DS 	BitsLength__7BBitmapCFv
+000008	DS 	Window__5BViewCFv
+000009	DS 	AddFloat__8BMessageFPCcf
+00000A	DS 	Bits__7BBitmapCFv
+00000B	DS 	__dt__8BMessageFv
+00000C	DS 	Bounds__7BBitmapCFv
+00000D	DS 	InsetBy__5BRectFff
+00000E	DS 	IsValid__7BBitmapCFv
+
+Import container "libroot.so"
+Current Version = 00000000, Old Implementation = 00000000
+00000F	DS 	__dl__FPv
+000010	DS 	__register_fragment
+000011	DS 	rand
+000012	DS 	__throw
+000013	DS 	random
+000014	DS 	__ct__9bad_allocFv
+000015	DS 	__unregister_fragment
+000016	DS 	__dt__9bad_allocFv
+000017	DS 	__nw__FUl
+000018	DS 	__ct__9bad_allocFRC9bad_alloc

@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: ControlSlider
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H3><TT>ControlSlider</TT>-class</H3>
+Derived from: <STRONG>public BSlider</STRONG>
+<P>
+Declared in: <STRONG>Controls.h</STRONG>
+<P>
+<HR>
+<H3>Overview</H3>
+This is a class that is very similar to BControl. The only difference is that this spawns another thread to do the mouse-tracking, thus leaving the window and its views free to respond to messages (i.e. the window will be unlocked most of the time).
+<HR>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>Constructor</H3>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="ControlSlider()"><TT>ControlSlider()</TT></A></H4>
+<PRE>  ControlSlider(BRect <I>frame</I>, const char* <I>name</I>, const char*
+    <I>label</I>, BMessage *message, int32 <I>rangeMin</I>,
+    int32 <I>rangeMax</I>, thumb_style <I>knob</I>)
+</PRE>
+This does nothing except passes the parameters straight to BSlider's constructor.
+</TD>
+</TR>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=40>
+</TR>
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

@@ -1,0 +1,48 @@
+Image Transformations
+
+Image can be transformed in several ways: rotated, translated and scaled. It can also be mirrored and cropped. The UI for each of those operations should be as clear as possible. All operations should also be possible to do on whole image or individual layer. This text describes the GUIs that are suitable for those operations and the implementation of such features in the layers themselves.
+
+
+Rotation:
+	-	There should be a following menu hierarchy for rotation:
+
+				Canvas
+					…
+					Rotate
+						Image
+						Layer
+
+	-	If an area is selected, the rotation should only touch that area
+	-	When rotating, the statusbar should display one of the following:
+			
+			Rotating Image: degrees˚
+			Rotating Layer: degrees˚
+
+	-	A rectangle should be drawn over image. The rectangle should
+		have handles that allow the rotation to be made easily. The
+		rectangle could look like following:
+
+				X----------------------------------------X
+				|			|			|
+				|_________	/\ _________|
+				|			\/			|
+				|			|			|
+				X----------------------------------------X
+
+	
+	-	It should also be possible to move the center of rotation.
+
+	-	It should be clear for user from where to accept rotation and
+		where to cancel the whole thing. This should be done from buttons
+		that are added to the status-bar when this operation starts.
+
+	-	The parts of layer that are not visible after rotating should not
+		be clipped. Layer should keep track of what is the real image
+		bounds because rotating several times could cause the size
+		of bitmap to grow infinitely. The bounds can be calculated by
+		taking the smallest rectangle that encloses the whole area that
+		has some image data in it. The new bitmap size will then be that
+		bounds rectangle rotated to new angle or the size of image, 
+		whichever is bigger.
+	
+	
