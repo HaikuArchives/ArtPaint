@@ -1,0 +1,69 @@
+ArtPaint project files
+
+
+The project-file format that was used in version 1.0.0 of ArtPaint was flat. It stored the information sequentially relying on the sizes of structures as identifiers. This leads to problems whenever something that is saved in the project-file changes. A better and more portable solution is to use specialized codes as identifiers of file-sections. The sections will also be marked with their length. The first byte of data indicates whether the file is little endian or not. If the byte is 0x00 it is not little endian if it is 0xFF it is litle endian. All other values indicate a malformed file.
+
+
+The structure of the project file looks like following:
+	
+	Is little endian							(int32)	
+	File id number							(int32)
+	Number of sections						(int32)
+
+	Section beginning marker					(int32)
+	Section type							(int32)
+	Section length							(int64)
+	Data for the section (Section length Bytes)	(length times byte)
+	Section end marker						(int32)
+
+
+	
+
+
+
+There can be as many sections as needed. Only the sections recognized by the program will be read, other sections will be ignored. The sections can be in any order and there can be as many of them as wanted. The method that reads some section always gets a file-pointer to the beginning of the file
+and hops over the sections until it finds the section it is reading. Sometimes the failior to read a section is critical. This is the case for example with the layers section. In case of critical failure the loading of project-file will be cancelled. If a non-critical section cannot be read its values will be replaced by default values.
+
+Currently used sections v.1.1
+
+	1.	Layers section.
+
+The layers section is in itself a structured part of the file. It consists of several layers. The structure of layers-section is following:
+
+	Section beginning marker		(int32)
+	Section type				(int32)
+	Section length				(int64)
+	----------****************---------------
+	Number of layers				(int32)
+	Used compression method		(int32)
+	Layer data start marker		(int32)
+	Layer width				(int32)
+	Layer height				(int32)
+	Layer type					(int32)
+	Layer visibility				(int32)
+	Layer data length in bytes		(int64)
+	Layer data				(length times byte, this is 4-byte aligned)
+	Layer data end marker			(int32)
+	Layer extra data start marker	(int32)
+	Layer extra data length		(int32)
+	Layer transparency coefficient	(float)
+	Layer extra data end marker	(int32)
+
+	-----------****************---------------
+	Section end marker			(int32)
+
+	
+
+
+	2.	Dimension section
+
+The dimensions section contains the dimensions that are used when creating the image-view. This section has the following structure:
+
+	Section beginning marker		(int32)
+	Section type				(int32)
+	Section length				(int64)
+	----------****************---------------
+	Image width				(int32)
+	Image height				(int32)
+	-----------****************---------------
+	Section end marker			(int32)

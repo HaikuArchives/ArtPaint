@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: Exported Data
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>Exported Data</H3>
+To function properly, the add-ons need to export the following things:
+<P>
+<OL>
+<LI>
+A pointer to a character array that represents add-on's name in the menu. The name of the exported pointer should be <I>name</I>.
+<P>
+</LI>
+<LI>
+A pointer to a character array that represents a help-string that is displayed in the status-bar while the add-on's menu-item is active. The name of the exported pointer should be <I>menu_help_string</I>. It is not absolutey necessary for the add-on to export this to function properly, but it is recommended.  
+<P>
+</LI>
+<LI>
+An int32 that contains the add-on API version. The name of the exporrted int32 should be <I>add_on_api_version</I>. The variable should be initialized to ADD_ON_API_VERSION, which is defined in Manipulator.h.
+<P>
+</LI>
+<LI>
+An add_on_types-type variable should be exported. The type add_on_types is declared in AddOns.h. The name of the exported variable should be <I>add_on_type</I> and it should be initialized to a suitable value that is found from AddOns.h. Currently this exported variable is not used for anything, but later it will be used to group the add-ons in a proper menu-hierarchy. If you think that some more add-on-types should be available, please <A HREF="mailto:Heikki.Suhonen@Helsinki.FI">e-mail me</A>.
+</LI>
+</OL>
+<P>
+Add-on also needs to implement the following function, which is automatically exported:
+<PRE>
+    Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer*)
+</PRE>
+The declaration for this function can be found in AddOns.h.
+</TD>
+</TR>
+
+</TABLE>
+
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

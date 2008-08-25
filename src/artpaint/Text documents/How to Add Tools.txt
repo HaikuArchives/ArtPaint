@@ -1,0 +1,11 @@
+How to Add Tools
+
+This document describes the steps that must be taken when adding a new tool. Currently the steps are the same that were used in demo-version.
+
+	1. Create a new tool-class
+	2. Add a tool-constant to tools.h
+	3. add number of tools definition in PaintApplication.h by one
+	4. add the call of constructor for this tool to apps createDrawingTool
+	and createDrawingTools functions
+	5. delete possible prefs-file
+	6. add a case to ToolSetupWindow's MessageReceived

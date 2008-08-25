@@ -1,0 +1,174 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: Manipulator
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H3><TT>Manipulator</TT>-class</H3>
+Derived from: <STRONG>none</STRONG>
+<P>
+Declared in: <STRONG>Manipulator.h</STRONG>
+<P>
+<HR>
+<H3>Overview</H3>
+The <TT>Manipulator</TT>-class is the base for manipulators that do not need any adjustment by the user. The class has two methods that need to be implemented in the subclass that you create. Those functions are <TT>ManipulateBitmap</TT> and <TT>ReturnName</TT>. The class also has a utility-function <TT>DuplicateBitmap</TT> that can be used to duplicate bitmaps.
+<HR>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>Constructor and Destructor</H3>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="Manipulator()"><TT>Manipulator()</TT></A></H4>
+<PRE>  Manipulator()
+</PRE>
+Initializes the manipulator.
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="~Manipulator()"><TT>~Manipulator()</TT></A></H4>
+<PRE>  virtual ~Manipulator()
+</PRE>
+Does nothing.
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H3>Member Functions</H3>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=20>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="ManipulateBitmap()"><TT>ManipulateBitmap()</TT></A></H4>
+<PRE>  virtual  BBitmap*  ManipulateBitmap(BBitmap* <I>original</I>,
+    Selection* <I>selection</I>, BStatusBar* <I>status_bar</I>)
+</PRE>
+This function is implemented by derived classes. The <I>original</I> is the bitmap that should be manipulated. This method can do anything to <I>original</I> except delete it. The method should return a bitmap that contains the manipulated image. This returned bitmap can be <I>original</I> or some other bitmap. The returned bitmap becomes the property of the calling function and should not be freed by the manipulator. If for some reason manipulation cannot be done this function should return NULL. Currently <I>original</I> is always in B_RGB32 color-space and the returned bitmap must also be in B_RGB32 color-space. It is still a good idea to check the color-space of <I>original</I> before manipulating it. The <I>original</I> does not accept BViews and neither should the returned bitmap.
+<P>
+The <I>selection</I> tells what pixels of the image should be manipulated. See instructions on <A HREF="./selections.html">using selections</A> for more details.
+<P>
+The <I>status_bar</I> should be updated with a total delta of one hundred during the manipulation. If the manipulation only lasts for very short time it is probably wise to update the <I>status_bar</I> only once. If the manipulation lasts for long time, it is a good idea to update it for example 20 times during the manipulation with 5 units each time. The part of the code that does the updating should look something like the following:
+<PRE>  if (time_to_update == TRUE) {		
+    BWindow *window = status_bar->Window();
+    if (window != NULL) {
+      BMessage *a_message;
+      a_message = new BMessage(B_UPDATE_STATUS_BAR);
+      a_message->AddFloat("delta",update_amount);
+      window->PostMessage(a_message,status_bar);
+      delete a_message;
+    }
+    time_to_update = FALSE;
+  }
+
+</PRE>
+</TD>
+</TR>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=20>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="ReturnSettings()"><TT>ReturnSettings()</TT></A></H4>
+<PRE>  virtual  ManipulatorSettings*  ReturnSettings()
+</PRE>
+This function retuns a pointer to instance of class <TT>ManipulatorSettings</TT> or its subclass. The default version returns NULL. You should not re-imlement this function in any manipulators that are based directly on <TT>Manipulator</TT>-class. Implementing this function is only meaningful for <TT>GUIManipulator</TT>-class and its subclasses.
+</TD>
+</TR>
+
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=20>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="ReturnName()"><TT>ReturnName()</TT></A></H4>
+<PRE>  virtual  char*  ReturnName()
+</PRE>
+This function is implemented in subclasses to return a pointer to a string representing the manipulators name. The name should start with an upper-case letter and should be in a form suitable to be used in undo and redo menu items. The returned name should not end with an ellipsis even if the exported add-on name ends with an ellipsis.
+</TD>
+</TR>
+
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="DuplicateBitmap()"><TT>DuplicateBitmap()</TT></A></H4>
+<PRE>  protected BBitmap*  DuplicateBitmap(BBitmap* <I>original</I>,
+    int32 <I>inset</I> = 0, bool <I>accept_views</I> = FALSE)
+</PRE>
+This method can be used to make copies of bitmaps. A copy of <I>original</I> is created and then it is returned. If the function fails, it will return NULL or if it runs out of memory it will throw a <TT>bad_alloc()</TT>.
+<P>
+The parameter <I>inset</I> determines how much larger or smaller the copied bitmap will be. If the value is negative, the resulting bitmap will be larger than the original and the edges will be padded to fill the new bitmap. If the parameter is positive, the new bitmap will be smaller than the original.
+<P>
+The parameter <I>accept_views</I> is passed to BBitmap constructor and it determines whether the returned bitmap can accept views or not. 
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WITDH=100 HEIGHT=30>
+</TD>
+</TR>
+
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

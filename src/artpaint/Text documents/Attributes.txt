@@ -1,0 +1,11 @@
+File Attributes
+
+Attributes will be used to store information in files that are not ArtPaint's own files. This document describes the attributes and their purpose that are added to each file. All attribute-names are prefixed with 'ArtP:' to indicate that they belong to this program.
+
+
+1.	Image files
+
+	Attribute name		Attribute length		Purpose
+
+	ArtP:frame_rect		sizeof(BRect)			window's position
+	ArtP:zoom_level		sizeof(float)			current zoom level

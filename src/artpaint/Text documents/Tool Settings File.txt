@@ -1,0 +1,14 @@
+ArtPaint Tool-Settings File Format
+
+The tools' settings are stored in a single file. That file has the following structure.
+
+This is the header:
+int32	is_little_endian	(0x00000000 or 0xFFFFFFFF, no or yes)
+int32	file_id_number	(0x12345678)
+int32	settings_file_version_number
+
+The next structure is repeated for each tool:
+int32	tool_id
+int32 tool_settings_length
+int32 tool_settings_version
+Here is the actual settings for the tool (tool_settings_length-4 bytes)

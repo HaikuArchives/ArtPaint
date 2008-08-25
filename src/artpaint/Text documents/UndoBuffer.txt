@@ -1,0 +1,50 @@
+ArtPaint Undo-buffer 
+
+Things that need to be considered in undo-buffer system:
+	-	Several levels of undo should be allowed
+	-	Redo should also be available
+	-	Buffer should only store minimal information required
+	-	Undo buffer should loop around if user wants that kind of behaviour
+		otherwise user should be informed that the buffer has ended
+	-	Information about the available undo/redo-steps should be
+		available
+	-	When user draws, all redo-steps should be removed from buffer
+		chain
+	-	If user deletes a layer all undo- or redo-steps that apply to that
+		buffer should also be deleted
+	-	A possibility to save the undo buffer into a file (automatically).
+
+
+Implementation:
+	-	Undo steps store bitmap of the area that was changed and also the
+		coordinates where it is located in image
+	-	A copy of active layer is kept. When user draws to layer a bounds
+		rectangle is recorded. Then a copy from that area is made from
+		the copy of active buffer. Then the copy of active buffer is updated.
+	-	When user requests undo a copy of (part of) that layer is made and
+		placed in redo-chain. Then undo-buffer is copied to that layer.  If that 
+		was the active layer also the copy of that buffer is updated. Then
+  		that undo-step is removed from undo-chain.
+	-	Redo is similar to undo but works the other way around.
+	-	Whenever a new entry to undo-buffer is made, redo-buffer is
+		cleared
+
+Features that UndoBuffer-class offers:
+	-	Setting the depth of buffer
+	-	Asking the available amount of undo- and redo-steps
+	-	Adding an area of bitmap to buffer by providing a Rect and 
+		a pointer to bitmap
+	-	Undo that provides a pointer to bitmap and a BRect
+	-	Redo that provides a pointer to bitmap and a BRect
+	
+ 
+
+
+Current undo-buffer implementation:
+	-	The first version will offer an undo-buffer that has depth of 1.
+	-	Whenever an operation is started, the buffer is copied to undo-
+		buffer.
+	-	When doing undo, the pixels in undo-buffer and image-buffer
+		are swapped (and thus undo-buffer becomes a redo-buffer).
+	-	Some operations (like resizing the canvas or changing active layer)
+		clear the whole undo-buffer.

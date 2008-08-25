@@ -1,0 +1,140 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: Selection
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H3><TT>Selection</TT>-class</H3>
+Derived from: <STRONG>none</STRONG>
+<P>
+Declared in: <STRONG>Selection.h</STRONG>
+<P>
+<HR>
+<H3>Overview</H3>
+Selections are used to determine which parts of the image should be affected by manipulators. While selection-class contains many functions, only three of them should be used by regular add-ons. The functions that should not be used are not documente here. 
+<HR>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>Constructor and Destructor</H3>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="Selection()"><TT>Selection()</TT></A></H4>
+<PRE>  Selection()
+  
+  Selection(const Selection* <I>selection</I>)
+</PRE>
+The first version initializes the selection to be empty (i.e. it will have every point selected). The second version copies the <I>selection</I>.
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="~Selection()"><TT>~Selection()</TT></A></H4>
+<PRE>  ~Selection()
+</PRE>
+Frees all the resources allocated by the selection and stops the thread that draws the selection.
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H3>Member Functions</H3>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=20>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="ContainsPoint()"><TT>ContainsPoint()</TT></A></H4>
+<PRE>  inline  bool  ContainsPoint(BPoint <I>point</I>)
+
+  inline  bool  ContainsPoint(int32 <I>x</I>,int32 <I>y</I>)
+</PRE>
+The first version returns true if the selection contains the pixel located at <I>point</I>. Otherwise the function returns false. The second version returns true if and only if the selection contains pixel located at <I>x</I>,<I>y</I>.
+<P>
+The BPoint-version checks first that the <I>point</I> is inside the image's bounds. The int32-version does not check whether the coordinate-pair actually is inside the image area. The int32-version is faster of the two, but you must be careful not to give it coordinates outside the image's bounds or it will crash. 
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="GetBoundingRect()"><TT>GetBoundingRect()</TT></A></H4>
+<PRE>  BRect  GetBoundingRect()
+</PRE>
+This function returns the smallest rectangle that surrounds the whole selection. If the rectangle has not yet been calculated, it will be calculated the first time this function is called.
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="IsEmpty()"><TT>IsEmpty()</TT></A></H4>
+<PRE>  bool  IsEmpty()
+</PRE>
+This function returns true if the selection is empty. This means that selection does not have any non-selected areas, so everything is selected. If there are at least some non-selected areas it will return false. This function can be used to speed up manipulating in the case when everything is selected. This should be done with something resembling the following code:
+<PRE>  if (selection->IsEmpty()) {
+    // manipulate all pixels
+  }
+  else {
+    // manipulate only pixels at x,y for which
+    // selection->ContainsPoint(x,y) == TRUE
+  }
+</PRE>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WITDH=100 HEIGHT=30>
+</TD>
+</TR>
+
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

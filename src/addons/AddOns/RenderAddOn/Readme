@@ -1,0 +1,37 @@
+These files contain a basic core for building an add-on that is based on Manipulator-class. You should do the following things to make the add-on:
+
+	1.	Duplicate this directory so that you do not lose this template when you start modifying it
+
+	2.	Rename the files Template.h and Template.cpp to myaddon.h and myaddon.cpp, where
+		myaddon is a name that you have chosen. Also rename the Template.proj.
+
+	3.	Open the project
+
+	4.	Add the file myaddon.cpp to the project
+
+	5.	For myaddon.h and myaddon.cpp search and replace the following things:
+		- replace $MANIPULATOR_NAME with the name for your manipulator-class
+		- replace $MENU_NAME with the name that you want to be in the menu for this add-on
+		- replace $HEADER_NAME with myaddon.h where myaddon.h is the name that you chose
+		- replace $MENU_HELP_TEXT with a text that you want to be shown in the status-bar
+		  while this add-ons menu-item is selected
+
+	6.	Change the exported add-on-type to be proper
+
+	7.	Change the information in the first few lines of myaddon.h and myaddon.cpp
+
+	8.	Change the $ifdef and #define in myaddon.h from TEMPLATE_H to your liking
+		 
+	9.	Change the returned string in ReturnName-function and ReturnHelpString-function.
+
+	10.	Implement the other functions in the file myaddon.cpp
+
+	11.	Change the name for the file in projects settings to your liking
+
+	12.	Compile
+
+	13.	Move the resulting file to directory ArtPaint/add-ons. You can also add the shell commads
+		needed for moving to the file script.sh, where they will be executed automatically right
+		after linking has finished.
+
+

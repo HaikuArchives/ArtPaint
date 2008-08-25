@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint: Selector-tool
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+<TD>
+<H2>Selector-tool</H2>
+The selector-tool allows the <A HREF="./selections.html">selection</A> of some area from the image. This tool has many different modes that affect how the tool is used.
+<H3>Settings</H3>
+Figure 1 shows the contents of the tool-setup-window when it is displaying the setup for the selector-tool.
+<DIV ALIGN=CENTER>
+<TABLE>
+<CAPTION ALIGN=BOTTOM>
+Figure 1: Setup view for  the selector-tool.
+</CAPTION>
+<TR>
+<TD><IMG SRC="./images/selector_tool.gif">
+</TABLE>
+</DIV> 
+<P>
+<DL>
+<DT><STRONG>Add Area</STRONG>
+<DD>When this option is selected, the newly made selection will be added to the previous selection.
+<DT><STRONG>Subtract Area</STRONG>
+<DD>When this option is selected, the newly made selection will be subtracted from the previous selection.
+<DT><STRONG>Free Line</STRONG>
+<DD>When this option is selected, the selection is made by clicking on the image and dragging the mouse around to draw a free-hand line. When the button is released the area that is inside of the line will be the new selection.
+<DT><STRONG>Rectangle</STRONG>
+<DD>When this option is selected, the selection is made by clicking on the image and dragging the mouse around to draw a rectangle. When the button is released the area that is inside of the rectangle will be the new selection.
+<DT><STRONG>Magic Wand</STRONG>
+<DD>When this option is selected, the selection is made by clicking on the image once. The tool then selects a proper area that matches the color that the click was made on and this becomes the new selection.
+<DT><STRONG>Intelligent Scissors</STRONG>
+<DD>When this mode is selected, the selection is made by clicking on the image several times to make a path of points. The tool combines these points by lines that try to follow the edges in the image. The tool is finished by double-clicking on the image, which causes the area that is inside the lines to become the new selected area.
+<DT><STRONG>Tolerance</STRONG>
+<DD>Tolerance controls how different colors the magic wand sees as the same color. If the tolerance is 0, the colors must match exactly to be considered the same, and if the tolerance is 100, all colors will be considered the same. 
+</DL>
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

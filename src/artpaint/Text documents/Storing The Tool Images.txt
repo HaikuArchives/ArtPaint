@@ -1,0 +1,51 @@
+Tool-images in the resources
+
+Tool-images are saved into app's resources. They have the type of B_COLOR_8_BIT and they are stored as a stream of bytes.  The length of data is 32*32*1 = 1024 for the big icons and 16*16*1 = 256 for the small images. In order to create an icon for a tool, we need to have all four images for that tool present in the resources. The icons are numbered in the following manner (i.e. their Id's are the following).
+
+	BIG_ICON_ON		a01
+	BIG_ICON_OFF		a02
+	SMALL_ICON_ON	a03
+	SMALL_ICON_OFF	a04
+
+Here a is a number that indicates what tool the icon belongs to. The following list describes the 'a'-values reserved so far. It will be updated whenever new
+tool-images are created.
+
+	NO_TOOL					a=10
+	SIMPLE_TEST_TOOL			a=20
+	SELECTOR_TOOL			a=30
+	FILL_TOOL					a=40
+	RECTANGLE_TOOL			a=50
+	ELLIPSE_TOOL				a=60
+	STRAIGHT_LINE_TOOL		a=70
+	BRUSH_TOOL				a=80
+	BLUR_TOOL					a=90
+	COLOR_SELECTOR_TOOL	a=100
+	TRANSPARENCY_TOOL		a=110
+	AIR_BRUSH_TOOL			a=120
+	SELECTION_TOOL			a=130
+	HAIRY_BRUSH_TOOL		a=140
+	ERASER_TOOL				a=150
+	TEXT_TOOL					a=160
+
+
+The ON-icons are images where the button is pressed down and the off-images are ones where the button is up.
+
+
+The next values of 'a' indicate images for other buttons than just tools.
+
+	OK_BUTTON						a=11
+	CANCEL_BUTTON				a=21
+	
+	POP_UP_LIST_PUSHED			30001
+	POP_UP_LIST_NOT_PUSHED		30002
+
+	COLOR_SELECTOR_POP_UP		30011		(15x5 pixels)
+
+	COLOR_SLIDE_PUSHED			30021		(12x13 pixels)
+	COLOR_SLIDE_NOT_PUSHED		30022		
+
+	LEFT_ARROW_PUSHED			30031		(9x13 pixels)
+	LEFT_ARROW_NOT_PUSHED		30032
+
+	RIGHT_ARROW_PUSHED			30041		(9x13 pixels)
+	RIGHT_ARROW_NOT_PUSHED	30042	

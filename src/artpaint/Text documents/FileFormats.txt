@@ -1,0 +1,69 @@
+THIS FILE CONTAINS OUTDATED INFORMATION
+ArtPaint fileformat-specifications
+
+This file describes the various fileformats that are used by ArtPaint. The first thing in each file is a File identification string that is used to check that the file is of correct type. Files should also have magic numbers inserted in certain places just to check the correctness of the file (might be even checksums).
+
+
+Palette File Format:
+
+	identification_string	a string of chars, no '\0' at the end
+	palette_size			int32 type
+	color_entry*			rgb_color type and there is palette_size of them	
+	palette_name		a string of chars, no '\0' at the end
+			
+
+
+Preferences File Format:
+
+	identification_string		a string of chars, no '\0' at the end
+	version_number			a 32-bit value indicating prefs version
+	global_settings			a struct global settings
+	color_set_count			int32, the number of color-sets
+	color_set*				a color-set, there is color_set_count of them
+	tool_count				int32, the number of tools in use
+	tool_settings*			settings for a tool, there is tool_count of them
+	brush_count				int32, stores the number of brushes in use
+	brush_info				brush_info structs for all brushes
+
+	color_set has the following structure:
+
+	size_of_set				int32, number of colors in set
+	name_length				int32, the length of color-set's name in bytes
+	name					a string of chars, no '\0' at the end
+	color*					rgb_color, there is size_of_set of them
+
+
+	tool_settings has the following structure:
+
+	The tool_settings are stored as a struct.	
+
+
+
+Project File Format:
+
+When storing the whole project, we should store the following things:
+
+	-	All layers' bitmaps
+	-	Information about layers:
+		-	order
+		-	visibility
+	-	All the same preference information that we store in prefs-files	
+	-	Undo/ Redo chains
+
+
+
+The file will follow this format:
+
+	id_info			identifies the project-file and stores the programs
+					version number
+	prefs			preferences for the project
+	image_bounds	bounds-rect of the image-view (the real size of image)
+	layer_count		how many layers were stored
+	layer*			layer's data, there is layer_count of them
+	undo_buffer		contents of the undo-buffer 	
+
+
+
+The data for a layer will be saved by layer-object itself. We can also create an empty layer that can load data from a file. It will try to read from the position that the file-pointer is in the file, and will leave the file-pointer at the position after the layer. It should report if the reading fails for some reason. The reading function should never crash even if the file is corrupted.	
+
+Undo-buffer will also be saved and read by the undo-buffer object. Same rules apply to its reading and writing functions that apply to layer's corresponding functions.			

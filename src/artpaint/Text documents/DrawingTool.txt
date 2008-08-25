@@ -1,0 +1,9 @@
+DrawingTool-classes
+
+-	Each drawing tool has it's own class that defines the functions that do the
+	drawing. The class also has storage for all the settings of the tool and
+	also has a function that creates the needed views for the setup.
+
+-	DrawingTool is a base class that each individual tool-class inherits from.
+	This class has no actual functionality, but it defines the common 
+	elements (such as the name) for each tool.

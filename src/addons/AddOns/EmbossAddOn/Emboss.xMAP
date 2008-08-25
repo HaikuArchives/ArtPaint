@@ -1,0 +1,172 @@
+File:    0	"/boot/home/ArtPaintAddOns/AddOns/EmbossAddOn/EmbossAddOn.cpp"
+File:    2	"/src/exp/src/kit/glue/common/global_destructor_chain.c"
+File:    3	"/src/exp/src/kit/glue/ppc/runtime.c"
+File:    6	"/src/exp/src/kit/glue/common/init_term_dyn.c"
+File:    8	"libbe.so"
+File:    9	"libroot.so"
+File:   14	"/boot/home/projects/ArtPaint/sources/viewmanipulators/Manipulator.cpp"
+File:   15	"/boot/home/projects/ArtPaint/sources/application/Selection.cpp"
+
+Files that were not referenced:
+"start_dyn.c"
+"ArtPaint"
+"BitmapDrawer.cpp"
+
+Code section, size = 4768 bytes
+000000	PR 	.__sinit									file = "*Linker-Generated*"
+00001C	PR 	.instantiate_add_on							file = "EmbossAddOn.cpp"
+000074	PR 	.__ct__17EmbossManipulatorFv
+000090	PR 	.__dt__17EmbossManipulatorFv
+0000F0	PR 	.ManipulateBitmap__17EmbossManipulatorFP7BBitmapP9SelectionP10BStatusBar
+0006E0	PR 	.ReturnName__17EmbossManipulatorFv
+0006E8	PR 	.ReturnSettings__11ManipulatorFv
+0006F0	PR 	.__dt__11ManipulatorFv
+000744	PR 	.__destroy_global_chain						file = "global_destructor_chain.c"
+000798	PR 	.__RTOC										file = "init_term_dyn.c"
+0007A0	PR 	._init_routine_
+0007F0	PR 	._term_routine_
+000820	PR 	.DuplicateBitmap__11ManipulatorFP7BBitmaplb	file = "Manipulator.cpp"
+000CB8	PR 	.GetBoundingRect__9SelectionFv				file = "Selection.cpp"
+000D58	PR 	.IsEmpty__9SelectionFv
+000D6C	PR 	.calculateBoundingRect__9SelectionFv
+000FBC	GL 	.__register_fragment						file = "*Linker-Generated*"
+000FD4	GL 	.__unregister_fragment
+000FEC	GL 	.__dl__FPv
+001004	GL 	.__nw__FUl
+00101C	GL 	.Lock__7BBitmapFv
+001034	GL 	.Bounds__7BBitmapCFv
+00104C	GL 	.InsetBy__5BRectFff
+001064	GL 	.__ct__7BBitmapF5BRect11color_spacebb
+00107C	GL 	.IsValid__7BBitmapCFv
+001094	GL 	.__ct__9bad_allocFv
+0010AC	GL 	.__ct__9bad_allocFRC9bad_alloc
+0010C4	GL 	.__throw
+0010DC	GL 	.__dt__9bad_allocFv
+0010F4	GL 	.Bits__7BBitmapCFv
+00110C	GL 	.BitsLength__7BBitmapCFv
+001124	GL 	.BytesPerRow__7BBitmapCFv
+00113C	GL 	.__ct__8BMessageFUl
+001154	GL 	.__ct__8BMessageFRC8BMessage
+00116C	GL 	.__dt__8BMessageFv
+001184	GL 	.AddFloat__8BMessageFPCcf
+00119C	GL 	.ReplaceFloat__8BMessageFPCcf
+0011B4	GL 	.Window__5BViewCFv
+0011CC	GL 	.PostMessage__7BLooperFP8BMessageP8BHandlerP8BHandler
+0011E4	GL 	.__ad__5BRectCF5BRect
+0011FC	GL 	.Unlock__7BBitmapFv
+001214	GL 	.__ptr_glue									file = "runtime.c"
+001228	TI 	@72											file = "EmbossAddOn.cpp"
+001234	TI 	@80
+001240	TI 	@223
+00124C	TI 	@232
+001258	TI 	@7											file = "global_destructor_chain.c"
+001264	TI 	@2											file = "init_term_dyn.c"
+001270	TI 	@4
+00127C	TI 	@184										file = "Manipulator.cpp"
+001288	TI 	@681										file = "Selection.cpp"
+001294	TI 	@761
+
+Data section, size = 1024 bytes (TOC anchor = 000000)
+000000	TC 	Unlock__7BBitmapFv							file = "*Linker-Generated*"
+000004	TC 	__ct__7BBitmapF5BRect11color_spacebb
+000008	TC 	ReplaceFloat__8BMessageFPCcf
+00000C	TC 	__ct__8BMessageFRC8BMessage
+000010	TC 	BytesPerRow__7BBitmapCFv
+000014	TC 	PostMessage__7BLooperFP8BMessageP8BHandlerP8BHandler
+000018	TC 	Lock__7BBitmapFv
+00001C	TC 	__ct__8BMessageFUl
+000020	TC 	BitsLength__7BBitmapCFv
+000024	TC 	Window__5BViewCFv
+000028	TC 	AddFloat__8BMessageFPCcf
+00002C	TC 	__ad__5BRectCF5BRect
+000030	TC 	Bits__7BBitmapCFv
+000034	TC 	__dt__8BMessageFv
+000038	TC 	Bounds__7BBitmapCFv
+00003C	TC 	InsetBy__5BRectFff
+000040	TC 	IsValid__7BBitmapCFv
+000044	TC 	__dl__FPv
+000048	TC 	__register_fragment
+00004C	TC 	__throw
+000050	TC 	__ct__9bad_allocFv
+000054	TC 	__unregister_fragment
+000058	TC 	__dt__9bad_allocFv
+00005C	TC 	__nw__FUl
+000060	TC 	__ct__9bad_allocFRC9bad_alloc
+000064	TC 	__vt__17EmbossManipulator
+000068	TC 	__vt__11Manipulator
+00006C	TC 	__global_destructor_chain
+000070	TC 	__exception_table_end__
+000074	TC 	__exception_table_start__
+000078	TC 	__data_end__
+00007C	TC 	__data_start__
+000080	TC 	__code_end__
+000084	TC 	__code_start__
+000088	TC 	@228										file = "EmbossAddOn.cpp"
+00008C	TC 	@213
+000090	TC 	@179										file = "Manipulator.cpp"
+000098	TD 	@218										file = "EmbossAddOn.cpp"
+0000A0	TD 	@216
+0000A8	TD 	@215
+0000AC	TD 	@214
+0000B0	TD 	fragmentID									file = "init_term_dyn.c"
+0000B8	TD 	@181										file = "Manipulator.cpp"
+0000C0	TD 	@760										file = "Selection.cpp"
+0000C8	TD 	@758
+0000CC	TD 	@757
+0000D0	DS 	__dt__11ManipulatorFv						file = "EmbossAddOn.cpp"
+0000D8	DS 	ReturnName__17EmbossManipulatorFv
+0000E0	DS 	ReturnSettings__11ManipulatorFv
+0000E8	DS 	ManipulateBitmap__17EmbossManipulatorFP7BBitmapP9SelectionP10BStatusBar
+0000F0	DS 	__dt__17EmbossManipulatorFv
+0000F8	DS 	instantiate_add_on
+000100	DS 	_term_routine_								file = "init_term_dyn.c"
+000108	DS 	_init_routine_
+000110	TB 	@71											file = "EmbossAddOn.cpp"
+000122	TB 	@222
+000142	TB 	@183										file = "Manipulator.cpp"
+000162	RW 	name										file = "EmbossAddOn.cpp"
+000261	RW 	menu_help_string
+000360	RW 	add_on_api_version
+000364	RW 	add_on_type
+000368	RW 	@213
+00036E	RW 	@224
+000380	RW 	@226
+00038C	RW 	__RTTI__11Manipulator
+000394	RW 	@225
+0003A0	RW 	__RTTI__17EmbossManipulator
+0003A8	RW 	__vt__17EmbossManipulator
+0003C0	RW 	__vt__11Manipulator
+0003D8	RW 	@228
+0003DF	RW 	@179										file = "Manipulator.cpp"
+0003F8	RW 	__global_destructor_chain					file = "global_destructor_chain.c"
+
+Import container "libbe.so"
+Current Version = 00000000, Old Implementation = 00000000
+000000	DS 	Unlock__7BBitmapFv
+000001	DS 	__ct__7BBitmapF5BRect11color_spacebb
+000002	DS 	ReplaceFloat__8BMessageFPCcf
+000003	DS 	__ct__8BMessageFRC8BMessage
+000004	DS 	BytesPerRow__7BBitmapCFv
+000005	DS 	PostMessage__7BLooperFP8BMessageP8BHandlerP8BHandler
+000006	DS 	Lock__7BBitmapFv
+000007	DS 	__ct__8BMessageFUl
+000008	DS 	BitsLength__7BBitmapCFv
+000009	DS 	Window__5BViewCFv
+00000A	DS 	AddFloat__8BMessageFPCcf
+00000B	DS 	__ad__5BRectCF5BRect
+00000C	DS 	Bits__7BBitmapCFv
+00000D	DS 	__dt__8BMessageFv
+00000E	DS 	Bounds__7BBitmapCFv
+00000F	DS 	InsetBy__5BRectFff
+000010	DS 	IsValid__7BBitmapCFv
+
+Import container "libroot.so"
+Current Version = 00000000, Old Implementation = 00000000
+000011	DS 	__dl__FPv
+000012	DS 	__register_fragment
+000013	DS 	__throw
+000014	DS 	__ct__9bad_allocFv
+000015	DS 	__unregister_fragment
+000016	DS 	__dt__9bad_allocFv
+000017	DS 	__nw__FUl
+000018	DS 	__ct__9bad_allocFRC9bad_alloc

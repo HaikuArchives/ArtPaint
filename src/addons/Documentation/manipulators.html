@@ -1,0 +1,52 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: Manipulators
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+A manipulator is the heart of any add-on that is used by ArtPaint. The manipulator is a class that is based on one of manipulator base-classes. Depending on which base-class the manipulator's class is based on, it must implement a certain set of functions. Currently there are three base-classes that can be used as a base for the manipulator and one intermediary class that should not be used as a direct base for manipulators. The classes are:
+<UL>
+<LI><A HREF="./manipulator.html"><TT>Manipulator</TT></A>
+<LI><A HREF="./guimanipulator.html"><TT>GUIManipulator</TT></A>
+<LI><A HREF="./statusbarguimanipulator.html"><TT>StatusBarGUIManipulator</TT></A>
+<LI><A HREF="./windowguimanipulator.html"><TT>WindowGUIManipulator</TT></A>.
+</UL>
+The classes form the following class-hierarchy:
+<BR>
+<IMG SRC="./images/hierarchy.gif" ALT="Class hierarchy">
+<BR>
+The class <TT>GUIManipulator</TT> is just an intermediary class and should not be used as a direct base for any manipulator.
+<P>
+The class <TT>Manipulator</TT> should be used as a base for those manipulators that do not accept any user input. Of current add-ons Emboss is an example of this kind of manipulator. The <TT>StatusBarGUIManipulator</TT> and <TT>WindowGUIManipulator</TT> classes should be used as a base for manipulators that allow for some kind of user input that affects how the image is manipulated. For example rotation in ArtPaint is handled by a subclass of <TT>StatusBarGUIManipulator</TT> and for example Blur is a subclass of <TT>WindowGUIManipulator</TT>. 
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+</TR>
+
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

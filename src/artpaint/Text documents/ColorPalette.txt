@@ -1,0 +1,38 @@
+ArtPaint ColorPalette
+
+ColorPalette should have the following properties:
+
+	-	Separate color should be selectable for each mouse-button
+		maybe even two colors for each
+
+	-	User should be able to define a set of colors that are most
+		commonly used for quick selection. These sets could be saved
+		and loaded. When opening such set the filepanel should display
+		sets colors. Several sets could be open at any one time for quick
+		changing between them.
+
+	-	It should be possible to define new colors in many different ways.
+		One method would be RGBA-sliders, other could be HSV-sliders.
+		Many other methods should also be made available.
+
+	-	ColorSelectors should act a little bit differently depending whether
+		they are being displayed on an 8-bit or 32-bit screen.
+
+	-	It should be possible to control color with an external controller.
+		When this is the case each color-set should contain a special
+		entry that reflects the controllers values.
+
+	-	It should be also possible to quickly define a color with the sliders
+		and start using it without the need to use color sets.
+
+	-	Whenever user selects a color it should become the active color for
+		that mousebutton that the selection was made with.
+
+	-	User could also set the preferences so that every button has the
+		same color. 
+
+	-	The alpha value of color should not propably be controlled here
+		but somewhere else. Also user should be able to determine
+		whether the alpha-value is used to mix between layers or
+		within the layer.
+
