@@ -1,0 +1,181 @@
+##	ZETA Generic Makefile Engine v3.0
+##	Sets up the targets, does actual work
+
+##	Supports Generic Makefiles versions 2.0 to 3.0
+
+
+#	define the actual work to be done	
+.PHONY: default
+
+default: build
+
+build: $(TARGET)
+
+buildflags:
+		$(TELL_BUILDFLAGS)
+
+$(TARGET): $(OBJ_DIR) $(OBJS) $(RSRCS) $(EXTRA_DEPS)
+		@rm -f $(TEMPDEPFILE)
+		$(TELL_LINKFLAGS)
+		$(LINK_MSG)
+		$(DO_ECHO) $(BUILD_LINE)
+		$(RSRC_MSG)
+		$(DO_ECHO) $(DO_RSRCS)
+		$(SETVERSION_MESSAGE)
+		$(DO_ECHO) $(DO_SETVERSION)
+		$(SVG_MESSAGE)
+		$(DO_ECHO) $(DO_ADD_SVG_ICON)
+		$(MIME_MSG)
+		$(DO_ECHO) $(DO_MIME)
+		$(EXTRA_BUILD_MESSAGE)
+		$(DO_ECHO) $(EXTRA_BUILD_STEPS)
+		@echo $(NAME) built successfully.; echo // -------------------------------------------------------------------; echo
+
+#	rule to create the object file directory if needed
+$(OBJ_DIR)::
+	@[ -d $(OBJ_DIR) ] || mkdir -p $(OBJ_DIR) > /dev/null 2>&1
+
+.SUFFIXES: .c .cpp .cp .cc .C .CC .CPP
+
+$(OBJ_DIR)/%.o : %.c
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o : %.cpp
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o : %.cp
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o : %.cc
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o : %.C
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o : %.CC
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o : %.CPP
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c $< $(INCLUDES) $(CFLAGS) -o $@
+$(OBJ_DIR)/%.o: %.asm
+	$(BUILD_MSG)
+	$(DO_ECHO)nasm -f elf $< $(INCLUDES)  -D__ASSEMBLER__  $(NASMFLAGS) -o $@
+$(OBJ_DIR)/%.o: %.S
+	$(BUILD_MSG)
+	$(DO_ECHO) $(CC) -c -D__ASSEMBLER__ $< $(INCLUDES) $(CFLAGS) $(ASSEMBLER_FLAGS) -o $@
+
+# Dependency related rules
+
+$(DEP_DIR)/%.d : %.c
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+$(DEP_DIR)/%.d : %.cpp
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+$(DEP_DIR)/%.d : %.cp
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+$(DEP_DIR)/%.d : %.cc
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+$(DEP_DIR)/%.d : %.C
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+$(DEP_DIR)/%.d : %.CC
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+$(DEP_DIR)/%.d : %.CPP
+	$(DO_ECHO)$(DEP_MSG)
+	$(DO_ECHO)$(DEP_STAGE1)
+	$(DO_ECHO)$(DEP_STAGE2)
+
+
+# For RDef files (some tracker thing)
+$(OBJ_DIR)/%.rsrc : %.rdef
+	$(DO_ECHO)$(BERES) -o $@ $<
+
+#	rules to handle lex/flex and yacc/bison files
+$(OBJ_DIR)/%.o: %.y
+	$(DO_ECHO)bison $(BISON_FLAGS) $<
+	$(DO_ECHO)$(CC) -c $(INCLUDES) $(CFLAGS) $(basename $<).c -o $@
+
+$(OBJ_DIR)/%.o: %.l
+	$(DO_ECHO)flex $(FLEX_FLAGS) $<
+	$(DO_ECHO)$(CC) -c $(INCLUDES) $(CFLAGS) $(basename $<).c -o $@
+
+#	empty rule. Things that depend on this rule will always get triggered
+FORCE:
+
+#	Clean up the deps
+cleandep :: FORCE
+	@echo Cleaning dependencies.
+	$(DO_ECHO)-rm -rf $(DEP_DIR)
+
+#	remove just the application from the object folder
+rmapp ::
+	@echo Cleaning target.
+	$(DO_ECHO)-rm -f $(TARGET)
+
+#	The  clean command. Delete everything in the object and dep folders.
+clean :: cleandep rmapp
+	@echo Cleaning objects.
+	$(DO_ECHO)-rm -rf $(OBJ_DIR)
+	$(DO_ECHO)$(EXTRA_CLEAN_STEPS)
+
+# condtional depends target
+depend :: FORCE
+	$(DO_ECHO)$(DO_DEPENDS)
+	$(DO_ECHO)echo Dependencies updated.
+
+driverinstall ::
+	$(DO_ECHO)$(error 'driverinstall' target is depricated, use 'install' target instead)
+	
+install :: default
+ifneq ($(TYPE), OBJECTS)
+	@echo Installing $(NAME)
+	$(DO_ECHO) mkdir -p "$(INSTALL_DIR)"
+	$(DO_ECHO) copyattr --data $(TARGET) $(INSTALL_DIR)/$(NAME)	
+# Create links as necessary
+	$(TELL_LINKS)
+	$(DO_ECHO) $(DO_LINKS)	
+# Additional install commands
+	$(TELL_ADDL_INSTALL)
+	$(DO_ECHO) $(ADDL_INSTALL)
+	@echo Installation complete
+	@echo =======================================================================================
+	@echo
+endif
+
+# delete the deps dir if we want to recreate all the dependencies
+ifneq ($(DODEPS), false)
+ifneq ($(NO_DEP_GEN), true)
+ifeq ($(CPU), x86)
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),cleandep)
+ifneq ($(TYPE), DECOR)
+ifneq ($(DEPENDS),)
+-include $(DEPENDS)
+endif	# Some projects have no dependency files!
+endif	# No deps for Decors
+endif	# Don't generate deps when cleaning the deps
+endif 	#  or when cleaning the project
+endif	# This method for x86 deps
+else
+-include .dependencies
+endif	# Set this to true to stop dep gen from the env.
+endif	# This can be set in the makefile to permanently stop dependecy generation.
+
+
