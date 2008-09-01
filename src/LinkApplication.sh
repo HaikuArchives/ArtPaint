@@ -1,7 +1,7 @@
 #!/bin/sh
 
-CURRENT_DIR=$PWD
-ADDON_DIR=../addons
+ARTPAINT_DIR=artpaint
+ADDON_DIR=./addons
 
 if [ ! -d $ADDON_DIR ]
 then
@@ -10,15 +10,17 @@ fi
 
 if [ -L $ADDON_DIR/_APP_ ]
 then
-#	echo "The link already exists!"
+	echo "The link already exists!"
 	exit 0
 fi
 
-if [ ! -f "./ArtPaint" ]
+if [ ! -f $ARTPAINT_DIR"/obj.X86/ArtPaint" ]
 then
 	echo "The ArtPaint executable does not seem to exist!"
+	echo $ARTPAINT_DIR"/obj.X86/ArtPaint"
 	exit 1
 fi
 
 cd $ADDON_DIR
-ln -s $CURRENT_DIR/ArtPaint _APP_
+ln -s ../$ARTPAINT_DIR/obj.X86/ArtPaint _APP_
+

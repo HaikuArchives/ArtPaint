@@ -1,7 +1,7 @@
 #!/bin/sh
 
-SRC_DIR=./sources
-ADDON_DIR=../addons
+SRC_DIR=./artpaint/sources
+ADDON_DIR=./addons
 HEADER_DIR=$ADDON_DIR/headers
 
 
