@@ -1,7 +1,7 @@
 TODO by stargater 2008
 - fix some missing #include | finish
 - add the new build engine  | finish
-- add addons jamfiles
-- fix sh scripts
+- add addons jamfiles		| fixed the BeOS and plain makefile!
+- fix sh scripts            | finish
 - add new tool icons
 - ... 
