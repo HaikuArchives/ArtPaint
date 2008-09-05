@@ -1,0 +1,215 @@
+SubDir HAIKU_TOP 3rdparty artpaint addons AddOns Halftone ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) UtilityClasses ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources application ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources controls ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources layers ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources paintwindow ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources tools ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources viewmanipulators ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources windows ] ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) UtilityClasses ] ;
+
+Addon Halftone.so :
+	Halftone.cpp
+	ImageProcessingLibrary.cpp
+	PreviewView.cpp
+	ColorDistanceMetric.cpp
+	ColorConverter.cpp
+	RangeSlider.cpp
+
+	AboutWindow.o
+	AirBrushTool.o
+	BackgroundView.o
+	BitmapDrawer.o
+	BitmapUtilities.o
+	BlurTool.o
+	BrushEditor.o
+	Brush.o
+	BrushStoreWindow.o
+	BrushTool.o
+	ClipBoardManager.o
+	ClipBoardView.o
+	CMYControl.o
+	ColorPalette.o
+	ColorSelectorTool.o
+	ColorView.o
+	Controls.o
+	CoordinateQueue.o
+	CoordinateReader.o
+	CropManipulator.o
+	DatatypeSetupWindow.o
+	DirectionControl.o
+	DrawingTool.o
+	EllipseTool.o
+	EraserTool.o
+	FilePanels.o
+	FillTool.o
+	FlipManipulator.o
+	FloaterManager.o
+	FreeTransformManipulator.o
+	GlobalSetupWindow.o
+	HairyBrushTool.o
+	HSPictureButton.o
+	HSPolygon.o
+	HSVControl.o
+	Image.o
+	ImageUpdater.o
+	ImageView.o
+	IntelligentPathFinder.o
+	Layer.o
+	LayerView.o
+	LayerWindow.o
+	LineTool.o
+	MagnificationView.o
+	ManipulatorInformer.o
+	Manipulator.o
+	ManipulatorServer.o
+	ManipulatorWindow.o
+	MatrixView.o
+	MessageFilters.o
+	PaintApplication.o
+	PaintWindowMenuItem.o
+	PaintWindow.o
+	PopUpColorWindow.o
+	PopUpList.o
+	PopUpSlider.o
+	ProjectFileFunctions.o
+	RandomNumberGenerator.o
+	RectangleTool.o
+	RefFilters.o
+	RGBControl.o
+	Rotate90Manipulator.o
+	RotationManipulator.o
+	ScaleManipulator.o
+	Selection.o
+	SelectorTool.o
+	Settings.o
+	SimpleTool.o
+	StatusView.o
+	StraightLineTool.o
+	StringServer.o
+	SymbolImageServer.o
+	TextManipulator.o
+	TextTool.o
+	ToolButton.o
+	ToolEventAdapter.o
+	ToolImages.o
+	ToolManager.o
+	ToolScript.o
+	ToolSelectionWindow.o
+	ToolSetupWindow.o
+	TranslationManipulator.o
+	TransparencyManipulator.o
+	TransparencyTool.o
+	UndoAction.o
+	UndoEvent.o
+	UndoQueue.o
+	UndoWindow.o
+	UtilityClasses.o
+	ViewSetupWindow.o
+	VisualColorControl.o
+	WindowGUIManipulator.o
+	YIQControl.o
+	YUVControl.o
+
+	: be tracker translation
+;
+
+ObjectReferences
+		<3rdparty!artpaint!artpaint!sources>AboutWindow.o
+		<3rdparty!artpaint!artpaint!sources>AirBrushTool.o
+		<3rdparty!artpaint!artpaint!sources>BackgroundView.o
+		<3rdparty!artpaint!artpaint!sources>BitmapDrawer.o
+		<3rdparty!artpaint!artpaint!sources>BitmapUtilities.o
+		<3rdparty!artpaint!artpaint!sources>BlurTool.o
+		<3rdparty!artpaint!artpaint!sources>BrushEditor.o
+		<3rdparty!artpaint!artpaint!sources>Brush.o
+		<3rdparty!artpaint!artpaint!sources>BrushStoreWindow.o
+		<3rdparty!artpaint!artpaint!sources>BrushTool.o
+		<3rdparty!artpaint!artpaint!sources>ClipBoardManager.o
+		<3rdparty!artpaint!artpaint!sources>ClipBoardView.o
+		<3rdparty!artpaint!artpaint!sources>CMYControl.o
+		<3rdparty!artpaint!artpaint!sources>ColorPalette.o
+		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
+		<3rdparty!artpaint!artpaint!sources>ColorView.o
+		<3rdparty!artpaint!artpaint!sources>Controls.o
+		<3rdparty!artpaint!artpaint!sources>CoordinateQueue.o
+		<3rdparty!artpaint!artpaint!sources>CoordinateReader.o
+		<3rdparty!artpaint!artpaint!sources>CropManipulator.o
+		<3rdparty!artpaint!artpaint!sources>DatatypeSetupWindow.o
+		<3rdparty!artpaint!artpaint!sources>DirectionControl.o
+		<3rdparty!artpaint!artpaint!sources>DrawingTool.o
+		<3rdparty!artpaint!artpaint!sources>EllipseTool.o
+		<3rdparty!artpaint!artpaint!sources>EraserTool.o
+		<3rdparty!artpaint!artpaint!sources>FilePanels.o
+		<3rdparty!artpaint!artpaint!sources>FillTool.o
+		<3rdparty!artpaint!artpaint!sources>FlipManipulator.o
+		<3rdparty!artpaint!artpaint!sources>FloaterManager.o
+		<3rdparty!artpaint!artpaint!sources>FreeTransformManipulator.o
+		<3rdparty!artpaint!artpaint!sources>GlobalSetupWindow.o
+		<3rdparty!artpaint!artpaint!sources>HairyBrushTool.o
+		<3rdparty!artpaint!artpaint!sources>HSPictureButton.o
+		<3rdparty!artpaint!artpaint!sources>HSPolygon.o
+		<3rdparty!artpaint!artpaint!sources>HSVControl.o
+		<3rdparty!artpaint!artpaint!sources>Image.o
+		<3rdparty!artpaint!artpaint!sources>ImageUpdater.o
+		<3rdparty!artpaint!artpaint!sources>ImageView.o
+		<3rdparty!artpaint!artpaint!sources>IntelligentPathFinder.o
+		<3rdparty!artpaint!artpaint!sources>Layer.o
+		<3rdparty!artpaint!artpaint!sources>LayerView.o
+		<3rdparty!artpaint!artpaint!sources>LayerWindow.o
+		<3rdparty!artpaint!artpaint!sources>LineTool.o
+		<3rdparty!artpaint!artpaint!sources>MagnificationView.o
+		<3rdparty!artpaint!artpaint!sources>ManipulatorInformer.o
+		<3rdparty!artpaint!artpaint!sources>Manipulator.o
+		<3rdparty!artpaint!artpaint!sources>ManipulatorServer.o
+		<3rdparty!artpaint!artpaint!sources>ManipulatorWindow.o
+		<3rdparty!artpaint!artpaint!sources>MatrixView.o
+		<3rdparty!artpaint!artpaint!sources>MessageFilters.o
+		<3rdparty!artpaint!artpaint!sources>PaintApplication.o
+		<3rdparty!artpaint!artpaint!sources>PaintWindowMenuItem.o
+		<3rdparty!artpaint!artpaint!sources>PaintWindow.o
+		<3rdparty!artpaint!artpaint!sources>PopUpColorWindow.o
+		<3rdparty!artpaint!artpaint!sources>PopUpList.o
+		<3rdparty!artpaint!artpaint!sources>PopUpSlider.o
+		<3rdparty!artpaint!artpaint!sources>ProjectFileFunctions.o
+		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
+		<3rdparty!artpaint!artpaint!sources>RectangleTool.o
+		<3rdparty!artpaint!artpaint!sources>RefFilters.o
+		<3rdparty!artpaint!artpaint!sources>RGBControl.o
+		<3rdparty!artpaint!artpaint!sources>Rotate90Manipulator.o
+		<3rdparty!artpaint!artpaint!sources>RotationManipulator.o
+		<3rdparty!artpaint!artpaint!sources>ScaleManipulator.o
+		<3rdparty!artpaint!artpaint!sources>Selection.o
+		<3rdparty!artpaint!artpaint!sources>SelectorTool.o
+		<3rdparty!artpaint!artpaint!sources>Settings.o
+		<3rdparty!artpaint!artpaint!sources>SimpleTool.o
+		<3rdparty!artpaint!artpaint!sources>StatusView.o
+		<3rdparty!artpaint!artpaint!sources>StraightLineTool.o
+		<3rdparty!artpaint!artpaint!sources>StringServer.o
+		<3rdparty!artpaint!artpaint!sources>SymbolImageServer.o
+		<3rdparty!artpaint!artpaint!sources>TextManipulator.o
+		<3rdparty!artpaint!artpaint!sources>TextTool.o
+		<3rdparty!artpaint!artpaint!sources>ToolButton.o
+		<3rdparty!artpaint!artpaint!sources>ToolEventAdapter.o
+		<3rdparty!artpaint!artpaint!sources>ToolImages.o
+		<3rdparty!artpaint!artpaint!sources>ToolManager.o
+		<3rdparty!artpaint!artpaint!sources>ToolScript.o
+		<3rdparty!artpaint!artpaint!sources>ToolSelectionWindow.o
+		<3rdparty!artpaint!artpaint!sources>ToolSetupWindow.o
+		<3rdparty!artpaint!artpaint!sources>TranslationManipulator.o
+		<3rdparty!artpaint!artpaint!sources>TransparencyManipulator.o
+		<3rdparty!artpaint!artpaint!sources>TransparencyTool.o
+		<3rdparty!artpaint!artpaint!sources>UndoAction.o
+		<3rdparty!artpaint!artpaint!sources>UndoEvent.o
+		<3rdparty!artpaint!artpaint!sources>UndoQueue.o
+		<3rdparty!artpaint!artpaint!sources>UndoWindow.o
+		<3rdparty!artpaint!artpaint!sources>UtilityClasses.o
+		<3rdparty!artpaint!artpaint!sources>ViewSetupWindow.o
+		<3rdparty!artpaint!artpaint!sources>VisualColorControl.o
+		<3rdparty!artpaint!artpaint!sources>WindowGUIManipulator.o
+		<3rdparty!artpaint!artpaint!sources>YIQControl.o
+		<3rdparty!artpaint!artpaint!sources>YUVControl.o
+;
