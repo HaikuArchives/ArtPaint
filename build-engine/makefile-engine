@@ -1,0 +1,10 @@
+##	BeOS Generic Makefile Engine v2.8.5.ZETA
+##	Does all the hard work for the Generic Makefile
+##	which simply defines the project parameters
+
+##	In this revised edition, we simply include the parts of the makefile-engine
+##   in the order that we want 
+##	Supports Generic Makefile v2.x.x.x
+
+include $(BUILDHOME)/etc/makefile-engine.vars
+include $(BUILDHOME)/etc/makefile-engine.targets

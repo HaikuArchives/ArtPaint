@@ -1,0 +1,14 @@
+The OpenBeOS Jamfile-engine
+by Ryan Leavengood
+Copyright (c) 2002, 2003
+Released under the Terms of the MIT License, see http://www.opensource.org/licenses/mit-license.html
+
+The Jamfile-engine is a Jam-based reimplementation of the Be makefile-engine, primarily created for the OpenBeOS project.  In this package you will find the Jamfile-engine, the generic Jamfile template that uses the engine, an install.sh install script and of course, this README.
+
+Installation simply involves putting the Jamfile-engine and Jamfile in $BUILDHOME/etc (which is normally /boot/develop/etc.)  The install.sh script does this for you.  Since this is where the Be makefile-engine resides, I figured it would be a good place for the Jamfile-engine.  If you decide to put the Jamfile-engine in another location, you will need to change the line at the end of the Jamfile template to the new location so that the Jamfile-engine is properly included.
+
+To use of the Jamfile-engine, you copy the Jamfile template from the installation location and fill it out as specified in its comments.  For more information about Jam, please see http://www.perforce.com/jam/jam.html or read some of my articles about it on the OpenBeOS newsletter: http://open-beos.sourceforge.net/nsl.php.
+
+This is the first release and I cannot guarantee it is defect-free, especially when building on PowerPC machines.  Any testing on PPC machines would be appreciated.
+
+Please send feature requests, comments, and bug reports to me at leavengood@sourceforge.net.
