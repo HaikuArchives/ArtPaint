@@ -28,7 +28,7 @@ Addon AHE.so :
 
 ObjectReferences
 	<3rdparty!artpaint!artpaint!sources>HSPolygon.o
-        <3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
+	<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
 	<3rdparty!artpaint!artpaint!sources>Selection.o
 ;
 

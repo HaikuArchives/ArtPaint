@@ -28,9 +28,8 @@ Addon AntiDitherer.so :
 ;
 
 ObjectReferences
-        <3rdparty!artpaint!artpaint!sources>Controls.o
-        <3rdparty!artpaint!artpaint!sources>Manipulator.o
-        <3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
-        <3rdparty!artpaint!artpaint!sources>WindowGUIManipulator.o
+		<3rdparty!artpaint!artpaint!sources>Controls.o
+		<3rdparty!artpaint!artpaint!sources>Manipulator.o
+		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
+		<3rdparty!artpaint!artpaint!sources>WindowGUIManipulator.o
 ;
-
