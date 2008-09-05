@@ -14,9 +14,9 @@ SEARCH_SOURCE += [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) UtilityClasses ] ;
 Addon Negativ.so :
 	NegativeAddOn.cpp
 	ImageProcessingLibrary.cpp
-	PreviewView.cpp
-	ColorDistanceMetric.cpp
-	ColorConverter.cpp
+	#	PreviewView.cpp
+	#	ColorDistanceMetric.cpp
+	#	ColorConverter.cpp
 	RangeSlider.cpp
 
 	HSPolygon.o
