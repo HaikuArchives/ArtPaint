@@ -1,0 +1,40 @@
+SubDir HAIKU_TOP 3rdparty artpaint addons AddOns ColorSeparator ;
+
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) UtilityClasses ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources application ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources controls ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources layers ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources paintwindow ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources tools ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources viewmanipulators ] ;
+SubDirHdrs [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) $(DOTDOT) artpaint sources windows ] ;
+
+SEARCH_SOURCE += [ FDirName $(SUBDIR) $(DOTDOT) $(DOTDOT) UtilityClasses ] ;
+
+Addon ColorSeparator.so :
+	ColorSeparator.cpp
+	ImageProcessingLibrary.cpp
+	PreviewView.cpp
+	ColorDistanceMetric.cpp
+	ColorConverter.cpp
+	RangeSlider.cpp
+
+	Controls.o
+	HSPolygon.o
+	Manipulator.o
+	RandomNumberGenerator.o
+	Selection.o
+	WindowGUIManipulator.o
+
+	: be
+;
+
+ObjectReferences
+		<3rdparty!artpaint!artpaint!sources>Controls.o
+		<3rdparty!artpaint!artpaint!sources>HSPolygon.o
+		<3rdparty!artpaint!artpaint!sources>Manipulator.o
+		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
+		<3rdparty!artpaint!artpaint!sources>Selection.o
+		<3rdparty!artpaint!artpaint!sources>WindowGUIManipulator.o
+;
+
