@@ -23,7 +23,7 @@ SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns OilAddOn ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns PolarMapper ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Saturation ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Sharpness ;
-#SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Threshold ;
+SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Threshold ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns TwirlAddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns WaveAddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns WoodRelief ;
