@@ -1,0 +1,41 @@
+
+DeferredSubInclude HAIKU_TOP 3rdparty ;
+
+AddFilesToHaikuImage apps artpaint : ArtPaint ;
+
+AddFilesToHaikuImage apps artpaint add-ons : AHE.so ;
+AddFilesToHaikuImage apps artpaint add-ons : AntiDitherer.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Blur.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Brightness.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Reducer.so ;
+AddFilesToHaikuImage apps artpaint add-ons : ColorSeparator.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Color\ Balance.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Contrast.so ;
+AddFilesToHaikuImage apps artpaint add-ons : ContrastManipulator1.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Dispersion.so ;
+AddFilesToHaikuImage apps artpaint add-ons : DetectEdges.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Emboss.so ;
+AddFilesToHaikuImage apps artpaint add-ons : EnhanceEdges.so ;
+AddFilesToHaikuImage apps artpaint add-ons : GaussianBlur.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Grayscale.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Halftone.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Interference.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Marble.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Negativ.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Oil.so ;
+AddFilesToHaikuImage apps artpaint add-ons : PolarMapper.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Saturation.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Sharpness.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Threshold.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Twirl.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Wave.so ;
+AddFilesToHaikuImage apps artpaint add-ons : Wood.so ;
+
+AddSymlinkToHaikuImage home config be Applications : /boot/apps/artpaint/ArtPaint : ArtPaint ;
+
+local ArtPaintDocDir = [ FDirName $(HAIKU_TOP) 3rdparty artpaint artpaint Documentation ] ;
+local ArtPaintHtmFiles = [ Glob $(ArtPaintDocDir) : *.html ] ;
+local ArtPaintImageFiles = [ Glob $(ArtPaintDocDir)/images : *.gif *.jpeg ] ;
+
+AddFilesToHaikuImage apps artpaint Documentation : $(ArtPaintHtmFiles) ;
+AddFilesToHaikuImage apps artpaint Documentation images : $(ArtPaintImageFiles) ;

@@ -1,0 +1,45 @@
+How to get and build ArtPaint.
+
+ArtPaint can be checked out through anonymous access with the following command:
+svn checkout svn://svn.osdrawer.net/svnroot/artpaint/trunk artpaint
+
+Developers can checkout through svn+ssh with the following command:
+svn checkout svn+ssh://developername@svn.osdrawer.net/svnroot/artpaint/trunk artpaint
+
+
+Please note, unlike the SCM Webpage states, make sure the your svn command ends with 'trunk'.
+This is especially important if you are going to try to build ArtPaint with Haiku's native
+Jamfile engine. The included Jamfiles expects ArtPaint's source code to be checked out into
+Haiku's 3rdparty folder.
+
+After successfully ckecking out the source your hard disk layout should look something like this:
+
+haiku |
+		- build
+		- data
+		- docs
+		- headers
+		- src
+		- 3rdparty |
+					- artpaint |
+								- addons
+								- artpaint
+								- haiku
+								- Jamfile
+
+Now there is only one more step required to get ArtPaint onto your Haiku image,
+cd into 3rdparty/artpaint/haiku and copy the content of the UserBuildConfig to
+your default UserBuildConfig used to build Haiku.
+
+If you didn't setup a UserBuildConfig yet, please read the file UserBuildConfig.ReadMe
+to be found under build/jam/UserBuildConfig.ReadMe and reuse build/jam/UserBuildConfig.sample
+to setup your own UserBuildConfig.
+
+After invoking a simple jam haiku-image or jam haiku-vmware-image ArtPaint should be
+properly copied onto your image. Of course you must have configured Haiku with
+
+./configure --include-3rdparty <some other options>
+
+how to do this refer to Haiku's configure while invoked with configure --help.
+
+Have fun!
