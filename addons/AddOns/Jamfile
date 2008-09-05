@@ -13,7 +13,7 @@ SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns DispersionAddOn ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns EdgeDetector ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns EmbossAddOn ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns EnhanceEdges ;
-#SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns GaussianBlur ;
+SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns GaussianBlur ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns GrayscaleAddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Halftone ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Interference ;
