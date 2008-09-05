@@ -1,0 +1,51 @@
+ArtPaint PaintWindow
+
+Things concerning the design of paint windows:
+
+	-	All menus should be visible at all times
+	-	Window should have scrollbars if image is larger than window
+	-	Center image and leave blank area outside if window is larger than
+		image
+	-	There should be room for Status-bar and Quick-tool buttons
+	-	Should there be a possibility to integrate toolwindow into paint
+		window ?
+	-	Window has only one image
+	-	If image is saved as a project, window settings should be saved
+		also
+	-	Window can be in different modes depending on what user is
+		currently doing	
+
+Functionality that is in this class:
+
+	-	Contains PaintView
+	-	Contains a menu and possibly statusbar and help view
+
+
+
+Window modes:
+
+	Window can be in many different modes. A mode is a situation where user's actions do something particular. In different modes some actions might not be allowed or some actions might have a different meaning. For example when an image has not been yet created for the window the window is in mode where user can choose the image size. None of the operations that have to do with drawing are allowed. When user creates the image the window changes into painting mode. There should be a mechanism that allows the window to change from mode to mode easily and program structures should be made so that the mode is taken into account in the relevant places (e.g. images's MouseDown-function). It should be made as easy as possible to add a new mode. 
+
+	-	The mode of the window should be clearly visible to the user. This
+		should be visible in status-view. In help view we should give a 
+		longer explanation of the mode.
+
+	-	When a mode changes, following things happen:
+
+		-	Status-view changes to reflect new mode
+		-	Some menu-items become inactive or active
+		-	
+
+	
+	-	Following modes should be available:
+
+		-	Normal paint-mode
+		-	A mode for image transformations (rotation, scaling, …)
+		-	A mode for add-ons	
+
+
+	-	Normal paint-mode is the default mode. Window will return to that
+		mode when some other mode ends.
+
+	-	Perhaps the image could have it's own modes that would be a little 
+		more specific than the window's modes?

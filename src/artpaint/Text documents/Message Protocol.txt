@@ -1,0 +1,81 @@
+ArtPaint Message Protocol
+
+ArtPaint can be used by other applications to handle their image editing needs. This is done by sending ArtPaint a message that contains necessary data of the image. The data items that such message contains are described below:
+
+	-	"what"		The usual int32 that describes what the message is
+					about. This should be registered to ensure
+					uniqueness.
+
+	-	"source"		A string that is the signature of the message source.
+
+	-	"frame"		A BRect that is the size of the image to be edited.
+
+	-	"bitmap"		Data for the bitmap, 32-bits per pixel. The order of
+					colors is BGRA. If this entry is missing from the
+					message, an empty image will be used as a start.
+
+	-	"data length"	The length of bitmap-data in bytes. If the "bitmap"
+					is missing, this can be ignored also.
+
+	-	"name"		A string that is the name for this image. This may be
+					omitted.
+
+	-	"id"			An int32 that identifies this image within the source
+					application. This is used to ensure that there will be no 
+					duplicates of the same image in ArtPaint. If this is 
+					missing it is presumed that the source application 
+					knows what of it's images is being edited. 
+
+
+
+When user has edited the image and wants to reflect the changes to "source" application a message will be sent to the application that is identified by "source"-string signature. That message will not be sent as a reply. The message contains the following data:
+
+	-	"what"		An int32 that describes what the message is about.
+					The same number as in previous message can be
+					used here.
+
+	-	"source"		ArtPaint's signature, just in case somebody wants it.
+
+	-	"frame"		A BRect that is the frame for the bitmap data that is
+					in this message.
+
+	-	"bitmap"		Data for the bitmap, 32-bits per pixel. The order of
+					colors is BGRA. If this entry is missing, the user 
+					cancelled the image editing.
+
+	-	"data length"	The length of bitmap data in bytes.
+
+	-	"id"			An int32 that should identify the image in target app.
+					If the source message did not have the corresponding
+					entry, this will be a random value.
+
+
+
+
+Responsibilities of the source application:
+
+	-	It is responsible for saving the image to disk. The user can save
+		also in ArtPaint, but it is not guaranteed that it will happen.
+
+
+
+Problems with this approach:
+
+	-	What happens if the "source" application quits while one of it's
+		images is being edited?
+
+	-	How should we deal with situation when the source would like
+		to have the image as 256-color palette image rather than 32-bit?
+		Should we restrict the used colors to just that palette? Or should
+		we allow the use of all 32-bit colors and then just dither the image
+		to 256-colors?	
+
+	-	What should we do when the user wants to just update the image
+		in source application, but wants still to continue editing in ArtPaint?
+		How can the source know that the image is still being edited? 
+		Perhaps we should add a data-member for the message that we
+		send to source that tells if this is only intermediate update or the 
+		final update.
+
+
+				 

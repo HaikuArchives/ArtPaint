@@ -1,0 +1,66 @@
+ArtPaint UndoQueue
+
+
+
+UndoBuffer class offers a simple undo/redo service. UndoQueue-class is designed to offer a more sophisticated undo-implementation.
+
+The main features of UndoQueue are:
+
+	-	unlimited number of undo-steps
+	-	undo for all actions
+	-	ability to browse easily through undo-steps (UI)
+	-	ability to undo any action without affecting actions that come after it
+	-	ability to replace any action with another action without affecting actions that come after it
+
+
+The most important design principles in doing UndoQueue are the following:
+
+	1.	low memory and speed overhead
+	2.	using disks efficiently to gain extra storage
+	3.	simple API
+	4.	extendability to even more sophisticated undo-mechanisms (e.g. undo-tree)
+
+
+
+
+
+UndoQueue implementation
+
+The UndoQueue is contstructed from UndoEvents. An UndoEvent contains information about how the picture has changed in certain step. The image's state is tracked in the UndoQueue by indexing these UndoEvents. The event at the position of index represents the current image state.
+
+						
+E---E----E----E----E----E----E----E----E----E 
+                   |
+				 index
+
+
+The UndoQueue API
+
+The UndoQueue has three basic operations: operation for adding an event to the queue, operation for moving to the previous event in the queue and operation for moving to the next event in the queue.
+
+The functions that are used are the following:
+
+	UndoEvent*		AddUndoEvent(Selection *selection, bool remove_tail=TRUE)
+
+This function adds an event to the undo-queue in the current position. If the parameter remove_tail is TRUE, all UndoEvents that follow the current position are discarded, otherwise an event is inserted between two other events in the queue. The parameter selection is recorded in to the newly created UndoEvent and a pointer to that UndoEvent is returned. The returned UndoEvent can then be used to record the actual things that have been done to certain layers.
+
+
+	UndoEvent*		RemoveEventAt(int32 index)
+
+This method removes and returns an event from the UndoQueue at given index. If the index is smaller than the current index the current index will be decreased by one.
+
+
+	int32	InsertUndoEvent(UndoEvent *event,int32 index)
+
+This method inserts the event in the position index in the UndoQueue. If the index is smaller than the current index, the current index will be increased by one. If the index is greater than or equal to current index, the current index will not be changed.
+
+	int32	CurrentIndex()
+
+Returns the index of the current state in the UndoQueue.
+
+
+
+
+
+
+

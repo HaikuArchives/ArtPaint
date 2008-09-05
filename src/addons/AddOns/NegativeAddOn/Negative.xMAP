@@ -1,0 +1,122 @@
+File:    0	"/boot/home/ArtPaintAddOns/AddOns/NegativeAddOn/NegativeAddOn.cpp"
+File:    2	"/src/exp/src/kit/glue/common/global_destructor_chain.c"
+File:    3	"/src/exp/src/kit/glue/ppc/runtime.c"
+File:    6	"/src/exp/src/kit/glue/common/init_term_dyn.c"
+File:    8	"libbe.so"
+File:    9	"libroot.so"
+File:   13	"/boot/home/projects/ArtPaint/sources/application/Selection.cpp"
+
+Files that were not referenced:
+"start_dyn.c"
+"ArtPaint"
+
+Code section, size = 1732 bytes
+000000	PR 	.__sinit									file = "*Linker-Generated*"
+00001C	PR 	.instantiate_add_on							file = "NegativeAddOn.cpp"
+000084	PR 	.__ct__24NegativeAddOnManipulatorFP7BBitmap
+0000A0	PR 	.__dt__24NegativeAddOnManipulatorFv
+000100	PR 	.ManipulateBitmap__24NegativeAddOnManipulatorFP7BBitmapP9SelectionP10BStatusBar
+0003B8	PR 	.ReturnName__24NegativeAddOnManipulatorFv
+0003C0	PR 	.ReturnSettings__11ManipulatorFv
+0003C8	PR 	.__dt__11ManipulatorFv
+00041C	PR 	.__destroy_global_chain						file = "global_destructor_chain.c"
+000470	PR 	.__RTOC										file = "init_term_dyn.c"
+000478	PR 	._init_routine_
+0004C8	PR 	._term_routine_
+0004F8	PR 	.IsEmpty__9SelectionFv						file = "Selection.cpp"
+00050C	GL 	.__register_fragment						file = "*Linker-Generated*"
+000524	GL 	.__unregister_fragment
+00053C	GL 	.__dl__FPv
+000554	GL 	.__nw__FUl
+00056C	GL 	.__ct__8BMessageFUl
+000584	GL 	.__ct__8BMessageFRC8BMessage
+00059C	GL 	.__dt__8BMessageFv
+0005B4	GL 	.AddFloat__8BMessageFPCcf
+0005CC	GL 	.ReplaceFloat__8BMessageFPCcf
+0005E4	GL 	.Window__5BViewCFv
+0005FC	GL 	.PostMessage__7BLooperFP8BMessageP8BHandlerP8BHandler
+000614	GL 	.BitsLength__7BBitmapCFv
+00062C	GL 	.Bits__7BBitmapCFv
+000644	GL 	.Bounds__7BBitmapCFv
+00065C	GL 	.__ptr_glue									file = "runtime.c"
+000670	TI 	@72											file = "NegativeAddOn.cpp"
+00067C	TI 	@80
+000688	TI 	@127
+000694	TI 	@136
+0006A0	TI 	@7											file = "global_destructor_chain.c"
+0006AC	TI 	@2											file = "init_term_dyn.c"
+0006B8	TI 	@4
+
+Data section, size = 884 bytes (TOC anchor = 000000)
+000000	TC 	ReplaceFloat__8BMessageFPCcf				file = "*Linker-Generated*"
+000004	TC 	__ct__8BMessageFRC8BMessage
+000008	TC 	PostMessage__7BLooperFP8BMessageP8BHandlerP8BHandler
+00000C	TC 	__ct__8BMessageFUl
+000010	TC 	BitsLength__7BBitmapCFv
+000014	TC 	Window__5BViewCFv
+000018	TC 	AddFloat__8BMessageFPCcf
+00001C	TC 	Bits__7BBitmapCFv
+000020	TC 	__dt__8BMessageFv
+000024	TC 	Bounds__7BBitmapCFv
+000028	TC 	__dl__FPv
+00002C	TC 	__register_fragment
+000030	TC 	__unregister_fragment
+000034	TC 	__nw__FUl
+000038	TC 	__vt__24NegativeAddOnManipulator
+00003C	TC 	__vt__11Manipulator
+000040	TC 	__global_destructor_chain
+000044	TC 	__exception_table_end__
+000048	TC 	__exception_table_start__
+00004C	TC 	__data_end__
+000050	TC 	__data_start__
+000054	TC 	__code_end__
+000058	TC 	__code_start__
+00005C	TC 	@132										file = "NegativeAddOn.cpp"
+000060	TC 	@121
+000064	TD 	@123										file = "NegativeAddOn.cpp"
+000068	TD 	@122
+00006C	TD 	fragmentID									file = "init_term_dyn.c"
+000070	DS 	__dt__11ManipulatorFv						file = "NegativeAddOn.cpp"
+000078	DS 	ReturnName__24NegativeAddOnManipulatorFv
+000080	DS 	ReturnSettings__11ManipulatorFv
+000088	DS 	ManipulateBitmap__24NegativeAddOnManipulatorFP7BBitmapP9SelectionP10BStatusBar
+000090	DS 	__dt__24NegativeAddOnManipulatorFv
+000098	DS 	instantiate_add_on
+0000A0	DS 	_term_routine_								file = "init_term_dyn.c"
+0000A8	DS 	_init_routine_
+0000B0	TB 	@71											file = "NegativeAddOn.cpp"
+0000C2	TB 	@126
+0000E2	RW 	name										file = "NegativeAddOn.cpp"
+0001E1	RW 	menu_help_string
+0002E0	RW 	add_on_api_version
+0002E4	RW 	add_on_type
+0002E8	RW 	@121
+0002EE	RW 	@128
+000307	RW 	@130
+000314	RW 	__RTTI__11Manipulator
+00031C	RW 	@129
+000328	RW 	__RTTI__24NegativeAddOnManipulator
+000330	RW 	__vt__24NegativeAddOnManipulator
+000348	RW 	__vt__11Manipulator
+000360	RW 	@132
+00036C	RW 	__global_destructor_chain					file = "global_destructor_chain.c"
+
+Import container "libbe.so"
+Current Version = 00000000, Old Implementation = 00000000
+000000	DS 	ReplaceFloat__8BMessageFPCcf
+000001	DS 	__ct__8BMessageFRC8BMessage
+000002	DS 	PostMessage__7BLooperFP8BMessageP8BHandlerP8BHandler
+000003	DS 	__ct__8BMessageFUl
+000004	DS 	BitsLength__7BBitmapCFv
+000005	DS 	Window__5BViewCFv
+000006	DS 	AddFloat__8BMessageFPCcf
+000007	DS 	Bits__7BBitmapCFv
+000008	DS 	__dt__8BMessageFv
+000009	DS 	Bounds__7BBitmapCFv
+
+Import container "libroot.so"
+Current Version = 00000000, Old Implementation = 00000000
+00000A	DS 	__dl__FPv
+00000B	DS 	__register_fragment
+00000C	DS 	__unregister_fragment
+00000D	DS 	__nw__FUl

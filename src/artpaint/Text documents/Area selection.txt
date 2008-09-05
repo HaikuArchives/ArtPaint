@@ -1,0 +1,15 @@
+Area selection
+
+User should be able to select an area of image to be edited by filters or by other means. The class that implements the selected area should have at least the following properties:
+
+	-	Possibility to select multiple (separate) areas.
+	-	Boolean operations between different areas.
+	-	A function to (quickly) test wheter or not a point is within the area.
+	-	Areas should be able to draw their boundaries to a view.
+	-	A possibility to invert the selection.
+	-	A function that gives the bounds-rectangle of selected area.
+	-	A function that gives many bounds-rectangles that together cover
+		the whole area. These bounds rectangles should try to cover as
+		little of total area as possible.
+	-	A function that calculates the distance of a given point from the 
+		closest edge of area 

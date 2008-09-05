@@ -1,0 +1,15 @@
+ArtPaint Layers
+
+
+ArtPaint has layers. Layers are independent buffers that can be placed on top of each other.
+
+Layers have the following features:
+	-	Layers are drawn on top of each other in order
+	-	Layers can have semi-transparent parts
+	-	Layers are completely independent from each other in all respects
+	-	Layers can be combined
+	-	The order of layers can be rearranged using graphical preview 
+		mode
+	-	There are also adjustment-layers
+	-	A layer can have a bit-mask
+	

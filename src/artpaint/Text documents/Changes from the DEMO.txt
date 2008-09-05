@@ -1,0 +1,11 @@
+Changes that should be copied from DEMO (19/9/97) to the official version.
+
+	-	The saving and loading of preferences has changed (especially tool preferences are now saved as a whole structs)
+
+	-	The image-save-panel is now better
+
+	-	The whole selected-area and the selector-tool are improved. This results in changes to tool setup-window also.
+
+
+
+No changes should be copied any more it is dangerous and leads to trouble. All features should rather be re-implemented.

@@ -1,0 +1,6 @@
+The following code can be used to divide the image into horizontal strips when using multiple threads to calculate something.
+
+	int32 height = area.Height() / number_of_threads + 1; 
+	BRect rect = area;
+	rect.top = min_c(area.bottom, area.top + i*height);
+	rect.bottom = min_c(area.bottom,rect.top+height-1);

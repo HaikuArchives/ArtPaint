@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: Introduction
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>ArtPaint Add-On Developer Kit</H3>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+ArtPaint Add-On Developer Kit contains API-descriptions, header-files and object-files for creating add-ons that can be used in ArtPaint image processing and painting program.
+<P>
+The add-on API used by ArtPaint allows for quite powerful add-ons while being still relatively simple. One of the main points in the API is allowing the real-time preview of the effect that the add-on is making. The API also allows the tracking of the mouse while user has buttons pressed. As an example of what can be done with this API are all currently available add-ons. Also rotation, translation,layer transparency and even the text tool follow this exact API.
+<P>
+The API is examined more closely in the other chapters of this document, but here is a brief introduction to it. Add-ons need to export these things:
+<UL>
+<LI>A function that returns a pointer to an instance of a class that is sub-class of class <TT>Manipulator</TT>.
+<LI>A pointer to character string that represents the add-on's name as it will appear in the menu.
+<LI>An integer that contains the add-on API version number.
+<LI>An integer that describes the add-on's type.
+</UL>
+The most important thing in the API is the manipulator that the add-on provides. The manipulator is a instance of a class that inherits from class named <TT>Manipulator</TT>. All the work will be done by the manipulator. The manipulator can ask the application to do certain things by sending it messages, but usually the application will ask the manipulator to do some work.
+<P>
+You should start the add-on development by examining <A HREF="./manipulators.html">what is required of a manipulator</A>. After you have built a manipulator it is easy to add the necessary <A HREF="./export.html">exports</A> in your file. You may also want to check out some <A HREF="./guidelines.html">general information</A> regarding the add-ons. As it has turned out, perhaps the easiest way of making a new add-on is taking the source-code of an existing (simple) add-on and then modifying it. The development package contains several example add-ons that can be used for this purpose.
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+</TR>
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: ControlSliderBox
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H3><TT>ControlSliderBox</TT>-class</H3>
+Derived from: <STRONG>public BBox</STRONG>
+<P>
+Declared in: <STRONG>Controls.h</STRONG>
+<P>
+<HR>
+<H3>Overview</H3>
+This class unifies the NumberControl- and ControlSlider-classes and puts them into a single BBox. Although this class works well, it is a little bit hard to use so it might be better to roll up your own class to do a similar thing.
+<HR>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>Constructor</H3>
+</TD>
+</TR>
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="ControlSliderBox()"><TT>ControlSliderBox()</TT></A></H4>
+<PRE>  ControlSliderBox(BRect <I>frame</I>, const char* <I>name</I>, const char*
+    <I>label</I>, const char* <I>text</I>, BMessage *message, int32 <I>rangeMin</I>,
+    int32 <I>rangeMax</I>, border_style <I>border</I>=B_PLAIN_BORDER,
+    bool <I>continuos</I>=TRUE, thumb_style <I>knob</I>=B_TRIANGLE_THUMB)
+</PRE>
+This creates the BBox, NumberControl and ControlSlider according to parameters. The parameter <I>message</I> will be sent from here to the assigned target. The message that will be sent to target contains and int32 named "value" that has the current value of the control. If parameter <I>continuos</I> is TRUE, a message will be sent whenever the slider is adjusted, otherwise a message will only be sent when the number control is invoked or slider adjusting is finished. The sent message contains a bool named "final" which indicates whether or not the adjusting is finished.  
+</TD>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H3>Member Functions</H3>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=20>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H4><A NAME="Divider()"><A HREF="#SetDivider()"><TT>Divider()</TT> see <TT>SetDivider()</TT></A></A></H4>
+</TD>
+</TR>
+
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="SetDivider()"><TT>SetDivider(), Divider()</TT></A></H4>
+<PRE>  void SetDivider(float <I>divider</I>, bool <I>resize_text_field</I>)
+
+  float Divider()
+</PRE>
+SetDivider sets the x-coordinate where the number control and slider meet. This value will be taken from <I>divider</I>. If <I>resize_text_field</I> is TRUE, the text-field in number control will be resized to maximum possible value. Otherwise it will remain as it is or will be shrinked if required.
+<P>
+Divider returns the value of the x-coordinate where the controls meet. The value is in the coordinate-space of this box.
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="SetMessage()"><TT>SetMessage()</TT></A></H4>
+<PRE>  void  SetMessage(BMessage* <I>message</I>)
+</PRE>
+Changes the message that is sent from this control to the target. The <I>message</I> will be copied and it remains the property of the calling function.
+</TD>
+</TR>
+
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="SetTarget()"><TT>SetTarget()</TT></A></H4>
+<PRE>  void  SetTarget(BMessenger* <I>target</I>)
+</PRE>
+Changes the target where the message will be sent to </I>target</I>. The messenger will be copied and it remains the property of the calling function.  
+</TD>
+</TR>
+
+
+<TR>
+<TD>
+</TD>
+<TD>
+<HR>
+<H4><A NAME="setValue()"><TT>setValue()</TT></A></H4>
+<PRE>  void  setValue(int32 <I>value</I>)
+</PRE>
+Changes the value of this control to <I>value</I>. 
+</TD>
+</TR>
+
+</TR>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=40>
+</TR>
+
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,24 @@
+This file list the changes that were made to version v.1.0.0 from the source base v.1.0.0.
+
+
+	- Added checks for Window() != NULL to ControlSlider::threadFunc
+
+	- Added a destructor for ControlSlider that kills the slider-thread
+
+	- Changed status-bar to remove confirm-buttons from display when progress bar is displayed
+
+	- Added include "StatusView.h" to DefaultViewManipulator.cpp
+
+	- Made the DefaultViewManipulator call SelectedToolsView::sendMessageToAll when tool was changed by pressing left shift and mouse-button.
+
+	- Added call to LayerWindow::ActiveWindowChanged from PaintWindow::AddImageView
+
+	- Added call to Layer::calc_mini_image from Layer::readLayer
+ 
+	- Added initialization of transparency attribute to TransparencyManipulator::TransparencyManipulator
+
+	- Changed the following shortcuts
+		Layer->Add Layer to '.'
+		Layer->Clear Layer to 'X'
+		Canvas->Clear Canvas to B_SHIFT_KEY + 'X'
+		Window->Show Tool Setup Window to 'M'
