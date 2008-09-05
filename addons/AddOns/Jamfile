@@ -4,7 +4,7 @@ SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns AdaptiveHistogramEqualizati
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns AntiDitherer ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns BlurAddOn ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Brightness ;
-#SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorReducer ;
+SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorReducer ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorSeparator ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorBalanceAddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Contrast ;
