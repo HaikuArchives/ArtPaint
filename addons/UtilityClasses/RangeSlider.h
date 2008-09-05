@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RangeSlider.h
-	Contents:	Declaration for a slider that can be used to adjust a range.	
+	Contents:	Declaration for a slider that can be used to adjust a range.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -22,7 +22,7 @@ static	int32	track_entry(void*);
 
 		int32	lower_value;
 		int32	higher_value;
-	
+
 		int32 	min_value;
 		int32	max_value;
 
@@ -31,13 +31,13 @@ static	int32	track_entry(void*);
 
 		int32	HigherValueX();
 		int32	LowerValueX();
-		
+
 
 public:
 		RangeSlider(BRect frame, const char *name, const char *label, BMessage *message, int32 minValue, int32 maxValue);
 
 void	DrawBar();
-void	DrawThumb();		
+void	DrawThumb();
 void	MouseDown(BPoint);
 
 int32	HigherValue() { return higher_value; }
@@ -49,10 +49,5 @@ void	SetLowerValue(int32);
 void	SetHigherThumbColor(rgb_color);
 void	SetLowerThumbColor(rgb_color);
 };
-
-
-
-
-
 
 #endif
