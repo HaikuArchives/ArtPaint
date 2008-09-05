@@ -1,19 +1,20 @@
-/* 
+/*
 
 	Filename:	ColorPalette.h
-	Contents:	declaretions for ColorPaletteWindow and some of its children views	
+	Contents:	declaretions for ColorPaletteWindow and some of its children views
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef COLOR_PALETTE_H
 #define COLOR_PALETTE_H
 
-#include <ColorControl.h>
-#include <PictureButton.h>
-
-#include <Window.h>
 #include <Box.h>
+#include <ColorControl.h>
+#include <FilePanel.h>
+#include <PictureButton.h>
+#include <Window.h>
+
 
 class ColorContainer;
 class ColorSet;
@@ -50,7 +51,7 @@ static	BList	*master_window_list;
 static	BList	*palette_window_clients;
 
 
-// this variable holds a derived color control object		
+// this variable holds a derived color control object
 		HSColorControl 			*color_control;
 
 // this holds an ColorControl-object
@@ -75,7 +76,7 @@ static	BList	*palette_window_clients;
 // This static holds the pointer to the open palette-window.
 // If no window is open, it is NULL
 static	ColorPaletteWindow	*palette_window;
-				
+
 // these functions are used to open necessary control views
 // and delete them when necessary
 bool	openControlViews(int32 mode);
@@ -90,7 +91,7 @@ void	handlePaletteSave(BMessage *message);
 
 static	void	InformClients(const rgb_color&);
 public:
-		ColorPaletteWindow(BRect frame,int32 mode);		
+		ColorPaletteWindow(BRect frame,int32 mode);
 		~ColorPaletteWindow();
 bool	QuitRequested();
 void	MessageReceived(BMessage *message);
@@ -127,16 +128,16 @@ class ColorContainer : public BView {
 		// this variable holds the information whether the selected color
 		// should be highlighted or not
 		bool	highlight_selected;
-		bool	dragging_enabled;		
+		bool	dragging_enabled;
 		bool	contains_arrows;
-		
-		
+
+
 		// this points to list that holds the pointers to every color container
 		// an entry is added to the front of list whenever container is created
 		// and is removed whenever a container is deleted
 		static 	BList 	*container_list;
 
-		
+
 		BPictureButton	*left_arrow;
 		BPictureButton	*right_arrow;
 
@@ -146,7 +147,7 @@ BRect	colorBounds(int32 index);
 
 // this function gives the index for palette entry at point
 // or -1 if none
-int32	pointIndex(BPoint point);		
+int32	pointIndex(BPoint point);
 
 // this sets up the container view and initializes variables
 // it is called whenever a container is created and whenever
@@ -159,7 +160,7 @@ public:
 		// this constructs a container that fits inside the rectangle
 		// or stretches the rectangle if it is too small
 		ColorContainer(BRect frame, int32 amount_of_colors,uint32 resizingMode=B_FOLLOW_NONE, bool highlight=TRUE,bool add_arrows=FALSE);
-		
+
 		// this removes the container from container_list
 		~ColorContainer();
 
@@ -188,8 +189,8 @@ class ColorSet {
 
 		// here is the list that holds all the color-sets and the index of current set
 		static	BList	*color_set_list;
-		static	int32	current_set_index;	
-		
+		static	int32	current_set_index;
+
 		// we should probably move the selected color from color-container
 		// to here so that each set could have different selected color
 		// but each container would have same selected color and
@@ -201,7 +202,7 @@ public:
 				ColorSet(int32 amount_of_colors, ColorSet *copy_this_palette = NULL);
 				~ColorSet();
 inline	int32	sizeOfSet() { return color_count; }
-rgb_color	colorAt(int32 index);	
+rgb_color	colorAt(int32 index);
 
 inline	rgb_color	currentColor() { return palette[current_color_index]; }
 inline	int32	currentColorIndex() { return current_color_index; }

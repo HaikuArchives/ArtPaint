@@ -1,22 +1,23 @@
-/* 
+/*
 
 	Filename:	PaintWindow.h
-	Contents:	PaintWindow class declaration + constants for PaintWindow class	
+	Contents:	PaintWindow class declaration + constants for PaintWindow class
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef PAINT_WINDOW_H
 #define PAINT_WINDOW_H
 
 
+#include <Box.h>
+#include <FilePanel.h>
+#include <Entry.h>
 #include <TranslatorRoster.h>
 #include <Window.h>
-#include <Entry.h>
-#include <Box.h>
 
 
-// these constants are used to determine views of a paint window 
+// these constants are used to determine views of a paint window
 #define	HS_QUICK_TOOLS 	0x0001
 #define	HS_HELP_VIEW	0x0002
 #define	HS_STATUS_VIEW	0x0004
@@ -64,20 +65,20 @@ class PaintWindow : public BWindow {
 private:
 		ImageView 		*image_view;			// view to draw in
 		BackgroundView 	*background;	// the backround for image
-				
+
 		BScrollBar 		*horiz_scroll, *vert_scroll;	// the scroll-bars
-		
+
 		BMenuBar 		*menubar;				// main menu for the window
 		char			tool_help_string[256];	// The text that the help view will display
-												// for a tool or a manipulator.		
-		
+												// for a tool or a manipulator.
+
 		StatusView 		*status_view;
 
 		// these next views are used when setting the image size
 		NumberControl 	*width_view,*height_view;
 		BButton			*set_size_button;
 		BBox			*container_box;
-		
+
 		// these variables hold the info about how much space
 		// all the additional views take, used when resizing the window
 		// to fit image
@@ -86,16 +87,16 @@ private:
 		// this is the file-panel that is used when saving the image
 		ImageSavePanel	*image_save_panel;
 		BFilePanel		*project_save_panel;
-		
+
 		window_settings	*settings;
 
 		// The BEntrys should be replace by something else as they
 		// consume a file-descriptor.
-		BEntry			image_entry;	
+		BEntry			image_entry;
 		BEntry			project_entry;
 		uint32			current_handler;
-				
-		
+
+
 // This counter keeps count of how many paint-windows we have open,
 // it is incremented in constructor and dectremented in destructor.
 static	int32			paint_window_count;
@@ -105,7 +106,7 @@ static	int32			untitled_window_number;
 // This list contains pointers to all of the paint-windows
 static	BList			*paint_window_list;
 
-		
+
 // this function will create the main menubar
 bool		openMenuBar();
 
@@ -145,7 +146,7 @@ void	ChangeMenuMode(menu_modes new_mode);
 public:
 static	PaintWindow*	createPaintWindow(BBitmap* =NULL,char* = NULL,int32 =0,entry_ref =entry_ref(), translator_id outTranslator=0);
 		~PaintWindow();
-void	FrameResized(float, float);	
+void	FrameResized(float, float);
 void	FrameMoved(BPoint);
 void	MenusBeginning();
 void	MenusEnded();

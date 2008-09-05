@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ImageView.h
 	Contents:	ImageView class declaration + constants
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef IMAGE_VIEW_H
@@ -48,7 +48,7 @@ enum {
 	DITHERED_8_BIT_DISPLAY_MODE,
 	CMYK_DISPLAY_MODE
 };
-	
+
 // These two will be used in window's add-on-menus.
 #define	HS_START_ADD_ON_WITH_GUI	'AowG'
 #define	HS_START_PLAIN_ADD_ON		'PlAo'
@@ -68,47 +68,47 @@ private:
 		int32	mag_scale_array_length;
 		int32	mag_scale_array_index;
 		float	*mag_scale_array;
-		float	magnify_scale;	// magnifying scale for view, normally 1		
-								
-								 
+		float	magnify_scale;	// magnifying scale for view, normally 1
+
+
 		int32	grid_unit;			// how many pixels is one grid unit, normally 1
 		BPoint	grid_origin;		// the origin for grid, normally (0,0)
-		
+
 		// This is the selection for the image.
 		Selection	*selection;
 
 		bool		continue_manipulator_updating;
 		BWindow		*manipulator_window;
-		
+
 		// This message is posted to the image-view when a manipulator has finished.
 		// It can be used to postpone some message only after finishing the manipulation.
 		// This is used when starting a manipulator before finishing the previous and
-		// when merging layers when a manipulator is on. 
-		BMessage	*manipulator_finishing_message;	
-		
+		// when merging layers when a manipulator is on.
+		BMessage	*manipulator_finishing_message;
+
 		// This returns true if the manipulator actually exists to be finished
 		bool	PostponeMessageAndFinishManipulator();
 
 		void	AddChange();
 		void	RemoveChange();
-		
+
 		// This variable records how many changes have been made to the project
 		int32	project_changed;
 		int32	image_changed;
 
-		
-		void	setWindowTitle();	
+
+		void	setWindowTitle();
 		char	*image_name;
 		char	*project_name;
-		
-		
+
+
 
 		cursor_modes	cursor_mode;
-	
+
 
 		// These two semaphores should always be acquired in the order they are declared here.
 		// Currently there seems to be some problems with the acquisition of semaphores. It
-		// seems that sometimes mouse_mutex is released even though it is not acquired.	
+		// seems that sometimes mouse_mutex is released even though it is not acquired.
 		// This is used to block the MouseDown-function from doing anything
 		// if it is not permitted.
 		sem_id	mouse_mutex;
@@ -116,7 +116,7 @@ private:
 		// This semaphore is used to guarantee that actions that are done on the image can be
 		// finished before the view is destroyed. Such actions include for example any calculations
 		// that are done by manipulators and updating the undo-queue.
-		sem_id	action_semaphore;		
+		sem_id	action_semaphore;
 
 
 		int32			current_display_mode;
@@ -128,10 +128,10 @@ private:
 		BRegion			region_drawn_by_manipulator;
 
 		void			DrawManipulatorGUI(bool blit_image);
-		
+
 		// This is the undo-queue.
 		UndoQueue	*undo_queue;
-		
+
 
 		// This is used as a reference-point when displaying deltas in the coordinate-view.
 		BPoint		reference_point;
@@ -158,16 +158,16 @@ static	int32	enter_thread(void*);
 		int32	PaintToolThread();	// For normal painting tools
 		int32	ManipulatorMouseTrackerThread();	// For tracking the mouse for manipulator
 		int32	GUIManipulatorUpdaterThread();		// For updating the view when manipulators settings change
-		int32	ManipulatorFinisherThread();		// For calculating the manipulator's effect		
+		int32	ManipulatorFinisherThread();		// For calculating the manipulator's effect
 
 		void	BlitImage(BRect);
-		
-		
+
+
 
 
 
 		status_t	DoCopyOrCut(int32 layers,bool cut=FALSE);
-		status_t	DoPaste();				
+		status_t	DoPaste();
 
 		status_t	ShowAlert(int32);
 		void		SetCursor();
@@ -193,7 +193,7 @@ status_t	Freeze();
 status_t	UnFreeze();
 
 // this is like GetMouse but it takes grid and magnify into account
-inline	void	getCoords(BPoint *bitmap_point, uint32 *buttons,BPoint *view_point=NULL);
+void	getCoords(BPoint *bitmap_point, uint32 *buttons,BPoint *view_point=NULL);
 
 // this function converts a Rect from bitmap to view with magnifying_scale
 BRect	convertBitmapRectToView(BRect rect);
@@ -224,7 +224,7 @@ Image*		ReturnImage() { return the_image; }
 void		SetDisplayMode(int32);
 
 void		SetToolHelpString(const char*);
-void		ResetChangeStatistics(bool project,bool image); 
+void		ResetChangeStatistics(bool project,bool image);
 
 
 void		SetProjectName(const char*);
@@ -235,4 +235,5 @@ const	char*	ReturnImageName() { return image_name; }
 };
 
 filter_result KeyFilterFunction(BMessage*,BHandler**,BMessageFilter*);
+
 #endif
