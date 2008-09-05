@@ -1,0 +1,5 @@
+SubDir HAIKU_TOP 3rdparty artpaint ;
+
+SubInclude HAIKU_TOP 3rdparty artpaint artpaint ;
+#SubInclude HAIKU_TOP 3rdparty artpaint addons ;
+
