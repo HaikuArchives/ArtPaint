@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FloaterManager.cpp
 	Contents:	FloaterManager-class definition
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,9 +19,9 @@ bool FloaterManager::floatersVisible = true;
 void FloaterManager::ToggleFloaterVisibility()
 {
 	floatersVisible = !floatersVisible;
-	
+
 	vector<BWindow*>::iterator floater_iterator = floaterVector.begin();
-	
+
 	if (floatersVisible) {
 		while (floater_iterator < floaterVector.end()) {
 			(*floater_iterator)->Lock();
@@ -49,11 +49,11 @@ void FloaterManager::ToggleFloaterVisibility()
 
 void FloaterManager::AddFloater(BWindow *floater)
 {
-	vector<BWindow*>::iterator iter 
+	vector<BWindow*>::iterator iter
 				= find(floaterVector.begin(),floaterVector.end(),floater);
-				
+
 	if (iter == floaterVector.end()) {
-		floaterVector.push_back(floater);			
+		floaterVector.push_back(floater);
 	}
 }
 
@@ -65,5 +65,5 @@ void FloaterManager::RemoveFloater(BWindow *floater)
 
 	if (iter < floaterVector.end()) {
 		floaterVector.erase(iter);
-	}	
+	}
 }
