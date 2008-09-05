@@ -8,7 +8,7 @@ SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorReducer ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorSeparator ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns ColorBalanceAddOn ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Contrast ;
-#SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Contrast1AddOn ;
+SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Contrast1AddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns DispersionAddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns EdgeDetector ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns EmbossAddOn ;
