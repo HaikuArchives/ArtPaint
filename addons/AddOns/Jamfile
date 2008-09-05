@@ -16,7 +16,7 @@ SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns EnhanceEdges ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns GaussianBlur ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns GrayscaleAddOn ;
 SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Halftone ;
-#SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Interference ;
+SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns Interference ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns MarbleTexturer ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns NegativeAddOn ;
 #SubInclude HAIKU_TOP 3rdparty artpaint addons AddOns OilAddOn ;
