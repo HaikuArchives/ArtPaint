@@ -1,22 +1,18 @@
-/* 
+/*
 
 	Filename:	TextManipulator.h
-	Contents:	TextManipulator-class declaration	
+	Contents:	TextManipulator-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
 #ifndef TEXT_MANIPULATOR_H
-#define	TEXT_MANIPULATOR_H
-
-#include <Menu.h>
-#include <MenuField.h>
-#include <CheckBox.h>
+#define TEXT_MANIPULATOR_H
 
 #include "WindowGUIManipulator.h"
 #include "Controls.h"
-#include "ColorView.h"	
+#include "ColorView.h"
 #include "PaletteWindowClient.h"
 
 #define TEXT_CHANGED							'Txch'
@@ -35,17 +31,24 @@
 #define TEXT_SETTINGS_VERSION	0x03
 
 
+class BBitmap;
+class BCheckBox;
+class BMenu;
+class BMenuField;
+class BView;
+
+
 class TextManipulatorSettings : public ManipulatorSettings {
 public:
 		TextManipulatorSettings();
 		TextManipulatorSettings(const TextManipulatorSettings&);
 virtual	~TextManipulatorSettings();
-		
+
 		bool operator==(const TextManipulatorSettings&);
 		bool operator!=(const TextManipulatorSettings&);
 		TextManipulatorSettings& operator=(const TextManipulatorSettings&);
-		
-char			*text;		
+
+char		*text;
 rgb_color	*text_color_array;
 int32		text_array_length;
 
@@ -59,23 +62,23 @@ class TextManipulatorView;
 class TextManipulator : public WindowGUIManipulator {
 	BBitmap	*preview_bitmap;
 	BBitmap	*copy_of_the_preview_bitmap;
-		
+
 	BRegion	previously_updated_region;
 
-	TextManipulatorSettings	settings;		
-	TextManipulatorSettings previous_settings;					
+	TextManipulatorSettings	settings;
+	TextManipulatorSettings previous_settings;
 	BPoint					origo;
-	
+
 	TextManipulatorView	*config_view;
 
 	int32	last_used_quality;
 	int32	lowest_allowed_quality;
-	
+
 public:
 			TextManipulator(BBitmap*);
 			~TextManipulator();
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
 BView*		MakeConfigurationView(BMessenger*);
 
@@ -115,7 +118,7 @@ class TextManipulatorView : public WindowGUIManipulatorView {
 //		ControlSliderBox		*transparency_slider;
 //		ColorView				*color_view;
 		BCheckBox				*anti_aliasing_box;
-				
+
 		bool					preview_started;
 
 void	FontFamilyAndStyleChanged(uint32);
@@ -134,8 +137,8 @@ void	ChangeSettings(TextManipulatorSettings*);
 
 
 // This class is like a regular BTextView, but it also reports whenever
-// the text is changed. It also allows the direct manipulation of text-color 
-// with the help of the ColorPaletteWindow. 
+// the text is changed. It also allows the direct manipulation of text-color
+// with the help of the ColorPaletteWindow.
 class TextEditor : public BTextView, PaletteWindowClient {
 		BMessage	*message;
 		BMessenger	target;
@@ -145,12 +148,12 @@ void	SendMessage();
 
 protected:
 void	InsertText(const char*,int32,int32,const text_run_array*);
-void	DeleteText(int32 start,int32 finish);		
+void	DeleteText(int32 start,int32 finish);
 
 public:
 			TextEditor(BRect);
-virtual		~TextEditor();		
-		
+virtual		~TextEditor();
+
 void		PaletteColorChanged(const rgb_color&);
 
 void		SetMessage(BMessage*);
