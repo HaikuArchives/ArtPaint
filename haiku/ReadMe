@@ -57,7 +57,7 @@ Check out the source as described above, then simple call jam ArtPaintPackage. T
 will generate a zip file containing all AddOns, Documention files as well as ArtPaint.
 
 You can find it most likely in your Haikus generated folder under:
-{HAIKU_SOURCE_DIR}/generated/objects/packages/haiku/x86/release/ArtPaintPackage/install.zip
+{HAIKU_SOURCE_DIR}/generated/packages/haiku/x86/{debug or release}/ArtPaintPackage.zip
 
 Unzip the file, it will contain a second zip call install.zip and a file called install.sh,
 simply double click the install.sh and choose one of the provided otions. This will install
