@@ -7,6 +7,8 @@ Developers can checkout through svn+ssh with the following command:
 svn checkout svn+ssh://developername@svn.osdrawer.net/svnroot/artpaint/trunk artpaint
 
 
+There are two ways to build ArtPaint, i will describe first what to do when cross compiling:
+
 Please note, unlike the SCM Webpage states, make sure the your svn command ends with 'trunk'.
 This is especially important if you are going to try to build ArtPaint with Haiku's native
 Jamfile engine. The included Jamfiles expects ArtPaint's source code to be checked out into
@@ -48,4 +50,23 @@ to setup your own UserBuildConfig.
 After invoking a simple jam haiku-image or jam haiku-vmware-image ArtPaint should be
 properly copied onto your image.
 
+
+There is a second way, most likely when compiling Haiku on Haiku:
+
+Check out the source as described above, then simple call jam ArtPaintPackage. This
+will generate a zip file containing all AddOns, Documention files as well ArtPaint.
+
+You can find it most likely in your Haikus generated folder under:
+{HAIKU_SOURCE_DIR}/generated/objects/packages/haiku/x86/release/ArtPaintPackage/install.zip
+
+Unzip the file, it will contain a second zip call install.zip and a file called install.sh,
+simply double click the install.sh and choose one of the provided otions. This will install
+ArtPaint into its proper folder, as well create a symlink in the Haiku Deskbar.
+
+Of course you need the Haiku source code and build tools set up and build properly.
+
+
+
 Have fun!
+
+
