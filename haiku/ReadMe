@@ -54,7 +54,7 @@ properly copied onto your image.
 There is a second way, most likely when compiling Haiku on Haiku:
 
 Check out the source as described above, then simple call jam ArtPaintPackage. This
-will generate a zip file containing all AddOns, Documention files as well ArtPaint.
+will generate a zip file containing all AddOns, Documention files as well as ArtPaint.
 
 You can find it most likely in your Haikus generated folder under:
 {HAIKU_SOURCE_DIR}/generated/objects/packages/haiku/x86/release/ArtPaintPackage/install.zip
