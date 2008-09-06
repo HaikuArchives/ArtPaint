@@ -42,3 +42,38 @@ local ArtPaintImageFiles = [ Glob $(ArtPaintDocDir)/images : *.gif *.jpeg ] ;
 AddFilesToHaikuImage apps artpaint Documentation : $(ArtPaintHtmFiles) ;
 AddFilesToHaikuImage apps artpaint Documentation images : $(ArtPaintImageFiles) ;
 
+Package ArtPaintPackage :
+	ArtPaint : boot apps artpaint ;
+
+PackageSymLink ArtPaintPackage :
+	boot home config be Applications ArtPaint : /boot/apps/artpaint/ArtPaint ;
+
+Package ArtPaintPackage :
+	AHE.so
+	AntiDitherer.so
+	Blur.so
+	Brightness.so
+	Reducer.so
+	ColorSeparator.so
+	Color\ Balance.so
+	Contrast.so
+	ContrastManipulator1.so
+	Dispersion.so
+	DetectEdges.so
+	Emboss.so
+	EnhanceEdges.so
+	GaussianBlur.so
+	Grayscale.so
+	Halftone.so
+	Interference.so
+	Marble.so
+	Negativ.so
+	Oil.so
+	PolarMapper.so
+	Saturation.so
+	Sharpness.so
+	Threshold.so
+	Twirl.so
+	Wave.so
+	Wood.so  : boot apps artpaint add-ons ;
+
