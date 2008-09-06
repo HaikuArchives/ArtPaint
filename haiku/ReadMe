@@ -28,18 +28,24 @@ haiku |
 								- Jamfile
 
 Now there is only one more step required to get ArtPaint onto your Haiku image,
-cd into 3rdparty/artpaint/haiku and copy the content of the UserBuildConfig to
-your default UserBuildConfig used to build Haiku.
+cd into your Haiku source root and issue jam haiku-vmware-image or jam haiku-image.
+Of course you must have configured Haiku with
+
+./configure --include-3rdparty <some other options>
+
+how to do this refer to Haiku's configure while invoked with configure --help.
+
+
+In case you did not configure haiku with 3rdparty enabled, we provide you with a
+pre configured UserBuildConfig file, to use it or it's content cd into
+3rdparty/artpaint/haiku and copy the content of the UserBuildConfig to your
+default UserBuildConfig used to build Haiku.
 
 If you didn't setup a UserBuildConfig yet, please read the file UserBuildConfig.ReadMe
 to be found under build/jam/UserBuildConfig.ReadMe and reuse build/jam/UserBuildConfig.sample
 to setup your own UserBuildConfig.
 
 After invoking a simple jam haiku-image or jam haiku-vmware-image ArtPaint should be
-properly copied onto your image. Of course you must have configured Haiku with
-
-./configure --include-3rdparty <some other options>
-
-how to do this refer to Haiku's configure while invoked with configure --help.
+properly copied onto your image.
 
 Have fun!
