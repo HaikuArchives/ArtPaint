@@ -134,30 +134,30 @@ void	ChangeSettings(TextManipulatorSettings*);
 };
 
 
-
-
-// This class is like a regular BTextView, but it also reports whenever
-// the text is changed. It also allows the direct manipulation of text-color
-// with the help of the ColorPaletteWindow.
+// This class is like a regular BTextView, but it also reports whenever the text
+// is changed. It also allows the direct manipulation of text-color with the help
+// of the ColorPaletteWindow.
 class TextEditor : public BTextView, PaletteWindowClient {
-		BMessage	*message;
-		BMessenger	target;
+public:
+						TextEditor(BRect rect);
+	virtual				~TextEditor();
 
+			void		PaletteColorChanged(const rgb_color& color);
 
-void	SendMessage();
+			void		SetMessage(BMessage* message);
+			void		SetTarget(const BMessenger& target);
 
 protected:
-void	InsertText(const char*,int32,int32,const text_run_array*);
-void	DeleteText(int32 start,int32 finish);
+			void		InsertText(const char* text, int32 length, int32 offset,
+							const text_run_array* runs);
+			void		DeleteText(int32 start, int32 finish);
 
-public:
-			TextEditor(BRect);
-virtual		~TextEditor();
+private:
+			void		_SendMessage();
 
-void		PaletteColorChanged(const rgb_color&);
-
-void		SetMessage(BMessage*);
-void		SetTarget(const BMessenger&);
+private:
+		BMessage*		fMessage;
+		BMessenger		fTarget;
 };
 
 #endif

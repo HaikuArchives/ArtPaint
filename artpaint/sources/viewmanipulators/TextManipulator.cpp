@@ -123,16 +123,13 @@ BRegion TextManipulator::Draw(BView *view,float)
 }
 
 
-BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar*)
+BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
+	BBitmap *original, Selection *selection, BStatusBar*)
 {
-	TextManipulatorSettings *new_settings = cast_as(set,TextManipulatorSettings);
+	TextManipulatorSettings *new_settings = cast_as(set, TextManipulatorSettings);
 
-	if (new_settings == NULL)
+	if (new_settings == NULL || original == NULL)
 		return NULL;
-
-	if (original == NULL)
-		return NULL;
-
 
 	// If the original bitmap is the same as preview-bitmap
 	// we should first reset the preview_bitmap to its original state.
@@ -154,7 +151,6 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 		}
 	}
 
-
 	// new_bitmap should be deleted at the end of this function.
 	// This was not done properly before and it caused quite a big memory-leak.
 	BBitmap *new_bitmap = DuplicateBitmap(original,0,TRUE);
@@ -172,20 +168,21 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 	height_vector.x = -sin(-alpha)*height_vector.y;
 	height_vector.y = cos(-alpha)*height_vector.y;
 	int32 line_number = 0;
-	for (int32 i=0;i<strlen(new_settings->text);i++) {
+
+	int32 length = new_settings->text ? strlen(new_settings->text) : 0;
+	for (int32 i = 0; i < length; ++i) {
 		if (new_settings->text[i] == '\n') {
 			// Move to next line
 			line_number++;
-			new_view->MovePenTo(new_settings->starting_point+BPoint(height_vector.x*line_number,height_vector.y*line_number));
-		}
-		else if (new_settings->text[i] == '\t') {
+			new_view->MovePenTo(new_settings->starting_point +
+				BPoint(height_vector.x * line_number, height_vector.y * line_number));
+		} else if (new_settings->text[i] == '\t') {
 			// Replace tabs with four spaces
 			new_view->DrawChar(' ');
 			new_view->DrawChar(' ');
 			new_view->DrawChar(' ');
 			new_view->DrawChar(' ');
-		}
-		else {
+		} else {
 			// Draw the next character from the string with
 			// correct color.
 			new_view->SetHighColor(new_settings->text_color_array[i]);
@@ -307,7 +304,8 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 		height_vector.y = cos(-alpha)*height_vector.y;
 		int32 line_number = 0;
 
-		for (int32 i=0;i<strlen(current_settings.text);i++) {
+		int32 len = current_settings.text ? strlen(current_settings.text) : 0;
+		for (int32 i = 0; i < len; ++i) {
 			pen_location = view->PenLocation();
 			if (settings.text[i] == '\n') {
 				// Move to next line
@@ -782,15 +780,18 @@ void TextManipulatorView::AllAttached()
 	text_view->MakeFocus(true);
 	text_view->SetText(settings.text);
 	text_view->SetTarget(BMessenger(this,Window()));
-	int32 length = strlen(settings.text);
-	for (int32 i=0;i<length;i++) {
-		text_view->SetFontAndColor(i,i+1,NULL,B_FONT_ALL,&settings.text_color_array[i]);
+	int32 length = settings.text ? strlen(settings.text) : 0;
+	for (int32 i = 0; i < length; ++i) {
+		text_view->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
+			&settings.text_color_array[i]);
 	}
 
-	size_slider->setValue(settings.font.Size());
-	rotation_slider->setValue(settings.font.Rotation());
-	shear_slider->setValue(settings.font.Shear());
+	size_slider->setValue(int32(settings.font.Size()));
+	rotation_slider->setValue(int32(settings.font.Rotation()));
+	shear_slider->setValue(int32(settings.font.Shear()));
+
 	FontFamilyAndStyleChanged(settings.font.FamilyAndStyle());
+
 	if (settings.font.Flags() & B_DISABLE_ANTIALIASING)
 		anti_aliasing_box->SetValue(B_CONTROL_OFF);
 	else
@@ -957,34 +958,31 @@ void TextManipulatorView::FontFamilyAndStyleChanged(uint32 font_code)
 
 void TextManipulatorView::ChangeSettings(TextManipulatorSettings *s)
 {
-	if (settings.font.FamilyAndStyle() != s->font.FamilyAndStyle()) {
+	if (settings.font.FamilyAndStyle() != s->font.FamilyAndStyle())
 		FontFamilyAndStyleChanged(s->font.FamilyAndStyle());
-	}
 
-
-
-	BWindow *window = Window();
-
-	if (window != NULL) {
-		window->Lock();
+	if (Window() && Window()->Lock()) {
 		if (strcmp(settings.text,s->text) != 0) {
 			strcpy(settings.text,s->text);
 			text_view->SetText(settings.text);
-			for (int32 i=0;i<strlen(settings.text);i++) {
-				text_view->SetFontAndColor(i,i+1,NULL,B_FONT_ALL,&settings.text_color_array[i]);
+
+			int32 length = settings.text ? strlen(settings.text) : 0;
+			for (int32 i = 0; i < length; ++i) {
+				text_view->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
+					&settings.text_color_array[i]);
 			}
-		}
-		else {
-			// Here we should set the text-colors if needed.
+		} else {
+			;// Here we should set the text-colors if needed.
 		}
 
 		if (settings.font.Size() != s->font.Size())
-			size_slider->setValue(s->font.Size());
-		if (settings.font.Shear() != s->font.Shear())
-			shear_slider->setValue(s->font.Shear());
-		if (settings.font.Rotation() != s->font.Rotation())
-			rotation_slider->setValue(s->font.Rotation());
+			size_slider->setValue(int32(s->font.Size()));
 
+		if (settings.font.Shear() != s->font.Shear())
+			shear_slider->setValue(int32(s->font.Shear()));
+
+		if (settings.font.Rotation() != s->font.Rotation())
+			rotation_slider->setValue(int32(s->font.Rotation()));
 
 		if (settings.font.Flags() != s->font.Flags()) {
 			if (settings.font.Flags() & B_DISABLE_ANTIALIASING)
@@ -992,94 +990,105 @@ void TextManipulatorView::ChangeSettings(TextManipulatorSettings *s)
 			else
 				anti_aliasing_box->SetValue(B_CONTROL_ON);
 		}
-		window->Unlock();
+		Window()->Unlock();
 	}
 
 	settings = *s;
 }
 
-// -----------------------
+
+// #pragma mark - TextEditor
+
+
 TextEditor::TextEditor(BRect rect)
-	: BTextView(rect,"text_view",BRect(0,0,rect.Width(),rect.Height()),B_FOLLOW_ALL_SIDES,B_WILL_DRAW),PaletteWindowClient()
+	: BTextView(rect, "text_view", BRect(0.0, 0.0, rect.Width(), rect.Height()),
+		B_FOLLOW_ALL_SIDES, B_WILL_DRAW),
+	  PaletteWindowClient(),
+	  fMessage(NULL)
 {
-	message = NULL;
-	SetStylable(TRUE);
-	SetWordWrap(FALSE);
+	SetStylable(true);
+	SetWordWrap(false);
 	SetTextRect(Bounds());
 }
 
+
 TextEditor::~TextEditor()
 {
+	delete fMessage;
 	ColorPaletteWindow::RemovePaletteWindowClient(this);
 }
 
-void TextEditor::InsertText(const char *text,int32 length,int32 offset,const text_run_array *runs)
+
+void
+TextEditor::InsertText(const char *text, int32 length, int32 offset,
+	const text_run_array *runs)
 {
 	BTextView::InsertText(text,length,offset,runs);
-	SendMessage();
+
+	_SendMessage();
 }
 
 
-void TextEditor::DeleteText(int32 start,int32 finish)
+void
+TextEditor::DeleteText(int32 start, int32 finish)
 {
 	BTextView::DeleteText(start,finish);
-	SendMessage();
+
+	_SendMessage();
 }
 
 
-void TextEditor::PaletteColorChanged(const rgb_color &c)
+void
+TextEditor::PaletteColorChanged(const rgb_color& color)
 {
-	if (Window() != NULL) {
-		Window()->Lock();
-		int32 start,finish;
-		GetSelection(&start,&finish);
+	if (Window() && Window()->Lock()) {
+		int32 start, finish;
+		GetSelection(&start, &finish);
 
 		if (start != finish)
-			SetFontAndColor(NULL,B_FONT_ALL,&c);
+			SetFontAndColor(NULL, B_FONT_ALL, &color);
 		else
-			SetFontAndColor(0,TextLength(),NULL,B_FONT_ALL,&c);
+			SetFontAndColor(0, TextLength(), NULL, B_FONT_ALL, &color);
 
-		SendMessage();
+		_SendMessage();
+
 		Window()->Unlock();
 	}
 }
 
 
-void TextEditor::SetMessage(BMessage *m)
+void
+TextEditor::SetMessage(BMessage* message)
 {
-	delete message;
-	message = m;
+	delete fMessage;
+	fMessage = message;
 }
 
 
-void TextEditor::SetTarget(const BMessenger &t)
+void
+TextEditor::SetTarget(const BMessenger& target)
 {
-	target = t;
+	fTarget = target;
 }
 
 
-void TextEditor::SendMessage()
+void
+TextEditor::_SendMessage()
 {
-	target.SendMessage(message);
+	fTarget.SendMessage(fMessage);
 }
 
 
+// #pragma mark - TextManipulatorSettings
 
-
-// ---------------------------------
 
 TextManipulatorSettings::TextManipulatorSettings()
 	: ManipulatorSettings()
 {
-//	printf("Test 1\n");
 	text_array_length = 256;
 	text = new char[text_array_length];
-//	printf("Test 2\n");
 	text_color_array = new rgb_color[text_array_length];
-//	printf("Test 3\n");
-
 	strcpy(text,"Text!");
-//	printf("Test 4\n");
 
 	rgb_color text_color;
 	text_color.red = 0;
