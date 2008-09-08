@@ -5,17 +5,18 @@
 	Author:		Heikki Suhonen
 
 */
-
-
-
-
 #ifndef MANIPULATOR_SETTINGS_H
 #define MANIPULATOR_SETTINGS_H
 
+
 class ManipulatorSettings {
-	virtual	void 	method_1() {};	// This is here to make dynamic casting possible.
 public:
-		ManipulatorSettings() {};
+							ManipulatorSettings() {}
+	virtual					~ManipulatorSettings() {}
+
+private:
+	// This is here to make dynamic casting possible.
+	virtual	void 			method_1() {};
 };
 
 
