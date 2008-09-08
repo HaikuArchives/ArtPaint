@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Manipulator.cpp
-	Contents:	Manipulator-class definitions	
+	Contents:	Manipulator-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -17,7 +17,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 	BRect new_bounds = bounds;
 	new_bounds.InsetBy(inset,inset);
 
-	BBitmap *copy = new BBitmap(new_bounds,B_RGB32,accept_views);	
+	BBitmap *copy = new BBitmap(new_bounds,B_RGB32,accept_views);
 	if (copy->IsValid() == FALSE)
 		throw bad_alloc();
 
@@ -25,7 +25,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 	uint32 *source_bits = (uint32*)original->Bits();
 	uint32 bits_length = original->BitsLength()/4;
 	uint32 source_bpr = original->BytesPerRow()/4;
-	
+
 	if (inset == 0) {
 		// Just copy the bitmap straight away.
 		for (int32 i=0;i<bits_length;i++)
@@ -37,7 +37,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 		int32 height = new_bounds.IntegerHeight();
 		for (int32 y=0;y<=height;y++) {
 			for (int32 x=0;x<=width;x++) {
-				*target_bits++ = *(source_bits + inset+x + (inset+y)*source_bpr);				
+				*target_bits++ = *(source_bits + inset+x + (inset+y)*source_bpr);
 			}
 		}
 	}
@@ -54,7 +54,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 			// Duplicate the actual row
 			for (int32 x=0;x<=width;x++) {
 				*target_bits++ = *source_bits++;
-			}			
+			}
 			// Duplicate the end of the row
 			source_bits--;
 			for (int32 addx=0;addx<abs(inset);addx++) {
@@ -71,7 +71,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 			// Duplicate the actual row
 			for (int32 x=0;x<=width;x++) {
 				*target_bits++ = *source_bits++;
-			}			
+			}
 			// Duplicate the end of the row
 			source_bits--;
 			for (int32 addx=0;addx<abs(inset);addx++) {
@@ -89,15 +89,15 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 			// Duplicate the actual row
 			for (int32 x=0;x<=width;x++) {
 				*target_bits++ = *source_bits++;
-			}			
+			}
 			// Duplicate the end of the row
 			source_bits--;
 			for (int32 addx=0;addx<abs(inset);addx++) {
 				*target_bits++ = *source_bits;
 			}
 			source_bits = source_bits + 1 - source_bpr;
-		}		
-	}	
+		}
+	}
 
 	return copy;
 }

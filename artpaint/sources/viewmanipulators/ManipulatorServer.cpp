@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:		ManipulatorServer.cpp
-	Contents:		ManipulatorServer-class definition	
+	Contents:		ManipulatorServer-class definition
 	Author:			Heikki Suhonen
-	
+
 */
 
 #include <ClassInfo.h>
@@ -50,33 +50,33 @@ Manipulator* ManipulatorServer::ReturnManipulator(manipulator_type type,int32 ad
 						BNode *add_on_node = GetAddOnNode(add_on_id);
 						gui_manipulator->ReadSettings(add_on_node);
 						delete add_on_node;
-					}			
+					}
 					return manipulator;
 				}
 				else {
 				//	printf("Could not get symbol: instantiate_add_on\n");
-					return NULL;	
+					return NULL;
 				}
 			}
-					
+
 		case FREE_TRANSFORM_MANIPULATOR:
 			return new FreeTransformManipulator(NULL);
-			
+
 		case TRANSLATION_MANIPULATOR:
-			return new TranslationManipulator(NULL);			
+			return new TranslationManipulator(NULL);
 
 		case ROTATION_MANIPULATOR:
 			return new RotationManipulator(NULL);
 
 		case HORIZ_FLIP_MANIPULATOR:
 			return new HorizFlipManipulator();
-			
+
 		case VERT_FLIP_MANIPULATOR:
 			return new VertFlipManipulator();
 
 		case ROTATE_CW_MANIPULATOR:
 			return new Rotate90ClockwiseManipulator();
-			
+
 		case ROTATE_CCW_MANIPULATOR:
 			return new Rotate90CounterclockwiseManipulator();
 
@@ -85,10 +85,10 @@ Manipulator* ManipulatorServer::ReturnManipulator(manipulator_type type,int32 ad
 
 		case CROP_MANIPULATOR:
 			return new CropManipulator(NULL);
-	
+
 		case TRANSPARENCY_MANIPULATOR:
 			return new TransparencyManipulator(NULL);
-				
+
 		case TEXT_MANIPULATOR:
 			TextManipulator *text_manipulator;
 			{
@@ -111,11 +111,11 @@ Manipulator* ManipulatorServer::ReturnManipulator(manipulator_type type,int32 ad
 						}
 					}
 				}
-			}			
+			}
 			return text_manipulator;
 
 		default:
-			return NULL;	
+			return NULL;
 	}
 }
 
@@ -140,28 +140,28 @@ int32 ManipulatorServer::add_on_reader(void*)
 	// We should try to make sure, not to read the same add-on more than once. And
 	// if multiple versions of the same add-on are available to use the latest version
 	// of them. Only one add-on per name will be loaded.
-	
+
 	status_t current_status;
 	BPath add_on_path;
-	PaintApplication::HomeDirectory(add_on_path);	
+	PaintApplication::HomeDirectory(add_on_path);
 	StringSet *addon_names = new StringSet();
-	
-	if ((current_status = add_on_path.Append("add-ons",TRUE)) == B_NO_ERROR) {		
+
+	if ((current_status = add_on_path.Append("add-ons",TRUE)) == B_NO_ERROR) {
 		BEntry current_entry;
 		BDirectory add_on_dir;
-	
+
 		if ((current_status = current_entry.SetTo(add_on_path.Path())) != B_NO_ERROR)
 			return current_status;
-		
+
 		if (addon_array == NULL) {
 			max_number_of_addons = 2;
 			addon_array = new image_id[max_number_of_addons];
 		}
-	
-		
+
+
 		image_id current_add_on_id;
 		char current_add_on_name[B_FILE_NAME_LENGTH];
-				
+
 		if ( (current_status = add_on_dir.SetTo(&current_entry)) == B_OK)	{
 			while ((current_status = add_on_dir.GetNextEntry(&current_entry)) == B_OK) {
 				current_entry.GetPath(&add_on_path);
@@ -177,34 +177,34 @@ int32 ManipulatorServer::add_on_reader(void*)
 								}
 								delete[] addon_array;
 								addon_array = new_array;
-							}		
+							}
 							addon_array[number_of_addons] = current_add_on_id;
-							number_of_addons++;		
+							number_of_addons++;
 							addon_names->AddString(current_add_on_name);
-					}	
+					}
 				}
 				else {
 //					printf("Could not load add-on:%s\n",add_on_path.Path());
 				}
 			}
-		}	
+		}
 	}
 	if ((find_directory(B_USER_ADDONS_DIRECTORY,&add_on_path) == B_OK) && (add_on_path.Append("ArtPaint") == B_NO_ERROR)) {
 		BEntry current_entry;
 		BDirectory add_on_dir;
-	
+
 		if ((current_status = current_entry.SetTo(add_on_path.Path())) != B_NO_ERROR)
 			return current_status;
-		
+
 		if (addon_array == NULL) {
 			max_number_of_addons = 2;
 			addon_array = new image_id[max_number_of_addons];
 		}
-	
-		
+
+
 		image_id current_add_on_id;
 		char current_add_on_name[B_FILE_NAME_LENGTH];
-				
+
 		if ( (current_status = add_on_dir.SetTo(&current_entry)) == B_OK)	{
 			while ((current_status = add_on_dir.GetNextEntry(&current_entry)) == B_OK) {
 				current_entry.GetPath(&add_on_path);
@@ -220,33 +220,33 @@ int32 ManipulatorServer::add_on_reader(void*)
 								}
 								delete[] addon_array;
 								addon_array = new_array;
-							}		
+							}
 							addon_array[number_of_addons] = current_add_on_id;
-							number_of_addons++;		
+							number_of_addons++;
 							addon_names->AddString(current_add_on_name);
-					}	
+					}
 				}
 				else {
 				}
 			}
-		}	
+		}
 	}
 	if ((find_directory(B_COMMON_ADDONS_DIRECTORY,&add_on_path) == B_OK) && (add_on_path.Append("ArtPaint") == B_NO_ERROR)) {
 		BEntry current_entry;
 		BDirectory add_on_dir;
-	
+
 		if ((current_status = current_entry.SetTo(add_on_path.Path())) != B_NO_ERROR)
 			return current_status;
-		
+
 		if (addon_array == NULL) {
 			max_number_of_addons = 2;
 			addon_array = new image_id[max_number_of_addons];
 		}
-	
-		
+
+
 		image_id current_add_on_id;
 		char current_add_on_name[B_FILE_NAME_LENGTH];
-				
+
 		if ( (current_status = add_on_dir.SetTo(&current_entry)) == B_OK)	{
 			while ((current_status = add_on_dir.GetNextEntry(&current_entry)) == B_OK) {
 				current_entry.GetPath(&add_on_path);
@@ -262,21 +262,21 @@ int32 ManipulatorServer::add_on_reader(void*)
 								}
 								delete[] addon_array;
 								addon_array = new_array;
-							}		
+							}
 							addon_array[number_of_addons] = current_add_on_id;
-							number_of_addons++;		
+							number_of_addons++;
 							addon_names->AddString(current_add_on_name);
-					}	
+					}
 				}
 				else {
 				}
 			}
-		}	
+		}
 	}
 	addons_available = TRUE;
 
 	delete addon_names;
-	return B_OK;	
+	return B_OK;
 }
 
 
@@ -311,16 +311,16 @@ void ManipulatorServer::StoreManipulatorSettings(Manipulator *manipulator)
 		}
 	}
 	else {
-		GUIManipulator *gui_manipulator = cast_as(manipulator,GUIManipulator);		
+		GUIManipulator *gui_manipulator = cast_as(manipulator,GUIManipulator);
 		// An add-on that is a GUIManipulator should store its settings as attributes
 		// to the file where it is loaded.
 		if (gui_manipulator != NULL) {
 			BNode *node = GetAddOnNode(gui_manipulator->add_on_id);
 			if (node != NULL) {
 				gui_manipulator->WriteSettings(node);
-				delete node;	
+				delete node;
 			}
-		}		
+		}
 	}
 
 }
@@ -336,7 +336,7 @@ BNode* ManipulatorServer::GetAddOnNode(image_id add_on_id)
 	image_info info;
 	if (get_image_info(add_on_id,&info) == B_NO_ERROR) {
 		BNode *node = new BNode();
-		
+
 		if (node->SetTo(info.name) != B_NO_ERROR) {
 			delete node;
 			return NULL;
@@ -365,7 +365,7 @@ StringSet::~StringSet()
 		delete[] string_array[i];
 		string_array[i] = NULL;
 	}
-	
+
 	delete[] string_array;
 }
 
@@ -374,16 +374,16 @@ void StringSet::AddString(const char *s)
 	if (entry_count == array_length) {
 		array_length *= 2;
 		char **new_array = new char*[array_length];
-		
+
 		for (int32 i=0;i<entry_count;i++) {
 			new_array[i] = string_array[i];
 			string_array[i] = NULL;
 		}
 		delete[] string_array;
-		string_array = new_array;			
+		string_array = new_array;
 	}
 	if (ContainsString(s) == FALSE) {
-		string_array[entry_count] = new char[strlen(s)+1];	
+		string_array[entry_count] = new char[strlen(s)+1];
 		strcpy(string_array[entry_count++],s);
 	}
 }
@@ -391,13 +391,13 @@ void StringSet::AddString(const char *s)
 bool StringSet::ContainsString(const char *s)
 {
 	bool found = FALSE;
-	
+
 	int32 i=0;
 	while ((i<entry_count) && (found == FALSE)) {
 		if (strcmp(string_array[i],s) == 0)
 			found = TRUE;
 		i++;
 	}
-	
+
 	return found;
 }

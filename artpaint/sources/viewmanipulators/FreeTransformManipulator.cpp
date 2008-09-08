@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FreeTransformManipulator.cpp
-	Contents:	FreeTransformManipulator-class definition.	
+	Contents:	FreeTransformManipulator-class definition.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <CheckBox.h>
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <Window.h> 
+#include <Window.h>
 
 #include "FreeTransformManipulator.h"
 #include "PixelOperations.h"
@@ -63,7 +63,7 @@ int32 FreeTransformManipulator::PreviewBitmap(Selection*,bool,BRegion *region)
 {
 	if (preview_bitmap == NULL)
 		return 0;
-		
+
 	FreeTransformManipulatorSettings current_settings = settings;
 	if (current_settings == previous_settings)
 		return 0;
@@ -91,16 +91,16 @@ int32 FreeTransformManipulator::PreviewBitmap(Selection*,bool,BRegion *region)
 	// 2. Rotate by rad_angle
 	// 3. Scale by dx and dy
 	// 4. Translate by translation_x + width/2, translation_y + height/2
-	
+
 	return 1;
 }
 
 void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
-{		
+{
 	if (first_click == TRUE) {
 		// Select the transformation-mode and record the starting-point.
 		starting_point = point;
-		
+
 		uint32 mods = modifiers();
 		if (mods & B_LEFT_SHIFT_KEY)
 			transformation_mode = RESIZING_MODE;
@@ -108,7 +108,7 @@ void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool
 			transformation_mode = ROTATING_MODE;
 		else
 			transformation_mode = TRANSLATING_MODE;
-		
+
 	}
 	else {
 		// Do the appropriate transformation.
@@ -118,8 +118,8 @@ void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool
 				settings.y_scale_factor = point.y/preview_bitmap->Bounds().Height();
 				break;
 			case TRANSLATING_MODE:
-				settings.x_translation += (starting_point.x - point.x); 
-				settings.y_translation += (starting_point.y - point.y); 				
+				settings.x_translation += (starting_point.x - point.x);
+				settings.y_translation += (starting_point.y - point.y);
 				starting_point = point;
 				break;
 			case ROTATING_MODE:
@@ -144,9 +144,9 @@ void FreeTransformManipulator::Reset(Selection*)
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
-	}	
+
+		memcpy(target,source,bits_length);
+	}
 }
 
 void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
@@ -163,14 +163,14 @@ void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 			else {
 				preview_bitmap = NULL;
 				copy_of_the_preview_bitmap = NULL;
-			}	
+			}
 		}
 		catch (bad_alloc e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap=NULL;
 			throw e;
 		}
-	}	
+	}
 	else {
 		// Just update the copy_of_the_preview_bitmap
 		preview_bitmap = bitmap;
@@ -183,7 +183,7 @@ void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 
 
 ManipulatorSettings* FreeTransformManipulator::ReturnSettings()
-{	
+{
 	return new FreeTransformManipulatorSettings(settings);
 }
 
@@ -222,7 +222,7 @@ void FreeTransformManipulatorView::MessageReceived(BMessage *message)
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
-	}		
+	}
 }
 
 
@@ -232,9 +232,9 @@ void FreeTransformManipulatorView::MessageReceived(BMessage *message)
 	original_height = height;
 	current_width = width;
 	current_height = height;
-	
+
 	char text[256];
-	
+
 	BWindow *window = Window();
 	if (window != NULL)
 		window->Lock();
@@ -245,7 +245,7 @@ void FreeTransformManipulatorView::MessageReceived(BMessage *message)
 		text_control->SetText(text);
 	}
 	sprintf(text,"%.0f",original_height);
-	
+
 	text_control = cast_as(FindView("height_control"),BTextControl);
 	if (text_control != NULL) {
 		text_control->SetText(text);

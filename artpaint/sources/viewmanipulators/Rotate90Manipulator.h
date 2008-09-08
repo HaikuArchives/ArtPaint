@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FlipManipulator.h
-	Contents:	FlipManipulator-class declarations (Horizontal and Vertical manipulator)	
+	Contents:	FlipManipulator-class declarations (Horizontal and Vertical manipulator)
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -12,10 +12,10 @@
 #ifndef ROTATE_90_MANIPULATOR_H
 #define	ROTATE_90_MANIPULATOR_H
 
-class Rotate90ClockwiseManipulator : public Manipulator {								
+class Rotate90ClockwiseManipulator : public Manipulator {
 
 public:
-			Rotate90ClockwiseManipulator();						
+			Rotate90ClockwiseManipulator();
 BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
 
 const char*	ReturnName();
@@ -23,10 +23,10 @@ const char*	ReturnName();
 private:
 };
 
-class Rotate90CounterclockwiseManipulator : public Manipulator {								
+class Rotate90CounterclockwiseManipulator : public Manipulator {
 
 public:
-			Rotate90CounterclockwiseManipulator();						
+			Rotate90CounterclockwiseManipulator();
 BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
 
 const char*	ReturnName();

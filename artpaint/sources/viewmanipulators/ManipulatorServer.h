@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ManipulatorServer.h
-	Contents:	ManipulatorServer-class declaration	
+	Contents:	ManipulatorServer-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -45,7 +45,7 @@ class StringSet {
 public:
 		StringSet();
 		~StringSet();
-		
+
 void	AddString(const char*);
 bool	ContainsString(const char*);
 };

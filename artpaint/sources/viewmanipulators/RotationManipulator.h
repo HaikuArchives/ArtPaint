@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RotationManipulator.h
-	Contents:	RotationManipulator-class declaration	
+	Contents:	RotationManipulator-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <TextControl.h>
@@ -29,8 +29,8 @@ public:
 
 	RotationManipulatorSettings(RotationManipulatorSettings *s)
 		: ManipulatorSettings() { angle = s->angle; origo = s->origo; }
-		
-		
+
+
 	float	angle;
 	BPoint	origo;
 };
@@ -38,7 +38,7 @@ public:
 const unsigned char HS_ROTATION_CURSOR[] =
 		{
 			0x10, 0x01, 0x03, 0x03,
-			
+
 			// here starts the image data
 			0x00, 0x00, 0x00, 0x00,		// lines 0 and 1
 			0x18, 0x1C, 0x24, 0x18,		// lines 2 and 3
@@ -48,7 +48,7 @@ const unsigned char HS_ROTATION_CURSOR[] =
 			0x00, 0x04, 0x70, 0x04,		// lines 10 and 11
 			0x60, 0x08, 0x58, 0x30,		// lines 12 and 13
 			0x07, 0xC0, 0x00, 0x00,		// lines 14 and 15
-			
+
 			// here starts the mask-data
 			0x00, 0x00, 0x18, 0x3C,		// lines 0 and 1
 			0x38, 0x3C, 0x64, 0x38,		// lines 2 and 3
@@ -57,7 +57,7 @@ const unsigned char HS_ROTATION_CURSOR[] =
 			0x00, 0x06, 0x00, 0x06,		// lines 8 and 9
 			0xF0, 0x0C, 0xF0, 0x0C,		// lines 10 and 11
 			0xF8, 0x38, 0xDF, 0xF0,		// lines 12 and 13
-			0x07, 0xC0, 0x00, 0x00		// lines 14 and 15										
+			0x07, 0xC0, 0x00, 0x00		// lines 14 and 15
 		};
 
 class RotationManipulator: public StatusBarGUIManipulator {
@@ -69,10 +69,10 @@ class RotationManipulator: public StatusBarGUIManipulator {
 		float	previous_angle;
 		float	starting_angle;
 		BPoint	previous_origo;
-		int32	last_calculated_resolution;	
+		int32	last_calculated_resolution;
 		int32	lowest_available_quality;
 		int32	highest_available_quality;
-		
+
 		RotationManipulatorSettings				*settings;
 
 		HSPolygon								*view_polygon;
@@ -82,9 +82,9 @@ class RotationManipulator: public StatusBarGUIManipulator {
 		bool	move_origo;
 
 public:
-			RotationManipulator(BBitmap*);				
+			RotationManipulator(BBitmap*);
 			~RotationManipulator();
-		
+
 void		SetPreviewBitmap(BBitmap*);
 
 BRegion		Draw(BView*,float);
@@ -115,10 +115,10 @@ class RotationManipulatorConfigurationView : public BView {
 	BTextControl		*text_control;
 	BMessenger			*target;
 	RotationManipulator	*manipulator;
-	
+
 public:
 		RotationManipulatorConfigurationView(BRect,RotationManipulator*);
-	
+
 void	AttachedToWindow();
 void	MessageReceived(BMessage*);
 

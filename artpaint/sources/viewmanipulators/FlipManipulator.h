@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FlipManipulator.h
-	Contents:	FlipManipulator-class declarations (Horizontal and Vertical manipulator)	
+	Contents:	FlipManipulator-class declarations (Horizontal and Vertical manipulator)
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -12,19 +12,19 @@
 #ifndef FLIP_MANIPULATOR_H
 #define	FLIP_MANIPULATOR_H
 
-class HorizFlipManipulator : public Manipulator {								
+class HorizFlipManipulator : public Manipulator {
 
 public:
-			HorizFlipManipulator();						
+			HorizFlipManipulator();
 BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
 
 const char*	ReturnName();
 };
 
-class VertFlipManipulator : public Manipulator {								
+class VertFlipManipulator : public Manipulator {
 
 public:
-			VertFlipManipulator();						
+			VertFlipManipulator();
 BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
 
 const char*	ReturnName();

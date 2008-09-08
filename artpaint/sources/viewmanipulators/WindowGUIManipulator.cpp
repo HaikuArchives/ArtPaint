@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	WindowGUIManipulator.cpp
-	Contents:	WindowGUIManipulator and WindowGUIManipulatorView definitions	
+	Contents:	WindowGUIManipulator and WindowGUIManipulatorView definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Message.h>
@@ -14,7 +14,7 @@
 WindowGUIManipulatorView::WindowGUIManipulatorView(BRect rect)
 	: BView(rect,"window_gui_manipulator_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
 {
-	
+
 }
 
 

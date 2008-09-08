@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	StatusBarGUIManipulator.h
-	Contents:	StatusBarGUIManipulator-class declaration.	
+	Contents:	StatusBarGUIManipulator-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -20,7 +20,7 @@ class StatusBarGUIManipulator : public GUIManipulator {
 public:
 	StatusBarGUIManipulator() {};
 	~StatusBarGUIManipulator() {};
-	
+
 virtual	BView*	MakeConfigurationView(float, float, BMessenger*) { return NULL; }
 };
 

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	WindowGUIManipulator.h
-	Contents:	WindowGUIManipulator-class declaration	
+	Contents:	WindowGUIManipulator-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 

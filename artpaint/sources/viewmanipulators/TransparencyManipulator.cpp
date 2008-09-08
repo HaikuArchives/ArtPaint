@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Transparency.cpp
-	Contents:	Transparency manipulator functions.	
+	Contents:	Transparency manipulator functions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include "AddOns.h"
@@ -70,22 +70,22 @@ int32 TransparencyManipulator::PreviewBitmap(Selection *selection,bool full_qual
 				return 0;
 		}
 		else
-			last_calculated_resolution = last_calculated_resolution / 2;			
+			last_calculated_resolution = last_calculated_resolution / 2;
 	}
 	else if (full_quality == TRUE)
 		last_calculated_resolution = 1;
 	else
-		last_calculated_resolution = lowest_available_quality;		
+		last_calculated_resolution = lowest_available_quality;
 
 
 	if (image == NULL)
 		return 0;
-	
+
 	updated_region->Include(image->ReturnActiveBitmap()->Bounds());
-	
-	if (preview_layer != NULL) 
+
+	if (preview_layer != NULL)
 		preview_layer->SetTransparency(settings->transparency / 255.0);
-	
+
 	return 1;
 }
 
@@ -94,9 +94,9 @@ void TransparencyManipulator::SetPreviewBitmap(BBitmap *bm)
 	if (image != NULL) {
 		original_transparency_coefficient = image->ReturnActiveLayer()->GetTransparency();
 		settings->transparency = original_transparency_coefficient * 255;
-		
+
 		if (config_view != NULL)
-			config_view->ChangeSettings(settings); 
+			config_view->ChangeSettings(settings);
 
 		preview_layer = image->ReturnActiveLayer();
 	}
@@ -135,8 +135,8 @@ ManipulatorSettings* TransparencyManipulator::ReturnSettings()
 const char*	TransparencyManipulator::ReturnHelpString()
 {
 	return StringServer::ReturnString(DO_CHANGE_TRANSPARENCY_HELP_STRING);
-	
-} 
+
+}
 const char*	TransparencyManipulator::ReturnName()
 {
 	return StringServer::ReturnString(CHANGE_TRANSPARENCY_STRING);
@@ -164,7 +164,7 @@ TransparencyManipulatorView::TransparencyManipulatorView(BRect rect,Transparency
 
 
 TransparencyManipulatorView::~TransparencyManipulatorView()
-{	
+{
 	delete target;
 }
 
@@ -189,14 +189,14 @@ void TransparencyManipulatorView::MessageReceived(BMessage *message)
 				started_manipulating = TRUE;
 				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 			}
-			break;		
+			break;
 
 		case MOUSE_TRACKING_FINISHED:
 			started_manipulating = FALSE;
 			manipulator->SetTransparency(transparency_control->Value());
 			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			break;
-			
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;

@@ -1,13 +1,13 @@
-/* 
+/*
 
 	Filename:	BasicManipulator.h
-	Contents:	Declaration for abstract base-class for actual manipulators	
+	Contents:	Declaration for abstract base-class for actual manipulators
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef	BASIC_MANIPULATOR
-#define	BASIC_MANIPULATOR	
+#define	BASIC_MANIPULATOR
 
 
 #include "ViewManipulator.h"
@@ -18,7 +18,7 @@
 class BasicManipulator : public ViewManipulator {
 public:
 					// We should get the manipulator_data in here.
-					BasicManipulator(BView *target) 
+					BasicManipulator(BView *target)
 						: ViewManipulator(target) {};
 
 virtual				~BasicManipulator() {};

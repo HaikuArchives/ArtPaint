@@ -1,20 +1,20 @@
-/* 
+/*
 
 	Filename:	ViewManipulator.h
-	Contents:	Declaration for abstract ViewManipulator-base-class	
+	Contents:	Declaration for abstract ViewManipulator-base-class
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef	VIEW_MANIPULATOR_H
-#define	VIEW_MANIPULATOR_H	
+#define	VIEW_MANIPULATOR_H
 
 
 class Selection;
 
 
 
-// This typedef represents a pointer to function that can read image-view's 
+// This typedef represents a pointer to function that can read image-view's
 // mouse coordinates.
 typedef		void	(*GET_MOUSE)(BView*,BPoint*,uint32*,BPoint*);
 
@@ -35,10 +35,10 @@ struct manipulator_data {
 											// The default is FALSE.
 
 	bool			manipulate_horizontal;	// These fields contain information about
-	bool			manipulate_vertical;	// The direction of manipulation, e.g. 
+	bool			manipulate_vertical;	// The direction of manipulation, e.g.
 											// a vertical flip.
-											
-													
+
+
 	BNode			*node;					// This allows the add-ons to save the
 											// settings as attributes to their files.
 
@@ -46,7 +46,7 @@ struct manipulator_data {
 	Selection		*selection;				// This is a pointer to view's selection.
 											// If selection is not empty, the manipulator
 											// should only manipulate selected area.
-	
+
 	UPDATE_IMAGE	image_updater;
 };
 
@@ -66,16 +66,16 @@ struct manipulator_data {
 // implement the Draw-function that can be used to draw some info
 // onto the image. If manipulator creates a UI, it should send a HS_OPERATION_FINISHED,
 // when the user closes the interface. It should contain member 'status' that is boolean
-// and if it is true indicates that user accepted the manipulation. 
+// and if it is true indicates that user accepted the manipulation.
 // Whenever the action started from mouse-down ends the manipulator should
 // send a message containing HS_ACTION_FINISHED.
 class ViewManipulator {
 protected:
-				BView	*target_view;		// This should not be deleted or changed. 
+				BView	*target_view;		// This should not be deleted or changed.
 
 public:
 				// We should get the manipulator_data in here.
-				ViewManipulator(BView *target) 
+				ViewManipulator(BView *target)
 					: target_view(target) {};
 
 virtual			~ViewManipulator() {};

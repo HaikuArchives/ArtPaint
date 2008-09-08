@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Rotate90Manipulator.cpp
-	Contents:	Rotate90Manipulator -class definitions	
+	Contents:	Rotate90Manipulator -class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <StatusBar.h>
@@ -20,17 +20,17 @@ Rotate90ClockwiseManipulator::Rotate90ClockwiseManipulator()
 
 BBitmap* Rotate90ClockwiseManipulator::ManipulateBitmap(BBitmap *original,Selection*,BStatusBar *status_bar)
 {
-	// create a new bitmap that is as wide as the original is high	
+	// create a new bitmap that is as wide as the original is high
 	BRect new_bounds(0,0,original->Bounds().Height(),original->Bounds().Width());
 	BBitmap *new_bitmap = new BBitmap(new_bounds,B_RGBA32);
 
 
 	// the first row in original becomes the last column in the new one
-	uint32 *original_bits = (uint32*)original->Bits();	
+	uint32 *original_bits = (uint32*)original->Bits();
 	uint32 *new_bits = (uint32*)new_bitmap->Bits();
 	int32 new_bpr = new_bitmap->BytesPerRow()/4;
-	
-	
+
+
 	int32 height = original->Bounds().IntegerHeight();
 	int32 width = original->Bounds().IntegerWidth();
 
@@ -44,7 +44,7 @@ BBitmap* Rotate90ClockwiseManipulator::ManipulateBitmap(BBitmap *original,Select
 }
 
 const char* Rotate90ClockwiseManipulator::ReturnName()
-{	
+{
 	return StringServer::ReturnString(ROTATE_CW_STRING);
 }
 
@@ -59,16 +59,16 @@ Rotate90CounterclockwiseManipulator::Rotate90CounterclockwiseManipulator()
 
 BBitmap* Rotate90CounterclockwiseManipulator::ManipulateBitmap(BBitmap *original,Selection*,BStatusBar *status_bar)
 {
-	// create a new bitmap that is as wide as the original is high	
+	// create a new bitmap that is as wide as the original is high
 	BRect new_bounds(0,0,original->Bounds().Height(),original->Bounds().Width());
 	BBitmap *new_bitmap = new BBitmap(new_bounds,B_RGBA32);
 
 
 	// the last row in original becomes the last column in the new one
-	uint32 *original_bits = (uint32*)original->Bits();	
+	uint32 *original_bits = (uint32*)original->Bits();
 	uint32 *new_bits = (uint32*)new_bitmap->Bits();
 	int32 new_bpr = new_bitmap->BytesPerRow()/4;
-	
+
 	int32 height = original->Bounds().IntegerHeight();
 	int32 width = original->Bounds().IntegerWidth();
 
@@ -82,6 +82,6 @@ BBitmap* Rotate90CounterclockwiseManipulator::ManipulateBitmap(BBitmap *original
 }
 
 const char* Rotate90CounterclockwiseManipulator::ReturnName()
-{	
+{
 	return StringServer::ReturnString(ROTATE_CCW_STRING);
 }

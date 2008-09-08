@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Manipulators.h
-	Contents:	Includes all the manipulator headers	
+	Contents:	Includes all the manipulator headers
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include "ViewManipulator.h"

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ImageAdapter.h
-	Contents:	Declaration for ImageAdapter-class		
+	Contents:	Declaration for ImageAdapter-class
 	Author:	Heikki Suhonen
-	
+
 */
 
 #ifndef IMAGE_ADAPTER_H

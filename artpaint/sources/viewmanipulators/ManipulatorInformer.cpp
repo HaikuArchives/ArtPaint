@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ManipulatorInformer.cpp
-	Contents:	ManipulatorInformer-class definitions		
+	Contents:	ManipulatorInformer-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include "ManipulatorInformer.h"

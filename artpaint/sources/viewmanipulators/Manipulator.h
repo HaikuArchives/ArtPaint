@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Manipulator.h
-	Contents:	Manipulator-class declaration	
+	Contents:	Manipulator-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -53,15 +53,15 @@ enum manipulator_type {
 class Manipulator {
 friend	class		ManipulatorServer;
 		image_id	add_on_id;
-		
+
 protected:
 BBitmap*		DuplicateBitmap(BBitmap*,int32 inset=0,bool accept_views=FALSE);
 
 public:
 			Manipulator() { add_on_id = -1; }
 virtual		~Manipulator() {}
-	
-virtual	BBitmap*				ManipulateBitmap(BBitmap*,Selection*,BStatusBar*) = 0;	
+
+virtual	BBitmap*				ManipulateBitmap(BBitmap*,Selection*,BStatusBar*) = 0;
 virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
 virtual	const	char*			ReturnName() = 0;
 };

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	TranslationManipulator.cpp
-	Contents:	TranslationManipulator -class definitions	
+	Contents:	TranslationManipulator -class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <ClassInfo.h>
@@ -27,10 +27,10 @@ TranslationManipulator::TranslationManipulator(BBitmap *bm)
 	preview_bitmap = bm;
 	if (preview_bitmap != NULL) {
 		copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
-	}	
+	}
 	else {
 		copy_of_the_preview_bitmap = NULL;
-	}	
+	}
 
 	settings = new TranslationManipulatorSettings();
 	previous_x_translation = 0;
@@ -51,7 +51,7 @@ TranslationManipulator::~TranslationManipulator()
 		config_view->RemoveSelf();
 		delete config_view;
 	}
-	
+
 }
 
 
@@ -65,7 +65,7 @@ void TranslationManipulator::MouseDown(BPoint point,uint32,BView*,bool first)
 
 		settings->x_translation += point.x - previous_point.x;
 		settings->y_translation += point.y - previous_point.y;
-			
+
 		previous_point = point;
 
 		if (config_view != NULL)
@@ -85,32 +85,32 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 			status_bar->Window()->Unlock();
 		}
 	}
-	
+
 	if (new_settings == NULL) {
 		return NULL;
-	}		
+	}
 	if (original == NULL) {
 		return NULL;
-	}		
+	}
 	if ((new_settings->x_translation == 0) && (new_settings->y_translation == 0)) {
 		return NULL;
 	}
 
 	BBitmap *new_bitmap;
-	if (original != preview_bitmap) {		
+	if (original != preview_bitmap) {
 		original->Lock();
 		BRect bitmap_frame = original->Bounds();
-		new_bitmap = new BBitmap(bitmap_frame,B_RGB_32_BIT);		
+		new_bitmap = new BBitmap(bitmap_frame,B_RGB_32_BIT);
 		original->Unlock();
 		if (new_bitmap->IsValid() == FALSE) {
 			throw bad_alloc();
 		}
-	}	
+	}
 	else {
 		new_bitmap = original;
 		original = copy_of_the_preview_bitmap;
 	}
-		
+
 	union {
 		uint8	bytes[4];
 		uint32	word;
@@ -133,7 +133,7 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 //	printf("%d %d\n",width,height);
 
 	// We have to copy translations so that we do translation for all pixels
-	// with the same values	
+	// with the same values
 	int32 x_translation_local = ((int32)new_settings->x_translation);
 	int32 y_translation_local = ((int32)new_settings->y_translation);
 //	printf("%d %d\n",x_translation_local,y_translation_local);
@@ -146,7 +146,7 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 				*(target_bits + x + y*target_bpr) = background.word;
 			}
 		}
-//		printf("Cleared the target\n");							
+//		printf("Cleared the target\n");
 		// Copy only the points that are within the intersection of
 		// original_bitmap->Bounds() and original_bitmap->Bounds().OffsetBy(x_translation,y_translation)
 		int32 target_x_offset = max_c(0,x_translation_local);
@@ -157,12 +157,12 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 		for (int32 y = 0;y<height - abs(y_translation_local);y++) {
 			for (int32 x = 0;x<width - abs(x_translation_local);x++) {
 				*(target_bits + x+target_x_offset + (y + target_y_offset)*target_bpr)
-			 	 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);		
+			 	 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);
 			}
 		}
 	}
-	else {		
-		// First reset the picture			
+	else {
+		// First reset the picture
 		for (int32 y=0;y<height;y++) {
 			for (int32 x=0;x<width;x++) {
 				*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
@@ -180,9 +180,9 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 				if (selection->ContainsPoint(x,y))
 					*(target_bits + x + y*target_bpr) = background.word;
 			}
-		}				
-		
-	
+		}
+
+
 		selection_bounds = selection->GetBoundingRect();
 		selection_bounds.OffsetBy(settings->x_translation,settings->y_translation);
 		selection_bounds = selection_bounds & original->Bounds() & new_bitmap->Bounds();
@@ -197,9 +197,9 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 				if (selection->ContainsPoint(new_x,new_y))
 					*(target_bits + x + y*target_bpr) = *(source_bits + new_x + new_y*source_bpr);
 			}
-		}				
+		}
 //		printf("Did the translation\n");
-	}		
+	}
 
 	return new_bitmap;
 }
@@ -220,9 +220,9 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 			else
 				return 0;
 		}
-		else { 
+		else {
 			if (full_quality == FALSE)
-				last_calculated_resolution = last_calculated_resolution / 2;			
+				last_calculated_resolution = last_calculated_resolution / 2;
 			else
 				last_calculated_resolution = min_c(1,last_calculated_resolution/2);
 		}
@@ -230,7 +230,7 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 	else if (full_quality == TRUE)
 		last_calculated_resolution = 1;
 	else
-		last_calculated_resolution = lowest_available_quality;		
+		last_calculated_resolution = lowest_available_quality;
 
 	if (last_calculated_resolution > 0) {
 		union {
@@ -242,19 +242,19 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 		background.bytes[1] = 0xFF;
 		background.bytes[2] = 0xFF;
 		background.bytes[3] = 0x00;
-	
-	
+
+
 		// This function assumes that the both bitmaps are of same size.
 		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 target_bpr = preview_bitmap->BytesPerRow()/4;
 		uint32 source_bpr = copy_of_the_preview_bitmap->BytesPerRow()/4;
-	
+
 		int32 width = (int32)min_c(preview_bitmap->Bounds().Width()+1,copy_of_the_preview_bitmap->Bounds().Width()+1);
 		int32 height = (int32)min_c(preview_bitmap->Bounds().Height()+1,copy_of_the_preview_bitmap->Bounds().Height()+1);
-	
+
 		// We have to copy translations so that we do translation for all pixels
-		// with the same values	
+		// with the same values
 		int32 x_translation_local = ((int32)settings->x_translation)/last_calculated_resolution*last_calculated_resolution;
 		int32 y_translation_local = ((int32)settings->y_translation)/last_calculated_resolution*last_calculated_resolution;
 		if (selection->IsEmpty()) {
@@ -279,18 +279,18 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 						*(target_bits + x + y*target_bpr) = background.word;
 					}
 				}
-			}								
+			}
 			// Copy only the points that are within the intersection of
 			// original_bitmap->Bounds() and original_bitmap->Bounds().OffsetBy(x_translation,y_translation)
 			int32 target_x_offset = max_c(0,x_translation_local);
 			int32 target_y_offset = max_c(0,y_translation_local);
 			int32 source_x_offset = max_c(0,-x_translation_local);
 			int32 source_y_offset = max_c(0,-y_translation_local);
-	
+
 			for (int32 y = 0;y<height - abs(y_translation_local);y += last_calculated_resolution) {
 				for (int32 x = 0;x<width - abs(x_translation_local);x += last_calculated_resolution) {
 					*(target_bits + x+target_x_offset + (y + target_y_offset)*target_bpr)
-				 	 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);		
+				 	 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);
 				}
 			}
 
@@ -300,8 +300,8 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 		}
 		else {
 			selection->Translate(x_translation_local-previous_x_translation,y_translation_local-previous_y_translation);
-			
-			// First reset the picture			
+
+			// First reset the picture
 			BRegion to_be_cleared;
 			to_be_cleared.Set(uncleared_rect);
 			uncleared_rect = selection->GetBoundingRect();
@@ -320,8 +320,8 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 						*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
 					}
 				}
-			}								
-	
+			}
+
 			// Then do the selection
 			BRect selection_bounds = selection->GetBoundingRect();
 			selection_bounds.left = ceil(selection_bounds.left / last_calculated_resolution)*last_calculated_resolution;
@@ -335,10 +335,10 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 					if (selection->ContainsPoint(x,y))
 						*(target_bits + x + y*target_bpr) = background.word;
 				}
-			}				
-			
-			
-		
+			}
+
+
+
 			selection_bounds = selection->GetBoundingRect();
 			selection_bounds.OffsetBy(settings->x_translation,settings->y_translation);
 			selection_bounds = selection_bounds & preview_bitmap->Bounds();
@@ -355,10 +355,10 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 					if (selection->ContainsPoint(new_x,new_y))
 						*(target_bits + x + y*target_bpr) = *(source_bits + new_x + new_y*source_bpr);
 				}
-			}				
-	
+			}
+
 			updated_region->Set(uncleared_rect);
-			updated_region->Include(&to_be_cleared);	
+			updated_region->Include(&to_be_cleared);
 		}
 		previous_x_translation = x_translation_local;
 		previous_y_translation = y_translation_local;
@@ -379,17 +379,17 @@ void TranslationManipulator::Reset(Selection *sel)
 	settings->y_translation = 0;
 	previous_x_translation = 0;
 	previous_y_translation = 0;
-		
+
 	if (preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with loop.
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
+
+		memcpy(target,source,bits_length);
 
 		uncleared_rect = preview_bitmap->Bounds();
-	}		
+	}
 }
 
 
@@ -399,22 +399,22 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 	preview_bitmap = bm;
 	if (preview_bitmap != NULL) {
 		copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
-	}	
+	}
 	else {
 		copy_of_the_preview_bitmap = NULL;
-	}	
+	}
 
 	if (preview_bitmap != NULL) {
 		system_info info;
 		get_system_info(&info);
 		double speed = info.cpu_count * info.cpu_clock_speed;
 		speed = speed / 1000;
-		
+
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
 		while ((2*num_pixels/lowest_available_quality/lowest_available_quality) > speed)
-			lowest_available_quality *= 2;			
+			lowest_available_quality *= 2;
 
 		highest_available_quality = max_c(lowest_available_quality/2,1);
 
@@ -457,18 +457,18 @@ const char*	TranslationManipulator::ReturnHelpString()
 
 
 
-TranslationManipulatorView::TranslationManipulatorView(BRect rect, TranslationManipulator *manip)	
+TranslationManipulatorView::TranslationManipulatorView(BRect rect, TranslationManipulator *manip)
 	: BView(rect,"configuration_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
 {
 	manipulator = manip;
 	target = NULL;
-	
+
 	x_control = new NumberControl(rect,"x_control","X:","9999˚",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5,TRUE);
 	x_control->ResizeToPreferred();
 	float divider = x_control->Divider();
 	x_control->ResizeBy(x_control->TextView()->StringWidth("99999")-x_control->TextView()->Bounds().Width(),0);
 	x_control->TextView()->ResizeBy(x_control->TextView()->StringWidth("99999")-x_control->TextView()->Bounds().Width(),0);
-	
+
 	x_control->SetDivider(divider);
 	AddChild(x_control);
 	BRect frame_rect = x_control->Frame();
@@ -481,8 +481,8 @@ TranslationManipulatorView::TranslationManipulatorView(BRect rect, TranslationMa
 	y_control->TextView()->ResizeBy(y_control->TextView()->StringWidth("99999")-y_control->TextView()->Bounds().Width(),0);
 	y_control->SetDivider(divider);
 	AddChild(y_control);
-	
-	ResizeTo(min_c(y_control->Frame().right,rect.Width()),min_c(y_control->Frame().Height(),rect.Height()));	
+
+	ResizeTo(min_c(y_control->Frame().right,rect.Width()),min_c(y_control->Frame().Height(),rect.Height()));
 }
 
 
@@ -513,7 +513,7 @@ void TranslationManipulatorView::MessageReceived(BMessage *message)
 			}
 			if (target != NULL)
 				target->SendMessage(message);
-			break;	
+			break;
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -531,5 +531,5 @@ void TranslationManipulatorView::SetValues(float x,float y)
 
 void TranslationManipulatorView::SetTarget(const BMessenger *t)
 {
-	target = new BMessenger(*t);	
+	target = new BMessenger(*t);
 }

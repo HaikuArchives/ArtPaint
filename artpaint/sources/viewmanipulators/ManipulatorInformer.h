@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ManipulatorInformer.h
-	Contents:	ManipulatorInformer-class declarations		
+	Contents:	ManipulatorInformer-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef MANIPULATOR_INFORMER_H

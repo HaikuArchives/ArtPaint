@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ScaleManipulator.h
-	Contents:	ScaleManipulator-class declaration	
+	Contents:	ScaleManipulator-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -29,15 +29,15 @@ class ScaleManipulatorView;
 class ScaleManipulatorSettings : public ManipulatorSettings {
 public:
 		ScaleManipulatorSettings()
-			: ManipulatorSettings() { 
+			: ManipulatorSettings() {
 				width_coefficient = 1.0;
 				height_coefficient = 1.0;
 			 }
-			
+
 		ScaleManipulatorSettings(ScaleManipulatorSettings *s)
-			: ManipulatorSettings() { 
+			: ManipulatorSettings() {
 				width_coefficient = s->width_coefficient;
-				height_coefficient = s->height_coefficient;	
+				height_coefficient = s->height_coefficient;
 			}
 
 
@@ -51,19 +51,19 @@ class ScaleManipulator : public WindowGUIManipulator {
 	BBitmap						*preview_bitmap;
 	BBitmap						*copy_of_the_preview_bitmap;
 
-	ScaleManipulatorView		*configuration_view;		
+	ScaleManipulatorView		*configuration_view;
 	ScaleManipulatorSettings	*settings;
 
 
-	
+
 	float						original_width;
 	float						original_height;
-	
+
 public:
 			ScaleManipulator(BBitmap*);
 			~ScaleManipulator();
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
 int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
 
 void		MouseDown(BPoint,uint32,BView*,bool);
@@ -94,14 +94,14 @@ class ScaleManipulatorView : public WindowGUIManipulatorView {
 		NumberControl		*height_control;
 
 		BMessenger *target;
-		
+
 public:
 		ScaleManipulatorView(BRect,ScaleManipulator*,BMessenger*);
 		~ScaleManipulatorView();
-		
+
 void	AttachedToWindow();
 
-void	MessageReceived(BMessage*);		
+void	MessageReceived(BMessage*);
 void	SetValues(float,float);
 bool	MaintainProportions() { return maintain_proportions; }
 };

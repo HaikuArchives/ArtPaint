@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ManipulatorSettings.h
-	Contents:	ManipulatorSettings-class declaration		
+	Contents:	ManipulatorSettings-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 

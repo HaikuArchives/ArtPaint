@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	CropManipulator.h
-	Contents:	CropManipulator-class declaration	
+	Contents:	CropManipulator-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -25,13 +25,13 @@ class CropManipulator : public WindowGUIManipulator {
 	BBitmap		*target_bitmap;
 	float 		min_x,max_x;
 	float		min_y,max_y;
-	
+
 	float		previous_left;
 	float		previous_right;
 	float		previous_top;
 	float		previous_bottom;
 
-	
+
 	CropManipulatorSettings	*settings;
 	CropManipulatorView		*config_view;
 
@@ -40,7 +40,7 @@ class CropManipulator : public WindowGUIManipulator {
 	bool		move_top;
 	bool		move_bottom;
 	bool 		move_all;
-		
+
 public:
 			CropManipulator(BBitmap*);
 			~CropManipulator();
@@ -49,7 +49,7 @@ void		MouseDown(BPoint,uint32,BView*,bool);
 
 BRegion		Draw(BView*,float);
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
 void		SetValues(float,float,float,float);
 
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
@@ -83,7 +83,7 @@ public:
 		top = s->top;
 		bottom = s->bottom;
 	}
-		
+
 	float	left;
 	float	right;
 	float	top;
@@ -103,7 +103,7 @@ class CropManipulatorView : public WindowGUIManipulatorView {
 		NumberControl	*right_control;
 		NumberControl	*top_control;
 		NumberControl	*bottom_control;
-		
+
 		BMessenger		*target;
 		CropManipulator	*manipulator;
 public:

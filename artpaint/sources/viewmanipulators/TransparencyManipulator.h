@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Transparency.h
-	Contents:	Transparency-manipulator declaration.	
+	Contents:	Transparency-manipulator declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -49,7 +49,7 @@ TransparencyManipulatorView		*config_view;
 public:
 			TransparencyManipulator(BBitmap*);
 			~TransparencyManipulator();
-			
+
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
 BView*		MakeConfigurationView(BMessenger*);
@@ -58,7 +58,7 @@ BView*		MakeConfigurationView(BMessenger*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 
-const	char*	ReturnHelpString(); 
+const	char*	ReturnHelpString();
 const	char*	ReturnName();
 
 void		SetTransparency(float);
@@ -72,13 +72,13 @@ class TransparencyManipulatorSettings : public ManipulatorSettings {
 public:
 	TransparencyManipulatorSettings()
 		: ManipulatorSettings() {
-			transparency = 0;		
+			transparency = 0;
 		}
-		
+
 	TransparencyManipulatorSettings(TransparencyManipulatorSettings *s)
 		: ManipulatorSettings() {
 			transparency = s->transparency;
-		}			
+		}
 
 
 	float	transparency;
@@ -99,10 +99,10 @@ class TransparencyManipulatorView : public WindowGUIManipulatorView {
 public:
 		TransparencyManipulatorView(BRect,TransparencyManipulator*,BMessenger*);
 		~TransparencyManipulatorView();
-	
+
 void	AllAttached();
 void	AttachedToWindow();
-void	MessageReceived(BMessage*);	
+void	MessageReceived(BMessage*);
 void	ChangeSettings(TransparencyManipulatorSettings*);
 };
 
