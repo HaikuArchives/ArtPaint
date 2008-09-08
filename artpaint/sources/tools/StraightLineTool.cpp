@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	StraightLineTool.cpp
-	Contents:	StraigLineTool-class definitions	
+	Contents:	StraigLineTool-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -25,7 +25,7 @@ StraightLineTool::StraightLineTool()
 {
 	options = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION;
 	number_of_options = 3;
-	
+
 	SetOption(SIZE_OPTION,1);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION,B_CONTROL_OFF);
 	SetOption(MODE_OPTION,B_CONTROL_ON);
@@ -61,12 +61,12 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
 
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
-		
+
 		BPoint original_point,original_view_point,prev_view_point;
 		BRect bitmap_rect,old_rect,new_rect;
 		HSPolygon *view_polygon = NULL;
 		BPoint point_list[4];
-		
+
 		window->Lock();
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
@@ -81,7 +81,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		point_list[1] = new_rect.RightTop();
 		point_list[2] = new_rect.RightBottom();
 		point_list[3] = new_rect.LeftBottom();
-		
+
 		window->Lock();
 		if ((GetCurrentValue(SIZE_OPTION) > 2) && (settings.mode == B_CONTROL_OFF)) {
 			view_polygon = new HSPolygon(point_list,4);
@@ -92,17 +92,17 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		else
 			view->StrokeLine(original_view_point,view_point);
 		window->Unlock();
-		
+
 		float angle = 0;
 		while (buttons) {
 			window->Lock();
 			view->getCoords(&point,&buttons,&view_point);
 			if (modifiers() & B_LEFT_CONTROL_KEY) {
-				// Make the new point be so that the angle is a multiple of 45°. 
+				// Make the new point be so that the angle is a multiple of 45°.
 				float x_diff,y_diff;
 				x_diff = fabs(original_point.x-point.x);
 				y_diff = fabs(original_point.y-point.y);
-				
+
 				if (x_diff < y_diff) {
 					if (x_diff < y_diff/2)
 						x_diff = 0;
@@ -118,7 +118,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 
 				float signed_x_diff = (point.x-original_point.x);
 				float signed_y_diff = (point.y-original_point.y);
-				
+
 				if (signed_x_diff != 0)
 					point.x = original_point.x + x_diff * signed_x_diff/fabs(signed_x_diff);
 
@@ -129,7 +129,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 
 				x_diff = fabs(original_view_point.x-view_point.x);
 				y_diff = fabs(original_view_point.y-view_point.y);
-				
+
 				if (x_diff < y_diff) {
 					if (x_diff < y_diff/2)
 						x_diff = 0;
@@ -153,7 +153,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 					view_point.y = original_view_point.y + y_diff * signed_y_diff/fabs(signed_y_diff);
 
 			}
-						
+
 			bitmap_rect = BRect(original_point.x,original_point.y-floor(((float)GetCurrentValue(SIZE_OPTION)-1.0)/2.0),original_point.x+sqrt(pow(original_point.x-point.x,2)+pow(original_point.y-point.y,2)),original_point.y+ceil(((float)GetCurrentValue(SIZE_OPTION)-1.0)/2.0));
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			if (old_rect != new_rect) {
@@ -171,7 +171,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 					view_polygon->Rotate(original_view_point,angle);
 					bpoly = view_polygon->GetBPolygon();
 					view->StrokePolygon(bpoly);
-					delete bpoly;			
+					delete bpoly;
 				}
 				else {
 					view->StrokeLine(original_view_point,prev_view_point);
@@ -194,9 +194,9 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 			view_polygon = new HSPolygon(NULL,0);
 			BRect orig_rect = bitmap_rect;
 			orig_rect.bottom = orig_rect.top = original_point.y;
-			
+
 			size = 0;
-			
+
 			while (continue_adjusting_width) {
 				if (is_clicks_data_valid) {
 					continue_adjusting_width = false;
@@ -228,7 +228,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 								view_polygon = new HSPolygon(point_list,4);
 								view_polygon->Rotate(original_view_point,angle);
 								bpoly = view_polygon->GetBPolygon();
-								view->StrokePolygon(bpoly);							
+								view->StrokePolygon(bpoly);
 								delete bpoly;
 							}
 							old_rect = new_rect;
@@ -243,7 +243,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 					}
 					snooze(20 * 1000);
 				}
-			}		
+			}
 		}
 		delete view_polygon;
 
@@ -252,7 +252,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 			anti_alias = FALSE;
 		else
 			anti_alias = TRUE;
-	
+
 		if (size > 1)
 			drawer->DrawLine(original_point,point,RGBColorToBGRA(c),size,anti_alias,selection);
 		else
@@ -265,20 +265,20 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		updated_rect.top -= size/2;
 		updated_rect.right += size/2;
 		updated_rect.bottom += size/2;
-	
-		last_updated_rect = updated_rect;	
+
+		last_updated_rect = updated_rect;
 		window->Lock();
 		view->SetDrawingMode(old_mode);
 		view->UpdateImage(updated_rect);
 		view->Sync();
 		window->Unlock();
-	
+
 		delete drawer;
 
 		the_script->AddPoint(original_point);
 		the_script->AddPoint(point);
-		return the_script;	
-	}		
+		return the_script;
+	}
 	else {
 		return NULL;
 	}
@@ -310,7 +310,7 @@ const void* StraightLineTool::ReturnToolCursor()
 	return HS_LINE_CURSOR;
 }
 
- 
+
 StraightLineToolConfigView::StraightLineToolConfigView(BRect rect, DrawingTool *t)
 	: DrawingToolConfigView(rect,t)
 {
@@ -320,8 +320,8 @@ StraightLineToolConfigView::StraightLineToolConfigView(BRect rect, DrawingTool *
 
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));	
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);			
+	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
+	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);
 	AddChild(size_slider);
 
 	message = new BMessage(OPTION_CHANGED);
@@ -329,12 +329,12 @@ StraightLineToolConfigView::StraightLineToolConfigView(BRect rect, DrawingTool *
 	message->AddInt32("value",0x00000000);
 	controller_frame = size_slider->Frame();
 	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	anti_aliasing_checkbox = new BCheckBox(controller_frame,"enable anti-aliasing box",StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),message);	
+	anti_aliasing_checkbox = new BCheckBox(controller_frame,"enable anti-aliasing box",StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),message);
 	AddChild(anti_aliasing_checkbox);
 	anti_aliasing_checkbox->ResizeToPreferred();
 	if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF) {
 		anti_aliasing_checkbox->SetValue(B_CONTROL_ON);
-	}	
+	}
 
 
 	message = new BMessage(OPTION_CHANGED);
@@ -342,12 +342,12 @@ StraightLineToolConfigView::StraightLineToolConfigView(BRect rect, DrawingTool *
 	message->AddInt32("value",0x00000000);
 	controller_frame = anti_aliasing_checkbox->Frame();
 	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	width_adjusting_checkbox = new BCheckBox(controller_frame,"adjustable_width_box",StringServer::ReturnString(ADJUSTABLE_WIDTH_STRING),message);	
+	width_adjusting_checkbox = new BCheckBox(controller_frame,"adjustable_width_box",StringServer::ReturnString(ADJUSTABLE_WIDTH_STRING),message);
 	AddChild(width_adjusting_checkbox);
 	width_adjusting_checkbox->ResizeToPreferred();
 	if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF) {
 		width_adjusting_checkbox->SetValue(B_CONTROL_ON);
-	}	
+	}
 
 	ResizeTo(max_c(width_adjusting_checkbox->Frame().right,size_slider->Frame().right)+EXTRA_EDGE,width_adjusting_checkbox->Frame().bottom + EXTRA_EDGE);
 }
@@ -356,7 +356,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(BRect rect, DrawingTool *
 void StraightLineToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
-	
+
 	size_slider->SetTarget(new BMessenger(this));
 	anti_aliasing_checkbox->SetTarget(BMessenger(this));
 	width_adjusting_checkbox->SetTarget(BMessenger(this));

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolManager.h
-	Contents:	ToolManager-class declarations.	
+	Contents:	ToolManager-class declarations.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -64,11 +64,11 @@ static	void			DeleteToolEntries();
 
 
 class ToolManager {
-		// ImageViews are the main clients of ToolManager-class. A client will be 
+		// ImageViews are the main clients of ToolManager-class. A client will be
 		// added when it first calls some function of ToolManager. A client is removed
 		// when it explicitily informs us that it is going away through the NotifyViewEvent-
 		// function. The clients will be kept in a straight list in which a client is moved to
-		// the head of the list whenever it calls one of the ToolManager-functions. The function 
+		// the head of the list whenever it calls one of the ToolManager-functions. The function
 		// ReturnClientData returns a pointer to ToolManagerClient-object and moves the object
 		// to correct position in the list. If the object does not exist yet, it will be created.
 
@@ -97,18 +97,18 @@ static	status_t	DestroyToolManager();
 		BRect		LastUpdatedRect(ImageView*);
 
 		status_t	ChangeTool(int32);
-const	void*		ReturnCursor();		
+const	void*		ReturnCursor();
 const	DrawingTool*	ReturnTool(int32);
 		int32		ReturnActiveToolType();
 		BView*		ReturnConfigurationView(int32);
 		status_t	SetCurrentBrush(brush_info*);
 
 		BPopUpMenu*	ReturnToolPopUpMenu();
-		
-// The next function can be used to notify the ToolManager about 
+
+// The next function can be used to notify the ToolManager about
 // other view-events than what have to do with drawing.
 		status_t	NotifyViewEvent(ImageView*,image_view_event_type);
-		
+
 		status_t	ReadToolSettings(BFile&);
 		status_t	WriteToolSettings(BFile&);
 };

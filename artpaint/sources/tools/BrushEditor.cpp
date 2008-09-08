@@ -1,9 +1,10 @@
-/* 
+
+/*
 
 	Filename:	BrushEditor.cpp
-	Contents:	BrushEditor-class definitions	
+	Contents:	BrushEditor-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -35,12 +36,12 @@ BrushEditor::BrushEditor(BRect frame,Brush *brush)
 	float height = BRUSH_PREVIEW_HEIGHT;
 	float width = BRUSH_PREVIEW_WIDTH;
 	ResizeTo(frame.Width(),height+2*EXTRA_EDGE);
-	BMessage *a_message;	
+	BMessage *a_message;
 	brush_view = new BrushView(BRect(EXTRA_EDGE,EXTRA_EDGE,width-EXTRA_EDGE,height-EXTRA_EDGE),the_brush);
 	AddChild(brush_view);
 	BRect slider_frame = BRect(brush_view->Frame().RightTop()+BPoint(EXTRA_EDGE,0),Bounds().RightTop()+BPoint(-EXTRA_EDGE,20+EXTRA_EDGE));
 
-		
+
 	a_message = new BMessage(BRUSH_SHAPE_CHANGED);
 	a_message->AddInt32("shape",HS_RECTANGULAR_BRUSH);
 	rectangle_button = new BRadioButton(slider_frame,"rectangle button",StringServer::ReturnString(RECTANGLE_STRING),a_message);
@@ -48,37 +49,37 @@ BrushEditor::BrushEditor(BRect frame,Brush *brush)
 	rectangle_button->ResizeToPreferred();
 	slider_frame = rectangle_button->Frame();
 	slider_frame.OffsetBy(0,slider_frame.Height());
-	
+
 	a_message = new BMessage(BRUSH_SHAPE_CHANGED);
 	a_message->AddInt32("shape",HS_ELLIPTICAL_BRUSH);
 	ellipse_button = new BRadioButton(slider_frame,"ellipse button",StringServer::ReturnString(ELLIPSE_STRING),a_message);
-	AddChild(ellipse_button);	
+	AddChild(ellipse_button);
 
 	slider_frame.OffsetBy(0,slider_frame.Height());
 	store_button = new BButton(slider_frame,"store_button",StringServer::ReturnString(STORE_BRUSH_STRING),new BMessage(BRUSH_STORING_REQUESTED));
 	store_button->ResizeTo(store_button->Frame().Width(),brush_view->Frame().bottom-store_button->Frame().top);
 	AddChild(store_button);
-		
+
 	slider_frame = BRect(brush_view->Frame().LeftBottom()+BPoint(0,EXTRA_EDGE),Bounds().RightBottom()-BPoint(EXTRA_EDGE,0));
 	a_message = new BMessage(BRUSH_WIDTH_CHANGED);
 	a_message->AddInt32("value",b_info.width);
-	width_slider = new ControlSliderBox(slider_frame,"brush width",StringServer::ReturnString(WIDTH_STRING),"0",a_message,1,100);  
+	width_slider = new ControlSliderBox(slider_frame,"brush width",StringServer::ReturnString(WIDTH_STRING),"0",a_message,1,100);
 	AddChild(width_slider);
 	slider_frame = width_slider->Frame();
 	slider_frame.OffsetBy(0,slider_frame.Height()+EXTRA_EDGE);
 	max_divider = max_c(max_divider,width_slider->Divider());
-	
+
 	a_message = new BMessage(BRUSH_HEIGHT_CHANGED);
 	a_message->AddInt32("value",b_info.height);
-	height_slider = new ControlSliderBox(slider_frame,"brush height",StringServer::ReturnString(HEIGHT_STRING),"0",a_message,1,100);  
+	height_slider = new ControlSliderBox(slider_frame,"brush height",StringServer::ReturnString(HEIGHT_STRING),"0",a_message,1,100);
 	AddChild(height_slider);
 	slider_frame = height_slider->Frame();
 	slider_frame.OffsetBy(0,slider_frame.Height()+EXTRA_EDGE);
 	max_divider = max_c(max_divider,height_slider->Divider());
-	
-		
+
+
 	a_message = new BMessage(BRUSH_EDGE_CHANGED);
-	a_message->AddInt32("value",b_info.fade_length);	
+	a_message->AddInt32("value",b_info.fade_length);
 	fade_slider = new ControlSliderBox(slider_frame,"brush edge",StringServer::ReturnString(FADE_STRING),"0",a_message,0,100);
 	AddChild(fade_slider);
 	max_divider = max_c(max_divider,fade_slider->Divider());
@@ -101,9 +102,9 @@ BView* BrushEditor::CreateBrushEditor(BRect rect,Brush *brush)
 {
 	if (the_editor != NULL)
 		return NULL;
-		
+
 	else {
-		the_editor = new BrushEditor(rect,brush);	
+		the_editor = new BrushEditor(rect,brush);
 		return the_editor;
 	}
 }
@@ -114,12 +115,12 @@ void BrushEditor::BrushModified()
 		BWindow *window = the_editor->Window();
 		if (window != NULL)
 			window->Lock();
-			
+
 		the_editor->brush_view->BrushModified();
 		if (window != NULL) {
 			window->PostMessage(BRUSH_ALTERED,the_editor);
 		}
-	
+
 		if (window != NULL)
 			window->Unlock();
 	}
@@ -132,7 +133,7 @@ void BrushEditor::AttachedToWindow()
 
 	a_messenger = new BMessenger(this);
 	height_slider->SetTarget(a_messenger);
-		
+
 	a_messenger = new BMessenger(this);
 	fade_slider->SetTarget(a_messenger);
 
@@ -145,14 +146,14 @@ void BrushEditor::AttachedToWindow()
 		ellipse_button->SetValue(B_CONTROL_ON);
 	}
 
-	store_button->SetTarget(this);	
+	store_button->SetTarget(this);
 }
-	
+
 void BrushEditor::MessageReceived(BMessage *message)
 {
 	int32 value;
 	bool final;
-	
+
 	switch (message->what) {
 		case BRUSH_WIDTH_CHANGED:
 			if (message->FindInt32("value",&value) == B_OK) {
@@ -186,7 +187,7 @@ void BrushEditor::MessageReceived(BMessage *message)
 						the_brush->CreateDiffBrushes();
 				}
 			}
-			break;			
+			break;
 		case BRUSH_SHAPE_CHANGED:
 			if (message->FindInt32("shape",&value) == B_OK) {
 				b_info.shape = value;
@@ -219,7 +220,7 @@ void BrushEditor::MessageReceived(BMessage *message)
 			break;
 	}
 }
-	
+
 
 
 
@@ -250,8 +251,8 @@ void BrushView::Draw(BRect)
 	StrokeLine(BPoint(0,0),Bounds().RightTop());
 //	SetHighColor(255,255,255,255);
 	StrokeLine(Bounds().RightTop(),Bounds().RightBottom());
-	StrokeLine(Bounds().LeftBottom(),Bounds().RightBottom());	
-	
+	StrokeLine(Bounds().LeftBottom(),Bounds().RightBottom());
+
 	if (draw_controls == TRUE) {
 		float r1 = Bounds().Width()/2;
 		float r2 = Bounds().Height()/2;
@@ -268,7 +269,7 @@ void BrushView::Draw(BRect)
 		point_list[9] = BPoint(0,0);
 		point_list[10] = BPoint(r1*.5,0);
 		point_list[11] = BPoint(0,0);
-		
+
 		HSPolygon *poly = new HSPolygon(point_list,12);
 		poly->Rotate(BPoint(0,0),the_brush->GetInfo().angle);
 		poly->TranslateBy(r1-1,r2-1);
@@ -298,11 +299,11 @@ void BrushView::MessageReceived(BMessage *message)
 					Window()->PostMessage(BRUSH_ALTERED,Parent());
 				}
 			}
-			break;									
+			break;
 		default:
 			BView::MessageReceived(message);
 			break;
-	}	
+	}
 }
 
 
@@ -311,9 +312,9 @@ void BrushView::MouseDown(BPoint point)
 	BPoint c;
 	c.x = Bounds().Width()/2;
 	c.y = Bounds().Height()/2;
-	brush_info info = the_brush->GetInfo();	
+	brush_info info = the_brush->GetInfo();
 	uint32 buttons;
-	
+
 	GetMouse(&point,&buttons);
 	float angle = info.angle;
 	float prev_angle;
@@ -347,8 +348,8 @@ void BrushView::MouseDown(BPoint point)
 			}
 			info.angle += angle - prev_angle;
 			snooze(20 *1000);
-		}	
-	
+		}
+
 		the_brush->CreateDiffBrushes();
 		Window()->PostMessage(BRUSH_ALTERED,Parent());
 	}
@@ -371,7 +372,7 @@ void BrushView::MouseMoved(BPoint,uint32 transit,const BMessage*)
 		}
 		if (transit == B_EXITED_VIEW) {
 			draw_controls = FALSE;
-			Draw(Bounds());	
+			Draw(Bounds());
 		}
 		Window()->Unlock();
 	}

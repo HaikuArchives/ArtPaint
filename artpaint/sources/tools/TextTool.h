@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	TextTool.h
-	Contents:	TextTool-class declaration.	
+	Contents:	TextTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,7 +21,7 @@ class TextTool : public DrawingTool {
 public:
 		TextTool();
 virtual	~TextTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 int32		UseToolWithScript(ToolScript*,BBitmap*);
 const	char*	ReturnHelpString(bool);

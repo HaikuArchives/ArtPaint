@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolImages.cpp
 	Contents:	Class that contains all the pictures for tools
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -25,7 +25,7 @@ ToolImages::ToolImages(int32 type, BPicture *picture_off_big, BPicture *picture_
 	on_big = picture_on_big;
 	off_small = picture_off_small;
 	on_small = picture_on_small;
-	
+
 	if (ToolImages::first_tool == NULL) {
 		next_tool = NULL;
 	}
@@ -40,14 +40,14 @@ ToolImages::ToolImages(int32 type, BPicture *picture_off_big, BPicture *picture_
 BPicture* ToolImages::getPicture(int32 type,int32 picture_size,int32 picture_number)
 {
 	ToolImages *list_pointer = first_tool;
-	
+
 	// the NULL test must be before the other test in the while loop
 	while ((list_pointer != NULL) && (list_pointer->tool_type != type)) {
 		list_pointer = list_pointer->next_tool;
 	}
 
 	// we should always return a copy of the picture so that it can be deleted
-	// by the caller (i.e. we should change this pointer returning)	
+	// by the caller (i.e. we should change this pointer returning)
 	if (list_pointer != NULL) {
 		// if we found a predefined image
 		if (picture_number == 0) {
@@ -69,16 +69,16 @@ BPicture* ToolImages::getPicture(int32 type,int32 picture_size,int32 picture_num
 
 	}
 	else {
-		// if no picture is found we will create and return a default picture	
+		// if no picture is found we will create and return a default picture
 		BView *a_view = new BView(BRect(0,0,picture_size-1,picture_size-1),"picture creation view",B_FOLLOW_NONE,0);
 		BBitmap *a_bitmap = new BBitmap(BRect(0,0,picture_size-1,picture_size-1),B_COLOR_8_BIT,TRUE);
-	
+
 		BPicture *pic;
-			
+
 		a_bitmap->AddChild(a_view);
-		
+
 		a_bitmap->Lock();
-		
+
 		// the picture will be two lines going from corner to corner
 		a_view->BeginPicture(new BPicture);
 		a_view->SetHighColor(255,255,255);
@@ -90,10 +90,10 @@ BPicture* ToolImages::getPicture(int32 type,int32 picture_size,int32 picture_num
 			a_view->SetDrawingMode(B_OP_INVERT);
 			a_view->FillRect(a_view->Bounds());
 		}
-		pic = a_view->EndPicture();	
-	
+		pic = a_view->EndPicture();
+
 		a_bitmap->Unlock();
-	
+
 		return pic;
 	}
 }
@@ -103,14 +103,14 @@ void ToolImages::createToolImages()
 {
 	// Here we read from this app's resources the images that are available there.
 	// They are stored as 32-bit BGRA-data.
-	
+
 	// First let's find the app's file and create a BResources object pointing to it.
 	app_info info;
 	BFile app_file;
 	BResources *app_resources;
 
 	be_app->GetAppInfo(&info);
-	app_file.SetTo(&(info.ref),B_READ_ONLY);	
+	app_file.SetTo(&(info.ref),B_READ_ONLY);
 	app_resources = new BResources(&app_file);
 
 	// For each set of tool-images found in the resource-file we must create
@@ -125,16 +125,16 @@ void ToolImages::createToolImages()
 	ReadImages(app_resources,50,RECTANGLE_TOOL);
 	ReadImages(app_resources,60,ELLIPSE_TOOL);
 	ReadImages(app_resources,70,STRAIGHT_LINE_TOOL);
-	ReadImages(app_resources,80,BRUSH_TOOL);	
-	ReadImages(app_resources,90,BLUR_TOOL);	
-	ReadImages(app_resources,100,COLOR_SELECTOR_TOOL);	
-	ReadImages(app_resources,110,TRANSPARENCY_TOOL);	
-	ReadImages(app_resources,120,AIR_BRUSH_TOOL);	
-	ReadImages(app_resources,130,SELECTOR_TOOL);	
-	ReadImages(app_resources,140,HAIRY_BRUSH_TOOL);	
-	ReadImages(app_resources,150,ERASER_TOOL);	
-	ReadImages(app_resources,160,TEXT_TOOL);	
-	
+	ReadImages(app_resources,80,BRUSH_TOOL);
+	ReadImages(app_resources,90,BLUR_TOOL);
+	ReadImages(app_resources,100,COLOR_SELECTOR_TOOL);
+	ReadImages(app_resources,110,TRANSPARENCY_TOOL);
+	ReadImages(app_resources,120,AIR_BRUSH_TOOL);
+	ReadImages(app_resources,130,SELECTOR_TOOL);
+	ReadImages(app_resources,140,HAIRY_BRUSH_TOOL);
+	ReadImages(app_resources,150,ERASER_TOOL);
+	ReadImages(app_resources,160,TEXT_TOOL);
+
 	// Finally destroy the pointer to resources.
 	delete app_resources;
 }
@@ -150,12 +150,12 @@ status_t ToolImages::ReadImages(BResources *res,int32 base, int32 tool_type)
 	big_off = NULL;
 	small_on = NULL;
 	small_off = NULL;
-	
+
 	status_t error = B_OK;
 	base = base*100;
 	char buffer[1024];
-	
-	// Read the BIG_ON-image	
+
+	// Read the BIG_ON-image
 	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+1,buffer,0,1024)) == B_OK ) {
 		big_map->SetBits(buffer,1024,0,B_COLOR_8_BIT);
 		big_on = bitmap_to_picture(big_map);
@@ -163,15 +163,15 @@ status_t ToolImages::ReadImages(BResources *res,int32 base, int32 tool_type)
 	else {
 		error = B_ERROR;
 	}
-	// Read the BIG_OFF-image	
+	// Read the BIG_OFF-image
 	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+2,buffer,0,1024)) == B_OK ) {
 		big_map->SetBits(buffer,1024,0,B_COLOR_8_BIT);
 		big_off = bitmap_to_picture(big_map);
 	}
 	else {
 		error = B_ERROR;
-	}	
-	// Read the SMALL_ON-image	
+	}
+	// Read the SMALL_ON-image
 	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+3,buffer,0,256)) == B_OK ) {
 		small_map->SetBits(buffer,256,0,B_COLOR_8_BIT);
 		small_on = bitmap_to_picture(small_map);
@@ -179,7 +179,7 @@ status_t ToolImages::ReadImages(BResources *res,int32 base, int32 tool_type)
 	else {
 		error = B_ERROR;
 	}
-	// Read the SMALL_OFF-image	
+	// Read the SMALL_OFF-image
 	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+4,buffer,0,256)) == B_OK ) {
 		small_map->SetBits(buffer,256,0,B_COLOR_8_BIT);
 		small_off = bitmap_to_picture(small_map);
@@ -187,10 +187,10 @@ status_t ToolImages::ReadImages(BResources *res,int32 base, int32 tool_type)
 	else {
 		error = B_ERROR;
 	}
-			
+
 	delete big_map;
-	delete small_map;	
-	
+	delete small_map;
+
 	if (error != B_OK) {
 		delete big_on;
 		delete big_off;
@@ -201,7 +201,7 @@ status_t ToolImages::ReadImages(BResources *res,int32 base, int32 tool_type)
 		new ToolImages(tool_type,big_off,big_on,small_off,small_on);
 	}
 
-	return error;	
+	return error;
 }
 BPicture* bitmap_to_picture(BBitmap *bitmap)
 {
@@ -215,8 +215,8 @@ BPicture* bitmap_to_picture(BBitmap *bitmap)
 	BPicture *picture = new BPicture();
 	off_screen->Lock();
 	off_screen_view->BeginPicture(picture);
-	off_screen_view->DrawBitmap(bitmap);	
-	picture = off_screen_view->EndPicture();	
+	off_screen_view->DrawBitmap(bitmap);
+	picture = off_screen_view->EndPicture();
 	off_screen->Unlock();
 	delete off_screen;
 

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolButton.h
-	Contents:	ToolButton-class declaration.	
+	Contents:	ToolButton-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -17,20 +17,20 @@
 class ToolButton : public BPictureButton {
 static	BList		*tool_button_list;
 		int32		tool_type;
-		
+
 const	char			*tool_name;
-		
-static	int32		active_tool;		
-static	ToolButton	*active_button;		
+
+static	int32		active_tool;
+static	ToolButton	*active_button;
 
 		BWindow		*help_window;
 		BPoint		opening_point;
-		
+
 public:
 		ToolButton(BRect frame,int32 tool,const char *name);
 		~ToolButton();
-		
-		void	MouseDown(BPoint);		
+
+		void	MouseDown(BPoint);
 		void	MouseMoved(BPoint,uint32,const BMessage*);
 		void	Pulse();
 

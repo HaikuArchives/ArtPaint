@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolScript.cpp
-	Contents:	ToolScrip-class definitions.	
+	Contents:	ToolScrip-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -15,9 +15,9 @@ ToolScript::ToolScript(int32 type,tool_settings set,rgb_color c)
 		tool_type = type;
 		settings = set;
 		color = c;
-		
+
 		max_points = 1;	// At least one point is needed
-		points = new BPoint[max_points];	
+		points = new BPoint[max_points];
 		point_count = 0;
 }
 

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	EraserTool.h
-	Contents:	EraserTool-class declaration	
+	Contents:	EraserTool-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -23,17 +23,17 @@ class EraserTool : public LineTool {
 
 	bool		reading_coordinates;
 
-	ImageView	*image_view;	
-		
+	ImageView	*image_view;
+
 static	int32	CoordinateReader(void*);
 		int32	read_coordinates();
 
-						
+
 public:
 				EraserTool();
 virtual			~EraserTool();
-	
-ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);	
+
+ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);
 		int32	UseToolWithScript(ToolScript*,BBitmap*);
 
 		BView*	makeConfigView();
@@ -48,12 +48,12 @@ class EraserToolConfigView : public DrawingToolConfigView {
 		BRadioButton		*mode_button_1;
 		BRadioButton		*mode_button_2;
 
-		
-		
+
+
 public:
 		EraserToolConfigView(BRect rect,DrawingTool *t);
-	
-void	AttachedToWindow();	
+
+void	AttachedToWindow();
 };
 
 

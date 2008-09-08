@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	TransparencyTool.cpp
-	Contents:	TransparencyTool-class definitions	
+	Contents:	TransparencyTool-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,7 +19,7 @@ TransparencyTool::TransparencyTool()
 	// The pressure option controls the speed of transparency change.
 	options = SIZE_OPTION | PRESSURE_OPTION;
 	number_of_options = 3;
-	
+
 	SetOption(SIZE_OPTION,1);
 	SetOption(PRESSURE_OPTION,1);
 }
@@ -39,24 +39,24 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 
 	BWindow *window = view->Window();
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
-	
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));		
+
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
 
 	BRect bounds = bitmap->Bounds();
 	uint32 *bits_origin = (uint32*)bitmap->Bits();
 	int32 bpr = bitmap->BytesPerRow()/4;
-			
+
 	BRect rc;
-	
+
 	// for the quick calculation of square-roots
 	float sqrt_table[5500];
 	for (int32 i=0;i<5500;i++)
 		sqrt_table[i] = sqrt(i);
-	
+
 	float half_size = settings.size/2;
-	rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));		
+	rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));
 	rc = rc & bounds;
-	last_updated_rect = rc; 
+	last_updated_rect = rc;
 
 	union {
 		uint8 bytes[4];
@@ -68,7 +68,7 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		int32 x_dist,y_sqr;
 
 		int32 width = rc.IntegerWidth();
-		int32 height = rc.IntegerHeight();	
+		int32 height = rc.IntegerHeight();
 		for (int32 y=0;y<height+1;y++) {
 			y_sqr = (int32)(point.y - rc.top - y);
 			y_sqr *= y_sqr;
@@ -93,16 +93,16 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 			}
 		}
 
-		if (rc.IsValid()) {	
+		if (rc.IsValid()) {
 			window->Lock();
 			view->UpdateImage(rc);
 			view->Sync();
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			half_size = settings.size/2;
-			rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));		
+			rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));
 			rc = rc & bounds;
-			last_updated_rect = last_updated_rect | rc;		
+			last_updated_rect = last_updated_rect | rc;
 			//snooze(20.0 * 1000.0);
 		}
 		else {
@@ -110,19 +110,19 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			half_size = settings.size/2;
-			rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));		
+			rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));
 			rc = rc & bounds;
-			last_updated_rect = last_updated_rect | rc;		
+			last_updated_rect = last_updated_rect | rc;
 			snooze(20 * 1000);
-		}		
+		}
 	}
-	
+
 	view->ReturnImage()->Render(rc);
 	window->Lock();
 	view->Draw(view->convertBitmapRectToView(rc));
 	last_updated_rect = last_updated_rect | rc;	// ???
 	window->Unlock();
-		
+
 	return the_script;
 }
 
@@ -162,8 +162,8 @@ TransparencyToolConfigView::TransparencyToolConfigView(BRect rect,DrawingTool *t
 	// First add the controller for size.
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));	
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);			
+	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
+	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);
 	AddChild(size_slider);
 
 	// Then add the controller for speed.
@@ -171,7 +171,7 @@ TransparencyToolConfigView::TransparencyToolConfigView(BRect rect,DrawingTool *t
 	message->AddInt32("option",PRESSURE_OPTION);
 	message->AddInt32("value",tool->GetCurrentValue(PRESSURE_OPTION));
 	controller_frame = size_slider->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);	
+	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
 	speed_slider = new ControlSliderBox(controller_frame,"speed",StringServer::ReturnString(SPEED_STRING),"1",message,1,100);
 	AddChild(speed_slider);
 
@@ -179,17 +179,17 @@ TransparencyToolConfigView::TransparencyToolConfigView(BRect rect,DrawingTool *t
 
 	size_slider->SetDivider(divider);
 	speed_slider->SetDivider(divider);
-			
+
 //	// Then add the controller for target transparency.
 //	message = new BMessage(OPTION_CHANGED);
 //	message->AddInt32("option",TRANSPARENCY_OPTION);
 //	message->AddInt32("value",tool->GetCurrentValue(TRANSPARENCY_OPTION));
 //	controller_frame = size_slider->Frame();
-//	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);	
+//	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
 //	transparency_slider = new ControlSliderBox(controller_frame,"transparency","","100",message,0,100);
 //	AddChild(speed_slider);
 
-	ResizeTo(speed_slider->Frame().right+EXTRA_EDGE,speed_slider->Frame().bottom + EXTRA_EDGE);	
+	ResizeTo(speed_slider->Frame().right+EXTRA_EDGE,speed_slider->Frame().bottom + EXTRA_EDGE);
 }
 
 
@@ -200,4 +200,4 @@ void TransparencyToolConfigView::AttachedToWindow()
 
 	size_slider->SetTarget(new BMessenger(this));
 	speed_slider->SetTarget(new BMessenger(this));
-}	
+}

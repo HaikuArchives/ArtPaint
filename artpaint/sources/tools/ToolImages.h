@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolImages.h
 	Contents:	Class declaration for tool-images and constants
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef TOOL_IMAGES_H
@@ -15,15 +15,15 @@
 
 // these define the sizes of various picture-buttons
 #define	BIG_TOOL_PICTURE_SIZE		32
-#define	SMALL_TOOL_PICTURE_SIZE		16 
+#define	SMALL_TOOL_PICTURE_SIZE		16
 
 class ToolImages {
 	BPicture *off_big,*on_big,*off_small,*on_small;
 	int32 tool_type;
 	ToolImages *next_tool;
 
-// this points to the first tool in the list	
-static	ToolImages 	*first_tool;		
+// this points to the first tool in the list
+static	ToolImages 	*first_tool;
 
 static	status_t	ReadImages(BResources*,int32,int32);
 

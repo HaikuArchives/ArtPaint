@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	EraserTool.cpp
-	Contents:	EraserTool-class definitions.	
+	Contents:	EraserTool-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,7 +19,7 @@ EraserTool::EraserTool()
 {
 	options = SIZE_OPTION | MODE_OPTION;
 	number_of_options = 2;
-	
+
 	SetOption(SIZE_OPTION,1);
 	SetOption(MODE_OPTION,HS_ERASE_TO_BACKGROUND_MODE);
 }
@@ -27,7 +27,7 @@ EraserTool::EraserTool()
 
 EraserTool::~EraserTool()
 {
-	// free whatever storage this class allocated 
+	// free whatever storage this class allocated
 }
 
 
@@ -46,7 +46,7 @@ ToolScript* EraserTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	resume_thread(coordinate_reader);
 	reading_coordinates = TRUE;
 	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
-	
+
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	Selection *selection = view->GetSelection();
 	BitmapDrawer *drawer = new BitmapDrawer(buffer);
@@ -58,51 +58,51 @@ ToolScript* EraserTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	background.bytes[1] = 0xFF;
 	background.bytes[2] = 0xFF;
 	background.bytes[3] = 0x00;
-	
-	
+
+
 	if (settings.mode == HS_ERASE_TO_BACKGROUND_MODE) {
 		rgb_color c = ((PaintApplication*)be_app)->GetColor(false);
 		background.bytes[0] = c.blue;
 		background.bytes[1] = c.green;
 		background.bytes[2] = c.red;
-		background.bytes[3] = c.alpha;		 
+		background.bytes[3] = c.alpha;
 	}
-		 
+
 	if (buffer == NULL) {
 		delete the_script;
 		return NULL;
-	}	
+	}
 	BPoint prev_point;
-		
-	prev_point = point;	
+
+	prev_point = point;
 	BRect updated_rect;
 	status_t status_of_read;
 	int diameter = settings.size;
 	if ((diameter%2) == 0)
 		diameter++;
-		
+
 	if (diameter != 1)
-		drawer->DrawCircle(prev_point,diameter/2,background.word,TRUE,TRUE,selection);	
+		drawer->DrawCircle(prev_point,diameter/2,background.word,TRUE,TRUE,selection);
 	else
 		drawer->DrawHairLine(prev_point,point,background.word,(bool)FALSE,selection);
-	
-	// This makes sure that the view is updated even if just one point is drawn	
+
+	// This makes sure that the view is updated even if just one point is drawn
 	updated_rect.left = min_c(point.x-diameter/2,prev_point.x-diameter/2);
 	updated_rect.top = min_c(point.y-diameter/2,prev_point.y-diameter/2);
 	updated_rect.right = max_c(point.x+diameter/2,prev_point.x+diameter/2);
 	updated_rect.bottom = max_c(point.y+diameter/2,prev_point.y+diameter/2);
-	
+
 	// We should do the composite picture and re-draw the window in
-	// a separate thread.			
-	view->ReturnImage()->Render(updated_rect);		
+	// a separate thread.
+	view->ReturnImage()->Render(updated_rect);
 	view->Window()->Lock();
 	// We have to use Draw, because Invalidate causes flickering by erasing
 	// the area before calling Draw.
 	view->Draw(view->convertBitmapRectToView(updated_rect));
-	view->Window()->Unlock();		
+	view->Window()->Unlock();
 
 	last_updated_rect = updated_rect;
-	the_script->AddPoint(point);			
+	the_script->AddPoint(point);
 	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == TRUE)) {
 		if ( (status_of_read == B_OK) && (prev_point != point) ) {
 			the_script->AddPoint(point);
@@ -111,43 +111,43 @@ ToolScript* EraserTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 //			}
 //			else {
 //				set_mouse_speed(original_mouse_speed);
-//			}				
+//			}
 			diameter = settings.size;
 			if ((diameter%2) == 0)
 				diameter++;
-			
-		
+
+
 			if (diameter != 1) {
-				drawer->DrawCircle(point,diameter/2,background.word,TRUE,FALSE,selection);	
-				drawer->DrawLine(prev_point,point,background.word,diameter,FALSE,selection);		
+				drawer->DrawCircle(point,diameter/2,background.word,TRUE,FALSE,selection);
+				drawer->DrawLine(prev_point,point,background.word,diameter,FALSE,selection);
 			}
 			else
 				drawer->DrawHairLine(prev_point,point,background.word,(bool)FALSE,selection);
-							
+
 			updated_rect.left = min_c(point.x-diameter/2-1,prev_point.x-diameter/2-1);
 			updated_rect.top = min_c(point.y-diameter/2-1,prev_point.y-diameter/2-1);
 			updated_rect.right = max_c(point.x+diameter/2+1,prev_point.x+diameter/2+1);
 			updated_rect.bottom = max_c(point.y+diameter/2+1,prev_point.y+diameter/2+1);
-		
+
 			last_updated_rect = last_updated_rect | updated_rect;
-							
+
 			// We should do the composite picture and re-draw the window in
-			// a separate thread.			
+			// a separate thread.
 			view->Window()->Lock();
 			view->UpdateImage(updated_rect);
 			view->Sync();
-			view->Window()->Unlock();		
+			view->Window()->Unlock();
 			prev_point = point;
 		}
-		else 
-			snooze(20 * 1000);	
+		else
+			snooze(20 * 1000);
 	}
-	
+
 //	set_mouse_speed(original_mouse_speed);
 //	help_message = new BMessage(HS_REGULAR_HELP_MESSAGE);
 //	help_message->AddString("message",HS_DRAW_MODE_HELP_MESSAGE);
-//	view->Window()->PostMessage(help_message,view->Window());	
-//	
+//	view->Window()->PostMessage(help_message,view->Window());
+//
 //	delete help_message;
 
 	delete drawer;
@@ -200,7 +200,7 @@ int32 EraserTool::read_coordinates()
 	image_view->MovePenTo(view_point);
 	image_view->Window()->Unlock();
 	prev_point = point + BPoint(1,1);
-	
+
 	while (buttons) {
 		image_view->Window()->Lock();
 		if (point != prev_point) {
@@ -211,8 +211,8 @@ int32 EraserTool::read_coordinates()
 		image_view->getCoords(&point,&buttons,&view_point);
 		image_view->Window()->Unlock();
 		snooze(20 * 1000);
-	}	
-	
+	}
+
 	reading_coordinates = FALSE;
 	return B_OK;
 }
@@ -223,7 +223,7 @@ int32 EraserTool::read_coordinates()
 
 
 EraserToolConfigView::EraserToolConfigView(BRect rect, DrawingTool *t)
-	: DrawingToolConfigView(rect,t)	
+	: DrawingToolConfigView(rect,t)
 {
 	BMessage *message;
 
@@ -232,8 +232,8 @@ EraserToolConfigView::EraserToolConfigView(BRect rect, DrawingTool *t)
 	// First add the controller for size.
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));	
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);			
+	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
+	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);
 	AddChild(size_slider);
 	// Remember to offset the controller_frame
 	controller_frame.OffsetBy(0,size_slider->Bounds().Height() + EXTRA_EDGE);
@@ -242,12 +242,12 @@ EraserToolConfigView::EraserToolConfigView(BRect rect, DrawingTool *t)
 	BBox *container = new BBox(controller_frame,"eraser_mode");
 	container->SetLabel(StringServer::ReturnString(COLOR_STRING));
 	AddChild(container);
-			
+
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",MODE_OPTION);
 	message->AddInt32("value",HS_ERASE_TO_BACKGROUND_MODE);
-			
-	// Create the first radio-button.			
+
+	// Create the first radio-button.
 	font_height fHeight;
 	container->GetFontHeight(&fHeight);
 	mode_button_1 = new BRadioButton(BRect(EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2,EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2),"a radio button",StringServer::ReturnString(BACKGROUND_STRING),new BMessage(*message));
@@ -256,17 +256,17 @@ EraserToolConfigView::EraserToolConfigView(BRect rect, DrawingTool *t)
 	if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_BACKGROUND_MODE)
 		mode_button_1->SetValue(B_CONTROL_ON);
 
-	// Create the second radio-button.		
-	message->ReplaceInt32("value",HS_ERASE_TO_TRANSPARENT_MODE);		
+	// Create the second radio-button.
+	message->ReplaceInt32("value",HS_ERASE_TO_TRANSPARENT_MODE);
 	mode_button_2 = new BRadioButton(BRect(EXTRA_EDGE,mode_button_1->Frame().bottom,EXTRA_EDGE,mode_button_1->Frame().bottom)," a radio button",StringServer::ReturnString(TRANSPARENT_STRING),message);
-	mode_button_2->ResizeToPreferred();		
+	mode_button_2->ResizeToPreferred();
 	container->AddChild(mode_button_2);
 	if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_TRANSPARENT_MODE)
-		mode_button_2->SetValue(B_CONTROL_ON);	
+		mode_button_2->SetValue(B_CONTROL_ON);
 
 	container->ResizeBy(0,mode_button_2->Frame().bottom+EXTRA_EDGE);
 
-	ResizeTo(controller_frame.Width()+2*EXTRA_EDGE,container->Frame().bottom + EXTRA_EDGE);	
+	ResizeTo(controller_frame.Width()+2*EXTRA_EDGE,container->Frame().bottom + EXTRA_EDGE);
 }
 
 

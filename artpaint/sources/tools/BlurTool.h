@@ -1,9 +1,10 @@
-/* 
+
+/*
 
 	Filename:	BlurTool.h
-	Contents:	BlurTool-class declaration.	
+	Contents:	BlurTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,7 +22,7 @@ Selection	*selection;
 public:
 		BlurTool();
 virtual	~BlurTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 int32		UseToolWithScript(ToolScript*,BBitmap*);
 
@@ -38,8 +39,8 @@ class BlurToolConfigView : public DrawingToolConfigView {
 
 public:
 		BlurToolConfigView(BRect rect, DrawingTool *t);
-		
-void	AttachedToWindow();		
+
+void	AttachedToWindow();
 };
 
 #endif

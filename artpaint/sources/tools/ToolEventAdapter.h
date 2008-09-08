@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolEventAdapter.h
-	Contents:	ToolEventAdapter-class declarations.	
+	Contents:	ToolEventAdapter-class declarations.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -22,7 +22,7 @@
 
 class ToolEventAdapter {
 protected:
-		bool	is_clicks_data_valid;		
+		bool	is_clicks_data_valid;
 		BPoint	last_click_bitmap_location;
 		BPoint	last_click_view_location;
 		uint32	last_click_buttons;
@@ -33,15 +33,15 @@ protected:
 		int32	last_key_event_num_bytes;
 
 
-		bool	is_view_data_valid;		
+		bool	is_view_data_valid;
 		BView	*active_image_view;
 		bool	is_mouse_inside_the_active_view;
-		
+
 
 public:
 		ToolEventAdapter();
 		~ToolEventAdapter();
-		
+
 void	SetClickEvent(BPoint,BPoint,uint32,int32);
 void	SetKeyEvent(const char*,int32);
 

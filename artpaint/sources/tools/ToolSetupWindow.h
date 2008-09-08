@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolSetupWindow.h
-	Contents:	Class declaration for ToolSetupWindow	
+	Contents:	Class declaration for ToolSetupWindow
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef TOOL_SETUP_WINDOW_H
@@ -32,12 +32,12 @@ class ToolSetupWindow : public BWindow {
 // this points to the tool-object that is being adjusted
 	DrawingTool *target_tool;
 	int32		current_tool_type;
-	
-	
+
+
 // only one instance of this class will be created, this is a pointer to it
 static	ToolSetupWindow	*setup_window;
 
-			
+
 public:
 		ToolSetupWindow(BRect frame, int32 tool_type);
 		~ToolSetupWindow();
@@ -47,7 +47,7 @@ void	MessageReceived(BMessage *message);
 
 // this changes the window to display views for new_type tool
 // it is also used by the constructor to create the initial views
-void	changeTool(int32 new_tool);	
+void	changeTool(int32 new_tool);
 
 
 

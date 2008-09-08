@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	TransparencyTool.h
-	Contents:	TransparencyTool-class declaration.	
+	Contents:	TransparencyTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -18,7 +18,7 @@ class TransparencyTool : public DrawingTool {
 public:
 		TransparencyTool();
 virtual	~TransparencyTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 int32		UseToolWithScript(ToolScript*,BBitmap*);
 
@@ -33,10 +33,10 @@ class TransparencyToolConfigView : public DrawingToolConfigView {
 		ControlSliderBox	*size_slider;
 		ControlSliderBox	*speed_slider;
 		ControlSliderBox	*transparency_slider;
-		
+
 public:
 		TransparencyToolConfigView(BRect rect,DrawingTool *t);
-		
+
 void	AttachedToWindow();
 };
 

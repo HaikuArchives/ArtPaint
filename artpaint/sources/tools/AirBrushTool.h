@@ -1,9 +1,10 @@
-/* 
+
+/*
 
 	Filename:	AirBrushTool.h
-	Contents:	AirBrushTool-class declaration.	
+	Contents:	AirBrushTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -15,11 +16,11 @@
 
 class AirBrushTool : public DrawingTool {
 		int32	*sqrt_table;
-		
+
 public:
 		AirBrushTool();
 virtual	~AirBrushTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 int32		UseToolWithScript(ToolScript*,BBitmap*);
 
@@ -33,7 +34,7 @@ const	char*	ReturnHelpString(bool);
 
 class AirBrushToolConfigView : public DrawingToolConfigView {
 		ControlSliderBox	*size_slider;
-		ControlSliderBox	*flow_slider;		
+		ControlSliderBox	*flow_slider;
 		BRadioButton		*mode_button_1;
 		BRadioButton		*mode_button_2;
 public:

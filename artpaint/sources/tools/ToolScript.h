@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolScript.h
-	Contents:	ToolScript-class declarations	
+	Contents:	ToolScript-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -23,11 +23,11 @@ class ToolScript {
 	BPoint			*points;
 	int32			point_count;
 	int32			max_points;
-	
+
 public:
 		ToolScript(int32,tool_settings,rgb_color);
 		~ToolScript();
-		
+
 void			AddPoint(BPoint);
 
 tool_settings*	ReturnSettings();

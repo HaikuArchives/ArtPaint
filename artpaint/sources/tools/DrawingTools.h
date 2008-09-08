@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	DrawingTools.h
 	Contents:	includes declarations for general tool base-class and specific tool classes
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef DRAWING_TOOLS_H

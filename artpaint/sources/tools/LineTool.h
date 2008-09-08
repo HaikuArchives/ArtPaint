@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	LineTool.h
-	Contents:	LineTool-class declaration	
+	Contents:	LineTool-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -27,7 +27,7 @@ void	calculateLineDDA(BPoint start, BPoint end);
 public:
 		LineTool(const char *tool_name, int32 tool_type);
 virtual	~LineTool();
-	
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 };
 

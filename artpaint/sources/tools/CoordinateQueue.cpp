@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	CoordinateQueue.cpp
-	Contents:	CoordinateQueue-class definitions.	
+	Contents:	CoordinateQueue-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -14,7 +14,7 @@
 
 CoordinateQueue::CoordinateQueue()
 {
-	front = rear = 0;	
+	front = rear = 0;
 	queue_length = 0;
 	queue_semaphore = create_sem(1,"coordinate queue semaphore");
 }

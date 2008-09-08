@@ -1,13 +1,13 @@
-/* 
+/*
 
 	Filename:	SelectorTool.cpp
-	Contents:	SelectorTool-class definitions.	
+	Contents:	SelectorTool-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Box.h>
-#include <RadioButton.h> 
+#include <RadioButton.h>
 #include <stdio.h>
 
 #include "Cursors.h"
@@ -24,7 +24,7 @@ SelectorTool::SelectorTool()
 			ToolEventAdapter()
 {
 	options = MODE_OPTION | SHAPE_OPTION | TOLERANCE_OPTION;	// the value for mode will be either B_OP_ADD or B_OP_SUBTRACT
-	
+
 	SetOption(MODE_OPTION,B_OP_ADD);
 	SetOption(SHAPE_OPTION,HS_RECTANGLE);
 	SetOption(TOLERANCE_OPTION,10);
@@ -35,14 +35,14 @@ SelectorTool::~SelectorTool()
 }
 
 ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint view_point)
-{	
+{
 	BPoint original_point;
 	// these are used when drawing the preview to the view
 	BPoint view_original_point;
-		
-	original_point = point;	
+
+	original_point = point;
 	view_original_point = view_point;
-	
+
 	Selection *selection = view->GetSelection();
 
 	BWindow *window = view->Window();
@@ -50,20 +50,20 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		return NULL;
 
 	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
-		
+
 	window->Lock();
 	view->SetHighColor(255,255,255,255);
 	view->SetLowColor(0,0,0,255);
 	view->SetPenSize(1);
 	view->SetDrawingMode(B_OP_COPY);
 	view->MovePenTo(view_point);
-	window->Unlock();	
-	
+	window->Unlock();
+
 	if (settings.shape == HS_INTELLIGENT_SCISSORS) {
 		IntelligentPathFinder *path_finder = new IntelligentPathFinder(view->ReturnImage()->ReturnActiveBitmap());
 		HSPolygon *the_polygon = new HSPolygon(&point,1);
 		BPolygon *active_view_polygon = NULL;
-		
+
 		path_finder->SetSeedPoint(point.x,point.y);
 		bool finished = FALSE;
 		BPoint prev_point = point;
@@ -113,7 +113,7 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						delete bpoly;
 					}
 					delete[] point_list;
-					
+
 					path_finder->SetSeedPoint(point.x,point.y);
 					seed_point = point;
 					delete active_view_polygon;
@@ -141,13 +141,13 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 							point_list[0] = seed_point;
 							point_list[1] = point;
 							point_list[2] = point;
-							active_view_polygon = new BPolygon(point_list,3);												
+							active_view_polygon = new BPolygon(point_list,3);
 							bitmap_rect = active_view_polygon->Frame();
 							view_rect = view->convertBitmapRectToView(bitmap_rect);
 							active_view_polygon->MapTo(bitmap_rect,view_rect);
 						}
 						delete[] point_list;
-						view->StrokePolygon(active_view_polygon,FALSE);					
+						view->StrokePolygon(active_view_polygon,FALSE);
 						view->UnlockLooper();
 					}
 					prev_point = point;
@@ -157,9 +157,9 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 				view->getCoords(&point,&buttons,&view_point);
 				view->UnlockLooper();
 			}
-			snooze(50 * 1000);	
+			snooze(50 * 1000);
 		}
-		
+
 		if (view->LockLooper()) {
 			view->SetPenSize(1);
 			view->SetDrawingMode(B_OP_COPY);
@@ -168,12 +168,12 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		delete path_finder;
 		selection->AddSelection(the_polygon,settings.mode == B_OP_ADD);
 	}
-	else if (settings.shape == HS_FREE_LINE) {		
+	else if (settings.shape == HS_FREE_LINE) {
 		int32 turn = 0;
 		int32 size = 100;
 		BPoint *point_list = new BPoint[size];
 		int32 next_index = 0;
-		
+
 		while (buttons) {
 			point_list[next_index++] = point;
 			the_script->AddPoint(point);
@@ -186,7 +186,7 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 				point_list = new_list;
 				size = 2*size;
 			}
-			
+
 			view->Window()->Lock();
 			if (turn == 0)
 				view->StrokeLine(view_point,B_SOLID_HIGH);
@@ -194,8 +194,8 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 				view->StrokeLine(view_point,B_SOLID_LOW);
 			view->getCoords(&point,&buttons,&view_point);
 			view->Window()->Unlock();
-		
-			snooze(20 * 1000);	
+
+			snooze(20 * 1000);
 			turn = (turn + 1) % 2;
 		}
 		HSPolygon *poly = new HSPolygon(point_list,next_index,HS_POLYGON_CLOCKWISE);
@@ -211,22 +211,22 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		view->SetDrawingMode(B_OP_INVERT);
 		view->StrokeRect(view->convertBitmapRectToView(new_rect));
 		view->Window()->Unlock();
-		
+
 		the_script->AddPoint(point);
-		
+
 		while (buttons) {
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
 				view->StrokeRect(view->convertBitmapRectToView(old_rect));
 				view->StrokeRect(view->convertBitmapRectToView(new_rect));
 				view->Window()->Unlock();
-											
+
 				old_rect = new_rect;
-			}	
+			}
 			view->Window()->Lock();
 			view->getCoords(&point,&buttons,&view_point);
-			view->Window()->Unlock();		
-			
+			view->Window()->Unlock();
+
 			left = min_c(original_point.x,point.x);
 			top = min_c(original_point.y,point.y);
 			right = max_c(original_point.x,point.x);
@@ -245,7 +245,7 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		point_list[1] = old_rect.RightTop();
 		point_list[2] = old_rect.RightBottom();
 		point_list[3] = old_rect.LeftBottom();
-		HSPolygon *poly = new HSPolygon(point_list,4,HS_POLYGON_CLOCKWISE);				
+		HSPolygon *poly = new HSPolygon(point_list,4,HS_POLYGON_CLOCKWISE);
 		selection->AddSelection(poly,settings.mode == B_OP_ADD);
 	}
 	else if (settings.shape == HS_MAGIC_WAND) {
@@ -258,13 +258,13 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		delete drawer;
 		delete selection_map;
 	}
-	
+
 	view->Window()->Lock();
-	view->Invalidate();		
+	view->Invalidate();
 	view->Window()->Unlock();
-	
+
 	return the_script;
-	
+
 }
 
 
@@ -303,13 +303,13 @@ BBitmap* SelectorTool::MakeFloodBinaryMap(BitmapDrawer *drawer,int32 min_x,int32
 		*binary_bits++ = 0x00;
 
 	binary_bits = (uchar*)binary_map->Bits();
-		
+
 	PointStack *stack = new PointStack(10000);
 	stack->Push(start);
-				
+
 	// Here fill the area using drawer's SetPixel and GetPixel.
 	// The algorithm uses 4-connected version of flood-fill.
-	// The SetPixel and GetPixel functions are versions that 
+	// The SetPixel and GetPixel functions are versions that
 	// do not check bounds so we have to be careful not to exceed
 	// bitmap's bounds.
 	uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
@@ -329,11 +329,11 @@ BBitmap* SelectorTool::MakeFloodBinaryMap(BitmapDrawer *drawer,int32 min_x,int32
 		}
 		else {
 			// The image is only one pixel high. Check the only span.
-			FillSpan(span_start,drawer,min_x,max_x,old_color,tolerance,binary_map);			
+			FillSpan(span_start,drawer,min_x,max_x,old_color,tolerance,binary_map);
 		}
-	}		
+	}
 	delete stack;
-		
+
 	// Remember to NULL the attribute binary_fill_map
 	return binary_map;
 }
@@ -351,20 +351,20 @@ void SelectorTool::CheckLowerSpans(BPoint span_start,BitmapDrawer *drawer,PointS
 	// This is the case that takes the variance into account. We must use a
 	// binary bitmap to see what parts have already been filled.
 	uint32 binary_bpr = binary_fill_map->BytesPerRow();
-	uchar *binary_bits = (uchar*)binary_fill_map->Bits();	
+	uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
 		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
 		if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y+1));
 			inside_lower_span = TRUE;
-		} 	
+		}
 		else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			inside_lower_span = FALSE;
 		}
 		x--;
 	}
-	
+
 	// Then go from start_x+1 towards the right side of the bitmap.
 	// We might already be inside a lower span
 	inside_lower_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y+1),old_color,tolerance) );
@@ -374,12 +374,12 @@ void SelectorTool::CheckLowerSpans(BPoint span_start,BitmapDrawer *drawer,PointS
 		if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y+1));
 			inside_lower_span = TRUE;
-		} 	
+		}
 		else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			inside_lower_span = FALSE;
 		}
 		x++;
-	}	
+	}
 }
 
 void SelectorTool::CheckUpperSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 old_color,int32 tolerance,BBitmap *binary_fill_map)
@@ -391,7 +391,7 @@ void SelectorTool::CheckUpperSpans(BPoint span_start,BitmapDrawer *drawer,PointS
 	bool inside_upper_span = FALSE;
 
 	uint32 binary_bpr = binary_fill_map->BytesPerRow();
-	uchar *binary_bits = (uchar*)binary_fill_map->Bits();	
+	uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))  && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
@@ -399,13 +399,13 @@ void SelectorTool::CheckUpperSpans(BPoint span_start,BitmapDrawer *drawer,PointS
 		if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y-1));
 			inside_upper_span = TRUE;
-		} 	
+		}
 		else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) ) {
 			inside_upper_span = FALSE;
 		}
 		x--;
 	}
-	
+
 	// Then go from start_x+1 towards the right side of the bitmap.
 	// We might already be inside a lower span
 	inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1) , old_color,tolerance) );
@@ -415,12 +415,12 @@ void SelectorTool::CheckUpperSpans(BPoint span_start,BitmapDrawer *drawer,PointS
 		if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y-1));
 			inside_upper_span = TRUE;
-		} 	
+		}
 		else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			inside_upper_span = FALSE;
 		}
 		x++;
-	}	
+	}
 }
 
 void SelectorTool::CheckBothSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 old_color,int32 tolerance,BBitmap *binary_fill_map)
@@ -434,57 +434,57 @@ void SelectorTool::CheckBothSpans(BPoint span_start,BitmapDrawer *drawer,PointSt
 		// This is the case that takes the variance into account. We must use a
 		// binary bitmap to see what parts have already been filled.
 		uint32 binary_bpr = binary_fill_map->BytesPerRow();
-		uchar *binary_bits = (uchar*)binary_fill_map->Bits();	
+		uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
 		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-		
+
 		if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y+1));
 			inside_lower_span = TRUE;
-		} 	
+		}
 		else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			inside_lower_span = FALSE;
 		}
-		
+
 		if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y-1));
 			inside_upper_span = TRUE;
-		} 	
+		}
 		else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) ) {
 			inside_upper_span = FALSE;
 		}
 
 		x--;
 	}
-	
+
 	// Then go from start_x+1 towards the right side of the bitmap.
 	// We might already be inside a lower span
 	inside_lower_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y+1),old_color,tolerance) );
-	inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1), old_color,tolerance) );	
+	inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1), old_color,tolerance) );
 	x = start_x + 1;
 	while ( (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))  && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
 		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-		
+
 		if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y+1));
 			inside_lower_span = TRUE;
-		} 	
+		}
 		else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			inside_lower_span = FALSE;
 		}
-		
+
 		if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y-1));
 			inside_upper_span = TRUE;
-		} 	
+		}
 		else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			inside_upper_span = FALSE;
 		}
-		
+
 		x++;
-	}	
+	}
 }
 
 void SelectorTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int32 max_x, uint32 old_color,int32 tolerance,BBitmap *binary_fill_map)
@@ -497,20 +497,20 @@ void SelectorTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, 
 	// This is the case that takes the variance into account. We must use a
 	// binary bitmap to see what parts have already been filled.
 	uint32 binary_bpr = binary_fill_map->BytesPerRow();
-	uchar *binary_bits = (uchar*)binary_fill_map->Bits();	
+	uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) ) {
 		*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
 		x--;
 	}
-	
+
 	// Then go from start_x+1 towards the right side of the bitmap.
 	x = start_x + 1;
 	while ( (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) ) {
 		*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
 		x++;
-	}	
+	}
 }
 
 
@@ -520,7 +520,7 @@ SelectorToolConfigView::SelectorToolConfigView(BRect rect,DrawingTool *t)
 	BMessage *message;
 
 	BBox *container;
-	
+
 	// This rect will be used as a frame-rect when creating controllers.
 	// Each controller will automatically resize to proper vertical size.
 	// When adding a new controller we must move this rect's offset by
@@ -529,17 +529,17 @@ SelectorToolConfigView::SelectorToolConfigView(BRect rect,DrawingTool *t)
 
 	// Add two radio-buttons for defining the mode of selector.
 	// Add a menu for defining the shape of the selector.
-	
+
 	// Create a BBox for the radio-buttons.
 	container = new BBox(controller_frame,"selector_type");
 	container->SetLabel(StringServer::ReturnString(MODE_STRING));
 	AddChild(container);
-			
+
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",MODE_OPTION);
 	message->AddInt32("value",B_OP_ADD);
-			
-	// Create the first radio-button.			
+
+	// Create the first radio-button.
 	font_height fHeight;
 	container->GetFontHeight(&fHeight);
 	mode_button_1 = new BRadioButton(BRect(EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2,EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2),"a radio button",StringServer::ReturnString(ADD_AREA_STRING),new BMessage(*message));
@@ -548,18 +548,18 @@ SelectorToolConfigView::SelectorToolConfigView(BRect rect,DrawingTool *t)
 	if (tool->GetCurrentValue(MODE_OPTION) == B_OP_ADD)
 		mode_button_1->SetValue(B_CONTROL_ON);
 
-	// Create the second radio-button.		
-	message->ReplaceInt32("value",B_OP_SUBTRACT);		
+	// Create the second radio-button.
+	message->ReplaceInt32("value",B_OP_SUBTRACT);
 	mode_button_2 = new BRadioButton(BRect(EXTRA_EDGE,mode_button_1->Frame().bottom,EXTRA_EDGE,mode_button_1->Frame().bottom)," a radio button",StringServer::ReturnString(SUBTRACT_AREA_STRING),message);
-	mode_button_2->ResizeToPreferred();		
+	mode_button_2->ResizeToPreferred();
 	container->AddChild(mode_button_2);
 	if (tool->GetCurrentValue(MODE_OPTION) == B_OP_SUBTRACT)
 		mode_button_2->SetValue(B_CONTROL_ON);
-			
+
 	container->ResizeBy(0,mode_button_2->Frame().bottom+EXTRA_EDGE);
 	controller_frame.OffsetBy(0,container->Frame().Height() + EXTRA_EDGE);
-	
-	
+
+
 	// Create a box for the shape buttons.
 	container = new BBox(controller_frame,StringServer::ReturnString(SHAPE_STRING));
 	container->SetLabel(StringServer::ReturnString(SHAPE_STRING));
@@ -570,29 +570,29 @@ SelectorToolConfigView::SelectorToolConfigView(BRect rect,DrawingTool *t)
 	message->AddInt32("value",HS_FREE_LINE);
 	shape_button_1 = new BRadioButton(BRect(EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2,EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2),"a radio button",StringServer::ReturnString(FREE_LINE_STRING),new BMessage(*message));
 	shape_button_1->ResizeToPreferred();
-	container->AddChild(shape_button_1);	
+	container->AddChild(shape_button_1);
 	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_FREE_LINE)
 		shape_button_1->SetValue(B_CONTROL_ON);
-		
-	message->ReplaceInt32("value",HS_RECTANGLE);		
+
+	message->ReplaceInt32("value",HS_RECTANGLE);
 	shape_button_2 = new BRadioButton(BRect(EXTRA_EDGE,shape_button_1->Frame().bottom,EXTRA_EDGE,shape_button_1->Frame().bottom),"a radio button",StringServer::ReturnString(RECTANGLE_STRING),new BMessage(*message));
 	shape_button_2->ResizeToPreferred();
-	container->AddChild(shape_button_2);	
+	container->AddChild(shape_button_2);
 	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_RECTANGLE)
 		shape_button_2->SetValue(B_CONTROL_ON);
 
 
-	message->ReplaceInt32("value",HS_MAGIC_WAND);		
+	message->ReplaceInt32("value",HS_MAGIC_WAND);
 	shape_button_3 = new BRadioButton(BRect(EXTRA_EDGE,shape_button_2->Frame().bottom,EXTRA_EDGE,shape_button_2->Frame().bottom),"a radio button",StringServer::ReturnString(MAGIC_WAND_STRING),new BMessage(*message));
 	shape_button_3->ResizeToPreferred();
-	container->AddChild(shape_button_3);	
+	container->AddChild(shape_button_3);
 	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_MAGIC_WAND)
 		shape_button_3->SetValue(B_CONTROL_ON);
 
-	message->ReplaceInt32("value",HS_INTELLIGENT_SCISSORS);		
+	message->ReplaceInt32("value",HS_INTELLIGENT_SCISSORS);
 	shape_button_4 = new BRadioButton(BRect(EXTRA_EDGE,shape_button_3->Frame().bottom,EXTRA_EDGE,shape_button_3->Frame().bottom),"a radio button",StringServer::ReturnString(INTELLIGENT_SCISSORS_STRING),new BMessage(*message));
 	shape_button_4->ResizeToPreferred();
-	container->AddChild(shape_button_4);	
+	container->AddChild(shape_button_4);
 	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_INTELLIGENT_SCISSORS)
 		shape_button_4->SetValue(B_CONTROL_ON);
 
@@ -601,33 +601,33 @@ SelectorToolConfigView::SelectorToolConfigView(BRect rect,DrawingTool *t)
 
 
 	controller_frame.OffsetBy(0,container->Frame().Height() + EXTRA_EDGE);
-	
-	
+
+
 	// Create a box for the tolerance control.
 	container = new BBox(controller_frame,"Wand Tolerance");
 	container->SetLabel(StringServer::ReturnString(WAND_TOLERANCE_STRING));
 	AddChild(container);
-	
+
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",TOLERANCE_OPTION);
 	message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
 	tolerance_slider = new ControlSliderBox(BRect(EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2,controller_frame.Width()-EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2),"tolerance_slider",StringServer::ReturnString(TOLERANCE_STRING),"10",message,0,100);
 	container->AddChild(tolerance_slider);
-	container->ResizeBy(0,tolerance_slider->Frame().bottom+EXTRA_EDGE);	
+	container->ResizeBy(0,tolerance_slider->Frame().bottom+EXTRA_EDGE);
 
-	ResizeTo(container->Frame().right+EXTRA_EDGE,container->Frame().bottom + EXTRA_EDGE);	
+	ResizeTo(container->Frame().right+EXTRA_EDGE,container->Frame().bottom + EXTRA_EDGE);
 }
 
 
 void SelectorToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
-	
+
 	mode_button_1->SetTarget(BMessenger(this));
 	mode_button_2->SetTarget(BMessenger(this));
 	shape_button_1->SetTarget(BMessenger(this));
-	shape_button_2->SetTarget(BMessenger(this));	
-	shape_button_3->SetTarget(BMessenger(this));	
-	shape_button_4->SetTarget(BMessenger(this));	
+	shape_button_2->SetTarget(BMessenger(this));
+	shape_button_3->SetTarget(BMessenger(this));
+	shape_button_4->SetTarget(BMessenger(this));
 	tolerance_slider->SetTarget(new BMessenger(this));
 }

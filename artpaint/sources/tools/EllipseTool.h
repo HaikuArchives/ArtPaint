@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RectangleTool.h
-	Contents:	RectangleTool declarations	
+	Contents:	RectangleTool declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -33,11 +33,11 @@ class EllipseToolConfigView : public DrawingToolConfigView {
 		BCheckBox			*fill_checkbox;
 		BRadioButton		*radio_button_1;
 		BRadioButton		*radio_button_2;
-			
+
 
 public:
 		EllipseToolConfigView(BRect rect,DrawingTool *t);
-		
+
 void	AttachedToWindow();
 };
 #endif

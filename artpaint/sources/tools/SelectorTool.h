@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	SelectorTool.h
-	Contents:	SelectorTool-class declaration.	
+	Contents:	SelectorTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -26,11 +26,11 @@ void		CheckBothSpans(BPoint,BitmapDrawer*,PointStack&,int32,int32,uint32,int32,B
 void		FillSpan(BPoint,BitmapDrawer*,int32, int32, uint32,int32,BBitmap*);
 BBitmap*	MakeFloodBinaryMap(BitmapDrawer*,int32,int32,int32,int32,uint32, BPoint);
 
-public: 
+public:
 		SelectorTool();
 virtual	~SelectorTool();
-		
-ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);		
+
+ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);
 BView*			makeConfigView();
 const	char*	ReturnHelpString(bool);
 const	void*	ReturnToolCursor();
@@ -46,10 +46,10 @@ class SelectorToolConfigView : public DrawingToolConfigView {
 		BRadioButton		*shape_button_3;
 		BRadioButton		*shape_button_4;
 		ControlSliderBox	*tolerance_slider;
-		
+
 public:
 		SelectorToolConfigView(BRect rect,DrawingTool *t);
-		
+
 void	AttachedToWindow();
 };
 #endif

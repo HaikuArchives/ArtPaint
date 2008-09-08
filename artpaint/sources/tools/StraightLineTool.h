@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	StraightLineTool.h
-	Contents:	StraightLineTool-class declaration.	
+	Contents:	StraightLineTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -18,7 +18,7 @@ class StraightLineTool : public DrawingTool, public ToolEventAdapter {
 public:
 		StraightLineTool();
 virtual	~StraightLineTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 int32		UseToolWithScript(ToolScript*,BBitmap*);
 
@@ -32,10 +32,10 @@ class StraightLineToolConfigView : public DrawingToolConfigView {
 		ControlSliderBox	*size_slider;
 		BCheckBox			*anti_aliasing_checkbox;
 		BCheckBox			*width_adjusting_checkbox;
-		
+
 public:
 		StraightLineToolConfigView(BRect rect,DrawingTool *t);
-		
+
 void	AttachedToWindow();
 };
 

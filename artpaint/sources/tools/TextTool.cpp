@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	TextTool.cpp
-	Contents:	TextTool-class definitions	
+	Contents:	TextTool-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 

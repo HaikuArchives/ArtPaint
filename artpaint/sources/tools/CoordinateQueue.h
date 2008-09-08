@@ -1,13 +1,13 @@
-/* 
+/*
 
 	Filename:	CoordinateQueue.h
-	Contents:	CoordinateQueue-class declaration.	
+	Contents:	CoordinateQueue-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
-/* 	
+/*
 	This class gives an interface for a queue where a thread can add
 	coordinates or get them. It works as FIFO-system. If no coordinates
 	are available when trying to get new, it will return B_ERROR
@@ -25,16 +25,16 @@
 
 class CoordinateQueue {
 			sem_id	queue_semaphore;
-			
+
 			int32	queue_length;	// The number of items in queue;
-			
+
 			BPoint	queue[MAX_QUEUE_LENGTH];
 			int32	front,rear;
-						
+
 public:
 			CoordinateQueue();
 			~CoordinateQueue();		// This destroys the remaining points.
-		
+
 status_t	Get(BPoint&);
 status_t	Put(BPoint&);
 

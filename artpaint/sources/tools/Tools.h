@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Tools.h
-	Contents:	Constants that define the tools	
+	Contents:	Constants that define the tools
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef TOOLS_H
@@ -15,7 +15,7 @@
 // After adding a constant here we should make also adjustments to
 // places where tools are created (i.e. in ArtPaintApp.cpp).
 // We should also change the version number of the prefs-file, because
-// tool settings are stored in that file. 
+// tool settings are stored in that file.
 enum drawing_tools {
 	NO_TOOL =	'NoTl',
 	FREE_LINE_TOOL =	'SiTT',
@@ -56,19 +56,19 @@ enum drawing_tools {
 // vary due to different fonts and such. The name should be
 // reasonably long because tool-setup-window's width is based on it.
 //#define HS_LONGEST_TOOL_NAME	"Transparency Tool"
-								 
+
 
 // These constants define which options a tool can have.
-// They are combined with bitwise and. 
+// They are combined with bitwise and.
 enum option_constants {
-	SIZE_OPTION 				=	0x00000001,		
+	SIZE_OPTION 				=	0x00000001,
 	PRESSURE_OPTION				=	0x00000002,
 	MODE_OPTION					=	0x00000004,
 	SHAPE_OPTION				=	0x00000008,
 	GRADIENT_ENABLED_OPTION		=	0x00000010,		// B_CONTROL_OFF is off, B_CONTROL_ON is on.
 	GRADIENT_COLOR_OPTION		=	0x00000020,		// color in BGRA-format
 	PREVIEW_ENABLED_OPTION		=	0x00000040,		// B_CONTROL_OFF is preview off, B_CONTROL_ON is on.
-	FILL_ENABLED_OPTION			=	0x00000080,	
+	FILL_ENABLED_OPTION			=	0x00000080,
 	ROTATION_ENABLED_OPTION		=	0x00000100,
 	ANTI_ALIASING_LEVEL_OPTION	=	0x00000200,
 	CONTINUITY_OPTION			=	0x00000800,		// B_CONTROL_ON means continuous execution of tool.
@@ -81,7 +81,7 @@ enum option_constants {
 // These constants are used when an option controller doesn't have
 // a numerical value (e.g. RadioButtons and menus).
 // The items will have some of these constants as their "values".
-enum controller_values {	
+enum controller_values {
 	HS_FREE_LINE					=	'Frln',
 	HS_RECTANGLE					=	'Reng',
 	HS_MAGIC_WAND					=	'Mwnd',
@@ -94,7 +94,7 @@ enum controller_values {
 	HS_AIRBRUSH_MODE				=	'Aibm',
 	HS_SPRAY_MODE					=	'Sprm',
 	HS_ERASE_TO_BACKGROUND_MODE		=	'EtBg',
-	HS_ERASE_TO_TRANSPARENT_MODE	=	'EtTr'		
+	HS_ERASE_TO_TRANSPARENT_MODE	=	'EtTr'
 };
 
 

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ToolEventAdapter.cpp
-	Contents:	ToolEventAdapter-class definitions	
+	Contents:	ToolEventAdapter-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <string.h>
@@ -49,10 +49,10 @@ void ToolEventAdapter::SetClickEvent(BPoint view_point,BPoint bitmap_point,uint3
 void ToolEventAdapter::SetKeyEvent(const char *bytes, int32 num_bytes)
 {
 	delete last_key_event_bytes;
-	
+
 	last_key_event_bytes = new char[num_bytes];
 	strncpy(last_key_event_bytes,bytes,num_bytes);
-	last_key_event_num_bytes = num_bytes;		
+	last_key_event_num_bytes = num_bytes;
 	is_keys_data_valid = TRUE;
 }
 
@@ -67,7 +67,7 @@ bool ToolEventAdapter::SetActiveImageView(BView *view)
 	else {
 		is_view_data_valid = TRUE;
 		return FALSE;
-	}	
+	}
 }
 
 bool ToolEventAdapter::SetIsMouseInsideActiveView(bool is_inside)

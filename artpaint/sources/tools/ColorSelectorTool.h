@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ColorSelectorTool.h
-	Contents:	ColorSelectorTool-class declaration.	
+	Contents:	ColorSelectorTool-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,7 +19,7 @@ class ColorSelectorTool : public DrawingTool {
 public:
 		ColorSelectorTool();
 virtual	~ColorSelectorTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 
 BView*	makeConfigView();
@@ -31,24 +31,24 @@ class ColorSelectorView : public BView {
 		uint32		selected_color;
 		BStringView	*red_view;
 		BStringView *green_view;
-		BStringView	*blue_view;	
+		BStringView	*blue_view;
 		BStringView	*alpha_view;
-		
+
 public:
 		ColorSelectorView(BRect);
 
 void	Draw(BRect);
-		
-void	ChangeValue(uint32);		
+
+void	ChangeValue(uint32);
 };
 
 class ColorSelectorWindow : public BWindow {
 		BRect 				screen_bounds;
-		ColorSelectorView	*cs_view;		
+		ColorSelectorView	*cs_view;
 public:
 		ColorSelectorWindow(BPoint);
-		
-void	ChangeValue(uint32);		
+
+void	ChangeValue(uint32);
 void	Move(BPoint);
 };
 
@@ -57,7 +57,7 @@ class ColorSelectorToolConfigView : public DrawingToolConfigView {
 		ControlSliderBox	*size_slider;
 public:
 		ColorSelectorToolConfigView(BRect rect,DrawingTool *t);
-		
-void	AttachedToWindow();		
+
+void	AttachedToWindow();
 };
 #endif

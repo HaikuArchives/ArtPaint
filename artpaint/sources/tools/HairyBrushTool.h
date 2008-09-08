@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	HairyBrushTool.h
-	Contents:	HairyBrushTool-class declaration	
+	Contents:	HairyBrushTool-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -25,17 +25,17 @@ class HairyBrushTool : public DrawingTool {
 //
 //	bool		reading_coordinates;
 
-	ImageView	*image_view;	
-		
+	ImageView	*image_view;
+
 //static	int32	CoordinateReader(void*);
 //		int32	read_coordinates();
 
-						
+
 public:
 				HairyBrushTool();
 virtual			~HairyBrushTool();
-	
-ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);	
+
+ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);
 		int32	UseToolWithScript(ToolScript*,BBitmap*);
 
 virtual	BView*	makeConfigView();
@@ -50,11 +50,11 @@ class HairyBrushToolConfigView : public DrawingToolConfigView {
 		ControlSliderBox	*width_slider;
 		ControlSlider		*color_variance_slider;
 		ControlSlider		*color_amount_slider;
-				
+
 public:
 		HairyBrushToolConfigView(BRect rect,DrawingTool *t);
-	
-void	AttachedToWindow();	
+
+void	AttachedToWindow();
 void	MessageReceived(BMessage*);
 };
 
@@ -62,7 +62,7 @@ void	MessageReceived(BMessage*);
 
 inline float random_round(float number,float r)
 {
-	float dec = number - floor(number);	
+	float dec = number - floor(number);
 	if (dec < r)
 		return floor(number);
 	else

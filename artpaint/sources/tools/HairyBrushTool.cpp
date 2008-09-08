@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	HairyBrushTool.cpp
-	Contents:	HairyBrushTool-class definitions.	
+	Contents:	HairyBrushTool-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdlib.h>
@@ -32,7 +32,7 @@ HairyBrushTool::HairyBrushTool()
 
 HairyBrushTool::~HairyBrushTool()
 {
-	// free whatever storage this class allocated 
+	// free whatever storage this class allocated
 }
 
 
@@ -53,21 +53,21 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
 
 	Selection *selection = view->GetSelection();
-	
+
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
-	BitmapDrawer *drawer = new BitmapDrawer(buffer);	
+	BitmapDrawer *drawer = new BitmapDrawer(buffer);
 	CoordinateReader *reader = new CoordinateReader(image_view,NO_INTERPOLATION,false,true);
 	ImageUpdater *updater = new ImageUpdater(image_view,0.0);
-	
+
 	RandomNumberGenerator *random_stream = new RandomNumberGenerator(107 + (int32)point.x,1024);
-		
+
 	if (buffer == NULL) {
 		delete the_script;
 		return NULL;
-	}	
+	}
 
-	BPoint prev_point;		
-	prev_point = point;	
+	BPoint prev_point;
+	prev_point = point;
 	BRect updated_rect;
 
 	float initial_width = GetCurrentValue(PRESSURE_OPTION);
@@ -77,14 +77,14 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	float color_randomness = GetCurrentValue(TOLERANCE_OPTION);
 	float initial_color_amount = GetCurrentValue(CONTINUITY_OPTION) / 10.0;
 	float color_amount_randomness = 4;
-	rgb_color color =  ((PaintApplication*)be_app)->GetColor(TRUE); 
-	int32 hair_count = GetCurrentValue(SIZE_OPTION);	
+	rgb_color color =  ((PaintApplication*)be_app)->GetColor(TRUE);
+	int32 hair_count = GetCurrentValue(SIZE_OPTION);
 
 	float *color_amount_array = new float[hair_count];
 	rgb_color *color_array = new rgb_color[hair_count];
 	BPoint *start_point_array = new BPoint[hair_count];
 	int32 *index_array = new int32[hair_count];
-	
+
 	for (int32 i=0;i<hair_count;i++) {
 		float red,green,blue,alpha;
 		color_amount_array[i] = initial_color_amount - color_amount_randomness + random()%1000/1000.0*color_amount_randomness*2.0;
@@ -93,10 +93,10 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 		green = color_array[i].green;
 		blue = color_array[i].blue;
 		alpha = color_array[i].alpha;
-				
+
 		red = red - color_randomness + ((rand() % 1000) / 1000.0 * color_randomness * 2.0);
 		red = min_c(255,max_c(red,0));
-		
+
 		green = green - color_randomness + ((rand() % 1000) / 1000.0 * color_randomness * 2.0);
 		green = min_c(255,max_c(green,0));
 
@@ -109,12 +109,12 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 		color_array[i].red = (uint8)red;
 		color_array[i].green = (uint8)green;
 		color_array[i].blue = (uint8)blue;
-					
+
 		start_point_array[i] = point;
 	}
 
 	last_updated_rect = BRect(point,point);
-	the_script->AddPoint(point);			
+	the_script->AddPoint(point);
 
 	bool initialized = false;
 	initial_width = 1;
@@ -126,7 +126,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 			current_width = initial_width;
 			BPoint line_normal;
 			line_normal.x = -(point-original_point).y;
-			line_normal.y = (point-original_point).x;			
+			line_normal.y = (point-original_point).x;
 			float normal_length = sqrt(pow(line_normal.x,2) + pow(line_normal.y,2));
 			line_normal.x /= normal_length;
 			line_normal.y /= normal_length;
@@ -172,14 +172,14 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 					if (color_amount_array[neighbour_index] > 0) {
 						color_amount_array[i] = color_amount_array[neighbour_index]/4;
 						color_amount_array[neighbour_index] -= color_amount_array[i];
-					}					
+					}
 					neighbour_index = (i+1)%hair_count;
 					if (color_amount_array[neighbour_index] > 0) {
 						color_amount_array[i] += color_amount_array[neighbour_index]/4;
 						color_amount_array[neighbour_index] -= color_amount_array[neighbour_index]/4;
-					}					
-					
-				}				
+					}
+
+				}
 
 				if (color_amount_array[i] > 0) {
 					drawer->DrawHairLine(start_point,end_point,RGBColorToBGRA(color_array[i]),true,selection);
@@ -188,16 +188,16 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 				else {
 				}
 				updated_rect = updated_rect | BRect(start_point,start_point);
-				updated_rect = updated_rect | BRect(end_point,end_point);							 			
+				updated_rect = updated_rect | BRect(end_point,end_point);
 			}
 			updated_rect.left = floor(updated_rect.left);
 			updated_rect.top = floor(updated_rect.top);
 			updated_rect.right = ceil(updated_rect.right);
-			updated_rect.bottom = ceil(updated_rect.bottom); 
+			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1,-1);
 			updater->AddRect(updated_rect);
 			last_updated_rect = updated_rect;
-		}			
+		}
 		else {
 			initial_width = min_c(maximum_width,initial_width+0.5);
 		}
@@ -206,7 +206,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 
 	}
 	updater->ForceUpdate();
-		
+
 	float number_of_consecutive_growths = 0;
 //	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == TRUE)) {
 	while (reader->GetPoint(point) == B_NO_ERROR) {
@@ -216,11 +216,11 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 
 			BPoint line_normal;
 			line_normal.x = -(point-prev_point).y;
-			line_normal.y = (point-prev_point).x;			
+			line_normal.y = (point-prev_point).x;
 			float normal_length = sqrt(pow(line_normal.x,2) + pow(line_normal.y,2));
 			line_normal.x /= normal_length;
 			line_normal.y /= normal_length;
-			
+
 			// This controls the width of resulting line
 			float width_coeff = min_c(normal_length/30.0,1.0);
 			float new_width = current_width * 0.5 + 0.5*(width_coeff*minimum_width + (1.0-width_coeff)*maximum_width);
@@ -228,13 +228,13 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 				current_width += min_c(number_of_consecutive_growths/20.0,1.0) * (new_width-current_width);
 				current_width = min_c(current_width,maximum_width);
 				number_of_consecutive_growths++;
-			}											
+			}
 			else if (new_width <= current_width) {
 				current_width = new_width;
 				number_of_consecutive_growths = 0;
-			}				
+			}
 			updated_rect = BRect(point,point);
-						
+
 
 			// Here we make an array of indexes and also swap hairs with
 			// their neighbours randomly.
@@ -244,7 +244,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 				if (number > 0.9) {
 					float old_amount = color_amount_array[i];
 					rgb_color old_color = color_array[i];
-					
+
 					color_amount_array[i] = color_amount_array[(i+1)%hair_count];
 					color_array[i] = color_array[(i+1)%hair_count];
 					color_amount_array[(i+1)%hair_count] = old_amount;
@@ -252,14 +252,14 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 				}
 				else if (number > 0.8) {
 					// NOT: (i-1)%hair_count might be also negative if i happens to be 0.
-					int32 other_index = ((i>=1) ? i-1 : hair_count-1); 
+					int32 other_index = ((i>=1) ? i-1 : hair_count-1);
 					float old_amount = color_amount_array[i];
 					rgb_color old_color = color_array[i];
-					
+
 					color_amount_array[i] = color_amount_array[other_index];
 					color_array[i] = color_array[other_index];
 					color_amount_array[other_index] = old_amount;
-					color_array[other_index] = old_color;				
+					color_array[other_index] = old_color;
 				}
 			}
 
@@ -282,7 +282,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 				// Randomly weight the rounding
 				end_point.x = random_round(end_point.x,random_stream->UniformDistribution(0.0,1.0));
 				end_point.y = random_round(end_point.y,random_stream->UniformDistribution(0.0,1.0));
-				
+
 //				end_point.x = round(end_point.x);
 //				end_point.y = round(end_point.y);
 
@@ -299,14 +299,14 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 					if (color_amount_array[neighbour_index] > 0) {
 						color_amount_array[i] = color_amount_array[neighbour_index]/4;
 						color_amount_array[neighbour_index] -= color_amount_array[i];
-					}					
+					}
 					neighbour_index = (i+1)%hair_count;
 					if (color_amount_array[neighbour_index] > 0) {
 						color_amount_array[i] += color_amount_array[neighbour_index]/4;
 						color_amount_array[neighbour_index] -= color_amount_array[neighbour_index]/4;
-					}					
-					
-				}				
+					}
+
+				}
 
 				if (color_amount_array[i] > 0) {
 					drawer->DrawHairLine(start_point,end_point,RGBColorToBGRA(color_array[i]),true,selection);
@@ -315,24 +315,24 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 				else {
 				}
 				updated_rect = updated_rect | BRect(start_point,start_point);
-				updated_rect = updated_rect | BRect(end_point,end_point);							 			
+				updated_rect = updated_rect | BRect(end_point,end_point);
 			}
 			updated_rect.left = floor(updated_rect.left);
 			updated_rect.top = floor(updated_rect.top);
 			updated_rect.right = ceil(updated_rect.right);
-			updated_rect.bottom = ceil(updated_rect.bottom); 
+			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1,-1);
 
 			last_updated_rect = last_updated_rect | updated_rect;
 
 			updater->AddRect(updated_rect);
 			updater->ForceUpdate();
-					
+
 			prev_point = point;
 		}
 		else {
 //			current_width = max_c(current_width-0.5,minimum_width);
-		}	
+		}
 	}
 	updater->ForceUpdate();
 
@@ -344,7 +344,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	delete reader;
 	delete updater;
 	delete random_stream;
-	
+
 	return the_script;
 }
 
@@ -391,7 +391,7 @@ const void* HairyBrushTool::ReturnToolCursor()
 //	image_view->MovePenTo(view_point);
 //	image_view->Window()->Unlock();
 //	prev_point = point + BPoint(1,1);
-//	
+//
 //	while (buttons) {
 //		image_view->Window()->Lock();
 //		if (point != prev_point) {
@@ -402,8 +402,8 @@ const void* HairyBrushTool::ReturnToolCursor()
 //		image_view->getCoords(&point,&buttons,&view_point);
 //		image_view->Window()->Unlock();
 //		snooze(20.0 * 1000.0);
-//	}	
-//	
+//	}
+//
 //	reading_coordinates = FALSE;
 //	return B_OK;
 //}
@@ -425,14 +425,14 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect,DrawingTool *t)
 	BRect frame = hair_amount_slider->Frame();
 	frame.OffsetBy(0,frame.Height()+EXTRA_EDGE);
 	divider = hair_amount_slider->Divider();
-	
+
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option",PRESSURE_OPTION);
 	message->AddInt32("value",tool->GetCurrentValue(PRESSURE_OPTION));
 	width_slider = new ControlSliderBox(frame,"size_slider",StringServer::ReturnString(SIZE_STRING),"0",message,2,50);
 	AddChild(width_slider);
 	divider = max_c(divider,width_slider->Divider());
-	
+
 	frame.OffsetBy(0,frame.Height()+EXTRA_EDGE);
 	message = new BMessage(COLOR_VARIANCE_CHANGED);
 	color_variance_slider = new ControlSlider(frame,"color_variance_slider",StringServer::ReturnString(COLOR_VARIANCE_STRING),message,0,128,B_BLOCK_THUMB);
@@ -440,7 +440,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect,DrawingTool *t)
 	color_variance_slider->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 	color_variance_slider->ResizeToPreferred();
 	AddChild(color_variance_slider);
-		
+
 	frame = color_variance_slider->Frame();
 	frame.OffsetBy(0,frame.Height());
 	message = new BMessage(COLOR_AMOUNT_CHANGED);
@@ -449,10 +449,10 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect,DrawingTool *t)
 	color_amount_slider->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
 	color_amount_slider->ResizeToPreferred();
 	AddChild(color_amount_slider);
-	
+
 	hair_amount_slider->SetDivider(divider);
-	width_slider->SetDivider(divider);	
-	ResizeTo(color_amount_slider->Bounds().Width()+2*EXTRA_EDGE,color_amount_slider->Frame().bottom+EXTRA_EDGE);	
+	width_slider->SetDivider(divider);
+	ResizeTo(color_amount_slider->Bounds().Width()+2*EXTRA_EDGE,color_amount_slider->Frame().bottom+EXTRA_EDGE);
 }
 
 

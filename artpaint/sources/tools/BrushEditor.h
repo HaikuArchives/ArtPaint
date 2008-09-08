@@ -1,9 +1,10 @@
-/* 
+
+/*
 
 	Filename:	BrushEditor.h
-	Contents:	BrushEditor-class declarations	
+	Contents:	BrushEditor-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -11,12 +12,12 @@
 /*
 	The class BrushEditor allows user to edit brushes. It will
 	display a preview of the brush and necessary controls for modifying it.
-	A brush-editor has one brush being edited at a time. It accepts and 
+	A brush-editor has one brush being edited at a time. It accepts and
 	generates brush drags and drops. The brush can be queried from the editor
 	and it can be copied to another object. BrushEditor tries to fit itself
 	inside the parameter rectangle, but if it does not fit it will be as small
 	as possible.
-	
+
 */
 
 #ifndef BRUSH_EDITOR_H
@@ -25,7 +26,7 @@
 #include <Box.h>
 
 #define	BRUSH_WIDTH_CHANGED		'BWCh'
-#define BRUSH_HEIGHT_CHANGED	'BHCh'	
+#define BRUSH_HEIGHT_CHANGED	'BHCh'
 #define BRUSH_EDGE_CHANGED		'BeCh'
 #define BRUSH_SHAPE_CHANGED		'Bshc'
 
@@ -60,7 +61,7 @@ static	BrushEditor	*the_editor;
 
 
 public:
-void	AttachedToWindow();		
+void	AttachedToWindow();
 void	MessageReceived(BMessage *message);
 
 
@@ -85,7 +86,7 @@ void	MessageReceived(BMessage*);
 void	MouseDown(BPoint);
 void	MouseMoved(BPoint,uint32,const BMessage*);
 
-void	BrushModified();		
+void	BrushModified();
 void	ChangeBrush(Brush*);
 };
 #endif

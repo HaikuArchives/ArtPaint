@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	CoordinateReader.h
-	Contents:	CoordinateReader-class declaration.	
+	Contents:	CoordinateReader-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -36,20 +36,20 @@ class CoordinateReader {
 	bool	trace;
 	bool	allow_duplicates;
 	double	reader_delay;
-	
+
 	ImageView				*view;
 	interpolation_styles	style;
-	
+
 	struct queue_entry {
 		BPoint	point;
 		queue_entry	*next_entry;
 	} *point_queue_head,*point_queue_tail;
-		
+
 	int32	point_queue_length;
 
 	float	interpolation_parameter;
 	float	interpolation_step;
-	
+
 	bool	interpolation_started;
 
 	BPoint	p0;
@@ -69,9 +69,9 @@ inline	float	car3(float);
 
 
 	thread_id	reader_thread;
-	
+
 static	int32	thread_entry(void*);
-		int32	reader_function();	
+		int32	reader_function();
 
 
 	status_t	NextPointNoInterpolation(BPoint&);
@@ -81,7 +81,7 @@ static	int32	thread_entry(void*);
 inline	float	round(float);
 
 public:
-		CoordinateReader(ImageView*,interpolation_styles=NO_INTERPOLATION,bool trace_path=FALSE,bool duplicates=FALSE,double delay=10000.0);	
+		CoordinateReader(ImageView*,interpolation_styles=NO_INTERPOLATION,bool trace_path=FALSE,bool duplicates=FALSE,double delay=10000.0);
 		~CoordinateReader();
 
 status_t	GetPoint(BPoint&);
@@ -95,33 +95,33 @@ status_t	GetPoint(BPoint&);
 inline float CoordinateReader::round(float c)
 {
 	return (((c - floor(c)) > 0.5) ? ceil(c) : floor(c));
-}	
+}
 
 
 float CoordinateReader::car0(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return 2*s*u*u - s*u*u*u - s*u;
 }
 
 
 float CoordinateReader::car1(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return (2-s)*u*u*u + (s-3)*u*u + 1;
 }
 
 
 float CoordinateReader::car2(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return (s-2)*u*u*u + (3-2*s)*u*u + s*u;
 }
 
 
 float CoordinateReader::car3(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return s*u*u*u - s*u*u;
 }
 #endif

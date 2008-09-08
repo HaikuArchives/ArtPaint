@@ -1,9 +1,9 @@
-/* 
-	
+/*
+
 	Filename:	FillTool.h
-	Contents:	FillTool-class declaration	
+	Contents:	FillTool-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,7 +21,7 @@ class Selection;
 class FillTool : public DrawingTool {
 BBitmap		*filled_bitmap;
 BBitmap		*binary_fill_map;
-		
+
 status_t	NormalFill(ImageView*,uint32,BPoint,Selection* =NULL);
 
 void		CheckLowerSpans(BPoint,BitmapDrawer*,PointStack&,int32,int32,uint32,uint32,int32,Selection* =NULL);
@@ -44,7 +44,7 @@ uint32		gradient_color2;
 public:
 		FillTool();
 virtual	~FillTool();
-		
+
 ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
 int32		UseToolWithScript(ToolScript*,BBitmap*);
 
@@ -73,10 +73,10 @@ class FillToolConfigView : public DrawingToolConfigView {
 //		ColorView			*color_view;
 		GradientView		*gradient_view;
 		ControlSliderBox	*tolerance_slider;
-			
+
 public:
 		FillToolConfigView(BRect rect,DrawingTool *t,uint32 c1,uint32 c2);
-		
+
 void		AttachedToWindow();
 void		MessageReceived(BMessage*);
 };
@@ -85,17 +85,17 @@ void		MessageReceived(BMessage*);
 class GradientView : public BControl {
 		rgb_color	color1;
 		rgb_color	color2;
-		
+
 		BBitmap		*gradient_map;
-		
+
 void		CalculateGradient();
 public:
 		GradientView(BRect,uint32,uint32);
 		~GradientView();
-		
+
 void		AttachedToWindow();
 void		Draw(BRect);
-void		MessageReceived(BMessage*);		
+void		MessageReceived(BMessage*);
 void		MouseDown(BPoint);
 };
 

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RectangleTool.h
-	Contents:	RectangleTool declarations	
+	Contents:	RectangleTool declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -38,7 +38,7 @@ class RectangleToolConfigView : public DrawingToolConfigView {
 
 public:
 		RectangleToolConfigView(BRect rect,DrawingTool *t);
-		
+
 void	AttachedToWindow();
 };
 
