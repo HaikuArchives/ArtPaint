@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PopUpList.h
-	Contents:	PopUpList-class declaration.	
+	Contents:	PopUpList-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -23,15 +23,15 @@ class PopUpList : public BView {
 		BBitmap 	*not_pushed;
 
 		BBitmap		*current_bitmap;
-		BMessenger	*target;		
+		BMessenger	*target;
 		BPopUpMenu	*the_menu;
-		
+
 public:
 		PopUpList(BRect,BBitmap*,BBitmap*,BMessage**,int32,BMessenger*);
 		PopUpList(BRect,BBitmap*,BBitmap*,BPopUpMenu*,BMessenger*);
-		~PopUpList();		
+		~PopUpList();
 
-void	Draw(BRect);		
+void	Draw(BRect);
 void	MouseDown(BPoint);
 
 BMenu*	ReturnMenu() { return the_menu; }

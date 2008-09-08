@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Controls.cpp
-	Contents:	Definitions for various control-classes	
+	Contents:	Definitions for various control-classes
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdio.h>
@@ -18,7 +18,7 @@ NumberControl::NumberControl(BRect frame, const char *name, const char *label, c
 				: BTextControl(frame,name,label,text,message)
 {
 	// here we set the control to only accept numbers
-	// here disallow all chars 
+	// here disallow all chars
 	for (int32 i=0;i<256;i++)
 		TextView()->DisallowChar(i);
 	// and here allow the numbers
@@ -34,10 +34,10 @@ NumberControl::NumberControl(BRect frame, const char *name, const char *label, c
 	TextView()->AllowChar('9');
 	if (allow_negative == TRUE)
 		TextView()->AllowChar('-');
-	
+
 	// there is a bug in alignment function
 	// SetAlignment(B_ALIGN_RIGHT,B_ALIGN_LEFT);
-	TextView()->SetMaxBytes(maxBytes);	
+	TextView()->SetMaxBytes(maxBytes);
 }
 
 
@@ -58,9 +58,9 @@ int32 NumberControl::Value()
 void NumberControl::SetValue(int32 value)
 {
 	BTextControl::SetValue(value);
-	
+
 	char text[256];
-	
+
 	sprintf(text,"%d",value);
 	SetText(text);
 }
@@ -79,7 +79,7 @@ ControlSlider::ControlSlider(BRect frame,const char *name,const char *label,BMes
 void ControlSlider::MouseDown(BPoint)
 {
 	thread_id track_thread = spawn_thread(track_entry,"track_thread",B_NORMAL_PRIORITY,(void*)this);
-	resume_thread(track_thread);	
+	resume_thread(track_thread);
 }
 
 
@@ -100,19 +100,19 @@ int32 ControlSlider::track_mouse()
 	BHandler *target_handler = Target();
 	if (target_handler == NULL)
 		return B_ERROR;
-		
+
 	BLooper *target_looper = target_handler->Looper();
-	
+
 	if (target_looper == NULL)
 		return B_ERROR;
-	
-	BMessenger messenger = BMessenger(target_handler,target_looper);	
 
-	window->Lock();	
+	BMessenger messenger = BMessenger(target_handler,target_looper);
+
+	window->Lock();
 	GetMouse(&point,&buttons);
-	int32 value	= ValueForPoint(point);	
+	int32 value	= ValueForPoint(point);
 	window->Unlock();
-	
+
 	if (value != Value()) {
 		if (ModificationMessage() != NULL)
 			messenger.SendMessage(ModificationMessage());
@@ -120,23 +120,23 @@ int32 ControlSlider::track_mouse()
 		window->Lock();
 		SetValue(value);
 		window->Unlock();
-	}					
+	}
 	while (buttons) {
 		window->Lock();
-		GetMouse(&point,&buttons);	
+		GetMouse(&point,&buttons);
 		value = ValueForPoint(point);
-		if (value != Value()) {	
-			if (ModificationMessage() != NULL) 
+		if (value != Value()) {
+			if (ModificationMessage() != NULL)
 				messenger.SendMessage(ModificationMessage());
-	
+
 			SetValue(value);
 		}
-		window->Unlock();			
+		window->Unlock();
 
 		snooze(SnoozeAmount());
 	}
 
-	if (Message() != NULL) 	
+	if (Message() != NULL)
 		messenger.SendMessage(Message());
 	return B_OK;
 }
@@ -166,10 +166,10 @@ ControlSliderBox::ControlSliderBox(BRect frame,const char *name, const char *lab
 	ResizeTo(frame.Width(),number_control->Bounds().Height()+4);
 
 	continuos_messages = continuos;
-	
+
 	min_value = rangeMin;
 	max_value = rangeMax;
-	
+
 	if (message != NULL) {
 		msg = message;
 		if (msg->HasInt32("value") == FALSE) {
@@ -185,7 +185,7 @@ ControlSliderBox::ControlSliderBox(BRect frame,const char *name, const char *lab
 		msg->AddInt32("value",0);
 		msg->AddBool("final",TRUE);
 	}
-}	
+}
 
 ControlSliderBox::~ControlSliderBox()
 {
@@ -197,7 +197,7 @@ ControlSliderBox::~ControlSliderBox()
 
 void ControlSliderBox::AllAttached()
 {
-	number_control->SetTarget(this);	
+	number_control->SetTarget(this);
 	slider->SetTarget(this);
 	setValue(msg->FindInt32("value"));
 
@@ -228,7 +228,7 @@ void ControlSliderBox::MessageReceived(BMessage *message)
 	case CONTROL_SLIDER_FINISHED:
 		sprintf(value,"%d",slider->Value());
 		number_control->SetText(value);
-		sendMessage(slider->Value(),TRUE);		
+		sendMessage(slider->Value(),TRUE);
 		break;
 	default:
 		BBox::MessageReceived(message);
@@ -239,10 +239,10 @@ void ControlSliderBox::MessageReceived(BMessage *message)
 
 void ControlSliderBox::setValue(int32 value)
 {
-	// this sets the value for both of the views 
+	// this sets the value for both of the views
 	value = CheckValue(value);
-	
-//	Next line causes some odd crashes.		
+
+//	Next line causes some odd crashes.
 	slider->SetValue(value);
 	char val[10];
 	sprintf(val,"%d",value);
@@ -257,7 +257,7 @@ int32 ControlSliderBox::CheckValue(int32 value)
 	else if (value<min_value)
 		value = (int32)min_value;
 
-	return value;	
+	return value;
 }
 
 
@@ -294,7 +294,7 @@ void ControlSliderBox::SetDivider(float position,bool resize_text_field)
 		number_control->TextView()->ResizeBy(delta,0);
 	else
 		number_control->TextView()->MoveBy(delta,0);
-	
+
 	slider->MoveBy(delta,0);
 	slider->ResizeBy(-delta,0);
 

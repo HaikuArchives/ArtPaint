@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ColorControl.cpp
-	Contents:	ColorControl-class definitions		
+	Contents:	ColorControl-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -25,23 +25,23 @@ VisualColorControl::VisualColorControl(BPoint position, rgb_color c,char *s1, ch
 	value.bytes[1] = c.green;
 	value.bytes[2] = c.red;
 	value.bytes[3] = c.alpha;
-	
+
 	// create the ramp-bitmaps
 	ramp1 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);
 	ramp2 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);
-	ramp3 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);	
+	ramp3 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);
 	ramp4 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);
 
 	label1 = s1;
 	label2 = s2;
 	label3 = s3;
 	label4 = s4;
-		
+
 	previous_value_at_1 = -100000;
 	previous_value_at_2 = -100000;
 	previous_value_at_3 = -100000;
 	previous_value_at_4 = -100000;
-	
+
 
 	// resize ourselves to proper size i.e. 30 pixels in height per ramp
 	// and 150 pixels in width for a ramp + 40 pixels in width for color-plate
@@ -57,7 +57,7 @@ void VisualColorControl::AttachedToWindow()
 
 	// calculate the initial ramps
 	CalcRamps();
-	
+
 	// create the arrow-pictures
 	BeginPicture(new BPicture());
 		SetHighColor(100,100,255);
@@ -65,9 +65,9 @@ void VisualColorControl::AttachedToWindow()
 		SetHighColor(0,0,0);
 		StrokePolygon(points,3);
 	down_arrow = EndPicture();
-	
+
 	if (Parent() != NULL)
-		SetViewColor(Parent()->ViewColor());	
+		SetViewColor(Parent()->ViewColor());
 
 	BStringView *sv = new BStringView(BRect(0,COLOR_HEIGHT/2,1,COLOR_HEIGHT/2),"label view",label1);
 	AddChild(sv);
@@ -77,20 +77,20 @@ void VisualColorControl::AttachedToWindow()
 	font_height fHeight;
 	sv->GetFontHeight(&fHeight);
 	sv->ResizeTo(sv_width,fHeight.ascent+fHeight.descent);
-	sv->MoveBy(0,-(fHeight.ascent+fHeight.descent)/2.0);	
+	sv->MoveBy(0,-(fHeight.ascent+fHeight.descent)/2.0);
 	BRect sv_frame = sv->Frame();
 	sv_frame.OffsetBy(0,COLOR_HEIGHT);
 	sv->SetAlignment(B_ALIGN_CENTER);
 	sv = new BStringView(sv_frame,"label view",label2);
-	AddChild(sv);	
+	AddChild(sv);
 	sv->SetAlignment(B_ALIGN_CENTER);
 	sv_frame.OffsetBy(0,COLOR_HEIGHT);
 	sv = new BStringView(sv_frame,"label view",label3);
-	AddChild(sv);	
+	AddChild(sv);
 	sv->SetAlignment(B_ALIGN_CENTER);
 	sv_frame.OffsetBy(0,COLOR_HEIGHT);
 	sv = new BStringView(sv_frame,"label view",label4);
-	AddChild(sv);	
+	AddChild(sv);
 	sv->SetAlignment(B_ALIGN_CENTER);
 
 	ramp_left_edge = sv->Bounds().IntegerWidth()+2;
@@ -111,20 +111,20 @@ VisualColorControl::~VisualColorControl()
 
 
 void VisualColorControl::Draw(BRect)
-{		
+{
 	// ramp height is COLOR_HEIGHT - 12 pixels that are required for controls
 	int32 ramp_height = COLOR_HEIGHT - 12;
-	
+
 	// here draw the ramps
 	BRect ramp_rect = BRect(ramp_left_edge+4,6,ramp_left_edge+RAMP_WIDTH+4,6+ramp_height-1);
-	
+
 	DrawBitmap(ramp1,ramp1->Bounds(),ramp_rect);
 	ramp_rect.OffsetBy(0,COLOR_HEIGHT);
 	DrawBitmap(ramp2,ramp2->Bounds(),ramp_rect);
 	ramp_rect.OffsetBy(0,COLOR_HEIGHT);
-	DrawBitmap(ramp3,ramp3->Bounds(),ramp_rect);		
+	DrawBitmap(ramp3,ramp3->Bounds(),ramp_rect);
 	ramp_rect.OffsetBy(0,COLOR_HEIGHT);
-	DrawBitmap(ramp4,ramp4->Bounds(),ramp_rect);		
+	DrawBitmap(ramp4,ramp4->Bounds(),ramp_rect);
 
 	// draw the color-plate
 	BRect a_rect = BRect(Bounds().Width()-PLATE_WIDTH+2,2,Bounds().Width()-2,Bounds().Height()-2);
@@ -134,20 +134,20 @@ void VisualColorControl::Draw(BRect)
 
 	rgb_color low = ValueAsColor();
 	rgb_color high = low;
-		
+
 	float coeff = high.alpha / 255.0;
 	low.red = (uint8)(coeff*low.red);
 	low.green = (uint8)(coeff*low.green);
 	low.blue = (uint8)(coeff*low.blue);
 	low.alpha = 255;
-		
+
 	high.red = (uint8)(coeff*high.red + (1-coeff)*255);
 	high.green = (uint8)(coeff*high.green + (1-coeff)*255);
 	high.blue = (uint8)(coeff*high.blue + (1-coeff)*255);
 	high.alpha = 255;
-		
+
 	SetHighColor(high);
-	SetLowColor(low);			
+	SetLowColor(low);
 	a_rect.InsetBy(1,1);
 	FillRect(a_rect,HS_2X2_BLOCKS);
 
@@ -182,7 +182,7 @@ void VisualColorControl::Draw(BRect)
 	previous_value_at_2 = value_at_2();
 	previous_value_at_3 = value_at_3();
 	previous_value_at_4 = value_at_4();
-	
+
 
 //	DrawPicture(down_arrow,BPoint(ramp_left_edge + (float)(value_at_2())/255.0*RAMP_WIDTH+4,COLOR_HEIGHT+5));
 //	DrawPicture(down_arrow,BPoint(ramp_left_edge + (float)(value_at_3())/255.0*RAMP_WIDTH+4,2*COLOR_HEIGHT+5));
@@ -199,7 +199,7 @@ void VisualColorControl::MessageReceived(BMessage *message)
 				SetValue(*new_color);
 			}
 			break;
-		
+
 		default:
 			BControl::MessageReceived(message);
 			break;
@@ -222,7 +222,7 @@ void VisualColorControl::SetValue(rgb_color c)
 	value.bytes[1] = c.green;
 	value.bytes[2] = c.red;
 	value.bytes[3] = c.alpha;
-				
+
 	CalcRamps();
 	Draw(Bounds());
 }
@@ -238,6 +238,6 @@ rgb_color VisualColorControl::ValueAsColor()
 	c.green = value.bytes[1];
 	c.blue = value.bytes[0];
 	c.alpha = value.bytes[3];
-	
+
 	return c;
 }

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	YIQControl.h
-	Contents:	YIQControl-class declaration	
+	Contents:	YIQControl-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef YIQ_CONTROL_H
@@ -30,7 +30,7 @@ float	min_value_at_1() { return 0; }
 float	min_value_at_2() { return -151.98; }
 float	min_value_at_3() { return -133.365; }
 
-			
+
 public:
 		YIQControl(BPoint position, rgb_color c);
 

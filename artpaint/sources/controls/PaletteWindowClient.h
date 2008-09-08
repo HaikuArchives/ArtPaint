@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PaletteWindowClient.h
-	Contents:	PaletteWindowClient-class declarations.		
+	Contents:	PaletteWindowClient-class declarations.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,12 +21,12 @@ public:
 					//printf("PaletteWindowClient\n");
 					ColorPaletteWindow::AddPaletteWindowClient(this);
 				}
-				
+
 virtual			~PaletteWindowClient() {
 				//	printf("~PaletteWindowClient\n");
 					ColorPaletteWindow::RemovePaletteWindowClient(this);
 				}
-				
+
 virtual	void	PaletteColorChanged(const rgb_color&) = 0;
 };
 

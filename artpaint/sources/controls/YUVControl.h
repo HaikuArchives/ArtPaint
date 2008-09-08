@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	YUVControl.h
-	Contents:	YUVControl-class declaration	
+	Contents:	YUVControl-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef YUV_CONTROL_H
@@ -30,7 +30,7 @@ float	min_value_at_1() { return 0; }
 float	min_value_at_2() { return -111.18; }
 float	min_value_at_3() { return -156.825; }
 
-			
+
 public:
 		YUVControl(BPoint position, rgb_color c);
 

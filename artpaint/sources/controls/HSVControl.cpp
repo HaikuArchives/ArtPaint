@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	HSVControl.cpp
-	Contents:	HSVControl-class definitions		
+	Contents:	HSVControl-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -18,7 +18,7 @@ HSVControl::HSVControl(BPoint position, rgb_color c)
 	float red = value.bytes[2];
 	float green = value.bytes[1];
 	float blue = value.bytes[0];
-	
+
 	rgb_to_hsv(red,green,blue,&h_value,&s_value,&v_value);
 }
 
@@ -58,18 +58,18 @@ void HSVControl::MouseDown(BPoint point)
 		dragged_map->Unlock();
 		BMessage dragger_message(B_PASTE);
 		dragger_message.AddData("RGBColor",B_RGB_COLOR_TYPE,&c,sizeof(rgb_color));
-		DragMessage(&dragger_message,dragged_map,BPoint(7,7));		
+		DragMessage(&dragger_message,dragged_map,BPoint(7,7));
 	}
 	else {
 		uint32 buttons;
 		Window()->CurrentMessage()->FindInt32("buttons",(int32*)&buttons);
-	
+
 		if (Message() != NULL) {
 			// if invocation-message has "buttons" we should replace it
 			if (Message()->HasInt32("buttons"))
 				Message()->ReplaceInt32("buttons",buttons);
 		}
-		
+
 		float previous_value = -500;
 		float orig_h = h_value;
 		float orig_s = s_value;
@@ -99,9 +99,9 @@ void HSVControl::MouseDown(BPoint point)
 				float red_value;
 				float green_value;
 				float blue_value;
-				
+
 				hsv_to_rgb(h_value,s_value,v_value,&red_value,&green_value,&blue_value);
-								
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
@@ -137,9 +137,9 @@ void HSVControl::MouseDown(BPoint point)
 				float red_value;
 				float green_value;
 				float blue_value;
-				
+
 				hsv_to_rgb(h_value,s_value,v_value,&red_value,&green_value,&blue_value);
-				
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
@@ -155,8 +155,8 @@ void HSVControl::MouseDown(BPoint point)
 			}
 		}
 
-		
-		
+
+
 		else if (((int32)(point.y / COLOR_HEIGHT)) == 0) {
 			// Here we change the Hue-value
 			while (buttons) {
@@ -164,17 +164,17 @@ void HSVControl::MouseDown(BPoint point)
 				h_value = ((point.x-4-ramp_left_edge)/RAMP_WIDTH)*(max_value_at_1()-min_value_at_1());
 				h_value = min_c(h_value,max_value_at_1());
 				h_value = max_c(h_value,min_value_at_1());
-			
+
 				float red_value;
 				float green_value;
-				float blue_value;				
+				float blue_value;
 				hsv_to_rgb(h_value,s_value,v_value,&red_value,&green_value,&blue_value);
-				
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
-				 			
-										
+
+
 				if (h_value != previous_value) {
 					previous_value = h_value;
 					CalcRamps();
@@ -183,7 +183,7 @@ void HSVControl::MouseDown(BPoint point)
 				GetMouse(&point,&buttons);
 			}
 		}
-		
+
 		else if	(((int32)(point.y / COLOR_HEIGHT)) == 1) {
 			// Here we change the Saturation-value
 			while (buttons) {
@@ -191,17 +191,17 @@ void HSVControl::MouseDown(BPoint point)
 				s_value = min_value_at_2() + ((point.x-4-ramp_left_edge)/RAMP_WIDTH)*(max_value_at_2()-min_value_at_2());
 				s_value = min_c(s_value,max_value_at_2());
 				s_value = max_c(s_value,min_value_at_2());
-		
+
 				float red_value;
 				float green_value;
 				float blue_value;
-				
+
 				hsv_to_rgb(h_value,s_value,v_value,&red_value,&green_value,&blue_value);
-				
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
-															
+
 				if (s_value != previous_value) {
 					previous_value = s_value;
 					CalcRamps();
@@ -210,7 +210,7 @@ void HSVControl::MouseDown(BPoint point)
 				GetMouse(&point,&buttons);
 			}
 		}
-		
+
 		else if	(((int32)(point.y / COLOR_HEIGHT)) == 2){
 			// Here we change the Value-value
 			while (buttons) {
@@ -218,17 +218,17 @@ void HSVControl::MouseDown(BPoint point)
 				v_value = min_value_at_3() + ((point.x-4-ramp_left_edge)/RAMP_WIDTH)*(max_value_at_3()-min_value_at_3());
 				v_value = min_c(v_value,max_value_at_3());
 				v_value = max_c(v_value,min_value_at_3());
-		
+
 				float red_value;
 				float green_value;
 				float blue_value;
-				
+
 				hsv_to_rgb(h_value,s_value,v_value,&red_value,&green_value,&blue_value);
-	
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
-										
+
 				if (v_value != previous_value) {
 					previous_value = v_value;
 					CalcRamps();
@@ -243,15 +243,15 @@ void HSVControl::MouseDown(BPoint point)
 				int32 alpha_value = (int32)(((point.x-4-ramp_left_edge)/RAMP_WIDTH)*255);
 				alpha_value = min_c(alpha_value,255);
 				alpha_value = max_c(alpha_value,0);
-		
+
 				value.bytes[3] = alpha_value;
-						
+
 				if (alpha_value != previous_value) {
 					previous_value = alpha_value;
 					CalcRamps();
 					Draw(Bounds());
 				}
-				GetMouse(&point,&buttons);	
+				GetMouse(&point,&buttons);
 			}
 		}
 		if (Message() != NULL) {
@@ -270,7 +270,7 @@ void HSVControl::CalcRamps()
 	// and 32-bit mode
 
 	// the order of colors in a bitmap is BGRA
-	uint32 *bits = (uint32*)ramp1->Bits();	
+	uint32 *bits = (uint32*)ramp1->Bits();
 	union {
 		uint8 bytes[4];
 		uint32 word;
@@ -279,7 +279,7 @@ void HSVControl::CalcRamps()
 		float red_value;
 		float green_value;
 		float blue_value;
-		float temp_value = i*(max_value_at_1()-min_value_at_1())/255.0+min_value_at_1();		
+		float temp_value = i*(max_value_at_1()-min_value_at_1())/255.0+min_value_at_1();
 		hsv_to_rgb(temp_value,s_value,v_value,&red_value,&green_value,&blue_value);
 		color.bytes[0] = (uint8)blue_value;
 		color.bytes[1] = (uint8)green_value;
@@ -287,28 +287,28 @@ void HSVControl::CalcRamps()
 		color.bytes[3] = (uint8)255;
 
 		*bits++ = color.word;
-	}	
-	bits = (uint32*)ramp2->Bits();	
+	}
+	bits = (uint32*)ramp2->Bits();
 	for (int32 i=0;i<256;i++) {
 		float red_value;
 		float green_value;
 		float blue_value;
-		float temp_value = i*(max_value_at_2()-min_value_at_2())/255.0+min_value_at_2();		
+		float temp_value = i*(max_value_at_2()-min_value_at_2())/255.0+min_value_at_2();
 		hsv_to_rgb(h_value,temp_value,v_value,&red_value,&green_value,&blue_value);
 		color.bytes[0] = (uint8)blue_value;
 		color.bytes[1] = (uint8)green_value;
 		color.bytes[2] = (uint8)red_value;
 		color.bytes[3] = (uint8)255;
-		
+
 		*bits++ = color.word;
 	}
-	
-	bits = (uint32*)ramp3->Bits();	
+
+	bits = (uint32*)ramp3->Bits();
 	for (int32 i=0;i<256;i++) {
 		float red_value;
 		float green_value;
 		float blue_value;
-		float temp_value = i*(max_value_at_3()-min_value_at_3())/255.0+min_value_at_3();		
+		float temp_value = i*(max_value_at_3()-min_value_at_3())/255.0+min_value_at_3();
 		hsv_to_rgb(h_value,s_value,temp_value,&red_value,&green_value,&blue_value);
 		color.bytes[0] = (uint8)blue_value;
 		color.bytes[1] = (uint8)green_value;
@@ -320,13 +320,13 @@ void HSVControl::CalcRamps()
 	bits = (uint32*)ramp4->Bits();
 	black.word = 0x00000000;
 	black.bytes[3] = 0xFF;
-	white.word = 0xFFFFFFFF;	
+	white.word = 0xFFFFFFFF;
 	color.word = value.word;
 	for (int32 i=0;i<256;i++) {
 		if ((i%2) == 0) {
 			color.word = mix_2_pixels_fixed(value.word,black.word,32768/255*i);
 		}
-		else 
+		else
 			color.word = mix_2_pixels_fixed(value.word,white.word,32768/255*i);
 		*bits++ = color.word;
 	}
@@ -339,7 +339,7 @@ void HSVControl::SetValue(int32 val)
 	float red = value.bytes[2];
 	float green = value.bytes[1];
 	float blue = value.bytes[0];
-	
+
 	rgb_to_hsv(red,green,blue,&h_value,&s_value,&v_value);
 
 	CalcRamps();
@@ -357,7 +357,7 @@ void HSVControl::SetValue(rgb_color c)
 	float red = value.bytes[2];
 	float green = value.bytes[1];
 	float blue = value.bytes[0];
-	
+
 	rgb_to_hsv(red,green,blue,&h_value,&s_value,&v_value);
 
 	CalcRamps();

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	YIQControl.cpp
-	Contents:	YIQControl-class definitions		
+	Contents:	YIQControl-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -21,7 +21,7 @@ YIQControl::YIQControl(BPoint position, rgb_color c)
 	float red = value.bytes[2];
 	float green = value.bytes[1];
 	float blue = value.bytes[0];
-	
+
 	y_value = (0.299*red+0.587*green+0.114*blue);
 	i_value = (0.596*red-0.274*green-0.322*blue);
 	q_value = (0.212*red-0.523*green+0.311*blue);
@@ -33,7 +33,7 @@ int32 YIQControl::value_at_1()
 //	float red = (value>>8)&0xFF;
 //	float green = (value>>16)&0xFF;
 //	float blue = (value>>24)&0xFF;
-//	
+//
 //	return (0.299*red+0.587*green+0.114*blue);
 	return (int32)y_value;
 }
@@ -44,7 +44,7 @@ int32 YIQControl::value_at_2()
 //	float red = (value>>8)&0xFF;
 //	float green = (value>>16)&0xFF;
 //	float blue = (value>>24)&0xFF;
-//	
+//
 //	return (0.596*red-0.274*green-0.322*blue);
 	return (int32)i_value;
 }
@@ -55,7 +55,7 @@ int32 YIQControl::value_at_3()
 //	float red = (value>>8)&0xFF;
 //	float green = (value>>16)&0xFF;
 //	float blue = (value>>24)&0xFF;
-//	
+//
 //	return (0.212*red-0.523*green+0.311*blue);
 	return (int32)q_value;
 }
@@ -78,18 +78,18 @@ void YIQControl::MouseDown(BPoint point)
 		dragged_map->Unlock();
 		BMessage dragger_message(B_PASTE);
 		dragger_message.AddData("RGBColor",B_RGB_COLOR_TYPE,&c,sizeof(rgb_color));
-		DragMessage(&dragger_message,dragged_map,BPoint(7,7));		
+		DragMessage(&dragger_message,dragged_map,BPoint(7,7));
 	}
 	else {
 		uint32 buttons;
 		Window()->CurrentMessage()->FindInt32("buttons",(int32*)&buttons);
-	
+
 		if (Message() != NULL) {
 			// if invocation-message has "buttons" we should replace it
 			if (Message()->HasInt32("buttons"))
 				Message()->ReplaceInt32("buttons",buttons);
 		}
-		
+
 		float previous_value = -500;
 		float orig_y = y_value;
 		float orig_i = i_value;
@@ -116,7 +116,7 @@ void YIQControl::MouseDown(BPoint point)
 				float red_value = max_c(0,min_c(255,(1*y_value + 0.956*i_value + 0.621*q_value)));
 				float green_value = max_c(0,min_c(255,(1*y_value - 0.272*i_value - 0.647*q_value)));
 				float blue_value = max_c(0,min_c(255,(1*y_value - 1.105*i_value + 1.702*q_value)));
-				
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
@@ -152,7 +152,7 @@ void YIQControl::MouseDown(BPoint point)
 				float red_value = max_c(0,min_c(255,(1*y_value + 0.956*i_value + 0.621*q_value)));
 				float green_value = max_c(0,min_c(255,(1*y_value - 0.272*i_value - 0.647*q_value)));
 				float blue_value = max_c(0,min_c(255,(1*y_value - 1.105*i_value + 1.702*q_value)));
-				
+
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
@@ -168,8 +168,8 @@ void YIQControl::MouseDown(BPoint point)
 			}
 		}
 
-		
-		
+
+
 		else if (((int32)(point.y / COLOR_HEIGHT)) == 0) {
 			// Here we change the Y-value
 			while (buttons) {
@@ -177,17 +177,17 @@ void YIQControl::MouseDown(BPoint point)
 				y_value = ((point.x-4-ramp_left_edge)/RAMP_WIDTH)*(max_value_at_1()-min_value_at_1());
 				y_value = min_c(y_value,max_value_at_1());
 				y_value = max_c(y_value,min_value_at_1());
-			
+
 				float red_value = max_c(0,min_c(255,(1*y_value + 0.956*i_value + 0.621*q_value)));
 				float green_value = max_c(0,min_c(255,(1*y_value - 0.272*i_value - 0.647*q_value)));
 				float blue_value = max_c(0,min_c(255,(1*y_value - 1.105*i_value + 1.702*q_value)));
-				
+
 	//			value = (int32)blue_value << 24 | (int32)green_value<<16 | (int32)red_value<<8 |value & 0xFF;
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
-				 			
-										
+
+
 				if (y_value != previous_value) {
 					previous_value = y_value;
 					CalcRamps();
@@ -196,7 +196,7 @@ void YIQControl::MouseDown(BPoint point)
 				GetMouse(&point,&buttons);
 			}
 		}
-		
+
 		else if	(((int32)(point.y / COLOR_HEIGHT)) == 1) {
 			// Here we change the I-value
 			while (buttons) {
@@ -204,20 +204,20 @@ void YIQControl::MouseDown(BPoint point)
 				i_value = min_value_at_2() + ((point.x-4-ramp_left_edge)/RAMP_WIDTH)*(max_value_at_2()-min_value_at_2());
 				i_value = min_c(i_value,max_value_at_2());
 				i_value = max_c(i_value,min_value_at_2());
-		
-	//			value = ((int32)(1*y_value - 1.105*i_value + 1.702*q_value) << 24) &0xFF000000 | 
-	//					((int32)(1*y_value - 0.272*i_value - 0.647*q_value) << 16) &0x00FF0000 |			
+
+	//			value = ((int32)(1*y_value - 1.105*i_value + 1.702*q_value) << 24) &0xFF000000 |
+	//					((int32)(1*y_value - 0.272*i_value - 0.647*q_value) << 16) &0x00FF0000 |
 	//					((int32)(1*y_value + 0.956*i_value + 0.621*q_value) << 8) & 0x0000FF00 |
 	//					value & 0xFF;
 				float red_value = max_c(0,min_c(255,(1*y_value + 0.956*i_value + 0.621*q_value)));
 				float green_value = max_c(0,min_c(255,(1*y_value - 0.272*i_value - 0.647*q_value)));
 				float blue_value = max_c(0,min_c(255,(1*y_value - 1.105*i_value + 1.702*q_value)));
-				
+
 	//			value = (int32)blue_value << 24 | (int32)green_value<<16 | (int32)red_value<<8 |value & 0xFF;
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
-															
+
 				if (i_value != previous_value) {
 					previous_value = i_value;
 					CalcRamps();
@@ -226,7 +226,7 @@ void YIQControl::MouseDown(BPoint point)
 				GetMouse(&point,&buttons);
 			}
 		}
-		
+
 		else if	(((int32)(point.y / COLOR_HEIGHT)) == 2){
 			// Here we change the Q-value
 			while (buttons) {
@@ -234,20 +234,20 @@ void YIQControl::MouseDown(BPoint point)
 				q_value = min_value_at_3() + ((point.x-4-ramp_left_edge)/RAMP_WIDTH)*(max_value_at_3()-min_value_at_3());
 				q_value = min_c(q_value,max_value_at_3());
 				q_value = max_c(q_value,min_value_at_3());
-		
-	//			value = ((int32)(1*y_value - 1.105*i_value + 1.702*q_value) << 24) &0xFF000000 | 
-	//					((int32)(1*y_value - 0.272*i_value - 0.647*q_value) << 16) &0x00FF0000 |			
+
+	//			value = ((int32)(1*y_value - 1.105*i_value + 1.702*q_value) << 24) &0xFF000000 |
+	//					((int32)(1*y_value - 0.272*i_value - 0.647*q_value) << 16) &0x00FF0000 |
 	//					((int32)(1*y_value + 0.956*i_value + 0.621*q_value) << 8) & 0x0000FF00 |
 	//					value & 0xFF;
 				float red_value = max_c(0,min_c(255,(1*y_value + 0.956*i_value + 0.621*q_value)));
 				float green_value = max_c(0,min_c(255,(1*y_value - 0.272*i_value - 0.647*q_value)));
 				float blue_value = max_c(0,min_c(255,(1*y_value - 1.105*i_value + 1.702*q_value)));
-	
+
 	//			value = (int32)blue_value << 24 | (int32)green_value<<16 | (int32)red_value<<8 |value & 0xFF;
 				value.bytes[0] = (uint8)blue_value;
 				value.bytes[1] = (uint8)green_value;
 				value.bytes[2] = (uint8)red_value;
-										
+
 				if (q_value != previous_value) {
 					previous_value = q_value;
 					CalcRamps();
@@ -261,15 +261,15 @@ void YIQControl::MouseDown(BPoint point)
 				int32 alpha_value = (int32)(((point.x-4-ramp_left_edge)/RAMP_WIDTH)*255);
 				alpha_value = min_c(alpha_value,255);
 				alpha_value = max_c(alpha_value,0);
-		
+
 				value.bytes[3] = alpha_value;
-						
+
 				if (alpha_value != previous_value) {
 					previous_value = alpha_value;
 					CalcRamps();
 					Draw(Bounds());
 				}
-				GetMouse(&point,&buttons);	
+				GetMouse(&point,&buttons);
 			}
 		}
 		if (Message() != NULL) {
@@ -288,7 +288,7 @@ void YIQControl::CalcRamps()
 	// and 32-bit mode
 
 	// the order of colors in a bitmap is BGRA
-	uint32 *bits = (uint32*)ramp1->Bits();	
+	uint32 *bits = (uint32*)ramp1->Bits();
 	union {
 		uint8 bytes[4];
 		uint32 word;
@@ -302,10 +302,10 @@ void YIQControl::CalcRamps()
 		color.bytes[2] = (uint8)red_value;
 		color.bytes[3] = (uint8)255;
 
-//		*bits++ = ((int32)blue_value<<24) + ((int32)green_value <<16) + ((int32)red_value<<8);		
+//		*bits++ = ((int32)blue_value<<24) + ((int32)green_value <<16) + ((int32)red_value<<8);
 		*bits++ = color.word;
-	}	
-	bits = (uint32*)ramp2->Bits();	
+	}
+	bits = (uint32*)ramp2->Bits();
 	for (int32 i=0;i<256;i++) {
 		float red_value = max_c(0,min_c(255,(y_value + 0.956*(min_value_at_2() + (max_value_at_2() - min_value_at_2())/256*i) + 0.621*q_value)));
 		float green_value = max_c(0,min_c(255,(y_value - 0.272*(min_value_at_2() + (max_value_at_2() - min_value_at_2())/256*i) - 0.647*q_value)));
@@ -314,11 +314,11 @@ void YIQControl::CalcRamps()
 		color.bytes[1] = (uint8)green_value;
 		color.bytes[2] = (uint8)red_value;
 		color.bytes[3] = (uint8)255;
-//		*bits++ = ((int32)blue_value<<24) + ((int32)green_value <<16) + ((int32)red_value<<8);		
+//		*bits++ = ((int32)blue_value<<24) + ((int32)green_value <<16) + ((int32)red_value<<8);
 		*bits++ = color.word;
 	}
-	
-	bits = (uint32*)ramp3->Bits();	
+
+	bits = (uint32*)ramp3->Bits();
 	for (int32 i=0;i<256;i++) {
 		float red_value = max_c(0,min_c(255,(y_value + 0.956*i_value + 0.621*(min_value_at_3() + (max_value_at_3() - min_value_at_3())/256*i))));
 		float green_value = max_c(0,min_c(255,(y_value - 0.272*i_value - 0.647*(min_value_at_3() + (max_value_at_3() - min_value_at_3())/256*i))));
@@ -328,19 +328,19 @@ void YIQControl::CalcRamps()
 		color.bytes[2] = (uint8)red_value;
 		color.bytes[3] = (uint8)255;
 
-//		*bits++ = ((int32)blue_value<<24) + ((int32)green_value <<16) + ((int32)red_value<<8);		
+//		*bits++ = ((int32)blue_value<<24) + ((int32)green_value <<16) + ((int32)red_value<<8);
 		*bits++ = color.word;
 	}
 	bits = (uint32*)ramp4->Bits();
 	black.word = 0x00000000;
 	black.bytes[3] = 0xFF;
-	white.word = 0xFFFFFFFF;	
+	white.word = 0xFFFFFFFF;
 	color.word = value.word;
 	for (int32 i=0;i<256;i++) {
 		if ((i%2) == 0) {
 			color.word = mix_2_pixels_fixed(value.word,black.word,32768/255*i);
 		}
-		else 
+		else
 			color.word = mix_2_pixels_fixed(value.word,white.word,32768/255*i);
 		*bits++ = color.word;
 	}
@@ -353,7 +353,7 @@ void YIQControl::SetValue(int32 val)
 	float red = value.bytes[2];
 	float green = value.bytes[1];
 	float blue = value.bytes[0];
-	
+
 	y_value = (0.299*red+0.587*green+0.114*blue);
 	i_value = (0.596*red-0.274*green-0.322*blue);
 	q_value = (0.212*red-0.523*green+0.311*blue);
@@ -374,7 +374,7 @@ void YIQControl::SetValue(rgb_color c)
 	float red = value.bytes[2];
 	float green = value.bytes[1];
 	float blue = value.bytes[0];
-	
+
 	y_value = (0.299*red+0.587*green+0.114*blue);
 	i_value = (0.596*red-0.274*green-0.322*blue);
 	q_value = (0.212*red-0.523*green+0.311*blue);

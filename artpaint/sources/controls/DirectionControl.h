@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	DirectionControl.h
-	Contents:	DirectionControl-class declarations	
+	Contents:	DirectionControl-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -27,7 +27,7 @@ int32 		old_value;
 public:
 		DirectionControl(BRect,char*,char*,BMessage*);
 		~DirectionControl();
-		
+
 void	Draw(BRect area);
 void	MouseDown(BPoint);
 void	setValue(float);
@@ -39,7 +39,7 @@ class DirectionControlBox : public BBox {
 		DirectionControl	*d_control;
 public:
 		DirectionControlBox(BRect,char*,char*,BMessage*);
-		~DirectionControlBox();	
+		~DirectionControlBox();
 
 void	setValue(float);
 };

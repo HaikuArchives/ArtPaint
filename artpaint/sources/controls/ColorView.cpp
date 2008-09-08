@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ColorView.cpp
-	Contents:	ColorView -class definitions	
+	Contents:	ColorView -class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,11 +19,11 @@ ColorView::ColorView(BRect frame,char *label,BMessage *message,rgb_color initial
 {
 	label_view = new BStringView(BRect(16,0,frame.Width(),frame.Height()),"color view label",label);
 	font_height fHeight;
-	
+
 	label_view->GetFontHeight(&fHeight);
 	font_leading = (frame.Height() - (fHeight.descent+fHeight.ascent))/2;
-	
-	AddChild(label_view);	
+
+	AddChild(label_view);
 	label_view->MoveTo((Bounds().bottom-font_leading)-(font_leading-1)+6,0);
 	current_color = initial_color;
 }
@@ -33,26 +33,26 @@ void ColorView::Draw(BRect)
 {
 	rgb_color low = current_color;
 	rgb_color high = low;
-		
+
 	float coeff = high.alpha / 255.0;
 	low.red = (uint8)(coeff*low.red);
 	low.green = (uint8)(coeff*low.green);
 	low.blue = (uint8)(coeff*low.blue);
 	low.alpha = 255;
-		
+
 	high.red = (uint8)(coeff*high.red + (1-coeff)*255);
 	high.green = (uint8)(coeff*high.green + (1-coeff)*255);
 	high.blue = (uint8)(coeff*high.blue + (1-coeff)*255);
 	high.alpha = 255;
-		
+
 	SetHighColor(high);
-	SetLowColor(low);			
+	SetLowColor(low);
 
 //	BRect filled_area = BRect(1,font_leading,(Bounds().bottom-font_leading)-(font_leading-1),Bounds().bottom-font_leading);
 	BRect filled_area = BRect(1,1,Bounds().Height()-2,Bounds().Height()-2);
-	FillRect(filled_area,B_MIXED_COLORS);	
+	FillRect(filled_area,B_MIXED_COLORS);
 	SetPenSize(1);
-	
+
 	SetHighColor(192,192,192,255);
 	StrokeLine(filled_area.LeftBottom(),filled_area.RightBottom());
 	StrokeLine(filled_area.RightTop(),filled_area.RightBottom());
@@ -78,8 +78,8 @@ void ColorView::MessageReceived(BMessage *message)
 			break;
 		default:
 			BControl::MessageReceived(message);
-			break;			
-	}	
+			break;
+	}
 }
 
 
@@ -92,14 +92,14 @@ void ColorView::MouseDown(BPoint point)
 	GetMouse(&point,&buttons);
 	while ((buttons) && ((real_time_clock_usecs() - start_time) < click_speed)) {
 		GetMouse(&point,&buttons);
-		snooze(20 * 1000);		
+		snooze(20 * 1000);
 	}
 	if (TRUE) {
 		ColorPaletteWindow::showPaletteWindow();
 		ColorPaletteWindow::ChangePaletteColor(current_color);
-	}	
+	}
 	else {
-		// Make a color-packet to be dragged.		
+		// Make a color-packet to be dragged.
 	}
 }
 
@@ -110,7 +110,7 @@ void ColorView::ResizeToPreferred()
 	label_view->GetFontHeight(&fHeight);
 	float height = fHeight.ascent+fHeight.descent+fHeight.leading;
 	label_view->ResizeTo(label_view->Bounds().Width(),height);
-	height += 8;	
+	height += 8;
 	ResizeTo(Bounds().Width(),height);
 	label_view->MoveTo(height+4,4);
 	font_leading = (Frame().Height() - (fHeight.descent+fHeight.ascent))/2;
@@ -122,5 +122,5 @@ void ColorView::SetColor(rgb_color c)
 	current_color = c;
 	Invalidate();
 	Message()->ReplaceInt32("value",(RGBColorToBGRA(current_color)));
-	Invoke();				
+	Invoke();
 }

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PopUpSlider.h
-	Contents:	PopUpSlider-class declarations	
+	Contents:	PopUpSlider-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,7 +21,7 @@ class PopUpSlider : public BWindow {
 public:
 
 static	PopUpSlider*	Instantiate(BPoint,BMessenger*,BMessage*,int32,int32);
-		BSlider*		ReturnSlider() { return the_slider; }	
+		BSlider*		ReturnSlider() { return the_slider; }
 		void			Go();
 };
 

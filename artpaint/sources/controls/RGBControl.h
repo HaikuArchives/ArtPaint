@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RGBControl.h
-	Contents:	RGBControl-class declaration	
+	Contents:	RGBControl-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef RGB_CONTROL_H
@@ -17,7 +17,7 @@ void	CalcRamps();
 int32	value_at_1();
 int32	value_at_2();
 int32	value_at_3();
-			
+
 public:
 		RGBControl(BPoint position, rgb_color c);
 

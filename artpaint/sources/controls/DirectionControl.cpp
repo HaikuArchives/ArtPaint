@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	DirectionControl.cpp
-	Contents:	DirectionControl-class definitions	
+	Contents:	DirectionControl-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <math.h>
@@ -24,13 +24,13 @@ DirectionControl::DirectionControl(BRect frame,char *name,char *label,BMessage *
 
 	last_angle = angle = 0;
 	new_angle = 0;
-	
+
 	BPoint point_list[3];
 	point_list[0] = BPoint(CONTROLLER_DIMENSION/2-4,5);
 	point_list[1] = BPoint(CONTROLLER_DIMENSION/2,1);
 	point_list[2] = BPoint(CONTROLLER_DIMENSION/2+4,5);
-	
-	
+
+
 	arrow_head = new HSPolygon(point_list,3);
 
 	point_list[0] = BPoint(CONTROLLER_DIMENSION/2,1);
@@ -54,10 +54,10 @@ void DirectionControl::Draw(BRect area)
 			// Erase the previous drawing.
 			BPolygon *a_poly = arrow_head->GetBPolygon();
 			SetHighColor(ViewColor());
-			FillPolygon(a_poly);	
-			delete a_poly;	
+			FillPolygon(a_poly);
+			delete a_poly;
 		}
-			
+
 		angle += new_angle-last_angle;
 		arrow_head->Rotate(BPoint(CONTROLLER_DIMENSION/2,CONTROLLER_DIMENSION/2),new_angle-last_angle);
 		line->Rotate(BPoint(CONTROLLER_DIMENSION/2,CONTROLLER_DIMENSION/2),new_angle-last_angle);
@@ -66,10 +66,10 @@ void DirectionControl::Draw(BRect area)
 	SetHighColor(0,0,0,255);
 	SetDrawingMode(B_OP_COPY);
 	BPolygon *a_poly = arrow_head->GetBPolygon();
-	FillPolygon(a_poly);	
+	FillPolygon(a_poly);
 	delete a_poly;
 	a_poly = line->GetBPolygon();
-	StrokePolygon(a_poly);	
+	StrokePolygon(a_poly);
 	if (area.IsValid()) {
 		StrokeArc(Bounds(),225,180);
 		SetHighColor(255,255,255,255);
@@ -90,25 +90,25 @@ void DirectionControl::MouseDown(BPoint point)
 	BPoint center;
 	center.x = (Bounds().left+Bounds().right)/2.0;
 	center.y = (Bounds().top+Bounds().bottom)/2.0;
-	Invalidate();	
-	while (buttons) {			
+	Invalidate();
+	while (buttons) {
 		GetMouse(&point,&buttons);
 		new_angle = atan2(point.x-center.x,center.y-point.y)*180/PI;
 		if (new_angle != last_angle) {
 			BRect area = BRect(0,0,-1,-1);
 			Draw(area);
 		}
-		snooze(20 * 1000);	
+		snooze(20 * 1000);
 	}
 	SetValue(new_angle);
-	Invoke();	
+	Invoke();
 }
 
 
 void DirectionControl::setValue(float ang)
 {
 	new_angle = ang;
-//	Draw();	
+//	Draw();
 }
 
 DirectionControlBox::DirectionControlBox(BRect frame,char *name,char *label,BMessage *message)
@@ -116,9 +116,9 @@ DirectionControlBox::DirectionControlBox(BRect frame,char *name,char *label,BMes
 {
 	SetBorder(B_PLAIN_BORDER);
 
-	d_control = new DirectionControl(BRect(EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE),name,label,message);	
+	d_control = new DirectionControl(BRect(EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE),name,label,message);
 	AddChild(d_control);
-	
+
 	ResizeTo(frame.Width(),d_control->Frame().Height()+2*EXTRA_EDGE);
 
 	BStringView *string_view = new BStringView(BRect(d_control->Frame().right+EXTRA_EDGE,Bounds().top,Bounds().right-1,Bounds().bottom),name,label);

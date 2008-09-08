@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PopUpList.cpp
-	Contents:	PopUpList-class definitions.	
+	Contents:	PopUpList-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -20,8 +20,8 @@ PopUpList::PopUpList(BRect frame,BBitmap *down,BBitmap *up,BMessage **message_li
 	pushed = down;
 	current_bitmap = not_pushed = up;
 	target = targ;
-	
-	// Here create the menu that we control	
+
+	// Here create the menu that we control
 	the_menu = new BPopUpMenu("pop-up list menu",FALSE,FALSE);
 	for (int32 i=0;i<message_count;i++) {
 		BMenuItem *menu_item;
@@ -38,7 +38,7 @@ PopUpList::PopUpList(BRect frame,BBitmap *down,BBitmap *up,BPopUpMenu *menu,BMes
 	pushed = down;
 	current_bitmap = not_pushed = up;
 	target = targ;
-	
+
 	the_menu = menu;
 	the_menu->SetTargetForItems(*target);
 }
@@ -65,7 +65,7 @@ void PopUpList::MouseDown(BPoint point)
 
 	BMenuItem *item = the_menu->Go(ConvertToScreen(point));
 	if (item != NULL) {
-		target->SendMessage(item->Message());	
+		target->SendMessage(item->Message());
 	}
 	current_bitmap = not_pushed;
 	Draw(Bounds());
