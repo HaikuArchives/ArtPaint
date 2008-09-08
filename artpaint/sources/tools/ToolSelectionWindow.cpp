@@ -1,125 +1,137 @@
-/* 
+/*
 
 	Filename:	ToolSelectionWindow.cpp
-	Contents:	Definitions for window that is used to select the tools	
+	Contents:	Definitions for window that is used to select the tools
 	Author:		Heikki Suhonen
-	
+
 */
 
-#include <stdio.h>
-
-#include "FloaterManager.h"
-#include "MessageConstants.h"
 #include "ToolSelectionWindow.h"
-#include "ToolImages.h"
-#include "Tools.h"
-#include "PaintApplication.h"
+
 #include "DrawingTools.h"
-#include "UtilityClasses.h"
-#include "StatusView.h"
-#include "Settings.h"
-#include "Controls.h"
-#include "MessageFilters.h"
-#include "ToolButton.h"
-#include "ToolSetupWindow.h"
-#include "StringServer.h"
-#include "ToolManager.h"
+#include "FloaterManager.h"
 #include "MatrixView.h"
+#include "MessageFilters.h"
+#include "PaintApplication.h"
+#include "Settings.h"
+#include "StringServer.h"
+#include "Tools.h"
+#include "ToolButton.h"
+#include "ToolImages.h"
+#include "ToolManager.h"
+#include "ToolSetupWindow.h"
 
-#define	BUTTONS_IN_A_ROW	2
-#define	ADDITIONAL_EDGES	4
-#define	SPACE_BETWEEN		4
 
+ToolSelectionWindow* ToolSelectionWindow::fSelectionWindow = NULL;
 
-ToolSelectionWindow* ToolSelectionWindow::selection_window = NULL;
 
 ToolSelectionWindow::ToolSelectionWindow(BRect frame)
-			:	BWindow(frame,StringServer::ReturnString(TOOLS_STRING),B_FLOATING_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_NOT_H_RESIZABLE|B_NOT_ZOOMABLE|B_WILL_ACCEPT_FIRST_CLICK|B_AVOID_FRONT)
+	: BWindow(frame, StringServer::ReturnString(TOOLS_STRING),
+		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_H_RESIZABLE |
+		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
 {
-	// here we should create buttons for each tool and place
-	// them in the window
-	// we should then resize the window to fit the buttons
-	int32 picture_size = BIG_TOOL_PICTURE_SIZE;
-	((PaintApplication*)be_app)->Settings()->tool_select_window_visible = TRUE;
-			
-	// Here we create a button for each tool.
-	MatrixView *button_matrix = new MatrixView(picture_size,picture_size,EXTRA_EDGE);	
-	BRect button_rect(0,0,picture_size-1,picture_size-1);
-	const DrawingTool *added_tool;
-	added_tool = tool_manager->ReturnTool(FREE_LINE_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	int32 pictureSize = BIG_TOOL_PICTURE_SIZE;
+	((PaintApplication*)be_app)->Settings()->tool_select_window_visible = true;
 
-	added_tool = tool_manager->ReturnTool(STRAIGHT_LINE_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	MatrixView* buttonMatrix = new MatrixView(pictureSize, pictureSize, EXTRA_EDGE);
 
-	added_tool = tool_manager->ReturnTool(RECTANGLE_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	BRect buttonRect(0, 0, pictureSize - 1, pictureSize - 1);
+	const DrawingTool* addedTool = tool_manager->ReturnTool(FREE_LINE_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(ELLIPSE_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(STRAIGHT_LINE_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+
+	addedTool = tool_manager->ReturnTool(RECTANGLE_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+
+	addedTool = tool_manager->ReturnTool(ELLIPSE_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
 	// Here we could add a separator to the tool window.
-	
-	added_tool = tool_manager->ReturnTool(BRUSH_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
-	
-	added_tool = tool_manager->ReturnTool(HAIRY_BRUSH_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
 
-	added_tool = tool_manager->ReturnTool(AIR_BRUSH_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(BRUSH_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(BLUR_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(HAIRY_BRUSH_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
+	addedTool = tool_manager->ReturnTool(AIR_BRUSH_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(FILL_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(BLUR_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(TEXT_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(FILL_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(TRANSPARENCY_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(TEXT_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(ERASER_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(TRANSPARENCY_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
+	addedTool = tool_manager->ReturnTool(ERASER_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(SELECTOR_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(SELECTOR_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	added_tool = tool_manager->ReturnTool(COLOR_SELECTOR_TOOL);
-	button_matrix->AddSubView(new ToolButton(button_rect,added_tool->GetType(),added_tool->GetName()));	
+	addedTool = tool_manager->ReturnTool(COLOR_SELECTOR_TOOL);
+	buttonMatrix->AddSubView(
+		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
 
-	AddChild(button_matrix);
-	button_matrix->ResizeTo(Bounds().Width(),Bounds().Height());
+	AddChild(buttonMatrix);
+	buttonMatrix->ResizeTo(Bounds().Width(), Bounds().Height());
 
-	window_feel feel = ((PaintApplication*)be_app)->Settings()->tool_select_window_feel;
+	window_feel feel =
+		((PaintApplication*)be_app)->Settings()->tool_select_window_feel;
 	SetFeel(feel);
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		SetLook(B_TITLED_WINDOW_LOOK);
 	else
 		SetLook(B_FLOATING_WINDOW_LOOK);
 
-	float min_dimension = 2*EXTRA_EDGE+picture_size;
-	float max_dimension = 1+EXTRA_EDGE + button_matrix->CountChildren()*(picture_size+EXTRA_EDGE);
-	SetSizeLimits(min_dimension,max_dimension,min_dimension,max_dimension);
+	float minDimension = 2 * EXTRA_EDGE + pictureSize;
+	float maxDimension = 1 + EXTRA_EDGE + buttonMatrix->CountChildren() *
+		(pictureSize + EXTRA_EDGE);
+	SetSizeLimits(minDimension, maxDimension, minDimension, maxDimension);
 
 	// Add a filter that will be used to catch mouse-down-messages in order
 	// to activate this window when required
-	Lock();
-	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,B_ANY_SOURCE,B_MOUSE_DOWN,window_activation_filter);
-	AddCommonFilter(activation_filter);
-	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
-	Unlock();
+	if (Lock()) {
+		BMessageFilter* activation_filter = new BMessageFilter(B_ANY_DELIVERY,
+			B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
+		AddCommonFilter(activation_filter);
+		AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
+		Unlock();
+	}
 
 	ToolButton::ChangeActiveButton(tool_manager->ReturnActiveToolType());
 
 	Show();
-	selection_window = this;
+	fSelectionWindow = this;
 
-	SetWindowAlignment(B_PIXEL_ALIGNMENT,0,0,picture_size+EXTRA_EDGE,EXTRA_EDGE+1,0,0,picture_size+EXTRA_EDGE,EXTRA_EDGE+1);
+	// NOTE: this is broken/ not implemented in Haiku, so the tools window
+	//		 will not show up horizontal as it should be, enable if implemented
+	//SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, picture_size + EXTRA_EDGE,
+	//	EXTRA_EDGE + 1, 0, 0, picture_size + EXTRA_EDGE, EXTRA_EDGE + 1);
+
+	// remove this if SetWindowAlignment is implemented
+	ResizeBy(0.0, maxDimension - pictureSize);
 
 	FloaterManager::AddFloater(this);
 }
@@ -129,98 +141,93 @@ ToolSelectionWindow::~ToolSelectionWindow()
 {
 	// Record our frame to the settings.
 	((PaintApplication*)be_app)->Settings()->tool_select_window_frame = Frame();
-	((PaintApplication*)be_app)->Settings()->tool_select_window_visible = FALSE;
+	((PaintApplication*)be_app)->Settings()->tool_select_window_visible = false;
 
-	selection_window = NULL;
+	fSelectionWindow = NULL;
 	FloaterManager::RemoveFloater(this);
 }
 
 
-void ToolSelectionWindow::FrameResized(float,float h)
+void
+ToolSelectionWindow::FrameResized(float width, float height)
 {
-	BView *matrix = ChildAt(0);
+	BView* matrix = ChildAt(0);
 	if (matrix != NULL) {
-		float width,height;
-		matrix->GetPreferredSize(&width,&height);
-		if ((width != Bounds().Width()) || (height != Bounds().Height()))
-			ResizeTo(width,h);
-
-////		float cell_size = 32+4;
-//		if (Bounds().IntegerWidth() < Bounds().IntegerHeight()) {
-//			SetFlags(Flags() & ~B_NOT_H_RESIZABLE | B_NOT_V_RESIZABLE);
-//		}
-//		else if (Bounds().IntegerWidth() > Bounds().IntegerHeight()) {
-//			SetFlags(Flags() & ~B_NOT_V_RESIZABLE | B_NOT_H_RESIZABLE);		
-//		}
-//		else {
-//			SetFlags(Flags() & ~B_NOT_V_RESIZABLE & ~B_NOT_H_RESIZABLE);
-//		}
-	}	
+		float tmpHeight;
+		matrix->GetPreferredSize(&width, &tmpHeight);
+		if ((width != Bounds().Width()) || (tmpHeight != Bounds().Height()))
+			ResizeTo(width, height);
+	}
 }
 
-void ToolSelectionWindow::MessageReceived(BMessage *message)
+
+void
+ToolSelectionWindow::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-
-		// this comes from a tool's picture-button and informs that a tool for a mouse-button has
-		// changed
-		case HS_TOOL_CHANGED:
+		case HS_TOOL_CHANGED: {
 			int32 tool;
-			if (message->FindInt32("tool",&tool) == B_NO_ERROR) {			
-				tool_manager->ChangeTool(message->FindInt32("tool"));		
+			if (message->FindInt32("tool",&tool) == B_OK) {
+				// this comes from a tool's picture-button and
+				// informs that a tool for a mouse-button has changed
+				tool_manager->ChangeTool(tool);
 				ToolButton::ChangeActiveButton(tool);
 				ToolSetupWindow::changeToolForTheSetupWindow(tool);
-			}									
-//			SelectedToolsView::sendMessageToAll(message);
-			break;
-		default:
+			}
+		} break;
+
+		default: {
 			BWindow::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
 
-void ToolSelectionWindow::showWindow()
+void
+ToolSelectionWindow::showWindow()
 {
-	if (selection_window == NULL) {
-		new ToolSelectionWindow(((PaintApplication*)be_app)->Settings()->tool_select_window_frame);
-	}
-	else {
-		selection_window->Lock();
-		selection_window->SetWorkspaces(B_CURRENT_WORKSPACE);
-		if (selection_window->IsHidden()) {
-			selection_window->Show();
+	if (fSelectionWindow) {
+		if (fSelectionWindow->Lock()) {
+			fSelectionWindow->SetWorkspaces(B_CURRENT_WORKSPACE);
+
+			if (fSelectionWindow->IsHidden())
+				fSelectionWindow->Show();
+
+			if (!fSelectionWindow->IsActive())
+				fSelectionWindow->Activate(true);
+
+			fSelectionWindow->Unlock();
 		}
-		if (!selection_window->IsActive()) {
-			selection_window->Activate(TRUE);
-		}
-		selection_window->Unlock();
+	} else {
+		new ToolSelectionWindow(
+			((PaintApplication*)be_app)->Settings()->tool_select_window_frame);
 	}
-	
-	BRect new_rect = FitRectToScreen(selection_window->Frame());
-	selection_window->MoveTo(new_rect.LeftTop());	
+
+	fSelectionWindow->MoveTo(FitRectToScreen(fSelectionWindow->Frame()).LeftTop());
 }
 
 
-void ToolSelectionWindow::setFeel(window_feel feel)
+void
+ToolSelectionWindow::setFeel(window_feel feel)
 {
 	((PaintApplication*)be_app)->Settings()->tool_select_window_feel = feel;
-	
-	if (selection_window != NULL) {
-		selection_window->SetFeel(feel);
 
-		if (feel == B_NORMAL_WINDOW_FEEL)
-			selection_window->SetLook(B_TITLED_WINDOW_LOOK);
-		else
-			selection_window->SetLook(B_FLOATING_WINDOW_LOOK);
+	if (fSelectionWindow) {
+		fSelectionWindow->SetFeel(feel);
+
+		window_look look = B_TITLED_WINDOW_LOOK;
+		if (feel != B_NORMAL_WINDOW_FEEL)
+			look = B_FLOATING_WINDOW_LOOK;
+		fSelectionWindow->SetLook(look);
 	}
 }
 
-void ToolSelectionWindow::ChangeTool(int32 tool)
+
+void
+ToolSelectionWindow::ChangeTool(int32 tool)
 {
-	if (selection_window != NULL) {
-		selection_window->Lock();
+	if (fSelectionWindow && fSelectionWindow->Lock()) {
 		ToolButton::ChangeActiveButton(tool);
-		selection_window->Unlock();
+		fSelectionWindow->Unlock();
 	}
 }
