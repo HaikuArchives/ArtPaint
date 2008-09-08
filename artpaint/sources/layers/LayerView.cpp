@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	LayerView.cpp
-	Contents:	Definitions for a view that represents a layer.	
+	Contents:	Definitions for a view that represents a layer.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -22,13 +22,13 @@ LayerView::LayerView(BBitmap *image,Layer *layer)
 {
 	the_image = image;
 	the_layer = layer;
-	
+
 	BMessage a_message;
 	a_message.AddInt32("layer_id",the_layer->Id());
 	a_message.AddPointer("layer_pointer",(void*)the_layer);
 	a_message.what = HS_LAYER_VISIBILITY_CHANGED;
 	visibility_box = new BCheckBox(BRect(80,5,140,30),"visibility check box",StringServer::ReturnString(VISIBLE_STRING),new BMessage(a_message));
-	
+
 	BRect rect = visibility_box->Frame();
 	rect.OffsetBy(0,rect.Height()+4);
 
@@ -38,8 +38,8 @@ LayerView::LayerView(BBitmap *image,Layer *layer)
 
 
 	layer_operation_pop_up_menu = new BPopUpMenu("layer operation menu");
-		
-	
+
+
 	a_message.what = HS_MERGE_WITH_UPPER_LAYER;
 	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(MERGE_WITH_FRONT_LAYER_STRING),new BMessage(a_message)));
 
@@ -56,12 +56,12 @@ LayerView::LayerView(BBitmap *image,Layer *layer)
 
 	layer_operation_pop_up_menu->AddSeparatorItem();
 
-	a_message.what = HS_DUPLICATE_LAYER;	
+	a_message.what = HS_DUPLICATE_LAYER;
 	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(DUPLICATE_LAYER_STRING),new BMessage(a_message)));
 
 	layer_operation_pop_up_menu->AddSeparatorItem();
 
-	a_message.what = HS_DELETE_LAYER;	
+	a_message.what = HS_DELETE_LAYER;
 	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(DELETE_LAYER_STRING),new BMessage(a_message)));
 
 	layer_operation_pop_up_menu->SetRadioMode(false);
@@ -70,7 +70,7 @@ LayerView::LayerView(BBitmap *image,Layer *layer)
 	popUpMenuField->ResizeToPreferred();
 	popUpMenuField->MoveTo(visibility_box->Frame().left,visibility_box->Frame().bottom+4);
 	popUpMenuField->MenuItem()->SetLabel("");
-	AddChild(popUpMenuField);	
+	AddChild(popUpMenuField);
 }
 
 
@@ -117,7 +117,7 @@ void LayerView::MessageReceived(BMessage *message)
 		case HS_LAYER_NAME_CHANGED:
 			the_layer->SetName(layer_name_field->Text());
 			break;
-		
+
 		default:
 			BBox::MessageReceived(message);
 			break;
@@ -131,14 +131,14 @@ void LayerView::MouseDown(BPoint location)
 	BMessage a_message;
 	a_message.AddInt32("layer_id",the_layer->Id());
 	a_message.AddPointer("layer_pointer",(void*)the_layer);
-	
+
 	uint32 buttons;
 	Window()->CurrentMessage()->FindInt32("buttons",(int32*)&buttons);
 	BRect mini_image_frame = BRect(5,5,HS_MINIATURE_IMAGE_WIDTH+5,HS_MINIATURE_IMAGE_HEIGHT+5);
 
-	if (image_window != NULL) {	
+	if (image_window != NULL) {
 		a_message.what = HS_LAYER_ACTIVATED;
-		image_window->PostMessage(&a_message,image_view);	
+		image_window->PostMessage(&a_message,image_view);
 	}
 	// Here initiate a drag-session. If mouse was over the image, whole layer should
 	// be dragged. Otherwise we drag this view in it's parent to reorder the layers.
@@ -148,7 +148,7 @@ void LayerView::MouseDown(BPoint location)
 		a_message.AddPointer("layer_bitmap",(void*)the_layer->Bitmap());
 		BBitmap *layer_mini_image = CopyBitmap(the_layer->GetMiniatureImage());
 		DragMessage(&a_message,layer_mini_image,B_OP_ALPHA,location-BPoint(5,5));
-	}		
+	}
 	else {
 		// We start reordering the layers.
 		thread_id reorder = spawn_thread(LayerView::reorder_thread,"reorder layers",B_NORMAL_PRIORITY,(void*)this);
@@ -168,36 +168,36 @@ void LayerView::MouseMoved(BPoint where,uint32 transit,const BMessage*)
 				number_of_null++;
 			}
 			else {
-				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(TRUE);			
+				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(TRUE);
 			}
-					
+
 			if (the_layer->ReturnLowerLayer() == NULL) {
 				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(FALSE);
 				number_of_null++;
 			}
 			else {
-				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);			
+				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
 			}
-	
+
 			if (number_of_null == 2) {
-				layer_operation_pop_up_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(FALSE);						
+				layer_operation_pop_up_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(FALSE);
 			}
 			else {
-				layer_operation_pop_up_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(TRUE);					
+				layer_operation_pop_up_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(TRUE);
 			}
-	
+
 			BView *image_view = the_layer->GetImageView();
 			BWindow *image_window = image_view->Window();
-			
+
 			popUpMenuField->Menu()->SetTargetForItems(BMessenger(image_view,image_window));
 		}
-	}	
+	}
 }
 
 
 void LayerView::UpdateImage()
 {
-	DrawBitmap(the_image,BPoint(5,5));	
+	DrawBitmap(the_image,BPoint(5,5));
 }
 
 
@@ -228,9 +228,9 @@ void LayerView::Activate(bool active)
 		}
 		else if (Parent() != NULL)
 			SetViewColor(Parent()->ViewColor());
-		
+
 		visibility_box->SetViewColor(ViewColor());
-		
+
 		popUpMenuField->SetViewColor(ViewColor());
 	}
 }
@@ -240,7 +240,7 @@ void LayerView::SetVisibility(bool visible)
 	BWindow *a_window = visibility_box->Window();
 	if (a_window != NULL)
 		a_window->Lock();
-		
+
 	if (visible == TRUE)
 		visibility_box->SetValue(B_CONTROL_ON);
 	else
@@ -266,7 +266,7 @@ int32 LayerView::ReorderViews()
 	BRect frame;
 
 	BWindow *the_window = Window();
-	
+
 	int32 positions_moved = 0;
 	if (the_window != NULL) {
 		the_window->Lock();
@@ -274,11 +274,11 @@ int32 LayerView::ReorderViews()
 		BView *exchanged_view;
 		GetMouse(&location,&buttons);
 		the_window->Unlock();
-		
-		if (parent_view != NULL) {	
+
+		if (parent_view != NULL) {
 			while (buttons) {
 				the_window->Lock();
-				location = ConvertToParent(location);				
+				location = ConvertToParent(location);
 				frame = ConvertToParent(Bounds());
 				frame.OffsetBy(0,-LAYER_VIEW_HEIGHT);
 				if (frame.Contains(location) == TRUE) {
@@ -292,7 +292,7 @@ int32 LayerView::ReorderViews()
 								parent_view->ScrollBy(0,Frame().top);
 							}
 						}
-					}				
+					}
 				}
 				else {
 					frame.OffsetBy(0,2*LAYER_VIEW_HEIGHT);
@@ -307,12 +307,12 @@ int32 LayerView::ReorderViews()
 									parent_view->ScrollBy(0,Frame().bottom-parent_view->Bounds().bottom);
 								}
 							}
-						}				
-					}			
-				}			
+						}
+					}
+				}
 				GetMouse(&location,&buttons);
 				the_window->Unlock();
-								
+
 				snooze(20 * 1000);
 			}
 		}
@@ -326,7 +326,7 @@ int32 LayerView::ReorderViews()
 		a_message.AddPointer("layer_pointer",(void*)the_layer);
 		a_message.AddInt32("positions_moved",positions_moved);
 		image_window->PostMessage(&a_message,image_view);
-	}	
-	
+	}
+
 	return positions_moved;
 }

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Layer.h
-	Contents:	Layer-class declaration and constants	
+	Contents:	Layer-class declaration and constants
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef LAYER_H
@@ -50,7 +50,7 @@ class Image;
 // from a list view just because of that. And the listview represenntation
 // is not very good anyway.
 class Layer {
-private:	
+private:
 	// this bitmap holds the actual image-data of this layer
 	BBitmap	*the_bitmap;
 //	BView	*bitmap_view;
@@ -59,7 +59,7 @@ private:
 
 	// This id identifies the layer within the image-view that it belongs to.
 	// It is set in the constructor.
-	int32	layer_id;	
+	int32	layer_id;
 
 	// this semaphore is used to guard the access to miniature image
 	// and the int32 tells how many threads are waiting to do this job
@@ -70,10 +70,10 @@ private:
 	// this tells whether the layer is visible at all
 	bool	visibility;
 	bool	is_active;
-	
+
 	// this is the type of the layer, HS_NORMAL_LAYER or HS_CONTROL_LAYER
 	int32	layer_type;
-	
+
 	// this stores the layer name
 	char	layer_name[64];
 
@@ -84,14 +84,14 @@ private:
 
 
 	Image	*the_image;
-	
+
 	// This is the view tha contains layer's miniature representation
 	// and some controls for controlling layers properties.
 	LayerView	*layer_view;
-		
+
 	uint32		fixed_alpha_table[256];
 	float		float_alpha_table[256];
-		
+
 	float		transparency_coefficient;
 
 // this function calculates the miniature_image
@@ -103,7 +103,7 @@ int32	calc_mini_image();
 
 // this function calculates the bounds_rectangle for actual image date
 BRect	ImageBounds();
-	
+
 public:
 	Layer(BRect frame,int32 id,BView *image_v,int32 type=HS_NORMAL_LAYER,BBitmap *a_bitmap=NULL);
 	~Layer();
@@ -151,7 +151,7 @@ const	uint32*		ReturnFixedAlphaTable() { return fixed_alpha_table; }
 
 		void		SetTransparency(float);
 		float		GetTransparency() { return transparency_coefficient; }
-		
+
 		Layer*		ReturnUpperLayer();
 		Layer*		ReturnLowerLayer();
 

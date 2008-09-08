@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	LayerView.h
-	Contents:	LayerView-class declaration.	
+	Contents:	LayerView-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -27,7 +27,7 @@ BBitmap	*the_image;		// Not to be deleted.
 Layer	*the_layer;		// Not to be deleted.
 bool	is_active;
 
-BCheckBox		*visibility_box;			
+BCheckBox		*visibility_box;
 BPopUpMenu		*layer_operation_pop_up_menu;	// Delete in destructor.
 BMenuField		*popUpMenuField;
 BTextControl	*layer_name_field;
@@ -42,13 +42,13 @@ public:
 			LayerView(BBitmap *image,Layer *layer);
 			~LayerView();
 
-void		AttachedToWindow();			
+void		AttachedToWindow();
 void		MessageReceived(BMessage*);
 void		MouseDown(BPoint);
 void		MouseMoved(BPoint where,uint32 transit,const BMessage*);
 void		Draw(BRect);
 
-		
+
 void		UpdateImage();
 void		Activate(bool);
 void		SetVisibility(bool);
