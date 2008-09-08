@@ -704,7 +704,7 @@ TextManipulatorView::TextManipulatorView(BRect rect,TextManipulator *manip,BMess
 	AddChild(font_menu_field);
 	font_menu_field->ResizeToPreferred();
 	font_menu_field->SetDivider(font_menu_field->StringWidth(string)+5);
-	frame = font_menu_field->Frame();
+	frame = text_view_box->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
