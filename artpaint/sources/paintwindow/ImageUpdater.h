@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ImageUpdater.h
-	Contents:	ImageUpdater-class declarations.	
+	Contents:	ImageUpdater-class declarations.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -25,17 +25,17 @@ class ImageUpdater {
 		BRect		updated_rect;
 		bool		continue_updating;
 		thread_id	updater_thread;
-	
+
 		bool	EnterCS();
 		bool	ExitCS();
 
 static	int32	updater_entry(void*);
-		int32	updater_function();	
+		int32	updater_function();
 
 public:
 		ImageUpdater(ImageView*,double update_interval=50000.0);
 		~ImageUpdater();
-	
+
 void	AddRect(BRect);
 void	ForceUpdate();
 };

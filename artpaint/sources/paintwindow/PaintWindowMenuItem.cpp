@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PaintWindowMenuItem.cpp
-	Contents:	PaintWindowMenuItem-class definitions	
+	Contents:	PaintWindowMenuItem-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <string.h>
@@ -20,7 +20,7 @@ PaintWindowMenuItem::PaintWindowMenuItem(const char *label,BMessage *message,cha
 		strcpy(help_message,help);
 	}
 	else
-		help_message = NULL;		
+		help_message = NULL;
 
 	paint_window = pw;
 }
@@ -42,6 +42,6 @@ void PaintWindowMenuItem::Highlight(bool highlighted)
 	else if ((highlighted == FALSE) && (paint_window != NULL)) {
 		paint_window->Lock();
 		paint_window->SetHelpString("",HS_TEMPORARY_HELP_MESSAGE);
-		paint_window->Unlock();		
+		paint_window->Unlock();
 	}
 }

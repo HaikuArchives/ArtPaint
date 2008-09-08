@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	BackgroundView.h
-	Contents:	BackgroundView class declaration	
+	Contents:	BackgroundView class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef	BACKGROUND_VIEW_H
@@ -19,7 +19,7 @@ class BackgroundView : public BView {
 // this will be used to create another thread for rotation or
 // resizing
 //static	int32	thread_entry(void *data);
-//	
+//
 //void	resizeImageBounds();
 
 public:

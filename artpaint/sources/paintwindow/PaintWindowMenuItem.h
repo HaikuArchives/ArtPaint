@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PaintWindowMenuItem.h
-	Contents:	PaintWindowMenuItem-class declaration	
+	Contents:	PaintWindowMenuItem-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,7 +21,7 @@ class PaintWindowMenuItem : public BMenuItem {
 public:
 		PaintWindowMenuItem(const char*,BMessage*,char =NULL,uint32 =NULL,PaintWindow* =NULL,const char* =NULL);
 		~PaintWindowMenuItem();
-	
+
 void	Highlight(bool);
 };
 

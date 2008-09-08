@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	MagnificationView.h
-	Contents:	MagnificationView-class declarations	
+	Contents:	MagnificationView-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef MAGNIFICATION_VIEW_H
@@ -16,12 +16,12 @@
 class MagnificationView : public BView {
 		BButton	*plus_button;
 		BButton	*minus_button;
-		
+
 		BStringView	*string_view;
 		BBox		*string_box;
 public:
 		MagnificationView(BRect);
-		
+
 void	AttachedToWindow();
 void	Draw(BRect);
 
@@ -34,7 +34,7 @@ void	SetTarget(BMessenger&);
 class MagStringView : public BStringView {
 public:
 		MagStringView(BRect,char*,char*);
-		
+
 void	MouseMoved(BPoint,uint32,const BMessage*);
 };
 

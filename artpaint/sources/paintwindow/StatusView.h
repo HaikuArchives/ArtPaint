@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	StatusView.h
-	Contents:	StatusView class declaration and some classes it uses	
+	Contents:	StatusView class declaration and some classes it uses
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -29,24 +29,24 @@ class StatusView : public BView {
 		BStringView 		*coordinate_view;
 		MagnificationView	*mag_state_view;
 		BStringView			*message_view;
-		
+
 		// This is the StatusBar that will be used in this status-view.
 		BStatusBar	*status_bar;
-						
+
 		// This is the view that has been created by the manipulator
 		BView		*manipulator_view;
 
 		// These are the boxes that hold the string-views.
 		BBox 	*coordinate_box;
 		BBox	*manipulator_box;
-		
+
 		// These are picture-buttons for Cancel- and OK-messages.
 		HSPictureButton	*ok_button,*cancel_button;
-				
+
 		// These are views for selected tools and colors
 		// and the current color-set.
 		ColorContainer		*color_container;
-		SelectedColorsView	*selected_colors;				
+		SelectedColorsView	*selected_colors;
 
 
 public:
@@ -56,7 +56,7 @@ public:
 
 		~StatusView();
 
-void	SetCoordinates(BPoint point,BPoint reference,bool use_reference);	
+void	SetCoordinates(BPoint point,BPoint reference,bool use_reference);
 void	SetMagnifyingScale(float mag);
 void	SetHelpMessage(const char *s) { message_view->SetText(s); }
 
@@ -77,18 +77,18 @@ class SelectedColorsView : public BBox {
 //		int32 		button_count;
 //		mouse_map 	button_map;
 //		BBitmap		*color_pop_up_image;
-		
+
 // a view is added to list in constructor and removed from it in destructor
 static	BList	*list_of_views;
 		float	foreground_color_percentage;
 
-void	SetHighAndLowColors(const rgb_color&);		
+void	SetHighAndLowColors(const rgb_color&);
 
 bool	IsPointOverForegroundColor(BPoint);
 public:
 		SelectedColorsView(BRect frame);
-		~SelectedColorsView();	
-void	Draw(BRect);			
+		~SelectedColorsView();
+void	Draw(BRect);
 void	MessageReceived(BMessage *message);
 void	MouseDown(BPoint location);
 void	MouseMoved(BPoint,uint32, const BMessage*);
@@ -107,14 +107,14 @@ static	void	sendMessageToAll(BMessage *message);
 //
 //		// these store the tool-pictures
 //		BPicture *left_picture,*right_picture,*middle_picture;
-//		
+//
 //// a view is added to list in constructor and removed from it in destructor
 //static	BList *list_of_views;
-//		
+//
 //public:
 //		SelectedToolsView(BRect frame);
-//		~SelectedToolsView();	
-//void	Draw(BRect);			
+//		~SelectedToolsView();
+//void	Draw(BRect);
 //void	MessageReceived(BMessage *message);
 //void	MouseDown(BPoint location);
 //void	MouseMoved(BPoint,uint32, const BMessage*);

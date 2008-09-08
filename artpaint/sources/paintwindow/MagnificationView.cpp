@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	MagnificationView.cpp
-	Contents:	MagnificationView-class definitions	
+	Contents:	MagnificationView-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Application.h>
@@ -26,14 +26,14 @@ MagnificationView::MagnificationView(BRect rect)
 {
 	char string[256];
 	sprintf(string,"%s: %.1f%%",StringServer::ReturnString(MAG_STRING),1600.0);
-	
+
 	BRect string_rect;
 	string_rect.left = 0;
-	string_rect.right = StringWidth(string);	
+	string_rect.right = StringWidth(string);
 	ResizeTo(string_rect.Width()+2*(rect.Height()+4),rect.Height());
 //	string_rect.OffsetBy(rect.Height()+4,0);
 	rect = Bounds();
-			
+
 	BRect button_rect;
 	button_rect.left = 0;
 	button_rect.top = 0;
@@ -43,9 +43,9 @@ MagnificationView::MagnificationView(BRect rect)
 	minus_button = new BButton(button_rect,"minus_button","-",new BMessage(HS_ZOOM_IMAGE_OUT));
 	minus_button->ResizeTo(button_rect.Width(),button_rect.Height());
 	AddChild(minus_button);
-	
+
 	button_rect.OffsetBy(button_rect.Width(),0);
-	plus_button = new BButton(button_rect,"plus_button","+",new BMessage(HS_ZOOM_IMAGE_IN));	
+	plus_button = new BButton(button_rect,"plus_button","+",new BMessage(HS_ZOOM_IMAGE_IN));
 	plus_button->ResizeTo(button_rect.Width(),button_rect.Height());
 	AddChild(plus_button);
 
@@ -57,7 +57,7 @@ MagnificationView::MagnificationView(BRect rect)
 	string_box->SetBorder(B_PLAIN_BORDER);
 	AddChild(string_box);
 
-	string_rect.InsetBy(2,1);	
+	string_rect.InsetBy(2,1);
 	string_rect.OffsetTo(1,1);
 	string_view = new MagStringView(string_rect,"string_view",string);
 	string_box->AddChild(string_view);
@@ -117,7 +117,7 @@ filter_result filter1(BMessage *message,BHandler **handlers,BMessageFilter *filt
 	BWindow *window = cast_as(filter->Looper(),BWindow);
 	BView *image_view = NULL;
 	BView *string_view = cast_as(handlers[0],BView);
-	
+
 	if (window != NULL) {
 		image_view = window->FindView("image_view");
 	}
@@ -127,7 +127,7 @@ filter_result filter1(BMessage *message,BHandler **handlers,BMessageFilter *filt
 	BPoint point;
 	message->FindPoint("point",&point);
 	BPoint screen_point = string_view->ConvertToScreen(point);
-	
+
 	PopUpSlider *slider = PopUpSlider::Instantiate(screen_point,new BMessenger(image_view,window),new BMessage(HS_SET_MAGNIFYING_SCALE),10,1600);
 	slider->ReturnSlider()->SetModificationMessage(new BMessage(HS_SET_MAGNIFYING_SCALE));
 	slider->ReturnSlider()->SetValue(value);

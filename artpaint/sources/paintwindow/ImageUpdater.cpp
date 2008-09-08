@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ImageUpdater.cpp
-	Contents:	ImageUpdater-class definitions	
+	Contents:	ImageUpdater-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdio.h>
@@ -37,9 +37,9 @@ ImageUpdater::~ImageUpdater()
 		int32 return_value;
 		snooze(1000);	// This is a precaution. See BeBook threads-chapter for more info.
 		wait_for_thread(updater_thread,&return_value);
-		ExitCS();	
+		ExitCS();
 	}
-	delete_sem(benaphore_mutex);	
+	delete_sem(benaphore_mutex);
 }
 
 
@@ -57,21 +57,21 @@ void ImageUpdater::AddRect(BRect rect)
 void ImageUpdater::ForceUpdate()
 {
 	EnterCS();
-	
+
 	if (updated_rect.IsValid() == true) {
 		if (view->LockLooper() == true) {
 			updated_rect.left = floor(updated_rect.left);
 			updated_rect.top = floor(updated_rect.top);
 			updated_rect.right = ceil(updated_rect.right);
 			updated_rect.bottom = ceil(updated_rect.bottom);
-			
+
 			if (updated_rect.IsValid() == true) {
 				view->UpdateImage(updated_rect);
 				view->Sync();
 			}
-			view->UnlockLooper();	
+			view->UnlockLooper();
 		}
-		updated_rect = BRect();	
+		updated_rect = BRect();
 	}
 	ExitCS();
 }
@@ -98,18 +98,18 @@ int32 ImageUpdater::updater_function()
 
 bool ImageUpdater::EnterCS()
 {
-	int32 previous = atomic_add(&benaphore_count, 1); 
-	if (previous >= 1) 
-		if (acquire_sem(benaphore_mutex) != B_NO_ERROR) 
+	int32 previous = atomic_add(&benaphore_count, 1);
+	if (previous >= 1)
+		if (acquire_sem(benaphore_mutex) != B_NO_ERROR)
 			return FALSE;
-	
-	return TRUE;		
+
+	return TRUE;
 }
 
 
 bool ImageUpdater::ExitCS()
 {
-	int32 previous = atomic_add(&benaphore_count, -1); 
+	int32 previous = atomic_add(&benaphore_count, -1);
 	if (previous > 1)  {
 		release_sem(benaphore_mutex);
 	}

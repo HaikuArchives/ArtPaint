@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Image.h
-	Contents:	Declarations for the Image-class	
+	Contents:	Declarations for the Image-class
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -18,7 +18,7 @@
 
 /*
 	The Image-class handles the image. It has the following duties:
-	
+
 		1.	Stores the layers
 		2.	Renders a complete picture out of the layers
 		3.	Allows undo-mechanism to update the layers
@@ -38,29 +38,29 @@ struct color_entry {
 };
 
 class Image {
-		BList	*layer_list;		
+		BList	*layer_list;
 		Layer	**layer_id_list;
 
 		// This is the index of active layer in layer_list.
 		int32	current_layer_index;
 		int32	next_layer_id;
 
-		BBitmap	*rendered_image;								
+		BBitmap	*rendered_image;
 		BBitmap	*thumbnail_image;
 
 		BBitmap	*dithered_image;
 		BList	*dithered_users;
 
 		bool	dithered_up_to_date;
-		
+
 		float	image_width,image_height;	// these are the real width and height of canvas in pixels
 
-		
-		
+
+
 		ImageView	*image_view;
 		UndoQueue	*undo_queue;
-		
-	
+
+
 
 		void		CalculateThumbnails();
 static	int32	calculate_thumbnail_image(void*);
@@ -77,7 +77,7 @@ static	int32		color_candidate_users;
 
 static	int32		enter_dither(void*);
 		int32		DoDither(BRect);
-		
+
 
 //static	int32		enter_copy_to_dither(void*);
 //		int32		CopyToDitherImage(BRect);
@@ -87,8 +87,8 @@ static	int32		candidate_creator(void*);
 
 static	int32		enter_render(void*);
 		int32		DoRender(BRect);
-		
-		
+
+
 static	int32		enter_render_preview(void*);
 		int32		DoRenderPreview(BRect,int32);
 
@@ -96,7 +96,7 @@ static	int32		enter_render_preview(void*);
 public:
 			Image(ImageView*,float,float,UndoQueue*);
 			~Image();
-		
+
 void		Render();
 void		Render(BRect);
 void		RenderPreview(BRect,int32);
@@ -114,12 +114,12 @@ bool		DuplicateLayer(Layer*,int32);
 bool		MergeLayers(Layer*,int32,bool merge_with_upper);
 bool		RemoveLayer(Layer*,int32);
 bool		ToggleLayerVisibility(Layer*,int32);
-				
+
 
 Layer*		ReturnUpperLayer(Layer*);
 Layer*		ReturnLowerLayer(Layer*);
 
-status_t	InsertLayer(BBitmap *layer_bitmap = NULL);	
+status_t	InsertLayer(BBitmap *layer_bitmap = NULL);
 
 BList*		LayerList() { return layer_list; }
 
