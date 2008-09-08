@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PopUpColorWindow.h
-	Contents:	Declarations for PopUpColorWindow -class and its views.	
+	Contents:	Declarations for PopUpColorWindow -class and its views.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,7 +19,7 @@
 /*
 	PopUpColorWindow displays a window that can be used to pick one color.
 	It will close itself when de-activated or after a color is selected.
-	It should be possible to pass the mouse-down message straight to this window.	
+	It should be possible to pass the mouse-down message straight to this window.
 	When color is selected a message is passed to designated target.
 */
 
@@ -29,7 +29,7 @@ class ControlSliderBox;
 class PopUpColorWindow : public BWindow {
 		BMessenger	*target;
 		BMessage	*default_message;
-		
+
 public:
 		PopUpColorWindow(BRect,BMessenger*,BMessage *default_out_message=NULL);
 		~PopUpColorWindow();
@@ -43,14 +43,14 @@ class ColorWell : public BView {
 		BBitmap 			*color_map;
 		uint32				blue_value;
 		BMessenger			*target;
-		
-		ControlSliderBox	*slider;			
-virtual	void	create_color_map();		
+
+		ControlSliderBox	*slider;
+virtual	void	create_color_map();
 public:
 		ColorWell(BRect frame,BMessenger*);
 		~ColorWell();
 void	AttachedToWindow();
-void	Draw(BRect);	
+void	Draw(BRect);
 void 	MessageReceived(BMessage*);
 void	MouseDown(BPoint location);
 };

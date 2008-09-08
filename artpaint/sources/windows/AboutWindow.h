@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	AboutWindow.h
-	Contents:	AboutWindow-class declaration			
+	Contents:	AboutWindow-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef	ABOUT_WINDOW_H
@@ -20,7 +20,7 @@ static	BWindow	*the_window;
 		AboutWindow(BRect frame);
 		~AboutWindow();
 public:
-static	void	showWindow();		
+static	void	showWindow();
 };
 
 
@@ -37,17 +37,17 @@ static	int32		updater_entry(void*);
 		bool	tracking_mouse;
 		bool	display_easter_egg;
 
-		BPoint	previous_point;		
+		BPoint	previous_point;
 
 public:
 		TextScrollerView(BRect);
 		~TextScrollerView();
-		
-void	AttachedToWindow();		
+
+void	AttachedToWindow();
 void	Draw(BRect);
 void 	MouseDown(BPoint);
 
-void	AddLine(const char*,rgb_color&,BFont&);		
+void	AddLine(const char*,rgb_color&,BFont&);
 void	AddEmptyLine();
 
 BTextView*	ReturnTextView() { return text_view; }

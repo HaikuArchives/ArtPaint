@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ViewSetupWindow.h
-	Contents:	ViewSetupWindow class declaration	
+	Contents:	ViewSetupWindow class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -16,7 +16,7 @@ class RGBControl;
 
 // this class constructs a window that is used to set up
 // the ImageView's and PaintWindow's parameters such as
-// selected area mask color and pattern 
+// selected area mask color and pattern
 // Paintwindows control this window with the static member functions.
 
 class ViewSetupWindow : public BWindow {
@@ -26,7 +26,7 @@ static	BView			*target_view;
 static	ViewSetupWindow	*setup_window;
 
 		RGBControl		*rgb_control;
-	
+
 public:
 	ViewSetupWindow(BRect frame);
 	~ViewSetupWindow();

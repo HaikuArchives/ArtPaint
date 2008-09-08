@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PopUpColorWindow.cpp
-	Contents:	Definitions for PopUpColorWindow and its views.	
+	Contents:	Definitions for PopUpColorWindow and its views.
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -15,11 +15,11 @@
 PopUpColorWindow::PopUpColorWindow(BRect frame,BMessenger *t,BMessage *default_out_message)
 	: BWindow(frame,"pop up color window",B_BORDERED_WINDOW,0)
 {
-	// We could also reposition ourselves so that we are 
+	// We could also reposition ourselves so that we are
 	// fully visible on the screen.
 	target = t;
 	default_message = default_out_message;
-		
+
 	frame.OffsetTo(BPoint(0,0));
 	frame.InsetBy(1,1);
 	ColorWell *color_well = new ColorWell(frame,new BMessenger(this));
@@ -60,7 +60,7 @@ void PopUpColorWindow::WindowActivated(bool active)
 	// when it is deactivated.
 	if (active == FALSE) {
 		Lock();
-		Quit();	
+		Quit();
 		Unlock();
 	}
 }
@@ -74,9 +74,9 @@ ColorWell::ColorWell(BRect frame,BMessenger *t)
 {
 	// Here we create a colormap. The colormap will be almost as big as the frame.
 	// A frame other than one starting from (0,0) causes some very strange
-	// effects in the bitmap. 
-	frame.InsetBy(1,1);	
-	frame.OffsetTo(BPoint(0,0));	
+	// effects in the bitmap.
+	frame.InsetBy(1,1);
+	frame.OffsetTo(BPoint(0,0));
 	BRect slider_frame = BRect(1,frame.bottom-20,frame.right,frame.bottom-1);
 	BMessage *message = new BMessage(BLUE_VALUE_CHANGED);
 	message->AddInt32("value",0);
@@ -86,7 +86,7 @@ ColorWell::ColorWell(BRect frame,BMessenger *t)
 	frame.bottom = slider->Frame().top-1;
 	color_map = new BBitmap(frame,B_RGB_32_BIT);
 	blue_value = 0;
-	create_color_map();		
+	create_color_map();
 	target = t;
 }
 
@@ -128,11 +128,11 @@ void ColorWell::MouseDown(BPoint location)
 	uint32 buttons;
 	GetMouse(&location,&buttons);
 	while (buttons) {
-		
+
 		GetMouse(&location,&buttons);
 		snooze(20 * 1000);
 	}
-	
+
 	// We send a message to our target containing the selected color.
 	uint32 rows = color_map->Bounds().IntegerHeight()+1;
 	uint32 columns = color_map->BytesPerRow()/4;
@@ -154,12 +154,12 @@ void ColorWell::create_color_map()
 
 	uint32 red_val;
 	uint32 green_val;
-	
+
 	for (int32 y=0;y<rows;y++) {
 		for (int32 x=0;x<bpr;x++) {
 			red_val = (uint32)((float)x/(float)bpr * 255);
 			green_val = (uint32)((float)y/(float)rows * 255);
-			*bits++ =  (red_val<< 8) & 0xFF00 |  (green_val << 16) & 0xFF0000 | blue_value<<24;			
+			*bits++ =  (red_val<< 8) & 0xFF00 |  (green_val << 16) & 0xFF0000 | blue_value<<24;
 		}
 	}
 }

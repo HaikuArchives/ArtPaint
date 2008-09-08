@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ManipulatorWindow.h
-	Contents:	ManipulatorWindow-class declaration.	
+	Contents:	ManipulatorWindow-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -27,8 +27,8 @@ static	window_look	look;
 public:
 		ManipulatorWindow(BRect,BView*,char*,BWindow *master,BMessenger*);
 		~ManipulatorWindow();
-		
-		
+
+
 
 void	static	setFeel(window_feel);
 };
@@ -49,9 +49,9 @@ void	Draw(BRect r) {
 				SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_DARKEN_4_TINT));
 				StrokeLine(BPoint(0,top),BPoint(Bounds().right,top));
 				SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_LIGHTEN_2_TINT));
-				StrokeLine(BPoint(0,top+1),BPoint(Bounds().right,top+1));				
+				StrokeLine(BPoint(0,top+1),BPoint(Bounds().right,top+1));
 			}
-		}			
+		}
 };
 #endif
 

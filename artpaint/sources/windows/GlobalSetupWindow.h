@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	GlobalSetupWindow.h
-	Contents:	GlobalSetupWindow class declaration	
+	Contents:	GlobalSetupWindow class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef GLOBAL_SETUP_WINDOW_H
@@ -37,8 +37,8 @@ static	GlobalSetupWindow	*setup_window;
 		UndoControlView		*undo_view;
 		LanguageControlView	*language_view;
 		GeneralControlView	*general_view;
-		
-		BTabView			*tab_view;				
+
+		BTabView			*tab_view;
 public:
 		GlobalSetupWindow(BRect frame);
 		~GlobalSetupWindow();
@@ -58,7 +58,7 @@ class WindowFeelView : public BView {
 		window_feel	brush_window_feel;
 		window_feel	layer_window_feel;
 		window_feel	add_on_window_feel;
-		
+
 public:
 		WindowFeelView(BRect);
 
@@ -82,11 +82,11 @@ class UndoControlView : public BView {
 		NumberControl	*undo_depth_control;
 
 		int32			undo_depth;
-		
+
 public:
 		UndoControlView(BRect);
-		
-void	AttachedToWindow();		
+
+void	AttachedToWindow();
 void	MessageReceived(BMessage*);
 void	ApplyChanges();
 };
@@ -102,9 +102,9 @@ class LanguageControlView : public BView {
 		BRadioButton	*language_button_1;
 		BRadioButton	*language_button_2;
 		BRadioButton	*language_button_3;
-		
+
 		BStringView		*message_view;
-		
+
 		int32 language;
 		int32 original_language;
 public:
@@ -122,9 +122,9 @@ void	ApplyChanges();
 class GeneralControlView : public BView {
 		BRadioButton	*cursor_button_1;
 		BRadioButton	*cursor_button_2;
-		
+
 		BCheckBox		*quit_confirm_box;
-		
+
 		int32	cursor_mode;
 		int32	quit_confirm_mode;
 public:

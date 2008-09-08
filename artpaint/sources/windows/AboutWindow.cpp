@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	AboutWindow.cpp
-	Contents:	AboutWindow-class definitions		
+	Contents:	AboutWindow-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdio.h>
@@ -25,30 +25,30 @@ AboutWindow::AboutWindow(BRect frame)
 	ResizeTo(300,200);
 
 	TextScrollerView *scroller = new TextScrollerView(Bounds());
-	
-	rgb_color yellow = { 255,255,0,255 };	
+
+	rgb_color yellow = { 255,255,0,255 };
 	rgb_color white = { 255,255,255,255 };
 	rgb_color red = { 255,0,0,255 };
-		
+
 	BFont title_font;
 	title_font.SetSize(title_font.Size()*1.616);
 
 	BFont subtitle_font;
-	
+
 	BFont text_font;
 
 	BFont italic_font;
 	italic_font.SetFace(B_ITALIC_FACE);
-		
+
 	scroller->AddLine("ArtPaint v. 2.0",yellow,title_font);
 	sprintf(string,StringServer::ReturnString(RELEASE_DATE_STRING),"March 2003");
 	scroller->AddLine(string,white,italic_font);
-	scroller->AddEmptyLine();	
+	scroller->AddEmptyLine();
 	scroller->AddLine(StringServer::ReturnString(ABOUT_1_TEXT_STRING),white,text_font);
 	scroller->AddEmptyLine();
-	
+
 	scroller->AddLine(StringServer::ReturnString(ABOUT_3_TEXT_STRING),white,text_font);
-	scroller->AddLine("http://www.beunited.org/index.php?page=developer",red,text_font);						  
+	scroller->AddLine("http://www.beunited.org/index.php?page=developer",red,text_font);
 	scroller->AddEmptyLine();
 	scroller->AddLine(StringServer::ReturnString(ABOUT_4_TEXT_STRING),white,text_font);
 	scroller->AddLine("contact@beunited.org",red,text_font);
@@ -73,7 +73,7 @@ AboutWindow::AboutWindow(BRect frame)
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_8_TEXT_STRING),yellow,subtitle_font);	
+	scroller->AddLine(StringServer::ReturnString(ABOUT_8_TEXT_STRING),yellow,subtitle_font);
 	scroller->AddLine("Esa Kallioniemi",white,italic_font);
 	scroller->AddLine("Rainer Riedl",white,italic_font);
 	scroller->AddLine("Be Inc. and Be Europe",white,italic_font);
@@ -82,12 +82,12 @@ AboutWindow::AboutWindow(BRect frame)
 	scroller->AddLine("Dominic Giampaolo",white,italic_font);
 	scroller->AddEmptyLine();
 	scroller->AddLine("...and You",white,italic_font);
-	
+
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_9_TEXT_STRING),yellow,subtitle_font);	
+	scroller->AddLine(StringServer::ReturnString(ABOUT_9_TEXT_STRING),yellow,subtitle_font);
 	scroller->AddLine("William Barret",white,italic_font);
 	scroller->AddLine("Paul Haeberli",white,italic_font);
 	scroller->AddLine("Aaron Herzmann",white,italic_font);
@@ -99,7 +99,7 @@ AboutWindow::AboutWindow(BRect frame)
 
 	AddChild(scroller);
 	the_window = this;
-	
+
 	Show();
 }
 
@@ -140,22 +140,22 @@ TextScrollerView::TextScrollerView(BRect frame)
 	text_view->SetStylable(true);
 	text_view->SetViewColor(0,0,0,255);
 	text_view->SetAlignment(B_ALIGN_CENTER);
-	
-	AddChild(text_view);	
+
+	AddChild(text_view);
 	SetViewColor(B_TRANSPARENT_32_BIT);
 
 	tracking_mouse = false;
 	display_easter_egg = false;
 
 	BMessageFilter *parent_filter = new BMessageFilter(B_ANY_DELIVERY,B_ANY_SOURCE,B_MOUSE_DOWN,message_to_parent);
-	text_view->AddFilter(parent_filter);	
+	text_view->AddFilter(parent_filter);
 }
 
 
 TextScrollerView::~TextScrollerView()
 {
 	if (continue_updating) {
-		continue_updating = false;	
+		continue_updating = false;
 		tracking_mouse = false;
 		suspend_thread(updater_thread);
 		snooze(1000);
@@ -169,7 +169,7 @@ void TextScrollerView::AttachedToWindow()
 {
 	updater_thread = spawn_thread(&updater_entry,"TextScrollerView updater_thread",B_NORMAL_PRIORITY,this);
 	continue_updating = true;
-	resume_thread(updater_thread);	
+	resume_thread(updater_thread);
 }
 
 void TextScrollerView::Draw(BRect)
@@ -206,7 +206,7 @@ void TextScrollerView::AddLine(const char *text,rgb_color &c,BFont &f)
 	run_array.runs[0].offset = 0;
 	run_array.runs[0].color = c;
 	run_array.runs[0].font = f;
-		
+
 	if (LockLooper()) {
 		text_view->Insert(text,&run_array);
 		text_view->Insert("\n");
@@ -214,7 +214,7 @@ void TextScrollerView::AddLine(const char *text,rgb_color &c,BFont &f)
 	}
 	else {
 		text_view->Insert(text,&run_array);
-		text_view->Insert("\n");	
+		text_view->Insert("\n");
 	}
 }
 
@@ -233,7 +233,7 @@ void TextScrollerView::AddEmptyLine()
 int32 TextScrollerView::updater_entry(void *data)
 {
 	TextScrollerView *view = (TextScrollerView*)data;
-	
+
 	return view->updater_function();
 }
 
@@ -255,7 +255,7 @@ int32 TextScrollerView::updater_function()
 
 	while (continue_updating) {
 		if (LockLooper()) {
-			if ((text_view->Bounds().top <= total_height) && (text_view->Bounds().top >= -height)) { 
+			if ((text_view->Bounds().top <= total_height) && (text_view->Bounds().top >= -height)) {
 				text_view->ScrollBy(0,1);
 			}
 			else {
@@ -263,7 +263,7 @@ int32 TextScrollerView::updater_function()
 			}
 			text_view->Sync();
 			UnlockLooper();
-		}		
+		}
 		snooze(60 * 1000);
 		while ((tracking_mouse) && (continue_updating)) {
 			snooze(250 * 1000);	// sleep 1/4 seconds

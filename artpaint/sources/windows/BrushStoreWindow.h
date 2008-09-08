@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	BrushStoreWindow.h
-	Contents:	BrushStoreWindow-class declaration	
+	Contents:	BrushStoreWindow-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -25,17 +25,17 @@ class BrushStoreView : public BView {
 	BList	*brush_data;
 	int32	selected_brush_index;
 	int32	previous_brush_index;
-	
-	BRect	get_bitmap_frame(int32);		
+
+	BRect	get_bitmap_frame(int32);
 	int32	get_point_index(BPoint);
 
 public:
-		BrushStoreView(BRect);		
+		BrushStoreView(BRect);
 		~BrushStoreView();
 
 void	DetachedFromWindow();
 void	Draw(BRect);
-void	FrameResized(float,float);	
+void	FrameResized(float,float);
 void	MessageReceived(BMessage*);
 void	KeyDown(const char *bytes,int32);
 void	MouseDown(BPoint);

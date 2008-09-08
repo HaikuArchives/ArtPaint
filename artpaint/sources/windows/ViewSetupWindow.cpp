@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ViewSetupWindow.cpp
-	Contents:	Definitions for ViewSetupWindow-class	
+	Contents:	Definitions for ViewSetupWindow-class
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@ ViewSetupWindow::ViewSetupWindow(BRect frame)
 	if (target_view != NULL) {
 		// here open the controls that affect the view
 		rgb_color c = {0,0,0,0};
-		rgb_control = new RGBControl(BPoint(0,0),c);	
+		rgb_control = new RGBControl(BPoint(0,0),c);
 		AddChild(rgb_control);
 		ResizeTo(rgb_control->Frame().Width(),rgb_control->Frame().Height());
 		rgb_control->SetTarget(target_view);
@@ -48,10 +48,10 @@ ViewSetupWindow::~ViewSetupWindow()
 void ViewSetupWindow::showViewSetupWindow(BWindow *target_w, BView *target_v)
 {
 	BWindow *old_target = target_window;
-	
+
 	target_window = target_w;
 	target_view = target_v;
-	
+
 	// If there is no setup-window we should open one.
 	if (setup_window == NULL) {
 		setup_window = new ViewSetupWindow(BRect(10,10,100,100));
@@ -62,7 +62,7 @@ void ViewSetupWindow::showViewSetupWindow(BWindow *target_w, BView *target_v)
 	if (target_window != old_target) {
 		char title[1000];
 		sprintf(title,"Settings: %s",target_window->Title());
-		setup_window->SetTitle(title);	
+		setup_window->SetTitle(title);
 	}
 
 	if (setup_window->IsHidden())
