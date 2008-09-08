@@ -5,14 +5,14 @@
 	Author:		Heikki Suhonen
 
 */
-
-
 #ifndef ADD_ONS_H
 #define	ADD_ONS_H
 
-#include <Bitmap.h>
-#include "ManipulatorInformer.h"
-#include "Manipulator.h"
+
+class BBitmap;
+class Manipulator;
+class ManipulatorInformer;
+
 
 enum add_on_types {
 	BLUR_FILTER_ADD_ON,
@@ -25,6 +25,7 @@ enum add_on_types {
 };
 
 
-extern "C" __declspec(dllexport) Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer*);
+extern "C" Manipulator* instantiate_add_on(BBitmap*, ManipulatorInformer*);
+
 
 #endif
