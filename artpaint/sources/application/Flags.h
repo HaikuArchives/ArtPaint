@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Flags.h
-	Contents:	Contains icon-dumps of flags of different countries		
+	Contents:	Contains icon-dumps of flags of different countries
 	Author:		Heikki Suhonen
-	
+
 */
 
 

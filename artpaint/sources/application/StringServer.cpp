@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	StringServer.cpp
-	Contents:	StringServer-class definitions	
+	Contents:	StringServer-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdio.h>
@@ -25,7 +25,7 @@ const char* StringServer::ReturnString(string_id id)
 		return return_german_string(id);
 	}
 	else if (current_language == FRENCH_LANGUAGE) {
-		return return_french_string(id);		
+		return return_french_string(id);
 	}
 	else {	// If language is not found return english
 		return return_english_string(id);
@@ -73,7 +73,7 @@ const char* StringServer::return_english_string(string_id id)
 		case ALL_LAYERS_CUT_HELP_STRING:
 			return ENGLISH_ALL_LAYERS_CUT_HELP_STRING;
 		case ALL_LAYERS_STRING:
-			return ENGLISH_ALL_LAYERS_STRING;	
+			return ENGLISH_ALL_LAYERS_STRING;
 		case ALPHA_STRING:
 			return ENGLISH_ALPHA_STRING;
 		case APPLY_CHANGES_STRING:
@@ -263,7 +263,7 @@ const char* StringServer::return_english_string(string_id id)
 		case LITTLE_STRING:
 			return ENGLISH_LITTLE_STRING;
 		case LOCK_PROPORTIONS_STRING:
-			return ENGLISH_LOCK_PROPORTIONS_STRING;	
+			return ENGLISH_LOCK_PROPORTIONS_STRING;
 		case LEFT_STRING:
 			return ENGLISH_LEFT_STRING;
 		case MAG_STRING:
@@ -301,7 +301,7 @@ const char* StringServer::return_english_string(string_id id)
 		case OPEN_IMAGE_HELP_STRING:
 			return ENGLISH_OPEN_IMAGE_HELP_STRING;
 		case OPEN_IMAGE_STRING:
-			return ENGLISH_OPEN_IMAGE_STRING;	
+			return ENGLISH_OPEN_IMAGE_STRING;
 		case OPEN_PROJECT_HELP_STRING:
 			return ENGLISH_OPEN_PROJECT_HELP_STRING;
 		case OPEN_PROJECT_STRING:
@@ -355,7 +355,7 @@ const char* StringServer::return_english_string(string_id id)
 		case ROTATE_CW_STRING:
 			return ENGLISH_ROTATE_CW_STRING;
 		case ROTATE_CCW_STRING:
-			return ENGLISH_ROTATE_CCW_STRING;			
+			return ENGLISH_ROTATE_CCW_STRING;
 		case ROTATION_STRING:
 			return ENGLISH_ROTATION_STRING;
 		case ROTATING_STRING:
@@ -525,9 +525,9 @@ const char* StringServer::return_english_string(string_id id)
 		case ZOOM_OUT_HELP_STRING:
 			return ENGLISH_ZOOM_OUT_HELP_STRING;
 		case ZOOM_OUT_STRING:
-			return ENGLISH_ZOOM_OUT_STRING;	
+			return ENGLISH_ZOOM_OUT_STRING;
 
-		
+
 		// Here begin the tool-name end tool-help strings.
 		case AIR_BRUSH_TOOL_NAME_STRING:
 			return ENGLISH_AIR_BRUSH_TOOL_NAME_STRING;
@@ -547,7 +547,7 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_FREE_LINE_TOOL_NAME_STRING;
 		case HAIRY_BRUSH_TOOL_NAME_STRING:
 			return ENGLISH_HAIRY_BRUSH_TOOL_NAME_STRING;
-		case RECTANGLE_TOOL_NAME_STRING:	
+		case RECTANGLE_TOOL_NAME_STRING:
 			return ENGLISH_RECTANGLE_TOOL_NAME_STRING;
 		case SELECTOR_TOOL_NAME_STRING:
 			return ENGLISH_SELECTOR_TOOL_NAME_STRING;
@@ -555,7 +555,7 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_STRAIGHT_LINE_TOOL_NAME_STRING;
 		case TEXT_TOOL_NAME_STRING:
 			return ENGLISH_TEXT_TOOL_NAME_STRING;
-		case TRANSPARENCY_TOOL_NAME_STRING:	
+		case TRANSPARENCY_TOOL_NAME_STRING:
 			return ENGLISH_TRANSPARENCY_TOOL_NAME_STRING;
 
 
@@ -577,7 +577,7 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_FREE_LINE_TOOL_READY_STRING;
 		case HAIRY_BRUSH_TOOL_READY_STRING:
 			return ENGLISH_HAIRY_BRUSH_TOOL_READY_STRING;
-		case RECTANGLE_TOOL_READY_STRING:	
+		case RECTANGLE_TOOL_READY_STRING:
 			return ENGLISH_RECTANGLE_TOOL_READY_STRING;
 		case SELECTOR_TOOL_READY_STRING:
 			return ENGLISH_SELECTOR_TOOL_READY_STRING;
@@ -585,7 +585,7 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_STRAIGHT_LINE_TOOL_READY_STRING;
 		case TEXT_TOOL_READY_STRING:
 			return ENGLISH_TEXT_TOOL_READY_STRING;
-		case TRANSPARENCY_TOOL_READY_STRING:	
+		case TRANSPARENCY_TOOL_READY_STRING:
 			return ENGLISH_TRANSPARENCY_TOOL_READY_STRING;
 
 
@@ -607,7 +607,7 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_FREE_LINE_TOOL_IN_USE_STRING;
 		case HAIRY_BRUSH_TOOL_IN_USE_STRING:
 			return ENGLISH_HAIRY_BRUSH_TOOL_IN_USE_STRING;
-		case RECTANGLE_TOOL_IN_USE_STRING:	
+		case RECTANGLE_TOOL_IN_USE_STRING:
 			return ENGLISH_RECTANGLE_TOOL_IN_USE_STRING;
 		case SELECTOR_TOOL_IN_USE_STRING:
 			return ENGLISH_SELECTOR_TOOL_IN_USE_STRING;
@@ -615,14 +615,14 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_STRAIGHT_LINE_TOOL_IN_USE_STRING;
 		case TEXT_TOOL_IN_USE_STRING:
 			return ENGLISH_TEXT_TOOL_IN_USE_STRING;
-		case TRANSPARENCY_TOOL_IN_USE_STRING:	
+		case TRANSPARENCY_TOOL_IN_USE_STRING:
 			return ENGLISH_TRANSPARENCY_TOOL_IN_USE_STRING;
 
 		case DO_CHANGE_TRANSPARENCY_HELP_STRING:
 			return ENGLISH_CHANGE_TRANSPARENCY_HELP_STRING;
 		case DO_CROP_HELP_STRING:
 			return ENGLISH_DO_CROP_HELP_STRING;
-		case DO_ROTATE_HELP_STRING:	
+		case DO_ROTATE_HELP_STRING:
 			return ENGLISH_DO_ROTATE_HELP_STRING;
 		case DO_SCALE_HELP_STRING:
 			return ENGLISH_DO_SCALE_HELP_STRING;
@@ -699,7 +699,7 @@ const char* StringServer::return_german_string(string_id id)
 		case ALL_LAYERS_CUT_HELP_STRING:
 			return GERMAN_ALL_LAYERS_CUT_HELP_STRING;
 		case ALL_LAYERS_STRING:
-			return GERMAN_ALL_LAYERS_STRING;	
+			return GERMAN_ALL_LAYERS_STRING;
 		case ALPHA_STRING:
 			return GERMAN_ALPHA_STRING;
 		case APPLY_CHANGES_STRING:
@@ -887,7 +887,7 @@ const char* StringServer::return_german_string(string_id id)
 		case LITTLE_STRING:
 			return GERMAN_LITTLE_STRING;
 		case LOCK_PROPORTIONS_STRING:
-			return GERMAN_LOCK_PROPORTIONS_STRING;	
+			return GERMAN_LOCK_PROPORTIONS_STRING;
 		case LEFT_STRING:
 			return GERMAN_LEFT_STRING;
 		case MAG_STRING:
@@ -925,7 +925,7 @@ const char* StringServer::return_german_string(string_id id)
 		case OPEN_IMAGE_HELP_STRING:
 			return GERMAN_OPEN_IMAGE_HELP_STRING;
 		case OPEN_IMAGE_STRING:
-			return GERMAN_OPEN_IMAGE_STRING;	
+			return GERMAN_OPEN_IMAGE_STRING;
 		case OPEN_PROJECT_HELP_STRING:
 			return GERMAN_OPEN_PROJECT_HELP_STRING;
 		case OPEN_PROJECT_STRING:
@@ -1149,9 +1149,9 @@ const char* StringServer::return_german_string(string_id id)
 		case ZOOM_OUT_HELP_STRING:
 			return GERMAN_ZOOM_OUT_HELP_STRING;
 		case ZOOM_OUT_STRING:
-			return GERMAN_ZOOM_OUT_STRING;	
+			return GERMAN_ZOOM_OUT_STRING;
 
-		
+
 		// Here begin the tool-name end tool-help strings.
 		case AIR_BRUSH_TOOL_NAME_STRING:
 			return GERMAN_AIR_BRUSH_TOOL_NAME_STRING;
@@ -1171,7 +1171,7 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_FREE_LINE_TOOL_NAME_STRING;
 		case HAIRY_BRUSH_TOOL_NAME_STRING:
 			return GERMAN_HAIRY_BRUSH_TOOL_NAME_STRING;
-		case RECTANGLE_TOOL_NAME_STRING:	
+		case RECTANGLE_TOOL_NAME_STRING:
 			return GERMAN_RECTANGLE_TOOL_NAME_STRING;
 		case SELECTOR_TOOL_NAME_STRING:
 			return GERMAN_SELECTOR_TOOL_NAME_STRING;
@@ -1179,7 +1179,7 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_STRAIGHT_LINE_TOOL_NAME_STRING;
 		case TEXT_TOOL_NAME_STRING:
 			return GERMAN_TEXT_TOOL_NAME_STRING;
-		case TRANSPARENCY_TOOL_NAME_STRING:	
+		case TRANSPARENCY_TOOL_NAME_STRING:
 			return GERMAN_TRANSPARENCY_TOOL_NAME_STRING;
 
 
@@ -1201,7 +1201,7 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_FREE_LINE_TOOL_READY_STRING;
 		case HAIRY_BRUSH_TOOL_READY_STRING:
 			return GERMAN_HAIRY_BRUSH_TOOL_READY_STRING;
-		case RECTANGLE_TOOL_READY_STRING:	
+		case RECTANGLE_TOOL_READY_STRING:
 			return GERMAN_RECTANGLE_TOOL_READY_STRING;
 		case SELECTOR_TOOL_READY_STRING:
 			return GERMAN_SELECTOR_TOOL_READY_STRING;
@@ -1209,7 +1209,7 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_STRAIGHT_LINE_TOOL_READY_STRING;
 		case TEXT_TOOL_READY_STRING:
 			return GERMAN_TEXT_TOOL_READY_STRING;
-		case TRANSPARENCY_TOOL_READY_STRING:	
+		case TRANSPARENCY_TOOL_READY_STRING:
 			return GERMAN_TRANSPARENCY_TOOL_READY_STRING;
 
 
@@ -1231,7 +1231,7 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_FREE_LINE_TOOL_IN_USE_STRING;
 		case HAIRY_BRUSH_TOOL_IN_USE_STRING:
 			return GERMAN_HAIRY_BRUSH_TOOL_IN_USE_STRING;
-		case RECTANGLE_TOOL_IN_USE_STRING:	
+		case RECTANGLE_TOOL_IN_USE_STRING:
 			return GERMAN_RECTANGLE_TOOL_IN_USE_STRING;
 		case SELECTOR_TOOL_IN_USE_STRING:
 			return GERMAN_SELECTOR_TOOL_IN_USE_STRING;
@@ -1239,14 +1239,14 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_STRAIGHT_LINE_TOOL_IN_USE_STRING;
 		case TEXT_TOOL_IN_USE_STRING:
 			return GERMAN_TEXT_TOOL_IN_USE_STRING;
-		case TRANSPARENCY_TOOL_IN_USE_STRING:	
+		case TRANSPARENCY_TOOL_IN_USE_STRING:
 			return GERMAN_TRANSPARENCY_TOOL_IN_USE_STRING;
 
 		case DO_CHANGE_TRANSPARENCY_HELP_STRING:
 			return GERMAN_CHANGE_TRANSPARENCY_HELP_STRING;
 		case DO_CROP_HELP_STRING:
 			return GERMAN_DO_CROP_HELP_STRING;
-		case DO_ROTATE_HELP_STRING:	
+		case DO_ROTATE_HELP_STRING:
 			return GERMAN_DO_ROTATE_HELP_STRING;
 		case DO_SCALE_HELP_STRING:
 			return GERMAN_DO_SCALE_HELP_STRING;
@@ -1319,7 +1319,7 @@ const char* StringServer::return_french_string(string_id id)
 		case ALL_LAYERS_CUT_HELP_STRING:
 			return FRENCH_ALL_LAYERS_CUT_HELP_STRING;
 		case ALL_LAYERS_STRING:
-			return FRENCH_ALL_LAYERS_STRING;	
+			return FRENCH_ALL_LAYERS_STRING;
 		case ALPHA_STRING:
 			return FRENCH_ALPHA_STRING;
 		case APPLY_CHANGES_STRING:
@@ -1509,7 +1509,7 @@ const char* StringServer::return_french_string(string_id id)
 		case LITTLE_STRING:
 			return FRENCH_LITTLE_STRING;
 		case LOCK_PROPORTIONS_STRING:
-			return FRENCH_LOCK_PROPORTIONS_STRING;	
+			return FRENCH_LOCK_PROPORTIONS_STRING;
 		case LEFT_STRING:
 			return FRENCH_LEFT_STRING;
 		case MAG_STRING:
@@ -1547,7 +1547,7 @@ const char* StringServer::return_french_string(string_id id)
 		case OPEN_IMAGE_HELP_STRING:
 			return FRENCH_OPEN_IMAGE_HELP_STRING;
 		case OPEN_IMAGE_STRING:
-			return FRENCH_OPEN_IMAGE_STRING;	
+			return FRENCH_OPEN_IMAGE_STRING;
 		case OPEN_PROJECT_HELP_STRING:
 			return FRENCH_OPEN_PROJECT_HELP_STRING;
 		case OPEN_PROJECT_STRING:
@@ -1771,9 +1771,9 @@ const char* StringServer::return_french_string(string_id id)
 		case ZOOM_OUT_HELP_STRING:
 			return FRENCH_ZOOM_OUT_HELP_STRING;
 		case ZOOM_OUT_STRING:
-			return FRENCH_ZOOM_OUT_STRING;	
+			return FRENCH_ZOOM_OUT_STRING;
 
-		
+
 		// Here begin the tool-name end tool-help strings.
 		case AIR_BRUSH_TOOL_NAME_STRING:
 			return FRENCH_AIR_BRUSH_TOOL_NAME_STRING;
@@ -1793,7 +1793,7 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_FREE_LINE_TOOL_NAME_STRING;
 		case HAIRY_BRUSH_TOOL_NAME_STRING:
 			return FRENCH_HAIRY_BRUSH_TOOL_NAME_STRING;
-		case RECTANGLE_TOOL_NAME_STRING:	
+		case RECTANGLE_TOOL_NAME_STRING:
 			return FRENCH_RECTANGLE_TOOL_NAME_STRING;
 		case SELECTOR_TOOL_NAME_STRING:
 			return FRENCH_SELECTOR_TOOL_NAME_STRING;
@@ -1801,7 +1801,7 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_STRAIGHT_LINE_TOOL_NAME_STRING;
 		case TEXT_TOOL_NAME_STRING:
 			return FRENCH_TEXT_TOOL_NAME_STRING;
-		case TRANSPARENCY_TOOL_NAME_STRING:	
+		case TRANSPARENCY_TOOL_NAME_STRING:
 			return FRENCH_TRANSPARENCY_TOOL_NAME_STRING;
 
 
@@ -1823,7 +1823,7 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_FREE_LINE_TOOL_READY_STRING;
 		case HAIRY_BRUSH_TOOL_READY_STRING:
 			return FRENCH_HAIRY_BRUSH_TOOL_READY_STRING;
-		case RECTANGLE_TOOL_READY_STRING:	
+		case RECTANGLE_TOOL_READY_STRING:
 			return FRENCH_RECTANGLE_TOOL_READY_STRING;
 		case SELECTOR_TOOL_READY_STRING:
 			return FRENCH_SELECTOR_TOOL_READY_STRING;
@@ -1831,7 +1831,7 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_STRAIGHT_LINE_TOOL_READY_STRING;
 		case TEXT_TOOL_READY_STRING:
 			return FRENCH_TEXT_TOOL_READY_STRING;
-		case TRANSPARENCY_TOOL_READY_STRING:	
+		case TRANSPARENCY_TOOL_READY_STRING:
 			return FRENCH_TRANSPARENCY_TOOL_READY_STRING;
 
 
@@ -1853,7 +1853,7 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_FREE_LINE_TOOL_IN_USE_STRING;
 		case HAIRY_BRUSH_TOOL_IN_USE_STRING:
 			return FRENCH_HAIRY_BRUSH_TOOL_IN_USE_STRING;
-		case RECTANGLE_TOOL_IN_USE_STRING:	
+		case RECTANGLE_TOOL_IN_USE_STRING:
 			return FRENCH_RECTANGLE_TOOL_IN_USE_STRING;
 		case SELECTOR_TOOL_IN_USE_STRING:
 			return FRENCH_SELECTOR_TOOL_IN_USE_STRING;
@@ -1861,14 +1861,14 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_STRAIGHT_LINE_TOOL_IN_USE_STRING;
 		case TEXT_TOOL_IN_USE_STRING:
 			return FRENCH_TEXT_TOOL_IN_USE_STRING;
-		case TRANSPARENCY_TOOL_IN_USE_STRING:	
+		case TRANSPARENCY_TOOL_IN_USE_STRING:
 			return FRENCH_TRANSPARENCY_TOOL_IN_USE_STRING;
 
 		case DO_CHANGE_TRANSPARENCY_HELP_STRING:
 			return FRENCH_CHANGE_TRANSPARENCY_HELP_STRING;
 		case DO_CROP_HELP_STRING:
 			return FRENCH_DO_CROP_HELP_STRING;
-		case DO_ROTATE_HELP_STRING:	
+		case DO_ROTATE_HELP_STRING:
 			return FRENCH_DO_ROTATE_HELP_STRING;
 		case DO_SCALE_HELP_STRING:
 			return FRENCH_DO_SCALE_HELP_STRING;

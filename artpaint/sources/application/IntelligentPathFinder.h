@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	IntelligentPathFinder.h
-	Contents:	IntelligentPathFinder-class declarations + OrderedPointList	
+	Contents:	IntelligentPathFinder-class declarations + OrderedPointList
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -24,17 +24,17 @@ class OrderedPointList {
 			point	*prev_point;
 			int32	x;
 			int32	y;
-			uint16	cost;	
+			uint16	cost;
 		};
-		
-uint16	highest_cost;		
+
+uint16	highest_cost;
 point	*point_list_head;
-point	**cost_limits;		
-		
+point	**cost_limits;
+
 public:
 		OrderedPointList();
 		~OrderedPointList();
-		
+
 void	RemoveLowestCostPoint(int32 *x,int32 *y,uint16 *cost);
 void	RemovePoint(int32 x,int32 y,uint16 cost);
 void	InsertPoint(int32 x, int32 y,uint16 cost);
@@ -85,10 +85,10 @@ thread_id		dp_thread;
 
 static	int32	dp_thread_entry(void*);
 		int32	dp_thread_function();
-		
+
 static	int32	lc_thread_entry(void*);
 		int32	lc_thread_function();
-				
+
 
 // The next variables are used in controlling the two threads.
 bool	calculation_continuing;
@@ -99,9 +99,9 @@ void	PrintCostMap();
 public:
 		IntelligentPathFinder(BBitmap*);
 		~IntelligentPathFinder();
-		
-void		SetSeedPoint(int32 x, int32 y);		
-BPoint*		ReturnPath(int32 x, int32 y,int32 *num_points);	
+
+void		SetSeedPoint(int32 x, int32 y);
+BPoint*		ReturnPath(int32 x, int32 y,int32 *num_points);
 };
 
 #endif

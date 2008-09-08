@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoQueue.cpp
-	Contents:	UndoQueue-class definitions	
+	Contents:	UndoQueue-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Alert.h>
@@ -19,7 +19,7 @@
 #include "StringServer.h"
 
 
-int32 UndoQueue::maximum_queue_depth = 10;	
+int32 UndoQueue::maximum_queue_depth = 10;
 BList* UndoQueue::queue_list = new BList();
 
 UndoQueue::UndoQueue(BMenuItem *undo_item,BMenuItem *redo_item,ImageView *iv)
@@ -33,13 +33,13 @@ UndoQueue::UndoQueue(BMenuItem *undo_item,BMenuItem *redo_item,ImageView *iv)
 	current_event = NULL;
 	first_event = NULL;
 	last_event = NULL;
-	
+
 	current_queue_depth = 0;
-	
+
 	queue_list->AddItem(this);
-	
+
 	selection_data = new SelectionData();
-	
+
 	UpdateMenuItems();
 }
 
@@ -65,7 +65,7 @@ UndoQueue::~UndoQueue()
 		layer_bitmaps[i] = NULL;
 	}
 	delete[] layer_bitmaps;
-	
+
 	delete selection_data;
 }
 
@@ -74,10 +74,10 @@ UndoEvent* UndoQueue::AddUndoEvent(const char *name,const BBitmap *thumbnail,boo
 {
 	if (maximum_queue_depth == 0)
 		return NULL;
-		
+
 	UndoEvent *event = new UndoEvent(name,thumbnail);
 	current_queue_depth++;
-		
+
 	if (remove_tail == FALSE) {
 		// Insert the new event in between.
 		if (current_event != NULL) {
@@ -94,7 +94,7 @@ UndoEvent* UndoQueue::AddUndoEvent(const char *name,const BBitmap *thumbnail,boo
 		else {
 			spare_event = first_event;
 			first_event = NULL;
-		}			
+		}
 		// Delete the rest of the events
 		while (spare_event != NULL) {
 			UndoEvent *another_spare_event = spare_event->next_event;
@@ -102,22 +102,22 @@ UndoEvent* UndoQueue::AddUndoEvent(const char *name,const BBitmap *thumbnail,boo
 			spare_event = another_spare_event;
 			current_queue_depth--;
 		}
-		
-		if (current_event != NULL) {		
+
+		if (current_event != NULL) {
 			current_event->next_event = event;
 			event->previous_event = current_event;
 		}
 	}
-		
+
 	if (first_event == NULL)
 		first_event = event;
 	current_event = event;
-		
+
 	event->SetQueue(this);
-	
+
 	TruncateQueue();
 
-	UpdateMenuItems();	
+	UpdateMenuItems();
 	return event;
 }
 
@@ -125,14 +125,14 @@ UndoEvent* UndoQueue::AddUndoEvent(const char *name,const BBitmap *thumbnail,boo
 status_t UndoQueue::RemoveEvent(UndoEvent *event)
 {
 	current_queue_depth--;
-	
+
 	UndoEvent *spare_event = first_event;
 	while ((spare_event != event) && (spare_event != NULL)) {
 		spare_event = spare_event->next_event;
 	}
 	if (spare_event == NULL)
 		return B_ERROR;
-		
+
 
 	// If the current event is the event that is removed we must change the
 	// current event also. At the moment this should happen always.
@@ -169,7 +169,7 @@ BBitmap* UndoQueue::ReturnLayerSpareBitmap(int32 layer_id,BBitmap *layer_bitmap)
 		BBitmap **new_bitmaps = new BBitmap*[layer_id+1];
 		for (int32 i=0;i<layer_id+1;i++)
 			new_bitmaps[i] = NULL;
-			
+
 		for (int32 i=0;i<layer_bitmap_count;i++) {
 			new_bitmaps[i] = layer_bitmaps[i];
 			layer_bitmaps[i] = NULL;
@@ -177,14 +177,14 @@ BBitmap* UndoQueue::ReturnLayerSpareBitmap(int32 layer_id,BBitmap *layer_bitmap)
 
 		delete[] layer_bitmaps;
 		layer_bitmaps = new_bitmaps;
-		layer_bitmap_count = layer_id+1;		
+		layer_bitmap_count = layer_id+1;
 	}
-	
+
 	if (layer_bitmaps[layer_id] == NULL) {
 		if (layer_bitmap != NULL) {
 			layer_bitmaps[layer_id] = new BBitmap(layer_bitmap->Bounds(),B_RGB32);
 			if (layer_bitmaps[layer_id]->IsValid() == FALSE)
-				throw bad_alloc(); 
+				throw bad_alloc();
 		}
 	}
 
@@ -199,17 +199,17 @@ status_t UndoQueue::ChangeLayerSpareBitmap(int32 layer_id, BBitmap *layer_bitmap
 		BBitmap **new_bitmaps = new BBitmap*[layer_id+1];
 		for (int32 i=0;i<layer_id+1;i++)
 			new_bitmaps[i] = NULL;
-			
+
 		for (int32 i=0;i<layer_bitmap_count;i++) {
 			new_bitmaps[i] = layer_bitmaps[i];
 			layer_bitmaps[i] = NULL;
 		}
 		delete[] layer_bitmaps;
 		layer_bitmaps = new_bitmaps;
-		layer_bitmap_count = layer_id+1;		
+		layer_bitmap_count = layer_id+1;
 	}
-	
-	if (layer_bitmap != NULL) {	
+
+	if (layer_bitmap != NULL) {
 		layer_bitmaps[layer_id] = new BBitmap(layer_bitmap->Bounds(),B_RGB32);
 		if (layer_bitmaps[layer_id]->IsValid() == FALSE)
 			throw bad_alloc();
@@ -219,10 +219,10 @@ status_t UndoQueue::ChangeLayerSpareBitmap(int32 layer_id, BBitmap *layer_bitmap
 		uint32 bitslength = layer_bitmap->BitsLength()/4;
 		for (int32 i=0;i<bitslength;i++)
 			*spare_bits++ = *bits++;
-	}	
+	}
 	else {
 		layer_bitmaps[layer_id] = NULL;
-	}	
+	}
 	return B_NO_ERROR;
 }
 
@@ -230,12 +230,12 @@ status_t UndoQueue::ChangeLayerSpareBitmap(int32 layer_id, BBitmap *layer_bitmap
 
 void UndoQueue::RegisterLayer(int32 layer_id,BBitmap *layer_bitmap)
 {
-	if ((maximum_queue_depth > 0) || (maximum_queue_depth == INFINITE_QUEUE_DEPTH)) { 
+	if ((maximum_queue_depth > 0) || (maximum_queue_depth == INFINITE_QUEUE_DEPTH)) {
 		if (layer_id > layer_bitmap_count-1) {
 			BBitmap **new_bitmaps = new BBitmap*[layer_id+1];
 			for (int32 i=0;i<layer_id+1;i++)
 				new_bitmaps[i] = NULL;
-				
+
 			for (int32 i=0;i<layer_bitmap_count;i++) {
 				new_bitmaps[i] = layer_bitmaps[i];
 				layer_bitmaps[i] = NULL;
@@ -243,21 +243,21 @@ void UndoQueue::RegisterLayer(int32 layer_id,BBitmap *layer_bitmap)
 			delete[] layer_bitmaps;
 			layer_bitmaps = new_bitmaps;
 			layer_bitmap_count = layer_id+1;
-			
+
 		}
-		
+
 		if (layer_bitmaps[layer_id] == NULL) {
 			if (layer_bitmap != NULL) {
 				layer_bitmaps[layer_id] = new BBitmap(layer_bitmap->Bounds(),B_RGB32);
 				if (layer_bitmaps[layer_id]->IsValid() == FALSE)
-					throw bad_alloc(); 
-	
+					throw bad_alloc();
+
 				uint32	*source_bits = (uint32*)layer_bitmap->Bits();
 				uint32	*target_bits = (uint32*)layer_bitmaps[layer_id]->Bits();
 				int32 bitslength = layer_bitmap->BitsLength()/4;
-				
+
 				for (int32 i=0;i<bitslength;i++)
-					*target_bits++ = *source_bits++; 
+					*target_bits++ = *source_bits++;
 			}
 		}
 	}
@@ -277,10 +277,10 @@ UndoEvent* UndoQueue::Undo()
 				current_event = returned_event;
 				returned_event = NULL;
 			}
-		}				
+		}
 	}
 
-	UpdateMenuItems();	
+	UpdateMenuItems();
 	return returned_event;
 }
 
@@ -296,7 +296,7 @@ UndoEvent* UndoQueue::Redo()
 			returned_event = current_event;
 		}
 	}
-	UpdateMenuItems();	
+	UpdateMenuItems();
 	return returned_event;
 }
 
@@ -305,7 +305,7 @@ UndoEvent* UndoQueue::Redo()
 const char* UndoQueue::ReturnUndoEventName()
 {
 	const char *name = NULL;
-	
+
 	UndoEvent *named_event = current_event;
 	if (named_event != NULL) {
 		UndoAction **actions = named_event->ReturnActions();
@@ -316,27 +316,27 @@ const char* UndoQueue::ReturnUndoEventName()
 		}
 		else
 			name = named_event->ReturnName();
-	}		
+	}
 
-	return name;	
+	return name;
 }
 
 
 const char* UndoQueue::ReturnRedoEventName()
 {
 	const char *name = NULL;
-	
+
 	UndoEvent *named_event;
 	if (current_event != NULL) {
 		named_event = current_event->next_event;
 	}
-	else	
+	else
 		named_event = first_event;
-	
+
 	if (named_event != NULL)
 		name = named_event->ReturnName();
-		
-	return name;	
+
+	return name;
 }
 
 
@@ -358,7 +358,7 @@ void UndoQueue::UpdateMenuItems()
 			undo_menu_item->SetEnabled(FALSE);
 		}
 	}
-		
+
 	event_name = ReturnRedoEventName();
 	if (redo_menu_item != NULL) {
 		if (event_name != NULL) {
@@ -391,8 +391,8 @@ void UndoQueue::HandleLowMemorySituation()
 	"It is advisable to save your work at this point to avoid any loss of data in case the "
 	"memory runs out completely. You may also want to adjust the undo-depth in the settings-window. "
 	"I am very sorry about this inconvenience." ,"Not OK",NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-	memory_alert->Go();		
-	
+	memory_alert->Go();
+
 	// We may have to delete either redo-events or undo-events. Currently this function is called
 	// only when there are no redo events so we only delete undo-events. This may change in the
 	// future however.
@@ -400,12 +400,12 @@ void UndoQueue::HandleLowMemorySituation()
 	UndoEvent *deleted_event = first_event;
 	while ((deleted_event_count < 5) && (deleted_event != NULL) && (deleted_event != current_event)) {
 		first_event = deleted_event->next_event;
-		first_event->previous_event = NULL;		
+		first_event->previous_event = NULL;
 		delete deleted_event;
 		deleted_event = first_event;
 		deleted_event_count++;
 		current_queue_depth--;
-	}		
+	}
 }
 
 
@@ -424,12 +424,12 @@ void UndoQueue::SetQueueDepth(int32 new_depth)
 		for (int32 i=0;i<queue_list->CountItems();i++) {
 			UndoQueue *queue = (UndoQueue*)queue_list->ItemAt(i);
 			queue->image_view->ReturnImage()->RegisterLayersWithUndo();
-		}		
+		}
 	}
-	
+
 
 	maximum_queue_depth = new_depth;
-	
+
 	((PaintApplication*)be_app)->Settings()->undo_queue_depth = new_depth;
 }
 
@@ -442,14 +442,14 @@ void UndoQueue::TruncateQueue()
 			// We should remove the events so that the nearest events to the current
 			// event from both sides are removed last, and the furthest away events
 			// first. If needed the actual current event is then removed at the end.
-			
+
 			// search the furhest away event from the current_event, or if current event
 			// is NULL, from the first_event. If both are NULL, put the current_queue_length to
 			// zero.
 			UndoEvent *furthest_event = NULL;
 			if (current_event != NULL) {
 				UndoEvent *redo_direction=current_event;
-				UndoEvent *undo_direction=current_event;				
+				UndoEvent *undo_direction=current_event;
 				while ((undo_direction != NULL) && (redo_direction != NULL)) {
 					undo_direction = undo_direction->previous_event;
 					redo_direction = redo_direction->next_event;
@@ -464,13 +464,13 @@ void UndoQueue::TruncateQueue()
 						redo_direction = redo_direction->next_event;
 					furthest_event = redo_direction;
 				}
-				else 
+				else
 					furthest_event = first_event;
-			}		
+			}
 			else if (first_event != NULL) {
 				furthest_event = first_event;
 				while (furthest_event->next_event != NULL)
-					furthest_event = furthest_event->next_event;			
+					furthest_event = furthest_event->next_event;
 			}
 			else
 				current_queue_depth = 0;
@@ -479,10 +479,10 @@ void UndoQueue::TruncateQueue()
 				if (first_event != NULL)
 					first_event = first_event->next_event;
 			}
-			
+
 			if (current_event == furthest_event)
 				current_event = NULL;
-				
+
 
 			// Here we should unlink the furthest_event and delete it.
 			// Also decrease the current undo-depth by one
@@ -491,13 +491,13 @@ void UndoQueue::TruncateQueue()
 					furthest_event->next_event->previous_event = furthest_event->previous_event;
 				if (furthest_event->previous_event != NULL)
 					furthest_event->previous_event->next_event = furthest_event->next_event;
-					
+
 				furthest_event->next_event = NULL;
 				furthest_event->previous_event = NULL;
-				
-				delete furthest_event;	
-			}			
-			current_queue_depth--;			
+
+				delete furthest_event;
+			}
+			current_queue_depth--;
 		}
 	}
 

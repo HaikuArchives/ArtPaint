@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	MessageConstants.h
-	Contents:	Constants for application-wide communication	
+	Contents:	Constants for application-wide communication
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef MESSAGE_CONSTANTS_H
@@ -38,7 +38,7 @@
 // this is used to inform palette-window that its container has a new selection
 // and all other contaners are informed with this too
 #define HS_PALETTE_SELECTION_CHANGED	'PslC'
-	
+
 // these constants are used in controlling the paint window
 #define HS_RESIZE_WINDOW_TO_FIT 	'RwTF'
 #define HS_IMAGE_SIZE_SET			'IsiS'
@@ -127,7 +127,7 @@
 
 
 // This is the message constant that is sent from the status-view's
-// OK- and Cancel-buttons. 
+// OK- and Cancel-buttons.
 //#define	HS_OPERATION_FINISHED	'OpFn'
 
 

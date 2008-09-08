@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Patterns.h
-	Contents:	Pattern definitions	
+	Contents:	Pattern definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -31,7 +31,7 @@ const pattern HS_2X2_BLOCKS = {
 	0xCC,
 	0xCC,
 	0x33,
-	0x33	
+	0x33
 };
 
 const pattern HS_4X4_BLOCKS = {

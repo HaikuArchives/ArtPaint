@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoWindow.cpp
-	Contents:	Definitions for UndowWindow and UndoView-classes		
+	Contents:	Definitions for UndowWindow and UndoView-classes
 	Author:	Heikki Suhonen
-	
+
 */
 
 

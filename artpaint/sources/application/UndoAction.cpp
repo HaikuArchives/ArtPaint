@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoAction.cpp
-	Contents:	UndoAction-class definitions	
+	Contents:	UndoAction-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,11 +19,11 @@ UndoAction::UndoAction(int32 layer,action_type t,BRect rect)
 	layer_id = layer;
 	type = t;
 	if (rect.IsValid() == TRUE)
-		bounding_rect = rect;	
+		bounding_rect = rect;
 	else
-		type = NO_ACTION;		
+		type = NO_ACTION;
 
-	tool_script = NULL;		
+	tool_script = NULL;
 	manipulator_settings = NULL;
 	add_on_id = -1;
 
@@ -42,11 +42,11 @@ UndoAction::UndoAction(int32 layer,int32 merged_layer,BRect rect)
 	merged_layer_id = merged_layer;
 	type = MERGE_LAYER_ACTION;
 	if (rect.IsValid() == TRUE)
-		bounding_rect = rect;	
+		bounding_rect = rect;
 	else
-		type = NO_ACTION;		
+		type = NO_ACTION;
 
-	tool_script = NULL;		
+	tool_script = NULL;
 	manipulator_settings = NULL;
 	add_on_id = -1;
 
@@ -63,15 +63,15 @@ UndoAction::UndoAction(int32 layer,ToolScript *script,BRect rect)
 	layer_id = layer;
 	type = TOOL_ACTION;
 	if (rect.IsValid() == TRUE)
-		bounding_rect = rect;	
+		bounding_rect = rect;
 	else
-		type = NO_ACTION;		
+		type = NO_ACTION;
 
-	tool_script = NULL;		
+	tool_script = NULL;
 	manipulator_settings = NULL;
 	add_on_id = -1;
 	queue = NULL;
-	
+
 	undo_bitmaps = NULL;
 	undo_rects = NULL;
 	undo_bitmap_count = 0;
@@ -93,11 +93,11 @@ UndoAction::UndoAction(int32 layer,ManipulatorSettings *settings,BRect rect,mani
 	layer_id = layer;
 	type = MANIPULATOR_ACTION;
 	if (rect.IsValid() == TRUE)
-		bounding_rect = rect;	
+		bounding_rect = rect;
 	else
-		type = NO_ACTION;		
-	
-	tool_script = NULL;		
+		type = NO_ACTION;
+
+	tool_script = NULL;
 	manipulator_settings = NULL;
 	add_on_id = -1;
 	queue = NULL;
@@ -106,7 +106,7 @@ UndoAction::UndoAction(int32 layer,ManipulatorSettings *settings,BRect rect,mani
 	undo_bitmap_count = 0;
 
 	size_has_changed = FALSE;
-	
+
 	if (type == MANIPULATOR_ACTION) {
 		manipulator_settings = settings;
 		manip_type = t;
@@ -122,7 +122,7 @@ UndoAction::~UndoAction()
 			delete undo_bitmaps[i];
 			undo_bitmaps[i] = NULL;
 		}
-		delete[] undo_bitmaps;	
+		delete[] undo_bitmaps;
 		delete[] undo_rects;
 	}
 
@@ -138,15 +138,15 @@ status_t UndoAction::StoreUndo(BBitmap *bitmap)
 		try {
 			if (queue == NULL) {
 				return B_ERROR;
-			}	
-			if ((type == CHANGE_LAYER_CONTENT_ACTION) || (type == TOOL_ACTION) || (type == CLEAR_LAYER_ACTION) || (type == MERGE_LAYER_ACTION)) {	
+			}
+			if ((type == CHANGE_LAYER_CONTENT_ACTION) || (type == TOOL_ACTION) || (type == CLEAR_LAYER_ACTION) || (type == MERGE_LAYER_ACTION)) {
 				BBitmap *spare_bitmap = queue->ReturnLayerSpareBitmap(layer_id,bitmap);
-				StoreDifferences(spare_bitmap,bitmap,bounding_rect);	
+				StoreDifferences(spare_bitmap,bitmap,bounding_rect);
 				if (undo_bitmap_count == 0)
 					type = NO_ACTION;
 			}
 			else if (type == ADD_LAYER_ACTION) {
-				queue->ChangeLayerSpareBitmap(layer_id,bitmap);	
+				queue->ChangeLayerSpareBitmap(layer_id,bitmap);
 				bounding_rect = bitmap->Bounds();
 			}
 			else if (type == DELETE_LAYER_ACTION) {
@@ -168,7 +168,7 @@ status_t UndoAction::StoreUndo(BBitmap *bitmap)
 				// If the size has changed we store the whole previous bitmap. If the size
 				// has not changed we behave like in the case of CHANGE_LAYER_CONTENT_ACTION.
 				// The offset that might also change when size changes should somehow be recorded.
-				// This is very important for the proper scripting of tools.		
+				// This is very important for the proper scripting of tools.
 				if (bitmap != NULL) {
 					BBitmap *layer_bitmap = queue->ReturnLayerSpareBitmap(layer_id,bitmap);
 					if ((layer_bitmap != NULL) && (layer_bitmap->Bounds() != bitmap->Bounds())) {
@@ -183,7 +183,7 @@ status_t UndoAction::StoreUndo(BBitmap *bitmap)
 					}
 					else if (layer_bitmap != NULL) {
 						// The size has not changed, so store just the differences.
-						StoreDifferences(layer_bitmap,bitmap,bounding_rect);	
+						StoreDifferences(layer_bitmap,bitmap,bounding_rect);
 					}
 					if (undo_bitmap_count == 0)
 						type = NO_ACTION;
@@ -191,13 +191,13 @@ status_t UndoAction::StoreUndo(BBitmap *bitmap)
 			}
 
 			success = TRUE;
-			tries++;			
+			tries++;
 		}
 		catch (bad_alloc e) {
 			queue->HandleLowMemorySituation();
 		}
 	}
-		
+
 	return B_NO_ERROR;
 }
 
@@ -207,14 +207,14 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 	try {
 		if (queue == NULL)
 			return NULL;
-	
+
 		if ((type == CHANGE_LAYER_CONTENT_ACTION) || (type == TOOL_ACTION) || (type == CLEAR_LAYER_ACTION) || (type == MERGE_LAYER_ACTION)) {
 			if (undo_bitmaps == NULL)
 				return NULL;
-	
+
 			BBitmap *spare_bitmap = queue->ReturnLayerSpareBitmap(layer_id,bitmap);
 			updated_rect = RestoreDifference(bitmap,spare_bitmap);
-							
+
 			return bitmap;
 		}
 		else if (type == ADD_LAYER_ACTION) {
@@ -224,18 +224,18 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 				undo_rects = new BRect[1];
 				undo_bitmaps[0] = queue->ReturnLayerSpareBitmap(layer_id,NULL);
 				undo_rects[0] = undo_bitmaps[0]->Bounds();
-				undo_bitmap_count = 1;				
+				undo_bitmap_count = 1;
 				// Then inform parties that the layer is gone
 				queue->ChangeLayerSpareBitmap(layer_id,NULL);
-				
+
 				updated_rect = undo_bitmaps[0]->Bounds();
-		
+
 				return NULL;
 			}
 			else {
 				// this is a redo, so transfer the layer's image to ImageView and UndoQueue
 				BBitmap *layer_bitmap = undo_bitmaps[0];
-				
+
 				undo_bitmaps[0] = NULL;
 				delete[] undo_bitmaps;
 				delete[] undo_rects;
@@ -243,8 +243,8 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 				undo_rects = NULL;
 				undo_bitmap_count = 0;
 				queue->ChangeLayerSpareBitmap(layer_id,layer_bitmap);
-		
-				updated_rect = layer_bitmap->Bounds();		
+
+				updated_rect = layer_bitmap->Bounds();
 				return layer_bitmap;
 			}
 		}
@@ -256,14 +256,14 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 				undo_rects = new BRect[1];
 				undo_bitmaps[0] = queue->ReturnLayerSpareBitmap(layer_id,NULL);
 				undo_rects[0] = undo_bitmaps[0]->Bounds();
-				undo_bitmap_count = 1;				
-				
+				undo_bitmap_count = 1;
+
 				// Then inform parties that the layer is gone
 				queue->ChangeLayerSpareBitmap(layer_id,NULL);
-				
+
 				updated_rect = undo_bitmaps[0]->Bounds();
-				
-				return NULL;						
+
+				return NULL;
 			}
 			else {
 				// This is an undo, so the layer reappears
@@ -277,7 +277,7 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 				queue->ChangeLayerSpareBitmap(layer_id,layer_bitmap);
 
 				updated_rect = layer_bitmap->Bounds();
-				return layer_bitmap;			
+				return layer_bitmap;
 			}
 		}
 		else if (type == MANIPULATOR_ACTION) {
@@ -296,22 +296,22 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 				return old_bitmap;
 			}
 			else {
-				// The size has not changed, just copy the differences like in the 
+				// The size has not changed, just copy the differences like in the
 				// case of CHANGE_LAYER_CONTENT_ACTION.
 				if (undo_bitmaps == NULL)
 					return NULL;
-		
+
 				BBitmap *spare_bitmap = queue->ReturnLayerSpareBitmap(layer_id,bitmap);
 				RestoreDifference(bitmap,spare_bitmap);
-				updated_rect = bitmap->Bounds();						
+				updated_rect = bitmap->Bounds();
 				return bitmap;
 			}
 		}
-	
+
 		else if (type == NO_ACTION) {
 			updated_rect = BRect(0,0,-1,-1);
 			return bitmap;
-		}	
+		}
 		return NULL;
 	}
 	catch (bad_alloc e) {
@@ -335,7 +335,7 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 		uint32 *bits = (uint32*)current->Bits();
 		uint32 *old_bits = (uint32*)old->Bits();
 		uint32	bpr = current->BytesPerRow()/4;
-	
+
 		int32 left = (int32)area.left;
 		int32 right = (int32)area.right;
 		int32 top = (int32)area.top;
@@ -351,12 +351,12 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 					if (*(bits + x + y*bpr) != *(old_bits + x + y*bpr))
 						difference = GREAT_DIFFERENCE;
 				}
-			}		
+			}
 		}
 		else {
 			// If the area is large enough we examine it randomly to see
 			// if it is different enough to be stored completely
-			difference = SLIGHT_DIFFERENCE;	
+			difference = SLIGHT_DIFFERENCE;
 			int32 width = area.IntegerWidth() + 1;
 			int32 height = area.IntegerHeight() + 1;
 			int32 left = (int32)area.left;
@@ -374,12 +374,12 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 			}
 			if ( (difference_count/number_of_tests) >= 0.25)
 				difference = GREAT_DIFFERENCE;
-		}	
-		
+		}
+
 		if (difference == GREAT_DIFFERENCE) {
 			BBitmap **new_undo_bitmaps = new BBitmap*[undo_bitmap_count + 1];
 			BRect *new_undo_rects = new BRect[undo_bitmap_count + 1];
-	
+
 			if (undo_bitmaps != NULL) {
 				for (int32 i=0;i<undo_bitmap_count;i++) {
 					new_undo_bitmaps[i] = undo_bitmaps[i];
@@ -387,18 +387,18 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 					new_undo_rects[i] = undo_rects[i];
 				}
 				delete[] undo_bitmaps;
-				delete[] undo_rects;	
+				delete[] undo_rects;
 			}
 			undo_bitmaps = new_undo_bitmaps;
 			undo_rects = new_undo_rects;
 			undo_bitmap_count++;
-	
+
 			BRect bitmap_rect = area;
 			bitmap_rect.OffsetTo(0,0);
 			undo_bitmaps[undo_bitmap_count - 1] = new BBitmap(bitmap_rect,B_RGB32);
 			if (undo_bitmaps[undo_bitmap_count-1]->IsValid() == FALSE)
 				throw bad_alloc();
-				
+
 			undo_rects[undo_bitmap_count - 1] = area;
 			uint32 *undo_bits = (uint32*)undo_bitmaps[undo_bitmap_count - 1]->Bits();
 			for (int32 y=(int32)area.top;y<=area.bottom;y++) {
@@ -406,7 +406,7 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 					*undo_bits++ = *(old_bits + x + y*bpr);
 					*(old_bits + x + y*bpr) = *(bits + x + y*bpr);
 				}
-			}		
+			}
 		}
 		else if (difference == SLIGHT_DIFFERENCE) {
 			// Here we divide the area into four parts and call this function recursively.
@@ -421,11 +421,11 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 			rect2 = BRect(middle_x+1,area.top,area.right,middle_y);
 			rect3 = BRect(area.left,middle_y+1,middle_x,area.bottom);
 			rect4 = BRect(middle_x+1,middle_y+1,area.right,area.bottom);
-			
+
 			StoreDifferences(old,current,rect1);
 			StoreDifferences(old,current,rect2);
 			StoreDifferences(old,current,rect3);
-			StoreDifferences(old,current,rect4);	
+			StoreDifferences(old,current,rect4);
 		}
 	}
 	catch (bad_alloc e) {
@@ -444,7 +444,7 @@ BRect UndoAction::RestoreDifference(BBitmap *bitmap1,BBitmap *bitmap2)
 	uint32 *bits2 = (uint32*)bitmap2->Bits();
 
 	BRect updated_rect(1000000,1000000,-1000000,-1000000);
-	
+
 	for (int32 i=0;i<undo_bitmap_count;i++) {
 		uint32 *undo_bits = (uint32*)undo_bitmaps[i]->Bits();
 		uint32	spare_value;
@@ -452,16 +452,16 @@ BRect UndoAction::RestoreDifference(BBitmap *bitmap1,BBitmap *bitmap2)
 		updated_rect.left = min_c(updated_rect.left,bitmap_rect.left);
 		updated_rect.right = max_c(updated_rect.right,bitmap_rect.right);
 		updated_rect.top = min_c(updated_rect.top,bitmap_rect.top);
-		updated_rect.bottom = max_c(updated_rect.bottom,bitmap_rect.bottom);	
+		updated_rect.bottom = max_c(updated_rect.bottom,bitmap_rect.bottom);
 		if (bounds.Contains(bitmap_rect)) {
 			for (int32 y=(int32)bitmap_rect.top;y<=bitmap_rect.bottom;y++) {
 				for (int32 x=(int32)bitmap_rect.left;x<=bitmap_rect.right;x++) {
 					spare_value = *(bits1 + x + y*bpr);
 					*(bits1 + x + y*bpr) = *undo_bits;
 					*(bits2 + x +y*bpr) = *undo_bits;
-					*undo_bits++ = spare_value;		
+					*undo_bits++ = spare_value;
 				}
-			}		
+			}
 		}
 		else if (bounds.Intersects(bitmap_rect)) {
 			for (int32 y=(int32)bitmap_rect.top;y<=bitmap_rect.bottom;y++) {
@@ -474,10 +474,10 @@ BRect UndoAction::RestoreDifference(BBitmap *bitmap1,BBitmap *bitmap2)
 					}
 					undo_bits++;
 				}
-			}					
+			}
 		}
-	}	
-	
+	}
+
 	updated_rect = updated_rect & bounds;
 	return updated_rect;
 }

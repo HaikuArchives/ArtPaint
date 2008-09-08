@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	Selection.h
-	Contents:	Selection-class declaration and inline functions + SelectionIterator declaration.	
+	Contents:	Selection-class declaration and inline functions + SelectionIterator declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -18,21 +18,21 @@
 /*
 	Selection-class offers a mechanism for specifying an arbitrarily-shaped,
 	possibly disjoint, area from an image. In constructor it gets the size of
-	the image. After constructing selections can be added to it or removed 
-	from it. It can return the selection's pixels sequentially as BPoint's or 
-	coordinate  pairs. It also calculates and returns the bounding rectangle of the 
-	selected area. It can also return whether a given point belongs to the 
-	selection or not.	
-	
+	the image. After constructing selections can be added to it or removed
+	from it. It can return the selection's pixels sequentially as BPoint's or
+	coordinate  pairs. It also calculates and returns the bounding rectangle of the
+	selected area. It can also return whether a given point belongs to the
+	selection or not.
+
 	Other major function of selection is drawing the selection to the view.
 	The drawing is done with the Draw-function that gets magnifying-scale
-	and bounding rectangle as a parameter. If everything is selected, the drawing 
+	and bounding rectangle as a parameter. If everything is selected, the drawing
 	function should do nothing.
-	
+
 	The selection works in reverse. It records what is NOT selected. If everything
 	is selected, like is the normal case, this will not store any information about
 	selection.
-	
+
 	If selection is empty when adding the first selection, we make the selection
 	first full.
 
@@ -50,7 +50,7 @@ class Selection {
 		// This is used when rotating the selections to store the original polygons.
 		HSPolygon	**original_selections;
 
-		
+
 		// This is a binary-bitmap that has one bit for each pixel in the image.
 		// If a bit is 1 then the corresponding pixel belongs to the selection.
 		// Otherwise it doesn't belong to the selection.
@@ -59,7 +59,7 @@ class Selection {
 
 		uint8	*selection_bits;
 		uint32	selection_bpr;
-																										
+
 		int32	number_of_rows;
 		int32	pixels_in_a_row;
 
@@ -83,16 +83,16 @@ class Selection {
 
 		// This is used to animate the lines that bound the selected area.
 		int32	animation_offset;
-		
-		
+
+
 		SelectionIterator	*selection_iterator;
-		
+
 // This function calculates the smallest rectangle that contains all the points
 // that are selected. It records this fact in the bounding_rect attribute.
 // Bounding rectangle is calcultated when it is needed the first time.
 void	calculateBoundingRect();
 
-// This function deselects everything. 
+// This function deselects everything.
 void	deSelect();
 
 
@@ -112,7 +112,7 @@ static	int32		thread_entry_func(void*);
 		void		SimplifySelection();
 
 		sem_id		selection_mutex;
-				
+
 public:
 		Selection(BRect);
 		Selection(const Selection*);
@@ -149,17 +149,17 @@ void	Draw();
 BRect	GetBoundingRect();
 
 
-// This function inverts the whole selection. If everything is selected, invert does 
+// This function inverts the whole selection. If everything is selected, invert does
 // nothing.
 void	Invert();
 
 
-// This function returns true, if the selection is empty (i.e. everything is 
+// This function returns true, if the selection is empty (i.e. everything is
 // selected).
 bool	IsEmpty();
 
 // This function rotates the selection. The parameter is in degrees with positive degrees
-// clockwise. This only rotates the selection, not the actual image. 
+// clockwise. This only rotates the selection, not the actual image.
 void	RotateTo(BPoint,float);
 
 // This function translates the selection by the amount given in the parameters.
@@ -178,7 +178,7 @@ void	ImageSizeChanged(BRect);
 
 const	SelectionData*	ReturnSelectionData() { return selection_data; }
 
-// These functions return true if the point in parameter belongs to the selection (i.e. 
+// These functions return true if the point in parameter belongs to the selection (i.e.
 // is not DEselected). The BPoint version will also check the bounds rectangle while the
 // int,int version will not check bounds. The latter function can be used in combination
 // with the GetBoundingRect-function.
@@ -189,7 +189,7 @@ inline	bool	ContainsPoint(int32,int32);
 // This function returns an iterator that can be used to iterate through the
 // points in this selection. The iterator should be used when the selection will
 // be iterated through multiple times in a row.
-//SelectionIterator*	ReturnIterator(); 
+//SelectionIterator*	ReturnIterator();
 
 };
 
@@ -198,7 +198,7 @@ bool Selection::ContainsPoint(BPoint p)
 {
 	int32 y = (int32)p.y;
 	int32 x = (int32)p.x;
-	return ((selection_bits == NULL) || (image_bounds.Contains(p) &&  
+	return ((selection_bits == NULL) || (image_bounds.Contains(p) &&
 		   ((*(selection_bits + y*selection_bpr + x/8) >> (7 - x%8)) & 0x01)));
 }
 
@@ -211,14 +211,14 @@ bool Selection::ContainsPoint(int32 x, int32 y)
 
 class PointContainer {
 		BPoint	**hash_table;
-		int32	*list_length_table;		
+		int32	*list_length_table;
 
 		int32	hash_value(int32 x, int32 y);
 const	int32	hash_table_size;
 public:
 		PointContainer();
 		~PointContainer();
-	
+
 void	InsertPoint(int32 x, int32 y);
 bool	HasPoint(int32 x, int32 y);
 };

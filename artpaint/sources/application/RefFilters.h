@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RefFilters.h
-	Contents:	Declarations for various ref-filters	
+	Contents:	Declarations for various ref-filters
 	Author:		Heikki Suhonen
-	
+
 */
 
 

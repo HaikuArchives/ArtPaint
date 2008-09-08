@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	EnglishStrings.h
-	Contents:	Definitions of UI strings in english.	
+	Contents:	Definitions of UI strings in english.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -11,7 +11,7 @@
 	The word "CANVAS" is a little bit misleading. It will be replaced by
 	word such as "IMAGE". In CREATE_CANVAS CANVAS might be better than IMAGE, and
 	also in SELECT_CANVAS_SIZE.
-	
+
 */
 
 #ifndef ENGLISH_STRINGS_H
@@ -137,7 +137,7 @@
 #define	ENGLISH_LOCK_PROPORTIONS_STRING			"Lock Proportions"
 #define	ENGLISH_MAG_STRING						"Mag"
 #define	ENGLISH_MAGIC_WAND_STRING				"Magic Wand"
-#define	ENGLISH_MERGE_WITH_BACK_LAYER_STRING	"Merge With Back Layer"			
+#define	ENGLISH_MERGE_WITH_BACK_LAYER_STRING	"Merge With Back Layer"
 #define	ENGLISH_MERGE_WITH_FRONT_LAYER_STRING	"Merge With Front Layer"
 #define	ENGLISH_MISCELLANEOUS_STRING			"Miscellaneous"
 #define	ENGLISH_MODE_STRING						"Mode"
@@ -235,7 +235,7 @@
 #define	ENGLISH_TOOL_SETUP_STRING				"Tool Setup"
 #define	ENGLISH_TOOL_SETUP_WINDOW_STRING		"Tool Setup Window"
 #define	ENGLISH_TOP_STRING						"Top"
-#define	ENGLISH_TRANSLATE_ALL_LAYERS_HELP_STRING	"Starts moving all layers."	
+#define	ENGLISH_TRANSLATE_ALL_LAYERS_HELP_STRING	"Starts moving all layers."
 #define	ENGLISH_TRANSLATE_LAYER_HELP_STRING		"Starts moving the active layer."
 #define	ENGLISH_TRANSLATE_STRING				"Translate…"
 #define	ENGLISH_TRANSPARENT_STRING				"Transparent"
@@ -245,7 +245,7 @@
 #define	ENGLISH_UNDO_SETTINGS_STRING			"Undo"
 #define	ENGLISH_UNDO_STRING						"Undo"
 #define	ENGLISH_UNLIMITED_STRING				"Unlimited"
-#define ENGLISH_UNSUPPORTED_FILE_TYPE_STRING	"The file %s is of unsupported type. You could try installing a translator for it if possible." 
+#define ENGLISH_UNSUPPORTED_FILE_TYPE_STRING	"The file %s is of unsupported type. You could try installing a translator for it if possible."
 #define	ENGLISH_UNTITLED_STRING					"Untitled"
 #define	ENGLISH_USE_THE_TOOL_STRING				"Use the tool by pressing the mouse-button."
 #define	ENGLISH_USER_MANUAL_HELP_STRING			"Opens NetPositive with the main documentation for ArtPaint."
@@ -326,7 +326,7 @@
 #define	ENGLISH_ABOUT_1_TEXT_STRING				"ArtPaint is a painting and  image-processing program for the BeOS."\
 												" It can be used for wide variety of purposes ranging from web-graphics"\
 												" to photo manipulation. See the tutorial in the manual to get started."
-																								
+
 #define	ENGLISH_ABOUT_3_TEXT_STRING				"For new versions of the program see:"
 
 #define	ENGLISH_ABOUT_4_TEXT_STRING				"Any comments or questions about the program can be sent to:"

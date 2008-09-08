@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UtilityClasses.h
-	Contents:	Declarations for small classes that do not need their own file	
+	Contents:	Declarations for small classes that do not need their own file
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef UTILITY_CLASSES_H
@@ -19,7 +19,7 @@
 class HelpWindow : public BWindow {
 
 public:
-		HelpWindow(BPoint location, const char *text);	
+		HelpWindow(BPoint location, const char *text);
 		HelpWindow(BPoint location, char **text_lines, int32 line_count);
 };
 
@@ -29,11 +29,11 @@ public:
 
 class BitmapView : public BView {
 		BBitmap		*the_bitmap;
-		
+
 public:
 		BitmapView(BBitmap *bitmap, BPoint location);
 		BitmapView(BBitmap *bitmap, BRect frame);
-void	Draw(BRect updateRect);		
+void	Draw(BRect updateRect);
 
 inline	void	ChangeBitmap(BBitmap *bitmap) { the_bitmap = bitmap; }
 };
@@ -41,7 +41,7 @@ inline	void	ChangeBitmap(BBitmap *bitmap) { the_bitmap = bitmap; }
 
 class BitmapViewBox : public BBox {
 	BitmapView	*bmap_view;
-	
+
 public:
 		BitmapViewBox(BBitmap *bitmap,BRect frame,char *label);
 
@@ -58,7 +58,7 @@ public:
 
 BPoint 	Pop()				{ return (top != stack ? *--top : *stack); }
 void	Push(BPoint p)		{ *top++ = p; }
-bool	IsEmpty()			{ return top <= stack; }		
+bool	IsEmpty()			{ return top <= stack; }
 };
 
 // This function just returns a copy of the parameter-bitmap. If the parameter
@@ -75,12 +75,12 @@ inline uint32 RGBColorToBGRA(rgb_color c)
 		char bytes[4];
 		uint32 word;
 	} color;
-	
+
 	color.bytes[0] = c.blue;
 	color.bytes[1] = c.green;
 	color.bytes[2] = c.red;
 	color.bytes[3] = c.alpha;
-//	return ((c.blue << 24) & 0xFF000000) | ((c.green << 16) & 0x00FF0000) | ((c.red << 8) & 0x0000FF00) | (c.alpha & 0xFF);	
+//	return ((c.blue << 24) & 0xFF000000) | ((c.green << 16) & 0x00FF0000) | ((c.red << 8) & 0x0000FF00) | (c.alpha & 0xFF);
 	return color.word;
 }
 
@@ -94,7 +94,7 @@ inline rgb_color BGRAColorToRGB(uint32 bgra_color)
 	c.green = (bgra_color >> 16) & 0xFF;
 	c.blue = (bgra_color >> 24) & 0xFF;
 	c.alpha = (bgra_color) & 0xFF;
-	
+
 	return c;
 }
 #else
@@ -105,7 +105,7 @@ inline rgb_color BGRAColorToRGB(uint32 bgra_color)
 	c.green = (bgra_color >> 8) & 0xFF;
 	c.blue = (bgra_color >> 0) & 0xFF;
 	c.alpha = (bgra_color >> 24) & 0xFF;
-	
+
 	return c;
 }
 #endif

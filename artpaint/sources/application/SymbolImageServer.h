@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	SymbolImageServer.h
-	Contents:	SymbolImageServer-class declarations.		
+	Contents:	SymbolImageServer-class declarations.
 	Author:	Heikki Suhonen
-	
+
 */
 
 

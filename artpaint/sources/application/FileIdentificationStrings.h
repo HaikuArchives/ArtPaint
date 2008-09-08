@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FileIdentificationStrings.h
-	Contents:	Strings that are used to identify different file types	
+	Contents:	Strings that are used to identify different file types
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -11,7 +11,7 @@
 
 // these strings are defined to identify self created file-types
 #define	HS_PALETTE_ID_STRING		"ArtPaint Palette File"
-#define	HS_PREFERENCES_ID_STRING	"ArtPaint Preferences File"	
+#define	HS_PREFERENCES_ID_STRING	"ArtPaint Preferences File"
 #define	HS_PROJECT_ID_STRING		"ArtPaint Project File"
 
 

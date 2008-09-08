@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	IntelligentPathFinder.cpp
-	Contents:	IntelligentPathFinder-class definitions + OrderedPointList	
+	Contents:	IntelligentPathFinder-class definitions + OrderedPointList
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <Bitmap.h>
@@ -42,7 +42,7 @@ IntelligentPathFinder::IntelligentPathFinder(BBitmap *bm)
 			total_cost_map[i][y] = 0x0000;
 			path_pointers_map[i][y]= 0x00000000;
 		}
-	}	
+	}
 
 	expanded_bits = new uint8*[(right_border>>3)+1];
 	for (int32 i=0;i<(right_border>>3)+1;i++) {
@@ -82,7 +82,7 @@ IntelligentPathFinder::~IntelligentPathFinder()
 	delete[] local_cost_map;
 	delete[] total_cost_map;
 	delete[] path_pointers_map;
-	
+
 	for (int32 i=0;i<(right_border>>3)+1;i++) {
 		delete[] expanded_bits[i];
 		expanded_bits[i] = NULL;
@@ -105,11 +105,11 @@ BPoint* IntelligentPathFinder::ReturnPath(int32 x, int32 y,int32 *num_points)
 	y = max_c(0,min_c(bottom_border-1,y));
 	int32 point_array_length = 128;
 	BPoint *point_array = new BPoint[point_array_length];
-	
+
 	int32 next_x = x;
 	int32 next_y = y;
 	int32 point_count = 0;
-	
+
 	while (((next_x != seed_point_x) || (next_y != seed_point_y)) && ((next_x >= 0) && (next_y >= 0))) {
 		if (point_count == point_array_length) {
 			point_array_length *= 2;
@@ -119,15 +119,15 @@ BPoint* IntelligentPathFinder::ReturnPath(int32 x, int32 y,int32 *num_points)
 			}
 			delete[] point_array;
 			point_array = new_array;
-		}	
+		}
 		BPoint point = ReturnNextPointInPath(next_x,next_y);
 		next_x = (int32)point.x;
 		next_y = (int32)point.y;
-		point_array[point_count++] = point; 
+		point_array[point_count++] = point;
 	}
-	
+
 	*num_points = point_count;
-	
+
 	if (point_count > 1)
 		return point_array;
 	else {
@@ -155,7 +155,7 @@ uint8 IntelligentPathFinder::LocalCost(int32 x, int32 y, int32 dx, int32 dy)
 		new_x = max_c(min_c(x-1,right_border-1),0);
 		new_y = max_c(min_c(y-1,bottom_border-1),0);
 		lt.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
-		
+
 		new_x = max_c(min_c(x,right_border-1),0);
 		new_y = max_c(min_c(y-1,bottom_border-1),0);
 		t.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
@@ -163,7 +163,7 @@ uint8 IntelligentPathFinder::LocalCost(int32 x, int32 y, int32 dx, int32 dy)
 		new_x = max_c(min_c(x+1,right_border-1),0);
 		new_y = max_c(min_c(y-1,bottom_border-1),0);
 		rt.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
-		
+
 		new_x = max_c(min_c(x-1,right_border-1),0);
 		new_y = max_c(min_c(y,bottom_border-1),0);
 		l.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
@@ -171,11 +171,11 @@ uint8 IntelligentPathFinder::LocalCost(int32 x, int32 y, int32 dx, int32 dy)
 		new_x = max_c(min_c(x+1,right_border-1),0);
 		new_y = max_c(min_c(y,bottom_border-1),0);
 		r.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
-		
+
 		new_x = max_c(min_c(x-1,right_border-1),0);
 		new_y = max_c(min_c(y+1,bottom_border-1),0);
 		lb.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
-		
+
 		new_x = max_c(min_c(x,right_border-1),0);
 		new_y = max_c(min_c(y+1,bottom_border-1),0);
 		b.word = *(bitmap_bits + new_x + new_y*bitmap_bpr);
@@ -198,13 +198,13 @@ uint8 IntelligentPathFinder::LocalCost(int32 x, int32 y, int32 dx, int32 dy)
 		green_magn =	abs(lb.bytes[1] - lt.bytes[1]) +
 						abs(2*b.bytes[1] - 2*t.bytes[1]) +
 						abs(rb.bytes[1] - rt.bytes[1]);
-		
+
 		blue_magn =	abs(lb.bytes[0] - lt.bytes[0]) +
 					abs(2*b.bytes[0] - 2*t.bytes[0]) +
 					abs(rb.bytes[0] - rt.bytes[0]);
 
 		gradient_magnitude = red_magn+blue_magn+green_magn;
-		
+
 		red_magn = 	abs(rt.bytes[2] - lt.bytes[2]) +
 					abs(2*r.bytes[2] - 2*l.bytes[2]) +
 					abs(rb.bytes[2] - lb.bytes[2]);
@@ -212,19 +212,19 @@ uint8 IntelligentPathFinder::LocalCost(int32 x, int32 y, int32 dx, int32 dy)
 		green_magn =	abs(rt.bytes[1] - lt.bytes[1]) +
 						abs(2*r.bytes[1] - 2*l.bytes[1]) +
 						abs(rb.bytes[1] - lb.bytes[1]);
-		
+
 		blue_magn = abs(rt.bytes[0] - lt.bytes[0]) +
 					abs(2*r.bytes[0] - 2*l.bytes[0]) +
 					abs(rb.bytes[0] - lb.bytes[0]);
-		 
+
 		gradient_magnitude = max_c(gradient_magnitude,red_magn+blue_magn+green_magn);
 
 		uint8 red_zero,green_zero,blue_zero;
-		
+
 		red_zero = (abs(8*c.bytes[2] - (lt.bytes[2] + t.bytes[2]
 					+ rt.bytes[2] + l.bytes[2] + r.bytes[2]
 					+ lb.bytes[2] + b.bytes[2] + rb.bytes[2])) < 2 ? 32 : 0);
-							
+
 		green_zero = (abs(8*c.bytes[1] - (lt.bytes[1] + t.bytes[1]
 					+ rt.bytes[1] + l.bytes[1] + r.bytes[1]
 					+ lb.bytes[1] + b.bytes[1] + rb.bytes[1])) < 2 ? 32 : 0);
@@ -236,9 +236,9 @@ uint8 IntelligentPathFinder::LocalCost(int32 x, int32 y, int32 dx, int32 dy)
 
 		gradient_magnitude = (int32)(32 - (gradient_magnitude / 3000.0)*32);
 		uint8 value = red_zero + green_zero + blue_zero + gradient_magnitude;
-		
-		local_cost_map[x][y] = value; 
-		
+
+		local_cost_map[x][y] = value;
+
 		if (abs(dx)+abs(dy)>1)
 			return value;
 		else
@@ -264,14 +264,14 @@ BPoint IntelligentPathFinder::ReturnNextPointInPath(int32 x, int32 y)
 		BPoint point;
 		point.x = (value >> 16) & 0xFFFF;
 		point.y = value & 0xFFFF;
-	
+
 		return point;
 	}
 	else {
 		BPoint point(-1,-1);
 		return point;
 	}
-		
+
 }
 
 
@@ -287,7 +287,7 @@ void IntelligentPathFinder::ResetTotalCostsAndPaths()
 			total_cost_map[i][y] = 0x0000;
 			path_pointers_map[i][y]= 0x00000000;
 		}
-	}		
+	}
 }
 
 
@@ -326,7 +326,7 @@ int32 IntelligentPathFinder::dp_thread_function()
 		snooze(50 * 1000);
 	}
 	seed_point_changed = FALSE;
-	
+
 	while (calculation_continuing) {
 		active_point_list = new OrderedPointList();
 		active_point_list->InsertPoint(seed_point_x,seed_point_y,0);
@@ -336,11 +336,11 @@ int32 IntelligentPathFinder::dp_thread_function()
 			uint16 cost;
 			active_point_list->RemoveLowestCostPoint(&x,&y,&cost);
 			SetExpanded(x,y);
-			
+
 			for (int32 dy=-1;dy<=1;dy++) {
 				for (int32 dx=-1;dx<=1;dx++) {
 					if ((dx != 0) || (dy != 0)) {
-						if ((x+dx >= 0) && (x+dx<right_border) && 
+						if ((x+dx >= 0) && (x+dx<right_border) &&
 							(y+dy >= 0) && (y+dy<bottom_border)) {
 							if (IsExpanded(x+dx,y+dy) == FALSE) {
 								uint16 temp_cost = ReturnTotalCost(x,y) + LocalCost(x,y,dx,dy);
@@ -350,13 +350,13 @@ int32 IntelligentPathFinder::dp_thread_function()
 								if ((previous_cost == 0) || (temp_cost < previous_cost)) {
 									SetTotalCost(x+dx,y+dy,temp_cost);
 									SetNextPointInPath(x+dx,y+dy,x,y);
-									active_point_list->InsertPoint(x+dx,y+dy,temp_cost);	
+									active_point_list->InsertPoint(x+dx,y+dy,temp_cost);
 								}
 							}
 						}
 					}
 				}
-			}			
+			}
 		}
 		while (!seed_point_changed && calculation_continuing)
 			snooze(100 * 1000);	// Calculated all costs.
@@ -364,9 +364,9 @@ int32 IntelligentPathFinder::dp_thread_function()
 		if (calculation_continuing) {
 			delete active_point_list;
 			ResetExpanded();
-			ResetTotalCostsAndPaths();			
+			ResetTotalCostsAndPaths();
 			seed_point_changed = FALSE;
-		}	
+		}
 
 	}
 
@@ -382,7 +382,7 @@ int32 IntelligentPathFinder::lc_thread_entry(void *data)
 
 int32 IntelligentPathFinder::lc_thread_function()
 {
-	return B_NO_ERROR;	
+	return B_NO_ERROR;
 }
 
 
@@ -401,7 +401,7 @@ void IntelligentPathFinder::PrintCostMap()
 
 OrderedPointList::OrderedPointList()
 {
-	point_list_head = NULL;	
+	point_list_head = NULL;
 	cost_limits = new point*[(int32)pow(2,16)];
 	for (int32 i=0;i<pow(2,16);i++)
 		cost_limits[i] = NULL;
@@ -446,7 +446,7 @@ void OrderedPointList::RemoveLowestCostPoint(int32 *x, int32 *y, uint16 *cost)
 		else {
 			highest_cost = 0;
 			cost_limits[*cost] = NULL;
-		}			
+		}
 		delete spare;
 	}
 	else {
@@ -499,7 +499,7 @@ void OrderedPointList::InsertPoint(int32 x, int32 y,uint16 cost)
 	spare->cost = cost;
 	spare->next_point = NULL;
 	spare->prev_point = NULL;
-	
+
 	if (cost_limits[cost] != NULL) {
 		spare->next_point = cost_limits[cost];
 		spare->prev_point = cost_limits[cost]->prev_point;
@@ -514,28 +514,28 @@ void OrderedPointList::InsertPoint(int32 x, int32 y,uint16 cost)
 			int32 next_cost = cost+1;
 			while (cost_limits[next_cost] == NULL)
 				next_cost++;
-			
-					
+
+
 			spare->next_point = cost_limits[next_cost];
 			spare->prev_point = cost_limits[next_cost]->prev_point;
 			if (spare->next_point != NULL)
 				spare->next_point->prev_point = spare;
 			if (spare->prev_point != NULL)
 				spare->prev_point->next_point = spare;
-			cost_limits[cost] = spare;			
+			cost_limits[cost] = spare;
 		}
 		else {
 			int32 prev_cost = cost - 1;
 			while ((prev_cost >= 0) && (cost_limits[prev_cost] == NULL))
 				prev_cost--;
-			
+
 			if (prev_cost >= 0) {
 				point *helper = cost_limits[prev_cost];
-				
+
 				if (helper != NULL) {
 					while ((helper->next_point != NULL) && (helper->cost < cost))
 						helper = helper->next_point;
-					
+
 					spare->next_point = helper;
 					spare->prev_point = helper->prev_point;
 					if (spare->next_point != NULL)
@@ -553,11 +553,11 @@ void OrderedPointList::InsertPoint(int32 x, int32 y,uint16 cost)
 			}
 		}
 	}
-	
+
 	if (spare->prev_point == NULL)
 		point_list_head = spare;
 
-	highest_cost = max_c(highest_cost,cost);	
+	highest_cost = max_c(highest_cost,cost);
 }
 
 
@@ -567,15 +567,15 @@ int32 OrderedPointList::ContainsPoint(int32 x, int32 y,uint16 min_cost)
 		return -1;
 	while (cost_limits[min_cost] == NULL)
 		min_cost++;
-	
+
 	point *spare = cost_limits[min_cost];
-	
+
 	while (spare != NULL) {
 		if ((spare->x == x) && (spare->y == y))
 			return spare->cost;
-		
+
 		spare = spare->next_point;
-	}	
+	}
 
 	return -1;
 }

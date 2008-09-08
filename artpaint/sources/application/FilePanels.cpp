@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FilePanels.cpp
-	Contents:	Definitions for various custom filepanels	
+	Contents:	Definitions for various custom filepanels
 	Author:		Heikki Suhonen
-	
+
 */
 
 //#include "Datatypes.h"
@@ -37,43 +37,43 @@ ImageSavePanel::ImageSavePanel(entry_ref *directory, BMessenger *target,int32 sa
 	char text[256];
 	sprintf(text,"ArtPaint: %s",StringServer::ReturnString(SAVE_IMAGE_STRING));
 	Window()->SetTitle(text);
-			
+
 	BView *text_view = Window()->FindView("text view");
 	text_view->MoveBy(0,20);
 
 	Window()->FindView("cancel button")->MoveBy(0,20);
 	Window()->FindView("default button")->MoveBy(0,20);
 	BView *child;
-	
+
 	for (int32 i=0;i<Window()->ChildAt(0)->CountChildren();i++) {
 		child = Window()->ChildAt(0)->ChildAt(i);
 		if ((child->ResizingMode() & B_FOLLOW_BOTTOM) || !(child->ResizingMode() & B_FOLLOW_TOP_BOTTOM))
 			child->MoveBy(0,-20);
 		else if (child->ResizingMode() & B_FOLLOW_TOP_BOTTOM)
-			child->ResizeBy(0,-20);	
-	}	
+			child->ResizeBy(0,-20);
+	}
 
 	// Add a button to show the datatype's settings.
 	BView *cancel_button = Window()->ChildAt(0)->FindView("cancel button");
 	if (cancel_button) {
 		sprintf(text,"%s",StringServer::ReturnString(SETTINGS_STRING));
 		float string_width = cancel_button->StringWidth(text);
-		
+
 		BRect button_rect = cancel_button->Frame();
 		button_rect.right = button_rect.left -10;
 		button_rect.left = button_rect.right - string_width - 20;
-		
+
 		BButton *settings_button = new BButton(button_rect,"settings button",text,new BMessage(HS_SHOW_DATATYPE_SETTINGS),B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM);
-	
+
 		settings_button->SetTarget(*target);
-		
-		cancel_button->Parent()->AddChild(settings_button);	
+
+		cancel_button->Parent()->AddChild(settings_button);
 	}
 
 	// this menu sends a message to the window that requested saving
 	// and tells it what format is currently chosen
 	// when the panel is invoked the window can save the image
-	// in the right format	
+	// in the right format
 	BPopUpMenu *format_menu = new BPopUpMenu("pop_up_menu");
 	BMessage *model_message = new BMessage(HS_SAVE_FORMAT_CHANGED);
 	BTranslationUtils::AddTranslationItems(format_menu,B_TRANSLATOR_BITMAP,model_message,NULL,NULL,NULL);
@@ -102,12 +102,12 @@ ImageSavePanel::ImageSavePanel(entry_ref *directory, BMessenger *target,int32 sa
 				target->SendMessage(new BMessage(*format_menu->ItemAt(0)->Message()));
 			}
 		}
-	}	
-	format_menu->SetTargetForItems(*target);	
+	}
+	format_menu->SetTargetForItems(*target);
 	sprintf(text,"%s:",StringServer::ReturnString(SAVE_FORMAT_STRING));
 	BMenuField *menu_field = new BMenuField(BRect(text_view->Frame().LeftTop() + BPoint(0,-25),text_view->Frame().RightTop() + BPoint(200,-5)),"a menu field",text,format_menu,B_FOLLOW_LEFT|B_FOLLOW_BOTTOM);
 	menu_field->SetDivider(menu_field->StringWidth(text) + 5);
-	
+
 	Window()->ChildAt(0)->AddChild(menu_field);
 
 	Window()->Unlock();

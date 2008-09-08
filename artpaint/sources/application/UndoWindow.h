@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoWindow.h
-	Contents:	Declarations for UndoWindow and UndoView-classes		
+	Contents:	Declarations for UndoWindow and UndoView-classes
 	Author:	Heikki Suhonen
-	
+
 */
 
 
@@ -19,7 +19,7 @@ public:
 		UndoWindow(BRect,char*);
 		~UndoWindow();
 
-void		MessageReceived(BMessage*);		
+void		MessageReceived(BMessage*);
 };
 
 
@@ -33,4 +33,4 @@ void		MouseDown(BPoint);
 
 };
 
-#endif 
+#endif

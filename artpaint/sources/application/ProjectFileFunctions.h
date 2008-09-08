@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ProjectFileFunctions.h
-	Contents:	Declarations for project-file handling functions.	
+	Contents:	Declarations for project-file handling functions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -19,7 +19,7 @@ int64	FindProjectFileSection(BFile&,int32 section_id);
 // These are used as markers in the project file.
 #define PROJECT_FILE_ID								0x01010101
 #define PROJECT_FILE_SECTION_START					0x02020202
-#define PROJECT_FILE_SECTION_END					0x02020203	
+#define PROJECT_FILE_SECTION_END					0x02020203
 #define PROJECT_FILE_DIMENSION_SECTION_ID			0x11001100
 #define PROJECT_FILE_LAYER_SECTION_ID				0x22002200
 #define PROJECT_FILE_LAYER_START_MARKER				0x33003300
@@ -35,5 +35,5 @@ enum {
 	QUADTREE_COMPRESSION = 0x00000001,
 	RLE_COMPRESSION = 0x00000002
 };
-	
+
 #endif

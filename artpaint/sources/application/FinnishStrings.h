@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FinnishStrings.h
-	Contents:	Definitions of UI strings in finnish.	
+	Contents:	Definitions of UI strings in finnish.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -110,7 +110,7 @@
 #define	FINNISH_LOCK_PROPORTIONS_STRING			"Lukitse Suhteet"
 #define	FINNISH_MAG_STRING						"Suur"
 #define	FINNISH_MAGIC_WAND_STRING				"Taikasauva"
-#define	FINNISH_MERGE_WITH_BACK_LAYER_STRING	"Yhdistä Alempaan Kerrokseen"			
+#define	FINNISH_MERGE_WITH_BACK_LAYER_STRING	"Yhdistä Alempaan Kerrokseen"
 #define	FINNISH_MERGE_WITH_FRONT_LAYER_STRING	"Yhdistä Ylempään Kerrokseen"
 #define	FINNISH_MODE_STRING						"Moodi"
 #define	FINNISH_MUCH_STRING						"Paljon"
@@ -194,7 +194,7 @@
 #define	FINNISH_TOOLS_STRING					"Työkalut"
 #define	FINNISH_TOOL_SETUP_STRING				"Työkalun Asetus"
 #define	FINNISH_TOP_STRING						"Ylä"
-#define	FINNISH_TRANSLATE_ALL_LAYERS_HELP_STRING	"Aloittaa kuvan liikuttamisen."	
+#define	FINNISH_TRANSLATE_ALL_LAYERS_HELP_STRING	"Aloittaa kuvan liikuttamisen."
 #define	FINNISH_TRANSLATE_LAYER_HELP_STRING		"Aloittaa aktiivisen kerroksen liikuttamisen."
 #define	FINNISH_TRANSLATE_STRING				"Liikuta…"
 #define	FINNISH_TRANSPARENT_STRING				"Läpinäkyvä"

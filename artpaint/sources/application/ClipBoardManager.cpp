@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ClipBoardManager.cpp
-	Contents:	ClipBoardManager-class definitions.	
+	Contents:	ClipBoardManager-class definitions.
 	Author:		Heikki Suhonen
-	
+
 */
 
 

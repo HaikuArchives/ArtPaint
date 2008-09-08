@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ClipBoardView.h
-	Contents:	ClipBoardView-class declarations.	
+	Contents:	ClipBoardView-class declarations.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -24,12 +24,12 @@
 #include <View.h>
 
 class ClipBoardView : public BView {
-		
+
 public:
 		ClipBoardView();
 		~ClipBoardView();
-		
-void	Draw(BRect);		
+
+void	Draw(BRect);
 void	MessageReceived(BMessage*);
 void	MouseDown(BPoint);
 };

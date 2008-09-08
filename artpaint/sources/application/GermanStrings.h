@@ -1,6 +1,6 @@
 /*
 	Filename:	GermanStrings.h
-	Contents:	Definitions of UI strings in German.	
+	Contents:	Definitions of UI strings in German.
 	Author:		Rainer Riedl (riedl@navios.de)
 	Remark:		v0.1, not really ready now, just a first try.
 				v0.2, next step. Not ready, but big improvement
@@ -24,7 +24,7 @@
 					- no translation for "Merge Layers" in menu Undo ...
 					- no translation for "Clear Layer" in menu Undo ...
 					- Scrollbars: clicking in the area between knob and arrows should move the window content one page (the visible area)
-					- entering numbers in textcontrols should immediatly make the necessary actions (eg in the move dialog you have to put the focus to another 
+					- entering numbers in textcontrols should immediatly make the necessary actions (eg in the move dialog you have to put the focus to another
 					  field before the input is recognized. That's even more bad as input is ignored when pressing the green checkmark)
 					- pressing the background color icon should set it as current color
 					- The frame that marks the cropped area should have another color (at least when it is outside)
@@ -144,7 +144,7 @@
 #define	GERMAN_LOCK_PROPORTIONS_STRING					"Proportionen beibehalten"
 #define	GERMAN_MAG_STRING								"Zoom"
 #define	GERMAN_MAGIC_WAND_STRING						"Zauberstab"
-#define	GERMAN_MERGE_WITH_BACK_LAYER_STRING				"Mit hinterer Ebene vereinigen"			
+#define	GERMAN_MERGE_WITH_BACK_LAYER_STRING				"Mit hinterer Ebene vereinigen"
 #define	GERMAN_MERGE_WITH_FRONT_LAYER_STRING			"Mit vorderer Ebene vereinigen"
 #define	GERMAN_MODE_STRING								"Modus"
 #define	GERMAN_MUCH_STRING								"viel"
@@ -230,7 +230,7 @@
 #define	GERMAN_TOOLS_STRING								"Werkzeuge"
 #define	GERMAN_TOOL_SETUP_STRING						"Werkzeugeinstellungen"
 #define	GERMAN_TOP_STRING								"oben"
-#define	GERMAN_TRANSLATE_ALL_LAYERS_HELP_STRING			"Verschiebt alle Ebenen."	
+#define	GERMAN_TRANSLATE_ALL_LAYERS_HELP_STRING			"Verschiebt alle Ebenen."
 #define	GERMAN_TRANSLATE_LAYER_HELP_STRING				"Verschiebt die aktive Ebene."
 #define	GERMAN_TRANSLATE_STRING							"Verschieben…"
 #define	GERMAN_TRANSPARENT_STRING						"Transparent"
@@ -262,7 +262,7 @@
 #define	GERMAN_ZOOM_LEVEL_400_HELP_STRING				"Setzt die Zoom-Stufe auf 400%."
 #define	GERMAN_ZOOM_LEVEL_800_HELP_STRING				"Setzt die Zoom-Stufe auf 800%."
 #define GERMAN_BRUSH_STRING								"Stift"
-#define GERMAN_COLOR_SET_STRING							"Farbpalette" 
+#define GERMAN_COLOR_SET_STRING							"Farbpalette"
 #define	GERMAN_ALPHA_STRING								"Alpha"
 #define	GERMAN_BLUE_STRING								"Blau"
 #define	GERMAN_GREEN_STRING								"Grün"
@@ -324,8 +324,8 @@
 #define	GERMAN_TEXT_TOOL_IN_USE_STRING					"Ziehen sie den Text mit der Maus an die richtige Position."
 
 #define	GERMAN_CONFIRM_QUIT_STRING						"Beenden bestätigen"
-#define GERMAN_CROSS_HAIR_CURSOR_STRING					"nur Fadenkreuz"  
-#define GERMAN_CURSOR_STRING							"Zeiger" 
+#define GERMAN_CROSS_HAIR_CURSOR_STRING					"nur Fadenkreuz"
+#define GERMAN_CURSOR_STRING							"Zeiger"
 #define	GERMAN_DO_NOT_SAVE_STRING						"Verwerfen"
 #define	GERMAN_MISCELLANEOUS_STRING						"Verschiedenes"
 #define	GERMAN_RECENT_IMAGES_STRING						"Zuletzt geöffnete Bilder"
@@ -357,7 +357,7 @@
 #define	GERMAN_ABOUT_1_TEXT_STRING						"ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für BeOS."\
 														" Es eignet sich für einen weiten Bereich von Web-Grafiken bis hin zu Bildverarbeitung."\
 														" Werfen Sie einen Blick in die Anleitung. Dort finden Sie eine Einleitung."
-																								
+
 #define	GERMAN_ABOUT_3_TEXT_STRING						"Neue Versionen finden sie hier:"
 
 #define	GERMAN_ABOUT_4_TEXT_STRING						"Vorschläge und Fragen betreffs dieses Programmes schicken Sie bitte an:"

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	RandomNumberGenerator.h
-	Contents:	RandomNumberGenerator-class declarations.		
+	Contents:	RandomNumberGenerator-class declarations.
 	Author:	Heikki Suhonen
-	
+
 */
 
 
@@ -19,21 +19,21 @@ class RandomNumberGenerator {
 		int32	random_array_length;
 
 		uint32	normal_stream_position;
-		uint32	uniform_stream_position;			
+		uint32	uniform_stream_position;
 		uint32	integer_uniform_stream_position;
-		
+
 		int32 	seed;
-		
+
 inline	float	FloatNoise(int32);
 inline	int32	IntegerNoise(int32);
 public:
 				RandomNumberGenerator(int32 seed_number,int32 minimum_sequence_length);
 				~RandomNumberGenerator();
-				
+
 		void		ResetStreams();
 
 inline	float	StandardNormalDistribution();
-inline	float	UniformDistribution(float a, float b);		
+inline	float	UniformDistribution(float a, float b);
 inline	int32	IntegerUniformDistribution(int32 a,int32 b);
 };
 
@@ -82,7 +82,7 @@ inline int32 RandomNumberGenerator::IntegerUniformDistribution(int32 a,int32 b)
 		return a + integer_random_number_array[integer_uniform_stream_position++ % random_array_length] % (b-a+1);
  	}
 	else  {
-		return a + IntegerNoise(integer_uniform_stream_position++) % (b-a+1);	
+		return a + IntegerNoise(integer_uniform_stream_position++) % (b-a+1);
 	}
 }
 

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	HSPolygon.h
-	Contents:	HSPolygon-class declaration.	
+	Contents:	HSPolygon-class declaration.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -32,20 +32,20 @@ class HSPolygon {
 BPoint				*points;
 int32				point_count;
 polygon_direction	direction;
-			
+
 
 public:
 				HSPolygon(BPoint*,int32,polygon_direction dir=HS_POLYGON_ANY_DIRECTION);
 				HSPolygon(const HSPolygon*);
 				~HSPolygon();
 
-void			AddPoints(BPoint*,int32,bool reverse_points=FALSE);		
+void			AddPoints(BPoint*,int32,bool reverse_points=FALSE);
 void			Rotate(const BPoint&,float);
 void			RotateAboutCenter(float);
 
 void			TranslateBy(int32,int32);
 
-BPolygon*		GetBPolygon();	
+BPolygon*		GetBPolygon();
 
 
 // This function checks that each point has follower within the parameter

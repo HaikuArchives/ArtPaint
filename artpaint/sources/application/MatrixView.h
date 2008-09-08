@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	MatrixView.h
-	Contents:	MatrixView-class declaration		
+	Contents:	MatrixView-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -15,7 +15,7 @@
 
 /*
 	MatrixView is a class that holds subviews of equal size
-	and orders them in a matrix. When the view is resized, the 
+	and orders them in a matrix. When the view is resized, the
 	subviews are automatically reordered.
 */
 

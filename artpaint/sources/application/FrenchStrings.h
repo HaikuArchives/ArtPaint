@@ -1,10 +1,10 @@
-/* 
+/*
 
 
 
 	Filename:	FrenchStrings.h
 
-	Contents:	Definitions of UI strings in frensh.	
+	Contents:	Definitions of UI strings in frensh.
 
 	Author:		Jean-Rémi Taponier
 
@@ -24,7 +24,7 @@
 
 	also in SELECT_CANVAS_SIZE.
 
-	
+
 
 */
 
@@ -276,7 +276,7 @@
 
 #define	FRENCH_MAGIC_WAND_STRING				"Baguette Magique"
 
-#define	FRENCH_MERGE_WITH_BACK_LAYER_STRING	"Fusionner Avec Le Calque Inférieur"			
+#define	FRENCH_MERGE_WITH_BACK_LAYER_STRING	"Fusionner Avec Le Calque Inférieur"
 
 #define	FRENCH_MERGE_WITH_FRONT_LAYER_STRING	"Fusionner Avec Le Calque Supérieur"
 
@@ -472,7 +472,7 @@
 
 #define	FRENCH_TOP_STRING						"Haut"
 
-#define	FRENCH_TRANSLATE_ALL_LAYERS_HELP_STRING	"Commence à bouger tous les calques."	
+#define	FRENCH_TRANSLATE_ALL_LAYERS_HELP_STRING	"Commence à bouger tous les calques."
 
 #define	FRENCH_TRANSLATE_LAYER_HELP_STRING		"Commence à bouger le calque actif."
 
@@ -492,7 +492,7 @@
 
 #define	FRENCH_UNLIMITED_STRING				"Illimitée"
 
-#define FRENCH_UNSUPPORTED_FILE_TYPE_STRING	"Le type du fichier %s n'est pas supporté. Essayer d'installer un Translator si c'est possible." 
+#define FRENCH_UNSUPPORTED_FILE_TYPE_STRING	"Le type du fichier %s n'est pas supporté. Essayer d'installer un Translator si c'est possible."
 
 #define	FRENCH_UNTITLED_STRING					"Sans Titre"
 
@@ -652,7 +652,7 @@
 												" Il peut être utilisé pour réaliser un grand choix de travaux depuis le design d'un site web"\
 												" à la retouche de photos. Pour bien débuter, regardez le didacticiel dans le manuel."
 
-																								
+
 
 #define	FRENCH_ABOUT_3_TEXT_STRING				"Les nouvelles versions de ArtPaint peuvent être trouvées ici:"
 

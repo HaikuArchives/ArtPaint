@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	AddOnTypes.h
-	Contents:	Enumeration for all possible add-on types	
+	Contents:	Enumeration for all possible add-on types
 	Author:		Heikki Suhonen
-	
+
 */
 
 

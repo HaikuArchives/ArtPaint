@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	MessageFilters.cpp
-	Contents:	Message-filter function definitions	
+	Contents:	Message-filter function definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -21,7 +21,7 @@ filter_result window_activation_filter(BMessage*, BHandler**, BMessageFilter *me
 	if (window != NULL)
 		window->Activate(TRUE);
 
-	return B_DISPATCH_MESSAGE;	
+	return B_DISPATCH_MESSAGE;
 }
 
 
@@ -29,7 +29,7 @@ filter_result message_to_parent(BMessage *msg,BHandler **handler,BMessageFilter 
 {
 	BView *view = dynamic_cast<BView*>(*handler);
 	BLooper *looper = messageFilter->Looper();
-	
+
 	if ((view != NULL) && (view->Parent() != NULL)) {
 		view = view->Parent();
 		if (looper != NULL)

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	FilePanels.h
-	Contents:	Declarations for various file-panel classes	
+	Contents:	Declarations for various file-panel classes
 	Author:		Heikki Suhonen
-	
+
 */
 
 #ifndef FILE_PANELS_H

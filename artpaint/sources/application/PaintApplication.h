@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	PaintApplication.h
 	Contents:	PaintApplication class declaration
 	Author:	Heikki Suhonen
-	
+
 */
 
 #ifndef PAINT_APPLICATION_H
@@ -30,32 +30,32 @@ struct global_settings;
 
 // PaintApplication class declaration
 class PaintApplication : public BApplication {
-private:		
+private:
 		// these variables hold the various open-panels
 		BFilePanel		*image_open_panel;
-		BFilePanel		*project_open_panel;				
+		BFilePanel		*project_open_panel;
 
 //		// this variable holds the pop-up-menu that displays
 //		// tools to the user
-//		BPopUpMenu		*tool_pop_up_menu;		
+//		BPopUpMenu		*tool_pop_up_menu;
 
 		global_settings	*settings;
-		
+
 		// this tells if we can use the datatypes
-		bool			datatypes_available;	
+		bool			datatypes_available;
 
 //		// this array holds pointers to tool-instances
 //		DrawingTool	 	*drawing_tools[HS_NUMBER_OF_TOOLS];
-		
+
 //		// this variable holds the info on how many untitled windows we have created
 //		// in this session
 //		int32			untitled_window_number;
-							
+
 // this funtion show the color palette window whether it is hidden, minimized
 // or closed
 //void		showColorWindow();
 
-// these functions set up some pop-up menus		
+// these functions set up some pop-up menus
 //void		setupToolMenu();
 
 //// this function creates the drawing tool instances and places them to the array
@@ -98,7 +98,7 @@ public:
 static	void				HomeDirectory(BPath &path);
 
 // this function returns a pointer to settings struct
-		global_settings*	Settings() { return settings; }	
+		global_settings*	Settings() { return settings; }
 };
 
 

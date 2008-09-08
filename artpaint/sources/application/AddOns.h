@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	AddOns.h
-	Contents:	Definitions for stuff that is needed by add-ons.	
+	Contents:	Definitions for stuff that is needed by add-ons.
 	Author:		Heikki Suhonen
-	
+
 */
 
 

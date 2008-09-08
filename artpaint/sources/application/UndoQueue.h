@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoQueue.h
-	Contents:	UndoQueue-class declaration	
+	Contents:	UndoQueue-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -32,15 +32,15 @@ class UndoQueue {
 		UndoEvent	*first_event;
 		UndoEvent	*last_event;
 		UndoEvent	*current_event;
-			
+
 static	int32		maximum_queue_depth;
 		int32		current_queue_depth;
-		
+
 //		int32		event_count;
 //		int32		max_event_count;
 
 		BMenuItem	*undo_menu_item;
-		BMenuItem	*redo_menu_item;				
+		BMenuItem	*redo_menu_item;
 		ImageView	*image_view;
 
 		void		UpdateMenuItems();
@@ -53,21 +53,21 @@ const	char*		ReturnUndoEventName();
 const	char*		ReturnRedoEventName();
 
 
-SelectionData		*selection_data;			
-		
+SelectionData		*selection_data;
+
 public:
 			UndoQueue(BMenuItem*,BMenuItem*,ImageView*);
 			UndoQueue(BFile&);
 
-		
+
 			~UndoQueue();
-		
+
 
 UndoEvent*	AddUndoEvent(const char*,const BBitmap*,bool remove_tail=TRUE);
 UndoEvent*	ReturnCurrentEvent() { return current_event; }
 
 status_t	RemoveEvent(UndoEvent*);
-int32		WriteUndoQueue(BFile&);	
+int32		WriteUndoQueue(BFile&);
 
 
 BBitmap*	ReturnLayerSpareBitmap(int32 layer_id,BBitmap *layer_bitmap);

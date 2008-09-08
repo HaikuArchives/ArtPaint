@@ -1,9 +1,9 @@
-/* 
+/*
 
-	Filename:	UndoEvent.cpp	
-	Contents:	UndoEvent-class definitions	
+	Filename:	UndoEvent.cpp
+	Contents:	UndoEvent-class definitions
 	Author:		Heikki Suhonen
-	
+
 */
 
 #include <stdio.h>
@@ -19,7 +19,7 @@ UndoEvent::UndoEvent(const char *name, const BBitmap*)
 	max_action_count = 0;
 
 	thumbnail_image = NULL;
-	
+
 	next_event = NULL;
 	previous_event = NULL;
 
@@ -30,7 +30,7 @@ UndoEvent::UndoEvent(const char *name, const BBitmap*)
 UndoEvent::~UndoEvent()
 {
 	delete thumbnail_image;
-	
+
 	for (int32 i=0;i<action_count;i++) {
 		delete actions[i];
 		actions[i] = NULL;
@@ -59,7 +59,7 @@ void UndoEvent::AddAction(UndoAction *action)
 		actions = new_actions;
 	}
 	action->SetQueue(queue);
-	action->SetEvent(this);	
+	action->SetEvent(this);
 	actions[action_count++] = action;
 }
 
@@ -85,8 +85,8 @@ bool UndoEvent::IsEmpty()
 	bool is_empty = TRUE;
 	for (int32 i=0;i<action_count;i++) {
 		if (actions[i]->IsEmpty() == FALSE)
-			is_empty = FALSE;	
-	}	
+			is_empty = FALSE;
+	}
 	return is_empty;
 }
 

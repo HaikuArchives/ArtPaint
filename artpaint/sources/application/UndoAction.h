@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoAction.h
-	Contents:	UndoAction-class declaration	
+	Contents:	UndoAction-class declaration
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -26,7 +26,7 @@ enum action_type {
 	DELETE_LAYER_ACTION,
 	CLEAR_LAYER_ACTION,
 	CHANGE_LAYER_CONTENT_ACTION,
-	MERGE_LAYER_ACTION	
+	MERGE_LAYER_ACTION
 };
 
 
@@ -43,7 +43,7 @@ class UndoAction {
 
 	int32				layer_id;
 	int32				merged_layer_id;
-	action_type			type;	
+	action_type			type;
 
 
 	ToolScript			*tool_script;
@@ -64,8 +64,8 @@ class UndoAction {
 		SLIGHT_DIFFERENCE,
 		GREAT_DIFFERENCE
 	};
-	
-	
+
+
 public:
 	UndoAction(int32 layer,action_type t=NO_ACTION,BRect rect=BRect(0,0,-1,-1));
 	UndoAction(int32 layer,int32 merged_layer,BRect rect=BRect(0,0,-1,-1));
@@ -75,7 +75,7 @@ public:
 	~UndoAction();
 
 status_t	StoreUndo(BBitmap*);
-BBitmap*	ApplyUndo(BBitmap*,BRect&);		
+BBitmap*	ApplyUndo(BBitmap*,BRect&);
 
 
 void		SetEvent(UndoEvent *e) { event = e; }

@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	ClipBoardManager.h
-	Contents:	ClipBoardManager-class declarations.	
+	Contents:	ClipBoardManager-class declarations.
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -26,11 +26,11 @@
 class Clip;
 
 class ClipBoardManager {
-		
+
 public:
 		ClipBoardManager();
 		~ClipBoardManager();
-		
+
 static	status_t	AddClip(BBitmap*);
 
 };
@@ -45,9 +45,9 @@ class Clip {
 public:
 			Clip(BBitmap*);
 			~Clip();
-		
+
 status_t	StoreBitmap(BPath);
-BBitmap*	ReturnBitmap();					
-BBitmap*	ReturnThumbnail();		
+BBitmap*	ReturnBitmap();
+BBitmap*	ReturnThumbnail();
 };
-#endif 
+#endif

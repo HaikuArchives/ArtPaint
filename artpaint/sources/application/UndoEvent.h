@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	UndoEvent.h
-	Contents:	UndoEvent-class declarations	
+	Contents:	UndoEvent-class declarations
 	Author:		Heikki Suhonen
-	
+
 */
 
 
@@ -22,18 +22,18 @@ friend 	class		UndoQueue;
 		int32		action_count;
 		int32		max_action_count;
 		UndoQueue	*queue;
-	
+
 const	char		*event_name;
 		BBitmap		*thumbnail_image;
-				
-		
+
+
 		UndoEvent	*next_event;
 		UndoEvent	*previous_event;
-		
+
 	SelectionData	*selection_data;
 
 public:
-		UndoEvent(const char *name, const BBitmap *thumbnail);			
+		UndoEvent(const char *name, const BBitmap *thumbnail);
 		~UndoEvent();
 
 

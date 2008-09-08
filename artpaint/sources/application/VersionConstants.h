@@ -1,9 +1,9 @@
-/* 
+/*
 
 	Filename:	VersionConstants.h
-	Contents:	Constants for version numbers of different parts of the program	
+	Contents:	Constants for version numbers of different parts of the program
 	Author:		Heikki Suhonen
-	
+
 */
 
 
