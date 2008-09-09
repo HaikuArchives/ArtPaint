@@ -87,8 +87,8 @@ Selection::Selection(const Selection *sel)
 		selection_map->Unlock();
 	}
 	else {
- 		selection_view = NULL;
- 		selection_map = NULL;
+		selection_view = NULL;
+		selection_map = NULL;
 	}
 
 	image_bounds = sel->image_bounds;
@@ -563,26 +563,27 @@ void Selection::ImageSizeChanged(BRect rect)
 		image_bounds = rect;
 		if (selection_map != NULL) {
 			BBitmap *previous_map = selection_map;
-			selection_map = new BBitmap(image_bounds,B_GRAY1,TRUE);
-			selection_view = new BView(image_bounds,"selection view",B_FOLLOW_NONE,B_WILL_DRAW);
+			selection_map = new BBitmap(image_bounds, B_GRAY1, true);
+			selection_view = new BView(image_bounds, "selection view",
+				B_FOLLOW_NONE, B_WILL_DRAW);
 			selection_map->AddChild(selection_view);
 			selection_bits = (uint8*)selection_map->Bits();
 			selection_bpr = selection_map->BytesPerRow();
 
-			int32 height = min_c(previous_map->Bounds().IntegerHeight(),selection_map->Bounds().IntegerHeight());
-			int32 width = min_c(selection_bpr,previous_map->BytesPerRow());
+			int32 height = min_c(previous_map->Bounds().IntegerHeight(),
+				selection_map->Bounds().IntegerHeight());
+			int32 width = min_c(selection_bpr, uint32(previous_map->BytesPerRow()));
 
 			int32 previous_bpr = previous_map->BytesPerRow();
 			uint8 *previous_bits = (uint8*)previous_map->Bits();
 
-			for (int32 y=0;y<=height;y++) {
-				for (int32 x=0;x<width;x++) {
-					*(selection_bits + x + y*selection_bpr) = *(previous_bits + x + y*previous_bpr);
+			for (int32 y = 0; y <= height; y++) {
+				for (int32 x = 0; x < width; x++) {
+					*(selection_bits + x + y * selection_bpr) =
+						*(previous_bits + x + y * previous_bpr);
 				}
 			}
-
 			delete previous_map;
-
 
 			SimplifySelection();
 		}
@@ -772,7 +773,8 @@ void Selection::SimplifySelection()
 
 					BPoint starting_point(x,y);
 					int32 turns = 0;
-					included_points->InsertPoint(starting_point.x,starting_point.y);
+					included_points->InsertPoint(int32(starting_point.x),
+						int32(starting_point.y));
 					BPoint next_point;
 					next_point = starting_point;
 					point_list[point_count++] = starting_point;
@@ -868,7 +870,8 @@ void Selection::SimplifySelection()
 
 					next_point = BPoint(new_x,new_y);
 					while ((next_point != starting_point) && (direction != NONE)) {
-						included_points->InsertPoint(next_point.x,next_point.y);
+						included_points->InsertPoint(int32(next_point.x),
+							int32(next_point.y));
 						point_list[point_count++] = next_point;
 						if (point_count == max_point_count) {
 							max_point_count *= 2;

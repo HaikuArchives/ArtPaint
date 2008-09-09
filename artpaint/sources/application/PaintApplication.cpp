@@ -339,7 +339,7 @@ void PaintApplication::RefsReceived(BMessage *message)
 						if (file.Read(&lendian,sizeof(int32)) == sizeof(int32)) {
 							if (file.Read(&file_id,sizeof(int32)) == sizeof(int32)) {
 								settings->insert_recent_project_path(input_path.Path());
-								if (lendian == 0xFFFFFFFF)
+								if (uint32(lendian) == 0xFFFFFFFF)
 									file_id = B_LENDIAN_TO_HOST_INT32(file_id);
 								else
 									file_id = B_BENDIAN_TO_HOST_INT32(file_id);
@@ -682,7 +682,7 @@ status_t PaintApplication::readProject(BFile &file,entry_ref &ref)
 	if (lendian == 0x00000000) {
 		is_little_endian = FALSE;
 	}
-	else if (lendian == 0xFFFFFFFF) {
+	else if (uint32(lendian) == 0xFFFFFFFF) {
 		is_little_endian = TRUE;
 	}
 	else
@@ -751,16 +751,16 @@ status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
 	strncpy(file_name,ref.name,256);
 
 	BAlert *alert;
-	int32 bytes_read;
 	char file_id[256]; 		// The identification string.
-	if ((bytes_read = file.Read(file_id,strlen(HS_PROJECT_ID_STRING))) != strlen(HS_PROJECT_ID_STRING)) {
+	ssize_t bytes_read = file.Read(file_id, strlen(HS_PROJECT_ID_STRING));
+	if (bytes_read < 0 || uint32(bytes_read) != strlen(HS_PROJECT_ID_STRING)) {
 		sprintf(alert_text,"Project file %s structure corrupted.",file_name);
 		alert = new BAlert("",alert_text,"OK");
 		alert->Go();	// Alert deletes itself before returning.
 		return B_ERROR;
 	}
 	file_id[bytes_read] = '\0';
-	if (strcmp(file_id,HS_PROJECT_ID_STRING) != 0) {
+	if (strcmp(file_id, HS_PROJECT_ID_STRING) != 0) {
 		sprintf(alert_text,"Project file %s structure corrupted.",file_name);
 		alert = new BAlert("",alert_text,"OK");
 		alert->Go();	// Alert deletes itself before returning.
