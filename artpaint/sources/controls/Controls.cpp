@@ -60,8 +60,8 @@ void NumberControl::SetValue(int32 value)
 	BTextControl::SetValue(value);
 
 	char text[256];
+	sprintf(text,"%ld", value);
 
-	sprintf(text,"%d",value);
 	SetText(text);
 }
 
@@ -220,13 +220,13 @@ void ControlSliderBox::MessageReceived(BMessage *message)
 	// we should then set the new value for number_control and inform the window also
 	case HS_CONTROL_SLIDER_INVOKED:
 		char value[10];
-		sprintf(value,"%d",slider->Value());
+		sprintf(value, "%ld", slider->Value());
 		number_control->SetText(value);
 		if (continuos_messages == TRUE)
 			sendMessage(slider->Value(),FALSE);
 		break;
 	case CONTROL_SLIDER_FINISHED:
-		sprintf(value,"%d",slider->Value());
+		sprintf(value, "%ld", slider->Value());
 		number_control->SetText(value);
 		sendMessage(slider->Value(),TRUE);
 		break;
@@ -245,7 +245,7 @@ void ControlSliderBox::setValue(int32 value)
 //	Next line causes some odd crashes.
 	slider->SetValue(value);
 	char val[10];
-	sprintf(val,"%d",value);
+	sprintf(val, "%ld", value);
 	number_control->SetText(val);
 }
 

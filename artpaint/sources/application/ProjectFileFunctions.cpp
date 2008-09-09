@@ -39,7 +39,7 @@ int64 FindProjectFileSection(BFile &file,int32 section_id)
 
 	if (lendian == 0x00000000)
 		number_of_sections = B_BENDIAN_TO_HOST_INT32(number_of_sections);
-	else if (lendian == 0xFFFFFFFF)
+	else if (uint32(lendian) == 0xFFFFFFFF)
 		number_of_sections = B_LENDIAN_TO_HOST_INT32(number_of_sections);
 	else
 		return 0;

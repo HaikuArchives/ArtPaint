@@ -20,16 +20,14 @@ const char* StringServer::ReturnString(string_id id)
 {
 	if (current_language == FINNISH_LANGUAGE) {
 //		return return_finnish_string(id);
-	}
-	else if (current_language == GERMAN_LANGUAGE) {
+	} else if (current_language == GERMAN_LANGUAGE) {
 		return return_german_string(id);
-	}
-	else if (current_language == FRENCH_LANGUAGE) {
+	} else if (current_language == FRENCH_LANGUAGE) {
 		return return_french_string(id);
 	}
-	else {	// If language is not found return english
-		return return_english_string(id);
-	}
+
+	// If language is not found return english
+	return return_english_string(id);
 }
 
 
@@ -1276,12 +1274,20 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_MEMORY_ALERT_2_STRING;
 		case MEMORY_ALERT_3_STRING:
 			return GERMAN_MEMORY_ALERT_3_STRING;
+
+		// TODO: check these
+		case ABOUT_9_TEXT_STRING:
+		case ABOUT_10_TEXT_STRING:
+		case CHANGES_TAKE_EFFECT_STRING:
+			goto not_translated_yet;
 	}
+
+not_translated_yet:
 
 	// The default case of the switch. Taken away from the switch
 	// to allow warnings on missing cases.
 	char *string = new char[256];
-	sprintf(string,"GER: %s",return_english_string(id));
+	sprintf(string,"GER: %s", return_english_string(id));
 	return string;
 }
 

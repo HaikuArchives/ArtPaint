@@ -217,7 +217,7 @@ status_t UndoQueue::ChangeLayerSpareBitmap(int32 layer_id, BBitmap *layer_bitmap
 		uint32 *spare_bits = (uint32*)layer_bitmaps[layer_id]->Bits();
 		uint32 *bits = (uint32*)layer_bitmap->Bits();
 		uint32 bitslength = layer_bitmap->BitsLength()/4;
-		for (int32 i=0;i<bitslength;i++)
+		for (uint32 i = 0; i < bitslength; i++)
 			*spare_bits++ = *bits++;
 	}
 	else {

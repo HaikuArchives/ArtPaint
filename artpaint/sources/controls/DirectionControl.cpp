@@ -100,7 +100,7 @@ void DirectionControl::MouseDown(BPoint point)
 		}
 		snooze(20 * 1000);
 	}
-	SetValue(new_angle);
+	SetValue(int32(new_angle));
 	Invoke();
 }
 

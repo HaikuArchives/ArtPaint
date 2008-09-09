@@ -142,7 +142,7 @@ void CMYControl::MouseDown(BPoint point)
 			value.bytes[2] = red_value;
 			value.bytes[3] = alpha_value;
 
-			if (value.word != previous_value) {
+			if (value.word != uint32(previous_value)) {
 				previous_value = value.word;
 				CalcRamps();
 				Draw(Bounds());

@@ -542,11 +542,12 @@ void ColorPaletteWindow::openMenuBar()
 	// in this loop we add possible palette sizes to menu
 	BMessage *msg;
 	char item_title[20] = "";
-	for (int32 i=3;i<=6;i++) {
-		sprintf(item_title,"%d %s",((int32)pow(2,i)),StringServer::ReturnString(COLORS_STRING));
+	for (int32 i = 3; i <= 6; i++) {
+		sprintf(item_title, "%ld %s",((int32)pow(2, i)),
+			StringServer::ReturnString(COLORS_STRING));
 		msg = new BMessage(HS_NEW_PALETTE_CREATED);
-		msg->AddInt32("colors",((int32)pow(2,i)));
-		menu_item = new BMenuItem(item_title,msg);
+		msg->AddInt32("colors", ((int32)pow(2, i)));
+		menu_item = new BMenuItem(item_title, msg);
 		sub_menu->AddItem(menu_item);
 	}
 	// the palette window will handle all things that concern making or loading new palette
@@ -935,7 +936,7 @@ void ColorContainer::MouseDown(BPoint point)
 	uint32 original_button;
 
 	GetMouse(&point, &buttons, true);
-    int32 index,prev_index = ColorSet::currentSet()->currentColorIndex();
+	int32 index,prev_index = ColorSet::currentSet()->currentColorIndex();
 
 	// first draw the rectangle around the newly selected color
 	index = pointIndex(point);
@@ -943,9 +944,9 @@ void ColorContainer::MouseDown(BPoint point)
 		// only of course if some color was actually selected
 		SetHighColor(255,255,255);
 		StrokeRect(colorBounds(index));
-    }
+	}
 
-    original_button = buttons;
+	original_button = buttons;
 
 	if (dragging_enabled == FALSE) {
 		while ( buttons ) {
@@ -1436,7 +1437,9 @@ status_t ColorSet::writeSets(BFile &file)
 		if (file.Write(&written_value,sizeof(int32)) != sizeof(int32))
 			return B_ERROR;
 
-		if (file.Write(((ColorSet*)color_set_list->ItemAt(i))->getName(),strlen(((ColorSet*)color_set_list->ItemAt(i))->getName())) != strlen(((ColorSet*)color_set_list->ItemAt(i))->getName()))
+		written_value = file.Write(((ColorSet*)color_set_list->ItemAt(i))->getName(),
+			strlen(((ColorSet*)color_set_list->ItemAt(i))->getName()));
+		if (uint32(written_value) != strlen(((ColorSet*)color_set_list->ItemAt(i))->getName()))
 			return B_ERROR;
 
 		// here write the palette entries
