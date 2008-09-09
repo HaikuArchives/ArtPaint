@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Rotate90Manipulator.cpp
-	Contents:	Rotate90Manipulator -class definitions
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <StatusBar.h>
 
 #include "MessageConstants.h"

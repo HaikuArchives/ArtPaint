@@ -1,12 +1,11 @@
 /*
-
-	Filename:	FlipManipulator.h
-	Contents:	FlipManipulator-class declarations (Horizontal and Vertical manipulator)
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "Manipulator.h"
 
 #ifndef ROTATE_90_MANIPULATOR_H

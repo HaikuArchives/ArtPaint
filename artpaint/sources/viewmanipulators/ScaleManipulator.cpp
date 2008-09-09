@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ScaleManipulator.cpp
-	Contents:	ScaleManipulator-class definition.
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <Button.h>

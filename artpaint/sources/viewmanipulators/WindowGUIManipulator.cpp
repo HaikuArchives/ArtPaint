@@ -1,11 +1,11 @@
 /*
-
-	Filename:	WindowGUIManipulator.cpp
-	Contents:	WindowGUIManipulator and WindowGUIManipulatorView definitions
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Message.h>
 
 #include "WindowGUIManipulator.h"

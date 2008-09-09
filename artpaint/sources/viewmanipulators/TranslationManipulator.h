@@ -1,12 +1,11 @@
 /*
-
-	Filename:	TranslationManipulator.h
-	Contents:	TranslationManipulator-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "StatusBarGUIManipulator.h"
 
 #ifndef	TRANSLATION_MANIPULATOR_H

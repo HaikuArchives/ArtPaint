@@ -1,12 +1,11 @@
 /*
-
-	Filename:	TextManipulator.h
-	Contents:	TextManipulator-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TEXT_MANIPULATOR_H
 #define TEXT_MANIPULATOR_H
 

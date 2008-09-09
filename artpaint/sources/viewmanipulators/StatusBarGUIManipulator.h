@@ -1,14 +1,11 @@
 /*
-
-	Filename:	StatusBarGUIManipulator.h
-	Contents:	StatusBarGUIManipulator-class declaration.
-	Author:		Heikki Suhonen
-
-*/
-
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef STATUS_BAR_GUI_MANIPULATOR_H
 #define STATUS_BAR_GUI_MANIPULATOR_H
 

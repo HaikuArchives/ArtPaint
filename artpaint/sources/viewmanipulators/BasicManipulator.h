@@ -1,11 +1,11 @@
 /*
-
-	Filename:	BasicManipulator.h
-	Contents:	Declaration for abstract base-class for actual manipulators
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	BASIC_MANIPULATOR
 #define	BASIC_MANIPULATOR
 

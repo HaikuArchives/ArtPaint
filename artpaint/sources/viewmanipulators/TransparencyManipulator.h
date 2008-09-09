@@ -1,12 +1,11 @@
 /*
-
-	Filename:	Transparency.h
-	Contents:	Transparency-manipulator declaration.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TRANSPARENCY_MANIPULATOR_H
 #define TRANSPARENCY_MANIPULATOR_H
 

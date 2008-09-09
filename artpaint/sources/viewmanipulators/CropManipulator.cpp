@@ -1,11 +1,11 @@
 /*
-
-	Filename:	CropManipulator.cpp
-	Contents:	CropManipulator-class definition.
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <ClassInfo.h>
 #include <math.h>
 #include <new.h>

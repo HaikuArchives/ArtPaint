@@ -1,11 +1,11 @@
 /*
-
-	Filename:		GUIManipulator.h
-	Contents:		Declaration for abstract base-class for manipulators that create a GUI
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	GUI_MANIPULATOR_H
 #define	GUI_MANIPULATOR_H
 

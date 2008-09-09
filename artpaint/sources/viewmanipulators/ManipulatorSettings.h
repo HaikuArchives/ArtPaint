@@ -1,10 +1,11 @@
 /*
-
-	Filename:	ManipulatorSettings.h
-	Contents:	ManipulatorSettings-class declaration
-	Author:		Heikki Suhonen
-
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef MANIPULATOR_SETTINGS_H
 #define MANIPULATOR_SETTINGS_H
 

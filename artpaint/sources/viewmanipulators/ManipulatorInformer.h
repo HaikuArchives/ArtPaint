@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ManipulatorInformer.h
-	Contents:	ManipulatorInformer-class declarations
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef MANIPULATOR_INFORMER_H
 #define	MANIPULATOR_INFORMER_H
 

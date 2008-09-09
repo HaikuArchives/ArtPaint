@@ -1,11 +1,11 @@
 /*
-
-	Filename:		ManipulatorServer.cpp
-	Contents:		ManipulatorServer-class definition
-	Author:			Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <ClassInfo.h>
 #include <Directory.h>
 #include <File.h>

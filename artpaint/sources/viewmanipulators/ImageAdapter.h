@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ImageAdapter.h
-	Contents:	Declaration for ImageAdapter-class
-	Author:	Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef IMAGE_ADAPTER_H
 #define IMAGE_ADAPTER_H
 

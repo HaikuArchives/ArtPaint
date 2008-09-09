@@ -1,14 +1,11 @@
 /*
-
-	Filename:	WindowGUIManipulator.h
-	Contents:	WindowGUIManipulator-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef WINDOW_GUI_MANIPULATOR_H
 #define	WINDOW_GUI_MANIPULATOR_H
 

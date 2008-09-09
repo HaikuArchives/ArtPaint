@@ -1,12 +1,11 @@
 /*
-
-	Filename:	CropManipulator.h
-	Contents:	CropManipulator-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CROP_MANIPULATOR_H
 #define	CROP_MANIPULATOR_H
 
