@@ -1,14 +1,11 @@
-/* 
-
-	Filename:	Template.h
-	Contents:	A template header for the ArtPaint add-ons.	
-	Author:	
-	
-*/
-
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TEMPLATE_H
 #define TEMPLATE_H
 
@@ -18,7 +15,7 @@ class $MANIPULATOR_NAME : public Manipulator {
 public:
 			$MANIPULATOR_NAME();
 			~$MANIPULATOR_NAME();
-			
+
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 char*		ReturnName();
 };

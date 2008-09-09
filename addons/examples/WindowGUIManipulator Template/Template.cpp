@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	Template.cpp
-	Contents:	A template for the ArtPaint add-ons.	
-	Author:		
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "AddOnTypes.h"
 #include "$HEADER_NAME"
 
@@ -18,7 +18,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = GENERIC_ADD_ON;
 
 Manipulator* manipulator_creator(BBitmap *bm)
 {
-	return new $MANIPULATOR_NAME(bm);	
+	return new $MANIPULATOR_NAME(bm);
 }
 
 
@@ -35,7 +35,7 @@ $MANIPULATOR_NAME::~$MANIPULATOR_NAME()
 }
 
 
-BBitmap* $MANIPULATOR_NAME::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* $MANIPULATOR_NAME::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 }
 
