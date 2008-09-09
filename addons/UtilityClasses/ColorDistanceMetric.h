@@ -1,9 +1,11 @@
 /*
-	Filename:	ColorDistanceMetric.h
-	Contents:	Color distance measuring class.
-	Author:		Heikki Suhonen (Heikki.Suhonen@Helsinki.FI)
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef COLOR_DISTANCE_METRIC_H
 #define	COLOR_DISTANCE_METRIC_H
 

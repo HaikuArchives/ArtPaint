@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	ColorConverter.h
-	Contents:	Converts colors between different color-spaces and allows randomizing of the components.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	COLOR_CONVERTER_H
 #define	COLOR_CONVERTER_H
 
@@ -40,7 +40,7 @@ class ColorConverter {
 		rgb_color	color_as_rgb;
 		cmyk_color	color_as_cmyk;
 		uint32		color_as_bgra;
-		
+
 		RandomNumberGenerator	*random_numbers;
 
 
@@ -48,9 +48,9 @@ inline	cmyk_color	rgb_to_cmyk(rgb_color&);
 inline	rgb_color	cmyk_to_rgb(cmyk_color&);
 public:
 		ColorConverter();
-		~ColorConverter();		
+		~ColorConverter();
 void		SetColor(rgb_color&);
-void		SetColor(uint32 bgra_color);		
+void		SetColor(uint32 bgra_color);
 void		SetColor(hsv_color&);
 void		SetColor(cmyk_color&);
 
@@ -79,14 +79,14 @@ cmyk_color ColorConverter::rgb_to_cmyk(rgb_color &c)
 	cm.cyan = 255-c.red;
 	cm.magenta = 255-c.green;
 	cm.yellow = 255-c.blue;
-	cm.black = min_c(cm.cyan,min_c(cm.yellow,cm.magenta));	
+	cm.black = min_c(cm.cyan,min_c(cm.yellow,cm.magenta));
 
 	cm.cyan -= cm.black;
 	cm.magenta -= cm.black;
 	cm.yellow -= cm.black;
 
 	cm.alpha = c.alpha;
-	
+
 	return cm;
 }
 

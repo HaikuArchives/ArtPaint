@@ -1,10 +1,11 @@
-/* 
-
-	Filename:	PreviewView.cpp
-	Contents:	Definitions for a PreviewView-class.	
-	Author:		Heikki Suhonen
-	
-*/
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Bitmap.h>
 
 #include "PreviewView.h"
@@ -35,14 +36,14 @@ PreviewView::~PreviewView()
 void PreviewView::Draw(BRect rect)
 {
 	BView::Draw(rect);
-	
+
 	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_DARKEN_2_TINT));
 	SetPenSize(1.0);
 	BRect bound = Bounds();
 	StrokeRect(bound);
 	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_LIGHTEN_2_TINT));
 	StrokeLine(bound.LeftBottom(),bound.RightBottom());
-	StrokeLine(bound.RightBottom(),bound.RightTop());		
+	StrokeLine(bound.RightBottom(),bound.RightTop());
 
 	RedisplayBitmap();
 }
@@ -54,11 +55,11 @@ void PreviewView::RedisplayBitmap()
 		DrawBitmap(preview_bitmap,bitmap_offset);
 		Sync();
 		UnlockLooper();
-	}	
+	}
 }
 
 
 BBitmap* PreviewView::ReturnBitmap()
 {
 	return preview_bitmap;
-}	
+}

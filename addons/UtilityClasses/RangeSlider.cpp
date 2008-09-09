@@ -1,11 +1,11 @@
 /*
-
-	Filename:	RangeSlider.cpp
-	Contents:	Definitions for a slider that can be used to adjust a range.
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <stdlib.h>
 #include <Window.h>
 
@@ -57,7 +57,7 @@ void RangeSlider::DrawThumb()
 	BRect bar_frame = BarFrame();
 	BView *view = OffscreenView();
 
-	int32 bottom = bar_frame.bottom;
+	float bottom = bar_frame.bottom;
 
 	int32 x;
 
@@ -154,7 +154,7 @@ int32 RangeSlider::track_mouse()
 		// track both values
 		int32 original_value = value;
 		int32 original_low = lower_value;
-		int32 original_high = higher_value;
+//		int32 original_high = higher_value;
 		int32 upper_limit = (max_value-min_value) - (higher_value-lower_value)+min_value;
 		int32 lower_limit = min_value;
 		int32 previous_value = value;
@@ -283,16 +283,16 @@ void RangeSlider::SetLowerThumbColor(rgb_color c)
 int32 RangeSlider::HigherValueX()
 {
 	BRect rect = BarFrame();
-	int32 left = rect.left;
-	float width = rect.Width();
-	return width/(max_value-min_value)*higher_value + left;
+	int32 left = int32(rect.left);
+	int32 width = rect.IntegerWidth();
+	return width / (max_value - min_value) * higher_value + left;
 }
 
 
 int32 RangeSlider::LowerValueX()
 {
 	BRect rect = BarFrame();
-	int32 left = rect.left;
-	float width = rect.Width();
+	int32 left = int32(rect.left);
+	int32 width = rect.IntegerWidth();
 	return width/(max_value-min_value)*lower_value + left;
 }

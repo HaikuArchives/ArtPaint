@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	ColorConverter.cpp
-	Contents:	Converts colors between different color-spaces and allows randomizing of the components.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "ColorConverter.h"
 
 
@@ -30,7 +30,7 @@ void ColorConverter::SetColor(rgb_color &c)
 	u.bytes[1] = c.green;
 	u.bytes[2] = c.red;
 	u.bytes[3] = c.alpha;
-	
+
 	color_as_bgra = u.word;
 }
 
@@ -39,7 +39,7 @@ void ColorConverter::SetColor(cmyk_color &c)
 {
 	color_as_cmyk = c;
 	color_as_rgb = cmyk_to_rgb(c);
-	
+
 	color_union u;
 	u.bytes[0] = color_as_rgb.blue;
 	u.bytes[1] = color_as_rgb.green;
@@ -52,15 +52,15 @@ void ColorConverter::SetColor(cmyk_color &c)
 void ColorConverter::SetColor(uint32 bgra_color)
 {
 	color_as_bgra = bgra_color;
-	
+
 	color_union u;
 	u.word = bgra_color;
-	
+
 	color_as_rgb.red = u.bytes[2];
 	color_as_rgb.green = u.bytes[1];
 	color_as_rgb.blue = u.bytes[0];
 	color_as_rgb.alpha = u.bytes[3];
-	
 
-	color_as_cmyk = rgb_to_cmyk(color_as_rgb);		
+
+	color_as_cmyk = rgb_to_cmyk(color_as_rgb);
 }

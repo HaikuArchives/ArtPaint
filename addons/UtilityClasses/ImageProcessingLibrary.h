@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	ImageProcessingLibrary.h
-	Contents:	Declarations for functions that do standard image-processing.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Bitmap.h>
 #include <Rect.h>
 

@@ -1,13 +1,11 @@
 /*
-
-	Filename:	RangeSlider.h
-	Contents:	Declaration for a slider that can be used to adjust a range.
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef RANGE_SLIDER_H
 #define	RANGE_SLIDER_H
 
