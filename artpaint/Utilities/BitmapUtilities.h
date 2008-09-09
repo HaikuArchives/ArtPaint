@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	BitmapUtilities.h
-	Contents:	BitmapUtilities-class declaration		
-	Author:		Heikki Suhonen (Heikki.Suhonen@Helsinki.FI)
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef _BITMAP_UTILITIES_H
 #define	_BITMAP_UTILITIES_H
 
