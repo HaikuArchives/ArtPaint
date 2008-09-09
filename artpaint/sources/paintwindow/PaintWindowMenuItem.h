@@ -1,12 +1,11 @@
 /*
-
-	Filename:	PaintWindowMenuItem.h
-	Contents:	PaintWindowMenuItem-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef PAINT_WINDOW_MENU_ITEM_H
 #define PAINT_WINDOW_MENU_ITEM_H
 

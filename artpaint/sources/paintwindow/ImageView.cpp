@@ -1,10 +1,11 @@
 /*
-
-	Filename:	ImageView.cpp
-	Contents:	ImageView class definition
-	Author:		Heikki Suhonen
-
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #define HS_DEBUG
 
 #include <Alert.h>

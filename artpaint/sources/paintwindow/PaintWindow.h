@@ -1,11 +1,11 @@
 /*
-
-	Filename:	PaintWindow.h
-	Contents:	PaintWindow class declaration + constants for PaintWindow class
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef PAINT_WINDOW_H
 #define PAINT_WINDOW_H
 

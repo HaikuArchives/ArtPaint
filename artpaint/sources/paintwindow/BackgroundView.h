@@ -1,11 +1,11 @@
 /*
-
-	Filename:	BackgroundView.h
-	Contents:	BackgroundView class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	BACKGROUND_VIEW_H
 #define	BACKGROUND_VIEW_H
 

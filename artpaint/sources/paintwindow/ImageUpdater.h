@@ -1,12 +1,11 @@
 /*
-
-	Filename:	ImageUpdater.h
-	Contents:	ImageUpdater-class declarations.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef IMAGE_UPDATER_H
 #define	IMAGE_UPDATER_H
 

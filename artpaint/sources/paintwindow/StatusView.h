@@ -1,12 +1,11 @@
 /*
-
-	Filename:	StatusView.h
-	Contents:	StatusView class declaration and some classes it uses
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef STATUS_VIEW_H
 #define	STATUS_VIEW_H
 
