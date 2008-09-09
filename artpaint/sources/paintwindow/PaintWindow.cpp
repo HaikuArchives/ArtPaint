@@ -381,11 +381,11 @@ PaintWindow* PaintWindow::createPaintWindow(BBitmap *a_bitmap,char *file_name,in
 //		a_window->readAttributes(a_node);
 
 		// Open an imageview for the window and add a layer to it.
-		a_window->OpenImageView(a_bitmap->Bounds().Width()+1,a_bitmap->Bounds().Height()+1);
+		a_window->OpenImageView(int32(a_bitmap->Bounds().Width() + 1),
+			int32(a_bitmap->Bounds().Height() + 1));
 		a_window->ReturnImageView()->ReturnImage()->InsertLayer(a_bitmap);
 		a_window->AddImageView();
 	}
-
 
 	a_window->current_handler = outTranslator;
 
@@ -938,8 +938,8 @@ void PaintWindow::DisplayCoordinates(BPoint point,BPoint reference,bool use_refe
 
 	if (set_size_button != NULL) {
 		// if the window is in resize mode display dimensions here too
-		width_view->SetValue(point.x);
-		height_view->SetValue(point.y);
+		width_view->SetValue(int32(point.x));
+		height_view->SetValue(int32(point.y));
 	}
 }
 

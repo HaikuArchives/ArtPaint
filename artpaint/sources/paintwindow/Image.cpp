@@ -822,7 +822,7 @@ status_t Image::ReadLayers(BFile &file)
 		return B_ERROR;
 	if (lendian == 0x00000000)
 		count = B_BENDIAN_TO_HOST_INT32(count);
-	else if (lendian == 0xFFFFFFFF)
+	else if (uint32(lendian) == 0xFFFFFFFF)
 		count = B_LENDIAN_TO_HOST_INT32(count);
 	else
 		return B_ERROR;
@@ -831,14 +831,16 @@ status_t Image::ReadLayers(BFile &file)
 	int32 compression_method;
 	if (file.Read(&compression_method,sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-	if (lendian == 0x00)
+	if (lendian == 0x00000000)
 		compression_method = B_BENDIAN_TO_HOST_INT32(compression_method);
-	else if (lendian == 0xFF)
+	else if (uint32(lendian) == 0xFFFFFFFF)
 		compression_method = B_LENDIAN_TO_HOST_INT32(compression_method);
 
 	for (int32 i=0;i<count;i++) {
 		// Here read the layers
-		Layer *layer = Layer::readLayer(file,image_view,atomic_add(&next_layer_id,1),lendian == 0xFFFFFFFF,compression_method);
+		Layer *layer = Layer::readLayer(file, image_view,
+			atomic_add(&next_layer_id, 1), uint32(lendian) == 0xFFFFFFFF,
+			compression_method);
 
 		if (layer != NULL) {
 			// Change the layer's id-number
@@ -1329,8 +1331,8 @@ int32 Image::DoDither(BRect area)
 						color.word = *(bgra_bits + x + y*bgra_bpr);
 
 						int32 rgb15 = ( ((color.bytes[2] & 0xf8) << 7) |
-		                  				((color.bytes[1] & 0xf8) << 2) |
-		                  				((color.bytes[0] & 0xf8) >> 3) );
+										((color.bytes[1] & 0xf8) << 2) |
+										((color.bytes[0] & 0xf8) >> 3) );
 //						int32 rgb15 = ( ((int32)((color.bytes[2] / 255.0)*0x1f)<<10) |
 //										((int32)((color.bytes[1] / 255.0)*0x1f)<<5) |
 //										((int32)(color.bytes[0] / 255.0)*0x1f) );

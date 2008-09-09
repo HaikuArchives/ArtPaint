@@ -1538,7 +1538,7 @@ int32 ImageView::ManipulatorFinisherThread()
 			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),the_image->ReturnThumbnailImage());
 			for (int32 i=0;i<layer_list->CountItems();i++) {
 				char text[256];
-				sprintf(text,"%s %d/%d",StringServer::ReturnString(LAYER_STRING),i+1,layer_list->CountItems());
+				sprintf(text,"%s %ld/%ld",StringServer::ReturnString(LAYER_STRING),i+1,layer_list->CountItems());
 				if (LockLooper() == true) {
 					status_bar->SetTrailingText(text);
 //					status_bar->Invalidate();

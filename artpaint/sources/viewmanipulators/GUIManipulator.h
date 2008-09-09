@@ -28,6 +28,7 @@ enum draw_resolutions {
 };
 
 class GUIManipulator : public Manipulator {
+protected:
 BBitmap*	ManipulateBitmap(BBitmap *b,Selection*,BStatusBar*) { return b; };
 
 public:
