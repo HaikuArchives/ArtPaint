@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Layer.h
-	Contents:	Layer-class declaration and constants
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef LAYER_H
 #define LAYER_H
 

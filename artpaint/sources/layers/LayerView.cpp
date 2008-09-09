@@ -1,11 +1,11 @@
 /*
-
-	Filename:	LayerView.cpp
-	Contents:	Definitions for a view that represents a layer.
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Bitmap.h>
 #include <CheckBox.h>
 #include <InterfaceDefs.h>

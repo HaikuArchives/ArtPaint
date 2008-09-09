@@ -1,11 +1,11 @@
 /*
-
-	Filename:	LayerWindow.h
-	Contents:	LayerWindow class declaration + some of it's child views
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	LAYER_WINDOW_H
 #define	LAYER_WINDOW_H
 
