@@ -1,11 +1,11 @@
 /*
-
-	Filename:	GlobalSetupWindow.h
-	Contents:	GlobalSetupWindow class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef GLOBAL_SETUP_WINDOW_H
 #define GLOBAL_SETUP_WINDOW_H
 

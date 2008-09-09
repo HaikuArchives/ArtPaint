@@ -1,11 +1,11 @@
 /*
-
-	Filename:	AboutWindow.h
-	Contents:	AboutWindow-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	ABOUT_WINDOW_H
 #define	ABOUT_WINDOW_H
 

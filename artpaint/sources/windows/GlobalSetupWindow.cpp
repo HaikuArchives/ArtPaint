@@ -1,11 +1,11 @@
 /*
-
-	Filename:	GlobalSetupWindow.cpp
-	Contents:	Definitions for GlobalSetupWindow-class
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Button.h>
 #include <CheckBox.h>
 #include <RadioButton.h>

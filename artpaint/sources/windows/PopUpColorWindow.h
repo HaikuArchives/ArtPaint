@@ -1,12 +1,11 @@
 /*
-
-	Filename:	PopUpColorWindow.h
-	Contents:	Declarations for PopUpColorWindow -class and its views.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef POP_UP_COLOR_WINDOW_H
 #define POP_UP_COLOR_WINDOW_H
 

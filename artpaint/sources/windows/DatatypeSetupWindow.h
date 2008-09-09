@@ -1,10 +1,11 @@
 /*
-
-	Filename:	DatatypeSetupWindo.h
-	Contents:	Declaration for DatatypeSetupWindow-class
-	Author:		Heikki Suhonen
-
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef DATATYPE_SETUP_WINDOW_H
 #define DATATYPE_SETUP_WINDOW_H
 

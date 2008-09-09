@@ -1,12 +1,11 @@
 /*
-
-	Filename:	ViewSetupWindow.h
-	Contents:	ViewSetupWindow class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	VIEW_SETUP_WINDOW_H
 #define	VIEW_SETUP_WINDOW_H
 
