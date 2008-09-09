@@ -28,6 +28,9 @@ class ControlSlider;
 class Layer;
 
 class TransparencyManipulator : public WindowGUIManipulator, public ImageAdapter {
+	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
+		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+
 BBitmap				*preview_bitmap;
 BBitmap				*copy_of_the_preview_bitmap;
 

@@ -101,8 +101,12 @@ ToolScript* BrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoin
 
 	if (selection->IsEmpty() == TRUE) {
 		while (coordinate_reader->GetPoint(point) == B_NO_ERROR) {
-			draw_brush(BPoint(point.x-brush_width_per_2,point.y-brush_height_per_2),point.x-prev_point.x,point.y-prev_point.y,new_color);
-			updated_rect = BRect(point.x-brush_width_per_2,point.y-brush_height_per_2,point.x+brush_width_per_2,point.y+brush_height_per_2);
+			draw_brush(BPoint(point.x - brush_width_per_2,
+				point.y - brush_height_per_2), int32(point.x - prev_point.x),
+				int32(point.y - prev_point.y), new_color);
+			updated_rect = BRect(point.x - brush_width_per_2,
+				point.y - brush_height_per_2, point.x + brush_width_per_2,
+				point.y + brush_height_per_2);
 			image_updater->AddRect(updated_rect);
 			last_updated_rect = updated_rect | last_updated_rect;
 			prev_point = point;
@@ -110,8 +114,12 @@ ToolScript* BrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoin
 	}
 	else {
 		while (coordinate_reader->GetPoint(point) == B_NO_ERROR) {
-			draw_brush_handle_selection(BPoint(point.x-brush_width_per_2,point.y-brush_height_per_2),point.x-prev_point.x,point.y-prev_point.y,new_color);
-			updated_rect = BRect(point.x-brush_width_per_2,point.y-brush_height_per_2,point.x+brush_width_per_2,point.y+brush_height_per_2);
+			draw_brush_handle_selection(BPoint(point.x - brush_width_per_2,
+				point.y - brush_height_per_2), int32(point.x - prev_point.x),
+				int32(point.y - prev_point.y), new_color);
+			updated_rect = BRect(point.x - brush_width_per_2,
+				point.y - brush_height_per_2, point.x + brush_width_per_2,
+				point.y + brush_height_per_2);
 			image_updater->AddRect(updated_rect);
 			last_updated_rect = updated_rect | last_updated_rect;
 			prev_point = point;

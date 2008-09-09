@@ -51,10 +51,15 @@ FreeTransformManipulator::~FreeTransformManipulator()
 
 
 
-BBitmap* FreeTransformManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection*,BStatusBar *status_bar)
+BBitmap*
+FreeTransformManipulator::ManipulateBitmap(ManipulatorSettings *set,
+	BBitmap *original, Selection*, BStatusBar *status_bar)
 {
-	FreeTransformManipulatorSettings *new_settings = cast_as(set,FreeTransformManipulatorSettings);
-	if (new_settings == NULL)
+	// TODO: check what's the idea behind this
+
+//	FreeTransformManipulatorSettings *new_settings =
+//		cast_as(set,FreeTransformManipulatorSettings);
+//	if (new_settings == NULL)
 		return NULL;
 }
 
@@ -131,9 +136,12 @@ void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool
 
 
 
-void FreeTransformManipulator::ChangeSettings(const FreeTransformManipulatorSettings &s)
+void FreeTransformManipulator::ChangeSettings(ManipulatorSettings *s)
 {
-	settings = s;
+	// change the values for controls whose values have changed
+	FreeTransformManipulatorSettings* newSettings = cast_as(s, FreeTransformManipulatorSettings);
+	if (newSettings)
+		settings = *newSettings;
 }
 
 
@@ -191,7 +199,7 @@ BView* FreeTransformManipulator::MakeConfigurationView(BMessenger *messenger)
 {
 	configuration_view = new FreeTransformManipulatorView(BRect(0,0,0,0),this,messenger);
 	if (configuration_view != NULL) {
-		configuration_view->ChangeSettings(settings);
+		configuration_view->ChangeSettings(&settings);
 	}
 	return configuration_view;
 }
@@ -258,10 +266,10 @@ void FreeTransformManipulatorView::MessageReceived(BMessage *message)
 
 
 
-void FreeTransformManipulatorView::ChangeSettings(const FreeTransformManipulatorSettings &s)
+void FreeTransformManipulatorView::ChangeSettings(ManipulatorSettings *s)
 {
-	if (settings != s) {
-		// Here change the values for controls whose values have changed.
-		settings = s;
-	}
+	// change the values for controls whose values have changed
+	FreeTransformManipulatorSettings* newSettings = cast_as(s, FreeTransformManipulatorSettings);
+	if (newSettings && *newSettings != settings)
+		settings = *newSettings;
 }

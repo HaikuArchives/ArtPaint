@@ -62,7 +62,7 @@ BrushEditor::BrushEditor(BRect frame,Brush *brush)
 
 	slider_frame = BRect(brush_view->Frame().LeftBottom()+BPoint(0,EXTRA_EDGE),Bounds().RightBottom()-BPoint(EXTRA_EDGE,0));
 	a_message = new BMessage(BRUSH_WIDTH_CHANGED);
-	a_message->AddInt32("value",b_info.width);
+	a_message->AddInt32("value", int32(b_info.width));
 	width_slider = new ControlSliderBox(slider_frame,"brush width",StringServer::ReturnString(WIDTH_STRING),"0",a_message,1,100);
 	AddChild(width_slider);
 	slider_frame = width_slider->Frame();
@@ -70,7 +70,7 @@ BrushEditor::BrushEditor(BRect frame,Brush *brush)
 	max_divider = max_c(max_divider,width_slider->Divider());
 
 	a_message = new BMessage(BRUSH_HEIGHT_CHANGED);
-	a_message->AddInt32("value",b_info.height);
+	a_message->AddInt32("value", int32(b_info.height));
 	height_slider = new ControlSliderBox(slider_frame,"brush height",StringServer::ReturnString(HEIGHT_STRING),"0",a_message,1,100);
 	AddChild(height_slider);
 	slider_frame = height_slider->Frame();
@@ -79,7 +79,7 @@ BrushEditor::BrushEditor(BRect frame,Brush *brush)
 
 
 	a_message = new BMessage(BRUSH_EDGE_CHANGED);
-	a_message->AddInt32("value",b_info.fade_length);
+	a_message->AddInt32("value", int32(b_info.fade_length));
 	fade_slider = new ControlSliderBox(slider_frame,"brush edge",StringServer::ReturnString(FADE_STRING),"0",a_message,0,100);
 	AddChild(fade_slider);
 	max_divider = max_c(max_divider,fade_slider->Divider());
@@ -200,16 +200,16 @@ void BrushEditor::MessageReceived(BMessage *message)
 			// Here something has altered the brush and we should reflect it
 			// in our controls and such things.
 			b_info = the_brush->GetInfo();
-			width_slider->setValue(b_info.width);
-			height_slider->setValue(b_info.height);
-			fade_slider->setValue(b_info.fade_length);
+			width_slider->setValue(int32(b_info.width));
+			height_slider->setValue(int32(b_info.height));
+			fade_slider->setValue(int32(b_info.fade_length));
 			brush_view->BrushModified();
 			// Also set the correct radio-button
 			if (b_info.shape == HS_RECTANGULAR_BRUSH) {
-				rectangle_button->SetValue(TRUE);
+				rectangle_button->SetValue(true);
 			}
 			else if (b_info.shape == HS_ELLIPTICAL_BRUSH) {
-				ellipse_button->SetValue(TRUE);
+				ellipse_button->SetValue(true);
 			}
 			break;
 		case BRUSH_STORING_REQUESTED:
@@ -270,12 +270,12 @@ void BrushView::Draw(BRect)
 		point_list[10] = BPoint(r1*.5,0);
 		point_list[11] = BPoint(0,0);
 
-		HSPolygon *poly = new HSPolygon(point_list,12);
-		poly->Rotate(BPoint(0,0),the_brush->GetInfo().angle);
-		poly->TranslateBy(r1-1,r2-1);
+		HSPolygon *poly = new HSPolygon(point_list, 12);
+		poly->Rotate(BPoint(0, 0), the_brush->GetInfo().angle);
+		poly->TranslateBy(int32(r1 - 1), int32(r2 - 1));
 		BPolygon *bpoly = poly->GetBPolygon();
-		SetHighColor(150,0,0,255);
-		StrokePolygon(bpoly,FALSE);
+		SetHighColor(150, 0, 0, 255);
+		StrokePolygon(bpoly, false);
 		FillPolygon(bpoly);
 		delete poly;
 		delete bpoly;

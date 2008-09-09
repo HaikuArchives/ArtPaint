@@ -1352,11 +1352,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 									}
 								}
 							}
-							SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))));
-							max_coverage = max_c(coverage,max_coverage);
+							SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+								GetPixel(int32(x), int32(y)),
+								uint32((32768 * ((float(coverage)) /
+								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))));
+							max_coverage = max_c(coverage, max_coverage);
 						}
 						else
-							SetPixel(x,y,color);
+							SetPixel(x, int32(y), color);
 					}
 				}
 				y++;
@@ -1395,11 +1398,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 										}
 									}
 								}
-								SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))));
+								SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+									GetPixel(x,  int32(y)),
+									uint32((32768 * ((float(coverage)) /
+									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))));
 								max_coverage = max_c(coverage,max_coverage);
 							}
 							else
-								SetPixel(x,y,color);
+								SetPixel(x, int32(y), color);
 						}
 					}
 					y++;
@@ -1433,11 +1439,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 										}
 									}
 								}
-								SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))));
-								max_coverage = max_c(coverage,max_coverage);
+								SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+									GetPixel(x, int32(y)),
+									uint32((32768 * ((float(coverage)) /
+									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))));
+								max_coverage = max_c(coverage, max_coverage);
 							}
 							else
-								SetPixel(x,y,color);
+								SetPixel(x, int32(y), color);
 						}
 					}
 					y++;
@@ -1479,11 +1488,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 									}
 								}
 							}
-							SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))));
-							max_coverage = max_c(coverage,max_coverage);
+							SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+								GetPixel(x, int32(y)),
+								uint32((32768 * ((float(coverage)) /
+								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))));
+							max_coverage = max_c(coverage, max_coverage);
 						}
 						else
-							SetPixel(x,y,color);
+							SetPixel(x, int32(y), color);
 					}
 				}
 				y++;
@@ -1513,11 +1525,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 									}
 								}
 							}
-							SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))),sel);
+							SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+								GetPixel(x, int32(y)),
+								uint32((32768 * ((float(coverage)) /
+								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))), sel);
 							max_coverage = max_c(coverage,max_coverage);
 						}
 						else
-							SetPixel(x,y,color,sel);
+							SetPixel(x, int32(y), color, sel);
 					}
 				}
 				y++;
@@ -1555,11 +1570,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 										}
 									}
 								}
-								SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))),sel);
-								max_coverage = max_c(coverage,max_coverage);
+								SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+									GetPixel(x, int32(y)),
+									uint32((32768 * ((float(coverage)) /
+									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))), sel);
+								max_coverage = max_c(coverage, max_coverage);
 							}
 							else
-								SetPixel(x,y,color,sel);
+								SetPixel(x, int32(y), color, sel);
 						}
 					}
 					y++;
@@ -1593,11 +1611,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 										}
 									}
 								}
-								SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))),sel);
-								max_coverage = max_c(coverage,max_coverage);
+								SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+									GetPixel(x, int32(y)),
+									uint32((32768 * ((float(coverage)) /
+									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))), sel);
+								max_coverage = max_c(coverage, max_coverage);
 							}
 							else
-								SetPixel(x,y,color,sel);
+								SetPixel(x, int32(y), color, sel);
 						}
 					}
 					y++;
@@ -1639,11 +1660,14 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 									}
 								}
 							}
-							SetPixel(x,y,mix_2_pixels_fixed(color,GetPixel(x,y),(uint32)(32768*(((float)coverage)/(SUBPIXEL_AMOUNT*SUBPIXEL_AMOUNT)))),sel);
-							max_coverage = max_c(coverage,max_coverage);
+							SetPixel(x, int32(y), mix_2_pixels_fixed(color,
+								GetPixel(x, int32(y)),
+								uint32((32768 * ((float(coverage)) /
+								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT))))), sel);
+							max_coverage = max_c(coverage, max_coverage);
 						}
 						else
-							SetPixel(x,y,color,sel);
+							SetPixel(x, int32(y), color, sel);
 					}
 				}
 				y++;
@@ -1670,14 +1694,14 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 		if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
 			for (int32 y=min_y;y<=max_y;y++) {
 				for (int32 x=min_x;x<=max_x;x++) {
-					SetPixel(BPoint(x,y),color);
+					SetPixel(BPoint(x, y), color);
 				}
 			}
 		}
 		else {
 			for (int32 y=min_y;y<=max_y;y++) {
 				for (int32 x=min_x;x<=max_x;x++) {
-					SetPixel(BPoint(x,y),color,sel);
+					SetPixel(BPoint(x, y), color, sel);
 				}
 			}
 		}
@@ -1735,7 +1759,7 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 					int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
 
 					for (int32 x=left_bound;x<=right_bound;x++) {
-						SetPixel(x,y,color);
+						SetPixel(x, int32(y), color);
 					}
 				}
 				y++;
@@ -1761,7 +1785,7 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 					int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
 
 					for (int32 x=left_bound;x<=right_bound;x++) {
-						SetPixel(x,y,color);
+						SetPixel(x, int32(y), color);
 					}
 				}
 				y++;
@@ -1786,7 +1810,7 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 					int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
 
 					for (int32 x=left_bound;x<=right_bound;x++) {
-						SetPixel(x,y,color);
+						SetPixel(x, int32(y), color);
 					}
 				}
 				y++;
@@ -1803,7 +1827,7 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 					int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
 
 					for (int32 x=left_bound;x<=right_bound;x++) {
-						SetPixel(x,y,color,sel);
+						SetPixel(x, int32(y), color, sel);
 					}
 				}
 				y++;
@@ -1829,7 +1853,7 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 					int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
 
 					for (int32 x=left_bound;x<=right_bound;x++) {
-						SetPixel(x,y,color,sel);
+						SetPixel(x, int32(y), color, sel);
 					}
 				}
 				y++;
@@ -1854,7 +1878,7 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 					int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
 
 					for (int32 x=left_bound;x<=right_bound;x++) {
-						SetPixel(x,y,color,sel);
+						SetPixel(x, int32(y), color, sel);
 					}
 				}
 				y++;

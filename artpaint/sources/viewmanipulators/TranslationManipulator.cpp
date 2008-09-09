@@ -157,7 +157,7 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 		for (int32 y = 0;y<height - abs(y_translation_local);y++) {
 			for (int32 x = 0;x<width - abs(x_translation_local);x++) {
 				*(target_bits + x+target_x_offset + (y + target_y_offset)*target_bpr)
-			 	 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);
+				 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);
 			}
 		}
 	}
@@ -290,7 +290,7 @@ int32 TranslationManipulator::PreviewBitmap(Selection *selection,bool full_quali
 			for (int32 y = 0;y<height - abs(y_translation_local);y += last_calculated_resolution) {
 				for (int32 x = 0;x<width - abs(x_translation_local);x += last_calculated_resolution) {
 					*(target_bits + x+target_x_offset + (y + target_y_offset)*target_bpr)
-				 	 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);
+					 = *(source_bits + x+source_x_offset + (y + source_y_offset)*source_bpr);
 				}
 			}
 
@@ -374,7 +374,7 @@ ManipulatorSettings* TranslationManipulator::ReturnSettings()
 
 void TranslationManipulator::Reset(Selection *sel)
 {
-	sel->Translate(-settings->x_translation,-settings->y_translation);
+	sel->Translate(int32(-settings->x_translation), int32(-settings->y_translation));
 	settings->x_translation = 0;
 	settings->y_translation = 0;
 	previous_x_translation = 0;
@@ -523,8 +523,8 @@ void TranslationManipulatorView::MessageReceived(BMessage *message)
 
 void TranslationManipulatorView::SetValues(float x,float y)
 {
-	x_control->SetValue(x);
-	y_control->SetValue(y);
+	x_control->SetValue(int32(x));
+	y_control->SetValue(int32(y));
 }
 
 

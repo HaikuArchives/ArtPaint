@@ -15,8 +15,6 @@
 #include "GUIManipulator.h"
 
 class StatusBarGUIManipulator : public GUIManipulator {
-
-
 public:
 	StatusBarGUIManipulator() {};
 	~StatusBarGUIManipulator() {};

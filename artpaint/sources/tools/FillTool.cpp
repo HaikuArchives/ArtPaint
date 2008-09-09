@@ -142,7 +142,7 @@ status_t FillTool::NormalFill(ImageView *view,uint32 buttons,BPoint start,Select
 				// Clear the binary map.
 				uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 				uint32 binary_bitslength = binary_fill_map->BitsLength();
-				for (int32 i=0;i<binary_bitslength;i++)
+				for (uint32 i = 0; i < binary_bitslength; i++)
 					*binary_bits++ = 0x00;
 			}
 			while (stack->IsEmpty() == FALSE) {

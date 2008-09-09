@@ -283,7 +283,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 				float v = source_y - floor_y;
 				// Then add the weighted sums of the four pixels.
 				if ((	floor_x <= right) && (floor_y <= bottom)
-					 	&& (floor_x>=left) && (floor_y>=top)) {
+						&& (floor_x>=left) && (floor_y>=top)) {
 					p1 = *(source_bits + (int32)floor_x + (int32)floor_y*source_bpr);
 				}
 				else {
@@ -291,7 +291,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 				}
 
 				if ((	ceil_x <= right) && (floor_y <= bottom)
-					 	&& (ceil_x>=left) && (floor_y>=top)) {
+						&& (ceil_x>=left) && (floor_y>=top)) {
 					p2 = *(source_bits + (int32)ceil_x + (int32)floor_y*source_bpr);
 				}
 				else {
@@ -299,7 +299,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 				}
 
 				if ((	floor_x <= right) && (ceil_y <= bottom)
-					 	&& (floor_x>=left) && (ceil_y>=top)) {
+						&& (floor_x>=left) && (ceil_y>=top)) {
 					p3 = *(source_bits + (int32)floor_x + (int32)ceil_y*source_bpr);
 				}
 				else {
@@ -307,7 +307,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 				}
 
 				if ((	ceil_x <= right) && (ceil_y <= bottom)
-					 	&& (ceil_x>=left) && (ceil_y>=top)) {
+						&& (ceil_x>=left) && (ceil_y>=top)) {
 					p4 = *(source_bits + (int32)ceil_x + (int32)ceil_y*source_bpr);
 				}
 				else {
@@ -361,7 +361,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 			register float x_times_sin = (sel_left-center_x)*sin_angle;
 			register float x_times_cos = (sel_left-center_x)*cos_angle;
 			for (float x=sel_left;x<=sel_right;x++) {
-				if (selection->ContainsPoint(x,y)) {
+				if (selection->ContainsPoint(int32(x), int32(y))) {
 					// rotate here around the origin
 					source_x = x_times_cos - y_times_sin;
 					source_y = x_times_sin + y_times_cos;
@@ -380,7 +380,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 					float v = source_y - floor_y;
 					// Then add the weighted sums of the four pixels.
 					if ((	floor_x <= right) && (floor_y <= bottom)
-						 	&& (floor_x>=left) && (floor_y>=top) ) {
+							&& (floor_x>=left) && (floor_y>=top) ) {
 						p1 = *(source_bits + (int32)floor_x + (int32)floor_y*source_bpr);
 					}
 					else {
@@ -389,7 +389,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 					// second
 					if ((	ceil_x <= right) && (floor_y <= bottom)
-						 	&& (ceil_x>=left) && (floor_y>=top) ) {
+							&& (ceil_x>=left) && (floor_y>=top) ) {
 						p2 = *(source_bits + (int32)ceil_x + (int32)floor_y*source_bpr);
 					}
 					else {
@@ -398,7 +398,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 					// third
 					if ((	floor_x <= right) && (ceil_y <= bottom)
-						 	&& (floor_x>=left) && (ceil_y>=top) ) {
+							&& (floor_x>=left) && (ceil_y>=top) ) {
 						p3 = *(source_bits + (int32)floor_x + (int32)ceil_y*source_bpr);
 					}
 					else {
@@ -407,7 +407,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 					// fourth
 					if ((	ceil_x <= right) && (ceil_y <= bottom)
-						 	&& (ceil_x>=left) && (ceil_y>=top) ) {
+							&& (ceil_x>=left) && (ceil_y>=top) ) {
 						p4 = *(source_bits + (int32)ceil_x + (int32)ceil_y*source_bpr);
 					}
 					else {
@@ -502,8 +502,10 @@ int32 RotationManipulator::PreviewBitmap(Selection *selection,bool full_quality,
 				// translate back to correct position
 				source_x += center_x;
 				source_y += center_y;
-				if ((source_x <= right) && (source_y <= bottom) && (source_x>=left) && (source_y>=top)) {
-						*(target_bits + x + y*target_bpr) = *(source_bits + (int32)source_x + (int32)source_y*source_bpr);
+				if ((source_x <= right) && (source_y <= bottom)
+					&& (source_x >= left) && (source_y >= top)) {
+						*(target_bits + x + y*target_bpr) =
+							*(source_bits + (int32)source_x + (int32)source_y*source_bpr);
 				}
 				else
 					*(target_bits + x + y*target_bpr) = background.word;	// Transparent.
@@ -528,8 +530,11 @@ int32 RotationManipulator::PreviewBitmap(Selection *selection,bool full_quality,
 				// translate back to correct position
 				source_x += center_x;
 				source_y += center_y;
-				if ((source_x <= right) && (source_y <= bottom) && (source_x>=left) && (source_y>=top) && selection->ContainsPoint(source_x,source_y)) {
-						*(target_bits + x + y*target_bpr) = *(source_bits + (int32)source_x + (int32)source_y*source_bpr);
+				if ((source_x <= right) && (source_y <= bottom)
+					&& (source_x >= left) && (source_y >= top)
+					&& selection->ContainsPoint(int32(source_x), int32(source_y))) {
+						*(target_bits + x + y*target_bpr) =
+							*(source_bits + (int32)source_x + (int32)source_y*source_bpr);
 				}
 				else if (selection->ContainsPoint(BPoint(source_x,source_y)))
 					*(target_bits + x + y*target_bpr) = background.word;	// Transparent.
@@ -637,7 +642,7 @@ void RotationManipulatorConfigurationView::MessageReceived(BMessage *message)
 	float sign = 1;
 	switch (message->what) {
 		case HS_MANIPULATOR_ADJUSTING_FINISHED:
-			for (int32 i=0;i<strlen(text);i++) {
+			for (uint32 i = 0; i < strlen(text); i++) {
 				if (isdigit(text[i]) != 0) {
 					float new_number = text[i] - '0';
 					if (decimal_place <= 0)

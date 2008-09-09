@@ -77,6 +77,9 @@ float	y_scale_factor;
 
 
 class FreeTransformManipulator : public WindowGUIManipulator {
+	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
+		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+
 	BBitmap						*preview_bitmap;
 	BBitmap						*copy_of_the_preview_bitmap;
 
@@ -95,14 +98,14 @@ BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BSta
 int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
 
 void			MouseDown(BPoint,uint32,BView*,bool);
-void			ChangeSettings(const FreeTransformManipulatorSettings&);
+void			ChangeSettings(ManipulatorSettings* settings);
 
 BView*		MakeConfigurationView(BMessenger*);
 void			Reset(Selection*);
 void			SetPreviewBitmap(BBitmap*);
 
-char*		ReturnHelpString() { return "Click on the image to rotate, move or stretch it."; }
-char*		ReturnName() { return "Free 2D Transform"; }
+const char*		ReturnHelpString() { return "Click on the image to rotate, move or stretch it."; }
+const char*		ReturnName() { return "Free 2D Transform"; }
 
 
 ManipulatorSettings*	ReturnSettings();
@@ -127,6 +130,6 @@ public:
 void	AttachedToWindow();
 
 void	MessageReceived(BMessage*);
-void ChangeSettings(const FreeTransformManipulatorSettings&);
+void ChangeSettings(ManipulatorSettings* settings);
 };
 #endif

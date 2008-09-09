@@ -61,6 +61,8 @@ const unsigned char HS_ROTATION_CURSOR[] =
 		};
 
 class RotationManipulator: public StatusBarGUIManipulator {
+	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
+		{ return StatusBarGUIManipulator::ManipulateBitmap(b, s, stb); };
 
 		BBitmap	*copy_of_the_preview_bitmap;
 		BBitmap	*preview_bitmap;

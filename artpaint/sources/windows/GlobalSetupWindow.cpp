@@ -107,7 +107,8 @@ GlobalSetupWindow::GlobalSetupWindow(BRect frame)
 	bg->AddChild(tab_view);
 	tab_view->SetTabWidth(B_WIDTH_FROM_LABEL);
 	tab_view->ResizeToPreferred();
-	//tab_view->ResizeTo(tab_view->TabFrame((int)tab_count-1).right+tab_view->TabFrame(0).left,tab_view->Frame().Height());
+	tab_view->ResizeTo(tab_view->TabFrame((int)tab_count-1).right +
+		tab_view->TabFrame(0).left, tab_view->Frame().Height());
 	tab_view->SetResizingMode(B_FOLLOW_NONE);
 	ResizeTo(tab_view->Frame().Width(),Frame().Height());
 	bg->ResizeTo(Frame().Width(),bg->Frame().Height());

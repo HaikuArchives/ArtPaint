@@ -177,7 +177,7 @@ void TransparencyManipulatorView::AttachedToWindow()
 
 void TransparencyManipulatorView::AllAttached()
 {
-	transparency_control->SetValue(settings.transparency);
+	transparency_control->SetValue(int32(settings.transparency));
 }
 
 void TransparencyManipulatorView::MessageReceived(BMessage *message)
@@ -208,9 +208,8 @@ void TransparencyManipulatorView::ChangeSettings(TransparencyManipulatorSettings
 {
 	settings = *new_set;
 
-	if (Window() != NULL) {
-		Window()->Lock();
-		transparency_control->SetValue(new_set->transparency);
+	if (Window() && Window()->Lock()) {
+		transparency_control->SetValue(int32(new_set->transparency));
 		Window()->Unlock();
 	}
 }

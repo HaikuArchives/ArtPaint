@@ -392,33 +392,30 @@ void CropManipulatorView::AttachedToWindow()
 	WindowGUIManipulatorView::AttachedToWindow();
 }
 
-void CropManipulatorView::SetValues(float x1,float x2,float y1,float y2)
+void CropManipulatorView::SetValues(float x1, float x2, float y1, float y2)
 {
 	BWindow *window = Window();
 
-	if (window != NULL)
-		window->Lock();
+	if (window && window->Lock()) {
+		left = x1;
+		right = x2;
+		top = y1;
+		bottom = y2;
 
-	left = x1;
-	right = x2;
-	top = y1;
-	bottom = y2;
+		if (left != left_control->Value())
+			left_control->SetValue(int32(left));
 
-	if (left != left_control->Value())
-		left_control->SetValue(left);
+		if (right != right_control->Value())
+			right_control->SetValue(int32(right));
 
-	if (right != right_control->Value())
-		right_control->SetValue(right);
+		if (top != top_control->Value())
+			top_control->SetValue(int32(top));
 
-	if (top != top_control->Value())
-		top_control->SetValue(top);
+		if (bottom != bottom_control->Value())
+			bottom_control->SetValue(int32(bottom));
 
-	if (bottom != bottom_control->Value())
-		bottom_control->SetValue(bottom);
-
-
-	if (window != NULL)
 		window->Unlock();
+	}
 }
 
 

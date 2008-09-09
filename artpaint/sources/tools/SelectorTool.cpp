@@ -64,7 +64,7 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		HSPolygon *the_polygon = new HSPolygon(&point,1);
 		BPolygon *active_view_polygon = NULL;
 
-		path_finder->SetSeedPoint(point.x,point.y);
+		path_finder->SetSeedPoint(int32(point.x), int32(point.y));
 		bool finished = FALSE;
 		BPoint prev_point = point;
 		BPoint seed_point = point;
@@ -93,9 +93,11 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 					// and new round of dynamic programming should be started with last_click_bitmap_location
 					// as a seed_point.
 					int32 num_points;
-					BPoint *point_list = path_finder->ReturnPath(point.x,point.y,&num_points);
+					BPoint *point_list = path_finder->ReturnPath(int32(point.x),
+						int32(point.y), &num_points);
 					while (point_list == NULL) {
-						point_list = path_finder->ReturnPath(point.x,point.y,&num_points);
+						point_list = path_finder->ReturnPath(int32(point.x),
+							int32(point.y), &num_points);
 						snooze(50 * 1000);
 					}
 					the_polygon->AddPoints(point_list,num_points,TRUE);
@@ -114,7 +116,7 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 					}
 					delete[] point_list;
 
-					path_finder->SetSeedPoint(point.x,point.y);
+					path_finder->SetSeedPoint(int32(point.x), int32(point.y));
 					seed_point = point;
 					delete active_view_polygon;
 					active_view_polygon = NULL;
@@ -129,7 +131,8 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 							delete active_view_polygon;
 						}
 						int32 num_points;
-						BPoint *point_list = path_finder->ReturnPath(point.x,point.y,&num_points);
+						BPoint *point_list = path_finder->ReturnPath(int32(point.x),
+							int32(point.y), &num_points);
 						if (point_list != NULL) {
 							active_view_polygon = new BPolygon(point_list,num_points);
 							bitmap_rect = active_view_polygon->Frame();
@@ -253,7 +256,10 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 		BBitmap *selection_map;
 		// We use a fill-tool to select the area:
 		BitmapDrawer *drawer = new BitmapDrawer(original_bitmap);
-		selection_map = MakeFloodBinaryMap(drawer,0,original_bitmap->Bounds().right,0,original_bitmap->Bounds().bottom,drawer->GetPixel(original_point),original_point);
+		selection_map = MakeFloodBinaryMap(drawer, 0,
+			int32(original_bitmap->Bounds().right), 0,
+			int32(original_bitmap->Bounds().bottom),
+			drawer->GetPixel(original_point), original_point);
 		selection->AddSelection(selection_map,settings.mode == B_OP_ADD);
 		delete drawer;
 		delete selection_map;

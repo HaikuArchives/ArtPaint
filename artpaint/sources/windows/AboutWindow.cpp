@@ -269,4 +269,6 @@ int32 TextScrollerView::updater_function()
 			snooze(250 * 1000);	// sleep 1/4 seconds
 		}
 	}
+
+	return B_OK;
 }

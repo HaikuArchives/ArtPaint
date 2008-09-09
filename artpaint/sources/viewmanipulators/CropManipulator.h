@@ -22,6 +22,9 @@ class CropManipulatorView;
 class CropManipulatorSettings;
 
 class CropManipulator : public WindowGUIManipulator {
+	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
+		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+
 	BBitmap		*target_bitmap;
 	float 		min_x,max_x;
 	float		min_y,max_y;

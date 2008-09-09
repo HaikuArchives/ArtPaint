@@ -48,6 +48,9 @@ float	width_coefficient;
 
 
 class ScaleManipulator : public WindowGUIManipulator {
+	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
+		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+
 	BBitmap						*preview_bitmap;
 	BBitmap						*copy_of_the_preview_bitmap;
 

@@ -28,7 +28,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 
 	if (inset == 0) {
 		// Just copy the bitmap straight away.
-		for (int32 i=0;i<bits_length;i++)
+		for (uint32 i = 0; i < bits_length; i++)
 			*target_bits++ = *source_bits++;
 	}
 	else if (inset > 0) {

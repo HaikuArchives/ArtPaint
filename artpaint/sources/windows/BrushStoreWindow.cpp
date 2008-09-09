@@ -81,8 +81,10 @@ BrushStoreWindow::BrushStoreWindow()
 	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
 	Unlock();
 
-
-	SetWindowAlignment(B_PIXEL_ALIGNMENT,0,0,BRUSH_VAULT_WIDTH,B_V_SCROLL_BAR_WIDTH+1,0,0,BRUSH_VAULT_HEIGHT,menu_bar->Bounds().Height()+1);
+	// TODO: check what this is used for once Haiku implements this
+	SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, BRUSH_VAULT_WIDTH,
+		int32(B_V_SCROLL_BAR_WIDTH + 1), 0, 0, BRUSH_VAULT_HEIGHT,
+		int32(menu_bar->Bounds().Height() + 1));
 
 	FloaterManager::AddFloater(this);
 }

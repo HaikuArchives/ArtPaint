@@ -514,19 +514,19 @@ void ScaleManipulatorView::MessageReceived(BMessage *message)
 				// Need to round the height correctly to the nearest pixel
 				if (maintain_proportions) {
 					current_height = max_c(1, floor(original_height * (current_width / original_width) + 0.5));
-					height_control->SetValue(current_height);
+					height_control->SetValue(int32(current_height));
 				}
 
-				width_control->SetValue(current_width);
+				width_control->SetValue(int32(current_width));
 			}
 			else {
 				current_height = height_control->Value();
 				current_height = max_c(1,ceil(current_height));
 				if (maintain_proportions) {
 					current_width = max_c(1, floor(original_width * (current_height / original_height) + 0.5));
-					width_control->SetValue(current_width);
+					width_control->SetValue(int32(current_width));
 				}
-				height_control->SetValue(current_height);
+				height_control->SetValue(int32(current_height));
 			}
 			if (manipulator != NULL)
 				manipulator->SetValues(current_width,current_height);
@@ -541,18 +541,18 @@ void ScaleManipulatorView::MessageReceived(BMessage *message)
 					current_width = max_c(1,ceil(coefficient*current_width));
 					if (maintain_proportions) {
 						current_height = max_c(1, floor(original_height * (current_width / original_width) + 0.5));
-						height_control->SetValue(current_height);
+						height_control->SetValue(int32(current_height));
 					}
-					width_control->SetValue(current_width);
+					width_control->SetValue(int32(current_width));
 					Window()->PostMessage(WIDTH_CHANGED,this);
 				}
 				else {
 					current_height = max_c(1,ceil(coefficient*current_height));
 					if (maintain_proportions) {
 						current_width = max_c(1, floor(original_width * (current_height / original_height) + 0.5));
-						width_control->SetValue(current_width);
+						width_control->SetValue(int32(current_width));
 					}
-					height_control->SetValue(current_height);
+					height_control->SetValue(int32(current_height));
 					Window()->PostMessage(HEIGHT_CHANGED,this);
 				}
 //				if (manipulator != NULL)
@@ -565,11 +565,11 @@ void ScaleManipulatorView::MessageReceived(BMessage *message)
 		case RESTORE_HEIGHT:
 		case RESTORE_WIDTH:
 			if (message->what == RESTORE_WIDTH) {
-				width_control->SetValue(original_width);
+				width_control->SetValue(int32(original_width));
 				Window()->PostMessage(WIDTH_CHANGED,this);
 			}
 			else if (message->what == RESTORE_HEIGHT) {
-				height_control->SetValue(original_height);
+				height_control->SetValue(int32(original_height));
 				Window()->PostMessage(HEIGHT_CHANGED,this);
 			}
 //			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
@@ -581,8 +581,8 @@ void ScaleManipulatorView::MessageReceived(BMessage *message)
 				current_height = max_c(1, floor(original_height * (current_width/original_width) + 0.5));
 				if (manipulator != NULL) {
 					manipulator->SetValues(current_width,current_height);
-					width_control->SetValue(current_width);
-					height_control->SetValue(current_height);
+					width_control->SetValue(int32(current_width));
+					height_control->SetValue(int32(current_height));
 				}
 			}
 			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
@@ -621,24 +621,24 @@ void ScaleManipulatorView::SetValues(float width, float height)
 	if (LockLooper()) {
 		BControl *text_control = dynamic_cast<BControl*>(FindView("width_control"));
 		if (text_control != NULL) {
-			text_control->SetValue(current_width);
+			text_control->SetValue(int32(current_width));
 		}
 
 		text_control = dynamic_cast<BControl*>(FindView("height_control"));
 		if (text_control != NULL) {
-			text_control->SetValue(current_height);
+			text_control->SetValue(int32(current_height));
 		}
 		UnlockLooper();
 	}
 	else {
 		BControl *text_control = dynamic_cast<BControl*>(FindView("width_control"));
 		if (text_control != NULL) {
-			text_control->SetValue(current_width);
+			text_control->SetValue(int32(current_width));
 		}
 
 		text_control = dynamic_cast<BControl*>(FindView("height_control"));
 		if (text_control != NULL) {
-			text_control->SetValue(current_height);
+			text_control->SetValue(int32(current_height));
 		}
 	}
 }

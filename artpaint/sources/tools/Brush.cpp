@@ -614,7 +614,7 @@ void Brush::print_brush(uint32 **b)
 	printf("Brush:\n");
 	for (int32 y=0;y<height_;y++) {
 		for (int32 x=0;x<width_;x++) {
-			printf("%d ",b[y][x]);
+			printf("%ld ",b[y][x]);
 		}
 		printf("\n");
 	}

@@ -44,6 +44,9 @@ const unsigned char HS_TRANSLATION_CURSOR[] =
 		};
 
 class TranslationManipulator: public StatusBarGUIManipulator {
+	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
+		{ return StatusBarGUIManipulator::ManipulateBitmap(b, s, stb); };
+
 		BBitmap	*preview_bitmap;
 		BBitmap	*copy_of_the_preview_bitmap;
 
