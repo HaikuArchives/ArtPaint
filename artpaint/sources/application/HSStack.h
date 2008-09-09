@@ -1,10 +1,11 @@
 /*
-
-	Filename:	HSStack.h
-	Contents:	HSStack-class declaration and definition.
-	Author:		Heikki Suhonen
-
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 
 // This is a simple generic stack. It should not be needed
 // after we get the STL working.

@@ -1,11 +1,11 @@
 /*
-
-	Filename:	UtilityClasses.cpp
-	Contents:	Contains definitions for small classes that do not deserve their own file
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Application.h>
 #include <Bitmap.h>
 #include <Button.h>

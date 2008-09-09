@@ -1,12 +1,11 @@
 /*
-
-	Filename:	IntelligentPathFinder.h
-	Contents:	IntelligentPathFinder-class declarations + OrderedPointList
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef INTELLIGENT_PATH_FINDER_H
 #define	INTELLIGENT_PATH_FINDER_H
 

@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Cursors.h
-	Contents:	The data-structures for mouse-cursors
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CURSORS_H
 #define	CURSORS_H
 

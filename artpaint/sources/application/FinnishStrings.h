@@ -1,12 +1,11 @@
 /*
-
-	Filename:	FinnishStrings.h
-	Contents:	Definitions of UI strings in finnish.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef FINNISH_STRINGS_H
 #define	FINNISH_STRINGS_H
 

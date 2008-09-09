@@ -1,13 +1,11 @@
 /*
-
-	Filename:	ProjectFileFunctions.h
-	Contents:	Declarations for project-file handling functions.
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef PROJECT_FILE_FUNCTIONS_H
 #define PROJECT_FILE_FUNCTIONS_H
 

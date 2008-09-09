@@ -1,12 +1,11 @@
 /*
-
-	Filename:	RandomNumberGenerator.h
-	Contents:	RandomNumberGenerator-class declarations.
-	Author:	Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	RANDOM_NUMBER_GENERATOR_H
 #define	RANDOM_NUMBER_GENERATOR_H
 

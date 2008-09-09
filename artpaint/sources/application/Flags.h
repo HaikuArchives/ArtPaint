@@ -1,12 +1,11 @@
 /*
-
-	Filename:	Flags.h
-	Contents:	Contains icon-dumps of flags of different countries
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef	FLAGS_H
 #define	FLAGS_H
 

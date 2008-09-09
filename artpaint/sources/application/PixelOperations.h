@@ -1,12 +1,11 @@
 /*
-
-	Filename:	PixelOperations.h
-	Contents:	Contains inline-functions for making pixel operations.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef PIXEL_OPERATIONS_H
 #define PIXEL_OPERATIONS_H
 

@@ -1,39 +1,19 @@
 /*
-
-
-
 	Filename:	FrenchStrings.h
-
 	Contents:	Definitions of UI strings in frensh.
-
 	Author:		Jean-Rémi Taponier
 
 	French Localization (in french) = Localisation Française
-
 */
-
-
-
 
 
 /*
-
 	The word "CANVAS" is a little bit misleading. It will be replaced by
-
 	word such as "IMAGE". In CREATE_CANVAS CANVAS might be better than IMAGE, and
-
 	also in SELECT_CANVAS_SIZE.
-
-
-
 */
-
-
-
 #ifndef FRENCH_STRINGS_H
-
 #define	FRENCH_STRINGS_H
-
 
 
 #define	FRENCH_ABOUT_ARTPAINT_STRING			"À Propos De ArtPaint"

@@ -1,10 +1,11 @@
 /*
-
-	Filename:	EnglishStrings.h
-	Contents:	Definitions of UI strings in english.
-	Author:		Heikki Suhonen
-
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 
 
 /*
@@ -13,7 +14,6 @@
 	also in SELECT_CANVAS_SIZE.
 
 */
-
 #ifndef ENGLISH_STRINGS_H
 #define	ENGLISH_STRINGS_H
 

@@ -1,12 +1,11 @@
 /*
-
-	Filename:	StringServer.h
-	Contents:	StringServer-class declarations.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef STRING_SERVER_H
 #define	STRING_SERVER_H
 

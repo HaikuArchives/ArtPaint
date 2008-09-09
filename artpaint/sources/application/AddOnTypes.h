@@ -1,14 +1,14 @@
 /*
-
-	Filename:	AddOnTypes.h
-	Contents:	Enumeration for all possible add-on types
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef ADD_ON_TYPES_H
 #define	ADD_ON_TYPES_H
+
 
 enum add_on_types {
 	BLUR_FILTER_ADD_ON,
@@ -19,7 +19,6 @@ enum add_on_types {
 	ANALYZER_ADD_ON,
 	GENERIC_ADD_ON
 };
-
 
 
 #endif

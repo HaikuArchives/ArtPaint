@@ -1,14 +1,11 @@
 /*
-
-	Filename:	Selection.h
-	Contents:	Selection-class declaration and inline functions + SelectionIterator declaration.
-	Author:		Heikki Suhonen
-
-*/
-
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef SELECTION_H
 #define SELECTION_H
 

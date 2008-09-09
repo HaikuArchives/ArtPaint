@@ -1,14 +1,11 @@
 /*
-
-	Filename:	ClipBoardView.h
-	Contents:	ClipBoardView-class declarations.
-	Author:		Heikki Suhonen
-
-*/
-
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CLIP_BOARD_VIEW_H
 #define	CLIP_BOARD_VIEW_H
 

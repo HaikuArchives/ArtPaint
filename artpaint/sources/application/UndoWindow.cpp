@@ -1,12 +1,11 @@
 /*
-
-	Filename:	UndoWindow.cpp
-	Contents:	Definitions for UndowWindow and UndoView-classes
-	Author:	Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "UndoWindow.h"
 #include "Message.h"
 

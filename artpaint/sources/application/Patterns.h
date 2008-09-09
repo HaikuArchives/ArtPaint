@@ -1,10 +1,11 @@
 /*
-
-	Filename:	Patterns.h
-	Contents:	Pattern definitions
-	Author:		Heikki Suhonen
-
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef PATTERNS_H
 #define PATTERNS_H
 

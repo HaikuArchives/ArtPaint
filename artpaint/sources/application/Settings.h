@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Settings.h
-	Contents:	Structs that are used to store various settings
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef SETTINGS_H
 #define SETTINGS_H
 

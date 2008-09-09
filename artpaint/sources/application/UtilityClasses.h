@@ -1,13 +1,14 @@
 /*
-
-	Filename:	UtilityClasses.h
-	Contents:	Declarations for small classes that do not need their own file
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef UTILITY_CLASSES_H
 #define UTILITY_CLASSES_H
+
 
 #include <Box.h>
 #include <FilePanel.h>

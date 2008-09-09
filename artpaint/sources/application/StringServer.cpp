@@ -1,11 +1,11 @@
 /*
-
-	Filename:	StringServer.cpp
-	Contents:	StringServer-class definitions
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <stdio.h>
 
 #include "StringServer.h"

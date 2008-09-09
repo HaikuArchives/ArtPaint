@@ -1,13 +1,11 @@
 /*
-
-	Filename:	UndoEvent.h
-	Contents:	UndoEvent-class declarations
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef UNDO_EVENT_H
 #define	UNDO_EVENT_H
 

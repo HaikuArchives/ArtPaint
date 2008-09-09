@@ -1,11 +1,11 @@
 /*
-
-	Filename:	FilePanels.h
-	Contents:	Declarations for various file-panel classes
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef FILE_PANELS_H
 #define FILE_PANELS_H
 

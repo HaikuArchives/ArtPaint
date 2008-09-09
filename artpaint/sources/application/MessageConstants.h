@@ -1,11 +1,11 @@
 /*
-
-	Filename:	MessageConstants.h
-	Contents:	Constants for application-wide communication
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef MESSAGE_CONSTANTS_H
 #define MESSAGE_CONSTANTS_H
 

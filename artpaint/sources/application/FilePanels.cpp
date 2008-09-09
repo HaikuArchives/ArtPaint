@@ -1,15 +1,11 @@
 /*
-
-	Filename:	FilePanels.cpp
-	Contents:	Definitions for various custom filepanels
-	Author:		Heikki Suhonen
-
-*/
-
-//#include "Datatypes.h"
-//#include "DataHandler.h"
-//#include "BitmapStream.h"
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Button.h>
 #include <Menu.h>
 #include <MenuField.h>

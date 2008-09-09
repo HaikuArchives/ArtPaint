@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Settings.cpp
-	Contents:	Functions for manipulating the setting structs.
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <FindDirectory.h>
 #include <Path.h>
 #include <string.h>

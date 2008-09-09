@@ -1,12 +1,11 @@
 /*
-
-	Filename:	MessageFilters.cpp
-	Contents:	Message-filter function definitions
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Looper.h>
 #include <stdio.h>
 #include <View.h>

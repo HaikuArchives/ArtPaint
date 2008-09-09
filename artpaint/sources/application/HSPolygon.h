@@ -1,10 +1,24 @@
 /*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
+#ifndef HS_POLYGON_H
+#define HS_POLYGON_H
 
-	Filename:	HSPolygon.h
-	Contents:	HSPolygon-class declaration.
-	Author:		Heikki Suhonen
 
-*/
+#include <Point.h>
+#include <Polygon.h>
+
+
+enum polygon_direction {
+	HS_POLYGON_CLOCKWISE,
+	HS_POLYGON_COUNTERCLOCKWISE,
+	HS_POLYGON_ANY_DIRECTION
+};
 
 
 /*
@@ -14,20 +28,6 @@
 	when asked.
 
 */
-
-#ifndef HS_POLYGON_H
-#define HS_POLYGON_H
-
-
-#include <Point.h>
-#include <Polygon.h>
-
-enum polygon_direction {
-	HS_POLYGON_CLOCKWISE,
-	HS_POLYGON_COUNTERCLOCKWISE,
-	HS_POLYGON_ANY_DIRECTION
-};
-
 class HSPolygon {
 BPoint				*points;
 int32				point_count;

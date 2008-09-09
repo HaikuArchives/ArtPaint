@@ -1,16 +1,14 @@
 /*
-
-	Filename:	UndoQueue.h
-	Contents:	UndoQueue-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef UNDO_QUEUE_H
 #define UNDO_QUEUE_H
+
 
 #include <MenuItem.h>
 #include <File.h>

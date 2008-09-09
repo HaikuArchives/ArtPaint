@@ -1,12 +1,11 @@
 /*
-
-	Filename:	RefFilters.cpp
-	Contents:	Definitions for various ref-filters
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Entry.h>
 #include <NodeInfo.h>
 #include <stdio.h>

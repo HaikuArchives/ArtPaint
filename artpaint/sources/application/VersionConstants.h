@@ -1,13 +1,11 @@
 /*
-
-	Filename:	VersionConstants.h
-	Contents:	Constants for version numbers of different parts of the program
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef VERSION_NUMBERS_H
 #define VERSION_NUMBERS_H
 
@@ -17,5 +15,6 @@
 // version. The third digit is a minor update.
 // The last digit is not currently used.
 #define ARTPAINT_VERSION	0x01020200
+
 
 #endif
