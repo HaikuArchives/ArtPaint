@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Tools.h
-	Contents:	Constants that define the tools
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TOOLS_H
 #define TOOLS_H
 

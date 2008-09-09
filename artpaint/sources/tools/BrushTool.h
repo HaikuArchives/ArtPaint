@@ -1,13 +1,11 @@
 /*
-
-	Filename:	BrushTool.h
-	Contents:	Declarations for a basic brush tool class.
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef BRUSH_TOOL_H
 #define BRUSH_TOOL_H
 

@@ -1,13 +1,11 @@
 /*
-
-	Filename:	HairyBrushTool.h
-	Contents:	HairyBrushTool-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef HAIRY_BRUSH_TOOL_H
 #define HAIRY_BRUSH_TOOL_H
 

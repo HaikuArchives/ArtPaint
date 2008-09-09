@@ -1,12 +1,11 @@
 /*
-
-	Filename:	StraightLineTool.h
-	Contents:	StraightLineTool-class declaration.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef STRAIGHT_LINE_TOOL_H
 #define STRAIGHT_LINE_TOOL_H
 

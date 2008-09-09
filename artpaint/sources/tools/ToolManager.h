@@ -1,12 +1,11 @@
 /*
-
-	Filename:	ToolManager.h
-	Contents:	ToolManager-class declarations.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TOOL_MANAGER_H
 #define	TOOL_MANAGER_H
 

@@ -1,13 +1,11 @@
-
 /*
-
-	Filename:	AirBrushTool.cpp
-	Contents:	AirBrushTool-class definitions
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Debug.h>
 #include <math.h>
 #include <RadioButton.h>

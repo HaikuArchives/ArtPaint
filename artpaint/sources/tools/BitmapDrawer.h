@@ -1,12 +1,11 @@
-
 /*
-
-	Filename:	BitmapDrawer.h
-	Contents:	BitmapDrawer class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef BITMAP_DRAWER_H
 #define BITMAP_DRAWER_H
 

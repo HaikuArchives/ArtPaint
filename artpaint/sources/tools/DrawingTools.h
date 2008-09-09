@@ -1,13 +1,14 @@
 /*
-
-	Filename:	DrawingTools.h
-	Contents:	includes declarations for general tool base-class and specific tool classes
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef DRAWING_TOOLS_H
 #define DRAWING_TOOLS_H
+
 
 #include "DrawingTool.h"
 #include "LineTool.h"
@@ -25,5 +26,6 @@
 #include "HairyBrushTool.h"
 #include "EraserTool.h"
 #include "TextTool.h"
+
 
 #endif

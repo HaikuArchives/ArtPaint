@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ToolSetupWindow.cpp
-	Contents:	definitions for class that creates the tool-setup-window
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <stdio.h>
 
 #include "FloaterManager.h"

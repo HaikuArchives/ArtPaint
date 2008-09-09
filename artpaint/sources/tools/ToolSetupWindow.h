@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ToolSetupWindow.h
-	Contents:	Class declaration for ToolSetupWindow
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TOOL_SETUP_WINDOW_H
 #define TOOL_SETUP_WINDOW_H
 

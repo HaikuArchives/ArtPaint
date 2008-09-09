@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ToolImages.cpp
-	Contents:	Class that contains all the pictures for tools
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Bitmap.h>
 #include <Resources.h>
 #include <Roster.h>

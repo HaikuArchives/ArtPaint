@@ -1,11 +1,11 @@
 /*
-
-	Filename:	BrushTool.cpp
-	Contents:	Definitions for a basic brush tool class.
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <ClassInfo.h>
 #include <File.h>
 #include <stdlib.h>

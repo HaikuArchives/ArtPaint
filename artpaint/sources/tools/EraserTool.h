@@ -1,13 +1,11 @@
 /*
-
-	Filename:	EraserTool.h
-	Contents:	EraserTool-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef ERASER_TOOL_H
 #define ERASER_TOOL_H
 

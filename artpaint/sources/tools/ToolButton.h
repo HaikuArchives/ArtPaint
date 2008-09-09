@@ -1,12 +1,11 @@
 /*
-
-	Filename:	ToolButton.h
-	Contents:	ToolButton-class declaration.
-	Author:		Heikki Suhonen
-
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TOOL_BUTTON_H
 #define TOOL_BUTTON_H
 

@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ToolSelectionWindow.cpp
-	Contents:	Definitions for window that is used to select the tools
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "ToolSelectionWindow.h"
 
 #include "DrawingTools.h"

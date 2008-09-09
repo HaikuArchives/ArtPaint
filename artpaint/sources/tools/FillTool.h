@@ -1,13 +1,11 @@
 /*
-
-	Filename:	FillTool.h
-	Contents:	FillTool-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef FILL_TOOL_H
 #define FILL_TOOL_H
 

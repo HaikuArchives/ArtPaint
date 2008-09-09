@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ToolImages.h
-	Contents:	Class declaration for tool-images and constants
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TOOL_IMAGES_H
 #define TOOL_IMAGES_H
 
