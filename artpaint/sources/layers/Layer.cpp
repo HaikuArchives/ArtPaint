@@ -34,7 +34,7 @@ Layer::Layer(BRect frame,int32 id,BView *image_v,int32 type, BBitmap *a_bitmap)
 	layer_id = id;
 	is_active = FALSE;
 
-	sprintf(layer_name,"Layer &d",layer_id);
+	sprintf(layer_name, "Layer %ld", layer_id);
 
 	// ensure that the frame is in correct position
 	frame.OffsetTo(0,0);
@@ -395,7 +395,7 @@ Layer* Layer::readLayer(BFile &file,ImageView *image_v,int32 new_id,bool is_litt
 	}
 
 	Layer *layer = new Layer(BRect(0,0,width-1,height-1),new_id,image_v,layer_type);
-	layer->SetVisibility((layer_visibility == 0xFFFFFFFF));
+	layer->SetVisibility((uint32(layer_visibility) == 0xFFFFFFFF));
 	int8 *bits = (int8*)layer->Bitmap()->Bits();
 	if (file.Read(bits,length) != length) {
 		delete layer;
