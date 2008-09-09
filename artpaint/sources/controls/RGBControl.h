@@ -1,11 +1,11 @@
 /*
-
-	Filename:	RGBControl.h
-	Contents:	RGBControl-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef RGB_CONTROL_H
 #define RGB_CONTROL_H
 

@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Controls.h
-	Contents:	Declarations for various control-classes
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CONTROLS_H
 #define CONTROLS_H
 

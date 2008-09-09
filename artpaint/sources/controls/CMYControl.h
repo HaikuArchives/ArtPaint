@@ -1,11 +1,11 @@
 /*
-
-	Filename:	CMYControl.h
-	Contents:	CMYControl-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CMY_CONTROL_H
 #define CMY_CONTROL_H
 

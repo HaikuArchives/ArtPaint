@@ -1,11 +1,11 @@
 /*
-
-	Filename:	Controls.cpp
-	Contents:	Definitions for various control-classes
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <stdio.h>
 #include <stdlib.h>
 

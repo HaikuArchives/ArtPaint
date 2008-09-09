@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ColorView.h
-	Contents:	ColorView -class declarations
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 
 
 /*	This class represents a view that accepts colordrops in the format

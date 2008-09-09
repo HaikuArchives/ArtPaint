@@ -1,11 +1,11 @@
 /*
-
-	Filename:	HSPictureButton.h
-	Contents:	HSPictureButton-class declaration
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef HS_PICTURE_BUTTON_H
 #define HS_PICTURE_BUTTON_H
 

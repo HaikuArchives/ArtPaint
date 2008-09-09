@@ -1,11 +1,11 @@
 /*
-
-	Filename:	ColorPalette.h
-	Contents:	declaretions for ColorPaletteWindow and some of its children views
-	Author:		Heikki Suhonen
-
-*/
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef COLOR_PALETTE_H
 #define COLOR_PALETTE_H
 
