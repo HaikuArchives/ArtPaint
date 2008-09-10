@@ -1,7 +1,11 @@
 /*
-	Filename:	color_mapper.h
-	Author:		Heikki Suhonen (Heikki.Suhonen@Helsinki.FI)
-*/
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 
 
 BBitmap* nearest_color_mapper(BBitmap * inSource, const rgb_color * inPalette, int inPaletteSize);
@@ -16,7 +20,7 @@ BBitmap* n_candidate_color_mapper(BBitmap * inSource, const rgb_color * inPalett
 	This function can be called at most 32768 times for an image.
 	For this reason it should be as fast as possible. Using some other
 	distance metric instead of the euclidian rgb-distance might very well
-	be useful. For example the sum of r,g and b component absolute 
+	be useful. For example the sum of r,g and b component absolute
 	differences could be used thus removing the sqrts.
 */
 
@@ -26,14 +30,14 @@ inline int32 find_palette_index(uint32 bgra_word,const rgb_color * inPalette, in
 		uint8 bytes[4];
 		uint32 word;
 	} bgra32;
-	
+
 	bgra32.word = bgra_word;
-	
+
 	float min_distance = 1000000.0;
 	uint8 red = bgra32.bytes[2];
 	uint8 green = bgra32.bytes[1];
 	uint8 blue = bgra32.bytes[0];
-	
+
 	int32 selected_index = -1;
 
 	for (int i=0;i<inPaletteSize;i++) {
@@ -43,7 +47,7 @@ inline int32 find_palette_index(uint32 bgra_word,const rgb_color * inPalette, in
 		if (distance < min_distance) {
 			selected_index = i;
 			min_distance = distance;
-		}																	
+		}
 	}
 
 	return selected_index;
@@ -69,18 +73,18 @@ inline int32 find_candidate(uint32 bgra_word,const rgb_color * inPalette, int in
 		uint8 bytes[4];
 		uint32 word;
 	} bgra32;
-	
+
 	bgra32.word = bgra_word;
-	
+
 	float min_distance = 1000000.0;
 	uint8 red = bgra32.bytes[2];
 	uint8 green = bgra32.bytes[1];
 	uint8 blue = bgra32.bytes[0];
-	
+
 	int32 selected_index = -1;
 
 	if (candidateNumber > inPaletteSize) {
-		*outDistance = min_distance; 
+		*outDistance = min_distance;
 		delete[] candidates;
 		return 0;
 	}
@@ -98,7 +102,7 @@ inline int32 find_candidate(uint32 bgra_word,const rgb_color * inPalette, int in
 		}
 		if (k<candidateNumber) {
 			candidates[k].distance = distance;
-			candidates[k].index = i; 
+			candidates[k].index = i;
 		}
 	}
 
@@ -106,7 +110,7 @@ inline int32 find_candidate(uint32 bgra_word,const rgb_color * inPalette, int in
 	*outDistance = candidates[candidateNumber-1].distance;
 
 	delete[] candidates;
-	return selected_index;	
+	return selected_index;
 }
 
 

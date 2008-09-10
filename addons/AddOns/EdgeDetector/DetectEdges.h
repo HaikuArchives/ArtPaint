@@ -1,14 +1,11 @@
-/* 
-
-	Filename:	DetectEdges.h
-	Contents:	Declaration for a manipulator that enhances edges in the image.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef DETECT_EDGES_H
 #define DETECT_EDGES_H
 
@@ -26,7 +23,7 @@ static	int32		thread_entry(void*);
 public:
 			DetectEdgesManipulator();
 			~DetectEdgesManipulator();
-			
+
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 char*		ReturnName();
 };

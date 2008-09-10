@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	AddOnTemplate.cpp
-	Contents:	A template for the ArtPaint add-ons.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Node.h>
 #include <StatusBar.h>
 #include <stdlib.h>
@@ -25,7 +25,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = EFFECT_FILTER_ADD_ON
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new PolarMapper(bm);	
+	return new PolarMapper(bm);
 }
 
 
@@ -48,8 +48,8 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 	if (status_bar != NULL)
 		status_bar_window = status_bar->Window();
 
-	BBitmap *spare_buffer = new BBitmap(original->Bounds(),B_RGBA32);				
-		
+	BBitmap *spare_buffer = new BBitmap(original->Bounds(),B_RGBA32);
+
 	// first map it
 	int32 width = original->Bounds().Width() + 1;
 	int32 height = original->Bounds().Height() + 1;
@@ -67,7 +67,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 		for (int32 x=0;x<width;x++) {
 			float angle = (float)(height-1-y)/(float)height*PI*2;
 			float radius = (float)x/(float)width*max_radius;
-			
+
 			int32 new_x = radius * cos(angle) + mid_x;
 			int32 new_y = radius * sin(angle) + mid_y;
 
@@ -75,7 +75,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 				uint8 bytes[4];
 				uint32 word;
 			} new_color;
-			
+
 			if ((new_x>=0)&&(new_x<width)&&(new_y>=0)&&(new_y<height)) {
 				new_color.word = *(original_bits + new_x + (height-new_y-1) * original_bpr);
 			}
@@ -91,7 +91,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 	spare_bits = (uint32*)spare_buffer->Bits();
 	original_bits = (uint32*)original->Bits();
 	// then copy it
-	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {	
+	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {
 		for (int32 y=0;y<height;y++) {
 			for (int32 x=0;x<width;x++) {
 				*original_bits++ = *spare_bits++;
@@ -100,7 +100,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 				status_bar->Update(100.0/height*20);
 				status_bar_window->Unlock();
 			}
-		}	
+		}
 	}
 	else {
 		for (int32 y=0;y<height;y++) {
@@ -114,7 +114,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 				status_bar->Update(100.0/height*20);
 				status_bar_window->Unlock();
 			}
-		}		
+		}
 	}
 	// we should also delete the spare-bitmap
 	delete spare_buffer;

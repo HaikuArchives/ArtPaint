@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	AHEManipulator.cpp
-	Contents:	AHEManipulator-definitions.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "AddOns.h"
 #include "AHEManipulator.h"
 #include "ImageProcessingLibrary.h"
@@ -19,7 +19,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new AHEManipulator(bm);	
+	return new AHEManipulator(bm);
 }
 
 
@@ -38,9 +38,9 @@ BBitmap* AHEManipulator::ManipulateBitmap(BBitmap *original, Selection *selectio
 {
 	// This manipulator assumes a grayscale image
 	ImageProcessingLibrary iplib;
-	
+
 	iplib.grayscale_clahe(original,16,5);
-	
+
 	if (selection->IsEmpty() == true) {
 	}
 	else {

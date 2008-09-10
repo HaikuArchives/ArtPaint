@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	AddOnTemplate.cpp
-	Contents:	A template for the ArtPaint add-ons.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include "AddOns.h"
 #include "ColorBalance.h"
 
@@ -19,7 +19,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new ColorBalanceManipulator(bm);	
+	return new ColorBalanceManipulator(bm);
 }
 
 
@@ -31,7 +31,7 @@ ColorBalanceManipulator::ColorBalanceManipulator(BBitmap *bm)
 	preview_bitmap = NULL;
 	copy_of_the_preview_bitmap = NULL;
 	config_view = NULL;
-	
+
 	SetPreviewBitmap(bm);
 	lowest_allowed_quality = 2;
 	last_used_quality = 2;
@@ -49,23 +49,23 @@ ColorBalanceManipulator::~ColorBalanceManipulator()
 	}
 }
 
-BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	ColorBalanceManipulatorSettings *new_settings = dynamic_cast<ColorBalanceManipulatorSettings*>(set);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-	
+
 	if (original == NULL)
 		return NULL;
 
 	if ((new_settings->red_difference == 0) &&(new_settings->green_difference == 0) && (new_settings->blue_difference == 0))
 		return NULL;
-		
+
 	BBitmap *source_bitmap;
 	BBitmap *target_bitmap;
 	BBitmap *new_bitmap = NULL;
-	
+
 	if (original == preview_bitmap) {
 		target_bitmap = original;
 		source_bitmap = copy_of_the_preview_bitmap;
@@ -75,32 +75,32 @@ BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 		new_bitmap =  DuplicateBitmap(original,0);
 		source_bitmap = new_bitmap;
 	}
-	
-	
+
+
 	uint32 *source_bits = (uint32*)source_bitmap->Bits();
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
 	int32 source_bpr = source_bitmap->BytesPerRow()/4;
-	int32 target_bpr = target_bitmap->BytesPerRow()/4;	
+	int32 target_bpr = target_bitmap->BytesPerRow()/4;
 
 
 	int32 left = target_bitmap->Bounds().left;
 	int32 right = target_bitmap->Bounds().right;
 	int32 top = target_bitmap->Bounds().top;
 	int32 bottom = target_bitmap->Bounds().bottom;
-	
+
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color;
-	
+
 	if (selection->IsEmpty() == TRUE) {
 		for (int32 y=top;y<=bottom;y++) {
 			for (int32 x=left;x<=right;x++) {
-				color.word = *source_bits++;		
+				color.word = *source_bits++;
 				color.bytes[0] = max_c(min_c(255,color.bytes[0]+new_settings->blue_difference),0);
 				color.bytes[1] = max_c(min_c(255,color.bytes[1]+new_settings->green_difference),0);
 				color.bytes[2] = max_c(min_c(255,color.bytes[2]+new_settings->red_difference),0);
-				*target_bits++ = color.word;			
+				*target_bits++ = color.word;
 			}
 		}
 	}
@@ -108,23 +108,23 @@ BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 		for (int32 y=top;y<=bottom;y++) {
 			for (int32 x=left;x<=right;x++) {
 				if (selection->ContainsPoint(x,y)) {
-					color.word = *source_bits++;		
+					color.word = *source_bits++;
 					color.bytes[0] = max_c(min_c(255,color.bytes[0]+new_settings->blue_difference),0);
 					color.bytes[1] = max_c(min_c(255,color.bytes[1]+new_settings->green_difference),0);
 					color.bytes[2] = max_c(min_c(255,color.bytes[2]+new_settings->red_difference),0);
-					*target_bits++ = color.word;			
+					*target_bits++ = color.word;
 				}
 				else {
 					*target_bits++ = *source_bits++;
 				}
 			}
-		}	
+		}
 	}
 	if (new_bitmap != NULL) {
 		delete new_bitmap;
 	}
 
-	return original;	
+	return original;
 }
 
 
@@ -133,13 +133,13 @@ int32 ColorBalanceManipulator::PreviewBitmap(Selection *selection,bool full_qual
 	if ((settings == previous_settings) == FALSE) {
 		previous_settings = settings;
 		last_used_quality = lowest_allowed_quality;
-	} 	
+	}
 	else {
 		last_used_quality = floor(last_used_quality/2.0);
 	}
 	if (full_quality == TRUE)
 		last_used_quality = min_c(last_used_quality,1);
-		
+
 	uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 	uint32 *target_bits = (uint32*)preview_bitmap->Bits();
 	int32 source_bpr = copy_of_the_preview_bitmap->BytesPerRow()/4;
@@ -149,8 +149,8 @@ int32 ColorBalanceManipulator::PreviewBitmap(Selection *selection,bool full_qual
 	int32 right = preview_bitmap->Bounds().right;
 	int32 top = preview_bitmap->Bounds().top;
 	int32 bottom = preview_bitmap->Bounds().bottom;
-	
-	
+
+
 	if (last_used_quality > 0) {
 		union {
 			uint8 bytes[4];
@@ -159,21 +159,21 @@ int32 ColorBalanceManipulator::PreviewBitmap(Selection *selection,bool full_qual
 		uint8 blue_array[256];
 		uint8 green_array[256];
 		uint8 red_array[256];
-		
+
 		for (int32 i=0;i<256;i++) {
 			blue_array[i] = max_c(min_c(255,i+settings.blue_difference),0);
 			green_array[i] = max_c(min_c(255,i+settings.green_difference),0);
-			red_array[i] = max_c(min_c(255,i+settings.red_difference),0);			
+			red_array[i] = max_c(min_c(255,i+settings.red_difference),0);
 		}
-		
+
 		if (selection->IsEmpty() == TRUE) {
 			for (int32 y=top;y<=bottom;y += last_used_quality) {
 				for (int32 x=left;x<=right;x += last_used_quality) {
-					color.word = *(source_bits + x + y*source_bpr);		
+					color.word = *(source_bits + x + y*source_bpr);
 					color.bytes[0] = blue_array[color.bytes[0]];
 					color.bytes[1] = green_array[color.bytes[1]];
 					color.bytes[2] = red_array[color.bytes[2]];
-					*(target_bits + x + y*target_bpr) = color.word;			
+					*(target_bits + x + y*target_bpr) = color.word;
 				}
 			}
 		}
@@ -181,20 +181,20 @@ int32 ColorBalanceManipulator::PreviewBitmap(Selection *selection,bool full_qual
 			for (int32 y=top;y<=bottom;y += last_used_quality) {
 				for (int32 x=left;x<=right;x += last_used_quality) {
 					if (selection->ContainsPoint(x,y)) {
-						color.word = *(source_bits + x + y*source_bpr);		
+						color.word = *(source_bits + x + y*source_bpr);
 						color.bytes[0] = blue_array[color.bytes[0]];
 						color.bytes[1] = green_array[color.bytes[1]];
 						color.bytes[2] = red_array[color.bytes[2]];
-						*(target_bits + x + y*target_bpr) = color.word;			
+						*(target_bits + x + y*target_bpr) = color.word;
 					}
 					else {
 						*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
 					}
 				}
-			}			
+			}
 		}
 	}
-	
+
 	updated_region->Set(preview_bitmap->Bounds());
 	return last_used_quality;
 }
@@ -220,9 +220,9 @@ void ColorBalanceManipulator::Reset(Selection*)
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
-		
+
 		int32 bits_length = preview_bitmap->BitsLength()/4;
-		
+
 		for (int32 i=0;i<bits_length;i++)
 			*target_bits++  = *source_bits++;
 	}
@@ -259,10 +259,10 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,ColorBalance
 	: WindowGUIManipulatorView(rect)
 {
 	target = new BMessenger(*t);
-	manipulator = manip;	
+	manipulator = manip;
 	preview_started = FALSE;
 	rgb_color color;
-	
+
 	red_slider = new ControlSlider(BRect(0,0,150,0),"red_slider",NULL,new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),-255,255,B_TRIANGLE_THUMB);
 	red_slider->SetLimitLabels("Less Red","More Red");
 	red_slider->ResizeToPreferred();
@@ -276,7 +276,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,ColorBalance
 	red_slider->MoveTo(4,4);
 	BRect frame = red_slider->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
-	
+
 	green_slider = new ControlSlider(frame,"green_slider",NULL,new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),-255,255,B_TRIANGLE_THUMB);
 	green_slider->SetLimitLabels("Less Green","More Green");
 	green_slider->ResizeToPreferred();
@@ -301,7 +301,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,ColorBalance
 	blue_slider->SetBarColor(color);
 	AddChild(blue_slider);
 
-	ResizeTo(blue_slider->Bounds().Width()+8,blue_slider->Frame().bottom + 4); 	
+	ResizeTo(blue_slider->Bounds().Width()+8,blue_slider->Frame().bottom + 4);
 }
 
 
@@ -312,7 +312,7 @@ void ColorBalanceManipulatorView::AttachedToWindow()
 
 	red_slider->SetTarget(BMessenger(this));
 	blue_slider->SetTarget(BMessenger(this));
-	green_slider->SetTarget(BMessenger(this));	
+	green_slider->SetTarget(BMessenger(this));
 }
 
 
@@ -333,10 +333,10 @@ void ColorBalanceManipulatorView::MessageReceived(BMessage *message)
 			settings.red_difference = red_slider->Value();
 			settings.blue_difference = blue_slider->Value();
 			settings.green_difference = green_slider->Value();
-			manipulator->ChangeSettings(&settings);			
+			manipulator->ChangeSettings(&settings);
 			if (preview_started == FALSE) {
 				preview_started = TRUE;
-				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);				
+				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 			}
 			break;
 

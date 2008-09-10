@@ -1,14 +1,11 @@
-/* 
-
-	Filename:	Wood.h
-	Contents:	Declaration for a manipulator that enhances edges in the image.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef WOOD_H
 #define WOOD_H
 
@@ -28,7 +25,7 @@ static	int32		thread_entry(void*);
 public:
 			WoodManipulator();
 			~WoodManipulator();
-			
+
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 char*		ReturnName();
 };

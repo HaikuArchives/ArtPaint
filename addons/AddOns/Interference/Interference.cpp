@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Wave.cpp
-	Contents:	Wave manipulator functions.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <math.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
@@ -31,7 +30,7 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 	// from the ViewManipulator base-class. It will be deleted
 	// in the application program.
 	delete i;
-	return new InterferenceManipulator(bm);	
+	return new InterferenceManipulator(bm);
 }
 
 
@@ -42,11 +41,11 @@ InterferenceManipulator::InterferenceManipulator(BBitmap *bm)
 	livePreview = false;
 	copy_of_the_preview_bitmap = NULL;
 	preview_bitmap = NULL;
-	
+
 	SetPreviewBitmap(bm);
-	
+
 	sin_table = new float[720];
-	for (int32 i=0;i<720;i++) 
+	for (int32 i=0;i<720;i++)
 		sin_table[i] = sin((float)i/720.0*2*PI);
 }
 
@@ -64,16 +63,16 @@ InterferenceManipulator::~InterferenceManipulator()
 }
 
 
-BBitmap* InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	InterferenceManipulatorSettings *new_settings = dynamic_cast<InterferenceManipulatorSettings*>(set);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-	
+
 	if (original == NULL)
 		return NULL;
-	
+
 	MakeInterference(original,new_settings,selection);
 
 	return original;
@@ -87,21 +86,21 @@ int32 InterferenceManipulator::PreviewBitmap(Selection *selection,bool full_qual
 		updated_region->Set(selection->GetBoundingRect());
 		return 1;
 	}
-	
+
 	return DRAW_ONLY_GUI;
 }
 
 
 void InterferenceManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
 {
-	if (first_click == TRUE)		
+	if (first_click == TRUE)
 		previous_settings = settings;
 
 	if (buttons & B_PRIMARY_MOUSE_BUTTON)
 		settings.centerA = point;
-	else 
+	else
 		settings.centerB = point;
-		
+
 
 	if (config_view != NULL)
 		config_view->ChangeSettings(&settings);
@@ -114,12 +113,12 @@ void InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceMani
 	BStopWatch watch("Making an interference");
 	uint32 *target_bits = (uint32*)target->Bits();
 	uint32 target_bpr = target->BytesPerRow()/4;
-	
+
 	BRect b = sel->GetBoundingRect();
 
 	// the wave lengths are taken as inverse numbers
 	float wl_A = 1.0/set->waveLengthA;
-	float wl_B = 1.0/set->waveLengthB;	
+	float wl_B = 1.0/set->waveLengthB;
 
 	// the centers
 	BPoint c_A = set->centerA;
@@ -137,24 +136,24 @@ void InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceMani
 		for (int32 x=b.left;x<=b.right;x++) {
 			if (sel->ContainsPoint(x,y)) {
 				float dist_A = sqrt(pow(fabs(x-c_A.x),2) + pow(fabs(y-c_A.y),2));
-				float dist_B = sqrt(pow(fabs(x-c_B.x),2) + pow(fabs(y-c_B.y),2));								
-				
+				float dist_B = sqrt(pow(fabs(x-c_B.x),2) + pow(fabs(y-c_B.y),2));
+
 				float contrib_A = sin(((dist_A*wl_A)-floor(dist_A*wl_A))*2*PI) * max_c(0,(max_dist-dist_A))/max_dist;
 				float contrib_B = sin(((dist_B*wl_B)-floor(dist_B*wl_B))*2*PI) * max_c(0,(max_dist-dist_B))/max_dist;
 //				float contrib_A = sin_table[(int32)(((dist_A*wl_A)-floor(dist_A*wl_A))*720)];
 //				float contrib_B = sin_table[(int32)(((dist_B*wl_B)-floor(dist_B*wl_B))*720)];
-				
+
 				float contrib = contrib_A + contrib_B;
-				uint8 value = 127 + contrib*.5*127;				
+				uint8 value = 127 + contrib*.5*127;
 				c.bytes[0] = c.bytes[1] = c.bytes[2] = value;
 //				if (contrib_A*contrib_B > 0) {
 //					// partially constructive
-//					c.bytes[0] = c.bytes[1] = c.bytes[2] = 255;									
+//					c.bytes[0] = c.bytes[1] = c.bytes[2] = 255;
 //				}
 //				else {
 //					// destructive
 //					c.bytes[0] = c.bytes[1] = c.bytes[2] = 0;
-//				}	
+//				}
 
 				*(target_bits + x + y*target_bpr) = c.word;
 			}
@@ -181,10 +180,10 @@ void InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 		get_system_info(&info);
 		double speed = info.cpu_count * info.cpu_clock_speed;
 		speed = speed / 15000;
-		
+
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
-		
+
 		if (num_pixels < 200000)
 			livePreview = true;
 
@@ -204,9 +203,9 @@ void InterferenceManipulator::Reset(Selection*)
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
-		
+
 		int32 bits_length = preview_bitmap->BitsLength()/4;
-		
+
 		for (int32 i=0;i<bits_length;i++)
 			*target_bits++  = *source_bits++;
 	}
@@ -243,25 +242,25 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,Interference
 //	manipulator = manip;
 //	target = new BMessenger(*t);
 //	preview_started = FALSE;
-//		
+//
 //	wave_length_slider = new ControlSlider(BRect(0,0,150,0),"wave_length_slider","Wave Length",new BMessage(WAVE_LENGTH_CHANGED),MIN_WAVE_LENGTH,MAX_WAVE_LENGTH,B_TRIANGLE_THUMB);
-//	wave_length_slider->SetLimitLabels("Short","Long");	
+//	wave_length_slider->SetLimitLabels("Short","Long");
 //	wave_length_slider->SetModificationMessage(new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
 //	wave_length_slider->ResizeToPreferred();
 //	wave_length_slider->MoveTo(4,4);
 //
 //	BRect frame = wave_length_slider->Frame();
 //	frame.OffsetBy(0,frame.Height()+4);
-//	
+//
 //	wave_amount_slider = new ControlSlider(frame,"wave_amount_slider","Wave Strength",new BMessage(WAVE_AMOUNT_CHANGED),MIN_WAVE_AMOUNT,MAX_WAVE_AMOUNT,B_TRIANGLE_THUMB);
-//	wave_amount_slider->SetLimitLabels("Mild","Strong");	
+//	wave_amount_slider->SetLimitLabels("Mild","Strong");
 //	wave_amount_slider->SetModificationMessage(new BMessage(WAVE_AMOUNT_ADJUSTING_STARTED));
 //	wave_amount_slider->ResizeToPreferred();
-//		
+//
 //	AddChild(wave_length_slider);
 //	AddChild(wave_amount_slider);
 //
-//	ResizeTo(wave_amount_slider->Frame().Width()+8,wave_amount_slider->Frame().bottom+4);	
+//	ResizeTo(wave_amount_slider->Frame().Width()+8,wave_amount_slider->Frame().bottom+4);
 }
 
 
@@ -269,7 +268,7 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,Interference
 void InterferenceManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
-	
+
 //	wave_length_slider->SetTarget(BMessenger(this));
 //	wave_amount_slider->SetTarget(BMessenger(this));
 }
@@ -294,13 +293,13 @@ void InterferenceManipulatorView::MessageReceived(BMessage *message)
 //			settings.wave_length = wave_length_slider->Value();
 //			manipulator->ChangeSettings(&settings);
 //			break;
-//		
+//
 //		case WAVE_LENGTH_CHANGED:
 //			preview_started = FALSE;
 //			settings.wave_length = wave_length_slider->Value();
 //			manipulator->ChangeSettings(&settings);
 //			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-//			break;			
+//			break;
 //
 //		case WAVE_AMOUNT_ADJUSTING_STARTED:
 //			if (preview_started == FALSE) {
@@ -310,13 +309,13 @@ void InterferenceManipulatorView::MessageReceived(BMessage *message)
 //			settings.wave_amount = wave_amount_slider->Value();
 //			manipulator->ChangeSettings(&settings);
 //			break;
-//		
+//
 //		case WAVE_AMOUNT_CHANGED:
 //			preview_started = FALSE;
 //			settings.wave_amount = wave_amount_slider->Value();
 //			manipulator->ChangeSettings(&settings);
 //			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-//			break;			
+//			break;
 //
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
@@ -329,13 +328,13 @@ void InterferenceManipulatorView::ChangeSettings(InterferenceManipulatorSettings
 {
 //	settings = *s;
 //	BWindow *window = Window();
-//	
+//
 //	if (window != NULL) {
 //		window->Lock();
 //
 //		wave_length_slider->SetValue(settings.wave_length);
 //		wave_amount_slider->SetValue(settings.wave_amount);
 //
-//		window->Unlock();		
+//		window->Unlock();
 //	}
 }

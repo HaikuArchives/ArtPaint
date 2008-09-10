@@ -1,14 +1,11 @@
-/* 
-
-	Filename:	AHEManipulator.h
-	Contents:	AHEManipulator-declarations.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef _AHE_MANIPULATOR_H
 #define _AHE_MANIPULATOR_H
 
@@ -20,7 +17,7 @@ BBitmap		*target_bitmap;
 public:
 			AHEManipulator(BBitmap*);
 			~AHEManipulator();
-			
+
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 char*		ReturnName() { return "Adaptive Histogram Equalization"; }
 };

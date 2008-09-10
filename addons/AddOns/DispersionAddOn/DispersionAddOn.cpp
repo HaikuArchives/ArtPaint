@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	AddOnTemplate.cpp
-	Contents:	A template for the ArtPaint add-ons.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Node.h>
 #include <StatusBar.h>
 #include <stdlib.h>
@@ -25,7 +25,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = EFFECT_FILTER_ADD_ON
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new DispersionManipulator(bm);	
+	return new DispersionManipulator(bm);
 }
 
 
@@ -48,9 +48,9 @@ BBitmap* DispersionManipulator::ManipulateBitmap(BBitmap *original,Selection *se
 	if (status_bar != NULL)
 		status_bar_window = status_bar->Window();
 
-	BBitmap *spare_buffer = DuplicateBitmap(original);				
+	BBitmap *spare_buffer = DuplicateBitmap(original);
 	BitmapDrawer *target = new BitmapDrawer(original);
-	
+
 	int32 width = original->Bounds().Width() + 1;
 	int32 height = original->Bounds().Height() + 1;
 
@@ -59,33 +59,33 @@ BBitmap* DispersionManipulator::ManipulateBitmap(BBitmap *original,Selection *se
 
 	int32 dx,dy;
 
-	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {	
+	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {
 		for (int32 y=0;y<height;y++) {
 			for (int32 x=0;x<width;x++) {
 				moved_pixel = *spare_bits++;
-				dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);				
-				dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);				
-				target->SetPixel(BPoint(x+dx,y+dy),moved_pixel);	
+				dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);
+				dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);
+				target->SetPixel(BPoint(x+dx,y+dy),moved_pixel);
 			}
 			if (((y % 20) == 0) && (status_bar_window != NULL) && (status_bar != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
 				status_bar->Update(100.0/height*20);
 				status_bar_window->Unlock();
 			}
-		}	
+		}
 	}
 	else {
 		for (int32 y=0;y<height;y++) {
 			for (int32 x=0;x<width;x++) {
 				moved_pixel = *spare_bits++;
-				dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);				
-				dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);				
-				target->SetPixel(BPoint(x+dx,y+dy),moved_pixel,selection);	
+				dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);
+				dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);
+				target->SetPixel(BPoint(x+dx,y+dy),moved_pixel,selection);
 			}
 			if (((y % 20) == 0) && (status_bar_window != NULL) && (status_bar != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
 				status_bar->Update(100.0/height*20);
 				status_bar_window->Unlock();
 			}
-		}		
+		}
 	}
 	// we should also delete the spare-bitmap
 	delete spare_buffer;

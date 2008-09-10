@@ -1,14 +1,11 @@
-/* 
-
-	Filename:	OilAddOn.h
-	Contents:	Oil add-on declarations.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef OIL_ADD_ON_H
 #define OIL_ADD_ON_H
 
@@ -19,7 +16,7 @@ class OilManipulator : public Manipulator {
 public:
 			OilManipulator(BBitmap*);
 			~OilManipulator();
-			
+
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 
 char*		ReturnName() { return "Oil"; }

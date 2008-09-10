@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	Reducer.cpp
-	Contents:	Definitions for brightness add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <ClassInfo.h>
 #include <Menu.h>
 #include <MenuField.h>
@@ -30,7 +30,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new ReducerManipulator(bm);	
+	return new ReducerManipulator(bm);
 }
 
 
@@ -41,9 +41,9 @@ ReducerManipulator::ReducerManipulator(BBitmap *bm)
 	preview_bitmap = NULL;
 	config_view = NULL;
 	copy_of_the_preview_bitmap = NULL;
-	
+
 	previous_settings.dither_mode = settings.dither_mode + 1;
-	
+
 	SetPreviewBitmap(bm);
 }
 
@@ -55,39 +55,39 @@ ReducerManipulator::~ReducerManipulator()
 }
 
 
-BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	ReducerManipulatorSettings *new_settings = cast_as(set,ReducerManipulatorSettings);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-		
+
 	if (original == NULL)
 		return NULL;
-		
+
 	BBitmap *source_bitmap,*target_bitmap;
 
-	if (original == preview_bitmap) { 
+	if (original == preview_bitmap) {
 		if (*new_settings == previous_settings)
 			return original;
-			
-		source_bitmap = copy_of_the_preview_bitmap; 
-		target_bitmap = original; 
-	} 
-	else { 
-		source_bitmap = original; 
-		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE); 
-	} 	
 
-	BScreen screen;	
+		source_bitmap = copy_of_the_preview_bitmap;
+		target_bitmap = original;
+	}
+	else {
+		source_bitmap = original;
+		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
+	}
+
+	BScreen screen;
 	const rgb_color *palette;
 	if (new_settings->palette_mode == BEOS_PALETTE)
 		palette = screen.ColorMap()->color_list;
 	else if (new_settings->palette_mode == GLA_PALETTE)
 		palette = gla_palette(source_bitmap,new_settings->palette_size);
-		
+
 	do_dither(source_bitmap,target_bitmap,palette,new_settings->palette_size,new_settings->dither_mode);
-		
+
 	return target_bitmap;
 }
 
@@ -98,23 +98,23 @@ int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,B
 	}
 
 	previous_settings = settings;
-	
+
 	updated_region->Set(preview_bitmap->Bounds());
-	
+
 
 	BBitmap *source_bitmap,*target_bitmap;
 	target_bitmap = preview_bitmap;
 	source_bitmap = copy_of_the_preview_bitmap;
-		
-	BScreen screen;	
+
+	BScreen screen;
 	const rgb_color *palette;
 	if (previous_settings.palette_mode == BEOS_PALETTE)
 		palette = screen.ColorMap()->color_list;
 	else if (previous_settings.palette_mode == GLA_PALETTE)
 		palette = gla_palette(source_bitmap,previous_settings.palette_size);
-		
+
 	do_dither(source_bitmap,target_bitmap,palette,previous_settings.palette_size,previous_settings.dither_mode);
-		
+
 	return 1;
 }
 
@@ -147,8 +147,8 @@ void ReducerManipulator::Reset(Selection*)
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
+
+		memcpy(target,source,bits_length);
 	}
 }
 
@@ -158,7 +158,7 @@ BView* ReducerManipulator::MakeConfigurationView(BMessenger *target)
 		config_view = new ReducerManipulatorView(this,target);
 		config_view->ChangeSettings(&settings);
 	}
-	
+
 	return config_view;
 }
 
@@ -207,12 +207,12 @@ void ReducerManipulator::do_dither(BBitmap *source,BBitmap *target,const rgb_col
 		reduced_map = floyd_steinberg_edd_color_mapper(source,palette,palette_size);
 	}
 
-	uint8 *reduced_bits = (uint8*)reduced_map->Bits(); 
+	uint8 *reduced_bits = (uint8*)reduced_map->Bits();
 	uint32 reduced_bpr = reduced_map->BytesPerRow();
-	
+
 	uint32 *destination_bits = (uint32*)target->Bits();
 	uint32 destination_bpr = target->BytesPerRow()/4;
-	
+
 	uint32 *source_bits = (uint32*)source->Bits();
 	uint32 source_bpr = source->BytesPerRow()/4;
 
@@ -226,7 +226,7 @@ void ReducerManipulator::do_dither(BBitmap *source,BBitmap *target,const rgb_col
 	// Use this union to guarantee endianness compatibility.
 	union {
 		uint8 bytes[4];
-		uint32 word;		
+		uint32 word;
 	} bgra32,source_bgra32;
 
 	for (int32 y=0;y<=height;y++) {
@@ -235,15 +235,15 @@ void ReducerManipulator::do_dither(BBitmap *source,BBitmap *target,const rgb_col
 			source_bgra32.word = *source_bits++;
 			bgra32.bytes[0] = c.blue;
 			bgra32.bytes[1] = c.green;
-			bgra32.bytes[2] = c.red;	
+			bgra32.bytes[2] = c.red;
 			bgra32.bytes[3] = source_bgra32.bytes[3];
-			
+
 			*destination_bits++ = bgra32.word;
 		}
 		destination_bits += destination_padding;
 		reduced_bits += reduced_padding;
 		source_bits += source_padding;
-	}	
+	}
 
 	delete reduced_map;
 }
@@ -261,62 +261,62 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,BMessen
 	manipulator = manip;
 
 	BMenu *dither_menu = new BMenu("dither_menu");
-	
+
 	BMessage *message;
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",NO_DITHER);
-	dither_menu->AddItem(new BMenuItem("No Dithering",message));	
+	dither_menu->AddItem(new BMenuItem("No Dithering",message));
 
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",FLOYD_STEINBERG_EDD_DITHER);
-	dither_menu->AddItem(new BMenuItem("Floyd-Steinberg EDD",message));	
-	
+	dither_menu->AddItem(new BMenuItem("Floyd-Steinberg EDD",message));
+
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",PRESERVE_SOLIDS_DITHER);
-	dither_menu->AddItem(new BMenuItem("Preserve solids FS",message));	
+	dither_menu->AddItem(new BMenuItem("Preserve solids FS",message));
 
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",N_CANDIDATE_DITHER);
-	dither_menu->AddItem(new BMenuItem("N-Candidate",message));	
+	dither_menu->AddItem(new BMenuItem("N-Candidate",message));
 
 	dither_mode_menu_field = new BMenuField(BRect(4,4,204,24),"dither_mode_menu_field","Dither Mode",dither_menu);
 	AddChild(dither_mode_menu_field);
 	dither_mode_menu_field->ResizeToPreferred();
 
-	
+
 	BMenu *size_menu = new BMenu("size_menu");
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",2);
-	size_menu->AddItem(new BMenuItem("2",message));	
+	size_menu->AddItem(new BMenuItem("2",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",4);
-	size_menu->AddItem(new BMenuItem("4",message));	
+	size_menu->AddItem(new BMenuItem("4",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",8);
-	size_menu->AddItem(new BMenuItem("8",message));	
+	size_menu->AddItem(new BMenuItem("8",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",16);
-	size_menu->AddItem(new BMenuItem("16",message));	
+	size_menu->AddItem(new BMenuItem("16",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",32);
-	size_menu->AddItem(new BMenuItem("32",message));	
+	size_menu->AddItem(new BMenuItem("32",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",64);
-	size_menu->AddItem(new BMenuItem("64",message));	
+	size_menu->AddItem(new BMenuItem("64",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",128);
-	size_menu->AddItem(new BMenuItem("128",message));	
+	size_menu->AddItem(new BMenuItem("128",message));
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",256);
-	size_menu->AddItem(new BMenuItem("256",message));	
+	size_menu->AddItem(new BMenuItem("256",message));
 
 	BRect frame = dither_mode_menu_field->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
@@ -330,18 +330,18 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,BMessen
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",BEOS_PALETTE);
-	mode_menu->AddItem(new BMenuItem("Beos Palette",message));	
+	mode_menu->AddItem(new BMenuItem("Beos Palette",message));
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",GLA_PALETTE);
-	mode_menu->AddItem(new BMenuItem("GLA Palette",message));	
+	mode_menu->AddItem(new BMenuItem("GLA Palette",message));
 
 	frame.OffsetBy(0,frame.Height()+4);
 
 	palette_mode_menu_field = new BMenuField(frame,"palette_mode_menu_field","Palette Mode",mode_menu);
 	AddChild(palette_mode_menu_field);
 	palette_mode_menu_field->ResizeToPreferred();
-	
+
 	ResizeTo(palette_mode_menu_field->Frame().Width() + 8, palette_mode_menu_field->Frame().bottom + 4);
 }
 
@@ -372,7 +372,7 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-							
+
 		case PALETTE_SIZE_CHANGED:
 		{
 			int32 size;
@@ -383,7 +383,7 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-		
+
 		case PALETTE_MODE_CHANGED:
 		{
 			int32 mode;
@@ -394,7 +394,7 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-		
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
@@ -408,11 +408,11 @@ void ReducerManipulatorView::ChangeSettings(ManipulatorSettings *set)
 
 	if (set != NULL) {
 		settings = *new_settings;
-				
+
 		BWindow *window = Window();
 		if (window != NULL) {
 			window->Lock();
 			window->Unlock();
 		}
-	} 
+	}
 }

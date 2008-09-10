@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	Blur.cpp
-	Contents:	Definitions for blur add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <StatusBar.h>
 #include <stdio.h>
 #include <StopWatch.h>
@@ -25,7 +25,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new GaussianBlurManipulator(bm);	
+	return new GaussianBlurManipulator(bm);
 }
 
 
@@ -37,15 +37,15 @@ GaussianBlurManipulator::GaussianBlurManipulator(BBitmap *bm)
 	config_view = NULL;
 	copy_of_the_preview_bitmap = NULL;
 	selection_bitmap = NULL;
-	
+
 	previous_settings.blur = settings.blur + 1;
 
 	system_info info;
 	get_system_info(&info);
-	processor_count = info.cpu_count;	
+	processor_count = info.cpu_count;
 
 	ipLibrary = new ImageProcessingLibrary();
-	
+
 	SetPreviewBitmap(bm);
 }
 
@@ -61,34 +61,34 @@ GaussianBlurManipulator::~GaussianBlurManipulator()
 }
 
 
-BBitmap* GaussianBlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* GaussianBlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	GaussianBlurManipulatorSettings *new_settings = dynamic_cast<GaussianBlurManipulatorSettings*>(set);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-		
+
 	if (original == NULL)
 		return NULL;
-		
-	if (original == preview_bitmap) { 
+
+	if (original == preview_bitmap) {
 		if ((*new_settings == previous_settings) && (last_calculated_resolution <= 1))
 			return original;
-			
-		source_bitmap = copy_of_the_preview_bitmap; 
-		target_bitmap = original; 
-	} 
-	else { 
-		source_bitmap = original; 
-		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE); 
-	} 	
+
+		source_bitmap = copy_of_the_preview_bitmap;
+		target_bitmap = original;
+	}
+	else {
+		source_bitmap = original;
+		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
+	}
 
 
 	current_resolution = 1;
 	current_selection = selection;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
-		
+
 	return target_bitmap;
 }
 
@@ -98,7 +98,7 @@ int32 GaussianBlurManipulator::PreviewBitmap(Selection *selection,bool full_qual
 	current_selection = selection;
 	if (settings == previous_settings ) {
 		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
-			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0)); 
+			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
 		else
 			last_calculated_resolution = 0;
 	}
@@ -109,8 +109,8 @@ int32 GaussianBlurManipulator::PreviewBitmap(Selection *selection,bool full_qual
 		last_calculated_resolution = min_c(1,last_calculated_resolution);
 	}
 	previous_settings = settings;
-	
-	if (last_calculated_resolution > 0) {		
+
+	if (last_calculated_resolution > 0) {
 		if (selection->IsEmpty()) {
 			updated_region->Set(preview_bitmap->Bounds());
 			Reset(selection);
@@ -123,8 +123,8 @@ int32 GaussianBlurManipulator::PreviewBitmap(Selection *selection,bool full_qual
 				if ((selection_bitmap->Bounds().Width() != selection_bounds.Width()) ||
 					(selection_bitmap->Bounds().Height() != selection_bounds.Height())) {
 					delete selection_bitmap;
-					selection_bitmap = NULL;	
-				}	
+					selection_bitmap = NULL;
+				}
 			}
 
 			if (selection_bitmap == NULL) {
@@ -133,34 +133,34 @@ int32 GaussianBlurManipulator::PreviewBitmap(Selection *selection,bool full_qual
 
 			uint32 *s_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 			uint32 s_bpr = copy_of_the_preview_bitmap->BytesPerRow()/4;
-			
+
 			uint32 *d_bits = (uint32*)selection_bitmap->Bits();
 
 			for (int32 y=selection_bounds.top;y<=selection_bounds.bottom;y++) {
 				for (int32 x=selection_bounds.left;x<=selection_bounds.right;x++) {
-					*d_bits++ = *(s_bits + y*s_bpr + x);					
+					*d_bits++ = *(s_bits + y*s_bpr + x);
 				}
-			}			
+			}
 			ipLibrary->gaussian_blur(selection_bitmap,settings.blur);
-			
+
 			s_bits = (uint32*)preview_bitmap->Bits();
 			s_bpr = preview_bitmap->BytesPerRow()/4;
-			
+
 			d_bits = (uint32*)selection_bitmap->Bits();
-			
+
 			for (int32 y=selection_bounds.top;y<=selection_bounds.bottom;y++) {
 				for (int32 x=selection_bounds.left;x<=selection_bounds.right;x++) {
-					if (selection->ContainsPoint(x,y)) 
-						*(s_bits + y*s_bpr + x) = *d_bits++;					
+					if (selection->ContainsPoint(x,y))
+						*(s_bits + y*s_bpr + x) = *d_bits++;
 					else
 						d_bits++;
 				}
-			}			
+			}
 
 			updated_region->Set(selection->GetBoundingRect());
 		}
 	}
-		
+
 	return 1;
 }
 
@@ -192,12 +192,12 @@ void GaussianBlurManipulator::SetPreviewBitmap(BBitmap *bm)
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
 		// about 50 CPU cycles.
-		speed = speed / (10*50);	
+		speed = speed / (10*50);
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
 		while ((num_pixels/lowest_available_quality/lowest_available_quality) > speed)
-			lowest_available_quality *= 2;			
+			lowest_available_quality *= 2;
 
 		lowest_available_quality = min_c(lowest_available_quality,16);
 		highest_available_quality = max_c(lowest_available_quality/2,1);
@@ -218,8 +218,8 @@ void GaussianBlurManipulator::Reset(Selection*)
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
+
+		memcpy(target,source,bits_length);
 	}
 }
 
@@ -229,7 +229,7 @@ BView* GaussianBlurManipulator::MakeConfigurationView(BMessenger *target)
 		config_view = new GaussianBlurManipulatorView(this,target);
 		config_view->ChangeSettings(&settings);
 	}
-	
+
 	return config_view;
 }
 
@@ -274,7 +274,7 @@ GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator
 	blur_slider->ResizeToPreferred();
 	blur_slider->MoveTo(4,4);
 	AddChild(blur_slider);
-	
+
 	ResizeTo(blur_slider->Bounds().Width()+8,blur_slider->Bounds().Height()+8);
 }
 
@@ -299,8 +299,8 @@ void GaussianBlurManipulatorView::MessageReceived(BMessage *message)
 			settings.blur = (blur_slider->Value()+1) / 40.0;
 			manipulator->ChangeSettings(&settings);
 			target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-			break;			
-						
+			break;
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
@@ -314,12 +314,12 @@ void GaussianBlurManipulatorView::ChangeSettings(ManipulatorSettings *set)
 
 	if (set != NULL) {
 		settings = *new_settings;
-				
+
 		BWindow *window = Window();
 		if (window != NULL) {
 			window->Lock();
 			blur_slider->SetValue(settings.blur * 40.0-1);
 			window->Unlock();
 		}
-	} 
+	}
 }

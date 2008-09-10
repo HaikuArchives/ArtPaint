@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Twirl.h
-	Contents:	Twirl-manipulator declaration.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef TWIRL_H
 #define TWIRL_H
 
@@ -32,7 +31,7 @@ public:
 			: ManipulatorSettings() {
 			center = BPoint(0,0);
 			twirl_amount = 10;
-			twirl_radius = 100;	
+			twirl_radius = 100;
 		}
 
 
@@ -40,7 +39,7 @@ public:
 			: ManipulatorSettings() {
 			center = s.center;
 			twirl_amount = s.twirl_amount;
-			twirl_radius = s.twirl_radius;	
+			twirl_radius = s.twirl_radius;
 		}
 
 
@@ -52,7 +51,7 @@ public:
 		}
 
 		bool operator==(TwirlManipulatorSettings s) {
-			return ((center == s.center) && (twirl_amount == s.twirl_amount) && 
+			return ((center == s.center) && (twirl_amount == s.twirl_amount) &&
 					(twirl_radius == s.twirl_radius));
 		}
 
@@ -85,10 +84,10 @@ int32						highest_available_quality;
 public:
 			TwirlManipulator(BBitmap*);
 			~TwirlManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString() { return "Click on the image to set the twirl center. Use sliders to adjust twirl."; }
@@ -106,10 +105,10 @@ class TwirlManipulatorView : public WindowGUIManipulatorView {
 		TwirlManipulator			*manipulator;
 		ControlSlider				*twirl_radius_slider;
 		ControlSlider				*twirl_amount_slider;
-		TwirlManipulatorSettings	settings;				
+		TwirlManipulatorSettings	settings;
 
 		bool						preview_started;
-		
+
 public:
 		TwirlManipulatorView(BRect,TwirlManipulator*,BMessenger*);
 
@@ -135,9 +134,31 @@ inline float reciprocal_of_square_root(register float number)
 }
 #endif
 
+
+/*
+ * A High Speed, Low Precision Square Root by Paul Lalonde and Robert Dawson
+ * from "Graphics Gems", Academic Press, 1990
+ *
+ * A fast square root program adapted from the code of Paul Lalonde and
+ * Robert Dawson in Graphics Gems I. Most likely written by Hill, Steve
+ *
+ * The Graphics Gems code is copyright-protected. In other words, you cannot
+ * claim the text of the code as your own and resell it. Using the code
+ * is permitted in any program, product, or library, non-commercial or
+ * commercial.
+ *
+ * see also: http://tog.acm.org/GraphicsGems
+ *
+ * The format of IEEE double precision floating point numbers is:
+ * SEEEEEEEEEEEMMMM MMMMMMMMMMMMMMMM MMMMMMMMMMMMMMMM MMMMMMMMMMMMMMMM
+ *
+ * S = Sign bit for whole number
+ * E = Exponent bit (exponent in excess 1023 form)
+ * M = Mantissa bit
+ *
+ */
 #define SQRT_TABLE
 #ifdef SQRT_TABLE
-// This sqrt-table thing comes from graphics gems III
 
 /* MOST_SIG_OFFSET gives the (int *) offset from the address of the double
  * to the part of the number containing the sign and exponent.
@@ -172,7 +193,7 @@ init_sqrt_tab()
         int           i;
         double        f;
         unsigned int  *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
-        
+
         for (i = 0; i < SQRT_TAB_SIZE/2; i++)
         {
                 f = 0; /* Clears least sig part */

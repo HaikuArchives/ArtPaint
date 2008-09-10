@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	AntiDitherer.cpp
-	Contents:	Definitions for saturation add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <StatusBar.h>
@@ -24,7 +24,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new AntiDithererManipulator(bm);	
+	return new AntiDithererManipulator(bm);
 }
 
 
@@ -35,7 +35,7 @@ AntiDithererManipulator::AntiDithererManipulator(BBitmap *bm)
 	preview_bitmap = NULL;
 	config_view = NULL;
 	copy_of_the_preview_bitmap = NULL;
-	
+
 	SetPreviewBitmap(bm);
 }
 
@@ -47,31 +47,31 @@ AntiDithererManipulator::~AntiDithererManipulator()
 }
 
 
-BBitmap* AntiDithererManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* AntiDithererManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	AntiDithererManipulatorSettings *new_settings = cast_as(set,AntiDithererManipulatorSettings);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-		
+
 	if (original == NULL)
 		return NULL;
-		
-	if (original == preview_bitmap) { 
+
+	if (original == preview_bitmap) {
 		if (*new_settings == previous_settings)
 			return original;
-			
-		source_bitmap = copy_of_the_preview_bitmap; 
-		target_bitmap = original; 
-	} 
-	else { 
-		source_bitmap = original; 
-		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE); 
-	} 	
+
+		source_bitmap = copy_of_the_preview_bitmap;
+		target_bitmap = original;
+	}
+	else {
+		source_bitmap = original;
+		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
+	}
 
 
 	settings = *new_settings;
-	
+
 	anti_dither();
 
 	return target_bitmap;
@@ -83,9 +83,9 @@ int32 AntiDithererManipulator::PreviewBitmap(Selection *selection,bool full_qual
 
 	target_bitmap = preview_bitmap;
 	source_bitmap = copy_of_the_preview_bitmap;
-	
+
 	anti_dither();
-		
+
 	return 1;
 }
 
@@ -100,7 +100,7 @@ void AntiDithererManipulator::SetPreviewBitmap(BBitmap *bm)
 {
 	if (preview_bitmap != bm) {
 		delete copy_of_the_preview_bitmap;
-		
+
 		if (bm != NULL) {
 			preview_bitmap = bm;
 			copy_of_the_preview_bitmap = DuplicateBitmap(bm,0);
@@ -120,8 +120,8 @@ void AntiDithererManipulator::Reset(Selection*)
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
+
+		memcpy(target,source,bits_length);
 	}
 }
 
@@ -130,7 +130,7 @@ void AntiDithererManipulator::anti_dither()
 {
 	uint32 *source_bits = (uint32*)source_bitmap->Bits();
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
-	
+
 	int32 source_bpr = source_bitmap->BytesPerRow()/4;
 	int32 target_bpr = target_bitmap->BytesPerRow()/4;
 
@@ -149,21 +149,21 @@ void AntiDithererManipulator::anti_dither()
 			for (int32 x=0;x<=width;x += block_size) {
 				int32 right = min_c(x+block_size-1,width);
 				int32 bottom = min_c(y+block_size-1,height);
-				
+
 				float red = 0;
 				float green = 0;
 				float blue = 0;
-				
+
 				float divider = (right-x+1)*(bottom-y+1);
-				
+
 				for (int32 dy=y;dy<=bottom;dy++) {
 					for (int32 dx=x;dx<=right;dx++) {
 						color.word = *(source_bits + dy*source_bpr + dx);
-						red += color.bytes[2];						
-						green += color.bytes[1];						
-						blue += color.bytes[0];						
+						red += color.bytes[2];
+						green += color.bytes[1];
+						blue += color.bytes[0];
 					}
-				}				
+				}
 				red /= divider;
 				green /= divider;
 				blue /= divider;
@@ -177,30 +177,30 @@ void AntiDithererManipulator::anti_dither()
 					for (int32 dx=x;dx<=right;dx++) {
 						*(target_bits + dy*target_bpr + dx) = color.word;
 					}
-				}				
+				}
 			}
-		}				
+		}
 	}
 	else {
 		for (int32 y=0;y<=height;y++) {
 			for (int32 x=0;x<=width;x++) {
 				int32 right = min_c(x+block_size-1,width);
 				int32 bottom = min_c(y+block_size-1,height);
-				
+
 				float red = 0;
 				float green = 0;
 				float blue = 0;
-				
+
 				float divider = (right-x+1)*(bottom-y+1);
-				
+
 				for (int32 dy=y;dy<=bottom;dy++) {
 					for (int32 dx=x;dx<=right;dx++) {
 						color.word = *(source_bits + dy*source_bpr + dx);
-						red += color.bytes[2];						
-						green += color.bytes[1];						
-						blue += color.bytes[0];						
+						red += color.bytes[2];
+						green += color.bytes[1];
+						blue += color.bytes[0];
 					}
-				}				
+				}
 				red /= divider;
 				green /= divider;
 				blue /= divider;
@@ -209,10 +209,10 @@ void AntiDithererManipulator::anti_dither()
 				color.bytes[1] = green;
 				color.bytes[0] = blue;
 				color.bytes[3] = 255;
-				
+
 				*(target_bits + y*target_bpr + x) = color.word;
 			}
-		}				
+		}
 	}
 }
 
@@ -222,7 +222,7 @@ BView* AntiDithererManipulator::MakeConfigurationView(BMessenger *target)
 		config_view = new AntiDithererManipulatorView(this,target);
 		config_view->ChangeSettings(&settings);
 	}
-	
+
 	return config_view;
 }
 
@@ -266,11 +266,11 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	AddChild(block_size_control);
 	block_size_control->MoveTo(BPoint(4,4));
 	BRect frame = block_size_control->Frame();
-	
+
 	frame.OffsetBy(0,frame.Height() + 4);
 	reduce_resolution_box = new BCheckBox(frame,"reduce_resolution","Reduce Resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
 	AddChild(reduce_resolution_box);
-	
+
 	ResizeTo(reduce_resolution_box->Bounds().Width()+8,reduce_resolution_box->Frame().bottom+4);
 }
 
@@ -279,7 +279,7 @@ void AntiDithererManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 	block_size_control->SetTarget(BMessenger(this));
-	reduce_resolution_box->SetTarget(BMessenger(this));	
+	reduce_resolution_box->SetTarget(BMessenger(this));
 }
 
 void AntiDithererManipulatorView::AllAttached()
@@ -295,14 +295,14 @@ void AntiDithererManipulatorView::MessageReceived(BMessage *message)
 			settings.reduce_resolution = reduce_resolution_box->Value();
 			manipulator->ChangeSettings(&settings);
 			target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-			break;			
+			break;
 
-						
+
 		case BLOCK_SIZE_ADJUSTED:
 			settings.block_size = block_size_control->Value();
 			manipulator->ChangeSettings(&settings);
 			target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-			break;			
+			break;
 
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
@@ -316,7 +316,7 @@ void AntiDithererManipulatorView::ChangeSettings(ManipulatorSettings *set)
 
 	if (set != NULL) {
 		settings = *new_settings;
-				
+
 		BWindow *window = Window();
 		if (window != NULL) {
 			window->Lock();
@@ -324,5 +324,5 @@ void AntiDithererManipulatorView::ChangeSettings(ManipulatorSettings *set)
 			reduce_resolution_box->SetValue(settings.reduce_resolution);
 			window->Unlock();
 		}
-	} 
+	}
 }

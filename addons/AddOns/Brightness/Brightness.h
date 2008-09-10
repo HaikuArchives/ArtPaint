@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Brightness.h
-	Contents:	Declarations for brightness add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef THRESHOLD_H
 #define THRESHOLD_H
 
@@ -35,7 +34,7 @@ public:
 		bool operator==(BrightnessManipulatorSettings s) {
 			return (brightness == s.brightness);
 		}
-		
+
 		bool operator!=(BrightnessManipulatorSettings s) {
 			return !(*this==s);
 		}
@@ -49,30 +48,30 @@ class BrightnessManipulatorView;
 class BrightnessManipulator : public WindowGUIManipulator {
 			BBitmap	*preview_bitmap;
 			BBitmap	*copy_of_the_preview_bitmap;
-						
+
 			int32	lowest_available_quality;
 			int32	highest_available_quality;
 			int32	last_calculated_resolution;
 
 			BrightnessManipulatorSettings	settings;
 			BrightnessManipulatorSettings	previous_settings;
-			
+
 			BrightnessManipulatorView		*config_view;
-			
-		
+
+
 			// The next attributes will be used by the thread_function.
 			int32	number_of_threads;
 			int32	current_resolution;
 
 			BrightnessManipulatorSettings	current_settings;
-			
-			Selection	*current_selection;				
-			
+
+			Selection	*current_selection;
+
 			BBitmap		*source_bitmap;
 			BBitmap		*target_bitmap;
 			BStatusBar	*progress_bar;
-			
-			void	start_threads();	
+
+			void	start_threads();
 
 	static	int32	thread_entry(void*);
 			int32	thread_function(int32);
@@ -81,10 +80,10 @@ class BrightnessManipulator : public WindowGUIManipulator {
 public:
 			BrightnessManipulator(BBitmap*);
 			~BrightnessManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString();
@@ -94,7 +93,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -105,8 +104,8 @@ void		ChangeSettings(ManipulatorSettings*);
 class BrightnessManipulatorView : public WindowGUIManipulatorView {
 		BMessenger						target;
 		BrightnessManipulator			*manipulator;
-		BrightnessManipulatorSettings	settings;	
-		
+		BrightnessManipulatorSettings	settings;
+
 		ControlSlider					*brightness_slider;
 
 

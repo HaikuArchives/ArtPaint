@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	AddOnTemplate.cpp
-	Contents:	A template for the ArtPaint add-ons.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Node.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -24,7 +24,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = BLUR_FILTER_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new BlurManipulator(bm);	
+	return new BlurManipulator(bm);
 }
 
 
@@ -36,7 +36,7 @@ BlurManipulator::BlurManipulator(BBitmap *bm)
 	preview_bitmap = NULL;
 	wide_copy_of_the_preview_bitmap = NULL;
 	tall_copy_of_the_preview_bitmap = NULL;
-	
+
 	config_view = NULL;
 	settings.blur_amount = 5;
 
@@ -64,27 +64,27 @@ BlurManipulator::~BlurManipulator()
 BBitmap* BlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	BlurManipulatorSettings *new_settings = dynamic_cast<BlurManipulatorSettings*>(set);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-		
+
 	if (original == NULL)
 		return NULL;
-		
+
 	if (new_settings->blur_amount < 1) {
 		return NULL;
 	}
-			
+
 	BBitmap *source_bitmap;
 	BBitmap	*target_bitmap;
 	BBitmap *new_bitmap = NULL;
-	
+
 	if (original == preview_bitmap) {
 		return original;
 	}
 	else {
 //		target_bitmap = original;
-//		source_bitmap = 
+//		source_bitmap =
 //		new_bitmap = source_bitmap;
 	}
 
@@ -103,23 +103,23 @@ int32 BlurManipulator::PreviewBitmap(Selection *sel, bool full_quality,BRegion *
 //	}
 //	else
 //		last_calculated_quality = floor(last_calculated_quality/2.0);
-//		
+//
 //	if (full_quality == TRUE) {
 //		if (last_calculated_quality > 1)
 //			last_calculated_quality = 1;
 //	}
-//	
+//
 //	if (last_calculated_quality == 1)
-//		CalculateBlur(copy_of_the_preview_bitmap,preview_bitmap,1,&settings,sel,NULL);	
-//	
+//		CalculateBlur(copy_of_the_preview_bitmap,preview_bitmap,1,&settings,sel,NULL);
+//
 //	else if (last_calculated_quality == 2)
-//		CalculateBlur(half_preview_bitmap,preview_bitmap,2,&settings,sel,NULL);	
+//		CalculateBlur(half_preview_bitmap,preview_bitmap,2,&settings,sel,NULL);
 //
 //	else if (last_calculated_quality == 4)
-//		CalculateBlur(quarter_preview_bitmap,preview_bitmap,4,&settings,sel,NULL);	
+//		CalculateBlur(quarter_preview_bitmap,preview_bitmap,4,&settings,sel,NULL);
 //
 //	else if (last_calculated_quality == 8)
-//		CalculateBlur(eight_preview_bitmap,preview_bitmap,8,&settings,sel,NULL);	
+//		CalculateBlur(eight_preview_bitmap,preview_bitmap,8,&settings,sel,NULL);
 //
 //	return last_calculated_quality;
 	if ((settings == previous_settings) == FALSE) {
@@ -173,7 +173,7 @@ void BlurManipulator::CalculateBlur()
 		int32 return_value;
 		wait_for_thread(threads[i],&return_value);
 	}
-	
+
 	delete[] threads;
 }
 
@@ -192,7 +192,7 @@ int32 BlurManipulator::thread_entry(void *data)
 			this_pointer->HorizontalBlur(thread_number);
 		}
 		return B_NO_ERROR;
-	}	
+	}
 	return B_ERROR;
 }
 
@@ -210,7 +210,7 @@ int32 BlurManipulator::VerticalBlur(int32 thread_number)
 	register uint32 *target_bits = wide_bits;
 	register int32 target_bpr = wide_bpr;
 	bool blur_alpha = settings.blur_alpha;
-		
+
 	source_bits += MAX_BLUR_AMOUNT*source_bpr;
 	union {
 		uint8 bytes[4];
@@ -235,47 +235,47 @@ int32 BlurManipulator::VerticalBlur(int32 thread_number)
 				green += color.bytes[1];
 				red += color.bytes[2];
 			}
-			alpha += color.bytes[3];		
-		}		
+			alpha += color.bytes[3];
+		}
 		color.bytes[0] = blue*divider;
 		color.bytes[1] = green*divider;
 		color.bytes[2] = red*divider;
 		color.bytes[3] = alpha*divider;
-		*(target_bits + x + MAX_BLUR_AMOUNT) = color.word;											
+		*(target_bits + x + MAX_BLUR_AMOUNT) = color.word;
 
 		int32 positive_source_y_offset = (blur_amount+1) * source_bpr;
 		int32 negative_source_y_offset = (-blur_amount)*source_bpr;
 		int32 target_y_offset = 1 * target_bpr;
 		for (int32 y=1;y<=height;y++) {
-			color.word = *(source_bits + x + negative_source_y_offset);  
+			color.word = *(source_bits + x + negative_source_y_offset);
 			if (color.bytes[3] != 0) {
 				blue -= color.bytes[0];
 				green -= color.bytes[1];
 				red -= color.bytes[2];
 			}
 			alpha -= color.bytes[3];
-			
-			color.word = *(source_bits + x + positive_source_y_offset);  
+
+			color.word = *(source_bits + x + positive_source_y_offset);
 			if (color.bytes[3] != 0) {
 				blue += color.bytes[0];
 				green += color.bytes[1];
 				red += color.bytes[2];
 			}
 			alpha += color.bytes[3];
-				
+
 			color.bytes[0] = blue*divider;
 			color.bytes[1] = green*divider;
 			color.bytes[2] = red*divider;
 			color.bytes[3] = alpha*divider;
 			*(target_bits + x+MAX_BLUR_AMOUNT + target_y_offset) = color.word;
-			positive_source_y_offset += source_bpr;														
+			positive_source_y_offset += source_bpr;
 			negative_source_y_offset += source_bpr;
 			target_y_offset += target_bpr;
 		}
 		if (((x%40) == 0) && (status_bar_window != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
 			status_bar->Update(status_bar_update_amount);
 			status_bar_window->Unlock();
-		} 
+		}
 	}
 	return B_OK;
 }
@@ -283,7 +283,7 @@ int32 BlurManipulator::VerticalBlur(int32 thread_number)
 int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 {
 	int32 top = (final_height) / thread_count * thread_number;
-	int32 bottom = min_c(top + (final_height+1) / thread_count,final_height); 	
+	int32 bottom = min_c(top + (final_height+1) / thread_count,final_height);
 	float status_bar_update_amount = 50.0 / thread_count / (bottom-top)*40.0;
 	register int32 width = final_width;
 	register uint32 *source_bits = wide_bits;
@@ -309,7 +309,7 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 
 	source_bits += top * source_bpr;
 	target_bits += top * target_bpr;
-	
+
 	if ((selection == NULL) || (selection->IsEmpty())) {
 		for (int32 y=top;y<=bottom;y++) {
 			for (int32 dx=0;dx<MAX_BLUR_AMOUNT;dx++) {
@@ -326,14 +326,14 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 					green += color.bytes[1];
 					red += color.bytes[2];
 				}
-				alpha += color.bytes[3];		
-			}		
+				alpha += color.bytes[3];
+			}
 			color.bytes[0] = blue*divider;
 			color.bytes[1] = green*divider;
 			color.bytes[2] = red*divider;
 			color.bytes[3] = alpha*divider;
-			*target_bits++ = color.word;	
-			++source_bits;										
+			*target_bits++ = color.word;
+			++source_bits;
 			for (int32 x=1;x<=width;x++) {
 				color.word = *(source_bits - blur_amount - 1);
 				if (color.bytes[3] != 0) {
@@ -341,28 +341,28 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 					green -= color.bytes[1];
 					red -= color.bytes[2];
 				}
-				alpha -= color.bytes[3];		
-				
+				alpha -= color.bytes[3];
+
 				color.word = *(source_bits + blur_amount);
 				if (color.bytes[3] != 0) {
 					blue += color.bytes[0];
 					green += color.bytes[1];
 					red += color.bytes[2];
 				}
-				alpha += color.bytes[3];		
-				
+				alpha += color.bytes[3];
+
 				color.bytes[0] = blue*divider;
 				color.bytes[1] = green*divider;
 				color.bytes[2] = red*divider;
 				color.bytes[3] = alpha*divider;
-				*target_bits++ = color.word;	
-				++source_bits;										
+				*target_bits++ = color.word;
+				++source_bits;
 			}
 			source_bits += MAX_BLUR_AMOUNT;
 			if (((y%40) == 0) && (status_bar_window != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
 				status_bar->Update(status_bar_update_amount);
 				status_bar_window->Unlock();
-			} 
+			}
 		}
 	}
 	else if (selection->IsEmpty() == false) {
@@ -381,15 +381,15 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 					green += color.bytes[1];
 					red += color.bytes[2];
 				}
-				alpha += color.bytes[3];		
-			}		
+				alpha += color.bytes[3];
+			}
 			if (selection->ContainsPoint(0,y)) {
 				color.bytes[0] = blue*divider;
 				color.bytes[1] = green*divider;
 				color.bytes[2] = red*divider;
 				color.bytes[3] = alpha*divider;
-				*target_bits++ = color.word;	
-				++source_bits;										
+				*target_bits++ = color.word;
+				++source_bits;
 			}
 			else {
 				++source_bits;
@@ -402,23 +402,23 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 					green -= color.bytes[1];
 					red -= color.bytes[2];
 				}
-				alpha -= color.bytes[3];		
-				
+				alpha -= color.bytes[3];
+
 				color.word = *(source_bits + blur_amount);
 				if (color.bytes[3] != 0) {
 					blue += color.bytes[0];
 					green += color.bytes[1];
 					red += color.bytes[2];
 				}
-				alpha += color.bytes[3];		
-	
-				if (selection->ContainsPoint(x,y)) {				
+				alpha += color.bytes[3];
+
+				if (selection->ContainsPoint(x,y)) {
 					color.bytes[0] = blue*divider;
 					color.bytes[1] = green*divider;
 					color.bytes[2] = red*divider;
 					color.bytes[3] = alpha*divider;
-					*target_bits++ = color.word;	
-					++source_bits;										
+					*target_bits++ = color.word;
+					++source_bits;
 				}
 				else {
 					++target_bits;
@@ -429,8 +429,8 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 			if (((y%40) == 0) && (status_bar_window != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
 				status_bar->Update(status_bar_update_amount);
 				status_bar_window->Unlock();
-			} 
-		}	
+			}
+		}
 	}
 	return B_OK;
 }
@@ -441,11 +441,11 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 	if (bm != preview_bitmap) {
 		if (wide_copy_of_the_preview_bitmap != NULL) {
 			delete wide_copy_of_the_preview_bitmap;
-			wide_copy_of_the_preview_bitmap = NULL;	
+			wide_copy_of_the_preview_bitmap = NULL;
 		}
 		if (tall_copy_of_the_preview_bitmap != NULL) {
 			delete tall_copy_of_the_preview_bitmap;
-			tall_copy_of_the_preview_bitmap = NULL;	
+			tall_copy_of_the_preview_bitmap = NULL;
 		}
 		if (bm != NULL) {
 			preview_bitmap = bm;
@@ -463,8 +463,8 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 				delete tall_copy_of_the_preview_bitmap;
 				throw bad_alloc();
 			}
-			
-	
+
+
 			// After allocating the bitmaps we should copy the data from preview_bitmap to
 			// tall_copy_of_the_preview_bitmap.
 			uint32 *source_bits = (uint32*)preview_bitmap->Bits();
@@ -472,7 +472,7 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 			int32 source_bpr = preview_bitmap->BytesPerRow()/4;
 			int32 target_bpr = tall_copy_of_the_preview_bitmap->BytesPerRow()/4;
 			int32 width = preview_bitmap->Bounds().Width();
-			int32 height = preview_bitmap->Bounds().Height();	
+			int32 height = preview_bitmap->Bounds().Height();
 			// First copy the first row MAX_BLUR_AMOUNT times.
 			for (int32 y=0;y<MAX_BLUR_AMOUNT;y++) {
 				for (int32 x=0;x<=width;x++) {
@@ -492,7 +492,7 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 				for (int32 x=0;x<=width;x++) {
 					*target_bits++ = *source_bits++;
 				}
-			}			
+			}
 		}
 		else {
 			preview_bitmap = NULL;
@@ -510,19 +510,19 @@ void BlurManipulator::Reset(Selection*)
 		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
 		int32 source_bpr = tall_copy_of_the_preview_bitmap->BytesPerRow()/4;
 		int32 target_bpr = preview_bitmap->BytesPerRow()/4;
-		
+
 		for (int32 y=0;y<preview_bitmap->Bounds().Height()+1;y++) {
 			for (int32 x=0;x<target_bpr;x++) {
 				*(target_bits + x + y*target_bpr) = *(source_bits + x + (y+MAX_BLUR_AMOUNT)*source_bpr);
 			}
-		}		
+		}
 	}
 }
 
 ManipulatorSettings* BlurManipulator::ReturnSettings()
 {
 	return new BlurManipulatorSettings(&settings);
-} 
+}
 
 
 void BlurManipulator::ChangeSettings(ManipulatorSettings *set)
@@ -538,7 +538,7 @@ BView* BlurManipulator::MakeConfigurationView(BMessenger *target)
 {
 	config_view = new BlurManipulatorView(BRect(0,0,0,0),this,target);
 	config_view->ChangeSettings(&settings);
-	return config_view;	
+	return config_view;
 }
 
 
@@ -579,16 +579,16 @@ BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,BMess
 {
 	manipulator = manip;
 	target = new BMessenger(*t);
-	
+
 	blur_amount_slider = new ControlSlider(BRect(0,0,150,0),"blur_amount_slider","Blur Amount",new BMessage(BLUR_AMOUNT_CHANGED),1,MAX_BLUR_AMOUNT,B_TRIANGLE_THUMB);
 	blur_amount_slider->SetLimitLabels("Little","Much");
-	blur_amount_slider->ResizeToPreferred();	
+	blur_amount_slider->ResizeToPreferred();
 	blur_amount_slider->MoveTo(4,4);
 //	blur_amount_slider->SetModificationMessage(new BMessage(BLUR_AMOUNT_CHANGE_STARTED));
-	
+
 //	BRect frame_rect = blur_amount_slider->Frame();
 //	frame_rect.bottom = frame_rect.top;
-//	transparency_checkbox = new BCheckBox(frame_rect,"transparency_checkbox","Blur Transparency",new BMessage(BLUR_TRANSPARENCY_CHANGED));	
+//	transparency_checkbox = new BCheckBox(frame_rect,"transparency_checkbox","Blur Transparency",new BMessage(BLUR_TRANSPARENCY_CHANGED));
 
 	ResizeTo(blur_amount_slider->Frame().Width()+8,blur_amount_slider->Frame().Height()+8);
 
@@ -618,7 +618,7 @@ void BlurManipulatorView::MessageReceived(BMessage *message)
 				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 			}
 			settings.blur_amount = blur_amount_slider->Value();
-			manipulator->ChangeSettings(&settings);				
+			manipulator->ChangeSettings(&settings);
 			break;
 
 		case BLUR_AMOUNT_CHANGED:
@@ -627,11 +627,11 @@ void BlurManipulatorView::MessageReceived(BMessage *message)
 			preview_started = FALSE;
 			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			break;
-		
+
 //		case BLUR_TRANSPARENCY_CHANGED:
 //			settings.blur_alpha = (transparency_checkbox->Value() == B_CONTROL_ON);
 //			manipulator->ChangeSettings(&settings);
-//			break;						
+//			break;
 
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
@@ -643,14 +643,14 @@ void BlurManipulatorView::MessageReceived(BMessage *message)
 void BlurManipulatorView::ChangeSettings(BlurManipulatorSettings *s)
 {
 	settings = *s;
-	
+
 	BWindow *window = Window();
-	
+
 	if (window != NULL)
 		window->Lock();
-		
+
 	blur_amount_slider->SetValue(settings.blur_amount);
-	
+
 	if (window != NULL)
 		window->Unlock();
 

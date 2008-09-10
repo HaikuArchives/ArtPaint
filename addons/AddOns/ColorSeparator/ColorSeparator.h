@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	ColorSeparator.h
-	Contents:	Declarations for saturation add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef BRIGHTNESS_H
 #define BRIGHTNESS_H
 
@@ -42,7 +41,7 @@ public:
 		bool operator==(ColorSeparatorManipulatorSettings s) {
 			return (mode == s.mode);
 		}
-		
+
 		bool operator!=(ColorSeparatorManipulatorSettings s) {
 			return !(*this==s);
 		}
@@ -60,21 +59,21 @@ class ColorSeparatorManipulator : public WindowGUIManipulator {
 
 			ColorSeparatorManipulatorSettings	settings;
 			ColorSeparatorManipulatorSettings	previous_settings;
-			
+
 			ColorSeparatorManipulatorView		*config_view;
 
 			BBitmap	*source_bitmap;
 			BBitmap	*target_bitmap;
-			
+
 void		separate_colors();
 
 public:
 			ColorSeparatorManipulator(BBitmap*);
 			~ColorSeparatorManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString();
@@ -84,7 +83,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -94,8 +93,8 @@ void		ChangeSettings(ManipulatorSettings*);
 class ColorSeparatorManipulatorView : public WindowGUIManipulatorView {
 		BMessenger						target;
 		ColorSeparatorManipulator			*manipulator;
-		ColorSeparatorManipulatorSettings	settings;	
-		
+		ColorSeparatorManipulatorSettings	settings;
+
 		BMenuField						*cmyk_menu_field;
 
 		bool							started_adjusting;

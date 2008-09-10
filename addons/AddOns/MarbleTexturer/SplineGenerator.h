@@ -1,13 +1,11 @@
-/* 
-
-	Filename:	SplineGenerator.h
-	Contents:	A class that can be used to genarate various splines.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef SPLINE_GENERATOR_H
 #define	SPLINE_GENERATOR_H
 
@@ -26,28 +24,28 @@ static	inline	float	CardinalSpline(float v0,float v1,float v2,float v3,float u);
 
 float SplineGenerator::car0(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return 2*s*u*u - s*u*u*u - s*u;
 }
 
 
 float SplineGenerator::car1(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return (2-s)*u*u*u + (s-3)*u*u + 1;
 }
 
 
 float SplineGenerator::car2(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return (s-2)*u*u*u + (3-2*s)*u*u + s*u;
 }
 
 
 float SplineGenerator::car3(float u)
 {
-	float s = 1.0;	
+	float s = 1.0;
 	return s*u*u*u - s*u*u;
 }
 

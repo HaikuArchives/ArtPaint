@@ -1,10 +1,11 @@
 /*
-	Filename:	palette_generator.h
-	Contents:	Functions that generate palettes from images
-	Author:		Heikki Suhonen (Heikki.Suhonen@Helsinki.FI)
-*/
-
-
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef PALETTE_GENERATOR_H
 #define	PALETTE_GENERATOR_H
 

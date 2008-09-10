@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Wave.h
-	Contents:	Wave-manipulator declaration.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef WAVE_H
 #define WAVE_H
 
@@ -34,14 +33,14 @@ public:
 			: ManipulatorSettings() {
 			center = BPoint(0,0);
 			wave_length = 30;
-			wave_amount = 30;	
+			wave_amount = 30;
 		}
 
 		WaveManipulatorSettings(const WaveManipulatorSettings& s)
 			: ManipulatorSettings() {
 			center = s.center;
 			wave_length = s.wave_length;
-			wave_amount = s.wave_amount;	
+			wave_amount = s.wave_amount;
 		}
 
 
@@ -59,7 +58,7 @@ public:
 		}
 
 		BPoint	center;
-		float	wave_length;	
+		float	wave_length;
 		float	wave_amount;
 };
 
@@ -87,10 +86,10 @@ int32					highest_available_quality;
 public:
 			WaveManipulator(BBitmap*);
 			~WaveManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString() { return "Click on the image to set the wave center. Use the sliders to adjust wave."; }
@@ -100,7 +99,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -110,10 +109,10 @@ class WaveManipulatorView : public WindowGUIManipulatorView {
 		WaveManipulator			*manipulator;
 		ControlSlider			*wave_length_slider;
 		ControlSlider			*wave_amount_slider;
-		WaveManipulatorSettings	settings;				
+		WaveManipulatorSettings	settings;
 
 		bool					preview_started;
-		
+
 public:
 		WaveManipulatorView(BRect,WaveManipulator*,BMessenger*);
 
@@ -139,9 +138,30 @@ float reciprocal_of_square_root(register float number)
 #endif
 
 
+/*
+ * A High Speed, Low Precision Square Root by Paul Lalonde and Robert Dawson
+ * from "Graphics Gems", Academic Press, 1990
+ *
+ * A fast square root program adapted from the code of Paul Lalonde and
+ * Robert Dawson in Graphics Gems I. Most likely written by Hill, Steve
+ *
+ * The Graphics Gems code is copyright-protected. In other words, you cannot
+ * claim the text of the code as your own and resell it. Using the code
+ * is permitted in any program, product, or library, non-commercial or
+ * commercial.
+ *
+ * see also: http://tog.acm.org/GraphicsGems
+ *
+ * The format of IEEE double precision floating point numbers is:
+ * SEEEEEEEEEEEMMMM MMMMMMMMMMMMMMMM MMMMMMMMMMMMMMMM MMMMMMMMMMMMMMMM
+ *
+ * S = Sign bit for whole number
+ * E = Exponent bit (exponent in excess 1023 form)
+ * M = Mantissa bit
+ *
+ */
 #define SQRT_TABLE
 #ifdef SQRT_TABLE
-// This sqrt-table thing comes from graphics gems III
 
 /* MOST_SIG_OFFSET gives the (int *) offset from the address of the double
  * to the part of the number containing the sign and exponent.
@@ -176,7 +196,7 @@ init_sqrt_tab()
         int           i;
         double        f;
         unsigned int  *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
-        
+
         for (i = 0; i < SQRT_TAB_SIZE/2; i++)
         {
                 f = 0; /* Clears least sig part */

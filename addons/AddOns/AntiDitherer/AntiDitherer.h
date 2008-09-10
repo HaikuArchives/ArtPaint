@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	AntiDitherer.h
-	Contents:	Declarations for saturation add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef BRIGHTNESS_H
 #define BRIGHTNESS_H
 
@@ -39,7 +38,7 @@ public:
 			return ((block_size == s.block_size) &&
 					(reduce_resolution == s.reduce_resolution));
 		}
-		
+
 		bool operator!=(AntiDithererManipulatorSettings s) {
 			return !(*this==s);
 		}
@@ -57,21 +56,21 @@ class AntiDithererManipulator : public WindowGUIManipulator {
 
 			AntiDithererManipulatorSettings	settings;
 			AntiDithererManipulatorSettings	previous_settings;
-			
+
 			AntiDithererManipulatorView		*config_view;
 
 			BBitmap	*source_bitmap;
 			BBitmap	*target_bitmap;
-			
+
 void		anti_dither();
 
 public:
 			AntiDithererManipulator(BBitmap*);
 			~AntiDithererManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString();
@@ -81,7 +80,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -92,8 +91,8 @@ void		ChangeSettings(ManipulatorSettings*);
 class AntiDithererManipulatorView : public WindowGUIManipulatorView {
 		BMessenger						target;
 		AntiDithererManipulator			*manipulator;
-		AntiDithererManipulatorSettings	settings;	
-		
+		AntiDithererManipulatorSettings	settings;
+
 		NumberControl					*block_size_control;
 		BCheckBox						*reduce_resolution_box;
 

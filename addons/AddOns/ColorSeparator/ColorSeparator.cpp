@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	ColorSeparator.cpp
-	Contents:	Definitions for saturation add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <Menu.h>
@@ -28,7 +28,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new ColorSeparatorManipulator(bm);	
+	return new ColorSeparatorManipulator(bm);
 }
 
 
@@ -39,7 +39,7 @@ ColorSeparatorManipulator::ColorSeparatorManipulator(BBitmap *bm)
 	preview_bitmap = NULL;
 	config_view = NULL;
 	copy_of_the_preview_bitmap = NULL;
-	
+
 	SetPreviewBitmap(bm);
 }
 
@@ -51,31 +51,31 @@ ColorSeparatorManipulator::~ColorSeparatorManipulator()
 }
 
 
-BBitmap* ColorSeparatorManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* ColorSeparatorManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	ColorSeparatorManipulatorSettings *new_settings = cast_as(set,ColorSeparatorManipulatorSettings);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-		
+
 	if (original == NULL)
 		return NULL;
-		
-	if (original == preview_bitmap) { 
+
+	if (original == preview_bitmap) {
 		if (*new_settings == previous_settings)
 			return original;
-			
-		source_bitmap = copy_of_the_preview_bitmap; 
-		target_bitmap = original; 
-	} 
-	else { 
-		source_bitmap = original; 
-		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE); 
-	} 	
+
+		source_bitmap = copy_of_the_preview_bitmap;
+		target_bitmap = original;
+	}
+	else {
+		source_bitmap = original;
+		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
+	}
 
 
 	settings = *new_settings;
-	
+
 	separate_colors();
 
 	return target_bitmap;
@@ -87,9 +87,9 @@ int32 ColorSeparatorManipulator::PreviewBitmap(Selection *selection,bool full_qu
 
 	target_bitmap = preview_bitmap;
 	source_bitmap = copy_of_the_preview_bitmap;
-	
+
 	separate_colors();
-		
+
 	return 1;
 }
 
@@ -104,7 +104,7 @@ void ColorSeparatorManipulator::SetPreviewBitmap(BBitmap *bm)
 {
 	if (preview_bitmap != bm) {
 		delete copy_of_the_preview_bitmap;
-		
+
 		if (bm != NULL) {
 			preview_bitmap = bm;
 			copy_of_the_preview_bitmap = DuplicateBitmap(bm,0);
@@ -124,8 +124,8 @@ void ColorSeparatorManipulator::Reset(Selection*)
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
+
+		memcpy(target,source,bits_length);
 	}
 }
 
@@ -134,15 +134,15 @@ void ColorSeparatorManipulator::separate_colors()
 {
 	uint32 *source_bits = (uint32*)source_bitmap->Bits();
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
-	
+
 	int32 bits_length = source_bitmap->BitsLength()/4;
-	
+
 	ColorConverter converter;
-	
+
 	for (int32 i=0;i<bits_length;i++) {
 		converter.SetColor(*source_bits++);
 		cmyk_color cmyk = converter.ReturnColorAsCMYK();
-		
+
 		if (settings.mode == SHOW_CYAN) {
 			cmyk.magenta = 0;
 			cmyk.yellow = 0;
@@ -151,22 +151,22 @@ void ColorSeparatorManipulator::separate_colors()
 		else if (settings.mode == SHOW_MAGENTA) {
 			cmyk.cyan = 0;
 			cmyk.yellow = 0;
-			cmyk.black = 0;			
+			cmyk.black = 0;
 		}
 		else if (settings.mode == SHOW_YELLOW) {
 			cmyk.magenta = 0;
 			cmyk.cyan = 0;
-			cmyk.black = 0;		
+			cmyk.black = 0;
 		}
 		else {
 			cmyk.magenta = 0;
 			cmyk.yellow = 0;
-			cmyk.cyan = 0;		
+			cmyk.cyan = 0;
 		}
 		converter.SetColor(cmyk);
-					
+
 		*target_bits++ = converter.ReturnColorAsBGRA();
-	}	
+	}
 }
 
 BView* ColorSeparatorManipulator::MakeConfigurationView(BMessenger *target)
@@ -175,7 +175,7 @@ BView* ColorSeparatorManipulator::MakeConfigurationView(BMessenger *target)
 		config_view = new ColorSeparatorManipulatorView(this,target);
 		config_view->ChangeSettings(&settings);
 	}
-	
+
 	return config_view;
 }
 
@@ -213,30 +213,30 @@ ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManip
 {
 	target = BMessenger(*t);
 	manipulator = manip;
-	
+
 	BMenu *cmyk_menu = new BMenu("cmyk_menu");
-	
+
 	BMessage *message;
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_CYAN);
-	cmyk_menu->AddItem(new BMenuItem("C",message));	
+	cmyk_menu->AddItem(new BMenuItem("C",message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_MAGENTA);
-	cmyk_menu->AddItem(new BMenuItem("M",message));	
+	cmyk_menu->AddItem(new BMenuItem("M",message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_YELLOW);
-	cmyk_menu->AddItem(new BMenuItem("Y",message));	
+	cmyk_menu->AddItem(new BMenuItem("Y",message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_BLACK);
-	cmyk_menu->AddItem(new BMenuItem("K",message));	
+	cmyk_menu->AddItem(new BMenuItem("K",message));
 
 	cmyk_menu_field = new BMenuField(BRect(4,4,204,24),"cmyk_menu_field","CMYK",cmyk_menu);
 	AddChild(cmyk_menu_field);
 	cmyk_menu_field->ResizeToPreferred();
-		
+
 	ResizeTo(cmyk_menu_field->Bounds().Width()+8,cmyk_menu_field->Frame().bottom+4);
 }
 
@@ -262,7 +262,7 @@ void ColorSeparatorManipulatorView::MessageReceived(BMessage *message)
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 				started_adjusting = TRUE;
 			}
-			break;			
+			break;
 
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
@@ -276,11 +276,11 @@ void ColorSeparatorManipulatorView::ChangeSettings(ManipulatorSettings *set)
 
 	if (set != NULL) {
 		settings = *new_settings;
-				
+
 		BWindow *window = Window();
 		if (window != NULL) {
 			window->Lock();
 			window->Unlock();
 		}
-	} 
+	}
 }

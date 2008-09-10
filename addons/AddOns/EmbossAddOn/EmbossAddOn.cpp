@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	EmbossAddOn.cpp
-	Contents:	Emboss add-on definitions.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -22,7 +22,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = EFFECT_FILTER_ADD_ON
 Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 {
 	delete i;
-	return new EmbossManipulator();	
+	return new EmbossManipulator();
 }
 
 
@@ -52,18 +52,18 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	// Here manipulate the bitmap in what way is required
 	// , but do not delete it.
 	/*
-	
+
 		this will do a simple emboss-effect by using the following matrix
-		
+
 				-1	0	0
 				0	0	0
 				0	0	1
 
 		it should also be checked that the pixel values do not go to negative
 		, if that happens we should replace them with 0
-		
+
 	*/
-		
+
 	original->Lock();
 
 	// first we will create a spare-buffer and copy data from original to it
@@ -76,17 +76,17 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	// here we should copy the buffer to spare and pad the edges twice
 	int32 *buffer_bits = (int32*)original->Bits();
 	int32 buffer_bpr = original->BytesPerRow()/4;
-	
+
 	int32 *spare_bits = (int32*)spare_buffer->Bits();
 	int32 spare_bpr = spare_buffer->BytesPerRow()/4;
-	
+
 	// here we can start doing the actual convolution
 	buffer_bits = (int32*)original->Bits();
 	spare_bits = (int32*)spare_buffer->Bits();
 	spare_bits += spare_bpr + 1;
-	
+
 	int32 target_value;
-	
+
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta",0.0);
 
@@ -94,24 +94,24 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 		uint8 bytes[4];
 		uint32 word;
 	} left_top,right_bottom,result;
-	if (selection->IsEmpty() == TRUE) {	
+	if (selection->IsEmpty() == TRUE) {
 		// here we iterate through each pixel in spare_buffer omitting the border pixels
 		for (int32 y=0;y<a_rect.Height()+1;y++) {
 			for (int32 x=0;x<a_rect.Width()+1;x++) {
 				/*
 					as this is a very simple filter we should only look at pixels
 					at left top and right bottom and calculate the answer
-					
+
 							X1	0	0
-							
+
 							0	P	0
-							
+
 							0	0	-X1
-							
+
 					here P == X1 - X2
 				*/
 //				target_value = (((LT>>24)&0xFF) > ((RB>>24)&0xFF) ? (((LT>>24)&0xFF)-((RB>>24)&0xFF))<<24	 : 0x00000000)
-//									| (((LT>>16)&0xFF) > ((RB>>16)&0xFF) ? (((LT>>16)&0xFF)-((RB>>16)&0xFF))<<16	 : 0x00000000)	
+//									| (((LT>>16)&0xFF) > ((RB>>16)&0xFF) ? (((LT>>16)&0xFF)-((RB>>16)&0xFF))<<16	 : 0x00000000)
 //									| (((LT>>8)&0xFF) > ((RB>>8)&0xFF) ? (((LT>>8)&0xFF)-((RB>>8)&0xFF))<<8	 : 0x00000000)
 //									| (*spare_bits & 0x000000FF);
 //				*buffer_bits++ = target_value;
@@ -121,7 +121,7 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 				result.bytes[0] = max_c(min_c(255,127+right_bottom.bytes[0] - left_top.bytes[0]),0);
 				result.bytes[1] = max_c(min_c(255,127+right_bottom.bytes[1] - left_top.bytes[1]),0);
 				result.bytes[2] = max_c(min_c(255,127+right_bottom.bytes[2] - left_top.bytes[2]),0);
-				
+
 				*buffer_bits++ = result.word;
 				spare_bits++;
 			}
@@ -146,7 +146,7 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 				if (selection->ContainsPoint(x,y) == TRUE) {
 					spare_bits = spare_origin + y*spare_bpr + x;
 //					target_value = (((LT>>24)&0xFF) > ((RB>>24)&0xFF) ? (((LT>>24)&0xFF)-((RB>>24)&0xFF))<<24	 : 0x00000000)
-//									| (((LT>>16)&0xFF) > ((RB>>16)&0xFF) ? (((LT>>16)&0xFF)-((RB>>16)&0xFF))<<16	 : 0x00000000)	
+//									| (((LT>>16)&0xFF) > ((RB>>16)&0xFF) ? (((LT>>16)&0xFF)-((RB>>16)&0xFF))<<16	 : 0x00000000)
 //									| (((LT>>8)&0xFF) > ((RB>>8)&0xFF) ? (((LT>>8)&0xFF)-((RB>>8)&0xFF))<<8	 : 0x00000000)
 //									| (*spare_bits & 0x000000FF);
 //					*(buffer_bits + y*buffer_bpr + x) = target_value;
@@ -156,14 +156,14 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 					result.bytes[0] = max_c(min_c(255,127+right_bottom.bytes[0] - left_top.bytes[0]),0);
 					result.bytes[1] = max_c(min_c(255,127+right_bottom.bytes[1] - left_top.bytes[1]),0);
 					result.bytes[2] = max_c(min_c(255,127+right_bottom.bytes[2] - left_top.bytes[2]),0);
-						
+
 					*(buffer_bits + y_buffer_bpr + x) = result.word;
 				}
 			}
 		}
 	}
 	original->Unlock();
-	
+
 	// we should also delete the spare-bitmap
 	delete spare_buffer;
 

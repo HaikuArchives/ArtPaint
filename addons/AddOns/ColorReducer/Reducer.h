@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Reducer.h
-	Contents:	Declarations for brightness add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef THRESHOLD_H
 #define THRESHOLD_H
 
@@ -58,7 +57,7 @@ public:
 					&& (palette_size == s.palette_size)
 					&& (palette_mode == s.palette_mode));
 		}
-		
+
 		bool operator!=(ReducerManipulatorSettings s) {
 			return !(*this==s);
 		}
@@ -74,10 +73,10 @@ class ReducerManipulatorView;
 class ReducerManipulator : public WindowGUIManipulator {
 			BBitmap	*preview_bitmap;
 			BBitmap	*copy_of_the_preview_bitmap;
-						
+
 			ReducerManipulatorSettings	settings;
 			ReducerManipulatorSettings	previous_settings;
-			
+
 			ReducerManipulatorView		*config_view;
 
 void		do_dither(BBitmap*,BBitmap*,const rgb_color *palette,int palette_size,int32 dither_mode);
@@ -86,10 +85,10 @@ void		do_dither(BBitmap*,BBitmap*,const rgb_color *palette,int palette_size,int3
 public:
 			ReducerManipulator(BBitmap*);
 			~ReducerManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString();
@@ -99,7 +98,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -111,12 +110,12 @@ void		ChangeSettings(ManipulatorSettings*);
 class ReducerManipulatorView : public WindowGUIManipulatorView {
 		BMessenger						target;
 		ReducerManipulator			*manipulator;
-		ReducerManipulatorSettings	settings;	
-		
+		ReducerManipulatorSettings	settings;
+
 		BMenuField		*dither_mode_menu_field;
 		BMenuField		*palette_size_menu_field;
 		BMenuField		*palette_mode_menu_field;
-		
+
 public:
 		ReducerManipulatorView(ReducerManipulator*,BMessenger*);
 

@@ -1,14 +1,11 @@
-/* 
-
-	Filename:	ContrastManipulator.h
-	Contents:	ContrastManipulator-declarations.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CONTRAST_MANIPULATOR_H
 #define CONTRAST_MANIPULATOR_H
 
@@ -20,7 +17,7 @@ BBitmap		*target_bitmap;
 public:
 			ContrastManipulator(BBitmap*);
 			~ContrastManipulator();
-			
+
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 char*		ReturnName() { return "Stretch Histogram"; }
 };

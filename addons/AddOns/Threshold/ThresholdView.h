@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	ThresholdView.h
-	Contents:	Histogram and threshold view	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef _THRESHOLD_VIEW_H
 #define	_THRESHOLD_VIEW_H
 
@@ -37,7 +36,7 @@ void	SetBitmap(BBitmap *bitmap);
 private:
 BBitmap		*histogramBitmap;
 int32		histogram[256];
-BRect		histogramRect;		
+BRect		histogramRect;
 
 BBitmap		*analyzedBitmap;
 

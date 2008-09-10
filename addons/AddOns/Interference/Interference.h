@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Interference.h
-	Contents:	Interference-manipulator declaration.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef _INTERFERENCE_H
 #define _INTERFERENCE_H
 
@@ -50,7 +49,7 @@ public:
 
 		BPoint	centerA;
 		BPoint	centerB;
-		float	waveLengthA;	
+		float	waveLengthA;
 		float	waveLengthB;
 };
 
@@ -74,10 +73,10 @@ void		MakeInterference(BBitmap*,InterferenceManipulatorSettings*,Selection*);
 public:
 			InterferenceManipulator(BBitmap*);
 			~InterferenceManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString() { return "Click on the image to move the wave centers and adjust wave-lengths. "; }
@@ -87,7 +86,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -97,10 +96,10 @@ class InterferenceManipulatorView : public WindowGUIManipulatorView {
 		InterferenceManipulator			*manipulator;
 		ControlSlider			*waveLengthSliderA;
 		ControlSlider			*waveLengthSliderB;
-		InterferenceManipulatorSettings	settings;				
+		InterferenceManipulatorSettings	settings;
 
 		bool					preview_started;
-		
+
 public:
 		InterferenceManipulatorView(BRect,InterferenceManipulator*,BMessenger*);
 
@@ -126,9 +125,30 @@ float reciprocal_of_square_root(register float number)
 #endif
 
 
+/*
+ * A High Speed, Low Precision Square Root by Paul Lalonde and Robert Dawson
+ * from "Graphics Gems", Academic Press, 1990
+ *
+ * A fast square root program adapted from the code of Paul Lalonde and
+ * Robert Dawson in Graphics Gems I. Most likely written by Hill, Steve
+ *
+ * The Graphics Gems code is copyright-protected. In other words, you cannot
+ * claim the text of the code as your own and resell it. Using the code
+ * is permitted in any program, product, or library, non-commercial or
+ * commercial.
+ *
+ * see also: http://tog.acm.org/GraphicsGems
+ *
+ * The format of IEEE double precision floating point numbers is:
+ * SEEEEEEEEEEEMMMM MMMMMMMMMMMMMMMM MMMMMMMMMMMMMMMM MMMMMMMMMMMMMMMM
+ *
+ * S = Sign bit for whole number
+ * E = Exponent bit (exponent in excess 1023 form)
+ * M = Mantissa bit
+ *
+ */
 #define SQRT_TABLE
 #ifdef SQRT_TABLE
-// This sqrt-table thing comes from graphics gems III
 
 /* MOST_SIG_OFFSET gives the (int *) offset from the address of the double
  * to the part of the number containing the sign and exponent.
@@ -163,7 +183,7 @@ init_sqrt_tab()
         int           i;
         double        f;
         unsigned int  *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
-        
+
         for (i = 0; i < SQRT_TAB_SIZE/2; i++)
         {
                 f = 0; /* Clears least sig part */

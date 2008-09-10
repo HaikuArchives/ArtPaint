@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	GrayscaleAddOn.cpp
-	Contents:	GreyscaleAddOnManipulator-class definitions.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -22,7 +22,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new GrayscaleAddOnManipulator(bm);	
+	return new GrayscaleAddOnManipulator(bm);
 }
 
 
@@ -65,34 +65,34 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap *original,Selection
 			blue = color.bytes[0] * 0.114;
 			green = color.bytes[1] * 0.587;
 			red = color.bytes[2] * 0.299;
-			float sum = blue + red + green; 
+			float sum = blue + red + green;
 			color.bytes[0] = sum;
 			color.bytes[1] = sum;
-			color.bytes[2] = sum;	
+			color.bytes[2] = sum;
 			*bits++ = color.word;
-		}	
+		}
 	}
 	else {
 		int32 width = original->Bounds().Width();
 		int32 height = original->Bounds().Height();
 		for (int32 y=0;y<=height;y++) {
 			for (int32 x=0;x<=width;x++) {
-				if (selection->ContainsPoint(x,y)) {			
+				if (selection->ContainsPoint(x,y)) {
 					color.word = *bits;
 					blue = color.bytes[0] * 0.114;
 					green = color.bytes[1] * 0.587;
 					red = color.bytes[2] * 0.299;
-					float sum = blue + red + green; 
+					float sum = blue + red + green;
 					color.bytes[0] = sum;
 					color.bytes[1] = sum;
-					color.bytes[2] = sum;	
+					color.bytes[2] = sum;
 					*bits++ = color.word;
 				}
 				else {
 					++bits;
 				}
-			}			
+			}
 		}
-	}	
+	}
 	return original;
 }

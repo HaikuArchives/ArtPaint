@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Contrast.h
-	Contents:	Declarations for contrast add-on.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef CONTRAST_H
 #define CONTRAST_H
 
@@ -35,7 +34,7 @@ public:
 		bool operator==(ContrastManipulatorSettings s) {
 			return (contrast == s.contrast);
 		}
-		
+
 		bool operator!=(ContrastManipulatorSettings s) {
 			return !(*this==s);
 		}
@@ -49,46 +48,46 @@ class ContrastManipulatorView;
 class ContrastManipulator : public WindowGUIManipulator {
 			BBitmap	*preview_bitmap;
 			BBitmap	*copy_of_the_preview_bitmap;
-						
+
 			int32	lowest_available_quality;
 			int32	highest_available_quality;
 			int32	last_calculated_resolution;
 
 			ContrastManipulatorSettings	settings;
 			ContrastManipulatorSettings	previous_settings;
-			
+
 			ContrastManipulatorView		*config_view;
-			
-		
+
+
 			// The next attributes will be used by the thread_function.
 			int32	number_of_threads;
 			int32	current_resolution;
 
 			uint8	current_average_luminance;
-			
+
 			ContrastManipulatorSettings	current_settings;
-			
-			Selection	*current_selection;				
-			
+
+			Selection	*current_selection;
+
 			BBitmap		*source_bitmap;
 			BBitmap		*target_bitmap;
 			BStatusBar	*progress_bar;
-			
-			void	start_threads();	
+
+			void	start_threads();
 
 	static	int32	thread_entry(void*);
 			int32	thread_function(int32);
 
 
 			uint8	CalculateAverageLuminance(BBitmap*);
-				
+
 public:
 			ContrastManipulator(BBitmap*);
 			~ContrastManipulator();
-			
+
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);	
+BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString();
@@ -98,7 +97,7 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(BMessenger*);
 
-void		ChangeSettings(ManipulatorSettings*);		
+void		ChangeSettings(ManipulatorSettings*);
 };
 
 
@@ -109,8 +108,8 @@ void		ChangeSettings(ManipulatorSettings*);
 class ContrastManipulatorView : public WindowGUIManipulatorView {
 		BMessenger						target;
 		ContrastManipulator			*manipulator;
-		ContrastManipulatorSettings	settings;	
-		
+		ContrastManipulatorSettings	settings;
+
 		ControlSlider					*contrast_slider;
 
 

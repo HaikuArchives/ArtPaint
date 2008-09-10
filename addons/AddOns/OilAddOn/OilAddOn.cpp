@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	OilAddOn.cpp
-	Contents:	OilAddOn-definitions.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Message.h>
 #include <StatusBar.h>
 #include <stdlib.h>
@@ -25,7 +24,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = EFFECT_FILTER_ADD_ON
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new OilManipulator(bm);	
+	return new OilManipulator(bm);
 }
 
 
@@ -48,14 +47,14 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 
 	BRect a_rect = original->Bounds();
 	BBitmap *spare_buffer = DuplicateBitmap(original);
-	
+
 	BitmapDrawer *target = new BitmapDrawer(original);
 	BitmapDrawer *source = new BitmapDrawer(spare_buffer);
-		
+
 	int32 width = original->Bounds().Width() + 1;
 	int32 height = original->Bounds().Height() + 1;
 
-	float status_bar_update_step = 100.0 / (width*height) * 1000.0;	
+	float status_bar_update_step = 100.0 / (width*height) * 1000.0;
 
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta",0.0);
@@ -65,18 +64,18 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 	int32 *offsets = new int32[width*height];
 	for (int32 i=0;i<width*height;i++)
 		offsets[i] = i;
-		
+
 	/*
 		We copy each pixel with the following pattern:
-			
+
 						 O
 						OOO
-			X	->		 OXOO		
+			X	->		 OXOO
 						  O
 
 	*/
 
-	int32 size_of_area = width*height-1;	
+	int32 size_of_area = width*height-1;
 	int32 width_times_height = width*height;
 	uint32 moved_pixel;
 	union {
@@ -89,7 +88,7 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 	for (int32 i=0;i<random_array_size;i++) {
 		random_array[i] = random()%10 * (random()%2 == 0?-1:1);
 	}
-	
+
 	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {
 //		for (int32 i=0;i<width_times_height;i++) {
 		while (size_of_area > 0) {
@@ -105,7 +104,7 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 			color.bytes[0] = min_c(255,max_c(0,(int32)color.bytes[0] + random_array[size_of_area%random_array_size]));
 			color.bytes[1] = min_c(255,max_c(0,(int32)color.bytes[1] + random_array[size_of_area%random_array_size]));
 			color.bytes[2] = min_c(255,max_c(0,(int32)color.bytes[2] + random_array[size_of_area%random_array_size]));
-					
+
 			moved_pixel = color.word;
 			target->SetPixel(BPoint(x-2,y-1),moved_pixel);
 			target->SetPixel(BPoint(x-1,y-1),moved_pixel);
@@ -116,12 +115,12 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 			target->SetPixel(BPoint(x+1,y),moved_pixel);
 			target->SetPixel(BPoint(x+2,y),moved_pixel);
 			target->SetPixel(BPoint(x,y+1),moved_pixel);
-			
+
 			if (((size_of_area % 1000) == 0) && (status_bar != NULL) && (status_bar_window != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
 				status_bar->Update(status_bar_update_step);
 				status_bar_window->Unlock();
 			}
-		}	
+		}
 	}
 	else {
 		while (size_of_area > 0) {
@@ -137,7 +136,7 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 			color.bytes[0] = min_c(255,max_c(0,(int32)color.bytes[0] + random_array[size_of_area%random_array_size]));
 			color.bytes[1] = min_c(255,max_c(0,(int32)color.bytes[1] + random_array[size_of_area%random_array_size]));
 			color.bytes[2] = min_c(255,max_c(0,(int32)color.bytes[2] + random_array[size_of_area%random_array_size]));
-					
+
 			moved_pixel = color.word;
 
 			target->SetPixel(BPoint(x-2,y-1),moved_pixel,selection);
@@ -153,13 +152,13 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 				status_bar->Update(status_bar_update_step);
 				status_bar_window->Unlock();
 			}
-		}		
-	}	
+		}
+	}
 	// we should also delete the spare-bitmap
 	delete spare_buffer;
 	delete target;
 	delete source;
 	delete[] offsets;
-	
+
 	return original;
 }

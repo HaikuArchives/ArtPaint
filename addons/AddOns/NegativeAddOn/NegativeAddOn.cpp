@@ -1,11 +1,11 @@
-/* 
-
-	Filename:	NegativeAddOn.cpp
-	Contents:	A template for the ArtPaint add-ons.	
-	Author:		Heikki Suhonen
-	
-*/
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -22,7 +22,7 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	delete i;
-	return new NegativeAddOnManipulator(bm);	
+	return new NegativeAddOnManipulator(bm);
 }
 
 
@@ -48,14 +48,14 @@ BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap *original, Selection
 		progress_message.ReplaceFloat("delta",100);
 		status_bar->Window()->PostMessage(&progress_message,status_bar);
 	}
-	
+
 	int32 bits_length = original->BitsLength()/4;
 	uint32 *bits = (uint32*)original->Bits();
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color;
-	
+
 	if (selection->IsEmpty() == TRUE) {
 		for (int32 i=0;i<bits_length;i++) {
 			color.word = *bits;
@@ -63,12 +63,12 @@ BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap *original, Selection
 			color.bytes[1] = 255 - color.bytes[1];
 			color.bytes[2] = 255 - color.bytes[2];
 			*bits++ = color.word;
-		}	
+		}
 	}
 	else {
 		int32 width = original->Bounds().Width();
 		int32 height = original->Bounds().Height();
-		
+
 		for (int32 y=0;y<=height;y++) {
 			for (int32 x=0;x<=width;x++) {
 				if (selection->ContainsPoint(x,y)) {
@@ -80,8 +80,8 @@ BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap *original, Selection
 				}
 				else
 					++bits;
-			}		
+			}
 		}
-	}	
+	}
 	return original;
 }

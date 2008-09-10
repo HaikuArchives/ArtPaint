@@ -1,10 +1,11 @@
-/* 
-
-	Filename:	Threshold.cpp
-	Contents:	Definitions for threshold add-on.	
-	Author:		Heikki Suhonen
-	
-*/
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 
 
 /*
@@ -29,8 +30,8 @@ extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
 
 
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
-{	
-	return new ThresholdManipulator(bm,i);	
+{
+	return new ThresholdManipulator(bm,i);
 }
 
 
@@ -41,10 +42,10 @@ ThresholdManipulator::ThresholdManipulator(BBitmap *bm,ManipulatorInformer *i)
 	preview_bitmap = NULL;
 	config_view = NULL;
 	copy_of_the_preview_bitmap = NULL;
-	
+
 	previous_settings.threshold = settings.threshold + 1;
 	settings.mode = HISTOGRAM_MODE_INTENSITY;
-	
+
 	SetPreviewBitmap(bm);
 
 	light_color = i->GetForegroundColor();
@@ -61,36 +62,36 @@ ThresholdManipulator::~ThresholdManipulator()
 }
 
 
-BBitmap* ThresholdManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)	
+BBitmap* ThresholdManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	ThresholdManipulatorSettings *new_settings = dynamic_cast<ThresholdManipulatorSettings*>(set);
-	
+
 	if (new_settings == NULL)
 		return NULL;
-		
+
 	if (original == NULL)
 		return NULL;
-		
-	if (original == preview_bitmap) { 
+
+	if (original == preview_bitmap) {
 		if ((*new_settings == previous_settings) && (last_calculated_resolution <= 1))
 			return original;
-			
-		source_bitmap = copy_of_the_preview_bitmap; 
-		target_bitmap = original; 
-	} 
-	else { 
-		source_bitmap = original; 
-		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE); 
-	} 	
+
+		source_bitmap = copy_of_the_preview_bitmap;
+		target_bitmap = original;
+	}
+	else {
+		source_bitmap = original;
+		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
+	}
 
 
 	current_resolution = 1;
 	current_selection = selection;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
-	
+
 	start_threads();
-	
+
 	return target_bitmap;
 }
 
@@ -100,7 +101,7 @@ int32 ThresholdManipulator::PreviewBitmap(Selection *selection,bool full_quality
 	current_selection = selection;
 	if (settings == previous_settings ) {
 		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
-			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0)); 
+			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
 		else
 			last_calculated_resolution = 0;
 	}
@@ -111,18 +112,18 @@ int32 ThresholdManipulator::PreviewBitmap(Selection *selection,bool full_quality
 		last_calculated_resolution = min_c(1,last_calculated_resolution);
 	}
 	previous_settings = settings;
-	
-	if (last_calculated_resolution > 0) {		
-		current_resolution = last_calculated_resolution;	
+
+	if (last_calculated_resolution > 0) {
+		current_resolution = last_calculated_resolution;
 		updated_region->Set(preview_bitmap->Bounds());
-	
+
 		target_bitmap = preview_bitmap;
 		source_bitmap = copy_of_the_preview_bitmap;
 		current_settings = settings;
-		
+
 		start_threads();
 	}
-		
+
 	return last_calculated_resolution;
 }
 
@@ -131,8 +132,8 @@ void ThresholdManipulator::start_threads()
 {
 	system_info info;
 	get_system_info(&info);
-	number_of_threads = info.cpu_count;	
-	
+	number_of_threads = info.cpu_count;
+
 	thread_id *threads = new thread_id[number_of_threads];
 
 	for (int32 i=0;i<number_of_threads;i++) {
@@ -153,19 +154,19 @@ int32 ThresholdManipulator::thread_entry(void *data)
 {
 	int32 thread_number;
 	thread_number = receive_data(NULL,NULL,0);
-	
+
 	ThresholdManipulator *this_pointer = (ThresholdManipulator*)data;
-	
+
 	return this_pointer->thread_function(thread_number);
 }
 
 
 int32 ThresholdManipulator::thread_function(int32 thread_number)
-{	
+{
 	int32 step = current_resolution;
 	uint32 threshold = settings.threshold;
 	int32 mode = settings.mode;
-		
+
 	BWindow *progress_bar_window = NULL;
 	if (progress_bar != NULL)
 		progress_bar_window = progress_bar->Window();
@@ -175,31 +176,31 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
 	int32 source_bpr = source_bitmap->BytesPerRow()/4;
 	int32 target_bpr = target_bitmap->BytesPerRow()/4;
-	
+
 	// This union must be used to guarantee endianness compatibility.
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color,dark,light;
-	
+
 	dark.bytes[0] = dark_color.blue;
 	dark.bytes[1] = dark_color.green;
 	dark.bytes[2] = dark_color.red;
 	dark.bytes[3] = dark_color.alpha;
-	
+
 	light.bytes[0] = light_color.blue;
 	light.bytes[1] = light_color.green;
 	light.bytes[2] = light_color.red;
 	light.bytes[3] = light_color.alpha;
-	
+
 	if (current_selection->IsEmpty()) {
-		// Here handle the whole image.		
+		// Here handle the whole image.
 		int32 left = target_bitmap->Bounds().left;
 		int32 right = target_bitmap->Bounds().right;
 		int32 top = target_bitmap->Bounds().top;
 		int32 bottom = target_bitmap->Bounds().bottom;
 
-		float height = bottom - top;		
+		float height = bottom - top;
 		top = height/number_of_threads*thread_number;
 		top = ceil(top/(float)step);
 		top *= step;
@@ -207,7 +208,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 		int32 update_interval = 10;
 		float update_amount = 100.0/(bottom-top)*update_interval/(float)number_of_threads;
 		float missed_update = 0;
-					
+
 		// Loop through all pixels in original.
 		uint32 value;
 
@@ -225,14 +226,14 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 					value = color.bytes[1];
 				else if (mode == HISTOGRAM_MODE_BLUE)
 					value = color.bytes[0];
-				
+
 				*(target_bits + x + y_times_target_bpr) = ((value < threshold) ? dark.word : light.word);
 			}
 
 
 			// Update the status-bar
 			if ( ((y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
-				progress_bar->Update(update_amount+missed_update);				
+				progress_bar->Update(update_amount+missed_update);
 				progress_bar_window->Unlock();
 				missed_update = 0;
 			}
@@ -250,16 +251,16 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 		int32 top = rect.top;
 		int32 bottom = rect.bottom;
 
-		float height = bottom - top;		
+		float height = bottom - top;
 		top += height/number_of_threads*thread_number;
 		top *= step;
 		top /= step;
-		
+
 		bottom = min_c(bottom,top + (height+1)/number_of_threads);
-		
+
 		int32 update_interval = 10;
 		float update_amount = 100.0/(bottom-top)*update_interval/(float)number_of_threads;
-		
+
 		// Loop through all pixels in original.
 		uint32 value;
 
@@ -285,7 +286,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 
 			// Update the status-bar
 			if ( ((y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
-				progress_bar->Update(update_amount);				
+				progress_bar->Update(update_amount);
 				progress_bar_window->Unlock();
 			}
 		}
@@ -323,12 +324,12 @@ void ThresholdManipulator::SetPreviewBitmap(BBitmap *bm)
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
 		// about 50 CPU cycles.
-		speed = speed / (10*50);	
+		speed = speed / (10*50);
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
 		while ((num_pixels/lowest_available_quality/lowest_available_quality) > speed)
-			lowest_available_quality *= 2;			
+			lowest_available_quality *= 2;
 
 		lowest_available_quality = min_c(lowest_available_quality,16);
 		highest_available_quality = max_c(lowest_available_quality/2,1);
@@ -351,8 +352,8 @@ void ThresholdManipulator::Reset(Selection*)
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
-		
-		memcpy(target,source,bits_length);		
+
+		memcpy(target,source,bits_length);
 	}
 }
 
@@ -363,7 +364,7 @@ BView* ThresholdManipulator::MakeConfigurationView(BMessenger *target)
 		config_view->ChangeSettings(&settings);
 		config_view->SetBitmap(copy_of_the_preview_bitmap);
 	}
-	
+
 	return config_view;
 }
 
@@ -415,7 +416,7 @@ ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,B
 	threshold_control = new ThresholdView(BRect(0,0,0,0),new BMessage(THRESHOLD_ADJUSTING_FINISHED));
 	threshold_control->MoveTo(4,4);
 	AddChild(threshold_control);
-	
+
 	ResizeTo(threshold_control->Bounds().Width()+8,threshold_control->Bounds().Height()+8);
 }
 
@@ -437,7 +438,7 @@ void ThresholdManipulatorView::MessageReceived(BMessage *message)
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 				started_adjusting = TRUE;
 			}
-			break;			
+			break;
 
 		case THRESHOLD_ADJUSTING_FINISHED: {
 				started_adjusting = false;
@@ -451,8 +452,8 @@ void ThresholdManipulatorView::MessageReceived(BMessage *message)
 				manipulator->ChangeSettings(&settings);
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			}
-			break;			
-						
+			break;
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
@@ -463,7 +464,7 @@ void ThresholdManipulatorView::MessageReceived(BMessage *message)
 void ThresholdManipulatorView::ChangeSettings(ManipulatorSettings *newSettings)
 {
 	ThresholdManipulatorSettings *s = dynamic_cast<ThresholdManipulatorSettings*>(newSettings);
-	
+
 	if (s != NULL) {
 		settings.threshold = s->threshold;
 		if (threshold_control != NULL) {
@@ -472,9 +473,9 @@ void ThresholdManipulatorView::ChangeSettings(ManipulatorSettings *newSettings)
 				threshold_control->UnlockLooper();
 			}
 			else {
-				threshold_control->SetValue(settings.threshold);			
+				threshold_control->SetValue(settings.threshold);
 			}
-		}	
+		}
 	}
 }
 

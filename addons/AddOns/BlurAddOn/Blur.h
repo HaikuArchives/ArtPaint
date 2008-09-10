@@ -1,12 +1,11 @@
-/* 
-
-	Filename:	Blur.h
-	Contents:	Blur-manipulator declaration.	
-	Author:		Heikki Suhonen
-	
-*/
-
-
+/*
+ * Copyright 2003, Heikki Suhonen
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *
+ */
 #ifndef COLOR_BALANCE_H
 #define COLOR_BALANCE_H
 
@@ -35,7 +34,7 @@ public:
 		BlurManipulatorSettings(BlurManipulatorSettings *s)
 			: ManipulatorSettings() {
 			blur_amount = s->blur_amount;
-			blur_alpha = s->blur_alpha;	
+			blur_alpha = s->blur_alpha;
 		}
 
 		BlurManipulatorSettings& operator=(const BlurManipulatorSettings& s) {
@@ -43,8 +42,8 @@ public:
 			blur_alpha = s.blur_alpha;
 			return *this;
 		}
-		
-		
+
+
 		bool operator==(BlurManipulatorSettings s) {
 			return ((blur_amount == s.blur_amount) &&
 					(blur_alpha == s.blur_alpha));
@@ -85,7 +84,7 @@ int32 		blur_amount;
 Selection	*selection;
 BStatusBar	*status_bar;
 
-			
+
 // These functions calculate the blur. The function CalculateBlur is
 // used to start a few threads for the calclation. It will return after the
 // threads have finished their jobs. Before calling it the above variables
@@ -93,7 +92,7 @@ BStatusBar	*status_bar;
 			void	CalculateBlur();
 static		int32	thread_entry(void*);
 			int32	VerticalBlur(int32 thread_number);
-			int32	HorizontalBlur(int32 thread_number);	
+			int32	HorizontalBlur(int32 thread_number);
 
 
 
@@ -106,7 +105,7 @@ BlurManipulatorView		*config_view;
 public:
 			BlurManipulator(BBitmap*);
 			~BlurManipulator();
-			
+
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 BView*		MakeConfigurationView(BMessenger*);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
@@ -117,7 +116,7 @@ void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString() { return "Use the slider to adjust blur amount."; }
 char*		ReturnName() { return "Blur"; }
 
-ManipulatorSettings*	ReturnSettings();	
+ManipulatorSettings*	ReturnSettings();
 
 //void		FinishManipulation(bool);
 //void		ChangeValue(int32);
@@ -135,14 +134,14 @@ class BlurManipulatorView : public WindowGUIManipulatorView {
 		BMessenger		*target;
 		ControlSlider	*blur_amount_slider;
 //		BCheckBox		*transparency_checkbox;
-		
+
 		BlurManipulatorSettings	settings;
 
 		bool			preview_started;
-		
+
 public:
 		BlurManipulatorView(BRect rect, BlurManipulator *manip,BMessenger*);
-		
+
 void	AttachedToWindow();
 void	MessageReceived(BMessage*);
 
