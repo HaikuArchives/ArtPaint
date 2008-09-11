@@ -1,27 +1,40 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2008, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <karsten.heimrich@gmx.de>
  *
  */
 #ifndef POP_UP_SLIDER_H
 #define	POP_UP_SLIDER_H
 
+
 #include <Window.h>
 
+
+class BMessage;
+class BMessenger;
+class BSlider;
+
+
 class PopUpSlider : public BWindow {
-		BSlider	*the_slider;
-
-		// A private constructor. The object is created through the
-		// Instantiate-function
-		PopUpSlider(BRect);
 public:
+	static	PopUpSlider*	Instantiate(const BMessenger& target,
+								BMessage* message, int32 minRange, int32 maxRange);
 
-static	PopUpSlider*	Instantiate(BPoint,BMessenger*,BMessage*,int32,int32);
-		BSlider*		ReturnSlider() { return the_slider; }
-		void			Go();
+			void			Go();
+			BSlider*		Slider() const;
+
+private:
+							PopUpSlider(BRect rect);
+	virtual					~PopUpSlider();
+
+private:
+			BSlider*		fSlider;
 };
+
 
 #endif

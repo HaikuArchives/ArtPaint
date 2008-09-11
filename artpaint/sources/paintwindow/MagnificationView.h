@@ -1,42 +1,39 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2008, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <karsten.heimrich@gmx.de>
  *
  */
 #ifndef MAGNIFICATION_VIEW_H
 #define	MAGNIFICATION_VIEW_H
 
-#include <MessageFilter.h>
-#include <StringView.h>
-#include <View.h>
 
-class MagnificationView : public BView {
-		BButton	*plus_button;
-		BButton	*minus_button;
+#include <Box.h>
 
-		BStringView	*string_view;
-		BBox		*string_box;
+
+class BButton;
+class MagStringView;
+
+
+class MagnificationView : public BBox {
 public:
-		MagnificationView(BRect);
+								MagnificationView(BRect rect);
 
-void	AttachedToWindow();
-void	Draw(BRect);
+	virtual	void				AttachedToWindow();
+	virtual	void				Draw(BRect updateRect);
 
-void	SetMagnificationLevel(float);
+			void				SetTarget(const BMessenger& target);
+			void				SetMagnificationLevel(float magLevel);
 
-void	SetTarget(BMessenger&);
+private:
+			BButton*			fPlusButton;
+			BButton*			fMinusButton;
+			MagStringView*		fMagStringView;
 };
 
 
-class MagStringView : public BStringView {
-public:
-		MagStringView(BRect,char*,char*);
-
-void	MouseMoved(BPoint,uint32,const BMessage*);
-};
-
-filter_result filter1(BMessage*,BHandler**,BMessageFilter*);
 #endif

@@ -34,34 +34,32 @@ StatusView::StatusView(BRect frame)
 	status_bar = NULL;
 	manipulator_view = NULL;
 
-	BRect rect;
-	font_height fheight;
-	float total_font_height;
-	float width;
-
 	// First add the coordinate-view.
+	float width, height;
 	coordinate_view = new BStringView(frame,"coordinate_view","X: , Y:");
-	coordinate_view->GetFontHeight(&fheight);
-	total_font_height = ceil(fheight.ascent + fheight.descent + fheight.leading);
+	coordinate_view->GetPreferredSize(&width, &height);
 	width = coordinate_view->StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)");
-	coordinate_view->ResizeTo(width,total_font_height);
-	coordinate_view->MoveTo(1,1);
-	rect = coordinate_view->Bounds();
-	rect.InsetBy(-2,-2);
+
+	coordinate_view->ResizeTo(width, height + 4.0);
+	coordinate_view->MoveTo(4.0, 2.0);
+	BRect rect(coordinate_view->Bounds());
+	rect.InsetBy(-4,-2);
 	rect.OffsetTo(1,1);
 	coordinate_box = new BBox(rect);
 	AddChild(coordinate_box);
 	coordinate_box->AddChild(coordinate_view);
 
 	rect = coordinate_box->Frame();
-	rect.OffsetBy(rect.Width()+2,0);
+	rect.OffsetBy(rect.Width() + 5.0, 0.0);
 	mag_state_view = new MagnificationView(rect);
 	AddChild(mag_state_view);
 
 	// Then we create the message view for displaying help messages.
 	// It will be under the other views and left from the color container.
-	message_view = new BStringView(BRect(coordinate_box->Frame().LeftBottom()+BPoint(0,2),coordinate_box->Frame().LeftBottom()+BPoint(0,2)),"message view","");
-	message_view->ResizeTo(Bounds().Width()-4,total_font_height);
+	message_view = new BStringView(BRect(coordinate_box->Frame().LeftBottom()
+		+ BPoint(0,2), coordinate_box->Frame().LeftBottom() + BPoint(0,2)),
+		"message view", "");
+	message_view->ResizeTo(Bounds().Width() - 4.0, height);
 	AddChild(message_view);
 	message_view->SetResizingMode(B_FOLLOW_LEFT_RIGHT|B_FOLLOW_TOP);
 
