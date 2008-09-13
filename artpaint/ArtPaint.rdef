@@ -34,56 +34,184 @@ resource(1, "BEOS:FILE_TYPES") message {
 	"types" = "application/x-vnd.hsuhonen-artpaint-project-file"
 };
 
-/*
-resource(30001, "ArtPaint") CLRB {
-	$"0606 0606 0606 0606 0606 0615 1515 1515" 
-	$"1515 151E 0615 1515 1515 1515 151E 0615"
-	$"1515 1515 1515 151E 0615 1515 0202 0202" 
-	$"151E 0615 1515 1515 1515 151E 0615 1515" 
-	$"0202 0202 151E 0615 1515 1515 1515 151E" 
-	$"0615 1515 0202 0202 151E 0615 1515 1515" 
-	$"1515 151E 0615 1515 0202 0202 151E 0615" 
-	$"1515 1515 1515 151E 0615 1515 0202 0202" 
-	$"151E 0615 1515 1515 1515 151E 0615 1515" 
-	$"1515 1515 151E 0615 1515 0202 1515 151E" 
-	$"0615 1502 0202 0215 151E 0615 0202 0202" 
-	$"0202 151E 0615 1515 1515 1515 151E 061E" 
-	$"1E1E 1E1E 1E1E 1E1E"
-};
-*/
 resource(30001, "ArtPaint") archive BBitmap
 {
-	"_frame" = rect { 0.0, 0.0, 8.0, 18.0 },
+	"_frame" = rect { 0.0, 0.0, 9.0, 19.0 },
+	"_cspace" = 8200,
+	"_bmflags" = 0,
+	"_rowbytes" = 40,
+	"_data" = array
+	{
+		$"030303ff030303ff030303ff030303ff030303ff030303ff030303ff030303ff"
+		$"000002ff000002ff030303ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8fff7f7ffff030303ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ff9a9a9aff9a9a9aff9a9a9aff9a9a9affa8a8a8fff7f7ffff"
+		$"030303ffa8a8a8ffa8a8a8ffa8a8a8ff1e1e1eff1e1e1eff1e1e1eff1e1e1eff"
+		$"a8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ff9a9a9aff9a9a9aff"
+		$"9a9a9aff9a9a9affa8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"1e1e1eff1e1e1eff1e1e1eff1e1e1effa8a8a8fff7f7ffff030303ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ff9a9a9aff9a9a9aff9a9a9aff9a9a9affa8a8a8fff7f7ffff"
+		$"030303ffa8a8a8ffa8a8a8ffa8a8a8ff1e1e1eff1e1e1eff1e1e1eff1e1e1eff"
+		$"a8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ff9a9a9aff9a9a9aff"
+		$"9a9a9aff9a9a9affa8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"1e1e1eff1e1e1eff1e1e1eff1e1e1effa8a8a8fff7f7ffff030303ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ff9a9a9aff9a9a9aff9a9a9aff9a9a9affa8a8a8fff7f7ffff"
+		$"030303ffa8a8a8ffa8a8a8ffa8a8a8ff1e1e1eff1e1e1eff1e1e1eff1e1e1eff"
+		$"a8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8fff7f7ffff030303ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"9a9a9aff9a9a9affa8a8a8ffa8a8a8ffa8a8a8fff7f7ffff030303ffa8a8a8ff"
+		$"a8a8a8ff9a9a9aff101010ff101010ff9a9a9affa8a8a8ffa8a8a8fff7f7ffff"
+		$"030303ffa8a8a8ff9a9a9aff101010ff101010ff101010ff0f0f0fff989898ff"
+		$"989898fff7f7ffff030303ffa8a8a8ff1e1e1eff1e1e1eff1e1e1eff0f0f0fff"
+		$"171717ff171717ffa8a8a8fff7f7ffff030303ffafafafffafafafffafafafff"
+		$"989898ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8fff7f7ffff030303fff7f7ffff"
+		$"f7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7ffff"
+	}
+};
+
+resource(30002, "ArtPaint") archive BBitmap
+{
+	"_frame" = rect { 0.0, 0.0, 9.0, 19.0 },
+	"_cspace" = 8200,
+	"_bmflags" = 0,
+	"_rowbytes" = 40,
+	"_data" = array
+	{
+		$"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+		$"ffffffff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff000002ffffffffffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa3a3a3ffa3a3a3ffa3a3a3ffa4a4a4ffa8a8a8ff000002ff"
+		$"ffffffffa8a8a8ffa8a8a8ffa8a8a8ff151515ff151515ff151515ff232323ff"
+		$"a8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ffa3a3a3ffa3a3a3ff"
+		$"a3a3a3ffa4a4a4ffa8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"151515ff151515ff151515ff232323ffa8a8a8ff000002ffffffffffa8a8a8ff"
+		$"a3a3a3ffa3a3a3ffa3a3a3ffa3a3a3ffa3a3a3ffa4a4a4ffa8a8a8ff000002ff"
+		$"ffffffffa8a8a8ff141414ff101010ff101010ff101010ff101010ff232323ff"
+		$"a8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ff141414ff101010ff101010ff"
+		$"232323ffa8a8a8ffa8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"151515ff232323ffa8a8a8ffa8a8a8ffa8a8a8ff000002ffffffffffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff000002ff"
+		$"ffffffffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff9d9d9dff000002ffffffffffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff9d9d9dff000002ff"
+		$"ffffffffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ff000002ffffffffffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
+		$"a8a8a8ffa8a8a8ffa8a8a8ff000002ffffffffffa4a4a4ffa4a4a4ffa4a4a4ff"
+		$"a4a4a4ffa4a4a4ffa8a8a8ffa8a8a8ffa8a8a8ff000002ff000002ff000002ff"
+		$"000002ff000002ff000002ff000002ff000002ff000002ff000002ff000002ff"
+	}
+};
+
+resource(30031, "ArtPaint") archive BBitmap
+{
+	"_frame" = rect { 0.0, 0.0, 8.0, 12.0 },
 	"_cspace" = 8200,
 	"_bmflags" = 0,
 	"_rowbytes" = 36,
 	"_data" = array
 	{
-		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff929292ff"
-		$"505050ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
-		$"929292ff505050ffa8a8a8ffa8a8a8ffa7a7a7ffa4a4a4ffa4a4a4ffa4a4a4ff"
-		$"a5a5a5ff929292ff505050ffa8a8a8ffa8a8a8ff8c8c8cff141414ff141414ff"
-		$"141414ff2f2f2fff929292ff505050ffa8a8a8ffa8a8a8ffa7a7a7ffa4a4a4ff"
-		$"a4a4a4ffa4a4a4ffa5a5a5ff929292ff505050ffa8a8a8ffa8a8a8ff8c8c8cff"
-		$"141414ff141414ff141414ff2f2f2fff929292ff505050ffa7a7a7ffa4a4a4ff"
-		$"a4a4a4ffa4a4a4ffa4a4a4ffa4a4a4ffa5a5a5ff929292ff505050ff8c8c8cff"
-		$"131313ff101010ff101010ff101010ff111111ff2f2f2fff929292ff505050ff"
-		$"a8a8a8ff8c8c8cff131313ff101010ff111111ff2f2f2fffa8a8a8ff929292ff"
-		$"505050ffa8a8a8ffa8a8a8ff8c8c8cff141414ff2f2f2fffa8a8a8ffa8a8a8ff"
-		$"929292ff505050ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
-		$"a8a8a8ff929292ff505050ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
-		$"a8a8a8ffa8a8a8ff929292ff505050ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff"
-		$"a8a8a8ffa8a8a8ffa8a8a8ff929292ff505050ffa8a8a8ffa8a8a8ffa8a8a8ff"
-		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff929292ff505050ffa8a8a8ffa8a8a8ff"
-		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff929292ff505050ffa8a8a8ff"
-		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff929292ff505050ff"
-		$"a8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ffa8a8a8ff929292ff"
-		$"505050ffa5a5a5ffa5a5a5ffa5a5a5ffa5a5a5ffa5a5a5ffa5a5a5ffa5a5a5ff"
-		$"8f8f8fff505050ff343434ff343434ff343434ff343434ff343434ff343434ff"
-		$"343434ff343434ff535353ff"
+		$"000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff"
+		$"000000ff000000ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffffffffff000000ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffd8d8d8ffffffffff000000ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"000000ffd8d8d8ffd8d8d8ffffffffff000000ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"000000ff000000ffd8d8d8ffd8d8d8ffffffffff000000ffd8d8d8ffd8d8d8ff"
+		$"000000ff000000ff000000ffd8d8d8ffd8d8d8ffffffffff000000ffd8d8d8ff"
+		$"000000ff000000ff000000ff000000ffd8d8d8ffd8d8d8ffffffffff000000ff"
+		$"d8d8d8ffd8d8d8ff000000ff000000ff000000ffd8d8d8ffd8d8d8ffffffffff"
+		$"000000ffd8d8d8ffd8d8d8ffd8d8d8ff000000ff000000ffd8d8d8ffd8d8d8ff"
+		$"ffffffff000000ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff000000ffd8d8d8ff"
+		$"d8d8d8ffffffffff000000ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffd8d8d8ffffffffff000000ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffd8d8d8ffd8d8d8ffffffffff000000ffffffffffffffffffffffffff"
+		$"ffffffffffffffffffffffffffffffffffffffff"
 	}
 };
 
+resource(30032, "ArtPaint") archive BBitmap
+{
+	"_frame" = rect { 0.0, 0.0, 8.0, 12.0 },
+	"_cspace" = 8200,
+	"_bmflags" = 0,
+	"_rowbytes" = 36,
+	"_data" = array
+	{
+		$"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+		$"000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ff000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffd8d8d8ff000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"000000ffd8d8d8ffd8d8d8ff000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"000000ff000000ffd8d8d8ffd8d8d8ff000000ffffffffffd8d8d8ffd8d8d8ff"
+		$"000000ff000000ff000000ffd8d8d8ffd8d8d8ff000000ffffffffffd8d8d8ff"
+		$"000000ff000000ff000000ff000000ffd8d8d8ffd8d8d8ff000000ffffffffff"
+		$"d8d8d8ffd8d8d8ff000000ff000000ff000000ffd8d8d8ffd8d8d8ff000000ff"
+		$"ffffffffd8d8d8ffd8d8d8ffd8d8d8ff000000ff000000ffd8d8d8ffd8d8d8ff"
+		$"000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff000000ffd8d8d8ff"
+		$"d8d8d8ff000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffd8d8d8ff000000ffffffffffd8d8d8ffd8d8d8ffd8d8d8ffd8d8d8ff"
+		$"d8d8d8ffd8d8d8ffd8d8d8ff000000ff000000ff000000ff000000ff000000ff"
+		$"000000ff000000ff000000ff000000ff000000ff"
+	}
+};
+
+resource(30041, "ArtPaint") archive BBitmap
+{
+	"_frame" = rect { 0.0, 0.0, 8.0, 12.0 },
+	"_cspace" = 8200,
+	"_bmflags" = 0,
+	"_rowbytes" = 36,
+	"_data" = array
+	{
+		$"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+		$"000000ffffffffffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ff000000ffffffffffbebebeffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ff000000ffffffffffb7b7b7ffb7b7b7ff131313ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ffb7b7b7ff000000ffffffffffb7b7b7ffb7b7b7ff0d0d0dff"
+		$"000000ffb7b7b7ffb7b7b7ffb7b7b7ff000000ffffffffffb7b7b7ffb7b7b7ff"
+		$"060606ff000000ff060606ffb7b7b7ffb7b7b7ff000000ffffffffffb7b7b7ff"
+		$"b7b7b7ff000000ff000000ff000000ff0e0e0effb7b7b7ff000000ffffffffff"
+		$"b7b7b7ffb7b7b7ff000000ff000000ff070707ffb7b7b7ffb7b7b7ff000000ff"
+		$"ffffffffb7b7b7ffb7b7b7ff000000ff0e0e0effb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"000000ffffffffffb7b7b7ffb7b7b7ff1b1b1bffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ff000000ffffffffffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ff000000ffffffffffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ffb7b7b7ff000000ff000000ff000000ff000000ff000000ff"
+		$"000000ff000000ff000000ff000000ff000000ff"
+	}
+};
+
+resource(30042, "ArtPaint") archive BBitmap
+{
+	"_frame" = rect { 0.0, 0.0, 8.0, 12.0 },
+	"_cspace" = 8200,
+	"_bmflags" = 0,
+	"_rowbytes" = 36,
+	"_data" = array
+	{
+		$"000000ff111111ff0e0e0eff080808ff010101ff000000ff000000ff000000ff"
+		$"000000ff000000ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7fff5f5f5ff000000ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7fffafafaff000000ffb7b7b7ffb7b7b7ff131313ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ffb7b7b7fffbfbfbff000000ffb7b7b7ffb7b7b7ff0d0d0dff"
+		$"000000ffb7b7b7ffb7b7b7ffb7b7b7fffdfdfdff000000ffb7b7b7ffb7b7b7ff"
+		$"060606ff000000ff060606ffb7b7b7ffb7b7b7fffefefeff010101ffb7b7b7ff"
+		$"b7b7b7ff000000ff000000ff000000ff0e0e0effb7b7b7ffffffffff080808ff"
+		$"b7b7b7ffb7b7b7ff000000ff000000ff070707ffb7b7b7ffb7b7b7fffffffff7"
+		$"0e0e0effb7b7b7ffb7b7b7ff000000ff0e0e0effb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"ffffffef000000ffb7b7b7ffb7b7b7ff1b1b1bffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffffffffe7000000ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ffffffffdf000000ffb7b7b7ffb7b7b7ffb7b7b7ffb7b7b7ff"
+		$"b7b7b7ffb7b7b7ffb7b7b7ffffffffd7000000ffffffffe7ffffffeffffffff7"
+		$"fffffffffefefefffdfdfdfffcfcfcffffffffcf"
+	}
+};
+
+
+// VICON from Humdinger
 resource vector_icon {
 	$"6E6369660A0301000004006E020006023EA928B8E8E43A2ABF3FF6904A568542"
 	$"8CBA00605D5DFFCBCBCB020016023AAFCC3BFAA8BF50A93E3D034B460F48AEEC"
