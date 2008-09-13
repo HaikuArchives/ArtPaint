@@ -60,9 +60,10 @@
 #include "AboutWindow.h"
 
 // initialize the static variable
+BList PaintWindow::paint_window_list(10);
 int32 PaintWindow::paint_window_count = 0;
 int32 PaintWindow::untitled_window_number = 1;
-BList* PaintWindow::paint_window_list = new BList();
+
 
 PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_settings *setup )
 				: BWindow(frame,name,B_DOCUMENT_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_WILL_ACCEPT_FIRST_CLICK|B_NOT_ANCHORED_ON_ACTIVATE)
@@ -327,7 +328,7 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 	Show();
 
 	// Add ourselves to the paint_window_list
-	paint_window_list->AddItem(this);
+	paint_window_list.AddItem(this);
 
 	Lock();
 	// Handle the window-activation with this common filter.
@@ -425,7 +426,7 @@ PaintWindow::~PaintWindow()
 	paint_window_count--;
 
 	// Remove ourselves from the paint_window_list.
-	paint_window_list->RemoveItem(this);
+	paint_window_list.RemoveItem(this);
 }
 
 
@@ -1913,7 +1914,8 @@ status_t PaintWindow::saveProject(BMessage *message)
 void
 PaintWindow::writeAttributes(BNode& node)
 {
-	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &(Frame()), sizeof(BRect));
+	BRect frame(Frame());
+	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame, sizeof(BRect));
 	if (image_view && image_view->LockLooper()) {
 		settings->zoom_level = image_view->getMagScale();
 		node.WriteAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0,

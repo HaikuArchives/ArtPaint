@@ -104,7 +104,7 @@ static	int32			paint_window_count;
 static	int32			untitled_window_number;
 
 // This list contains pointers to all of the paint-windows
-static	BList			*paint_window_list;
+static	BList			paint_window_list;
 
 
 // this function will create the main menubar
