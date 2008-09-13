@@ -1910,49 +1910,53 @@ status_t PaintWindow::saveProject(BMessage *message)
 }
 
 
-void PaintWindow::writeAttributes(BNode &node)
+void
+PaintWindow::writeAttributes(BNode& node)
 {
-	printf("Writing attributes\n");
-	// here write the attributes
-	BRect frame = Frame();
-	node.WriteAttr("ArtP:frame_rect",B_RECT_TYPE,0,&frame,sizeof(BRect));
-	if (image_view != NULL) {
+	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &(Frame()), sizeof(BRect));
+	if (image_view && image_view->LockLooper()) {
 		settings->zoom_level = image_view->getMagScale();
-		node.WriteAttr("ArtP:zoom_level",B_FLOAT_TYPE,0,&(settings->zoom_level),sizeof(float));
+		node.WriteAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0,
+			&(settings->zoom_level), sizeof(float));
+
 		settings->view_position = image_view->LeftTop();
-		node.WriteAttr("ArtP:view_position",B_POINT_TYPE,0,&(settings->view_position),sizeof(BPoint));
+		node.WriteAttr("ArtP:view_position", B_POINT_TYPE, 0,
+			&(settings->view_position), sizeof(BPoint));
+		image_view->UnlockLooper();
 	}
 }
 
 
-void PaintWindow::readAttributes(BNode &node)
+void
+PaintWindow::readAttributes(BNode &node)
 {
-	printf("Reading attributes\n");
-	// here read the attributes
-	// the view might change so we should lock the window
-	Lock();
-	float zoom_level;
-	if (node.ReadAttr("ArtP:zoom_level",B_FLOAT_TYPE,0,&zoom_level,sizeof(float)) > 0) {
-		settings->zoom_level = zoom_level;
-		if (image_view != NULL)
-			image_view->setMagScale(zoom_level);
-	}
-	BPoint view_position;
-	if (node.ReadAttr("ArtP:view_position",B_POINT_TYPE,0,&view_position,sizeof(BPoint)) > 0) {
-		settings->view_position = view_position;
-		if (image_view != NULL)
-			image_view->ScrollTo(view_position);
-	}
+	if (Lock()) {
+		float zoom_level;
+		if (node.ReadAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0, &zoom_level,
+			sizeof(float)) > 0) {
+			settings->zoom_level = zoom_level;
+			if (image_view)
+				image_view->setMagScale(zoom_level);
+		}
 
-	// Also read the frame-rect for the window.
-	BRect frame;
-	if (node.ReadAttr("ArtP:frame_rect",B_RECT_TYPE,0,&frame,sizeof(BRect)) > 0) {
-		frame = FitRectToScreen(frame);
-		MoveTo(frame.left,frame.top);
-		ResizeTo(frame.Width(),frame.Height());
-	}
+		BPoint view_position;
+		if (node.ReadAttr("ArtP:view_position" ,B_POINT_TYPE, 0, &view_position,
+			sizeof(BPoint)) > 0) {
+			settings->view_position = view_position;
+			if (image_view)
+				image_view->ScrollTo(view_position);
+		}
 
-	Unlock();
+		BRect frame;
+		if (node.ReadAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame,
+			sizeof(BRect)) > 0) {
+			frame = FitRectToScreen(frame);
+			MoveTo(frame.left, frame.top);
+			ResizeTo(frame.Width(), frame.Height());
+		}
+
+		Unlock();
+	}
 }
 
 

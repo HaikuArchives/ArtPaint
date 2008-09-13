@@ -134,7 +134,7 @@ status_t	saveImageIntoResources();
 status_t	saveImageAsCursor();
 
 // this function will write the attributes to node
-void			writeAttributes(BNode &node);
+void			writeAttributes(BNode& node);
 
 static	int32	AddAddOnsToMenu(void*);
 
