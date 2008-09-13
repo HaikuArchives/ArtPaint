@@ -34,13 +34,19 @@ const char* LayerWindow::window_title = NULL;
 sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphore");
 
 LayerWindow::LayerWindow(BRect frame)
-	:	BWindow(frame,StringServer::ReturnString(LAYERS_STRING),B_FLOATING_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK)
+	: BWindow(frame,StringServer::ReturnString(LAYERS_STRING),
+		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK)
 {
-	BBox *top_part = new BBox(BRect(-1,0,Bounds().Width()+2,HS_MINIATURE_IMAGE_HEIGHT+3),NULL,B_FOLLOW_LEFT_RIGHT|B_FOLLOW_TOP);
+	BBox *top_part = new BBox(BRect(-1, 0, Bounds().Width() + 2,
+		HS_MINIATURE_IMAGE_HEIGHT + 3), NULL, B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
 	AddChild(top_part);
-	bitmap_view = new BitmapView(NULL,BRect(6,2,HS_MINIATURE_IMAGE_WIDTH-1+6,HS_MINIATURE_IMAGE_HEIGHT-1+2));
+	bitmap_view = new BitmapView(NULL, BRect(6, 2, HS_MINIATURE_IMAGE_WIDTH - 1 + 6,
+		HS_MINIATURE_IMAGE_HEIGHT - 1 + 2));
 	top_part->AddChild(bitmap_view);
-	title_view = new BStringView(BRect(HS_MINIATURE_IMAGE_WIDTH+10,2,top_part->Bounds().Width()-2,HS_MINIATURE_IMAGE_HEIGHT-2),"image title","");
+	title_view = new BStringView(BRect(HS_MINIATURE_IMAGE_WIDTH + 10, 2,
+		top_part->Bounds().Width() - 2, HS_MINIATURE_IMAGE_HEIGHT - 2),
+		"image title", "", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
 	top_part->AddChild(title_view);
 
 
