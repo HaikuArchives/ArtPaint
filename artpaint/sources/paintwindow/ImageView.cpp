@@ -295,72 +295,68 @@ void ImageView::MessageReceived(BMessage *message)
 			}
 			break;
 
-		case HS_ZOOM_IMAGE_IN:
-			{
-				if (mag_scale_array_index == -1) {
-					// Search for the right index.
-					mag_scale_array_index = 0;
-					while ((mag_scale_array_index < mag_scale_array_length-1) && (mag_scale_array[mag_scale_array_index] <= magnify_scale)) {
-						mag_scale_array_index++;
-					}
+		case HS_ZOOM_IMAGE_IN: {
+			if (mag_scale_array_index == -1) {
+				// Search for the right index.
+				mag_scale_array_index = 0;
+				while ((mag_scale_array_index < mag_scale_array_length - 1)
+					&& (mag_scale_array[mag_scale_array_index] <= magnify_scale)) {
+					mag_scale_array_index++;
 				}
-				else {
-					mag_scale_array_index = min_c(mag_scale_array_index+1,mag_scale_array_length-1);
-				}
-
-				setMagScale(mag_scale_array[mag_scale_array_index]);
+			} else {
+				mag_scale_array_index = min_c(mag_scale_array_index + 1,
+					mag_scale_array_length - 1);
 			}
-			break;
 
-		case HS_ZOOM_IMAGE_OUT:
-			{
-				if (mag_scale_array_index == -1) {
-					// Search for the right index.
-					mag_scale_array_index = mag_scale_array_length-1;
-					while ((mag_scale_array_index > 0) && (mag_scale_array[mag_scale_array_index] >= magnify_scale)) {
-						mag_scale_array_index--;
-					}
-				}
-				else {
-					mag_scale_array_index = max_c(mag_scale_array_index-1,0);
-				}
+			setMagScale(mag_scale_array[mag_scale_array_index]);
+		}	break;
 
-				setMagScale(mag_scale_array[mag_scale_array_index]);
+		case HS_ZOOM_IMAGE_OUT: {
+			if (mag_scale_array_index == -1) {
+				// Search for the right index.
+				mag_scale_array_index = mag_scale_array_length - 1;
+				while ((mag_scale_array_index > 0)
+					&& (mag_scale_array[mag_scale_array_index] >= magnify_scale)) {
+					mag_scale_array_index--;
+				}
+			} else {
+				mag_scale_array_index = max_c(mag_scale_array_index - 1, 0);
 			}
-			break;
 
-		case HS_SET_MAGNIFYING_SCALE:
+			setMagScale(mag_scale_array[mag_scale_array_index]);
+		}	break;
+
+		case HS_SET_MAGNIFYING_SCALE: {
 			mag_scale_array_index = -1;
-			float new_mag_scale;
-			if (message->FindFloat("magnifying_scale",&new_mag_scale) == B_OK) {
-				setMagScale(new_mag_scale);
-				((PaintWindow*)Window())->displayMag(magnify_scale);
-			}
-			else {
+			float newMagScale;
+			if (message->FindFloat("magnifying_scale", &newMagScale) == B_OK) {
+				setMagScale(newMagScale);
+				((PaintWindow*)Window())->displayMag(newMagScale);
+			} else {
 				void *source;
-				if (message->FindPointer("source",&source) == B_OK) {
-					BSlider *slider = (BSlider*)source;
-					if (slider != NULL) {
-						float scale = slider->Value() / 100.0;
-						scale = 0.1 + 15.9*pow(scale/16.0,2);
-						setMagScale(scale);
-					}
-				}
-			}
-			break;
+				if (message->FindPointer("source", &source) == B_OK) {
+					BSlider *slider = static_cast<BSlider*> (source);
+					if (slider == NULL)
+						break;
 
-		case HS_GRID_ADJUSTED:
-			{
-				BPoint origin;
-				int32 unit;
-				if (message->FindPoint("origin",&origin) == B_OK) {
-					if (message->FindInt32("unit",&unit) == B_OK) {
-						grid_unit = unit;
-						grid_origin = origin;
-					}
+					// Convert nonlinear from [10,1600] -> [0.1,16]
+					float scale = (pow(10.0, (slider->Value() - 10.0) / 1590.0)
+						- 1.0) * (15.9 / 9.0) + 0.1;
+					setMagScale(scale);
 				}
 			}
-			break;
+		}	break;
+
+		case HS_GRID_ADJUSTED: {
+			BPoint origin;
+			if (message->FindPoint("origin",&origin) == B_OK) {
+				int32 unit;
+				if (message->FindInt32("unit",&unit) == B_OK) {
+					grid_unit = unit;
+					grid_origin = origin;
+				}
+			}
+		}	break;
 
 		// This comes from layer's view and tells us to change the visibility for that layer.
 		case HS_LAYER_VISIBILITY_CHANGED:

@@ -34,7 +34,7 @@ PopUpSlider*
 PopUpSlider::Instantiate(const BMessenger& target, BMessage* message,
 	int32 minRange, int32 maxRange)
 {
-	BSlider* slider = new BSlider(BRect(0.0, 0.0, 150.0, 0.0),
+	BSlider* slider = new BSlider(BRect(0.0, 0.0, 200.0, 0.0),
 		"popUpSlider", NULL, message, minRange, maxRange, B_TRIANGLE_THUMB);
 
 	slider->SetTarget(target);

@@ -43,7 +43,6 @@ public:
 								const char* label);
 	virtual					~MagStringView();
 
-	virtual void			AllAttached();
 	virtual	void			MouseMoved(BPoint point, uint32 transit,
 								const BMessage* message);
 };
@@ -60,13 +59,6 @@ MagStringView::MagStringView(BRect rect, const char* name,
 
 MagStringView::~MagStringView()
 {
-}
-
-
-void
-MagStringView::AllAttached()
-{
-
 }
 
 
@@ -195,20 +187,19 @@ MouseDownFilter(BMessage* message, BHandler** handlers, BMessageFilter* filter)
 
 	magStringView->SetEventMask(B_POINTER_EVENTS);
 
-	float value = (sqrt(imageView->getMagScale()) * 16.0 / 15.9 - 0.1) * 100.0;
-
 	gPopUpSlider = PopUpSlider::Instantiate(BMessenger(imageView, window),
 		new BMessage(HS_SET_MAGNIFYING_SCALE), 10, 1600);
+
+	// Convert nonlinear from [0.1,16] -> [10,1600]
+	float value = 1590.0 * log10((9.0 * (imageView->getMagScale() - 0.1) / 15.9)
+		+ 1.0) + 10.0;
 
 	BSlider* slider = gPopUpSlider->Slider();
 	slider->SetValue(int32(value));
 	slider->SetModificationMessage(new BMessage(HS_SET_MAGNIFYING_SCALE));
 
 	BRect rect(slider->BarFrame());
-	// this code depends heavily on BSlider implementation
-	float offset = ceil((rect.left + 1.0) + (value - 10.0) / (1600 - 10) *
-		(rect.right - 1.0) - (rect.left + 1.0));
-	offset = ceil(offset * 3.885714286) + 8.0;
+	float offset = (slider->Position() * (rect.Width() - 1.0)) + 8.0;
 
 	rect = gPopUpSlider->Bounds();
 	bounds = magStringView->ConvertToScreen(bounds);
