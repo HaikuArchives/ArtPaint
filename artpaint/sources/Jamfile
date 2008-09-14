@@ -130,6 +130,7 @@ Application ArtPaint :
 	BitmapUtilities.cpp
 
 	: be tracker translation
-	: ../ArtPaint.rsrc
+	#: ../ArtPaint.rsrc
+	: ../ArtPaint.rdef
 ;
 
