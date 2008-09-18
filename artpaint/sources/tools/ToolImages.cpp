@@ -10,6 +10,7 @@
 #include <Resources.h>
 #include <Roster.h>
 #include <View.h>
+#include <IconUtils.h>
 
 #include "ToolImages.h"
 #include "Tools.h"
@@ -118,91 +119,62 @@ void ToolImages::createToolImages()
 	// BPictures. When we create a ToolImages-object it will add itself to the
 	// tool-images list. We will use a dedicated function to read the images and
 	// create new ToolImages.
-	ReadImages(app_resources,10,NO_TOOL);
-	ReadImages(app_resources,20,FREE_LINE_TOOL);
-	ReadImages(app_resources,30,SELECTOR_TOOL);
-	ReadImages(app_resources,40,FILL_TOOL);
-	ReadImages(app_resources,50,RECTANGLE_TOOL);
-	ReadImages(app_resources,60,ELLIPSE_TOOL);
-	ReadImages(app_resources,70,STRAIGHT_LINE_TOOL);
-	ReadImages(app_resources,80,BRUSH_TOOL);
-	ReadImages(app_resources,90,BLUR_TOOL);
-	ReadImages(app_resources,100,COLOR_SELECTOR_TOOL);
-	ReadImages(app_resources,110,TRANSPARENCY_TOOL);
-	ReadImages(app_resources,120,AIR_BRUSH_TOOL);
-	ReadImages(app_resources,130,SELECTOR_TOOL);
-	ReadImages(app_resources,140,HAIRY_BRUSH_TOOL);
-	ReadImages(app_resources,150,ERASER_TOOL);
-	ReadImages(app_resources,160,TEXT_TOOL);
 
+	ReadVICNImage(app_resources,208,FREE_LINE_TOOL);
+	ReadVICNImage(app_resources,205,FILL_TOOL);
+	ReadVICNImage(app_resources,210,RECTANGLE_TOOL);
+	ReadVICNImage(app_resources,203,ELLIPSE_TOOL);
+	ReadVICNImage(app_resources,208,STRAIGHT_LINE_TOOL);
+	ReadVICNImage(app_resources,202,BRUSH_TOOL);
+	ReadVICNImage(app_resources,201,BLUR_TOOL);
+	ReadVICNImage(app_resources,209,COLOR_SELECTOR_TOOL);
+	ReadVICNImage(app_resources,215,TRANSPARENCY_TOOL);
+	ReadVICNImage(app_resources,200,AIR_BRUSH_TOOL);
+	ReadVICNImage(app_resources,212,SELECTOR_TOOL);
+	ReadVICNImage(app_resources,202,HAIRY_BRUSH_TOOL);
+	ReadVICNImage(app_resources,204,ERASER_TOOL);
+	ReadVICNImage(app_resources,214,TEXT_TOOL);
+	
 	// Finally destroy the pointer to resources.
 	delete app_resources;
 }
 
-
-status_t ToolImages::ReadImages(BResources *res,int32 base, int32 tool_type)
+void ToolImages::ReadVICNImage(BResources *res, int32 id, int32 tool_type)
 {
-	// If some of the images is not found we should return NULL and also delete any created pictures.
-	BBitmap *big_map = new BBitmap(BRect(0,0,31,31),B_COLOR_8_BIT);
-	BBitmap *small_map = new BBitmap(BRect(0,0,15,15),B_COLOR_8_BIT);
-	BPicture *big_on,*big_off,*small_on,*small_off;
-	big_on = NULL;
-	big_off = NULL;
-	small_on = NULL;
-	small_off = NULL;
-
-	status_t error = B_OK;
-	base = base*100;
-	char buffer[1024];
-
-	// Read the BIG_ON-image
-	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+1,buffer,0,1024)) == B_OK ) {
-		big_map->SetBits(buffer,1024,0,B_COLOR_8_BIT);
+	size_t length ;
+	const void *data;
+	data = res->LoadResource(B_VECTOR_ICON_TYPE, id, &length); //B_VECTOR_ICON_TYPE
+	
+	BPicture *big_on = NULL, *big_off = NULL;
+	BBitmap *big_map = new BBitmap(BRect(0, 0, 31-1, 31-1), 0, B_RGBA32);
+	BIconUtils::GetVectorIcon((uint8*)data, length, big_map);
+	
+	if (big_map) {
 		big_on = bitmap_to_picture(big_map);
-	}
-	else {
-		error = B_ERROR;
-	}
-	// Read the BIG_OFF-image
-	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+2,buffer,0,1024)) == B_OK ) {
-		big_map->SetBits(buffer,1024,0,B_COLOR_8_BIT);
 		big_off = bitmap_to_picture(big_map);
 	}
-	else {
-		error = B_ERROR;
-	}
-	// Read the SMALL_ON-image
-	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+3,buffer,0,256)) == B_OK ) {
-		small_map->SetBits(buffer,256,0,B_COLOR_8_BIT);
+
+	BPicture *small_on = NULL, *small_off = NULL;	
+	BBitmap *small_map = new BBitmap(BRect(0, 0, 16-1, 16-1), 0, B_RGBA32);
+	BIconUtils::GetVectorIcon((uint8*)data, length, small_map);
+	if (small_map) {
 		small_on = bitmap_to_picture(small_map);
-	}
-	else {
-		error = B_ERROR;
-	}
-	// Read the SMALL_OFF-image
-	if ( (res->ReadResource(B_COLOR_8_BIT_TYPE,base+4,buffer,0,256)) == B_OK ) {
-		small_map->SetBits(buffer,256,0,B_COLOR_8_BIT);
 		small_off = bitmap_to_picture(small_map);
 	}
-	else {
-		error = B_ERROR;
-	}
-
+	
 	delete big_map;
-	delete small_map;
+	delete small_map;	
 
-	if (error != B_OK) {
+	if (big_on && big_off && small_on && small_off) {
+		new ToolImages(tool_type,big_off,big_on,small_off,small_on);
+	} else {
 		delete big_on;
 		delete big_off;
 		delete small_on;
 		delete small_off;
-	}
-	else {
-		new ToolImages(tool_type,big_off,big_on,small_off,small_on);
-	}
-
-	return error;
+	}	
 }
+
 BPicture* bitmap_to_picture(BBitmap *bitmap)
 {
 	// Create an off-screen bitmap for the purpose of recording picture.
@@ -210,6 +182,7 @@ BPicture* bitmap_to_picture(BBitmap *bitmap)
 
 	// Create a view that records the picture.
 	BView *off_screen_view = new BView(BRect(0,0,0,0),"picture maker view",B_FOLLOW_NONE,B_WILL_DRAW);
+	off_screen_view->SetDrawingMode(B_OP_ALPHA);
 	off_screen->AddChild(off_screen_view);
 
 	BPicture *picture = new BPicture();

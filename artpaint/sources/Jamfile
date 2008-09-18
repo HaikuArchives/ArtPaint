@@ -18,6 +18,8 @@ SEARCH_SOURCE += [ FDirName $(SUBDIR) viewmanipulators ] ;
 SEARCH_SOURCE += [ FDirName $(SUBDIR) windows ] ;
 SEARCH_SOURCE += [ FDirName $(SUBDIR) $(DOTDOT) Utilities ] ;
 
+UseLibraryHeaders icon ;
+
 Application ArtPaint :
 	# application
 	ClipBoardManager.cpp
@@ -129,7 +131,7 @@ Application ArtPaint :
 	# Utilities
 	BitmapUtilities.cpp
 
-	: be tracker translation
+	: be tracker translation $(TARGET_LIBSTDC++)
 	#: ../ArtPaint.rsrc
 	: ../ArtPaint.rdef
 ;

@@ -25,7 +25,7 @@ class ToolImages {
 // this points to the first tool in the list
 static	ToolImages 	*first_tool;
 
-static	status_t	ReadImages(BResources*,int32,int32);
+static	void		ReadVICNImage(BResources *res,int32 id, int32 tool_type);
 
 public:
 		ToolImages(int32 type, BPicture *picture_off_big,BPicture *picture_on_big,BPicture *picture_off_small,BPicture *picture_on_small);
