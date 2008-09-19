@@ -124,14 +124,14 @@ void ToolImages::createToolImages()
 	ReadVICNImage(app_resources,205,FILL_TOOL);
 	ReadVICNImage(app_resources,210,RECTANGLE_TOOL);
 	ReadVICNImage(app_resources,203,ELLIPSE_TOOL);
-	ReadVICNImage(app_resources,208,STRAIGHT_LINE_TOOL);
+	ReadVICNImage(app_resources,217,STRAIGHT_LINE_TOOL);
 	ReadVICNImage(app_resources,202,BRUSH_TOOL);
 	ReadVICNImage(app_resources,201,BLUR_TOOL);
 	ReadVICNImage(app_resources,209,COLOR_SELECTOR_TOOL);
 	ReadVICNImage(app_resources,215,TRANSPARENCY_TOOL);
 	ReadVICNImage(app_resources,200,AIR_BRUSH_TOOL);
 	ReadVICNImage(app_resources,212,SELECTOR_TOOL);
-	ReadVICNImage(app_resources,202,HAIRY_BRUSH_TOOL);
+	ReadVICNImage(app_resources,216,HAIRY_BRUSH_TOOL);
 	ReadVICNImage(app_resources,204,ERASER_TOOL);
 	ReadVICNImage(app_resources,214,TEXT_TOOL);
 	
