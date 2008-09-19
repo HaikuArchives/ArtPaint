@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Ralf Schuelke <teammaui@web.de>
  *
  */
 #include <Bitmap.h>
@@ -119,21 +120,20 @@ void ToolImages::createToolImages()
 	// BPictures. When we create a ToolImages-object it will add itself to the
 	// tool-images list. We will use a dedicated function to read the images and
 	// create new ToolImages.
-
-	ReadVICNImage(app_resources,208,FREE_LINE_TOOL);
-	ReadVICNImage(app_resources,205,FILL_TOOL);
-	ReadVICNImage(app_resources,210,RECTANGLE_TOOL);
-	ReadVICNImage(app_resources,203,ELLIPSE_TOOL);
-	ReadVICNImage(app_resources,217,STRAIGHT_LINE_TOOL);
-	ReadVICNImage(app_resources,202,BRUSH_TOOL);
-	ReadVICNImage(app_resources,201,BLUR_TOOL);
-	ReadVICNImage(app_resources,209,COLOR_SELECTOR_TOOL);
-	ReadVICNImage(app_resources,215,TRANSPARENCY_TOOL);
 	ReadVICNImage(app_resources,200,AIR_BRUSH_TOOL);
-	ReadVICNImage(app_resources,212,SELECTOR_TOOL);
-	ReadVICNImage(app_resources,216,HAIRY_BRUSH_TOOL);
+	ReadVICNImage(app_resources,201,BLUR_TOOL);
+	ReadVICNImage(app_resources,202,BRUSH_TOOL);
+	ReadVICNImage(app_resources,203,ELLIPSE_TOOL);
 	ReadVICNImage(app_resources,204,ERASER_TOOL);
-	ReadVICNImage(app_resources,214,TEXT_TOOL);
+	ReadVICNImage(app_resources,205,FILL_TOOL);	
+	ReadVICNImage(app_resources,208,FREE_LINE_TOOL);
+	ReadVICNImage(app_resources,209,COLOR_SELECTOR_TOOL);
+	ReadVICNImage(app_resources,210,RECTANGLE_TOOL);
+	ReadVICNImage(app_resources,212,SELECTOR_TOOL);
+	ReadVICNImage(app_resources,214,TEXT_TOOL);	
+	ReadVICNImage(app_resources,215,TRANSPARENCY_TOOL);
+	ReadVICNImage(app_resources,216,HAIRY_BRUSH_TOOL);
+	ReadVICNImage(app_resources,217,STRAIGHT_LINE_TOOL);
 	
 	// Finally destroy the pointer to resources.
 	delete app_resources;
@@ -143,19 +143,18 @@ void ToolImages::ReadVICNImage(BResources *res, int32 id, int32 tool_type)
 {
 	size_t length ;
 	const void *data;
-	data = res->LoadResource(B_VECTOR_ICON_TYPE, id, &length); //B_VECTOR_ICON_TYPE
+	data = res->LoadResource(B_VECTOR_ICON_TYPE, id, &length); 
+	BBitmap *big_map = NULL, *small_map = NULL;
+	BPicture *big_on = NULL, *big_off = NULL, *small_on = NULL, *small_off = NULL;
 	
-	BPicture *big_on = NULL, *big_off = NULL;
-	BBitmap *big_map = new BBitmap(BRect(0, 0, 31-1, 31-1), 0, B_RGBA32);
+	big_map = new BBitmap(BRect(0, 0, BIG_TOOL_PICTURE_SIZE -1, BIG_TOOL_PICTURE_SIZE -1), 0, B_RGBA32);
 	BIconUtils::GetVectorIcon((uint8*)data, length, big_map);
-	
 	if (big_map) {
 		big_on = bitmap_to_picture(big_map);
 		big_off = bitmap_to_picture(big_map);
 	}
 
-	BPicture *small_on = NULL, *small_off = NULL;	
-	BBitmap *small_map = new BBitmap(BRect(0, 0, 16-1, 16-1), 0, B_RGBA32);
+	small_map = new BBitmap(BRect(0, 0, SMALL_TOOL_PICTURE_SIZE -1, SMALL_TOOL_PICTURE_SIZE -1), 0, B_RGBA32);
 	BIconUtils::GetVectorIcon((uint8*)data, length, small_map);
 	if (small_map) {
 		small_on = bitmap_to_picture(small_map);
@@ -184,10 +183,11 @@ BPicture* bitmap_to_picture(BBitmap *bitmap)
 	BView *off_screen_view = new BView(BRect(0,0,0,0),"picture maker view",B_FOLLOW_NONE,B_WILL_DRAW);
 	off_screen_view->SetDrawingMode(B_OP_ALPHA);
 	off_screen->AddChild(off_screen_view);
-
+	
 	BPicture *picture = new BPicture();
 	off_screen->Lock();
 	off_screen_view->BeginPicture(picture);
+	
 	off_screen_view->DrawBitmap(bitmap);
 	picture = off_screen_view->EndPicture();
 	off_screen->Unlock();

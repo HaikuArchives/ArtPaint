@@ -22,7 +22,7 @@ ToolButton::ToolButton(BRect frame,int32 tool,const char *name)
 	: BPictureButton(frame,"tool_button",ToolImages::getPicture(tool,BIG_TOOL_PICTURE_SIZE,0),ToolImages::getPicture(tool,BIG_TOOL_PICTURE_SIZE,1),NULL)
 	, tool_name(name)
 
-{
+{	
 	BMessage *model_message = new BMessage(HS_TOOL_CHANGED);
 	model_message->AddInt32("tool",tool);
 	model_message->AddInt32("buttons",0);
