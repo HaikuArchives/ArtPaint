@@ -144,16 +144,44 @@ void ToolImages::ReadVICNImage(BResources *res, int32 id, int32 tool_type)
 	size_t length ;
 	const void *data;
 	data = res->LoadResource(B_VECTOR_ICON_TYPE, id, &length); 
-	BBitmap *big_map = NULL, *small_map = NULL;
+	BBitmap *big_map = NULL, *big_map_on = NULL, *big_map_off = NULL, *small_map = NULL;
 	BPicture *big_on = NULL, *big_off = NULL, *small_on = NULL, *small_off = NULL;
 	
-	big_map = new BBitmap(BRect(0, 0, BIG_TOOL_PICTURE_SIZE -1, BIG_TOOL_PICTURE_SIZE -1), 0, B_RGBA32);
+	//VIcon to bitmap
+	big_map = new BBitmap(BRect(0, 0, BIG_TOOL_PICTURE_SIZE -10, BIG_TOOL_PICTURE_SIZE -10), 0, B_RGBA32); //-3
 	BIconUtils::GetVectorIcon((uint8*)data, length, big_map);
-	if (big_map) {
-		big_on = bitmap_to_picture(big_map);
-		big_off = bitmap_to_picture(big_map);
+	
+	//selectet bitmap
+	big_map_on = new BBitmap(BRect(0, 0, BIG_TOOL_PICTURE_SIZE -1, BIG_TOOL_PICTURE_SIZE -1), B_BITMAP_ACCEPTS_VIEWS, B_RGBA32);
+	BView *on_view = new BView(BRect(0,0,BIG_TOOL_PICTURE_SIZE -1,BIG_TOOL_PICTURE_SIZE -1),"view",B_FOLLOW_NONE,B_WILL_DRAW);
+	big_map_on->Lock();
+	big_map_on->AddChild(on_view);
+	on_view->SetHighColor(0,0,0);
+	on_view->FillRect(on_view->Bounds());
+	on_view->SetHighColor(255,255,255);
+	on_view->FillRect(BRect(1,1,BIG_TOOL_PICTURE_SIZE -2,BIG_TOOL_PICTURE_SIZE -2));
+	on_view->SetDrawingMode(B_OP_ALPHA);
+	on_view->DrawBitmap(big_map,BPoint(5,5));
+	on_view->Sync();
+	big_map_on->Unlock();
+	
+	//non selectect bitmap
+	big_map_off = new BBitmap(BRect(0, 0, BIG_TOOL_PICTURE_SIZE -1, BIG_TOOL_PICTURE_SIZE -1), B_BITMAP_ACCEPTS_VIEWS, B_RGBA32);
+	BView *off_view = new BView(BRect(0,0,BIG_TOOL_PICTURE_SIZE -1,BIG_TOOL_PICTURE_SIZE -1),"view",B_FOLLOW_NONE,B_WILL_DRAW);
+	big_map_off->Lock();
+	big_map_off->AddChild(off_view);
+	off_view->SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	off_view->FillRect(off_view->Bounds());
+	off_view->SetDrawingMode(B_OP_ALPHA);
+	off_view->DrawBitmap(big_map, BPoint(5,5));
+	off_view->Sync();
+	big_map_off->Unlock();
+	
+	if (big_map && big_map_off || big_map_on) {
+		big_on = bitmap_to_picture(big_map_on);
+		big_off = bitmap_to_picture(big_map_off);
 	}
-
+	
 	small_map = new BBitmap(BRect(0, 0, SMALL_TOOL_PICTURE_SIZE -1, SMALL_TOOL_PICTURE_SIZE -1), 0, B_RGBA32);
 	BIconUtils::GetVectorIcon((uint8*)data, length, small_map);
 	if (small_map) {
@@ -162,6 +190,8 @@ void ToolImages::ReadVICNImage(BResources *res, int32 id, int32 tool_type)
 	}
 	
 	delete big_map;
+	delete big_map_on;
+	delete big_map_off;
 	delete small_map;	
 
 	if (big_on && big_off && small_on && small_off) {
@@ -187,7 +217,6 @@ BPicture* bitmap_to_picture(BBitmap *bitmap)
 	BPicture *picture = new BPicture();
 	off_screen->Lock();
 	off_screen_view->BeginPicture(picture);
-	
 	off_screen_view->DrawBitmap(bitmap);
 	picture = off_screen_view->EndPicture();
 	off_screen->Unlock();
