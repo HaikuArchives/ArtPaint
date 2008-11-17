@@ -1,10 +1,10 @@
 How to get and build ArtPaint.
 
 ArtPaint can be checked out through anonymous access with the following command:
-svn checkout svn://svn.osdrawer.net/svnroot/artpaint/trunk artpaint
+svn checkout http://svn.osdrawer.net/artpaint/trunk artpaint
 
-Developers can checkout through svn+ssh with the following command:
-svn checkout svn+ssh://developername@svn.osdrawer.net/svnroot/artpaint/trunk artpaint
+Developers can checkout using the following command:
+svn checkout --username USERNAME svn checkout http://svn.osdrawer.net/artpaint/trunk artpaint
 
 
 There are two ways to build ArtPaint, i will describe first what to do when cross compiling:
@@ -38,7 +38,7 @@ Of course you must have configured Haiku with
 how to do this refer to Haiku's configure while invoked with configure --help.
 
 
-In case you did not configure haiku with 3rdparty enabled, we provide you with a
+In case you did not configure Haiku with 3rdparty enabled, we provide you with a
 pre configured UserBuildConfig file, to use it or it's content cd into
 3rdparty/artpaint/haiku and copy the content of the UserBuildConfig to your
 default UserBuildConfig used to build Haiku.
