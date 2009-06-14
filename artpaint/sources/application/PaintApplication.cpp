@@ -451,98 +451,89 @@ PaintApplication::SetColor(rgb_color color, bool foreground)
 void
 PaintApplication::readPreferences()
 {
-	bool create_default_tools = true;
-	bool create_default_colorset = true;
+	bool createDefaultTools = true;
+	bool createDefaultColorset = true;
 
-	BPath a_path;
-	if (find_directory(B_USER_SETTINGS_DIRECTORY,&a_path) == B_OK) {
-		BDirectory user_settings_directory;
-		BDirectory settings_directory;
-		BDirectory spare_settings_directory;
-		user_settings_directory.SetTo(a_path.Path());
-		status_t main_err = settings_directory.SetTo(&user_settings_directory, "ArtPaint/");
-		HomeDirectory(a_path);
-		spare_settings_directory.SetTo(a_path.Path());
-		status_t spare_err = spare_settings_directory.SetTo(&spare_settings_directory,"settings/");
+	BPath path;
+	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
+		path.Append("ArtPaint");
+		BDirectory settingsDir(path.Path());
 
-		if ((main_err == B_OK) || (spare_err == B_OK)) {
-			BEntry brush_entry;
-			status_t err;
-			err = settings_directory.FindEntry("brushes",&brush_entry,true);
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
-				err = spare_settings_directory.FindEntry("brushes",&brush_entry,true);
+		HomeDirectory(path);
+		path.Append("settings");
+		BDirectory spareDir(path.Path());
 
-			if (err == B_OK) {
-				BFile brush_file(&brush_entry,B_READ_ONLY);
-				err = brush_file.InitCheck();
-				if (err == B_OK)
-					BrushStoreWindow::readBrushes(brush_file);
+		bool spareDirExists = spareDir.InitCheck() == B_OK;
+		if (settingsDir.InitCheck() == B_OK || spareDirExists) {
+			BEntry entry;
+			status_t status = settingsDir.FindEntry("brushes", &entry, true);
+			if ((status != B_OK) && spareDirExists)
+				status = spareDir.FindEntry("brushes", &entry, true);
+
+			if (status == B_OK) {
+				BFile brushes(&entry, B_READ_ONLY);
+				status = brushes.InitCheck();
+				if (status == B_OK)
+					BrushStoreWindow::readBrushes(brushes);
 			}
 
-			if (err != B_OK) {
-				// We might create some default brushes.
+			if (status != B_OK)
+				;// We might create some default brushes.
+
+			status = settingsDir.FindEntry("main_preferences",&entry, true);
+			if ((status != B_OK) && spareDirExists)
+				status = spareDir.FindEntry("main_preferences",&entry, true);
+
+			if (status == B_OK) {
+				BFile mainPreferences(&entry, B_READ_ONLY);
+				status = mainPreferences.InitCheck();
+				if (status == B_OK)
+					status = settings->read_from_file(mainPreferences);
 			}
 
-			BEntry main_preferences_entry;
-			err = settings_directory.FindEntry("main_preferences",&main_preferences_entry,true);
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
-				err = spare_settings_directory.FindEntry("main_preferences",&main_preferences_entry,true);
-
-			if (err == B_OK) {
-				BFile main_preferences_file(&main_preferences_entry,B_READ_ONLY);
-				err = main_preferences_file.InitCheck();
-				if (err == B_OK)
-					err = settings->read_from_file(main_preferences_file);
-			}
-			if (err != B_OK) {
-				// Settings have the default values.
-			}
+			if (status != B_OK)
+				;// Settings have the default values.
 
 			// Here set the language for the StringServer
-			StringServer::SetLanguage((languages)settings->language);
+			StringServer::SetLanguage(languages(settings->language));
 
-			// Create a tool-manager object. This depends on the language being set.
+			// Create a tool-manager object. Depends on the language being set.
 			ToolManager::CreateToolManager();
 
-			BEntry tool_entry;
-			err = settings_directory.FindEntry("tool_preferences",&tool_entry,true);
+			status = settingsDir.FindEntry("tool_preferences", &entry, true);
+			if ((status != B_OK) && spareDirExists)
+				status = spareDir.FindEntry("tool_preferences", &entry, true);
 
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
-				err = spare_settings_directory.FindEntry("tool_preferences",&tool_entry,true);
-
-			if (err == B_OK) {
-				BFile tool_file(&tool_entry,B_READ_ONLY);
-				if (err == B_OK) {
-					tool_manager->ReadToolSettings(tool_file);
+			if (status == B_OK) {
+				BFile tools(&entry, B_READ_ONLY);
+				if (tools.InitCheck() == B_OK) {
+					if (tool_manager->ReadToolSettings(tools) == B_OK)
+						createDefaultTools = false;
 				}
 			}
 
-			BEntry color_entry;
-			err = settings_directory.FindEntry("color_preferences",&color_entry,true);
+			status = settingsDir.FindEntry("color_preferences", &entry, true);
+			if ((status != B_OK) && spareDirExists)
+				status = spareDir.FindEntry("color_preferences", &entry, true);
 
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
-				err = spare_settings_directory.FindEntry("color_preferences",&color_entry,true);
-
-			if (err == B_OK) {
-				BFile color_file(&color_entry,B_READ_ONLY);
-				err = color_file.InitCheck();
-				if (err == B_OK) {
-					if (ColorSet::readSets(color_file) == B_OK)
-						create_default_colorset = false;
+			if (status == B_OK) {
+				BFile colors(&entry, B_READ_ONLY);
+				if (colors.InitCheck() == B_OK) {
+					if (ColorSet::readSets(colors) == B_OK)
+						createDefaultColorset = false;
 				}
 			}
-
 		}
 	}
 
-	if (create_default_colorset) {
+	if (createDefaultColorset) {
 		// We might look into apps directory and palette directory for some
-		// colorsets
+		// colorsets (TODO: this looks starnge, maybe implement static init)
 		new ColorSet(16);
 	}
 
 	// Create a tool-manager object.
-	if (create_default_tools)
+	if (createDefaultTools)
 		ToolManager::CreateToolManager();
 }
 
@@ -550,47 +541,39 @@ PaintApplication::readPreferences()
 void
 PaintApplication::writePreferences()
 {
-	BPath a_path;
-	if (find_directory(B_USER_SETTINGS_DIRECTORY,&a_path) == B_OK) {
-		BDirectory user_settings_directory;
-		BDirectory settings_directory;
-		user_settings_directory.SetTo(a_path.Path());
-		status_t err = user_settings_directory.CreateDirectory("./ArtPaint",&settings_directory);
-		if (err == B_FILE_EXISTS) {
-			err = settings_directory.SetTo(&user_settings_directory,"ArtPaint/");
-		}
-		if (err == B_OK) {
+	BPath path;
+	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
+		BDirectory settingsDir(path.Path());
+		status_t status = settingsDir.CreateDirectory("./ArtPaint", &settingsDir);
+		if (status == B_FILE_EXISTS)
+			status = settingsDir.SetTo(&settingsDir, "ArtPaint/");
+
+		if (status == B_OK) {
 			// Here we create several preferences files. One for each internal
-			// manipulator, main preferences file and brushes and palettes files.
-			// Later we might add even more files for example a file for each tool.
-			// Now all the tool-settings are stored in one file. Actually the manipulator
-			// preference files will be created by ManipulatorServer.
-			BFile brush_file;
-			err = settings_directory.CreateFile("brushes",&brush_file,false);
-			if (err == B_OK) {
-				BrushStoreWindow::writeBrushes(brush_file);
+			// manipulator, main preferences file and brushes and palettes
+			// files. Later we might add even more files for example a file for
+			// each tool. Now all the tool-settings are stored in one file.
+			// Actually the manipulator preference files will be created by
+			// ManipulatorServer.
+			BFile brushes;
+			if (settingsDir.CreateFile("brushes", &brushes, false) == B_OK)
+				BrushStoreWindow::writeBrushes(brushes);
+
+			BFile mainPreferences;
+			if (settingsDir.CreateFile("main_preferences",
+				&mainPreferences, false) == B_OK) {
+					settings->write_to_file(mainPreferences);
 			}
 
-			BFile main_preferences_file;
-			err = settings_directory.CreateFile("main_preferences",&main_preferences_file,false);
-			if (err == B_OK) {
-				err = settings->write_to_file(main_preferences_file);
-			}
+			BFile tools;
+			if (settingsDir.CreateFile("tool_preferences", &tools, false) == B_OK)
+				tool_manager->WriteToolSettings(tools);
 
-			BFile tool_file;
-			err = settings_directory.CreateFile("tool_preferences",&tool_file,false);
-			if (err == B_OK) {
-				tool_manager->WriteToolSettings(tool_file);
-			}
-
-			BFile color_palette_file;
-			err = settings_directory.CreateFile("color_preferences",&color_palette_file,false);
-			if (err == B_OK) {
-				err = ColorSet::writeSets(color_palette_file);
-			}
-		}
-		else {
-		//	printf("Could not write preferences. Hmmm?\n");
+			BFile colors;
+			if (settingsDir.CreateFile("color_preferences", &colors, false) == B_OK)
+				ColorSet::writeSets(colors);
+		} else {
+			fprintf(stderr, "Could not write preferences.\n");
 		}
 	}
 }
