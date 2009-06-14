@@ -161,32 +161,21 @@ PaintApplication::MessageReceived(BMessage* message)
 
 		case HS_SHOW_USER_DOCUMENTATION: {
 			// issued from paint-window's menubar->"Help"->"User Documentation"
-			// Here start the NetPositive with the right page.
-			BPath home_path;
-			PaintApplication::HomeDirectory(home_path);
+			BRoster roster;
+			entry_ref mimeHandler;
+			if (roster.FindApp("text/html", &mimeHandler) == B_OK) {
+				BPath homePath;
+				PaintApplication::HomeDirectory(homePath);
 
-			// Force normalization of the path to check validity.
-			if (home_path.Append("Documentation/",true) == B_OK) {
-				// Take the file-name from the message
-				const char* document_name;
-				message->FindString("document",&document_name);
-				if (home_path.Append(document_name,true) == B_OK) {
-					char url[512];
-					sprintf(url,"file://%s",home_path.Path());
-
-					// this comes from Be Newsletter 88
-					BMessage url_message(B_ARGV_RECEIVED);
-					url_message.AddString("argv","NetPositive");
-					url_message.AddString("argv",url);
-					url_message.AddInt32("argc",2);
-
-					BMessenger messenger("application/x-vnd.Be-NPOS", -1, NULL);
-
-					if (messenger.IsValid()) {
-						messenger.SendMessage( &url_message );
-					}
-					else {
-						be_roster->Launch ("application/x-vnd.Be-NPOS", &url_message );
+				// Force normalization of the path to check validity.
+				if (homePath.Append("Documentation/", true) == B_OK) {
+					const char* documentName;
+					message->FindString("document", &documentName);
+					if (homePath.Append(documentName, true) == B_OK) {
+						BString url = "file://";
+						url.Append(homePath.Path());
+						const char* argv = url.String();
+						roster.Launch(&mimeHandler, 1, &argv);
 					}
 				}
 			}
