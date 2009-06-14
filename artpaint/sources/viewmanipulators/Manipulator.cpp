@@ -7,7 +7,7 @@
  *
  */
 #include "Manipulator.h"
-#include <new.h>
+#include <new>
 #include <stdlib.h>
 
 BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_views)
@@ -18,7 +18,7 @@ BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_
 
 	BBitmap *copy = new BBitmap(new_bounds,B_RGB32,accept_views);
 	if (copy->IsValid() == FALSE)
-		throw bad_alloc();
+		throw std::bad_alloc();
 
 	uint32 *target_bits = (uint32*)copy->Bits();
 	uint32 *source_bits = (uint32*)original->Bits();

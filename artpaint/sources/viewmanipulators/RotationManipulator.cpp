@@ -9,7 +9,7 @@
 #include <ClassInfo.h>
 #include <ctype.h>
 #include <math.h>
-#include <new.h>
+#include <new>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,7 +89,7 @@ void RotationManipulator::SetPreviewBitmap(BBitmap *bitmap)
 				copy_of_the_preview_bitmap = NULL;
 			}
 		}
-		catch (bad_alloc e) {
+		catch (std::bad_alloc e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap=NULL;
 			throw e;
@@ -201,7 +201,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 		new_bitmap = new BBitmap(bitmap_frame,B_RGB32);
 		original->Unlock();
 		if (new_bitmap->IsValid() == FALSE)
-			throw bad_alloc();
+			throw std::bad_alloc();
 	}
 	else {
 		new_bitmap = original;

@@ -7,7 +7,7 @@
  *
  */
 #include <ClassInfo.h>
-#include <new.h>
+#include <new>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -103,7 +103,7 @@ BBitmap* TranslationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitm
 		new_bitmap = new BBitmap(bitmap_frame,B_RGB_32_BIT);
 		original->Unlock();
 		if (new_bitmap->IsValid() == FALSE) {
-			throw bad_alloc();
+			throw std::bad_alloc();
 		}
 	}
 	else {

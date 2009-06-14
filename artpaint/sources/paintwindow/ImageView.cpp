@@ -14,7 +14,7 @@
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
-#include <new.h>
+#include <new>
 #include <PopUpMenu.h>
 #include <Screen.h>
 #include <ScrollBar.h>
@@ -446,7 +446,7 @@ void ImageView::MessageReceived(BMessage *message)
 					Invalidate();
 					AddChange();
 				}
-				catch (bad_alloc){
+				catch (std::bad_alloc){
 					ShowAlert(CANNOT_ADD_LAYER_ALERT);
 				}
 				break;
@@ -467,7 +467,7 @@ void ImageView::MessageReceived(BMessage *message)
 						AddChange();
 					}
 				}
-				catch (bad_alloc e) {
+				catch (std::bad_alloc e) {
 					ShowAlert(CANNOT_ADD_LAYER_ALERT);
 				}
 				break;
@@ -487,7 +487,7 @@ void ImageView::MessageReceived(BMessage *message)
 							AddChange();
 						}
 					}
-					catch (bad_alloc) {
+					catch (std::bad_alloc) {
 						ShowAlert(CANNOT_ADD_LAYER_ALERT);
 					}
 				}
@@ -668,7 +668,7 @@ void ImageView::MessageReceived(BMessage *message)
 							}
 						}
 					}
-					catch (bad_alloc) {
+					catch (std::bad_alloc) {
 						ShowAlert(CANNOT_START_MANIPULATOR_ALERT);
 						delete the_manipulator;
 						the_manipulator = NULL;
@@ -1575,7 +1575,7 @@ int32 ImageView::ManipulatorFinisherThread()
 			}
 		}
 	}
-	catch (bad_alloc e) {
+	catch (std::bad_alloc e) {
 		ShowAlert(CANNOT_FINISH_MANIPULATOR_ALERT);
 		// The manipulator should be asked to reset the preview-bitmap, if it is
 		// a GUIManipulator.
@@ -1842,7 +1842,7 @@ status_t ImageView::DoPaste()
 							AddChange();
 						}
 					}
-					catch (bad_alloc e) {
+					catch (std::bad_alloc e) {
 						ShowAlert(CANNOT_ADD_LAYER_ALERT);
 					}
 				}

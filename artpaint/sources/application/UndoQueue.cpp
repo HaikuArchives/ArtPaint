@@ -8,7 +8,7 @@
  */
 #include <Alert.h>
 #include <MenuItem.h>
-#include <new.h>
+#include <new>
 #include <stdio.h>
 
 #include "UndoQueue.h"
@@ -184,7 +184,7 @@ BBitmap* UndoQueue::ReturnLayerSpareBitmap(int32 layer_id,BBitmap *layer_bitmap)
 		if (layer_bitmap != NULL) {
 			layer_bitmaps[layer_id] = new BBitmap(layer_bitmap->Bounds(),B_RGB32);
 			if (layer_bitmaps[layer_id]->IsValid() == FALSE)
-				throw bad_alloc();
+				throw std::bad_alloc();
 		}
 	}
 
@@ -212,7 +212,7 @@ status_t UndoQueue::ChangeLayerSpareBitmap(int32 layer_id, BBitmap *layer_bitmap
 	if (layer_bitmap != NULL) {
 		layer_bitmaps[layer_id] = new BBitmap(layer_bitmap->Bounds(),B_RGB32);
 		if (layer_bitmaps[layer_id]->IsValid() == FALSE)
-			throw bad_alloc();
+			throw std::bad_alloc();
 
 		uint32 *spare_bits = (uint32*)layer_bitmaps[layer_id]->Bits();
 		uint32 *bits = (uint32*)layer_bitmap->Bits();
@@ -250,7 +250,7 @@ void UndoQueue::RegisterLayer(int32 layer_id,BBitmap *layer_bitmap)
 			if (layer_bitmap != NULL) {
 				layer_bitmaps[layer_id] = new BBitmap(layer_bitmap->Bounds(),B_RGB32);
 				if (layer_bitmaps[layer_id]->IsValid() == FALSE)
-					throw bad_alloc();
+					throw std::bad_alloc();
 
 				uint32	*source_bits = (uint32*)layer_bitmap->Bits();
 				uint32	*target_bits = (uint32*)layer_bitmaps[layer_id]->Bits();

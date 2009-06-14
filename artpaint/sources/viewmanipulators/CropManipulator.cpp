@@ -8,7 +8,7 @@
  */
 #include <ClassInfo.h>
 #include <math.h>
-#include <new.h>
+#include <new>
 #include <StatusBar.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -215,7 +215,7 @@ BBitmap* CropManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 	BBitmap *new_bitmap;
 	new_bitmap = new BBitmap(BRect(0,0,right-left,bottom-top),B_RGB_32_BIT);
 	if (new_bitmap->IsValid() == FALSE)
-		throw bad_alloc();
+		throw std::bad_alloc();
 
 	uint32 *orig_bits = (uint32*)original->Bits();
 	uint32 *new_bits = (uint32*)new_bitmap->Bits();

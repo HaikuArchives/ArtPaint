@@ -9,7 +9,7 @@
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <Button.h>
-#include <new.h>
+#include <new>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <string.h>
@@ -75,7 +75,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *or
 	if (new_width != starting_width) {
 		intermediate_bitmap = new BBitmap(BRect(0,0,new_width-1,starting_height-1),B_RGB_32_BIT);
 		if (intermediate_bitmap->IsValid() == FALSE)
-			throw bad_alloc();
+			throw std::bad_alloc();
 		uint32 *target_bits = (uint32*)intermediate_bitmap->Bits();
 		int32 target_bpr = intermediate_bitmap->BytesPerRow()/4;
 		uint32 *source_bits = (uint32*)original->Bits();
@@ -154,7 +154,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *or
 	if (new_height != starting_height) {
 		BBitmap *new_bitmap = new BBitmap(BRect(0,0,new_width-1,new_height-1),B_RGB_32_BIT);
 		if (new_bitmap->IsValid() == FALSE)
-			throw bad_alloc();
+			throw std::bad_alloc();
 
 		uint32 *target_bits = (uint32*)new_bitmap->Bits();
 		int32 target_bpr = new_bitmap->BytesPerRow()/4;
@@ -349,7 +349,7 @@ void ScaleManipulator::SetPreviewBitmap(BBitmap *bitmap)
 				copy_of_the_preview_bitmap = NULL;
 			}
 		}
-		catch (bad_alloc e) {
+		catch (std::bad_alloc e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap=NULL;
 			throw e;

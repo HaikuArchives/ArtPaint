@@ -13,7 +13,7 @@
 #include <Entry.h>
 #include <InterfaceDefs.h>
 #include <MenuBar.h>
-#include <new.h>
+#include <new>
 #include <NodeInfo.h>
 #include <Path.h>
 #include <Resources.h>
@@ -566,7 +566,7 @@ void PaintWindow::MessageReceived(BMessage *message)
 					image_view->ReturnImage()->InsertLayer();
 					image_created = TRUE;
 				}
-				catch (bad_alloc) {
+				catch (std::bad_alloc) {
 					image_created = FALSE;
 					delete image_view;
 					image_view = FALSE;

@@ -6,7 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <new.h>
+#include <new>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -192,7 +192,7 @@ status_t UndoAction::StoreUndo(BBitmap *bitmap)
 			success = TRUE;
 			tries++;
 		}
-		catch (bad_alloc e) {
+		catch (std::bad_alloc e) {
 			queue->HandleLowMemorySituation();
 		}
 	}
@@ -313,7 +313,7 @@ BBitmap* UndoAction::ApplyUndo(BBitmap *bitmap,BRect &updated_rect)
 		}
 		return NULL;
 	}
-	catch (bad_alloc e) {
+	catch (std::bad_alloc e) {
 		queue->HandleLowMemorySituation();
 		throw e;
 	}
@@ -396,7 +396,7 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 			bitmap_rect.OffsetTo(0,0);
 			undo_bitmaps[undo_bitmap_count - 1] = new BBitmap(bitmap_rect,B_RGB32);
 			if (undo_bitmaps[undo_bitmap_count-1]->IsValid() == FALSE)
-				throw bad_alloc();
+				throw std::bad_alloc();
 
 			undo_rects[undo_bitmap_count - 1] = area;
 			uint32 *undo_bits = (uint32*)undo_bitmaps[undo_bitmap_count - 1]->Bits();
@@ -427,7 +427,7 @@ void UndoAction::StoreDifferences(BBitmap *old, BBitmap *current, BRect area)
 			StoreDifferences(old,current,rect4);
 		}
 	}
-	catch (bad_alloc e) {
+	catch (std::bad_alloc e) {
 		throw e;
 	}
 }

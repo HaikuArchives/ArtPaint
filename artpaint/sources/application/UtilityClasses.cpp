@@ -10,7 +10,7 @@
 #include <Bitmap.h>
 #include <Button.h>
 #include <InterfaceDefs.h>
-#include <new.h>
+#include <new>
 #include <Resources.h>
 #include <Screen.h>
 #include <StringView.h>
@@ -157,7 +157,7 @@ BBitmap* CopyBitmap(BBitmap *to_be_copied,bool deep)
 		new_bitmap = new BBitmap(to_be_copied->Bounds(),to_be_copied->ColorSpace());
 	}
 	if (new_bitmap->IsValid() == FALSE)
-		throw bad_alloc();
+		throw std::bad_alloc();
 
 	// Copy the bitmap data.
 	uint32 *s_bits = (uint32*)to_be_copied->Bits();

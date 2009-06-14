@@ -7,7 +7,7 @@
  *
  */
 #include <File.h>
-#include <new.h>
+#include <new>
 #include <stdio.h>
 
 #include "Layer.h"
@@ -57,7 +57,7 @@ Layer::Layer(BRect frame,int32 id,BView *image_v,int32 type, BBitmap *a_bitmap)
 		}
 		the_bitmap = new BBitmap(frame,B_RGB_32_BIT);
 		if (the_bitmap->IsValid() == FALSE) {
-			throw bad_alloc();
+			throw std::bad_alloc();
 		}
 
 		// Fill the bitmap with wanted initial color.

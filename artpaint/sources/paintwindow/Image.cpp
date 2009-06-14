@@ -9,7 +9,7 @@
 #include <Alert.h>
 #include <ByteOrder.h>
 #include <File.h>
-#include <new.h>
+#include <new>
 #include <Screen.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -276,11 +276,11 @@ bool Image::SetImageSize()
 
 			if (rendered_image->IsValid() == FALSE) {
 				rendered_image = NULL;
-				throw bad_alloc();
+				throw std::bad_alloc();
 			}
 			if ((dithered_image != NULL) && (dithered_image->IsValid() == FALSE)) {
 				dithered_image = NULL;
-				throw bad_alloc();
+				throw std::bad_alloc();
 			}
 
 //			// If the image size changes, clear the selection.
@@ -317,7 +317,7 @@ Layer* Image::AddLayer(BBitmap *bitmap,Layer *next_layer,bool add_to_front,float
 	try {
 		new_layer = new Layer(BRect(0,0,image_width-1,image_height-1),layer_id,image_view,HS_NORMAL_LAYER,bitmap);
 	}
-	catch (bad_alloc e) {
+	catch (std::bad_alloc e) {
 		delete bitmap;
 		throw e;
 	}
@@ -358,7 +358,7 @@ Layer* Image::AddLayer(BBitmap *bitmap,Layer *next_layer,bool add_to_front,float
 				layer_id_list[layer_id] = NULL;
 				layer_list->RemoveItem(new_layer);
 				delete new_layer;
-				throw bad_alloc();
+				throw std::bad_alloc();
 			}
 		}
 
@@ -862,7 +862,7 @@ status_t Image::ReadLayers(BFile &file)
 					layer_id_list[layer->Id()] = NULL;
 					layer_list->RemoveItem(layer);
 					delete layer;
-					throw bad_alloc();
+					throw std::bad_alloc();
 				}
 			}
 		}
@@ -940,7 +940,7 @@ status_t Image::ReadLayersOldStyle(BFile &file,int32 count)
 					layer_id_list[layer->Id()] = NULL;
 					layer_list->RemoveItem(layer);
 					delete layer;
-					throw bad_alloc();
+					throw std::bad_alloc();
 				}
 			}
 		}

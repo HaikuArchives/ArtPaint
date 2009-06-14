@@ -10,7 +10,7 @@
 #include <ClassInfo.h>
 #include <Button.h>
 #include <math.h>
-#include <new.h>
+#include <new>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -173,7 +173,7 @@ void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 				copy_of_the_preview_bitmap = NULL;
 			}
 		}
-		catch (bad_alloc e) {
+		catch (std::bad_alloc e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap=NULL;
 			throw e;
