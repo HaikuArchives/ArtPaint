@@ -1,5 +1,6 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:

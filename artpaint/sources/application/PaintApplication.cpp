@@ -1,5 +1,6 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -804,17 +805,15 @@ AppKeyFilterFunction(BMessage* message,BHandler** handler, BMessageFilter*)
 {
 	const char* bytes;
 	if ((!(modifiers() & B_COMMAND_KEY)) && (!(modifiers() & B_CONTROL_KEY))) {
-		if (message->FindString("bytes",&bytes) == B_OK) {
-			switch (bytes[0]) {
-				case B_TAB: {
-					BView* view = dynamic_cast<BView*>(*handler);
-					if ((view == NULL)
-						|| ((!(view->Flags() & B_NAVIGABLE))
-							&& (dynamic_cast<BTextView*>(*handler) == NULL))) {
+		if (message->FindString("bytes", &bytes) == B_OK) {
+			if (bytes[0] == B_TAB) {
+				BView* view = dynamic_cast<BView*>(*handler);
+				if (view && !(view->Flags() & B_NAVIGABLE)) {
+					if (dynamic_cast<BTextView*>(*handler) == NULL)
 						FloaterManager::ToggleFloaterVisibility();
-					}
+				} else {
+					FloaterManager::ToggleFloaterVisibility();
 				}
-				break;
 			}
 		}
 	}
