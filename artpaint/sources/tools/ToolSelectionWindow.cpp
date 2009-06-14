@@ -31,7 +31,7 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
 {
 	int32 pictureSize = BIG_TOOL_PICTURE_SIZE;
-	((PaintApplication*)be_app)->Settings()->tool_select_window_visible = true;
+	((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_visible = true;
 
 	MatrixView* buttonMatrix = new MatrixView(pictureSize, pictureSize, EXTRA_EDGE);
 
@@ -98,7 +98,7 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 	buttonMatrix->ResizeTo(Bounds().Width(), Bounds().Height());
 
 	window_feel feel =
-		((PaintApplication*)be_app)->Settings()->tool_select_window_feel;
+		((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_feel;
 	SetFeel(feel);
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		SetLook(B_TITLED_WINDOW_LOOK);
@@ -140,8 +140,8 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 ToolSelectionWindow::~ToolSelectionWindow()
 {
 	// Record our frame to the settings.
-	((PaintApplication*)be_app)->Settings()->tool_select_window_frame = Frame();
-	((PaintApplication*)be_app)->Settings()->tool_select_window_visible = false;
+	((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_frame = Frame();
+	((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_visible = false;
 
 	fSelectionWindow = NULL;
 	FloaterManager::RemoveFloater(this);
@@ -200,7 +200,7 @@ ToolSelectionWindow::showWindow()
 		}
 	} else {
 		new ToolSelectionWindow(
-			((PaintApplication*)be_app)->Settings()->tool_select_window_frame);
+			((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_frame);
 	}
 
 	fSelectionWindow->MoveTo(FitRectToScreen(fSelectionWindow->Frame()).LeftTop());
@@ -210,7 +210,7 @@ ToolSelectionWindow::showWindow()
 void
 ToolSelectionWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->Settings()->tool_select_window_feel = feel;
+	((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_feel = feel;
 
 	if (fSelectionWindow) {
 		fSelectionWindow->SetFeel(feel);

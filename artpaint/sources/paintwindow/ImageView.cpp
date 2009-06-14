@@ -55,7 +55,7 @@ ImageView::ImageView(BRect frame, float width, float height)
 	undo_queue = new UndoQueue(NULL,NULL,this);
 
 // This will only be set once after reafing the prefs-file
-//	UndoQueue::SetQueueDepth(((PaintApplication*)be_app)->Settings()->undo_queue_depth);
+//	UndoQueue::SetQueueDepth(((PaintApplication*)be_app)->GlobalSettings()->undo_queue_depth);
 
 	// Initialize the image.
 	the_image = new Image(this,width,height,undo_queue);
@@ -645,7 +645,7 @@ void ImageView::MessageReceived(BMessage *message)
 								else if (window_gui_manipulator != NULL) {
 									char window_name[256];
 									sprintf(window_name,"%s: %s",ReturnProjectName(),window_gui_manipulator->ReturnName());
-									BRect frame = FitRectToScreen(((PaintApplication*)be_app)->Settings()->add_on_window_frame);
+									BRect frame = FitRectToScreen(((PaintApplication*)be_app)->GlobalSettings()->add_on_window_frame);
 									manipulator_window = new ManipulatorWindow(frame,window_gui_manipulator->MakeConfigurationView(the_messenger),window_name,Window(),the_messenger);
 									// This is commented out because there doesn't seem to be any problem
 									// with leaving the tools and colors when a manipulator has its own
@@ -853,7 +853,7 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 
 bool ImageView::Quit()
 {
-	if (((PaintApplication*)be_app)->Settings()->quit_confirm_mode == B_CONTROL_ON) {
+	if (((PaintApplication*)be_app)->GlobalSettings()->quit_confirm_mode == B_CONTROL_ON) {
 		if (project_changed > 0) {
 			char alert_text[256];
 			sprintf(alert_text,StringServer::ReturnString(SAVE_CHANGES_STRING),project_changed);

@@ -115,7 +115,7 @@ GlobalSetupWindow::GlobalSetupWindow(BRect frame)
 	tab_view->SetResizingMode(B_FOLLOW_ALL_SIDES);
 	ResizeBy(100,0);
 
-	tab_view->Select(((PaintApplication*)be_app)->Settings()->settings_window_tab_number);
+	tab_view->Select(((PaintApplication*)be_app)->GlobalSettings()->settings_window_tab_number);
 	Lock();
 	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
 	Unlock();
@@ -125,8 +125,8 @@ GlobalSetupWindow::GlobalSetupWindow(BRect frame)
 GlobalSetupWindow::~GlobalSetupWindow()
 {
 	// We should also store settings in PaintApplication::settings
-	((PaintApplication*)be_app)->Settings()->global_setup_window_frame = Frame();
-	((PaintApplication*)be_app)->Settings()->settings_window_tab_number = tab_view->Selection();
+	((PaintApplication*)be_app)->GlobalSettings()->global_setup_window_frame = Frame();
+	((PaintApplication*)be_app)->GlobalSettings()->settings_window_tab_number = tab_view->Selection();
 
 	setup_window = NULL;
 }
@@ -159,7 +159,7 @@ void GlobalSetupWindow::MessageReceived(BMessage *msg)
 
 void GlobalSetupWindow::showGlobalSetupWindow()
 {
-	BRect frame = ((PaintApplication*)be_app)->Settings()->global_setup_window_frame;
+	BRect frame = ((PaintApplication*)be_app)->GlobalSettings()->global_setup_window_frame;
 
 	// If there is no setup-window we should open one.
 	if (setup_window == NULL) {
@@ -197,12 +197,13 @@ WindowFeelView::WindowFeelView(BRect frame)
 
 	float label_height = fHeight.ascent + fHeight.descent;
 
-	tool_window_feel = ((PaintApplication*)be_app)->Settings()->tool_select_window_feel;
-	tool_setup_window_feel = ((PaintApplication*)be_app)->Settings()->tool_setup_window_feel;
-	palette_window_feel = ((PaintApplication*)be_app)->Settings()->palette_window_feel;
-	brush_window_feel = ((PaintApplication*)be_app)->Settings()->brush_window_feel;
-	layer_window_feel = ((PaintApplication*)be_app)->Settings()->layer_window_feel;
-	add_on_window_feel = ((PaintApplication*)be_app)->Settings()->add_on_window_feel;
+	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
+	tool_window_feel = settings->tool_select_window_feel;
+	tool_setup_window_feel = settings->tool_setup_window_feel;
+	palette_window_feel = settings->palette_window_feel;
+	brush_window_feel = settings->brush_window_feel;
+	layer_window_feel = settings->layer_window_feel;
+	add_on_window_feel = settings->add_on_window_feel;
 
 	BView *p = Parent();
 	if (p != NULL) {
@@ -223,7 +224,7 @@ WindowFeelView::WindowFeelView(BRect frame)
 	box->AddChild(cb);
 	cb->ResizeToPreferred();
 	cb->SetResizingMode(resizing_mode);
-	if (((PaintApplication*)be_app)->Settings()->palette_window_feel == B_FLOATING_APP_WINDOW_FEEL)
+	if (((PaintApplication*)be_app)->GlobalSettings()->palette_window_feel == B_FLOATING_APP_WINDOW_FEEL)
 		cb->SetValue(B_CONTROL_ON);
 	else
 		cb->SetValue(B_CONTROL_OFF);
@@ -247,7 +248,7 @@ WindowFeelView::WindowFeelView(BRect frame)
 	box->AddChild(cb);
 	cb->ResizeToPreferred();
 	cb->SetResizingMode(resizing_mode);
-	if (((PaintApplication*)be_app)->Settings()->tool_select_window_feel == B_FLOATING_APP_WINDOW_FEEL)
+	if (((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_feel == B_FLOATING_APP_WINDOW_FEEL)
 		cb->SetValue(B_CONTROL_ON);
 	else
 		cb->SetValue(B_CONTROL_OFF);
@@ -266,7 +267,7 @@ WindowFeelView::WindowFeelView(BRect frame)
 	box->AddChild(cb);
 	cb->ResizeToPreferred();
 	cb->SetResizingMode(resizing_mode);
-	if (((PaintApplication*)be_app)->Settings()->tool_setup_window_feel == B_FLOATING_APP_WINDOW_FEEL)
+	if (((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_feel == B_FLOATING_APP_WINDOW_FEEL)
 		cb->SetValue(B_CONTROL_ON);
 	else
 		cb->SetValue(B_CONTROL_OFF);
@@ -285,7 +286,7 @@ WindowFeelView::WindowFeelView(BRect frame)
 	box->AddChild(cb);
 	cb->ResizeToPreferred();
 	cb->SetResizingMode(resizing_mode);
-	if (((PaintApplication*)be_app)->Settings()->layer_window_feel == B_FLOATING_APP_WINDOW_FEEL)
+	if (((PaintApplication*)be_app)->GlobalSettings()->layer_window_feel == B_FLOATING_APP_WINDOW_FEEL)
 		cb->SetValue(B_CONTROL_ON);
 	else
 		cb->SetValue(B_CONTROL_OFF);
@@ -304,7 +305,7 @@ WindowFeelView::WindowFeelView(BRect frame)
 	box->AddChild(cb);
 	cb->ResizeToPreferred();
 	cb->SetResizingMode(resizing_mode);
-	if (((PaintApplication*)be_app)->Settings()->brush_window_feel == B_FLOATING_APP_WINDOW_FEEL)
+	if (((PaintApplication*)be_app)->GlobalSettings()->brush_window_feel == B_FLOATING_APP_WINDOW_FEEL)
 		cb->SetValue(B_CONTROL_ON);
 	else
 		cb->SetValue(B_CONTROL_OFF);
@@ -323,7 +324,7 @@ WindowFeelView::WindowFeelView(BRect frame)
 	box->AddChild(cb);
 	cb->ResizeToPreferred();
 	cb->SetResizingMode(resizing_mode);
-	if (((PaintApplication*)be_app)->Settings()->add_on_window_feel == B_FLOATING_SUBSET_WINDOW_FEEL)
+	if (((PaintApplication*)be_app)->GlobalSettings()->add_on_window_feel == B_FLOATING_SUBSET_WINDOW_FEEL)
 		cb->SetValue(B_CONTROL_ON);
 	else
 		cb->SetValue(B_CONTROL_OFF);
@@ -566,7 +567,7 @@ LanguageControlView::LanguageControlView(BRect frame)
 	flag2->MoveTo(flag_left_point,flag2->Frame().top);
 
 
-	original_language = language = ((PaintApplication*)be_app)->Settings()->language;
+	original_language = language = ((PaintApplication*)be_app)->GlobalSettings()->language;
 	if (language == ENGLISH_LANGUAGE)
 		language_button_1->SetValue(B_CONTROL_ON);
 
@@ -625,7 +626,7 @@ void LanguageControlView::MessageReceived(BMessage *message)
 
 void LanguageControlView::ApplyChanges()
 {
-	((PaintApplication*)be_app)->Settings()->language = language;
+	((PaintApplication*)be_app)->GlobalSettings()->language = language;
 }
 
 
@@ -652,7 +653,7 @@ GeneralControlView::GeneralControlView(BRect frame)
 	button_frame = cursor_button_2->Frame();
 	button_frame.OffsetBy(0,button_frame.Height()+10);
 
-	cursor_mode = ((PaintApplication*)be_app)->Settings()->cursor_mode;
+	cursor_mode = ((PaintApplication*)be_app)->GlobalSettings()->cursor_mode;
 	if (cursor_mode == CROSS_HAIR_CURSOR_MODE)
 		cursor_button_1->SetValue(B_CONTROL_ON);
 
@@ -672,7 +673,7 @@ GeneralControlView::GeneralControlView(BRect frame)
 	button_frame = box->Frame();
 	button_frame.OffsetBy(0,button_frame.Height()+4);
 
-	quit_confirm_mode = ((PaintApplication*)be_app)->Settings()->quit_confirm_mode;
+	quit_confirm_mode = ((PaintApplication*)be_app)->GlobalSettings()->quit_confirm_mode;
 	quit_confirm_box = new BCheckBox(button_frame,"quit_confirm_box",StringServer::ReturnString(CONFIRM_QUIT_STRING),new BMessage(CONFIRM_MODE_CHANGED));
 	quit_confirm_box->ResizeToPreferred();
 	AddChild(quit_confirm_box);
@@ -707,7 +708,7 @@ void GeneralControlView::MessageReceived(BMessage *message)
 
 void GeneralControlView::ApplyChanges()
 {
-	((PaintApplication*)be_app)->Settings()->cursor_mode = cursor_mode;
-	((PaintApplication*)be_app)->Settings()->quit_confirm_mode = quit_confirm_mode;
+	((PaintApplication*)be_app)->GlobalSettings()->cursor_mode = cursor_mode;
+	((PaintApplication*)be_app)->GlobalSettings()->quit_confirm_mode = quit_confirm_mode;
 }
 

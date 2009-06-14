@@ -50,7 +50,7 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	// here we just record the mode that user has requested
 	// for displaying the controls (eg. RGBA, HSV, something else)
 	selector_mode = mode;
-	((PaintApplication*)be_app)->Settings()->palette_window_visible = TRUE;
+	((PaintApplication*)be_app)->GlobalSettings()->palette_window_visible = TRUE;
 
 	open_panel = NULL;
 	save_panel = NULL;
@@ -75,7 +75,7 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	// Put the static pointer to point to this window.
 	palette_window = this;
 
-	window_feel feel = ((PaintApplication*)be_app)->Settings()->palette_window_feel;
+	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->palette_window_feel;
 	SetFeel(feel);
 
 	// Add a filter that will be used to catch mouse-down-messages in order
@@ -108,11 +108,12 @@ ColorPaletteWindow::~ColorPaletteWindow()
 	palette_window = NULL;
 
 	// Store our frame in the settings
-	((PaintApplication*)be_app)->Settings()->palette_window_frame = Frame();
-	((PaintApplication*)be_app)->Settings()->palette_window_visible = FALSE;
+	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
+	settings->palette_window_frame = Frame();
+	settings->palette_window_visible = FALSE;
 
 	// Store the mode in the settings
-	((PaintApplication*)be_app)->Settings()->palette_window_mode = selector_mode;
+	settings->palette_window_mode = selector_mode;
 
 	FloaterManager::RemoveFloater(this);
 }
@@ -733,8 +734,9 @@ void ColorPaletteWindow::showPaletteWindow(BMessage *msg)
 	// If there is already a palette window, we should only show it.
 	// Remember to check the workspace.
 	if (palette_window == NULL) {
-		palette_window = new ColorPaletteWindow(((PaintApplication*)be_app)->Settings()->palette_window_frame,
-												((PaintApplication*)be_app)->Settings()->palette_window_mode);
+		global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
+		palette_window = new ColorPaletteWindow(settings->palette_window_frame,
+			settings->palette_window_mode);
 		for (int32 i=0;i<master_window_list->CountItems();i++) {
 			((BWindow*)master_window_list->ItemAt(i))->AddToSubset(palette_window);
 		}
@@ -780,7 +782,7 @@ void ColorPaletteWindow::ChangePaletteColor(rgb_color& c)
 
 void ColorPaletteWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->Settings()->palette_window_feel = feel;
+	((PaintApplication*)be_app)->GlobalSettings()->palette_window_feel = feel;
 	if (palette_window != NULL) {
 		palette_window->SetFeel(feel);
 		if (feel == B_NORMAL_WINDOW_FEEL)

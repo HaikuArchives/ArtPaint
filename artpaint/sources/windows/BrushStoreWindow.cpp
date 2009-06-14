@@ -35,8 +35,8 @@ BrushStoreWindow* BrushStoreWindow::brush_window = NULL;
 BrushStoreWindow::BrushStoreWindow()
 	:	BWindow(BRect(20,20,220,220),StringServer::ReturnString(BRUSHES_STRING),B_DOCUMENT_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK)
 {
-	BRect frame = ((PaintApplication*)be_app)->Settings()->brush_window_frame;
-	((PaintApplication*)be_app)->Settings()->brush_window_visible = TRUE;
+	BRect frame = ((PaintApplication*)be_app)->GlobalSettings()->brush_window_frame;
+	((PaintApplication*)be_app)->GlobalSettings()->brush_window_visible = TRUE;
 	frame = FitRectToScreen(frame);
 	MoveTo(frame.LeftTop());
 	ResizeTo(frame.Width(),frame.Height());
@@ -70,7 +70,7 @@ BrushStoreWindow::BrushStoreWindow()
 
 	SetSizeLimits(scroll_bar->Frame().Width()+BRUSH_VAULT_WIDTH,10000,menu_bar->Frame().Height() + 1 + BRUSH_VAULT_HEIGHT,10000);
 
-	window_feel feel = ((PaintApplication*)be_app)->Settings()->brush_window_feel;
+	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->brush_window_feel;
 	setFeel(feel);
 
 	// Add a filter that will be used to catch mouse-down-messages in order
@@ -92,8 +92,8 @@ BrushStoreWindow::BrushStoreWindow()
 
 BrushStoreWindow::~BrushStoreWindow()
 {
-	((PaintApplication*)be_app)->Settings()->brush_window_frame	= Frame();
-	((PaintApplication*)be_app)->Settings()->brush_window_visible = FALSE;
+	((PaintApplication*)be_app)->GlobalSettings()->brush_window_frame	= Frame();
+	((PaintApplication*)be_app)->GlobalSettings()->brush_window_visible = FALSE;
 	brush_window = NULL;
 
 	FloaterManager::RemoveFloater(this);
@@ -174,7 +174,7 @@ void BrushStoreWindow::showWindow()
 
 void BrushStoreWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->Settings()->brush_window_feel = feel;
+	((PaintApplication*)be_app)->GlobalSettings()->brush_window_feel = feel;
 	if (brush_window != NULL) {
 		brush_window->Lock();
 		brush_window->SetFeel(feel);

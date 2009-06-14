@@ -24,7 +24,7 @@ window_feel ManipulatorWindow::feel = B_NORMAL_WINDOW_FEEL;
 ManipulatorWindow::ManipulatorWindow(BRect rect,BView *view,char *name,BWindow *master,BMessenger *t)
 	: BWindow(rect,name,look,feel,B_NOT_RESIZABLE|B_NOT_ZOOMABLE|B_NOT_ANCHORED_ON_ACTIVATE|B_NOT_CLOSABLE)
 {
-	feel = ((PaintApplication*)be_app)->Settings()->add_on_window_feel;
+	feel = ((PaintApplication*)be_app)->GlobalSettings()->add_on_window_feel;
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		look = B_TITLED_WINDOW_LOOK;
 	else
@@ -100,7 +100,7 @@ ManipulatorWindow::~ManipulatorWindow()
 	manipulator_view->RemoveSelf();	// The manipulator will delete this.
 
 	// Store the frame in the settings.
-	((PaintApplication*)be_app)->Settings()->add_on_window_frame = Frame();
+	((PaintApplication*)be_app)->GlobalSettings()->add_on_window_frame = Frame();
 
 	delete target;
 
@@ -126,5 +126,5 @@ void ManipulatorWindow::setFeel(window_feel f)
 	}
 	release_sem(list_mutex);
 
-	((PaintApplication*)be_app)->Settings()->add_on_window_feel = feel;
+	((PaintApplication*)be_app)->GlobalSettings()->add_on_window_feel = feel;
 }

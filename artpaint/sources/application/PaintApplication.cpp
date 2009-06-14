@@ -69,7 +69,7 @@ PaintApplication::PaintApplication()
 
 	// create the settings
 	fGlobalSettings = new global_settings();
-	readPreferences();
+	_ReadPreferences();
 
 	// Set the language
 	StringServer::SetLanguage(languages(fGlobalSettings->language));
@@ -102,7 +102,7 @@ PaintApplication::~PaintApplication()
 
 	delete fProjectOpenPanel;
 
-	writePreferences();
+	_WritePreferences();
 	delete fGlobalSettings;
 
 	ToolManager::DestroyToolManager();
@@ -332,7 +332,7 @@ PaintApplication::RefsReceived(BMessage* message)
 											}
 										}
 									}
-									readProject(file,ref);
+									_ReadProject(file,ref);
 								}
 								else {
 									bool store_path;
@@ -347,7 +347,7 @@ PaintApplication::RefsReceived(BMessage* message)
 										}
 									}
 									file.Seek(0,SEEK_SET);
-									readProjectOldStyle(file,ref);
+									_ReadProjectOldStyle(file,ref);
 								}
 							}
 						}
@@ -452,7 +452,7 @@ PaintApplication::SetColor(rgb_color color, bool foreground)
 
 
 void
-PaintApplication::readPreferences()
+PaintApplication::_ReadPreferences()
 {
 	bool createDefaultTools = true;
 	bool createDefaultColorset = true;
@@ -542,7 +542,7 @@ PaintApplication::readPreferences()
 
 
 void
-PaintApplication::writePreferences()
+PaintApplication::_WritePreferences()
 {
 	BPath path;
 	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
@@ -583,70 +583,65 @@ PaintApplication::writePreferences()
 
 
 status_t
-PaintApplication::readProject(BFile &file,entry_ref &ref)
+PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 {
-	// This is the new way of reading a structured project file. The possibility to read old
-	// project-files is maintained through readProjectOldStyle-function.
+	// This is the new way of reading a structured project file. The possibility
+	// to read old project files is still maintained through readProjectOldStyle.
 
-	bool is_little_endian;
 	int32 lendian;
-	file.Read(&lendian,sizeof(int32));
-	if (lendian == 0x00000000) {
-		is_little_endian = false;
-	}
-	else if (uint32(lendian) == 0xFFFFFFFF) {
-		is_little_endian = true;
-	}
-	else
-		return B_ERROR;
+	file.Read(&lendian, sizeof(int32));
 
-	int64 length = FindProjectFileSection(file,PROJECT_FILE_DIMENSION_SECTION_ID);
-	if (length != 2*sizeof(int32))
+	bool isLittleEndian = true;
+	if (lendian == 0x00000000) {
+		isLittleEndian = false;
+	} else if (uint32(lendian) == 0xFFFFFFFF) {
+		isLittleEndian = true;
+	} else {
+		return B_ERROR;
+	}
+
+	int64 length = FindProjectFileSection(file, PROJECT_FILE_DIMENSION_SECTION_ID);
+	if (length != (2 * sizeof(int32)))
 		return B_ERROR;
 
 	int32 width;
+	if (file.Read(&width, sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
 	int32 height;
-
-	if (file.Read(&width,sizeof(int32)) != sizeof(int32))
-		return B_ERROR;
-	if (file.Read(&height,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&height, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	if (is_little_endian) {
+	if (isLittleEndian) {
 		width = B_LENDIAN_TO_HOST_INT32(width);
 		height = B_LENDIAN_TO_HOST_INT32(height);
-	}
-	else {
+	} else {
 		width = B_BENDIAN_TO_HOST_INT32(width);
 		height = B_BENDIAN_TO_HOST_INT32(height);
 	}
 
 	// Create a paint-window using the width and height
-	PaintWindow* the_window = PaintWindow::createPaintWindow(NULL, ref.name);
+	PaintWindow* paintWindow = PaintWindow::createPaintWindow(NULL, ref.name);
 
-	the_window->OpenImageView(width,height);
+	paintWindow->OpenImageView(width,height);
 	// Then read the layer-data. Rewind the file and put the image-view to read
 	// the data.
-	ImageView* image_view = the_window->ReturnImageView();
+	ImageView* image_view = paintWindow->ReturnImageView();
 	image_view->ReturnImage()->ReadLayers(file);
 
 	// This must be before the image-view is added
-	BEntry* entry = the_window->ProjectEntry();
-	*entry = BEntry(&ref,true);
-
-	the_window->AddImageView();
+	paintWindow->SetProjectEntry(BEntry(&ref, true));
+	paintWindow->AddImageView();
 
 	// As last thing read the attributes from the file
-	the_window->readAttributes(file);
-
-
+	paintWindow->readAttributes(file);
 
 	return B_OK;
 }
 
 
 status_t
-PaintApplication::readProjectOldStyle(BFile& file, entry_ref& ref)
+PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 {
 // This old version of file reading will be copied to the conversion utility.
 	// The structure of a project file is following.
@@ -727,7 +722,7 @@ PaintApplication::readProjectOldStyle(BFile& file, entry_ref& ref)
 	PaintWindow* the_window = PaintWindow::createPaintWindow(NULL,file_name);
 	the_window->OpenImageView(width,height);
 
-//	BEntry* project_entry = the_window->ProjectEntry();
+
 //	*project_entry = BEntry(&ref);
 
 	// Here we are ready to read layers from the file.
@@ -758,8 +753,7 @@ PaintApplication::readProjectOldStyle(BFile& file, entry_ref& ref)
 	}
 
 	// This must be before the image-view is added
-	BEntry* entry = the_window->ProjectEntry();
-	*entry = BEntry(&ref,true);
+	the_window->SetProjectEntry(BEntry(&ref, true));
 
 	the_window->AddImageView();
 	// Change the zoom-level to be correct

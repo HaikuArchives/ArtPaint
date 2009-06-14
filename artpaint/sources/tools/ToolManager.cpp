@@ -151,7 +151,7 @@ status_t ToolManager::ChangeTool(int32 tool_type)
 	ToolSetupWindow::changeToolForTheSetupWindow(tool_type);
 	ToolSelectionWindow::ChangeTool(tool_type);
 
-	((PaintApplication*)be_app)->Settings()->primary_tool = tool_type;
+	((PaintApplication*)be_app)->GlobalSettings()->primary_tool = tool_type;
 
 	return B_NO_ERROR;
 }
@@ -165,7 +165,7 @@ const DrawingTool* ToolManager::ReturnTool(int32 tool_type)
 
 const void* ToolManager::ReturnCursor()
 {
-	int32 cursor_mode = ((PaintApplication*)be_app)->Settings()->cursor_mode;
+	int32 cursor_mode = ((PaintApplication*)be_app)->GlobalSettings()->cursor_mode;
 	if ((active_drawing_tool != NULL) && (cursor_mode == TOOL_CURSOR_MODE)) {
 		return active_drawing_tool->ReturnToolCursor();
 	}

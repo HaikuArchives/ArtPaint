@@ -64,9 +64,9 @@ LayerWindow::LayerWindow(BRect frame)
 	layer_window = this;
 	layer_count = 0;
 
-	window_feel feel = ((PaintApplication*)be_app)->Settings()->layer_window_feel;
+	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->layer_window_feel;
 	setFeel(feel);
-	((PaintApplication*)be_app)->Settings()->layer_window_visible = TRUE;
+	((PaintApplication*)be_app)->GlobalSettings()->layer_window_visible = TRUE;
 	ResizeBy(1,0);
 	ResizeBy(-1,0);
 
@@ -87,8 +87,8 @@ LayerWindow::~LayerWindow()
 	release_sem(layer_window_semaphore);
 
 	// Then we must record our frame to the app's preferences.
-	((PaintApplication*)be_app)->Settings()->layer_window_frame = Frame();
-	((PaintApplication*)be_app)->Settings()->layer_window_visible = FALSE;
+	((PaintApplication*)be_app)->GlobalSettings()->layer_window_frame = Frame();
+	((PaintApplication*)be_app)->GlobalSettings()->layer_window_visible = FALSE;
 
 	FloaterManager::RemoveFloater(this);
 }
@@ -141,7 +141,7 @@ void LayerWindow::showLayerWindow()
 {
 	acquire_sem(layer_window_semaphore);
 	if (layer_window == NULL) {
-		BRect frame = ((PaintApplication*)be_app)->Settings()->layer_window_frame;
+		BRect frame = ((PaintApplication*)be_app)->GlobalSettings()->layer_window_frame;
 		new LayerWindow(FitRectToScreen(frame));
 		layer_window->Update();
 	}
@@ -159,7 +159,7 @@ void LayerWindow::showLayerWindow()
 
 void LayerWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->Settings()->layer_window_feel = feel;
+	((PaintApplication*)be_app)->GlobalSettings()->layer_window_feel = feel;
 
 	if (layer_window != NULL) {
 		layer_window->Lock();

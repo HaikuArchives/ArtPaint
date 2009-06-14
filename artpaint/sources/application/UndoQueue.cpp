@@ -430,7 +430,7 @@ void UndoQueue::SetQueueDepth(int32 new_depth)
 
 	maximum_queue_depth = new_depth;
 
-	((PaintApplication*)be_app)->Settings()->undo_queue_depth = new_depth;
+	((PaintApplication*)be_app)->GlobalSettings()->undo_queue_depth = new_depth;
 }
 
 

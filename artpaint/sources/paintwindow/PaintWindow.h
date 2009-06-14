@@ -187,8 +187,9 @@ status_t	AddImageView();
 ImageView*	ReturnImageView() { return image_view; }
 
 BEntry*		ImageEntry() { return &image_entry; }
-BEntry*		ProjectEntry() { return &project_entry; }
 
+BEntry		ProjectEntry() const { return project_entry; }
+void		SetProjectEntry(const BEntry& entry) { project_entry = entry; }
 
 StatusView*	ReturnStatusView();
 };

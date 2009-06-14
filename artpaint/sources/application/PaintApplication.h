@@ -41,15 +41,14 @@ public:
 
 
 	static	void				HomeDirectory(BPath& path);
-			global_settings*	Settings() { return fGlobalSettings; }
+			global_settings*	GlobalSettings() { return fGlobalSettings; }
 
 private:
-			void				readPreferences();
-			void				writePreferences();
+			void				_ReadPreferences();
+			void				_WritePreferences();
 
-			status_t			readAddOns();
-			status_t			readProject(BFile& file, entry_ref& ref);
-			status_t			readProjectOldStyle(BFile& file, entry_ref& ref);
+			status_t			_ReadProject(BFile& file, entry_ref& ref);
+			status_t			_ReadProjectOldStyle(BFile& file, entry_ref& ref);
 
 private:
 			BFilePanel*			fImageOpenPanel;

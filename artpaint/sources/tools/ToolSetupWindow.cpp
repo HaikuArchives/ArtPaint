@@ -52,7 +52,7 @@ ToolSetupWindow::ToolSetupWindow(BRect frame,int32 tool_type)
 	// initialize the static variable
 	setup_window = this;
 
-	window_feel feel = ((PaintApplication*)be_app)->Settings()->tool_setup_window_feel;
+	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_feel;
 	SetFeel(feel);
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		SetLook(B_TITLED_WINDOW_LOOK);
@@ -69,15 +69,15 @@ ToolSetupWindow::ToolSetupWindow(BRect frame,int32 tool_type)
 
 	// finally show ourselves to the public
 	Show();
-	((PaintApplication*)be_app)->Settings()->tool_setup_window_visible = TRUE;
+	((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_visible = TRUE;
 	FloaterManager::AddFloater(this);
 }
 
 ToolSetupWindow::~ToolSetupWindow()
 {
 	// record our frame into apps settings
-	((PaintApplication*)be_app)->Settings()->tool_setup_window_frame = Frame();
-	((PaintApplication*)be_app)->Settings()->tool_setup_window_visible = FALSE;
+	((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_frame = Frame();
+	((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_visible = FALSE;
 
 	// NULLify the static pointer
 	setup_window = NULL;
@@ -122,7 +122,7 @@ void ToolSetupWindow::changeTool(int32 new_tool)
 		// Record the new tool type in member-variable.
 		current_tool_type = new_tool;
 		// Also store the new tool into app's settings.
-		((PaintApplication*)be_app)->Settings()->setup_window_tool = new_tool;
+		((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool = new_tool;
 
 		// Remove the controllers of the previous tool.
 		int32 children_count = settings_container->CountChildren();
@@ -168,7 +168,7 @@ void ToolSetupWindow::showWindow(int32 tool_type)
 	if (setup_window == NULL) {
 		if (tool_type == 0)
 			tool_type = FREE_LINE_TOOL;
-		new ToolSetupWindow(((PaintApplication*)be_app)->Settings()->tool_setup_window_frame,tool_type);
+		new ToolSetupWindow(((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_frame,tool_type);
 		tool_type = 0;
 	}
 	else {
@@ -197,7 +197,7 @@ void ToolSetupWindow::showWindow(int32 tool_type)
 
 void ToolSetupWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->Settings()->tool_setup_window_feel = feel;
+	((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_feel = feel;
 
 	if (setup_window != NULL) {
 		setup_window->SetFeel(feel);
@@ -218,7 +218,7 @@ void ToolSetupWindow::changeToolForTheSetupWindow(int32 new_tool)
 		setup_window->Unlock();
 	}
 	else {
-		((PaintApplication*)be_app)->Settings()->setup_window_tool = new_tool;
+		((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool = new_tool;
 	}
 }
 
