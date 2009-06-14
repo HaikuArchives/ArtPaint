@@ -6,7 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <new.h>
+#include <new>
 #include <StatusBar.h>
 
 #include "AddOnTypes.h"
@@ -62,7 +62,7 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 		// convolution to work properly.
 		duplicate = DuplicateBitmap(original,-1);
 	}
-	catch (bad_alloc e) {
+	catch (std::bad_alloc e) {
 		// Here we could clean up if there was need for that.
 		throw e;
 	}
