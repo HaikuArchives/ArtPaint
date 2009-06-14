@@ -4,8 +4,7 @@ ArtPaint can be checked out through anonymous access with the following command:
 svn checkout http://svn.osdrawer.net/artpaint/trunk artpaint
 
 Developers can checkout using the following command:
-svn checkout --username USERNAME svn checkout http://svn.osdrawer.net/artpaint/trunk artpaint
-
+svn checkout --username developername http://svn.osdrawer.net/artpaint/trunk artpaint
 
 There are two ways to build ArtPaint, i will describe first what to do when cross compiling:
 
@@ -14,7 +13,7 @@ This is especially important if you are going to try to build ArtPaint with Haik
 Jamfile engine. The included Jamfiles expects ArtPaint's source code to be checked out into
 Haiku's 3rdparty folder.
 
-After successfully ckecking out the source your hard disk layout should look something like this:
+After successfully checking out the source, your hard disk layout should look something like this:
 
 haiku |
 		- build
