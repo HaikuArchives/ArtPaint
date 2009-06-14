@@ -551,7 +551,7 @@ void ImageView::MessageReceived(BMessage *message)
 		// layers and recalculate the composite picture and redisplay
 		case HS_CLEAR_CANVAS:
 			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
-				rgb_color c = ((PaintApplication*)be_app)->GetColor(FALSE);
+				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
 				if (the_image->ClearLayers(c) == TRUE) {
 					Invalidate();
 					AddChange();
@@ -564,7 +564,7 @@ void ImageView::MessageReceived(BMessage *message)
 		// the composite picture and redisplay the image.
 		case HS_CLEAR_LAYER:
 			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
-				rgb_color c = ((PaintApplication*)be_app)->GetColor(FALSE);
+				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
 				if (the_image->ClearCurrentLayer(c) == TRUE) {
 					Invalidate();
 					AddChange();

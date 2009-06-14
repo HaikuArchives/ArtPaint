@@ -11,11 +11,11 @@
 
 rgb_color ManipulatorInformer::GetForegroundColor()
 {
-	return ((PaintApplication*)be_app)->GetColor(true);
+	return ((PaintApplication*)be_app)->Color(true);
 }
 
 
 rgb_color ManipulatorInformer::GetBackgroundColor()
 {
-	return ((PaintApplication*)be_app)->GetColor(false);
+	return ((PaintApplication*)be_app)->Color(false);
 }

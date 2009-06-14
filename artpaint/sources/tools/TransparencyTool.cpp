@@ -39,7 +39,7 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 	BWindow *window = view->Window();
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	BRect bounds = bitmap->Bounds();
 	uint32 *bits_origin = (uint32*)bitmap->Bits();
@@ -63,7 +63,7 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 	} color;
 	while (buttons) {
 		the_script->AddPoint(point);
-		uint32 transparency_value = ((PaintApplication*)be_app)->GetColor(TRUE).alpha;
+		uint32 transparency_value = ((PaintApplication*)be_app)->Color(TRUE).alpha;
 		int32 x_dist,y_sqr;
 
 		int32 width = rc.IntegerWidth();

@@ -52,7 +52,7 @@ ToolScript* RectangleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,B
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 //	BView *bitmap_view = view->getBufferView();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 	Selection *selection = view->GetSelection();
 
 	bool draw_rectangle = TRUE;
@@ -66,7 +66,7 @@ ToolScript* RectangleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,B
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
-		rgb_color c=((PaintApplication*)be_app)->GetColor(TRUE);
+		rgb_color c=((PaintApplication*)be_app)->Color(TRUE);
 		original_point = point;
 		bitmap_rect = BRect(point,point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);

@@ -58,7 +58,7 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 	Selection *selection = view->GetSelection();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	if (settings.mode == HS_AIRBRUSH_MODE) {		// Do the airbrush
 		BRect bounds = bitmap->Bounds();
@@ -71,7 +71,7 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 			the_script->AddPoint(point);
 
 			float half_size = settings.size/2;
-			rgb_color c = ((PaintApplication*)be_app)->GetColor(TRUE);
+			rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
 			target_color = RGBColorToBGRA(c);
 			// we should only consider points that are inside this rectangle
 			rc = BRect(point.x-half_size,point.y-half_size,point.x+half_size,point.y+half_size);
@@ -164,7 +164,7 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 			float width = settings.size;
 			float angle;
 			float opacity = 0.4;
-			rgb_color c = ((PaintApplication*)be_app)->GetColor(TRUE);
+			rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
 			uint32 target_color = RGBColorToBGRA(c);
 
 			BRect rc(point,point);

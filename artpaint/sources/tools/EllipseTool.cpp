@@ -45,7 +45,7 @@ ToolScript* EllipseTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPo
 	drawing_mode old_mode;
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 	Selection *selection = view->GetSelection();
 
 	if (window != NULL) {
@@ -55,7 +55,7 @@ ToolScript* EllipseTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPo
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
-		rgb_color c=((PaintApplication*)be_app)->GetColor(TRUE);
+		rgb_color c=((PaintApplication*)be_app)->Color(TRUE);
 		original_point = point;
 		bitmap_rect = BRect(point,point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);

@@ -52,7 +52,7 @@ ToolScript* BlurTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	selection = view->GetSelection();
 

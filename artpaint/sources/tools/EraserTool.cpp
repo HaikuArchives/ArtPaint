@@ -44,7 +44,7 @@ ToolScript* EraserTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	thread_id coordinate_reader = spawn_thread(CoordinateReader,"read coordinates",B_NORMAL_PRIORITY,this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = TRUE;
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	Selection *selection = view->GetSelection();
@@ -60,7 +60,7 @@ ToolScript* EraserTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 
 
 	if (settings.mode == HS_ERASE_TO_BACKGROUND_MODE) {
-		rgb_color c = ((PaintApplication*)be_app)->GetColor(false);
+		rgb_color c = ((PaintApplication*)be_app)->Color(false);
 		background.bytes[0] = c.blue;
 		background.bytes[1] = c.green;
 		background.bytes[2] = c.red;

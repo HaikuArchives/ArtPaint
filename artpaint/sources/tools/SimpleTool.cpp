@@ -50,7 +50,7 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	thread_id coordinate_reader = spawn_thread(CoordinateReader,"read coordinates",B_NORMAL_PRIORITY,this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = TRUE;
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	Selection *selection = view->GetSelection();
@@ -74,7 +74,7 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	if ((diameter%2) == 0)
 		diameter++;
 
-	new_color = ((PaintApplication*)be_app)->GetColor(TRUE);
+	new_color = ((PaintApplication*)be_app)->Color(TRUE);
 	new_color_bgra = RGBColorToBGRA(new_color);
 	if (diameter != 1)
 		drawer->DrawCircle(prev_point,diameter/2,new_color_bgra,TRUE,TRUE,selection);
@@ -108,7 +108,7 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 //				set_mouse_speed(original_mouse_speed);
 //			}
 			// first set the color
-			new_color = ((PaintApplication*)be_app)->GetColor(TRUE);
+			new_color = ((PaintApplication*)be_app)->Color(TRUE);
 			new_color_bgra = RGBColorToBGRA(new_color);
 			diameter = settings.size;
 			if ((diameter%2) == 0)

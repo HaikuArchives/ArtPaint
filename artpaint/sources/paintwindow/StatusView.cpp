@@ -375,7 +375,7 @@ void SelectedColorsView::Draw(BRect area)
 	foreground_rect.InsetBy(1,1);
 	foreground_rect = foreground_rect & area;
 
-	SetHighAndLowColors(((PaintApplication*)be_app)->GetColor(TRUE));
+	SetHighAndLowColors(((PaintApplication*)be_app)->Color(TRUE));
 	FillRect(foreground_rect,HS_2X2_BLOCKS);
 
 	SetHighColor(0,0,0,255);
@@ -387,7 +387,7 @@ void SelectedColorsView::Draw(BRect area)
 	StrokeLine(BPoint(foreground_rect.right+2,foreground_rect.bottom+1),BPoint(foreground_rect.right+2,rect.top));
 
 
-	SetHighAndLowColors(((PaintApplication*)be_app)->GetColor(FALSE));
+	SetHighAndLowColors(((PaintApplication*)be_app)->Color(FALSE));
 	FillRegion(&background_region,HS_2X2_BLOCKS);
 }
 
@@ -441,14 +441,14 @@ void SelectedColorsView::MouseDown(BPoint point)
 	if ((buttons & B_PRIMARY_MOUSE_BUTTON) && Bounds().Contains(point)) {
 		bool fore = IsPointOverForegroundColor(point);
 
-		rgb_color c = ((PaintApplication*)be_app)->GetColor(fore);
+		rgb_color c = ((PaintApplication*)be_app)->Color(fore);
 
 		ColorPaletteWindow::showPaletteWindow();
 		ColorPaletteWindow::ChangePaletteColor(c);
 	}
 	else {
-		rgb_color foreground = ((PaintApplication*)be_app)->GetColor(true);
-		rgb_color background = ((PaintApplication*)be_app)->GetColor(false);
+		rgb_color foreground = ((PaintApplication*)be_app)->Color(true);
+		rgb_color background = ((PaintApplication*)be_app)->Color(false);
 
 		((PaintApplication*)be_app)->SetColor(background,true);
 		((PaintApplication*)be_app)->SetColor(foreground,false);

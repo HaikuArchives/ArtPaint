@@ -57,7 +57,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 	Selection *selection = view->GetSelection();
 
 	if (window != NULL) {
-		ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+		ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 
@@ -71,7 +71,7 @@ ToolScript* StraightLineTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
 		original_point = point;
-		rgb_color c = ((PaintApplication*)be_app)->GetColor(TRUE);
+		rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
 
 		prev_view_point = original_view_point = view_point;
 		bitmap_rect = BRect(point.x,point.y-floor(((float)GetCurrentValue(SIZE_OPTION)-1.0)/2.0),point.x,point.y+ceil(((float)GetCurrentValue(SIZE_OPTION)-1.0)/2.0));

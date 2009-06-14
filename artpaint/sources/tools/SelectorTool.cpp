@@ -49,7 +49,7 @@ ToolScript* SelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 	if (window == NULL)
 		return NULL;
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	window->Lock();
 	view->SetHighColor(255,255,255,255);

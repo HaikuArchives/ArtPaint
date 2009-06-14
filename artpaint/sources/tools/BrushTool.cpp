@@ -53,7 +53,7 @@ ToolScript* BrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoin
 
 	CoordinateReader *coordinate_reader = new CoordinateReader(view,LINEAR_INTERPOLATION,FALSE);
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	selection = view->GetSelection();
 
@@ -76,7 +76,7 @@ ToolScript* BrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoin
 		char bytes[4];
 		uint32 word;
 	} c;
-	rgb_color col = ((PaintApplication*)be_app)->GetColor(TRUE);
+	rgb_color col = ((PaintApplication*)be_app)->Color(TRUE);
 	c.bytes[0] = col.blue;
 	c.bytes[1] = col.green;
 	c.bytes[2] = col.red;

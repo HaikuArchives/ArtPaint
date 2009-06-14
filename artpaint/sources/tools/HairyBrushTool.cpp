@@ -50,7 +50,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 //	thread_id coordinate_reader = spawn_thread(CoordinateReader,"read coordinates",B_NORMAL_PRIORITY,this);
 //	resume_thread(coordinate_reader);
 //	reading_coordinates = TRUE;
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 
 	Selection *selection = view->GetSelection();
 
@@ -77,7 +77,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	float color_randomness = GetCurrentValue(TOLERANCE_OPTION);
 	float initial_color_amount = GetCurrentValue(CONTINUITY_OPTION) / 10.0;
 	float color_amount_randomness = 4;
-	rgb_color color =  ((PaintApplication*)be_app)->GetColor(TRUE);
+	rgb_color color =  ((PaintApplication*)be_app)->Color(TRUE);
 	int32 hair_count = GetCurrentValue(SIZE_OPTION);
 
 	float *color_amount_array = new float[hair_count];
@@ -88,7 +88,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	for (int32 i=0;i<hair_count;i++) {
 		float red,green,blue,alpha;
 		color_amount_array[i] = initial_color_amount - color_amount_randomness + random()%1000/1000.0*color_amount_randomness*2.0;
-		color_array[i] = ((PaintApplication*)be_app)->GetColor(TRUE);
+		color_array[i] = ((PaintApplication*)be_app)->Color(TRUE);
 		red = color_array[i].red;
 		green = color_array[i].green;
 		blue = color_array[i].blue;

@@ -44,7 +44,7 @@ FillTool::~FillTool()
 
 ToolScript* FillTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint view_point)
 {
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->GetColor(TRUE));
+	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
 	the_script->AddPoint(point);
 	Selection *selection = view->GetSelection();
 	if (selection->IsEmpty() == TRUE) {
@@ -101,7 +101,7 @@ status_t FillTool::NormalFill(ImageView *view,uint32 buttons,BPoint start,Select
 	bitmap_bounds.OffsetTo(BPoint(0,0));
 
 	// Get the color for the fill.
-	rgb_color c = ((PaintApplication*)be_app)->GetColor(TRUE);
+	rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
 	uint32 color = RGBColorToBGRA(c);
 
 	// Get the old color.
@@ -864,7 +864,7 @@ BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint
 		// At this point we should take some action if min_x == max_x or min_y == max_y
 
 		// Get the color for the fill.
-//		rgb_color c = ((PaintApplication*)be_app)->getColor(buttons);
+//		rgb_color c = ((PaintApplication*)be_app)->Color(buttons);
 //		uint32 color = RGBColorToBGRA(c);
 
 //		// Get the gradient color.

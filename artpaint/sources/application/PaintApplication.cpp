@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #define DEBUG 1
@@ -426,8 +427,11 @@ PaintApplication::RefsReceived(BMessage* message)
 }
 
 
+// These functions get and set color for particular button. The ability to have
+// different colors for each button is removed and thus only foreground and
+// background-color can be defined.
 rgb_color
-PaintApplication::GetColor(bool foreground)
+PaintApplication::Color(bool foreground) const
 {
 	// here we return the tool that corresponds to button
 	if (foreground)
@@ -436,15 +440,13 @@ PaintApplication::GetColor(bool foreground)
 }
 
 
-bool
+void
 PaintApplication::SetColor(rgb_color color, bool foreground)
 {
 	if (foreground)
 		settings->primary_color = color;
 	else
 		settings->secondary_color = color;
-
-	return true;
 }
 
 
