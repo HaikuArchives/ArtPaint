@@ -6,7 +6,6 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <new.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
 #include <Window.h>

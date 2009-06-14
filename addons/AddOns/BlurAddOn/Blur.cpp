@@ -12,7 +12,8 @@
 
 #include "AddOns.h"
 #include "Blur.h"
-#include "new.h"
+
+#include <new>
 
 extern "C" __declspec(dllexport) int32 add_on_api_version = ADD_ON_API_VERSION;
 extern "C" __declspec(dllexport) char name[255] = "Blur…";
@@ -454,14 +455,14 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 			bounds.OffsetTo(0,0);
 			tall_copy_of_the_preview_bitmap = new BBitmap(bounds,B_RGB32);
 			if (tall_copy_of_the_preview_bitmap->IsValid() == FALSE) {
-				throw bad_alloc();
+				throw std::bad_alloc();
 			}
 			bounds.InsetBy(-MAX_BLUR_AMOUNT,MAX_BLUR_AMOUNT);
 			bounds.OffsetTo(0,0);
 			wide_copy_of_the_preview_bitmap = new BBitmap(bounds,B_RGB32);
 			if (wide_copy_of_the_preview_bitmap->IsValid() == FALSE) {
 				delete tall_copy_of_the_preview_bitmap;
-				throw bad_alloc();
+				throw std::bad_alloc();
 			}
 
 
