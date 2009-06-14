@@ -59,25 +59,25 @@
 // application constructor function
 PaintApplication::PaintApplication()
 	: BApplication("application/x-vnd.hsuhonen-artpaint")
-	, image_open_panel(NULL)
-	, project_open_panel(NULL)
-	, settings(NULL)
+	, fImageOpenPanel(NULL)
+	, fProjectOpenPanel(NULL)
+	, fGlobalSettings(NULL)
 {
 	// Some of the things in this function depend on the previously initialized
 	// things, so the order may be important. This should be fixed in future.
 
 	// create the settings
-	settings = new global_settings();
+	fGlobalSettings = new global_settings();
 	readPreferences();
 
 	// Set the language
-	StringServer::SetLanguage((languages)settings->language);
+	StringServer::SetLanguage(languages(fGlobalSettings->language));
 
 	// Set the tool
-	tool_manager->ChangeTool(settings->primary_tool);
+	tool_manager->ChangeTool(fGlobalSettings->primary_tool);
 
 	// Set the undo-queue to right depth
-	UndoQueue::SetQueueDepth(Settings()->undo_queue_depth);
+	UndoQueue::SetQueueDepth(fGlobalSettings->undo_queue_depth);
 
 //	// the first untitled window will have number 1
 //	untitled_window_number = 1;
@@ -94,15 +94,15 @@ PaintApplication::PaintApplication()
 
 PaintApplication::~PaintApplication()
 {
-	if (image_open_panel) {
-		delete image_open_panel->RefFilter();
-		delete image_open_panel;
+	if (fImageOpenPanel) {
+		delete fImageOpenPanel->RefFilter();
+		delete fImageOpenPanel;
 	}
 
-	delete project_open_panel;
+	delete fProjectOpenPanel;
 
 	writePreferences();
-	delete settings;
+	delete fGlobalSettings;
 
 	ToolManager::DestroyToolManager();
 }
@@ -120,44 +120,44 @@ PaintApplication::MessageReceived(BMessage* message)
 		case HS_SHOW_IMAGE_OPEN_PANEL: {
 			// issued from paint-window's menubar->"File"->"Open"->"Open Image…"
 			BMessage filePanelMessage(B_REFS_RECEIVED);
-			if (image_open_panel == NULL) {
+			if (fImageOpenPanel == NULL) {
 				entry_ref ref;
-				get_ref_for_path(settings->image_open_path, &ref);
+				get_ref_for_path(fGlobalSettings->image_open_path, &ref);
 				filePanelMessage.AddBool("from_filepanel", true);
 
 				BMessenger app(this);
-				image_open_panel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
+				fImageOpenPanel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
 					B_FILE_NODE, true, NULL, new ImageFilter());
 			}
 
-			image_open_panel->SetMessage(&filePanelMessage);
-			image_open_panel->Window()->SetTitle(BString("ArtPaint: ")
+			fImageOpenPanel->SetMessage(&filePanelMessage);
+			fImageOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
 				.Append(StringServer::ReturnString(OPEN_IMAGE_STRING)).String());
-			image_open_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
+			fImageOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
-			set_filepanel_strings(image_open_panel);
-			image_open_panel->Show();
+			set_filepanel_strings(fImageOpenPanel);
+			fImageOpenPanel->Show();
 		}	break;
 
 		case HS_SHOW_PROJECT_OPEN_PANEL: {
 			BMessage filePanelMessage(B_REFS_RECEIVED);
-			if (project_open_panel == NULL) {
+			if (fProjectOpenPanel == NULL) {
 				entry_ref ref;
-				get_ref_for_path(settings->project_open_path, &ref);
+				get_ref_for_path(fGlobalSettings->project_open_path, &ref);
 				filePanelMessage.AddBool("from_filepanel", true);
 
 				BMessenger app(this);
-				project_open_panel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
+				fProjectOpenPanel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
 					B_FILE_NODE);
 			}
 
-			project_open_panel->SetMessage(&filePanelMessage);
-			project_open_panel->Window()->SetTitle(BString("ArtPaint: ")
+			fProjectOpenPanel->SetMessage(&filePanelMessage);
+			fProjectOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
 				.Append(StringServer::ReturnString(OPEN_PROJECT_STRING)).String());
-			project_open_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
+			fProjectOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
-			set_filepanel_strings(project_open_panel);
-			project_open_panel->Show();
+			set_filepanel_strings(fProjectOpenPanel);
+			fProjectOpenPanel->Show();
 		}	break;
 
 		case HS_SHOW_USER_DOCUMENTATION: {
@@ -211,19 +211,19 @@ PaintApplication::QuitRequested()
 {
 	// Here we must collect information about the window's that are still open
 	// because they will be closed in BApplication::QuitRequested().
-	bool layer_window_visible = settings->layer_window_visible;
-	bool tool_setup_window_visible = settings->tool_setup_window_visible;
-	bool tool_select_window_visible = settings->tool_select_window_visible;
-	bool palette_window_visible = settings->palette_window_visible;
-	bool brush_window_visible = settings->brush_window_visible;
+	bool layer_window_visible = fGlobalSettings->layer_window_visible;
+	bool tool_setup_window_visible = fGlobalSettings->tool_setup_window_visible;
+	bool tool_select_window_visible = fGlobalSettings->tool_select_window_visible;
+	bool palette_window_visible = fGlobalSettings->palette_window_visible;
+	bool brush_window_visible = fGlobalSettings->brush_window_visible;
 
 	if (BApplication::QuitRequested()) {
 		// We will quit.
-		settings->layer_window_visible = layer_window_visible;
-		settings->tool_setup_window_visible = tool_setup_window_visible;
-		settings->tool_select_window_visible = tool_select_window_visible;
-		settings->palette_window_visible = palette_window_visible;
-		settings->brush_window_visible = brush_window_visible;
+		fGlobalSettings->layer_window_visible = layer_window_visible;
+		fGlobalSettings->tool_setup_window_visible = tool_setup_window_visible;
+		fGlobalSettings->tool_select_window_visible = tool_select_window_visible;
+		fGlobalSettings->palette_window_visible = palette_window_visible;
+		fGlobalSettings->brush_window_visible = brush_window_visible;
 		return true;
 	}
 	return false;
@@ -234,23 +234,23 @@ void
 PaintApplication::ReadyToRun()
 {
 	// Open here the ToolSelectionWindow
-	if (settings->tool_select_window_visible)
+	if (fGlobalSettings->tool_select_window_visible)
 		ToolSelectionWindow::showWindow();
 
 	// Open here the ToolSetupWindow
-	if (settings->tool_setup_window_visible)
-		ToolSetupWindow::showWindow(settings->setup_window_tool);
+	if (fGlobalSettings->tool_setup_window_visible)
+		ToolSetupWindow::showWindow(fGlobalSettings->setup_window_tool);
 
 	// Test here the brush store window
-	if (settings->brush_window_visible) {
+	if (fGlobalSettings->brush_window_visible) {
 		BrushStoreWindow* brush_window = new BrushStoreWindow();
 		brush_window->Show();
 	}
 
-	if (settings->palette_window_visible)
+	if (fGlobalSettings->palette_window_visible)
 		ColorPaletteWindow::showPaletteWindow(false);
 
-	if (settings->layer_window_visible)
+	if (fGlobalSettings->layer_window_visible)
 		LayerWindow::showLayerWindow();
 
 	// Here we will open a PaintWindow if no image was loaded on startup. This
@@ -312,7 +312,7 @@ PaintApplication::RefsReceived(BMessage* message)
 						int32 lendian;
 						if (file.Read(&lendian,sizeof(int32)) == sizeof(int32)) {
 							if (file.Read(&file_id,sizeof(int32)) == sizeof(int32)) {
-								settings->insert_recent_project_path(input_path.Path());
+								fGlobalSettings->insert_recent_project_path(input_path.Path());
 								if (uint32(lendian) == 0xFFFFFFFF)
 									file_id = B_LENDIAN_TO_HOST_INT32(file_id);
 								else
@@ -327,7 +327,7 @@ PaintApplication::RefsReceived(BMessage* message)
 											entry.GetParent(&entry);
 											BPath path;
 											if ((entry.GetPath(&path) == B_OK) && (path.Path() != NULL)) {
-												strcpy(settings->project_open_path,path.Path());
+												strcpy(fGlobalSettings->project_open_path,path.Path());
 											}
 										}
 									}
@@ -341,7 +341,7 @@ PaintApplication::RefsReceived(BMessage* message)
 											entry.GetParent(&entry);
 											BPath path;
 											if ((entry.GetPath(&path) == B_OK) && (path.Path() != NULL)) {
-												strcpy(settings->project_open_path,path.Path());
+												strcpy(fGlobalSettings->project_open_path,path.Path());
 											}
 										}
 									}
@@ -369,7 +369,7 @@ PaintApplication::RefsReceived(BMessage* message)
 							alert->Go();
 						}
 						else {
-							settings->insert_recent_image_path(input_path.Path());
+							fGlobalSettings->insert_recent_image_path(input_path.Path());
 
 							input_bitmap = BitmapUtilities::ConvertColorSpace(input_bitmap,B_RGBA32);
 							BitmapUtilities::FixMissingAlpha(input_bitmap);
@@ -407,7 +407,7 @@ PaintApplication::RefsReceived(BMessage* message)
 								entry.GetParent(&entry);
 								BPath path;
 								if ((entry.GetPath(&path) == B_OK) && (path.Path() != NULL)) {
-									strcpy(settings->image_open_path,path.Path());
+									strcpy(fGlobalSettings->image_open_path,path.Path());
 								}
 							}
 							else {
@@ -435,8 +435,8 @@ PaintApplication::Color(bool foreground) const
 {
 	// here we return the tool that corresponds to button
 	if (foreground)
-		return settings->primary_color;
-	return settings->secondary_color;
+		return fGlobalSettings->primary_color;
+	return fGlobalSettings->secondary_color;
 }
 
 
@@ -444,9 +444,9 @@ void
 PaintApplication::SetColor(rgb_color color, bool foreground)
 {
 	if (foreground)
-		settings->primary_color = color;
+		fGlobalSettings->primary_color = color;
 	else
-		settings->secondary_color = color;
+		fGlobalSettings->secondary_color = color;
 }
 
 
@@ -490,14 +490,14 @@ PaintApplication::readPreferences()
 				BFile mainPreferences(&entry, B_READ_ONLY);
 				status = mainPreferences.InitCheck();
 				if (status == B_OK)
-					status = settings->read_from_file(mainPreferences);
+					status = fGlobalSettings->read_from_file(mainPreferences);
 			}
 
 			if (status != B_OK)
 				;// Settings have the default values.
 
 			// Here set the language for the StringServer
-			StringServer::SetLanguage(languages(settings->language));
+			StringServer::SetLanguage(languages(fGlobalSettings->language));
 
 			// Create a tool-manager object. Depends on the language being set.
 			ToolManager::CreateToolManager();
@@ -564,7 +564,7 @@ PaintApplication::writePreferences()
 			BFile mainPreferences;
 			if (settingsDir.CreateFile("main_preferences",
 				&mainPreferences, false) == B_OK) {
-					settings->write_to_file(mainPreferences);
+					fGlobalSettings->write_to_file(mainPreferences);
 			}
 
 			BFile tools;

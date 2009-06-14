@@ -40,7 +40,7 @@ public:
 
 
 	static	void				HomeDirectory(BPath& path);
-			global_settings*	Settings() { return settings; }
+			global_settings*	Settings() { return fGlobalSettings; }
 
 private:
 			void				readPreferences();
@@ -51,9 +51,9 @@ private:
 			status_t			readProjectOldStyle(BFile& file, entry_ref& ref);
 
 private:
-			BFilePanel*			image_open_panel;
-			BFilePanel*			project_open_panel;
-			global_settings*	settings;
+			BFilePanel*			fImageOpenPanel;
+			BFilePanel*			fProjectOpenPanel;
+			global_settings*	fGlobalSettings;
 };
 
 filter_result AppKeyFilterFunction(BMessage* message, BHandler** handler,
