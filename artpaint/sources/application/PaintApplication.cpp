@@ -57,12 +57,13 @@
 
 // application constructor function
 PaintApplication::PaintApplication()
-			:	BApplication("application/x-vnd.hsuhonen-artpaint")
+	: BApplication("application/x-vnd.hsuhonen-artpaint")
+	, image_open_panel(NULL)
+	, project_open_panel(NULL)
+	, settings(NULL)
 {
-
-	// Some of the things in this function depend on the previously initialized things,
-	// so the order may be important. This should be fixed in future.
-
+	// Some of the things in this function depend on the previously initialized
+	// things, so the order may be important. This should be fixed in future.
 
 	// create the settings
 	settings = new global_settings();
@@ -74,13 +75,8 @@ PaintApplication::PaintApplication()
 	// Set the tool
 	tool_manager->ChangeTool(settings->primary_tool);
 
-	// NULL the window pointers
-	image_open_panel = NULL;
-	project_open_panel = NULL;
-
 	// Set the undo-queue to right depth
 	UndoQueue::SetQueueDepth(Settings()->undo_queue_depth);
-
 
 //	// the first untitled window will have number 1
 //	untitled_window_number = 1;
@@ -88,20 +84,21 @@ PaintApplication::PaintApplication()
 	// create the tool-images here
 	ToolImages::createToolImages();
 
-	// Read the add-ons. They will be read in another thread by the manipulator server.
-	// This should be the last thing to read so that it does not interfere with other
-	// reading.
+	// Read the add-ons. They will be read in another thread by the manipulator
+	// server. This should be the last thing to read so that it does not
+	// interfere with other reading.
 	ManipulatorServer::ReadAddOns();
 }
 
 
 PaintApplication::~PaintApplication()
 {
-	if (image_open_panel != NULL)
+	if (image_open_panel) {
+		delete image_open_panel->RefFilter();
 		delete image_open_panel;
+	}
 
-	if (project_open_panel != NULL)
-		delete project_open_panel;
+	delete project_open_panel;
 
 	writePreferences();
 	delete settings;
@@ -109,119 +106,108 @@ PaintApplication::~PaintApplication()
 	ToolManager::DestroyToolManager();
 }
 
-void PaintApplication::MessageReceived(BMessage *message)
+
+void
+PaintApplication::MessageReceived(BMessage* message)
 {
-	// this is used for replying to messages
-	BMessage reply_message;
-
-	// this is used to change the file-panel's message
-	BMessage *file_panel_message;
-
 	switch (message->what) {
-		// this comes from a paint-window's menubar->"Window"->"New Paint Window"
-		case HS_NEW_PAINT_WINDOW:
+		case HS_NEW_PAINT_WINDOW: {
+			// issued from paint-window's menubar->"Window"->"New Paint Window"
 			PaintWindow::createPaintWindow();
-			break;
+		}	break;
 
-		// these next constants deal with opening images and projects
-		// first loading a image
-		// this comes from a paint-window's menubar->"File"->"Open"->"Open Image…"
-		case HS_SHOW_IMAGE_OPEN_PANEL:
-			file_panel_message = new BMessage(B_REFS_RECEIVED);
+		case HS_SHOW_IMAGE_OPEN_PANEL: {
+			// issued from paint-window's menubar->"File"->"Open"->"Open Image…"
+			BMessage filePanelMessage(B_REFS_RECEIVED);
 			if (image_open_panel == NULL) {
-				entry_ref *ref = new entry_ref();
-				get_ref_for_path(settings->image_open_path,ref);
-				file_panel_message->AddBool("from_filepanel",TRUE);
-				image_open_panel = new BFilePanel(B_OPEN_PANEL,new BMessenger(this),ref,B_FILE_NODE,true,NULL, new ImageFilter());
-				delete ref;
+				entry_ref ref;
+				get_ref_for_path(settings->image_open_path, &ref);
+				filePanelMessage.AddBool("from_filepanel", true);
+
+				BMessenger app(this);
+				image_open_panel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
+					B_FILE_NODE, true, NULL, new ImageFilter());
 			}
 
-			char string[256];
-			sprintf(string,"ArtPaint: %s",StringServer::ReturnString(OPEN_IMAGE_STRING));
-			image_open_panel->Window()->SetTitle(string);
-
-			image_open_panel->SetMessage(file_panel_message);
+			image_open_panel->SetMessage(&filePanelMessage);
+			image_open_panel->Window()->SetTitle(BString("ArtPaint: ")
+				.Append(StringServer::ReturnString(OPEN_IMAGE_STRING)).String());
 			image_open_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
+
 			set_filepanel_strings(image_open_panel);
 			image_open_panel->Show();
-			delete file_panel_message;
-			break;
+		}	break;
 
-		case HS_SHOW_PROJECT_OPEN_PANEL:
-			{
-				file_panel_message = new BMessage(B_REFS_RECEIVED);
-				if (project_open_panel == NULL) {
-					entry_ref *ref = new entry_ref();
-					get_ref_for_path(settings->project_open_path,ref);
-					file_panel_message->AddBool("from_filepanel",TRUE);
-					project_open_panel = new BFilePanel(B_OPEN_PANEL,new BMessenger(this),ref,B_FILE_NODE,true,NULL);
-					delete ref;
-				}
-				char string[256];
-				sprintf(string,"ArtPaint: %s",StringServer::ReturnString(OPEN_PROJECT_STRING));
-				project_open_panel->Window()->SetTitle(string);
-				project_open_panel->SetMessage(file_panel_message);
-				project_open_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
-				set_filepanel_strings(project_open_panel);
-				project_open_panel->Show();
-				delete file_panel_message;
+		case HS_SHOW_PROJECT_OPEN_PANEL: {
+			BMessage filePanelMessage(B_REFS_RECEIVED);
+			if (project_open_panel == NULL) {
+				entry_ref ref;
+				get_ref_for_path(settings->project_open_path, &ref);
+				filePanelMessage.AddBool("from_filepanel", true);
+
+				BMessenger app(this);
+				project_open_panel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
+					B_FILE_NODE);
 			}
-			break;
-		// this comes from a paint-window's menubar->"Help"->"User Documentation"
-		case HS_SHOW_USER_DOCUMENTATION:
-			{
-				// Here start the NetPositive with the right page.
-				BPath home_path;
-				PaintApplication::HomeDirectory(home_path);
 
-				// Force normalization of the path to check validity.
-				if (home_path.Append("Documentation/",TRUE) == B_NO_ERROR) {
-					// Take the file-name from the message
-					const char *document_name;
-					message->FindString("document",&document_name);
-					if (home_path.Append(document_name,TRUE) == B_NO_ERROR) {
-						char url[512];
-						sprintf(url,"file://%s",home_path.Path());
+			project_open_panel->SetMessage(&filePanelMessage);
+			project_open_panel->Window()->SetTitle(BString("ArtPaint: ")
+				.Append(StringServer::ReturnString(OPEN_PROJECT_STRING)).String());
+			project_open_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
-						// this comes from Be Newsletter 88
-						BMessage url_message(B_ARGV_RECEIVED);
-						url_message.AddString("argv","NetPositive");
-						url_message.AddString("argv",url);
-						url_message.AddInt32("argc",2);
+			set_filepanel_strings(project_open_panel);
+			project_open_panel->Show();
+		}	break;
 
-						BMessenger messenger("application/x-vnd.Be-NPOS", -1, NULL);
+		case HS_SHOW_USER_DOCUMENTATION: {
+			// issued from paint-window's menubar->"Help"->"User Documentation"
+			// Here start the NetPositive with the right page.
+			BPath home_path;
+			PaintApplication::HomeDirectory(home_path);
 
-						if (messenger.IsValid()) {
-							messenger.SendMessage( &url_message );
-						}
-						else {
-							be_roster->Launch ("application/x-vnd.Be-NPOS", &url_message );
-						}
+			// Force normalization of the path to check validity.
+			if (home_path.Append("Documentation/",true) == B_OK) {
+				// Take the file-name from the message
+				const char* document_name;
+				message->FindString("document",&document_name);
+				if (home_path.Append(document_name,true) == B_OK) {
+					char url[512];
+					sprintf(url,"file://%s",home_path.Path());
+
+					// this comes from Be Newsletter 88
+					BMessage url_message(B_ARGV_RECEIVED);
+					url_message.AddString("argv","NetPositive");
+					url_message.AddString("argv",url);
+					url_message.AddInt32("argc",2);
+
+					BMessenger messenger("application/x-vnd.Be-NPOS", -1, NULL);
+
+					if (messenger.IsValid()) {
+						messenger.SendMessage( &url_message );
+					}
+					else {
+						be_roster->Launch ("application/x-vnd.Be-NPOS", &url_message );
 					}
 				}
-
-				break;
 			}
+		}	break;
 
-		case B_PASTE:
-			{
-				be_clipboard->Lock();
-				BMessage *bitmap_message = new BMessage();
-				BMessage *clipboard_message = be_clipboard->Data();
-				if (clipboard_message != NULL) {
-					if (clipboard_message->FindMessage("image/bitmap",bitmap_message) == B_OK) {
-						if (bitmap_message != NULL) {
-							BBitmap *pasted_bitmap = new BBitmap(bitmap_message);
-							delete bitmap_message;
-							if ((pasted_bitmap != NULL) && (pasted_bitmap->IsValid() == TRUE)) {
-								PaintWindow::createPaintWindow(pasted_bitmap,"Clip 1");
-							}
+		case B_PASTE: {
+			if (be_clipboard->Lock()) {
+				BMessage* data = be_clipboard->Data();
+				if (data) {
+					BMessage message;
+					if (data->FindMessage("image/bitmap", &message) == B_OK) {
+						BBitmap* pastedBitmap = new BBitmap(&message);
+						if (pastedBitmap && pastedBitmap->IsValid()) {
+							char name[] = "Clip 1";
+							PaintWindow::createPaintWindow(pastedBitmap, name);
 						}
 					}
 				}
 				be_clipboard->Unlock();
 			}
-			break;
+		}	break;
 
 		default:
 			BApplication::MessageReceived(message);
@@ -230,7 +216,8 @@ void PaintApplication::MessageReceived(BMessage *message)
 }
 
 
-bool PaintApplication::QuitRequested()
+bool
+PaintApplication::QuitRequested()
 {
 	// Here we must collect information about the window's that are still open
 	// because they will be closed in BApplication::QuitRequested().
@@ -240,54 +227,51 @@ bool PaintApplication::QuitRequested()
 	bool palette_window_visible = settings->palette_window_visible;
 	bool brush_window_visible = settings->brush_window_visible;
 
-	if (BApplication::QuitRequested() == TRUE) {
+	if (BApplication::QuitRequested()) {
 		// We will quit.
 		settings->layer_window_visible = layer_window_visible;
 		settings->tool_setup_window_visible = tool_setup_window_visible;
 		settings->tool_select_window_visible = tool_select_window_visible;
 		settings->palette_window_visible = palette_window_visible;
 		settings->brush_window_visible = brush_window_visible;
-
-		return TRUE;
+		return true;
 	}
-	else {
-		return FALSE;
-	}
+	return false;
 }
 
-void PaintApplication::ReadyToRun()
+
+void
+PaintApplication::ReadyToRun()
 {
 	// Open here the ToolSelectionWindow
-	if (settings->tool_select_window_visible == TRUE)
+	if (settings->tool_select_window_visible)
 		ToolSelectionWindow::showWindow();
 
 	// Open here the ToolSetupWindow
-	if (settings->tool_setup_window_visible == TRUE)
+	if (settings->tool_setup_window_visible)
 		ToolSetupWindow::showWindow(settings->setup_window_tool);
-//	else
-//		printf("tool-setup-window is not visible\n");
 
 	// Test here the brush store window
-	if (settings->brush_window_visible == TRUE) {
-		BrushStoreWindow *brush_window = new BrushStoreWindow();
+	if (settings->brush_window_visible) {
+		BrushStoreWindow* brush_window = new BrushStoreWindow();
 		brush_window->Show();
 	}
 
-	if (settings->palette_window_visible == TRUE) {
-		ColorPaletteWindow::showPaletteWindow(FALSE);
-	}
+	if (settings->palette_window_visible)
+		ColorPaletteWindow::showPaletteWindow(false);
 
-	if (settings->layer_window_visible == TRUE) {
+	if (settings->layer_window_visible)
 		LayerWindow::showLayerWindow();
-	}
-	// Here we will open a PaintWindow if no image was loaded on startup.
-	// This should be the last window opened so that it will be the active window.
+
+	// Here we will open a PaintWindow if no image was loaded on startup. This
+	// should be the last window opened so that it will be the active window.
 	if (PaintWindow::CountPaintWindows() == 0)
 		PaintWindow::createPaintWindow();
 }
 
 
-void PaintApplication::RefsReceived(BMessage *message)
+void
+PaintApplication::RefsReceived(BMessage* message)
 {
 	// here we will determine which type of file was opened
 	// and then initiate the right function for opening it
@@ -296,8 +280,8 @@ void PaintApplication::RefsReceived(BMessage *message)
 	uint32 type;
 	int32 count;
 	entry_ref ref;
-	BMessage *to_be_sent;
-	BAlert *alert;
+	BMessage* to_be_sent;
+	BAlert* alert;
 
 	message->GetInfo("refs", &type, &count);
 	if ( type == B_REF_TYPE ) {
@@ -348,7 +332,7 @@ void PaintApplication::RefsReceived(BMessage *message)
 									file.Seek(0,SEEK_SET);	// Rewind the file.
 									bool store_path;
 									if (message->FindBool("from_filepanel",&store_path) == B_OK) {
-										if (store_path == TRUE) {
+										if (store_path == true) {
 											BEntry entry(&ref);
 											entry.GetParent(&entry);
 											BPath path;
@@ -362,7 +346,7 @@ void PaintApplication::RefsReceived(BMessage *message)
 								else {
 									bool store_path;
 									if (message->FindBool("from_filepanel",&store_path) == B_OK) {
-										if (store_path == TRUE) {
+										if (store_path == true) {
 											BEntry entry(&ref);
 											entry.GetParent(&entry);
 											BPath path;
@@ -386,7 +370,7 @@ void PaintApplication::RefsReceived(BMessage *message)
 						input_entry.GetPath(&input_path);
 						// The returned bitmap might be in 8-bit format. If that is the case, we should
 						// convert to 32-bit.
-						BBitmap *input_bitmap = BTranslationUtils::GetBitmapFile(input_path.Path());
+						BBitmap* input_bitmap = BTranslationUtils::GetBitmapFile(input_path.Path());
 						if (input_bitmap == NULL) {
 							// even the translators did not work
 							char alert_string[255];
@@ -400,7 +384,7 @@ void PaintApplication::RefsReceived(BMessage *message)
 							input_bitmap = BitmapUtilities::ConvertColorSpace(input_bitmap,B_RGBA32);
 							BitmapUtilities::FixMissingAlpha(input_bitmap);
 
-							BTranslatorRoster *roster = BTranslatorRoster::Default();
+							BTranslatorRoster* roster = BTranslatorRoster::Default();
 
 							translator_info in_info;
 							translator_info test_info;
@@ -411,9 +395,9 @@ void PaintApplication::RefsReceived(BMessage *message)
 							BBitmapStream image_buffer(input_bitmap);
 							status_t output_error;
 
-							PaintWindow *the_window;
+							PaintWindow* the_window;
 
-							if ((output_error = roster->Identify(&image_buffer,NULL,&test_info,0,NULL,in_info.type)) == B_NO_ERROR) {
+							if ((output_error = roster->Identify(&image_buffer,NULL,&test_info,0,NULL,in_info.type)) == B_OK) {
 								// Reverse translation is possible
 								image_buffer.DetachBitmap(&input_bitmap);
 								the_window = PaintWindow::createPaintWindow(input_bitmap,ref.name,in_info.type,ref,test_info.translator);
@@ -453,86 +437,41 @@ void PaintApplication::RefsReceived(BMessage *message)
 }
 
 
-rgb_color PaintApplication::GetColor(bool foreground)
+rgb_color
+PaintApplication::GetColor(bool foreground)
 {
 	// here we return the tool that corresponds to button
 	if (foreground)
 		return settings->primary_color;
-	else
-		return settings->secondary_color;
+	return settings->secondary_color;
 }
 
-bool PaintApplication::SetColor(rgb_color color,bool foreground)
+
+bool
+PaintApplication::SetColor(rgb_color color, bool foreground)
 {
 	if (foreground)
 		settings->primary_color = color;
 	else
 		settings->secondary_color = color;
 
-	return TRUE;
+	return true;
 }
 
 
-//void PaintApplication::createPaintWindow(BBitmap *a_bitmap,char *file_name,int32 type, entry_ref &ref)
-//{
-//	PaintWindow *a_window;
-//
-//	if (a_bitmap == NULL) {
-//		char title[100];
-//		sprintf(title,"%s - %d",StringServer::ReturnString(UNTITLED_STRING),untitled_window_number);
-//		a_window = new PaintWindow(title,settings->default_window_settings.frame_rect,HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW | HS_SIZING_VIEW,&(settings->default_window_settings));
-//		untitled_window_number++;
-//	}
-//
-//	else {
-////		// in this case we should first try to read window's rect from attributes
-////		// should also check that the rect is inside the screen's bounds
-////		BNode a_node(&ref);
-////		BNodeInfo a_node_info(&a_node);
-////		BRect a_rect;
-////		if (a_node.ReadAttr("ArtP:frame_rect",B_RECT_TYPE,0,&a_rect,sizeof(BRect)) < 0)
-//		a_window = new PaintWindow(file_name,settings->default_window_settings.frame_rect, HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW,&(settings->default_window_settings));
-////		else {
-////			a_rect = FitRectToScreen(a_rect);
-////			a_window = new PaintWindow(file_name,a_rect, HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW,&(settings->default_window_settings));
-////		}
-//
-//		// some of these might also come from attributes
-//		a_window->Settings()->zoom_level = settings->default_window_settings.zoom_level;
-//		a_window->Settings()->view_position = settings->default_window_settings.view_position;
-//		a_window->Settings()->file_type = type;
-//		a_node_info.GetType(a_window->Settings()->file_mime);
-//		BEntry *entry = a_window->ImageEntry();
-//		*entry = BEntry(&ref,TRUE);
-//
-//		// make the window read it's attributes
-//		a_window->readAttributes(a_node);
-//
-//		// Open an imageview for the window and add a layer to it.
-//		a_window->OpenImageView(a_bitmap->Bounds().Width()+1,a_bitmap->Bounds().Height()+1);
-//		a_window->ReturnImageView()->ReturnImage()->InsertLayer(a_bitmap);
-//		a_window->AddImageView();
-//	}
-//
-//	// Change the zoom-level to be correct
-//	a_window->Lock();
-//	a_window->displayMag(a_window->Settings()->zoom_level);
-//	a_window->Unlock();
-//}
-
-
-void PaintApplication::readPreferences()
+void
+PaintApplication::readPreferences()
 {
 	bool create_default_tools = true;
 	bool create_default_colorset = true;
 
 	BPath a_path;
-	if (find_directory(B_USER_SETTINGS_DIRECTORY,&a_path) == B_NO_ERROR) {
+	if (find_directory(B_USER_SETTINGS_DIRECTORY,&a_path) == B_OK) {
 		BDirectory user_settings_directory;
 		BDirectory settings_directory;
 		BDirectory spare_settings_directory;
 		user_settings_directory.SetTo(a_path.Path());
-		status_t main_err = settings_directory.SetTo(&user_settings_directory,"ArtPaint/");;
+		status_t main_err = settings_directory.SetTo(&user_settings_directory, "ArtPaint/");
 		HomeDirectory(a_path);
 		spare_settings_directory.SetTo(a_path.Path());
 		status_t spare_err = spare_settings_directory.SetTo(&spare_settings_directory,"settings/");
@@ -540,31 +479,30 @@ void PaintApplication::readPreferences()
 		if ((main_err == B_OK) || (spare_err == B_OK)) {
 			BEntry brush_entry;
 			status_t err;
-			err = settings_directory.FindEntry("brushes",&brush_entry,TRUE);
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_NO_ERROR))
-				err = spare_settings_directory.FindEntry("brushes",&brush_entry,TRUE);
+			err = settings_directory.FindEntry("brushes",&brush_entry,true);
+			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
+				err = spare_settings_directory.FindEntry("brushes",&brush_entry,true);
 
 			if (err == B_OK) {
 				BFile brush_file(&brush_entry,B_READ_ONLY);
 				err = brush_file.InitCheck();
-				if (err == B_NO_ERROR)
+				if (err == B_OK)
 					BrushStoreWindow::readBrushes(brush_file);
 			}
+
 			if (err != B_OK) {
 				// We might create some default brushes.
-
 			}
 
-
 			BEntry main_preferences_entry;
-			err = settings_directory.FindEntry("main_preferences",&main_preferences_entry,TRUE);
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_NO_ERROR))
-				err = spare_settings_directory.FindEntry("main_preferences",&main_preferences_entry,TRUE);
+			err = settings_directory.FindEntry("main_preferences",&main_preferences_entry,true);
+			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
+				err = spare_settings_directory.FindEntry("main_preferences",&main_preferences_entry,true);
 
 			if (err == B_OK) {
 				BFile main_preferences_file(&main_preferences_entry,B_READ_ONLY);
 				err = main_preferences_file.InitCheck();
-				if (err == B_NO_ERROR)
+				if (err == B_OK)
 					err = settings->read_from_file(main_preferences_file);
 			}
 			if (err != B_OK) {
@@ -578,37 +516,33 @@ void PaintApplication::readPreferences()
 			ToolManager::CreateToolManager();
 
 			BEntry tool_entry;
-			err = settings_directory.FindEntry("tool_preferences",&tool_entry,TRUE);
+			err = settings_directory.FindEntry("tool_preferences",&tool_entry,true);
 
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_NO_ERROR))
-				err = spare_settings_directory.FindEntry("tool_preferences",&tool_entry,TRUE);
+			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
+				err = spare_settings_directory.FindEntry("tool_preferences",&tool_entry,true);
 
 			if (err == B_OK) {
 				BFile tool_file(&tool_entry,B_READ_ONLY);
-				if (err == B_NO_ERROR) {
+				if (err == B_OK) {
 					tool_manager->ReadToolSettings(tool_file);
 				}
 			}
 
-
 			BEntry color_entry;
-			err = settings_directory.FindEntry("color_preferences",&color_entry,TRUE);
+			err = settings_directory.FindEntry("color_preferences",&color_entry,true);
 
-			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_NO_ERROR))
-				err = spare_settings_directory.FindEntry("color_preferences",&color_entry,TRUE);
+			if ((err != B_OK) && (spare_settings_directory.InitCheck() == B_OK))
+				err = spare_settings_directory.FindEntry("color_preferences",&color_entry,true);
 
 			if (err == B_OK) {
 				BFile color_file(&color_entry,B_READ_ONLY);
 				err = color_file.InitCheck();
 				if (err == B_OK) {
 					if (ColorSet::readSets(color_file) == B_OK)
-						create_default_colorset = FALSE;
+						create_default_colorset = false;
 				}
 			}
 
-		}
-		else {
-		//	printf("No settings were found\n");
 		}
 	}
 
@@ -617,16 +551,18 @@ void PaintApplication::readPreferences()
 		// colorsets
 		new ColorSet(16);
 	}
-	if (create_default_tools) {
-		// Create a tool-manager object.
+
+	// Create a tool-manager object.
+	if (create_default_tools)
 		ToolManager::CreateToolManager();
-	}
 }
 
-void PaintApplication::writePreferences()
+
+void
+PaintApplication::writePreferences()
 {
 	BPath a_path;
-	if (find_directory(B_USER_SETTINGS_DIRECTORY,&a_path) == B_NO_ERROR) {
+	if (find_directory(B_USER_SETTINGS_DIRECTORY,&a_path) == B_OK) {
 		BDirectory user_settings_directory;
 		BDirectory settings_directory;
 		user_settings_directory.SetTo(a_path.Path());
@@ -641,25 +577,25 @@ void PaintApplication::writePreferences()
 			// Now all the tool-settings are stored in one file. Actually the manipulator
 			// preference files will be created by ManipulatorServer.
 			BFile brush_file;
-			err = settings_directory.CreateFile("brushes",&brush_file,FALSE);
+			err = settings_directory.CreateFile("brushes",&brush_file,false);
 			if (err == B_OK) {
 				BrushStoreWindow::writeBrushes(brush_file);
 			}
 
 			BFile main_preferences_file;
-			err = settings_directory.CreateFile("main_preferences",&main_preferences_file,FALSE);
+			err = settings_directory.CreateFile("main_preferences",&main_preferences_file,false);
 			if (err == B_OK) {
 				err = settings->write_to_file(main_preferences_file);
 			}
 
 			BFile tool_file;
-			err = settings_directory.CreateFile("tool_preferences",&tool_file,FALSE);
+			err = settings_directory.CreateFile("tool_preferences",&tool_file,false);
 			if (err == B_OK) {
 				tool_manager->WriteToolSettings(tool_file);
 			}
 
 			BFile color_palette_file;
-			err = settings_directory.CreateFile("color_preferences",&color_palette_file,FALSE);
+			err = settings_directory.CreateFile("color_preferences",&color_palette_file,false);
 			if (err == B_OK) {
 				err = ColorSet::writeSets(color_palette_file);
 			}
@@ -671,7 +607,8 @@ void PaintApplication::writePreferences()
 }
 
 
-status_t PaintApplication::readProject(BFile &file,entry_ref &ref)
+status_t
+PaintApplication::readProject(BFile &file,entry_ref &ref)
 {
 	// This is the new way of reading a structured project file. The possibility to read old
 	// project-files is maintained through readProjectOldStyle-function.
@@ -680,10 +617,10 @@ status_t PaintApplication::readProject(BFile &file,entry_ref &ref)
 	int32 lendian;
 	file.Read(&lendian,sizeof(int32));
 	if (lendian == 0x00000000) {
-		is_little_endian = FALSE;
+		is_little_endian = false;
 	}
 	else if (uint32(lendian) == 0xFFFFFFFF) {
-		is_little_endian = TRUE;
+		is_little_endian = true;
 	}
 	else
 		return B_ERROR;
@@ -710,18 +647,17 @@ status_t PaintApplication::readProject(BFile &file,entry_ref &ref)
 	}
 
 	// Create a paint-window using the width and height
-//	PaintWindow *the_window = new PaintWindow(ref.name,settings->default_window_settings.frame_rect,HS_STATUS_VIEW|HS_MENU_BAR,&(settings->default_window_settings));
-	PaintWindow *the_window = PaintWindow::createPaintWindow(NULL,ref.name);
-
+	PaintWindow* the_window = PaintWindow::createPaintWindow(NULL, ref.name);
 
 	the_window->OpenImageView(width,height);
-	// Then read the layer-data. Rewind the file and put the image-view to read the data.
-	ImageView *image_view = the_window->ReturnImageView();
+	// Then read the layer-data. Rewind the file and put the image-view to read
+	// the data.
+	ImageView* image_view = the_window->ReturnImageView();
 	image_view->ReturnImage()->ReadLayers(file);
 
 	// This must be before the image-view is added
-	BEntry *entry = the_window->ProjectEntry();
-	*entry = BEntry(&ref,TRUE);
+	BEntry* entry = the_window->ProjectEntry();
+	*entry = BEntry(&ref,true);
 
 	the_window->AddImageView();
 
@@ -734,7 +670,8 @@ status_t PaintApplication::readProject(BFile &file,entry_ref &ref)
 }
 
 
-status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
+status_t
+PaintApplication::readProjectOldStyle(BFile& file, entry_ref& ref)
 {
 // This old version of file reading will be copied to the conversion utility.
 	// The structure of a project file is following.
@@ -750,7 +687,7 @@ status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
 	char file_name[256];
 	strncpy(file_name,ref.name,256);
 
-	BAlert *alert;
+	BAlert* alert;
 	char file_id[256]; 		// The identification string.
 	ssize_t bytes_read = file.Read(file_id, strlen(HS_PROJECT_ID_STRING));
 	if (bytes_read < 0 || uint32(bytes_read) != strlen(HS_PROJECT_ID_STRING)) {
@@ -791,7 +728,7 @@ status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
 	}
 	settings_length = B_BENDIAN_TO_HOST_INT32(settings_length);
 	// We skip the settings, no need to bother converting them
-	if (TRUE) {
+	if (true) {
 		file.Seek(settings_length,SEEK_CUR);
 	}
 
@@ -812,11 +749,10 @@ status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
 	width = B_BENDIAN_TO_HOST_INT32(width);
 	height = B_BENDIAN_TO_HOST_INT32(height);
 	// We should create a PaintWindow and also an ImageView for it.
-//	PaintWindow *the_window = new PaintWindow(file_name,project_settings->frame_rect,HS_STATUS_VIEW|HS_HELP_VIEW|HS_MENU_BAR,project_settings);
-	PaintWindow *the_window = PaintWindow::createPaintWindow(NULL,file_name);
+	PaintWindow* the_window = PaintWindow::createPaintWindow(NULL,file_name);
 	the_window->OpenImageView(width,height);
 
-//	BEntry *project_entry = the_window->ProjectEntry();
+//	BEntry* project_entry = the_window->ProjectEntry();
 //	*project_entry = BEntry(&ref);
 
 	// Here we are ready to read layers from the file.
@@ -847,8 +783,8 @@ status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
 	}
 
 	// This must be before the image-view is added
-	BEntry *entry = the_window->ProjectEntry();
-	*entry = BEntry(&ref,TRUE);
+	BEntry* entry = the_window->ProjectEntry();
+	*entry = BEntry(&ref,true);
 
 	the_window->AddImageView();
 	// Change the zoom-level to be correct
@@ -859,12 +795,12 @@ status_t PaintApplication::readProjectOldStyle(BFile &file,entry_ref &ref)
 	// As last thing read the attributes from the file
 	the_window->readAttributes(file);
 
-
-
 	return B_OK;
 }
 
-void PaintApplication::HomeDirectory(BPath &path)
+
+void
+PaintApplication::HomeDirectory(BPath &path)
 {
 	// this from the newsletter 81
 	app_info info;
@@ -873,45 +809,34 @@ void PaintApplication::HomeDirectory(BPath &path)
 	appentry.SetTo(&info.ref);
 	appentry.GetPath(&path);
 	path.GetParent(&path);
-	//printf("HomeDirectory called\n");
 }
 
 
-// the main function
-int main()
+int
+main(int argc, char* argv[])
 {
-//	SetNewLeakChecking(true);
-//	SetMallocLeakChecking(true);
-	PaintApplication *my_app;
-
-	// create app
-	my_app = new PaintApplication();
-
-	// only run app if it could be created
-	if (my_app != NULL) {
-		// run app
-		my_app->Run();
-
-		// delete app
-		delete my_app;
+	PaintApplication* paintApp = new PaintApplication();
+	if (paintApp) {
+		paintApp->Run();
+		delete paintApp;
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-filter_result AppKeyFilterFunction(BMessage *message,BHandler **handler,BMessageFilter*)
+filter_result
+AppKeyFilterFunction(BMessage* message,BHandler** handler, BMessageFilter*)
 {
-	const char *bytes;
+	const char* bytes;
 	if ((!(modifiers() & B_COMMAND_KEY)) && (!(modifiers() & B_CONTROL_KEY))) {
-		if (message->FindString("bytes",&bytes) == B_NO_ERROR) {
+		if (message->FindString("bytes",&bytes) == B_OK) {
 			switch (bytes[0]) {
-				case B_TAB:
-				{
-
-					BView *view = dynamic_cast<BView*>(*handler);
-					if ((view == NULL) || ((!(view->Flags() & B_NAVIGABLE)) &&
-						(dynamic_cast<BTextView *>(*handler) == NULL))) {
+				case B_TAB: {
+					BView* view = dynamic_cast<BView*>(*handler);
+					if ((view == NULL)
+						|| ((!(view->Flags() & B_NAVIGABLE))
+							&& (dynamic_cast<BTextView*>(*handler) == NULL))) {
 						FloaterManager::ToggleFloaterVisibility();
 					}
 				}
@@ -919,6 +844,5 @@ filter_result AppKeyFilterFunction(BMessage *message,BHandler **handler,BMessage
 			}
 		}
 	}
-
 	return B_DISPATCH_MESSAGE;
 }

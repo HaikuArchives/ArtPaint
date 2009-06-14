@@ -42,7 +42,7 @@ private:
 		global_settings	*settings;
 
 		// this tells if we can use the datatypes
-		bool			datatypes_available;
+//		bool			datatypes_available;
 
 //		// this array holds pointers to tool-instances
 //		DrawingTool	 	*drawing_tools[HS_NUMBER_OF_TOOLS];
