@@ -47,6 +47,11 @@ private:
 			void				_ReadPreferences();
 			void				_WritePreferences();
 
+			void				_ShowAlert(const BString& text);
+			void				_StorePath(const BMessage* message,
+									const entry_ref& ref, char* target);
+	static	BPath				_GetParentPath(const entry_ref& entryRef);
+
 			status_t			_ReadProject(BFile& file, entry_ref& ref);
 			status_t			_ReadProjectOldStyle(BFile& file, entry_ref& ref);
 
