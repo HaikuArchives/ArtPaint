@@ -21,19 +21,18 @@ bool
 ImageFilter::Filter(const entry_ref* ref, BNode* node, struct stat_beos* stat,
 	const char* fileType)
 {
-	char mimeType[B_MIME_TYPE_LENGTH];
-
-	BNodeInfo nodeInfo(node);
-	nodeInfo.GetType(mimeType);
-
-	if ((S_ISDIR(stat->st_mode)) || (strncmp("image", mimeType, 5) == 0))
+	if (S_ISDIR(stat->st_mode))
 		return true;
 
 	if (S_ISLNK(stat->st_mode)) {
-		// Traverse symlinks
 		BEntry entry(ref, true);
 		return entry.IsDirectory();
 	}
+
+	char mimeType[B_MIME_TYPE_LENGTH];
+	BNodeInfo(node).GetType(mimeType);
+	if (strncmp("image/", mimeType, 6) == 0)
+		return true;
 
 	return false;
 }
