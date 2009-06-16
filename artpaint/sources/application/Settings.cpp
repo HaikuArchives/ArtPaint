@@ -440,76 +440,72 @@ status_t global_settings::write_to_file(BFile &file)
 
 void global_settings::insert_recent_image_path(const char *path)
 {
-	int32 i=0;
-
-	while ((i<RECENT_LIST_LENGTH) && (recent_image_paths[i] != NULL) && (strcmp(recent_image_paths[i],path) != 0)) {
-		i++;
+	int32 i = 0;
+	while ((i < RECENT_LIST_LENGTH) && (recent_image_paths[i] != NULL)
+		&& (strcmp(recent_image_paths[i], path) != 0)) {
+		++i;
 	}
 
 	if ((i < RECENT_LIST_LENGTH) && (recent_image_paths[i] != NULL)) {
 		// The entry is already in the list, move it to the front.
-		i--;
-		while (i>=0) {
-			strcpy(recent_image_paths[i+1],recent_image_paths[i]);
-			i--;
+		--i;
+		while (i >= 0) {
+			strcpy(recent_image_paths[i + 1], recent_image_paths[i]);
+			--i;
 		}
-		strcpy(recent_image_paths[0],path);
-	}
-	else {
+	} else {
 		// The entry is not in the list. Move everything one step closer to the
 		// rear of the list and then insert the path in the front of the list.
-		if ((recent_image_paths[i] == NULL) && (i>0))
-			i--;
+		if ((recent_image_paths[i] == NULL) && (i > 0))
+			--i;
 
-		i = min_c(i,RECENT_LIST_LENGTH-2);
+		i = min_c(i, RECENT_LIST_LENGTH - 2);
 
-		while ((i>=0) && (recent_image_paths[i] != NULL)) {
-			if (recent_image_paths[i+1] == NULL)
-				recent_image_paths[i+1] = new char[B_PATH_NAME_LENGTH];
-			strcpy(recent_image_paths[i+1],recent_image_paths[i]);
-			i--;
+		while ((i >= 0) && (recent_image_paths[i] != NULL)) {
+			if (recent_image_paths[i + 1] == NULL)
+				recent_image_paths[i + 1] = new char[B_PATH_NAME_LENGTH];
+			strcpy(recent_image_paths[i + 1], recent_image_paths[i]);
+			--i;
 		}
+
 		if (recent_image_paths[0] == NULL)
 			recent_image_paths[0] = new char[B_PATH_NAME_LENGTH];
-
-		strcpy(recent_image_paths[0],path);
 	}
+	strcpy(recent_image_paths[0], path);
 }
 
 void global_settings::insert_recent_project_path(const char *path)
 {
-	int32 i=0;
-
-	while ((i<RECENT_LIST_LENGTH) && (recent_project_paths[i] != NULL) && (strcmp(recent_project_paths[i],path) != 0)) {
-		i++;
+	int32 i = 0;
+	while ((i < RECENT_LIST_LENGTH) && (recent_project_paths[i] != NULL)
+		&& (strcmp(recent_project_paths[i], path) != 0)) {
+		++i;
 	}
 
 	if ((i < RECENT_LIST_LENGTH) && (recent_project_paths[i] != NULL)) {
 		// The entry is already in the list, move it to the front.
-		i--;
-		while (i>=0) {
-			strcpy(recent_project_paths[i+1],recent_project_paths[i]);
-			i--;
+		--i;
+		while (i >= 0) {
+			strcpy(recent_project_paths[i + 1], recent_project_paths[i]);
+			--i;
 		}
-		strcpy(recent_project_paths[0],path);
-	}
-	else {
+	} else {
 		// The entry is not in the list. Move everything one step closer to the
 		// rear of the list and then insert the path in the front of the list.
 		if ((recent_project_paths[i] == NULL) && (i>0))
-			i--;
+			--i;
 
-		i = min_c(i,RECENT_LIST_LENGTH-2);
+		i = min_c(i, RECENT_LIST_LENGTH - 2);
 
-		while ((i>=0) && (recent_project_paths[i] != NULL)) {
-			if (recent_project_paths[i+1] == NULL)
-				recent_project_paths[i+1] = new char[B_PATH_NAME_LENGTH];
-			strcpy(recent_project_paths[i+1],recent_project_paths[i]);
+		while ((i >= 0) && (recent_project_paths[i] != NULL)) {
+			if (recent_project_paths[i + 1] == NULL)
+				recent_project_paths[i + 1] = new char[B_PATH_NAME_LENGTH];
+			strcpy(recent_project_paths[i + 1], recent_project_paths[i]);
 			i--;
 		}
+
 		if (recent_project_paths[0] == NULL)
 			recent_project_paths[0] = new char[B_PATH_NAME_LENGTH];
-
-		strcpy(recent_project_paths[0],path);
 	}
+	strcpy(recent_project_paths[0], path);
 }
