@@ -5,7 +5,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
-* 		Karsten Heimrich <host.haiku@gmx.de>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef PAINT_APPLICATION_H

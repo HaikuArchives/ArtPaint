@@ -111,7 +111,7 @@ PaintApplication::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case HS_NEW_PAINT_WINDOW: {
 			// issued from paint-window's menubar->"Window"->"New Paint Window"
-			PaintWindow::createPaintWindow();
+			PaintWindow::CreatePaintWindow();
 		}	break;
 
 		case HS_SHOW_IMAGE_OPEN_PANEL: {
@@ -188,7 +188,7 @@ PaintApplication::MessageReceived(BMessage* message)
 						BBitmap* pastedBitmap = new BBitmap(&message);
 						if (pastedBitmap && pastedBitmap->IsValid()) {
 							char name[] = "Clip 1";
-							PaintWindow::createPaintWindow(pastedBitmap, name);
+							PaintWindow::CreatePaintWindow(pastedBitmap, name);
 						}
 					}
 				}
@@ -252,7 +252,7 @@ PaintApplication::ReadyToRun()
 	// Here we will open a PaintWindow if no image was loaded on startup. This
 	// should be the last window opened so that it will be the active window.
 	if (PaintWindow::CountPaintWindows() == 0)
-		PaintWindow::createPaintWindow();
+		PaintWindow::CreatePaintWindow();
 }
 
 
@@ -331,9 +331,9 @@ PaintApplication::RefsReceived(BMessage* message)
 					testInfo.translator = 0;
 				}
 
-				PaintWindow* window = PaintWindow::createPaintWindow(bitmap,
+				PaintWindow* window = PaintWindow::CreatePaintWindow(bitmap,
 					ref.name, orgInfo.type, ref, testInfo.translator);
-				window->readAttributes(file);
+				window->ReadAttributes(file);
 
 				fGlobalSettings->insert_recent_image_path(path.Path());
 				_StorePath(message, ref, fGlobalSettings->image_open_path);
@@ -563,7 +563,7 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 	}
 
 	// Create a paint-window using the width and height
-	PaintWindow* paintWindow = PaintWindow::createPaintWindow(NULL, ref.name);
+	PaintWindow* paintWindow = PaintWindow::CreatePaintWindow(NULL, ref.name);
 
 	paintWindow->OpenImageView(width,height);
 	// Then read the layer-data. Rewind the file and put the image-view to read
@@ -576,7 +576,7 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 	paintWindow->AddImageView();
 
 	// As last thing read the attributes from the file
-	paintWindow->readAttributes(file);
+	paintWindow->ReadAttributes(file);
 
 	return B_OK;
 }
@@ -643,7 +643,7 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 	height = B_BENDIAN_TO_HOST_INT32(height);
 
 	// We should create a PaintWindow and also an ImageView for it.
-	PaintWindow* window = PaintWindow::createPaintWindow(NULL, ref.name);
+	PaintWindow* window = PaintWindow::CreatePaintWindow(NULL, ref.name);
 	window->OpenImageView(width, height);
 
 	// Read the layers from the file. First read how many layers there are.
@@ -655,7 +655,7 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 			// This must be before the image-view is added
 			window->SetProjectEntry(BEntry(&ref, true));
 			window->AddImageView();
-			window->readAttributes(file);
+			window->ReadAttributes(file);
 			return B_OK;
 		}
 	}

@@ -1,36 +1,41 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef PAINT_WINDOW_H
 #define PAINT_WINDOW_H
 
-
-#include <Box.h>
-#include <FilePanel.h>
 #include <Entry.h>
 #include <TranslatorRoster.h>
 #include <Window.h>
 
+class BBox;
+class BFilePanel;
+class BNode;
 
-// these constants are used to determine views of a paint window
+class BackgroundView;
+class ImageView;
+class ImageSavePanel;
+class LayerWindow;
+class NumberControl;
+class StatusView;
+
+struct window_settings;
+
+
+// views of a paint window
 #define	HS_QUICK_TOOLS 	0x0001
 #define	HS_HELP_VIEW	0x0002
 #define	HS_STATUS_VIEW	0x0004
 #define	HS_MENU_BAR		0x0008
 #define HS_SIZING_VIEW	0x0010
 
-// these constants are for the internal communication of the PaintWindow-class
-#define	HS_SHOW_VIEW_SETUP_WINDOW		'SvsW'
-#define HS_SHOW_GLOBAL_SETUP_WINDOW		'SgsW'
-#define	HS_SAVE_IMAGE_INTO_RESOURCES	'Sirc'
-#define	HS_SAVE_IMAGE_AS_CURSOR			'Siac'
-#define	HS_RECENT_IMAGE_SIZE			'Rsis'
-#define	HS_SHOW_ABOUT_WINDOW			'Sabw'
 
 enum menu_modes {
 	FULL_MENU,
@@ -39,159 +44,141 @@ enum menu_modes {
 };
 
 
-// ImageView declared in ImageView.h
-class ImageView;
-
-// BackgroundView declared in BackgroundView.h
-class BackgroundView;
-
-// StatusView declared in StatusView.h
-class StatusView;
-
-// NumberControl declared in UtilityClasses.h
-class NumberControl;
-
-// LayerWindow declared in LayerWindow.h
-class LayerWindow;
-
-// ImageSavePanel declared in FilePanels.h
-class ImageSavePanel;
-//PaintWindow class declaration
-
-struct window_settings;
-
-
 class PaintWindow : public BWindow {
-private:
-		ImageView 		*image_view;			// view to draw in
-		BackgroundView 	*background;	// the backround for image
-
-		BScrollBar 		*horiz_scroll, *vert_scroll;	// the scroll-bars
-
-		BMenuBar 		*menubar;				// main menu for the window
-		char			tool_help_string[256];	// The text that the help view will display
-												// for a tool or a manipulator.
-
-		StatusView 		*status_view;
-
-		// these next views are used when setting the image size
-		NumberControl 	*width_view,*height_view;
-		BButton			*set_size_button;
-		BBox			*container_box;
-
-		// these variables hold the info about how much space
-		// all the additional views take, used when resizing the window
-		// to fit image
-		float 			additional_height, additional_width;
-
-		// this is the file-panel that is used when saving the image
-		ImageSavePanel	*image_save_panel;
-		BFilePanel		*project_save_panel;
-
-		window_settings	*settings;
-
-		// The BEntrys should be replace by something else as they
-		// consume a file-descriptor.
-		BEntry			image_entry;
-		BEntry			project_entry;
-		uint32			current_handler;
-
-
-// This counter keeps count of how many paint-windows we have open,
-// it is incremented in constructor and dectremented in destructor.
-static	int32			paint_window_count;
-
-static	int32			untitled_window_number;
-
-// This list contains pointers to all of the paint-windows
-static	BList			paint_window_list;
-
-
-// this function will create the main menubar
-bool		openMenuBar();
-
-
-// this function will resize the window to fit image
-void		resizeToFit();
-BRect		getPreferredSize();
-
-BRect		user_frame;
-
-// this function will show the layer-window
-//void	showLayerWindow();
-
-
-// These function will save the image.
-static	int32		save_image(void*);
-		status_t	saveImage(BMessage *message);
-
-// These functions will save the project.
-static	int32		save_project(void*);
-		status_t	saveProject(BMessage *message);
-
-// this function will save the image in to a resource-file.
-status_t	saveImageIntoResources();
-status_t	saveImageAsCursor();
-
-// this function will write the attributes to node
-void			writeAttributes(BNode& node);
-
-static	int32	AddAddOnsToMenu(void*);
-
-// This function changes the enability of some menu-items. The parameter
-// is used as a guide to what should be enabled and what not.
-void	ChangeMenuMode(menu_modes new_mode);
-		PaintWindow(char *name,BRect frame,uint32 views,const window_settings *setup);
-
 public:
-static	PaintWindow*	createPaintWindow(BBitmap* =NULL,char* = NULL,int32 =0,entry_ref =entry_ref(), translator_id outTranslator=0);
-		~PaintWindow();
-void	FrameResized(float, float);
-void	FrameMoved(BPoint);
-void	MenusBeginning();
-void	MenusEnded();
-void 	MessageReceived(BMessage *message);
-bool	QuitRequested();
-void	WindowActivated(bool active);
-void	WorkspaceActivated(int32,bool);
-void	Zoom(BPoint,float,float);
+	static	PaintWindow*		CreatePaintWindow(BBitmap* bitmap = NULL,
+									const char* fileName = NULL,
+									int32 fileType = 0,
+									const entry_ref& entryRef = entry_ref(),
+									translator_id outTranslator = 0);
 
-void	DisplayCoordinates(BPoint point,BPoint reference,bool use_reference);
-void	displayMag(float mag);
+	virtual						~PaintWindow();
 
-void	SetHelpString(const char*,int32);
+	virtual	void				FrameResized(float newWidth, float newHeight);
+	virtual	void				FrameMoved(BPoint newPosition);
+	virtual	void				MenusBeginning();
+	virtual	void				MenusEnded();
+	virtual	void				MessageReceived(BMessage* message);
+	virtual	bool				QuitRequested();
+	virtual	void				WindowActivated(bool state);
+	virtual	void				WorkspaceActivated(int32 workspace, bool state);
+	virtual	void				Zoom(BPoint leftTop, float width, float height);
 
-inline	window_settings*	Settings() { return settings; }
-// this function will read the attributes from a node, it is called whenever an image
-// is loaded
-void	readAttributes(BNode &node);
+			void				DisplayCoordinates(BPoint point, BPoint reference,
+									bool useReference);
+			void				displayMag(float mag);
 
-// this is the function used by layer-window to inform paint-windows that
-// it has been closed if no target window is specified at the moment
-//static	void	LayerWindowClosed();
+			void				SetHelpString(const char* string, int32 type);
 
-// This returns the number of paint-windows
-static	int32	CountPaintWindows() { return paint_window_count; }
+	inline	window_settings*	Settings() { return fSettings; }
 
-// This function will create the ImageView. The width and height parameters
-// should reflect the actual size of image in pixels.
-status_t	OpenImageView(int32,int32);
+			// this function will read the attributes from a node, it is called
+			// whenever an image is loaded
+			void				ReadAttributes(const BNode& node);
 
-// This function will add the image-view to window's view hierarchy.
-// And finish its initialization.
-status_t	AddImageView();
+			// this is the function used by layer-window to inform paint-windows
+			// that it has been closed if no target window is specified ATM.
+	//static	void			LayerWindowClosed();
 
+			// This returns the number of paint-windows
+	static	int32				CountPaintWindows() { return sgPaintWindowCount; }
 
+			// This function will create the ImageView. The width and height
+			// parameters should reflect the actual size of image in pixels.
+			status_t			OpenImageView(int32 width, int32 height);
 
-// This function returns a pointer to the image
-ImageView*	ReturnImageView() { return image_view; }
+			// This function will add the image-view to window's view hierarchy.
+			// And finish its initialization.
+			status_t			AddImageView();
 
-BEntry*		ImageEntry() { return &image_entry; }
+			ImageView*			ReturnImageView() const { return fImageView; }
 
-BEntry		ProjectEntry() const { return project_entry; }
-void		SetProjectEntry(const BEntry& entry) { project_entry = entry; }
+			void				SetImageEntry(const BEntry& entry) {
+									fImageEntry = entry;
+								}
+			BEntry				ImageEntry() const { return fImageEntry; }
 
-StatusView*	ReturnStatusView();
+			void				SetProjectEntry(const BEntry& entry) {
+									fProjectEntry = entry;
+								}
+			BEntry				ProjectEntry() const { return fProjectEntry; }
+
+			StatusView*			ReturnStatusView() const { return fStatusView; }
+
+private:
+								PaintWindow(const char* name, BRect frame,
+									uint32 views, const window_settings *setup);
+
+			// this function will create the main menubar
+			bool				openMenuBar();
+
+			// this function will resize the window to fit image
+			void				resizeToFit();
+			BRect				getPreferredSize();
+
+			// this function will show the layer-window
+			//void				showLayerWindow();
+
+			// These function will save the image.
+	static	int32				save_image(void*);
+			status_t			saveImage(BMessage *message);
+
+			// These functions will save the project.
+	static	int32				save_project(void*);
+			status_t			saveProject(BMessage *message);
+
+			// this function will save the image in to a resource-file.
+			status_t			saveImageIntoResources();
+			status_t			saveImageAsCursor();
+
+			// this function will write the attributes to node
+			void				writeAttributes(BNode& node);
+
+	static	int32				AddAddOnsToMenu(void*);
+
+			// This function changes the enability of some menu-items. The
+			// parameter is used as a guide to what should be enabled and not.
+			void				ChangeMenuMode(menu_modes new_mode);
+
+private:
+			window_settings*	fSettings;
+			ImageView*			fImageView;
+			BackgroundView*		fBackground;
+
+			BScrollBar*			fVerticalScrollbar;
+			BScrollBar*			fHorizontalScrollbar;
+
+			BMenuBar*			fMenubar;
+			StatusView*			fStatusView;
+
+			BBox*				fContainerBox;
+			BButton*			fSetSizeButton;
+			NumberControl*		fWidthNumberControl;
+			NumberControl*		fHeightNumberControl;
+
+			ImageSavePanel*		fImageSavePanel;
+			BFilePanel*			fProjectSavePanel;
+
+			// The BEntrys should be replace by something else as they
+			// consume a file-descriptor.
+			BEntry				fImageEntry;
+			BEntry				fProjectEntry;
+			uint32				fCurrentHandler;
+
+			// This list contains pointers to all of the paint-windows
+			// This counter keeps count of how many paint-windows we have open,
+			// it is incremented in constructor and dectremented in destructor.
+			static	BList		sgPaintWindowList;
+			static	int32		sgPaintWindowCount;
+			static	int32		sgUntitledWindowNumber;
+
+			// these variables hold the info about how much space
+			// all the additional views take, used when resizing the window
+			// to fit image
+			BRect				fUserFrame;
+			float				fAdditionalWidth;
+			float				fAdditionalHeight;
 };
 
-#endif
+
+#endif	// PAINT_WINDOW_H

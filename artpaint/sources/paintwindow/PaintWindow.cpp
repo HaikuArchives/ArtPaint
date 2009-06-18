@@ -1,73 +1,108 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
+
+#include "PaintWindow.h"
+
+#include "AboutWindow.h"
+#include "BackgroundView.h"
+#include "BrushStoreWindow.h"
+#include "Controls.h"
+#include "ColorPalette.h"
+#include "DatatypeSetupWindow.h"
+#include "FileIdentificationStrings.h"
+#include "FilePanels.h"
+#include "GlobalSetupWindow.h"
+#include "HSStack.h"
+#include "Image.h"
+#include "ImageView.h"
+#include "Layer.h"
+#include "LayerWindow.h"
+#include "Manipulator.h"
+#include "ManipulatorServer.h"
+#include "MessageConstants.h"
+#include "MessageFilters.h"
+#include "PaintApplication.h"
+#include "PaintWindowMenuItem.h"
+#include "ProjectFileFunctions.h"
+#include "PopUpList.h"
+#include "Settings.h"
+#include "StatusView.h"
+#include "StringServer.h"
+#include "SymbolImageServer.h"
+#include "ToolSetupWindow.h"
+#include "ToolSelectionWindow.h"
+#include "UtilityClasses.h"
+#include "VersionConstants.h"
+#include "ViewSetupWindow.h"
+
+
 #include <Alert.h>
 #include <BitmapStream.h>
 #include <Button.h>
 #include <Clipboard.h>
 #include <Entry.h>
-#include <InterfaceDefs.h>
 #include <MenuBar.h>
-#include <new>
 #include <NodeInfo.h>
 #include <Path.h>
 #include <Resources.h>
 #include <Roster.h>
 #include <Screen.h>
 #include <ScrollBar.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <SupportDefs.h>
 #include <TranslatorRoster.h>
 
-#include "PaintWindow.h"
-#include "ImageView.h"
-#include "BackgroundView.h"
-#include "MessageConstants.h"
-#include "StatusView.h"
-#include "UtilityClasses.h"
-#include "LayerWindow.h"
-#include "PaintApplication.h"
-#include "FilePanels.h"
-#include "ViewSetupWindow.h"
-#include "Settings.h"
-#include "ColorPalette.h"
-#include "Controls.h"
-#include "DatatypeSetupWindow.h"
-#include "FileIdentificationStrings.h"
-#include "VersionConstants.h"
-#include "ToolSetupWindow.h"
-#include "ToolSelectionWindow.h"
-#include "HSStack.h"
-#include "PopUpList.h"
-#include "BrushStoreWindow.h"
-#include "Layer.h"
-#include "GlobalSetupWindow.h"
-#include "MessageFilters.h"
-#include "Manipulator.h"
-#include "ManipulatorServer.h"
-#include "ProjectFileFunctions.h"
-#include "PaintWindowMenuItem.h"
-#include "Image.h"
-#include "StringServer.h"
-#include "SymbolImageServer.h"
-#include "AboutWindow.h"
+
+#include <new>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 // initialize the static variable
-BList PaintWindow::paint_window_list(10);
-int32 PaintWindow::paint_window_count = 0;
-int32 PaintWindow::untitled_window_number = 1;
+BList PaintWindow::sgPaintWindowList(10);
+int32 PaintWindow::sgPaintWindowCount = 0;
+int32 PaintWindow::sgUntitledWindowNumber = 1;
 
 
-PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_settings *setup )
-				: BWindow(frame,name,B_DOCUMENT_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_WILL_ACCEPT_FIRST_CLICK|B_NOT_ANCHORED_ON_ACTIVATE)
+// these constants are for the internal communication of the PaintWindow-class
+#define	HS_SHOW_VIEW_SETUP_WINDOW		'SvsW'
+#define HS_SHOW_GLOBAL_SETUP_WINDOW		'SgsW'
+#define	HS_SAVE_IMAGE_INTO_RESOURCES	'Sirc'
+#define	HS_SAVE_IMAGE_AS_CURSOR			'Siac'
+#define	HS_RECENT_IMAGE_SIZE			'Rsis'
+#define	HS_SHOW_ABOUT_WINDOW			'Sabw'
+
+
+PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
+		const window_settings *setup)
+	: BWindow(frame, name, B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE)
+	, fSettings(NULL)
+	, fImageView(NULL)
+	, fBackground(NULL)
+	, fVerticalScrollbar(NULL)
+	, fHorizontalScrollbar(NULL)
+	, fMenubar(NULL)
+	, fStatusView(NULL)
+	, fContainerBox(NULL)
+	, fSetSizeButton(NULL)
+	, fWidthNumberControl(NULL)
+	, fHeightNumberControl(NULL)
+	, fImageSavePanel(NULL)
+	, fProjectSavePanel(NULL)
+	, fCurrentHandler(0)
+	, fAdditionalWidth(0.0)
+	, fAdditionalHeight(0.0)
 {
+	sgPaintWindowCount++;
 	SetSizeLimits(400, 10000, 300, 10000);
 
 	// Fit the window to screen.
@@ -77,49 +112,22 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 		ResizeTo(new_frame.Width(),new_frame.Height());
 	}
 
-	// Here we set various views to NULL so we can later test if they are opened.
-	menubar = NULL;
-	image_view = NULL;
-	set_size_button = NULL;
-
-	strcpy(tool_help_string,"");
-
-	// also NULL the save-panels
-	image_save_panel = NULL;
-	project_save_panel = NULL;
-
-	// Create initial entrys. Actually BEntrys should not be used to store paths
-	// as they consume a file-descriptor.
-	image_entry = BEntry();
-	project_entry = BEntry();
-
-	// Increment the window count by 1.
-	paint_window_count++;
-
-	if (views == 0) {
+	if (views == 0)
 		views = setup->views;
-	}
 
 	// Record the settings.
-	settings = new window_settings(setup);
-	current_handler = 0;
-
-	// reset the additional variables
-	additional_width = 0;
-	additional_height = 0;
+	fSettings = new window_settings(setup);
 
 	// here get the be_plain_font height
 	font_height p_f_height;
 	BFont plain_font;
 	plain_font.GetHeight(&p_f_height);
 
-	if ((views & HS_MENU_BAR) != 0) {	// the menubar should be opened
+	if ((views & HS_MENU_BAR) != 0) {
+		// the menubar should be opened
 		openMenuBar();
-
-		// the height of menubar can be obtained by calling menubar->Bounds().Height()
-		additional_height += menubar->Bounds().Height() + 1;
+		fAdditionalHeight += fMenubar->Bounds().Height() + 1.0;
 	}
-
 
 	// here the scrollbars are opened and placed along window sides
 	// vertical bar is opened to begin under the menubar
@@ -129,20 +137,24 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 	float top = 0;
 
 
-	if (menubar != NULL)	// here add the height of menubar if it is opened
-		top += menubar->Bounds().Height();
+	if (fMenubar != NULL)	// here add the height of menubar if it is opened
+		top += fMenubar->Bounds().Height();
 
 	// Create the scrollbars, and disable them.
-	horiz_scroll = new BScrollBar(BRect(0,bottom - B_H_SCROLL_BAR_HEIGHT,right-B_V_SCROLL_BAR_WIDTH,bottom),"horiz",NULL,0,0,B_HORIZONTAL);
-	vert_scroll = new BScrollBar(BRect(right - B_V_SCROLL_BAR_WIDTH,top,right,bottom - B_H_SCROLL_BAR_HEIGHT),"vert",NULL,0,0,B_VERTICAL);
-	horiz_scroll->SetRange(0,0);
-	vert_scroll->SetRange(0,0);
+	fHorizontalScrollbar = new BScrollBar(BRect(0.0,
+		bottom - B_H_SCROLL_BAR_HEIGHT, right - B_V_SCROLL_BAR_WIDTH, bottom),
+		"horizontal", NULL, 0, 0, B_HORIZONTAL);
+	fVerticalScrollbar = new BScrollBar(BRect(right - B_V_SCROLL_BAR_WIDTH,
+		top, right, bottom - B_H_SCROLL_BAR_HEIGHT), "vertical", NULL, 0, 0,
+		B_VERTICAL);
+	fHorizontalScrollbar->SetRange(0,0);
+	fVerticalScrollbar->SetRange(0,0);
 
 	// add the scroll bars to window
-	AddChild(horiz_scroll);
-	AddChild(vert_scroll);
-	horiz_scroll->SetSteps(8,32);
-	vert_scroll->SetSteps(8,32);
+	AddChild(fHorizontalScrollbar);
+	AddChild(fVerticalScrollbar);
+	fHorizontalScrollbar->SetSteps(8,32);
+	fVerticalScrollbar->SetSteps(8,32);
 
 	// update the free area limits
 	bottom -= (B_H_SCROLL_BAR_HEIGHT + 1);
@@ -151,28 +163,28 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 
 
 	// increase the additional width and height variables
-	additional_width += B_V_SCROLL_BAR_WIDTH - 1;
-	additional_height += B_H_SCROLL_BAR_HEIGHT - 1;
+	fAdditionalWidth += B_V_SCROLL_BAR_WIDTH - 1;
+	fAdditionalHeight += B_H_SCROLL_BAR_HEIGHT - 1;
 
 	// The status-view is not optional. It contains sometimes also buttons that
 	// can cause some actions to be taken.
 	if ((views & HS_STATUS_VIEW) != 0) {	// the statusbar should be opened
 		// Create the status-view and make it display nothing
-		status_view = new StatusView(BRect(BPoint(0,bottom),BPoint(right,bottom)));
-		status_view->DisplayNothing();
+		fStatusView = new StatusView(BRect(BPoint(0,bottom),BPoint(right,bottom)));
+		fStatusView->DisplayNothing();
 
 		// place the statusbar along bottom of window on top of scrollbar
 		// and also record size that it occupies
 
 		// here add the statusview to window's hierarchy
-		AddChild(status_view);
+		AddChild(fStatusView);
 
 		// update the bottom value to be 1 pixel above status_view
 		// status_view is resized in window FrameResized() function
-		bottom -= (status_view->Bounds().Height() + 1);
+		bottom -= (fStatusView->Bounds().Height() + 1);
 
-		// update the additional_height variable
-		additional_height += status_view->Bounds().Height() + 1;
+		// update the fAdditionalHeight variable
+		fAdditionalHeight += fStatusView->Bounds().Height() + 1;
 	}
 
 	// here set the window minimum size so that all views are nicely visible
@@ -181,12 +193,11 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 	// adjust the coordinates so that no views overlap
 	// later should take into account all the views that were opened
 
-	// make the background view
-	background = new BackgroundView(BRect(0,top,right,bottom));
-	AddChild(background);
+	// make the background view (the backround for image)
+	fBackground = new BackgroundView(BRect(0,top,right,bottom));
+	AddChild(fBackground);
 
-
-	if ( (views & HS_SIZING_VIEW) != 0x0000 )  {
+	if ((views & HS_SIZING_VIEW) != 0x0000)  {
 		// here we should open the views that are used to set the image size
 		// we should add them as children for background-view and put them on
 		// the right side of that area
@@ -203,28 +214,28 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 		else
 			longer_string = width_string;
 
-		width_view = new NumberControl(BRect(10,10,110,10),"width_view",longer_string,"",NULL);
-		width_view->TextView()->SetMaxBytes(4);
-		height_view = new NumberControl(BRect(10,width_view->Frame().bottom + 10,110,width_view->Frame().bottom + 10),"height_view",longer_string,"",NULL);
-		height_view->TextView()->SetMaxBytes(4);
-		set_size_button = new BButton(BRect(10,height_view->Frame().bottom + 10,110,height_view->Frame().bottom + 10),"set_size_button",create_canvas_string, new BMessage(HS_IMAGE_SIZE_SET));
-		set_size_button->SetTarget(this);
+		fWidthNumberControl = new NumberControl(BRect(10,10,110,10),"width_number_control",longer_string,"",NULL);
+		fWidthNumberControl->TextView()->SetMaxBytes(4);
+		fHeightNumberControl = new NumberControl(BRect(10,fWidthNumberControl->Frame().bottom + 10,110,fWidthNumberControl->Frame().bottom + 10),"height_number_control",longer_string,"",NULL);
+		fHeightNumberControl->TextView()->SetMaxBytes(4);
+		fSetSizeButton = new BButton(BRect(10,fHeightNumberControl->Frame().bottom + 10,110,fHeightNumberControl->Frame().bottom + 10),"set_size_button",create_canvas_string, new BMessage(HS_IMAGE_SIZE_SET));
+		fSetSizeButton->SetTarget(this);
 
 		// resize the buttons to preferred sizes
-		width_view->ResizeToPreferred();
-		height_view->ResizeToPreferred();
-		set_size_button->ResizeToPreferred();
+		fWidthNumberControl->ResizeToPreferred();
+		fHeightNumberControl->ResizeToPreferred();
+		fSetSizeButton->ResizeToPreferred();
 
 
-		// and then change the label of width_view to Width
-		width_view->SetLabel(width_string);
-		height_view->SetLabel(height_string);
+		// and then change the label of fWidthNumberControl to Width
+		fWidthNumberControl->SetLabel(width_string);
+		fHeightNumberControl->SetLabel(height_string);
 
 		// Here also create a button that controls a pop-up menu that contains the
 		// most recently used sizes as items. The menu-items should post a message
-		// to this window, that then changes the values to width_view and height_view.
-		float pop_up_left = height_view->Frame().right+5;
-		float pop_up_top = height_view->Frame().top - (height_view->Frame().top -width_view->Frame().bottom)/2 - 10;
+		// to this window, that then changes the values to fWidthNumberControl and fHeightNumberControl.
+		float pop_up_left = fHeightNumberControl->Frame().right+5;
+		float pop_up_top = fHeightNumberControl->Frame().top - (fHeightNumberControl->Frame().top -fWidthNumberControl->Frame().bottom)/2 - 10;
 		int32 w,h;
 		BBitmap *pushed = SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST_PUSHED,w,h);
 		BBitmap *not_pushed = SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST,w,h);
@@ -240,7 +251,10 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 				settings->recent_image_height_list[i]);
 			message_list[i]->AddString("label",label);
 		}
-		PopUpList *pop_up_list = new PopUpList(BRect(pop_up_left,pop_up_top,pop_up_left+9,pop_up_top+19),pushed,not_pushed,message_list,RECENT_LIST_LENGTH,new BMessenger(NULL,this));
+		PopUpList *pop_up_list = new PopUpList(BRect(pop_up_left, pop_up_top,
+			pop_up_left + 9, pop_up_top + 19), pushed, not_pushed, message_list,
+			RECENT_LIST_LENGTH, new BMessenger(NULL, this));
+
 		BMenu *standard_size_menu = new BMenu(StringServer::ReturnString(STANDARD_SIZES_STRING));
 		BMessage *message;
 		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
@@ -290,28 +304,28 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 
 //		container_width += 5;
 
-		// here create the container_box that is large enough
-		float container_width = max_c(set_size_button->Frame().Width() + 20,pop_up_list->Frame().right+5);
-		float container_height = set_size_button->Frame().Height() + 2*height_view->Frame().Height() + 40;
-		container_box = new BBox(BRect(background->Bounds().right-container_width,background->Bounds().bottom-container_height,background->Bounds().right,background->Bounds().bottom),"container for controls",B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM);
+		// here create the fContainerBox that is large enough
+		float container_width = max_c(fSetSizeButton->Frame().Width() + 20,pop_up_list->Frame().right+5);
+		float container_height = fSetSizeButton->Frame().Height() + 2*fHeightNumberControl->Frame().Height() + 40;
+		fContainerBox = new BBox(BRect(fBackground->Bounds().right-container_width,fBackground->Bounds().bottom-container_height,fBackground->Bounds().right,fBackground->Bounds().bottom),"container for controls",B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM);
 
 		// here we should center the button and boxes horizontally
 
-		background->AddChild(container_box);
+		fBackground->AddChild(fContainerBox);
 
 		// Container-box tries to change its color to that of background's
 		// (which should be B_TRANSPARENT_32_BIT) so we have to change it to
 		// the color we want it to have before adding children to it.
-		container_box->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-		container_box->AddChild(width_view);
-		container_box->AddChild(height_view);
-		container_box->AddChild(set_size_button);
-		container_box->AddChild(pop_up_list);
+		fContainerBox->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		fContainerBox->AddChild(fWidthNumberControl);
+		fContainerBox->AddChild(fHeightNumberControl);
+		fContainerBox->AddChild(fSetSizeButton);
+		fContainerBox->AddChild(pop_up_list);
 		BMessage *help_message = new BMessage(HS_TOOL_HELP_MESSAGE);
 		help_message->AddString("message",StringServer::ReturnString(SELECT_CANVAS_SIZE_STRING));
 		PostMessage(help_message,this);
 		delete help_message;
-		set_size_button->MakeDefault(true);
+		fSetSizeButton->MakeDefault(true);
 	}
 
 
@@ -327,203 +341,207 @@ PaintWindow::PaintWindow(char *name,BRect frame, uint32 views,const window_setti
 	// show the window to user
 	Show();
 
-	// Add ourselves to the paint_window_list
-	paint_window_list.AddItem(this);
+	// Add ourselves to the sgPaintWindowList
+	sgPaintWindowList.AddItem(this);
 
 	Lock();
 	// Handle the window-activation with this common filter.
-	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,B_ANY_SOURCE,B_MOUSE_DOWN,window_activation_filter);
+	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,
+		B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
 	AddCommonFilter(activation_filter);
-	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
+	AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
 	Unlock();
 
-	user_frame = Frame();
+	fUserFrame = Frame();
 
 }
 
 
-PaintWindow* PaintWindow::createPaintWindow(BBitmap *a_bitmap,char *file_name,int32 type, entry_ref ref, translator_id outTranslator)
+PaintWindow*
+PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* file_name,
+	int32 type, const entry_ref& ref, translator_id outTranslator)
 {
-	PaintWindow *a_window;
-
 	window_settings default_window_settings =
 		((PaintApplication*)be_app)->GlobalSettings()->default_window_settings;
 
 	uint32 flags = HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW ;
-	char title[100];
+	BString title;
 	if (file_name == NULL) {
-//		sprintf(title,"%s - %d",StringServer::ReturnString(UNTITLED_STRING),untitled_window_number);
-		sprintf(title,"%s",StringServer::ReturnString(EMPTY_PAINT_WINDOW_STRING));;
+		// sprintf(title,"%s - %d",StringServer::ReturnString(UNTITLED_STRING),
+		//		sgUntitledWindowNumber);
 		flags = flags | HS_SIZING_VIEW;
+		title = StringServer::ReturnString(EMPTY_PAINT_WINDOW_STRING);
+	} else {
+		title = file_name;
 	}
-	else
-		sprintf(title,"%s",file_name);
 
-	if (a_bitmap == NULL) {
-		a_window = new PaintWindow(title,default_window_settings.frame_rect,flags,&(default_window_settings));
-//		untitled_window_number++;
-	}
-	else {
-		a_window = new PaintWindow(title,default_window_settings.frame_rect, flags,&(default_window_settings));
+	PaintWindow* paintWindow = new PaintWindow(title.String(),
+		default_window_settings.frame_rect, flags, &(default_window_settings));
 
+	if (bitmap != NULL) {
 		// some of these might also come from attributes
-		a_window->Settings()->zoom_level = default_window_settings.zoom_level;
-		a_window->Settings()->view_position = default_window_settings.view_position;
-		a_window->Settings()->file_type = type;
+		window_settings* settings = paintWindow->Settings();
 
-		BNode a_node(&ref);
-		BNodeInfo a_node_info(&a_node);
+		settings->file_type = type;
+		settings->zoom_level = default_window_settings.zoom_level;
+		settings->view_position = default_window_settings.view_position;
 
-		a_node_info.GetType(a_window->Settings()->file_mime);
-		BEntry *entry = a_window->ImageEntry();
-		*entry = BEntry(&ref,TRUE);
+		BNode node(&ref);
+		BNodeInfo nodeInfo(&node);
+		nodeInfo.GetType(paintWindow->Settings()->file_mime);
+
+		paintWindow->SetImageEntry(BEntry(&ref, true));
 
 // This is done elsewhere to make it possible to read the attributes
 // after creating the image-view.
 //		// make the window read it's attributes
-//		a_window->readAttributes(a_node);
+//		paintWindow->ReadAttributes(node);
 
 		// Open an imageview for the window and add a layer to it.
-		a_window->OpenImageView(int32(a_bitmap->Bounds().Width() + 1),
-			int32(a_bitmap->Bounds().Height() + 1));
-		a_window->ReturnImageView()->ReturnImage()->InsertLayer(a_bitmap);
-		a_window->AddImageView();
+		paintWindow->OpenImageView(int32(bitmap->Bounds().Width() + 1),
+			int32(bitmap->Bounds().Height() + 1));
+		paintWindow->ReturnImageView()->ReturnImage()->InsertLayer(bitmap);
+		paintWindow->AddImageView();
 	}
 
-	a_window->current_handler = outTranslator;
+	paintWindow->fCurrentHandler = outTranslator;
 
 	// Change the zoom-level to be correct
-	a_window->Lock();
-	a_window->displayMag(a_window->Settings()->zoom_level);
-	a_window->Unlock();
+	paintWindow->Lock();
+	paintWindow->displayMag(paintWindow->Settings()->zoom_level);
+	paintWindow->Unlock();
 
 
-	return a_window;
+	return paintWindow;
 }
-
 
 
 PaintWindow::~PaintWindow()
 {
-	if (image_view != NULL) {
+	if (fImageView != NULL) {
 		// if we have a BEntry for this image, we should
 		// write some attributes to that file
-		if (image_entry.InitCheck() == B_NO_ERROR) {
+		if (fImageEntry.InitCheck() == B_OK) {
 			// call a function that writes attributes to a node
-			BNode a_node(&image_entry);
+			BNode a_node(&fImageEntry);
 			writeAttributes(a_node);
 		}
-		if (project_entry.InitCheck() == B_NO_ERROR) {
-			BNode a_node(&project_entry);
+		if (fProjectEntry.InitCheck() == B_OK) {
+			BNode a_node(&fProjectEntry);
 			writeAttributes(a_node);
 		}
 
-		image_view->RemoveSelf();
-		delete image_view;
+		fImageView->RemoveSelf();
+		delete fImageView;
 	}
 
-	delete settings;
+	delete fSettings;
 	// Decrement the window-count by 1.
-	paint_window_count--;
+	sgPaintWindowCount--;
 
-	// Remove ourselves from the paint_window_list.
-	paint_window_list.RemoveItem(this);
+	// Remove ourselves from the sgPaintWindowList.
+	sgPaintWindowList.RemoveItem(this);
 }
 
 
-void PaintWindow::FrameResized(float, float)
+void
+PaintWindow::FrameResized(float, float)
 {
 	// Store the new frame to settings.
-	settings->frame_rect = Frame();
+	fSettings->frame_rect = Frame();
 }
 
-void PaintWindow::FrameMoved(BPoint)
+
+void
+PaintWindow::FrameMoved(BPoint)
 {
 	// Store the new frame to settings.
-	settings->frame_rect = Frame();
+	fSettings->frame_rect = Frame();
 }
 
 
-
-void PaintWindow::MenusBeginning()
+void
+PaintWindow::MenusBeginning()
 {
 	BWindow::MenusBeginning();
 
-	BMenuItem *item = menubar->FindItem(StringServer::ReturnString(PASTE_AS_NEW_LAYER_STRING));
+	BMenuItem *item = fMenubar->FindItem(StringServer::ReturnString(PASTE_AS_NEW_LAYER_STRING));
 	if (item != NULL) {
 		be_clipboard->Lock();
 		if (be_clipboard->Data()->HasMessage("image/bitmap"))
-			item->SetEnabled(TRUE);
+			item->SetEnabled(true);
 		else
-			item->SetEnabled(FALSE);
+			item->SetEnabled(false);
 		be_clipboard->Unlock();
 	}
 
-	item = menubar->FindItem(StringServer::ReturnString(PASTE_AS_NEW_PROJECT_STRING));
+	item = fMenubar->FindItem(StringServer::ReturnString(PASTE_AS_NEW_PROJECT_STRING));
 	if (item != NULL) {
 		be_clipboard->Lock();
 		if (be_clipboard->Data()->HasMessage("image/bitmap"))
-			item->SetEnabled(TRUE);
+			item->SetEnabled(true);
 		else
-			item->SetEnabled(FALSE);
+			item->SetEnabled(false);
 		be_clipboard->Unlock();
 	}
 
-
-	if (image_view != NULL) {
-		item = menubar->FindItem(HS_CLEAR_SELECTION);
-		if (image_view->GetSelection()->IsEmpty())
-			item->SetEnabled(FALSE);
+	if (fImageView != NULL) {
+		item = fMenubar->FindItem(HS_CLEAR_SELECTION);
+		if (fImageView->GetSelection()->IsEmpty())
+			item->SetEnabled(false);
 		else
-			item->SetEnabled(TRUE);
+			item->SetEnabled(true);
 
-		item = menubar->FindItem(HS_INVERT_SELECTION);
-		if (image_view->GetSelection()->IsEmpty())
-			item->SetEnabled(FALSE);
+		item = fMenubar->FindItem(HS_INVERT_SELECTION);
+		if (fImageView->GetSelection()->IsEmpty())
+			item->SetEnabled(false);
 		else
-			item->SetEnabled(TRUE);
+			item->SetEnabled(true);
 
-		item = menubar->FindItem(HS_GROW_SELECTION);
-		if (image_view->GetSelection()->IsEmpty())
-			item->SetEnabled(FALSE);
+		item = fMenubar->FindItem(HS_GROW_SELECTION);
+		if (fImageView->GetSelection()->IsEmpty())
+			item->SetEnabled(false);
 		else
-			item->SetEnabled(TRUE);
+			item->SetEnabled(true);
 
-		item = menubar->FindItem(HS_SHRINK_SELECTION);
-		if (image_view->GetSelection()->IsEmpty())
-			item->SetEnabled(FALSE);
+		item = fMenubar->FindItem(HS_SHRINK_SELECTION);
+		if (fImageView->GetSelection()->IsEmpty())
+			item->SetEnabled(false);
 		else
-			item->SetEnabled(TRUE);
+			item->SetEnabled(true);
 	}
 
-	if ((image_entry.InitCheck() == B_NO_ERROR) && (current_handler != 0)) {
-		BMenuItem *item = menubar->FindItem(HS_SAVE_IMAGE);
-		if (item) item->SetEnabled(TRUE);
-	}
-	else {
-		BMenuItem *item = menubar->FindItem(HS_SAVE_IMAGE);
-		if (item) item->SetEnabled(FALSE);
-	}
-
-	if (project_entry.InitCheck() == B_NO_ERROR) {
-		BMenuItem *item = menubar->FindItem(HS_SAVE_PROJECT);
-		if (item) item->SetEnabled(TRUE);
+	if ((fImageEntry.InitCheck() == B_OK) && (fCurrentHandler != 0)) {
+		BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
+		if (item) item->SetEnabled(true);
 	}
 	else {
-		BMenuItem *item = menubar->FindItem(HS_SAVE_PROJECT);
-		if (item) item->SetEnabled(FALSE);
+		BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
+		if (item) item->SetEnabled(false);
+	}
+
+	if (fProjectEntry.InitCheck() == B_OK) {
+		BMenuItem *item = fMenubar->FindItem(HS_SAVE_PROJECT);
+		if (item) item->SetEnabled(true);
+	}
+	else {
+		BMenuItem *item = fMenubar->FindItem(HS_SAVE_PROJECT);
+		if (item) item->SetEnabled(false);
 	}
 
 	SetHelpString("",HS_TEMPORARY_HELP_MESSAGE);
 }
 
 
-void PaintWindow::MenusEnded()
+void
+PaintWindow::MenusEnded()
 {
 	SetHelpString(NULL,HS_TOOL_HELP_MESSAGE);
 }
 
-void PaintWindow::MessageReceived(BMessage *message)
+
+void
+PaintWindow::MessageReceived(BMessage *message)
 {
 	// handles all the messages that come to PaintWindow
 	// this path can be used when saving the image or project
@@ -535,7 +553,7 @@ void PaintWindow::MessageReceived(BMessage *message)
 	BMessage *a_save_message;
 
 	switch ( message->what ) {
-		// this comes from menubar->"Window"->"Resize Window to Fit" and informs us that
+		// this comes from fMenubar->"Window"->"Resize Window to Fit" and informs us that
 		// we should fit the window to display exactly the image
 		case HS_RESIZE_WINDOW_TO_FIT:
 			// use a private function to do resizing
@@ -544,8 +562,8 @@ void PaintWindow::MessageReceived(BMessage *message)
 
 		// This comes from the recent image-size pop-up-list.
 		case HS_RECENT_IMAGE_SIZE:
-			width_view->SetValue(message->FindInt32("width"));
-			height_view->SetValue(message->FindInt32("height"));
+			fWidthNumberControl->SetValue(message->FindInt32("width"));
+			fHeightNumberControl->SetValue(message->FindInt32("height"));
 			break;
 
 		// this comes from a button and it informs that the user has decided the image size
@@ -557,24 +575,24 @@ void PaintWindow::MessageReceived(BMessage *message)
 				// conversion should be done in a separate function.
 				bool image_created;
 				int32 width,height;
-				width = atoi(width_view->Text());
-				height = atoi(height_view->Text());
+				width = atoi(fWidthNumberControl->Text());
+				height = atoi(fHeightNumberControl->Text());
 
 				try {
 					// Open the image view
 					OpenImageView(width,height);
 					// Add a layer to it.
-					image_view->ReturnImage()->InsertLayer();
-					image_created = TRUE;
+					fImageView->ReturnImage()->InsertLayer();
+					image_created = true;
 				}
 				catch (std::bad_alloc) {
-					image_created = FALSE;
-					delete image_view;
-					image_view = FALSE;
+					image_created = false;
+					delete fImageView;
+					fImageView = NULL;
 					BAlert *memory_alert = new BAlert("memory_alert",StringServer::ReturnString(CANNOT_CREATE_IMAGE_STRING),StringServer::ReturnString(OK_STRING),NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
 					memory_alert->Go();
 				}
-				if (image_created == TRUE) {
+				if (image_created == true) {
 					// Record the window's frame and also put the new size to the most recently used
 					// list.
 					((PaintApplication*)be_app)->GlobalSettings()->default_window_settings.frame_rect = Frame();
@@ -608,10 +626,13 @@ void PaintWindow::MessageReceived(BMessage *message)
 					}
 
 					// Remove the sizing buttons.
-					container_box->RemoveSelf();
-					delete container_box;
-					// NULL this because it will be used later to check if we are still resizing
-					set_size_button = NULL;
+					fContainerBox->RemoveSelf();
+					delete fContainerBox;
+
+					// NULL this because it will be used later to check if we
+					// are still resizing
+					fContainerBox = NULL;
+					fSetSizeButton = NULL;
 
 					// Add the view to view hierarchy.
 					AddImageView();
@@ -623,19 +644,19 @@ void PaintWindow::MessageReceived(BMessage *message)
 		// this comes from backgrounview, we should then put the actual imageview
 		// to follow the mouse
 		case HS_MOUSE_DOWN_IN_BACKGROUNDVIEW:
-			if ((image_view != NULL) && (image_view->Window() != NULL)) {
-				image_view->MouseDown(message->FindPoint("point"));
+			if ((fImageView != NULL) && (fImageView->Window() != NULL)) {
+				fImageView->MouseDown(message->FindPoint("point"));
 			}
 			break;
 
 
 
-		// this comes from menubar->"Window"->"Show Layer Window" and tells us to show the
+		// this comes from fMenubar->"Window"->"Show Layer Window" and tells us to show the
 		// layer window
 		case HS_SHOW_LAYER_WINDOW:
 			LayerWindow::showLayerWindow();
-			if (image_view != NULL) {
-				LayerWindow::ActiveWindowChanged(this,image_view->ReturnImage()->LayerList(),image_view->ReturnImage()->ReturnThumbnailImage());
+			if (fImageView != NULL) {
+				LayerWindow::ActiveWindowChanged(this,fImageView->ReturnImage()->LayerList(),fImageView->ReturnImage()->ReturnThumbnailImage());
 			}
 			else {
 				LayerWindow::ActiveWindowChanged(this);
@@ -643,79 +664,84 @@ void PaintWindow::MessageReceived(BMessage *message)
 			break;
 
 	// this shows us a view setup window
-		// this comes from menubar->"Window"->"Window Settings…" and tells us to show the
+		// this comes from fMenubar->"Window"->"Window Settings…" and tells us to show the
 		// window for setting the parameters of this window and it's views
 		case HS_SHOW_VIEW_SETUP_WINDOW:
-			ViewSetupWindow::showViewSetupWindow(this,image_view);
+			ViewSetupWindow::showViewSetupWindow(this,fImageView);
 			break;
 
-		// this comes from menubar->"Window"->"Global Settings…"
+		// this comes from fMenubar->"Window"->"Global Settings…"
 		case HS_SHOW_GLOBAL_SETUP_WINDOW:
 			GlobalSetupWindow::showGlobalSetupWindow();
 			break;
 
 	// this tells us that user wants to open a save-panel for saving the image in a new file-name
-		// This comes from menubar->"File"->"Save Image As…" and we should show a save-panel
+		// This comes from fMenubar->"File"->"Save Image As…" and we should show a save-panel
 		case HS_SHOW_IMAGE_SAVE_PANEL:
-			if (image_save_panel == NULL) {
+			if (fImageSavePanel == NULL) {
 				entry_ref *ref = new entry_ref();
-				if (image_entry.InitCheck() != B_NO_ERROR) {
+				if (fImageEntry.InitCheck() != B_OK) {
 					// This might actually fail if the user has removed the directory.
-					if (path.SetTo(((PaintApplication*)be_app)->GlobalSettings()->image_save_path) != B_NO_ERROR) {
+					if (path.SetTo(((PaintApplication*)be_app)->GlobalSettings()->image_save_path) != B_OK) {
 						PaintApplication::HomeDirectory(path);
 					}
 				}
 				else {
-					image_entry.GetPath(&path);
+					fImageEntry.GetPath(&path);
 					// get the dir that the file lives in
 					path.GetParent(&path);
 				}
 				get_ref_for_path(path.Path(),ref);
-				image_save_panel = new ImageSavePanel(ref, new BMessenger(this),settings->file_type,image_view->ReturnImage()->ReturnThumbnailImage());
+				BMessenger window(this);
+				fImageSavePanel = new ImageSavePanel(ref, &window,
+					fSettings->file_type,
+					fImageView->ReturnImage()->ReturnThumbnailImage());
 				delete ref;
 			}
-			image_save_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
-			set_filepanel_strings(image_save_panel);
-			if (!image_save_panel->IsShowing())
-				image_save_panel->Show();
+			fImageSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
+			set_filepanel_strings(fImageSavePanel);
+			if (!fImageSavePanel->IsShowing())
+				fImageSavePanel->Show();
 			break;
 
-		// This comes from menubar->"File"->"Save Project As…"
+		// This comes from fMenubar->"File"->"Save Project As…"
 		case HS_SHOW_PROJECT_SAVE_PANEL:
-			if (project_save_panel == NULL) {
+			if (fProjectSavePanel == NULL) {
 				entry_ref *ref = new entry_ref();
-				if (project_entry.InitCheck() != B_NO_ERROR) {
+				if (fProjectEntry.InitCheck() != B_OK) {
 					path.SetTo(((PaintApplication*)be_app)->GlobalSettings()->project_save_path);
 				}
 				else {
-					project_entry.GetPath(&path);
+					fProjectEntry.GetPath(&path);
 					// get the dir that the file lives in
 					path.GetParent(&path);
 				}
 				get_ref_for_path(path.Path(),ref);
-				project_save_panel = new BFilePanel(B_SAVE_PANEL, new BMessenger(this),ref,0,FALSE,new BMessage(HS_PROJECT_SAVE_REFS));
+				BMessenger window(this);
+				fProjectSavePanel = new BFilePanel(B_SAVE_PANEL, &window, ref,
+					0, false, new BMessage(HS_PROJECT_SAVE_REFS));
 				delete ref;
 			}
-			project_save_panel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
+			fProjectSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 			char string[256];
 			sprintf(string,"ArtPaint: %s",StringServer::ReturnString(SAVE_PROJECT_STRING));
-			project_save_panel->Window()->SetTitle(string);
-			set_filepanel_strings(project_save_panel);
-			if (!project_save_panel->IsShowing())
-				project_save_panel->Show();
+			fProjectSavePanel->Window()->SetTitle(string);
+			set_filepanel_strings(fProjectSavePanel);
+			if (!fProjectSavePanel->IsShowing())
+				fProjectSavePanel->Show();
 			break;
 
-		// This comes from menubar->"Window"->"Show Color Window". We should open the color window.
+		// This comes from fMenubar->"Window"->"Show Color Window". We should open the color window.
 		case HS_SHOW_COLOR_WINDOW:
-			ColorPaletteWindow::showPaletteWindow(FALSE);
+			ColorPaletteWindow::showPaletteWindow(false);
 			break;
 
-		// This comes from menubar->"Window"->"Show Tool Window". We should open the tool window.
+		// This comes from fMenubar->"Window"->"Show Tool Window". We should open the tool window.
 		case HS_SHOW_TOOL_WINDOW:
 			ToolSelectionWindow::showWindow();
 			break;
 
-		// This comes from menubar->"Window"->"Show Tool Setup Window". We should open the tool window.
+		// This comes from fMenubar->"Window"->"Show Tool Setup Window". We should open the tool window.
 		case HS_SHOW_TOOL_SETUP_WINDOW:
 			ToolSetupWindow::showWindow(((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool);
 			break;
@@ -730,9 +756,9 @@ void PaintWindow::MessageReceived(BMessage *message)
 			// We should actually call it in another thread while ensuring that it saves the
 			// correct bitmap. We should also protect the bitmap from being modified while we save.
 			// We should also inform the user about saving of the.
-			delete image_save_panel;
-			image_save_panel = NULL;
-			if (image_view != NULL) {
+			delete fImageSavePanel;
+			fImageSavePanel = NULL;
+			if (fImageView != NULL) {
 				thread_id save_thread = spawn_thread(PaintWindow::save_image,"save image",B_NORMAL_PRIORITY,(void*)this);
 				resume_thread(save_thread);
 				BMessage *sendable_message = new BMessage(*message);
@@ -744,9 +770,9 @@ void PaintWindow::MessageReceived(BMessage *message)
 		// should be saved.
 		case HS_PROJECT_SAVE_REFS:
 			// We call the function that saves the project.
-			delete project_save_panel;
-			project_save_panel = NULL;
-			if (image_view != NULL) {
+			delete fProjectSavePanel;
+			fProjectSavePanel = NULL;
+			if (fImageView != NULL) {
 				thread_id save_thread = spawn_thread(PaintWindow::save_project,"save project",B_NORMAL_PRIORITY,(void*)this);
 				resume_thread(save_thread);
 				BMessage *sendable_message = new BMessage(*message);
@@ -756,8 +782,8 @@ void PaintWindow::MessageReceived(BMessage *message)
 
 		case HS_SAVE_IMAGE:
 			// We make a message containing the file name and ref for its dir.
-			image_entry.GetParent(&parent_entry);
-			image_entry.GetName(a_name);
+			fImageEntry.GetParent(&parent_entry);
+			fImageEntry.GetName(a_name);
 			parent_entry.GetPath(&a_path);
 			get_ref_for_path(a_path.Path(),&a_save_ref);
 			a_save_message = new BMessage(HS_IMAGE_SAVE_REFS);
@@ -768,10 +794,10 @@ void PaintWindow::MessageReceived(BMessage *message)
 			break;
 
 		case HS_SAVE_PROJECT:
-			if (project_entry.InitCheck() == B_NO_ERROR) {
+			if (fProjectEntry.InitCheck() == B_OK) {
 				// We make a message containing the file name and ref for its dir.
-				project_entry.GetParent(&parent_entry);
-				project_entry.GetName(a_name);
+				fProjectEntry.GetParent(&parent_entry);
+				fProjectEntry.GetName(a_name);
 				parent_entry.GetPath(&a_path);
 				get_ref_for_path(a_path.Path(),&a_save_ref);
 				a_save_message = new BMessage(HS_PROJECT_SAVE_REFS);
@@ -789,17 +815,17 @@ void PaintWindow::MessageReceived(BMessage *message)
 		// format has changed
 		case HS_SAVE_FORMAT_CHANGED:
 			{
-				settings->file_type = message->FindInt32("be:type");
-				current_handler = message->FindInt32("be:translator");
-				DatatypeSetupWindow::ChangeHandler(current_handler);
+				fSettings->file_type = message->FindInt32("be:type");
+				fCurrentHandler = message->FindInt32("be:translator");
+				DatatypeSetupWindow::ChangeHandler(fCurrentHandler);
 
 				BTranslatorRoster *roster = BTranslatorRoster::Default();
 				int32 num_formats;
 				const translation_format *formats = NULL;
-				if (roster->GetOutputFormats(current_handler,&formats,&num_formats) == B_NO_ERROR) {
+				if (roster->GetOutputFormats(fCurrentHandler,&formats,&num_formats) == B_OK) {
 					for (int32 i=0;i<num_formats;i++) {
-						if (formats[i].type == settings->file_type) {
-							strcpy(settings->file_mime,formats[i].MIME);
+						if (formats[i].type == fSettings->file_type) {
+							strcpy(fSettings->file_mime,formats[i].MIME);
 						}
 					}
 				}
@@ -809,21 +835,21 @@ void PaintWindow::MessageReceived(BMessage *message)
 		// This comes from image-save-panel's setting-button and tells us to show the datatype-
 		// setup-window.
 		case HS_SHOW_DATATYPE_SETTINGS:
-			DatatypeSetupWindow::showWindow(current_handler);
+			DatatypeSetupWindow::showWindow(fCurrentHandler);
 			break;
 
 		// this might come from a lot of places, but it is assumed that it comes from the
 		// image save panel
 		case B_CANCEL:
-			// cancel might come from somewhere else than just image_save_panel
+			// cancel might come from somewhere else than just fImageSavePanel
 			// we should check that somewhow
-			if ((image_save_panel != NULL) && (image_save_panel->IsShowing() == FALSE)) {
-				delete image_save_panel;
-				image_save_panel = NULL;
+			if ((fImageSavePanel != NULL) && (fImageSavePanel->IsShowing() == false)) {
+				delete fImageSavePanel;
+				fImageSavePanel = NULL;
 			}
-			else if ((project_save_panel != NULL) && (project_save_panel->IsShowing() == FALSE)) {
-				delete project_save_panel;
-				project_save_panel = NULL;
+			else if ((fProjectSavePanel != NULL) && (fProjectSavePanel->IsShowing() == false)) {
+				delete fProjectSavePanel;
+				fProjectSavePanel = NULL;
 			}
 			break;
 
@@ -859,116 +885,122 @@ void PaintWindow::MessageReceived(BMessage *message)
 	}
 }
 
-bool PaintWindow::QuitRequested()
+
+bool
+PaintWindow::QuitRequested()
 {
 	// here we should ask the user if changes to picture should be saved
 	// we also tell the application that the number of paint windows
 	// has decreased by one
-	if (image_view != NULL) {
-		if (image_view->Quit() == FALSE) {
-			return FALSE;
-		}
-		if (image_save_panel != NULL)
-			delete image_save_panel;
+	if (fImageView) {
+		if (fImageView->Quit() == false)
+			return false;
+
+		if (fImageSavePanel != NULL)
+			delete fImageSavePanel;
 	}
 
 	LayerWindow::ActiveWindowChanged(NULL);
 
-	if (paint_window_count <= 1)
+	if (sgPaintWindowCount <= 1)
 		be_app->PostMessage(B_QUIT_REQUESTED);
-	return TRUE;
+
+	return true;
 }
 
-void PaintWindow::WindowActivated(bool active)
+
+void
+PaintWindow::WindowActivated(bool active)
 {
-	if (active == TRUE) {
-		if (image_view != NULL) {
-			LayerWindow::ActiveWindowChanged(this,image_view->ReturnImage()->LayerList(),image_view->ReturnImage()->ReturnThumbnailImage());
-		}
-		else {
+	if (active == true) {
+		if (fImageView != NULL) {
+			LayerWindow::ActiveWindowChanged(this,
+				fImageView->ReturnImage()->LayerList(),
+				fImageView->ReturnImage()->ReturnThumbnailImage());
+		} else {
 			LayerWindow::ActiveWindowChanged(this);
 		}
 	}
 }
 
 
-void PaintWindow::WorkspaceActivated(int32,bool active)
+void
+PaintWindow::WorkspaceActivated(int32, bool active)
 {
 	if (active) {
-		if (image_view != NULL) {
-			BScreen screen(this);
-			if (screen.ColorSpace() == B_CMAP8) {
+		if (fImageView != NULL) {
+			if (BScreen(this).ColorSpace() == B_CMAP8) {
 //				printf("B_CMAP8\n");
-				image_view->SetDisplayMode(DITHERED_8_BIT_DISPLAY_MODE);
-			}
-			else {
+				fImageView->SetDisplayMode(DITHERED_8_BIT_DISPLAY_MODE);
+			} else {
 //				printf("not B_CMAP8\n");
-				image_view->SetDisplayMode(FULL_RGB_DISPLAY_MODE);
+				fImageView->SetDisplayMode(FULL_RGB_DISPLAY_MODE);
 			}
 		}
 	}
 }
 
 
-void PaintWindow::Zoom(BPoint lefttop,float width,float height)
+void
+PaintWindow::Zoom(BPoint leftTop, float width, float height)
 {
-	BRect frame = Frame();
-	BRect preferred = getPreferredSize();
+	bool resizedToFit = true;
 
-	bool resized_to_fit = true;
+	if (Frame() != getPreferredSize())
+		resizedToFit = false;
 
-	if (frame != preferred) {
-		printf("Frame is not preferred\n");
-		resized_to_fit = false;
-	}
-	if (resized_to_fit) {
-		MoveTo(user_frame.LeftTop());
-		ResizeTo(user_frame.Width(),user_frame.Height());
-	}
-	else {
+	if (resizedToFit) {
+		MoveTo(fUserFrame.LeftTop());
+		ResizeTo(fUserFrame.Width(), fUserFrame.Height());
+	} else {
 		resizeToFit();
 	}
 }
 
 
-void PaintWindow::DisplayCoordinates(BPoint point,BPoint reference,bool use_reference)
+void
+PaintWindow::DisplayCoordinates(BPoint point, BPoint reference, bool useReference)
 {
 	// here we set the proper view to display the coordinates
 
 	// set the coords string with sprintf
 //	sprintf(coords,"X: %.0f  Y: %.0f",point.x,point.y);
 
-	status_view->SetCoordinates(point,reference,use_reference);
+	fStatusView->SetCoordinates(point, reference, useReference);
 
-	if (set_size_button != NULL) {
+	if (fSetSizeButton != NULL) {
 		// if the window is in resize mode display dimensions here too
-		width_view->SetValue(int32(point.x));
-		height_view->SetValue(int32(point.y));
+		fWidthNumberControl->SetValue(int32(point.x));
+		fHeightNumberControl->SetValue(int32(point.y));
 	}
 }
 
 
-void PaintWindow::displayMag(float mag)
+void
+PaintWindow::displayMag(float mag)
 {
-	status_view->SetMagnifyingScale(mag);
+	fStatusView->SetMagnifyingScale(mag);
 }
 
 
-void PaintWindow::SetHelpString(const char *string,int32 type)
+void
+PaintWindow::SetHelpString(const char *string,int32 type)
 {
+	static char tool_help_string[256];
 	if ((type == HS_TOOL_HELP_MESSAGE) && (string != NULL))
-		strncpy(tool_help_string,string,255);
+		strncpy(tool_help_string, string, 255);
 
-	if (status_view != NULL) {
+	if (fStatusView != NULL) {
 		if (string != NULL)
-			status_view->SetHelpMessage(string);
+			fStatusView->SetHelpMessage(string);
 		else if (type == HS_TOOL_HELP_MESSAGE)
-			status_view->SetHelpMessage(tool_help_string);
+			fStatusView->SetHelpMessage(tool_help_string);
 	}
 }
 
 
-bool PaintWindow::openMenuBar()
+bool
+PaintWindow::openMenuBar()
 {
 	// Some of the items have the image as their target, the targets for those items
 	// are set in openImageView.
@@ -982,10 +1014,10 @@ bool PaintWindow::openMenuBar()
 	BMessage *a_message;
 
 	// here we place the menubar along the top edge of window
-	menubar = new BMenuBar(BRect(0,0,1,1),"menu_bar");
+	fMenubar = new BMenuBar(BRect(0,0,1,1),"menu_bar");
 
 	item = new BMenu(StringServer::ReturnString(FILE_STRING));
-	menubar->AddItem(item);
+	fMenubar->AddItem(item);
 
 	sub_menu = new BMenu(StringServer::ReturnString(RECENT_IMAGES_STRING));
 	item->AddItem(sub_menu);
@@ -993,9 +1025,9 @@ bool PaintWindow::openMenuBar()
 	for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
 		char *path = settings->recent_image_paths[i];
 		if (path != NULL) {
-			BPath path_object(path,NULL,TRUE);
-			BEntry entry(path_object.Path(),TRUE);
-			if (entry.Exists() == TRUE) {
+			BPath path_object(path,NULL,true);
+			BEntry entry(path_object.Path(),true);
+			if (entry.Exists() == true) {
 				entry_ref ref;
 				entry.GetRef(&ref);
 				a_message = new BMessage(B_REFS_RECEIVED);
@@ -1010,7 +1042,7 @@ bool PaintWindow::openMenuBar()
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(SAVE_IMAGE_AS_STRING),new BMessage(HS_SHOW_IMAGE_SAVE_PANEL),(char)NULL,0,this,StringServer::ReturnString(SAVE_IMAGE_AS_HELP_STRING)));
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(SAVE_IMAGE_STRING),new BMessage(HS_SAVE_IMAGE),'S',0,this,StringServer::ReturnString(SAVE_IMAGE_HELP_STRING)));
 	item->FindItem(HS_SHOW_IMAGE_OPEN_PANEL)->SetTarget(be_app);
-	item->FindItem(HS_SAVE_IMAGE)->SetEnabled(FALSE);
+	item->FindItem(HS_SAVE_IMAGE)->SetEnabled(false);
 	item->AddSeparatorItem();
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(NEW_PROJECT_STRING),new BMessage(HS_NEW_PAINT_WINDOW),'N',0,this,StringServer::ReturnString(NEW_PROJECT_HELP_STRING)));	// This is same as window->new paint window
 	sub_menu = new BMenu(StringServer::ReturnString(RECENT_PROJECTS_STRING));
@@ -1018,9 +1050,9 @@ bool PaintWindow::openMenuBar()
 	for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
 		char *path = ((PaintApplication*)be_app)->GlobalSettings()->recent_project_paths[i];
 		if (path != NULL) {
-			BPath path_object(path,NULL,TRUE);
-			BEntry entry(path_object.Path(),TRUE);
-			if (entry.Exists() == TRUE) {
+			BPath path_object(path,NULL,true);
+			BEntry entry(path_object.Path(),true);
+			if (entry.Exists() == true) {
 				entry_ref ref;
 				entry.GetRef(&ref);
 				a_message = new BMessage(B_REFS_RECEIVED);
@@ -1035,7 +1067,7 @@ bool PaintWindow::openMenuBar()
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(OPEN_PROJECT_STRING), new BMessage(HS_SHOW_PROJECT_OPEN_PANEL),'O',B_SHIFT_KEY,this,StringServer::ReturnString(OPEN_PROJECT_HELP_STRING)));
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(SAVE_PROJECT_AS_STRING),new BMessage(HS_SHOW_PROJECT_SAVE_PANEL),(char)NULL,0,this,StringServer::ReturnString(SAVE_PROJECT_AS_HELP_STRING)));
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(SAVE_PROJECT_STRING),new BMessage(HS_SAVE_PROJECT),'S',B_SHIFT_KEY,this,StringServer::ReturnString(SAVE_PROJECT_HELP_STRING)));
-	item->FindItem(HS_SAVE_PROJECT)->SetEnabled(FALSE);
+	item->FindItem(HS_SAVE_PROJECT)->SetEnabled(false);
 	item->FindItem(HS_SHOW_PROJECT_OPEN_PANEL)->SetTarget(be_app);
 	item->FindItem(HS_NEW_PAINT_WINDOW)->SetTarget(be_app);
 	item->AddSeparatorItem();
@@ -1049,7 +1081,7 @@ bool PaintWindow::openMenuBar()
 
 	// The Edit menu.
 	item = new BMenu(StringServer::ReturnString(EDIT_STRING));
-	menubar->AddItem(item),
+	fMenubar->AddItem(item),
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(UNDO_NOT_AVAILABLE_STRING),new BMessage(HS_UNDO),'Z',0,this,StringServer::ReturnString(UNDO_HELP_STRING)));
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(REDO_NOT_AVAILABLE_STRING),new BMessage(HS_REDO),'Z',B_SHIFT_KEY,this,StringServer::ReturnString(REDO_HELP_STRING)));
 	item->AddItem(new BSeparatorItem());
@@ -1084,7 +1116,7 @@ bool PaintWindow::openMenuBar()
 
 	// The Layer menu.
 	item = new BMenu(StringServer::ReturnString(LAYER_STRING));
-	menubar->AddItem(item);
+	fMenubar->AddItem(item);
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",ROTATION_MANIPULATOR);
@@ -1132,7 +1164,7 @@ bool PaintWindow::openMenuBar()
 
 	// The Canvas menu.
 	item = new BMenu(StringServer::ReturnString(CANVAS_STRING));
-	menubar->AddItem(item);
+	fMenubar->AddItem(item);
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",ROTATION_MANIPULATOR);
@@ -1180,7 +1212,7 @@ bool PaintWindow::openMenuBar()
 
 	// The Window menu,
 	item = new BMenu(StringServer::ReturnString(WINDOW_STRING));
-	menubar->AddItem(item);
+	fMenubar->AddItem(item);
 
 	// use + and - as shorcuts for zooming
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(ZOOM_IN_STRING), new BMessage(HS_ZOOM_IMAGE_IN),'+',0,this,StringServer::ReturnString(ZOOM_IN_HELP_STRING)));
@@ -1225,8 +1257,8 @@ bool PaintWindow::openMenuBar()
 	a_message->AddPoint("origin",BPoint(0,0));
 	a_message->AddInt32("unit",8);
 	sub_menu->AddItem(new PaintWindowMenuItem("8x8",a_message,(char)NULL,0,this,StringServer::ReturnString(GRID_8_BY_8_HELP_STRING)));
-	sub_menu->SetRadioMode(TRUE);
-	sub_menu->ItemAt(0)->SetMarked(TRUE);
+	sub_menu->SetRadioMode(true);
+	sub_menu->ItemAt(0)->SetMarked(true);
 
 	// use here the same shortcut as the tracker uses == Y
 	item->AddItem(new PaintWindowMenuItem(StringServer::ReturnString(RESIZE_TO_FIT_STRING),new BMessage(HS_RESIZE_WINDOW_TO_FIT),'Y',0,this,StringServer::ReturnString(RESIZE_TO_FIT_HELP_STRING)));
@@ -1248,10 +1280,10 @@ bool PaintWindow::openMenuBar()
 	item = new BMenu(StringServer::ReturnString(ADD_ONS_STRING));
 	thread_id add_on_adder_thread = spawn_thread(AddAddOnsToMenu,"add_on_adder_thread",B_NORMAL_PRIORITY,this);
 	resume_thread(add_on_adder_thread);
-	menubar->AddItem(item);
+	fMenubar->AddItem(item);
 
 	item = new BMenu(StringServer::ReturnString(HELP_STRING));
-	menubar->AddItem(item);
+	fMenubar->AddItem(item);
 	BMenuItem *an_item;
 	a_message =  new BMessage(HS_SHOW_USER_DOCUMENTATION);
 	a_message->AddString("document","index.html");
@@ -1272,88 +1304,99 @@ bool PaintWindow::openMenuBar()
 	item->AddItem(an_item);
 
 	ChangeMenuMode(NO_IMAGE_MENU);
-	AddChild(menubar);
+	AddChild(fMenubar);
 
 	// the creation of menubar succeeded...
-	return TRUE;
+	return true;
 }
 
 
-
-int32 PaintWindow::AddAddOnsToMenu(void *data)
+int32
+PaintWindow::AddAddOnsToMenu(void* data)
 {
-	PaintWindow *this_pointer = (PaintWindow*)data;
-	if (this_pointer == NULL)
+	PaintWindow* paintWindow = static_cast<PaintWindow*>(data);
+	if (!paintWindow)
 		return B_ERROR;
 
-	while ((ManipulatorServer::AddOnsAvailable() == FALSE) || (this_pointer->KeyMenuBar() == NULL)) {
-		snooze(50 * 1000);
+	while ((ManipulatorServer::AddOnsAvailable() == false)
+		|| (paintWindow->KeyMenuBar() == NULL)) {
+		snooze(50000);
 	}
 
-	image_id add_on_id;
-	image_id *addon_array = ManipulatorServer::AddOnArray();
-	BMenu *add_on_menu = NULL;
-	if (this_pointer->KeyMenuBar() != NULL) {
-		add_on_menu = this_pointer->KeyMenuBar()->FindItem(StringServer::ReturnString(ADD_ONS_STRING))->Submenu();
+	BMenu* addOnMenu = NULL;
+	if (paintWindow->KeyMenuBar() != NULL) {
+		BMenuBar* menuBar = paintWindow->KeyMenuBar();
+		BMenuItem* item =
+			menuBar->FindItem(StringServer::ReturnString(ADD_ONS_STRING));
+		addOnMenu = item->Submenu();
 	}
-	if (add_on_menu != NULL) {
-		this_pointer->Lock();
-		for (int32 i=0;i<ManipulatorServer::AddOnCount();i++) {
-			add_on_id = addon_array[i];
-			char *add_on_name;
-			char *add_on_help;
-			int32 *add_on_version;
-			status_t errors;
 
-			errors = get_image_symbol(add_on_id,"name",B_SYMBOL_TYPE_DATA,(void**)&add_on_name);
-			errors |= get_image_symbol(add_on_id,"add_on_api_version",B_SYMBOL_TYPE_DATA,(void**)&add_on_version);
-			if (get_image_symbol(add_on_id,"menu_help_string",B_SYMBOL_TYPE_DATA,(void**)&add_on_help) != B_NO_ERROR)
-				add_on_help = "Starts an add-on effect.";
+	if (addOnMenu) {
+		if (paintWindow->Lock()) {
+			BMessenger target(paintWindow);
+			image_id* addon_array = ManipulatorServer::AddOnArray();
+			for (int32 i = 0; i < ManipulatorServer::AddOnCount(); ++i) {
+				image_id imageId = addon_array[i];
 
-			BMessage *a_message;
-			if ((*add_on_version == ADD_ON_API_VERSION) && (errors == B_NO_ERROR)) {
-				a_message = new BMessage(HS_START_MANIPULATOR);
-				a_message->AddInt32("manipulator_type",ADD_ON_MANIPULATOR);
-				a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-				a_message->AddInt32("add_on_id",add_on_id);
-				add_on_menu->AddItem(new PaintWindowMenuItem(add_on_name,a_message,(char)NULL,0,this_pointer,add_on_help));
+				char* add_on_name;
+				status_t errors = get_image_symbol(imageId, "name",
+						B_SYMBOL_TYPE_DATA, (void**)&add_on_name);
+
+				int32* add_on_version;
+				errors |= get_image_symbol(imageId, "add_on_api_version",
+						B_SYMBOL_TYPE_DATA, (void**)&add_on_version);
+
+				const char* add_on_help;
+				if (get_image_symbol(imageId, "menu_help_string",
+						B_SYMBOL_TYPE_DATA, (void**)&add_on_help) != B_OK) {
+					add_on_help = "Starts an add-on effect.";
+				}
+
+				if (*add_on_version == ADD_ON_API_VERSION && errors == B_OK) {
+					BMessage* message = new BMessage(HS_START_MANIPULATOR);
+					message->AddInt32("manipulator_type",ADD_ON_MANIPULATOR);
+					message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
+					message->AddInt32("add_on_id", imageId);
+					addOnMenu->AddItem(new PaintWindowMenuItem(add_on_name,
+						message, (char)NULL, 0, paintWindow, add_on_help));
+				}
 			}
+			addOnMenu->SetTargetForItems(target);
+			paintWindow->Unlock();
 		}
-		add_on_menu->SetTargetForItems(BMessenger(this_pointer));
-		this_pointer->Unlock();
 	}
 
-	if (this_pointer->image_view != NULL) {
-		add_on_menu->SetTargetForItems(this_pointer->image_view);
-	}
+	if (paintWindow->fImageView != NULL)
+		addOnMenu->SetTargetForItems(paintWindow->fImageView);
 
 	return B_OK;
 }
 
 
-status_t PaintWindow::OpenImageView(int32 width, int32 height)
+status_t
+PaintWindow::OpenImageView(int32 width, int32 height)
 {
 	// The image-view should be at most as large as backgroundview
 	// but not larger than image width and height.
 	Lock();	// Lock while we take background's bounds.
-	image_view = new ImageView(background->Bounds(),width,height);
+	fImageView = new ImageView(fBackground->Bounds(),width,height);
 	Unlock();
 
-	// return TRUE because we were successfull
-	return TRUE;
+	// return true because we were successfull
+	return true;
 }
 
 
-
-status_t PaintWindow::AddImageView()
+status_t
+PaintWindow::AddImageView()
 {
 	// We have to lock as this functionmight be
 	// called from outside the window's thread.
 	Lock();
 
 	// put the view as target for scrollbars
-	horiz_scroll->SetTarget(image_view);
-	vert_scroll->SetTarget(image_view);
+	fHorizontalScrollbar->SetTarget(fImageView);
+	fVerticalScrollbar->SetTarget(fImageView);
 	// Change the regular help-view's message.
 //	BMessage *help_message = new BMessage(HS_REGULAR_HELP_MESSAGE);
 //	help_message->AddString("message",HS_DRAW_MODE_HELP_MESSAGE);
@@ -1364,43 +1407,43 @@ status_t PaintWindow::AddImageView()
 	ChangeMenuMode(FULL_MENU);
 
 	// Add the view to window's view hierarchy.
-	background->AddChild(image_view);
+	fBackground->AddChild(fImageView);
 
 	// Adjust image's position and size.
-	image_view->adjustSize();
-	image_view->adjustPosition();
+	fImageView->adjustSize();
+	fImageView->adjustPosition();
 	// Update the image's scroll-bars.
-	image_view->adjustScrollBars();
+	fImageView->adjustScrollBars();
 
 	// Change image for target for certain menu-items. These cannot be changed
 	// before image is added as a child to this window.
-	menubar->FindItem(StringServer::ReturnString(EDIT_STRING))->Submenu()->SetTargetForItems(image_view);
-	menubar->FindItem(StringServer::ReturnString(PASTE_AS_NEW_PROJECT_STRING))->SetTarget(be_app);
+	fMenubar->FindItem(StringServer::ReturnString(EDIT_STRING))->Submenu()->SetTargetForItems(fImageView);
+	fMenubar->FindItem(StringServer::ReturnString(PASTE_AS_NEW_PROJECT_STRING))->SetTarget(be_app);
 
-	BMenu *menu = menubar->FindItem(StringServer::ReturnString(EDIT_STRING))->Submenu();
+	BMenu *menu = fMenubar->FindItem(StringServer::ReturnString(EDIT_STRING))->Submenu();
 	if (menu != NULL) {
 		BMenu *sub_menu;
 		for (int32 i=0;i<menu->CountItems();i++) {
 			sub_menu = menu->SubmenuAt(i);
 			if (sub_menu != NULL)
-				sub_menu->SetTargetForItems(image_view);
+				sub_menu->SetTargetForItems(fImageView);
 		}
 	}
 
-	menubar->FindItem(StringServer::ReturnString(ADD_ONS_STRING))->Submenu()->SetTargetForItems(image_view);
-	menubar->FindItem(HS_ADD_LAYER_FRONT)->SetTarget(image_view);
-	menubar->FindItem(StringServer::ReturnString(CROP_STRING))->SetTarget(image_view);
-	menubar->FindItem(HS_CLEAR_CANVAS)->SetTarget(image_view);
-	menubar->FindItem(HS_CLEAR_LAYER)->SetTarget(image_view);
-	menubar->FindItem(HS_ZOOM_IMAGE_IN)->SetTarget(image_view);
-	menubar->FindItem(HS_ZOOM_IMAGE_OUT)->SetTarget(image_view);
-	menubar->FindItem(StringServer::ReturnString(SET_ZOOM_LEVEL_STRING))->Submenu()->SetTargetForItems(image_view);
-	menubar->FindItem(StringServer::ReturnString(SET_GRID_STRING))->Submenu()->SetTargetForItems(image_view);
+	fMenubar->FindItem(StringServer::ReturnString(ADD_ONS_STRING))->Submenu()->SetTargetForItems(fImageView);
+	fMenubar->FindItem(HS_ADD_LAYER_FRONT)->SetTarget(fImageView);
+	fMenubar->FindItem(StringServer::ReturnString(CROP_STRING))->SetTarget(fImageView);
+	fMenubar->FindItem(HS_CLEAR_CANVAS)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_CLEAR_LAYER)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_ZOOM_IMAGE_IN)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_ZOOM_IMAGE_OUT)->SetTarget(fImageView);
+	fMenubar->FindItem(StringServer::ReturnString(SET_ZOOM_LEVEL_STRING))->Submenu()->SetTargetForItems(fImageView);
+	fMenubar->FindItem(StringServer::ReturnString(SET_GRID_STRING))->Submenu()->SetTargetForItems(fImageView);
 	HSStack<BMenu*> menu_stack(100);
 
-	for (int32 i=0;i<menubar->CountItems();i++) {
-		if (menubar->ItemAt(i)->Submenu() != NULL)
-			menu_stack.push(menubar->ItemAt(i)->Submenu());
+	for (int32 i=0;i<fMenubar->CountItems();i++) {
+		if (fMenubar->ItemAt(i)->Submenu() != NULL)
+			menu_stack.push(fMenubar->ItemAt(i)->Submenu());
 	}
 
 	// Change the image as target for all menu-items that have HS_START_MANIPULATOR
@@ -1409,7 +1452,7 @@ status_t PaintWindow::AddImageView()
 	while (menu != NULL) {
 		for (int32 i=0;i<menu->CountItems();i++) {
 			if (menu->ItemAt(i)->Command() == HS_START_MANIPULATOR) {
-				menu->ItemAt(i)->SetTarget(image_view);
+				menu->ItemAt(i)->SetTarget(fImageView);
 			}
 			if (menu->ItemAt(i)->Submenu() != NULL) {
 				menu_stack.push(menu->ItemAt(i)->Submenu());
@@ -1420,37 +1463,38 @@ status_t PaintWindow::AddImageView()
 
 	// This allows Alt-+ next to the backspace key to work (the menu item shortcut only works
 	// with the + key on the numeric keypad)
-	AddShortcut('=', B_COMMAND_KEY, new BMessage(HS_ZOOM_IMAGE_IN), image_view);
+	AddShortcut('=', B_COMMAND_KEY, new BMessage(HS_ZOOM_IMAGE_IN), fImageView);
 
 	// change the name of the image and the project in the image-view
-	if (project_entry.InitCheck() == B_OK) {
+	if (fProjectEntry.InitCheck() == B_OK) {
 		char name[B_PATH_NAME_LENGTH];
-		project_entry.GetName(name);
-		image_view->SetProjectName(name);
+		fProjectEntry.GetName(name);
+		fImageView->SetProjectName(name);
 	}
 	else {
 		char title[256];
 		sprintf(title,"%s - %ld",StringServer::ReturnString(UNTITLED_STRING),
-			untitled_window_number++);
-		image_view->SetProjectName(title);
+			sgUntitledWindowNumber++);
+		fImageView->SetProjectName(title);
 	}
-	if (image_entry.InitCheck() == B_OK) {
+	if (fImageEntry.InitCheck() == B_OK) {
 		char name[B_PATH_NAME_LENGTH];
-		image_entry.GetName(name);
-		image_view->SetImageName(name);
+		fImageEntry.GetName(name);
+		fImageView->SetImageName(name);
 	}
-	status_view->DisplayToolsAndColors();
+	fStatusView->DisplayToolsAndColors();
 	// Finally unlock the window.
 	Unlock();
 
 	// We can update ourselves to the layer-window.
-	LayerWindow::ActiveWindowChanged(this,image_view->ReturnImage()->LayerList(),image_view->ReturnImage()->ReturnThumbnailImage());
+	LayerWindow::ActiveWindowChanged(this,fImageView->ReturnImage()->LayerList(),fImageView->ReturnImage()->ReturnThumbnailImage());
 
 	return B_OK;
 }
 
 
-void PaintWindow::resizeToFit()
+void
+PaintWindow::resizeToFit()
 {
 	// here we check if the window fits to screen when resized
 	// if not then we will make the window as big as will fit on screen
@@ -1461,7 +1505,7 @@ void PaintWindow::resizeToFit()
 
 	// Store the user-frame
 	if (Frame() != getPreferredSize())
-		user_frame = Frame();
+		fUserFrame = Frame();
 
 	// here we should also take magify_scale into account
 	BRect screen_bounds;
@@ -1470,7 +1514,7 @@ void PaintWindow::resizeToFit()
 	}
 	screen_bounds.OffsetTo(0,0);
 
-	if (!image_view) {
+	if (!fImageView) {
 		screen_bounds.InsetBy(7.5, 7.5);
 		ResizeTo(screen_bounds.right, screen_bounds.bottom - 20.0);
 		MoveTo(screen_bounds.LeftTop() + BPoint(-5.0, 15.0));
@@ -1480,11 +1524,11 @@ void PaintWindow::resizeToFit()
 	// we have to subtract a little from screen dimensions to leave some room
 	// around window
 	float width = min_c(screen_bounds.Width() - 30,
-		image_view->getMagScale() * image_view->ReturnImage()->Width() +
-		additional_width);
+		fImageView->getMagScale() * fImageView->ReturnImage()->Width() +
+		fAdditionalWidth);
 	float height = min_c(screen_bounds.Height() - 30,
-		image_view->getMagScale()*image_view->ReturnImage()->Height() +
-		additional_height);
+		fImageView->getMagScale()*fImageView->ReturnImage()->Height() +
+		fAdditionalHeight);
 	width = ceil(width);
 	height = ceil(height);
 
@@ -1500,7 +1544,8 @@ void PaintWindow::resizeToFit()
 }
 
 
-BRect PaintWindow::getPreferredSize()
+BRect
+PaintWindow::getPreferredSize()
 {
 	// here we should also take magify_scale into account
 	BRect screen_bounds;
@@ -1509,17 +1554,17 @@ BRect PaintWindow::getPreferredSize()
 	}
 	screen_bounds.OffsetTo(0,0);
 
-	if (!image_view)
+	if (!fImageView)
 		return screen_bounds;
 
 	// we have to subtract a little from screen dimensions to leave some room
 	// around window
 	float width = min_c(screen_bounds.Width() - 30.0,
-		image_view->getMagScale() * image_view->ReturnImage()->Width() +
-		additional_width);
+		fImageView->getMagScale() * fImageView->ReturnImage()->Width() +
+		fAdditionalWidth);
 	float height = min_c(screen_bounds.Height() - 30.0,
-		image_view->getMagScale() * image_view->ReturnImage()->Height() +
-		additional_height);
+		fImageView->getMagScale() * fImageView->ReturnImage()->Height() +
+		fAdditionalHeight);
 	width = ceil(width);
 	height = ceil(height);
 
@@ -1533,7 +1578,9 @@ BRect PaintWindow::getPreferredSize()
 	return BRect(left_top.x, left_top.y, left_top.x + width, left_top.y + height);
 }
 
-int32 PaintWindow::save_image(void *data)
+
+int32
+PaintWindow::save_image(void *data)
 {
 	PaintWindow *window = (PaintWindow*)data;
 	BMessage *message = NULL;
@@ -1548,21 +1595,23 @@ int32 PaintWindow::save_image(void *data)
 		return B_ERROR;
 }
 
-status_t PaintWindow::saveImage(BMessage *message)
+
+status_t
+PaintWindow::saveImage(BMessage *message)
 {
-	if (image_view->Freeze() == B_NO_ERROR) {
+	if (fImageView->Freeze() == B_OK) {
 		entry_ref ref;
 		message->FindRef("directory",&ref);
 		BDirectory directory = BDirectory(&ref);
 		status_t err;
 
 		// store the entry-ref
-		err = image_entry.SetTo(&directory,message->FindString("name"),TRUE);
+		err = fImageEntry.SetTo(&directory,message->FindString("name"),true);
 
 		// Only one save ref is received so we do not need to loop.
 		BFile file;
-		if ((err = file.SetTo(&directory,message->FindString("name"),B_WRITE_ONLY|B_CREATE_FILE|B_ERASE_FILE)) != B_NO_ERROR) {
-			image_view->UnFreeze();
+		if ((err = file.SetTo(&directory,message->FindString("name"),B_WRITE_ONLY|B_CREATE_FILE|B_ERASE_FILE)) != B_OK) {
+			fImageView->UnFreeze();
 			return err;
 		}
 
@@ -1572,7 +1621,7 @@ status_t PaintWindow::saveImage(BMessage *message)
 
 		// Create a BNodeInfo for this file and set the MIME-type and preferred app.
 		BNodeInfo *nodeinfo = new BNodeInfo(&file);
-		nodeinfo->SetType(settings->file_mime);
+		nodeinfo->SetType(fSettings->file_mime);
 //		nodeinfo->SetPreferredApp(info.signature);
 		delete nodeinfo;
 
@@ -1581,28 +1630,28 @@ status_t PaintWindow::saveImage(BMessage *message)
 		writeAttributes(*node);
 
 		// here translate the data using a BitmapStream-object
-		BBitmap *picture = image_view->ReturnImage()->ReturnRenderedImage();
+		BBitmap *picture = fImageView->ReturnImage()->ReturnRenderedImage();
 
 		printf("Picture at 0,0: 0x%8lx\n",*((uint32*)(picture->Bits())));
 
 		BBitmapStream *image_stream = new BBitmapStream(picture);
 		BTranslatorRoster *roster = BTranslatorRoster::Default();
 
-		err = roster->Translate(image_stream,(const translator_info*)NULL,(BMessage*)NULL,&file,settings->file_type,B_TRANSLATOR_BITMAP);
-		image_view->UnFreeze();
-		if (err == B_NO_ERROR) {
+		err = roster->Translate(image_stream,(const translator_info*)NULL,(BMessage*)NULL,&file,fSettings->file_type,B_TRANSLATOR_BITMAP);
+		fImageView->UnFreeze();
+		if (err == B_OK) {
 			char title[B_FILE_NAME_LENGTH];
-			image_entry.GetName(title);
+			fImageEntry.GetName(title);
 			Lock();
-			image_view->ResetChangeStatistics(false,true);
-			image_view->SetImageName(title);
-//			BMenuItem *item = menubar->FindItem(HS_SAVE_IMAGE);
-//			if (item) item->SetEnabled(TRUE);
+			fImageView->ResetChangeStatistics(false,true);
+			fImageView->SetImageName(title);
+//			BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
+//			if (item) item->SetEnabled(true);
 			Unlock();
 			// Also change this new path into the settings.
 
 			BPath path;
-			image_entry.GetPath(&path);
+			fImageEntry.GetPath(&path);
 			((PaintApplication*)be_app)->GlobalSettings()->insert_recent_image_path(path.Path());
 			path.GetParent(&path);
 
@@ -1621,7 +1670,8 @@ status_t PaintWindow::saveImage(BMessage *message)
 }
 
 
-status_t PaintWindow::saveImageIntoResources()
+status_t
+PaintWindow::saveImageIntoResources()
 {
 	// Find a file named ArtPaint.rsrc in the apps directory an create a resource pointing to it.
 	BFile res_file;
@@ -1638,7 +1688,7 @@ status_t PaintWindow::saveImageIntoResources()
 	scanf("%ld",&res_id);
 
 	// While writing the image convert it to B_COLOR_8_BIT.
-	BBitmap *buffer = image_view->ReturnImage()->ReturnRenderedImage();
+	BBitmap *buffer = fImageView->ReturnImage()->ReturnRenderedImage();
 	char *image_8_bit = new char[buffer->BitsLength()/4];
 	uint32 *bits = (uint32*)buffer->Bits();
 	int32 bits_length = buffer->BitsLength()/4;
@@ -1660,13 +1710,14 @@ status_t PaintWindow::saveImageIntoResources()
 }
 
 
-status_t PaintWindow::saveImageAsCursor()
+status_t
+PaintWindow::saveImageAsCursor()
 {
 	BFile cursor_file;
 	if (cursor_file.SetTo("/boot/home/Cursor.h",B_READ_WRITE|B_CREATE_FILE|B_ERASE_FILE) != B_OK) {
 		return B_ERROR;
 	}
-	BBitmap *buffer = image_view->ReturnImage()->ReturnActiveBitmap();
+	BBitmap *buffer = fImageView->ReturnImage()->ReturnActiveBitmap();
 
 	int32 colors[16][2];
 	int32 transparency[16][2];
@@ -1735,7 +1786,9 @@ status_t PaintWindow::saveImageAsCursor()
 	return B_OK;
 }
 
-int32 PaintWindow::save_project(void *data)
+
+int32
+PaintWindow::save_project(void *data)
 {
 	PaintWindow *window = (PaintWindow*)data;
 	BMessage *message = NULL;
@@ -1750,9 +1803,11 @@ int32 PaintWindow::save_project(void *data)
 		return B_ERROR;
 }
 
-status_t PaintWindow::saveProject(BMessage *message)
+
+status_t
+PaintWindow::saveProject(BMessage *message)
 {
-	if (image_view->Freeze() == B_NO_ERROR) {
+	if (fImageView->Freeze() == B_OK) {
 		// We open the file that the ref and the name of message tells us.
 		entry_ref ref;
 		message->FindRef("directory",&ref);
@@ -1760,12 +1815,12 @@ status_t PaintWindow::saveProject(BMessage *message)
 		status_t err;
 
 		// store the entry-ref
-		err = project_entry.SetTo(&directory,message->FindString("name"),TRUE);
+		err = fProjectEntry.SetTo(&directory,message->FindString("name"),true);
 
 		// Only one save ref is received so we do not need to loop.
 		BFile file;
-		if ((err = file.SetTo(&directory,message->FindString("name"),B_WRITE_ONLY|B_CREATE_FILE|B_ERASE_FILE)) != B_NO_ERROR) {
-			image_view->UnFreeze();
+		if ((err = file.SetTo(&directory,message->FindString("name"),B_WRITE_ONLY|B_CREATE_FILE|B_ERASE_FILE)) != B_OK) {
+			fImageView->UnFreeze();
 			return err;
 		}
 
@@ -1790,14 +1845,14 @@ status_t PaintWindow::saveProject(BMessage *message)
 
 		// Write the endianness
 		if (file.Write(&lendian,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Write the file-id.
 		int32 id = PROJECT_FILE_ID;
 		if (file.Write(&id,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
@@ -1805,21 +1860,21 @@ status_t PaintWindow::saveProject(BMessage *message)
 		// only two sections.
 		int32 section_count = 2;
 		if (file.Write(&section_count,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// First write the dimensions section. The real dimensions of the image are written to the file.
 		int32 marker = PROJECT_FILE_SECTION_START;
 		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Here write the section type.
 		int32 type = PROJECT_FILE_DIMENSION_SECTION_ID;
 		if (file.Write(&type,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
@@ -1827,39 +1882,39 @@ status_t PaintWindow::saveProject(BMessage *message)
 		file.Seek(sizeof(int64),SEEK_CUR);
 
 		// Here write the width and height.
-		int32 width = (int32)image_view->ReturnImage()->Width();
-		int32 height = (int32)image_view->ReturnImage()->Height();
+		int32 width = (int32)fImageView->ReturnImage()->Width();
+		int32 height = (int32)fImageView->ReturnImage()->Height();
 		int64 written_bytes = 0;
 		written_bytes = file.Write(&width,sizeof(int32));
 		written_bytes += file.Write(&height,sizeof(int32));
 
 		if (written_bytes != 2*sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		file.Seek(-written_bytes-sizeof(int64),SEEK_CUR);
 		if (file.Write(&written_bytes,sizeof(int64)) != sizeof(int64)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 		file.Seek(written_bytes,SEEK_CUR);
 
 		marker = PROJECT_FILE_SECTION_END;
 		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Here starts the layer-section.
 		marker = PROJECT_FILE_SECTION_START;
 		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 		id = PROJECT_FILE_LAYER_SECTION_ID;
 		if (file.Write(&id,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
@@ -1867,11 +1922,11 @@ status_t PaintWindow::saveProject(BMessage *message)
 		file.Seek(sizeof(int64),SEEK_CUR);
 
 		// Here tell the image to write layers.
-		written_bytes = image_view->ReturnImage()->WriteLayers(file);
+		written_bytes = fImageView->ReturnImage()->WriteLayers(file);
 
 		file.Seek(-written_bytes-sizeof(int64),SEEK_CUR);
 		if (file.Write(&written_bytes,sizeof(int64)) != sizeof(int64)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 		file.Seek(written_bytes,SEEK_CUR);
@@ -1879,34 +1934,34 @@ status_t PaintWindow::saveProject(BMessage *message)
 		// Write the end-marker for the layer-section.
 		marker = PROJECT_FILE_SECTION_END;
 		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
-			image_view->UnFreeze();
+			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 
 		// Now we are happily at the end of writing.
-		image_view->ResetChangeStatistics(true,false);
-		image_view->UnFreeze();
+		fImageView->ResetChangeStatistics(true,false);
+		fImageView->UnFreeze();
 		char title[256];
-		project_entry.GetName(title);
+		fProjectEntry.GetName(title);
 		Lock();
-		image_view->SetProjectName(title);
+		fImageView->SetProjectName(title);
 
 		// This must come after the project's name has been set.
-		LayerWindow::ActiveWindowChanged(this,image_view->ReturnImage()->LayerList(),image_view->ReturnImage()->ReturnThumbnailImage());
-//		BMenuItem *item = menubar->FindItem(HS_SAVE_PROJECT);
-//		if (item) item->SetEnabled(TRUE);
+		LayerWindow::ActiveWindowChanged(this,fImageView->ReturnImage()->LayerList(),fImageView->ReturnImage()->ReturnThumbnailImage());
+//		BMenuItem *item = fMenubar->FindItem(HS_SAVE_PROJECT);
+//		if (item) item->SetEnabled(true);
 		Unlock();
 		// Also change this new path into the settings.
 		BPath path;
-		project_entry.GetPath(&path);
+		fProjectEntry.GetPath(&path);
 		((PaintApplication*)be_app)->GlobalSettings()->insert_recent_project_path(path.Path());
 		path.GetParent(&path);
 
 		if (path.Path() != NULL) {
 			strcpy(((PaintApplication*)be_app)->GlobalSettings()->project_save_path,path.Path());
 		}
-		return B_NO_ERROR;
+		return B_OK;
 	}
 	else {
 		return B_ERROR;
@@ -1919,37 +1974,37 @@ PaintWindow::writeAttributes(BNode& node)
 {
 	BRect frame(Frame());
 	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame, sizeof(BRect));
-	if (image_view && image_view->LockLooper()) {
-		settings->zoom_level = image_view->getMagScale();
+	if (fImageView && fImageView->LockLooper()) {
+		fSettings->zoom_level = fImageView->getMagScale();
 		node.WriteAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0,
-			&(settings->zoom_level), sizeof(float));
+			&(fSettings->zoom_level), sizeof(float));
 
-		settings->view_position = image_view->LeftTop();
+		fSettings->view_position = fImageView->LeftTop();
 		node.WriteAttr("ArtP:view_position", B_POINT_TYPE, 0,
-			&(settings->view_position), sizeof(BPoint));
-		image_view->UnlockLooper();
+			&(fSettings->view_position), sizeof(BPoint));
+		fImageView->UnlockLooper();
 	}
 }
 
 
 void
-PaintWindow::readAttributes(BNode &node)
+PaintWindow::ReadAttributes(const BNode& node)
 {
 	if (Lock()) {
 		float zoom_level;
 		if (node.ReadAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0, &zoom_level,
 			sizeof(float)) > 0) {
-			settings->zoom_level = zoom_level;
-			if (image_view)
-				image_view->setMagScale(zoom_level);
+			fSettings->zoom_level = zoom_level;
+			if (fImageView)
+				fImageView->setMagScale(zoom_level);
 		}
 
 		BPoint view_position;
 		if (node.ReadAttr("ArtP:view_position" ,B_POINT_TYPE, 0, &view_position,
 			sizeof(BPoint)) > 0) {
-			settings->view_position = view_position;
-			if (image_view)
-				image_view->ScrollTo(view_position);
+			fSettings->view_position = view_position;
+			if (fImageView)
+				fImageView->ScrollTo(view_position);
 		}
 
 		BRect frame;
@@ -1965,7 +2020,8 @@ PaintWindow::readAttributes(BNode &node)
 }
 
 
-void PaintWindow::ChangeMenuMode(menu_modes new_mode)
+void
+PaintWindow::ChangeMenuMode(menu_modes new_mode)
 {
 	// Here create a pseudo-stack for use in quasi-recursion.
 	// Always increment last_item before adding item and decrement
@@ -1975,9 +2031,9 @@ void PaintWindow::ChangeMenuMode(menu_modes new_mode)
 	BMenuItem *current_item;
 
 	// First enable all the items in the menu.
-	for (int32 i=0;i<menubar->CountItems();i++) {
-		current_item = menubar->ItemAt(i);
-		current_item->SetEnabled(TRUE);
+	for (int32 i=0;i<fMenubar->CountItems();i++) {
+		current_item = fMenubar->ItemAt(i);
+		current_item->SetEnabled(true);
 		if (current_item->Submenu()) {
 			last_item++;
 			sub_menus[last_item] = current_item->Submenu();
@@ -1986,7 +2042,7 @@ void PaintWindow::ChangeMenuMode(menu_modes new_mode)
 				last_item--;
 				for (int32 j=0;j<sub_menu->CountItems();j++) {
 					current_item = sub_menu->ItemAt(j);
-					current_item->SetEnabled(TRUE);
+					current_item->SetEnabled(true);
 					if (current_item->Submenu()) {
 						last_item++;
 						sub_menus[last_item] = current_item->Submenu();
@@ -2005,69 +2061,61 @@ void PaintWindow::ChangeMenuMode(menu_modes new_mode)
 	// of the image (e.g. area selections and the clipboard). The image
 	// will have functions with which to query the status.
 	case FULL_MENU:
-		if (image_entry.InitCheck() != B_NO_ERROR) {
-			to_be_disabled = menubar->FindItem(HS_SAVE_IMAGE);
-			if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		if (fImageEntry.InitCheck() != B_OK) {
+			to_be_disabled = fMenubar->FindItem(HS_SAVE_IMAGE);
+			if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 		}
-		if (project_entry.InitCheck() != B_NO_ERROR) {
-			to_be_disabled = menubar->FindItem(HS_SAVE_PROJECT);
-			if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		if (fProjectEntry.InitCheck() != B_OK) {
+			to_be_disabled = fMenubar->FindItem(HS_SAVE_PROJECT);
+			if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 		}
 		break;
 
 	// In this case we disable some additional items and then let fall through
 	// to the next case that disables most of the other items.
 	case NO_IMAGE_MENU:
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(RESIZE_TO_FIT_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(RESIZE_TO_FIT_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(ZOOM_IN_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(ZOOM_IN_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(ZOOM_OUT_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(ZOOM_OUT_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(SET_ZOOM_LEVEL_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(SET_ZOOM_LEVEL_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(SET_GRID_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(SET_GRID_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
 	// In this case most of the items should be disabled.
 	case MINIMAL_MENU:
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(CANVAS_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(CANVAS_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(LAYER_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(LAYER_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(SAVE_IMAGE_AS_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(SAVE_IMAGE_AS_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(SAVE_PROJECT_AS_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(SAVE_PROJECT_AS_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(EDIT_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(EDIT_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(StringServer::ReturnString(ADD_ONS_STRING));
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(StringServer::ReturnString(ADD_ONS_STRING));
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(HS_SAVE_IMAGE);
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(HS_SAVE_IMAGE);
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
-		to_be_disabled = menubar->FindItem(HS_SAVE_PROJECT);
-		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(FALSE);
+		to_be_disabled = fMenubar->FindItem(HS_SAVE_PROJECT);
+		if (to_be_disabled != NULL) to_be_disabled->SetEnabled(false);
 
 		break;
 
 	}
-}
-
-
-
-
-StatusView* PaintWindow::ReturnStatusView()
-{
-	return status_view;
 }
