@@ -14,8 +14,6 @@
 #include <Rect.h>
 #include <Window.h>
 
-class	ColorSet;
-
 // each window has it's own window-settings and they are stored into
 // project-file or image-file's attributes
 // global settings also has a default window setting that is used if no-other

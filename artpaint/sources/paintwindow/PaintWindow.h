@@ -11,12 +11,15 @@
 #ifndef PAINT_WINDOW_H
 #define PAINT_WINDOW_H
 
+#include "StringServer.h"
+
 #include <Entry.h>
 #include <TranslatorRoster.h>
 #include <Window.h>
 
 class BBox;
 class BFilePanel;
+class BMenu;
 class BNode;
 
 class BackgroundView;
@@ -35,7 +38,6 @@ struct window_settings;
 #define	HS_STATUS_VIEW	0x0004
 #define	HS_MENU_BAR		0x0008
 #define HS_SIZING_VIEW	0x0010
-
 
 enum menu_modes {
 	FULL_MENU,
@@ -136,9 +138,12 @@ private:
 
 	static	int32				AddAddOnsToMenu(void*);
 
-			// This function changes the enability of some menu-items. The
-			// parameter is used as a guide to what should be enabled and not.
-			void				ChangeMenuMode(menu_modes new_mode);
+	static	const char*			_StringForId(string_id stringId);
+			void				_ChangeMenuMode(menu_modes newMode);
+			void				_EnableMenuItems(BMenu* menu);
+			void				_DisableMenuItem(const char* label);
+
+
 
 private:
 			window_settings*	fSettings;
