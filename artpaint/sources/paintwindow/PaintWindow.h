@@ -136,14 +136,16 @@ private:
 			// this function will write the attributes to node
 			void				writeAttributes(BNode& node);
 
-	static	int32				AddAddOnsToMenu(void*);
+			void				_AddMenuItems(BMenu* menu, string_id label,
+									uint32 what, char shortcut, uint32 modifiers,
+									BHandler* target, string_id help);
+			void				_AddRecentMenuItems(BMenu* menu, string_id id);
+	static	int32				_AddAddOnsToMenu(void*);
 
 	static	const char*			_StringForId(string_id stringId);
 			void				_ChangeMenuMode(menu_modes newMode);
 			void				_EnableMenuItems(BMenu* menu);
 			void				_DisableMenuItem(const char* label);
-
-
 
 private:
 			window_settings*	fSettings;

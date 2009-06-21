@@ -19,6 +19,7 @@ enum languages {
 };
 
 enum string_id {
+	SEPARATOR = -1,
 	ABOUT_ARTPAINT_STRING = 0,
 	ABOUT_HELP_STRING,
 	ACTIVE_LAYER_STRING,
