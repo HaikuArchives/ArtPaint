@@ -204,11 +204,13 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 		const char* tmpLabel = widthLabel;
 		if (font.StringWidth(heightLabel) > font.StringWidth(widthLabel))
 			tmpLabel = heightLabel;
+		float divider = font.StringWidth(tmpLabel) + 5.0;
 
 		BRect rect(10.0, 10.0, 110.0, 10.0);
 		fWidthNumberControl = new NumberControl(rect, "width_number_control",
 			tmpLabel, "", NULL);
 		fWidthNumberControl->ResizeToPreferred();
+		fWidthNumberControl->SetDivider(divider);
 		fWidthNumberControl->SetLabel(widthLabel);
 		fWidthNumberControl->TextView()->SetMaxBytes(4);
 
@@ -216,6 +218,7 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 		fHeightNumberControl = new NumberControl(rect, "height_number_control",
 			tmpLabel, "", NULL);
 		fHeightNumberControl->ResizeToPreferred();
+		fHeightNumberControl->SetDivider(divider);
 		fHeightNumberControl->SetLabel(heightLabel);
 		fHeightNumberControl->TextView()->SetMaxBytes(4);
 
@@ -311,6 +314,10 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 		fContainerBox->AddChild(fHeightNumberControl);
 		fContainerBox->AddChild(fSetSizeButton);
 		fContainerBox->AddChild(popUpList);
+
+		rect = fContainerBox->Bounds();
+		BRect frame = fSetSizeButton->Frame();
+		fSetSizeButton->MoveTo((rect.right - frame.Width()) / 2.0, frame.top);
 
 		BMessage msg(HS_TOOL_HELP_MESSAGE);
 		msg.AddString("message", _StringForId(SELECT_CANVAS_SIZE_STRING));
