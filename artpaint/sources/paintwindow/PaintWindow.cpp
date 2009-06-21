@@ -127,11 +127,6 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 	// Record the settings.
 	fSettings = new window_settings(setup);
 
-	// here get the be_plain_font height
-	font_height p_f_height;
-	BFont plain_font;
-	plain_font.GetHeight(&p_f_height);
-
 	if ((views & HS_MENU_BAR) != 0) {
 		// the menubar should be opened
 		openMenuBar();
@@ -190,159 +185,143 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 
 		// update the bottom value to be 1 pixel above status_view
 		// status_view is resized in window FrameResized() function
-		bottom -= (fStatusView->Bounds().Height() + 1);
+		bottom -= fStatusView->Bounds().Height() + 1.0;
 
 		// update the fAdditionalHeight variable
-		fAdditionalHeight += fStatusView->Bounds().Height() + 1;
+		fAdditionalHeight += fStatusView->Bounds().Height() + 1.0;
 	}
-
-	// here set the window minimum size so that all views are nicely visible
-	// even when window is at minimum size
-	// also create the ImageView and backgroundview
-	// adjust the coordinates so that no views overlap
-	// later should take into account all the views that were opened
 
 	// make the background view (the backround for image)
 	fBackground = new BackgroundView(BRect(0,top,right,bottom));
 	AddChild(fBackground);
 
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
-		// here we should open the views that are used to set the image size
-		// we should add them as children for background-view and put them on
-		// the right side of that area
+		// we need to show the creata canvas area
+		const char* widthLabel = _StringForId(WIDTH_STRING);
+		const char* heightLabel = _StringForId(HEIGHT_STRING);
 
-		// here set the width and height views, no message is required
-		// set the label of width view also to Height so that the views
-		// resize to same size
-		const char *width_string = _StringForId(WIDTH_STRING);
-		const char *height_string = _StringForId(HEIGHT_STRING);
-		const char *create_canvas_string = _StringForId(CREATE_CANVAS_STRING);
-		const char *longer_string;
-		if (strlen(height_string) > strlen(width_string))
-			longer_string = height_string;
-		else
-			longer_string = width_string;
+		BFont font;
+		const char* tmpLabel = widthLabel;
+		if (font.StringWidth(heightLabel) > font.StringWidth(widthLabel))
+			tmpLabel = heightLabel;
 
-		fWidthNumberControl = new NumberControl(BRect(10,10,110,10),"width_number_control",longer_string,"",NULL);
-		fWidthNumberControl->TextView()->SetMaxBytes(4);
-		fHeightNumberControl = new NumberControl(BRect(10,fWidthNumberControl->Frame().bottom + 10,110,fWidthNumberControl->Frame().bottom + 10),"height_number_control",longer_string,"",NULL);
-		fHeightNumberControl->TextView()->SetMaxBytes(4);
-		fSetSizeButton = new BButton(BRect(10,fHeightNumberControl->Frame().bottom + 10,110,fHeightNumberControl->Frame().bottom + 10),"set_size_button",create_canvas_string, new BMessage(HS_IMAGE_SIZE_SET));
-		fSetSizeButton->SetTarget(this);
-
-		// resize the buttons to preferred sizes
+		BRect rect(10.0, 10.0, 110.0, 10.0);
+		fWidthNumberControl = new NumberControl(rect, "width_number_control",
+			tmpLabel, "", NULL);
 		fWidthNumberControl->ResizeToPreferred();
+		fWidthNumberControl->SetLabel(widthLabel);
+		fWidthNumberControl->TextView()->SetMaxBytes(4);
+
+		rect.OffsetBy(0.0, fWidthNumberControl->Bounds().Height() + 5.0);
+		fHeightNumberControl = new NumberControl(rect, "height_number_control",
+			tmpLabel, "", NULL);
 		fHeightNumberControl->ResizeToPreferred();
+		fHeightNumberControl->SetLabel(heightLabel);
+		fHeightNumberControl->TextView()->SetMaxBytes(4);
+
+		rect.OffsetBy(0.0, fWidthNumberControl->Bounds().Height() + 10.0);
+		fSetSizeButton = new BButton(rect, "set_size_button",
+			_StringForId(CREATE_CANVAS_STRING), new BMessage(HS_IMAGE_SIZE_SET));
+		fSetSizeButton->SetTarget(this);
+		fSetSizeButton->MakeDefault(true);
 		fSetSizeButton->ResizeToPreferred();
 
-
-		// and then change the label of fWidthNumberControl to Width
-		fWidthNumberControl->SetLabel(width_string);
-		fHeightNumberControl->SetLabel(height_string);
-
-		// Here also create a button that controls a pop-up menu that contains the
-		// most recently used sizes as items. The menu-items should post a message
-		// to this window, that then changes the values to fWidthNumberControl and fHeightNumberControl.
-		float pop_up_left = fHeightNumberControl->Frame().right+5;
-		float pop_up_top = fHeightNumberControl->Frame().top - (fHeightNumberControl->Frame().top -fWidthNumberControl->Frame().bottom)/2 - 10;
-		int32 w,h;
-		BBitmap *pushed = SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST_PUSHED,w,h);
-		BBitmap *not_pushed = SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST,w,h);
-		BMessage* message_list[RECENT_LIST_LENGTH];
 		char label[256];
+		BMessage* message_list[RECENT_LIST_LENGTH];
 		global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-		for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
+		for (int32 i = 0; i < RECENT_LIST_LENGTH; ++i) {
+			const int32 width = settings->recent_image_width_list[i];
+			const int32 height = settings->recent_image_height_list[i];
+
 			message_list[i] = new BMessage(HS_RECENT_IMAGE_SIZE);
-			message_list[i]->AddInt32("width",settings->recent_image_width_list[i]);
-			message_list[i]->AddInt32("height",settings->recent_image_height_list[i]);
-			sprintf(label,"%ld x %ld",
-				settings->recent_image_width_list[i],
-				settings->recent_image_height_list[i]);
-			message_list[i]->AddString("label",label);
+			message_list[i]->AddInt32("width", width);
+			message_list[i]->AddInt32("height", height);
+
+			sprintf(label,"%ld x %ld", width, height);
+			message_list[i]->AddString("label", label);
 		}
-		PopUpList *pop_up_list = new PopUpList(BRect(pop_up_left, pop_up_top,
-			pop_up_left + 9, pop_up_top + 19), pushed, not_pushed, message_list,
-			RECENT_LIST_LENGTH, new BMessenger(NULL, this));
 
-		BMenu *standard_size_menu = new BMenu(_StringForId(STANDARD_SIZES_STRING));
-		BMessage *message;
-		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",320);
-		message->AddInt32("height",256);
-		standard_size_menu->AddItem(new BMenuItem("320 x 256",message));
+		float left = fHeightNumberControl->Frame().right + 5.0;
+		float top = (fHeightNumberControl->Frame().bottom -
+			fWidthNumberControl->Frame().top) / 2.0;
 
-		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",640);
-		message->AddInt32("height",400);
-		standard_size_menu->AddItem(new BMenuItem("640 x 400",message));
+		int32 w, h;
+		PopUpList* popUpList = new PopUpList(BRect(left, top, left + 9, top + 19),
+			SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST_PUSHED, w, h),
+			SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST, w, h),
+			message_list, RECENT_LIST_LENGTH, new BMessenger(NULL, this));
 
-		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",640);
-		message->AddInt32("height",480);
-		standard_size_menu->AddItem(new BMenuItem("640 x 480",message));
+		BMenu* standardSize = new BMenu(_StringForId(STANDARD_SIZES_STRING));
+
+		BMessage* message = new BMessage(HS_RECENT_IMAGE_SIZE);
+		message->AddInt32("width", 320);
+		message->AddInt32("height", 256);
+		standardSize->AddItem(new BMenuItem("320 x 256", message));
 
 		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",800);
-		message->AddInt32("height",600);
-		standard_size_menu->AddItem(new BMenuItem("800 x 600",message));
+		message->AddInt32("width", 640);
+		message->AddInt32("height", 400);
+		standardSize->AddItem(new BMenuItem("640 x 400", message));
 
 		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",1024);
-		message->AddInt32("height",768);
-		standard_size_menu->AddItem(new BMenuItem("1024 x 768",message));
+		message->AddInt32("width", 640);
+		message->AddInt32("height", 480);
+		standardSize->AddItem(new BMenuItem("640 x 480", message));
 
 		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",1152);
-		message->AddInt32("height",900);
-		standard_size_menu->AddItem(new BMenuItem("1152 x 900",message));
+		message->AddInt32("width", 800);
+		message->AddInt32("height", 600);
+		standardSize->AddItem(new BMenuItem("800 x 600", message));
 
 		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",1280);
-		message->AddInt32("height",1024);
-		standard_size_menu->AddItem(new BMenuItem("1280 x 1024",message));
+		message->AddInt32("width", 1024);
+		message->AddInt32("height", 768);
+		standardSize->AddItem(new BMenuItem("1024 x 768", message));
 
 		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
-		message->AddInt32("width",1600);
-		message->AddInt32("height",1200);
-		standard_size_menu->AddItem(new BMenuItem("1600 x 1200",message));
+		message->AddInt32("width", 1152);
+		message->AddInt32("height", 900);
+		standardSize->AddItem(new BMenuItem("1152 x 900", message));
 
+		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
+		message->AddInt32("width", 1280);
+		message->AddInt32("height", 1024);
+		standardSize->AddItem(new BMenuItem("1280 x 1024", message));
 
-		pop_up_list->ReturnMenu()->AddItem(standard_size_menu,0);
-		pop_up_list->ReturnMenu()->AddItem(new BSeparatorItem(),1);
+		message  = new BMessage(HS_RECENT_IMAGE_SIZE);
+		message->AddInt32("width", 1600);
+		message->AddInt32("height", 1200);
+		standardSize->AddItem(new BMenuItem("1600 x 1200", message));
 
+		popUpList->ReturnMenu()->AddItem(standardSize, 0);
+		popUpList->ReturnMenu()->AddItem(new BSeparatorItem(), 1);
 
-//		container_width += 5;
+		float width = max_c(fSetSizeButton->Frame().right,
+			popUpList->Frame().right) + 10.0;
+		float height = fSetSizeButton->Frame().bottom + 10.0;
 
-		// here create the fContainerBox that is large enough
-		float container_width = max_c(fSetSizeButton->Frame().Width() + 20,pop_up_list->Frame().right+5);
-		float container_height = fSetSizeButton->Frame().Height() + 2*fHeightNumberControl->Frame().Height() + 40;
-		fContainerBox = new BBox(BRect(fBackground->Bounds().right-container_width,fBackground->Bounds().bottom-container_height,fBackground->Bounds().right,fBackground->Bounds().bottom),"container for controls",B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM);
-
-		// here we should center the button and boxes horizontally
-
+		rect = fBackground->Bounds();
+		fContainerBox = new BBox(BRect(rect.right - width, rect.bottom - height,
+			rect.right, rect.bottom - 1.0), "container_for_controls",
+			B_FOLLOW_RIGHT | B_FOLLOW_BOTTOM);
 		fBackground->AddChild(fContainerBox);
-
-		// Container-box tries to change its color to that of background's
-		// (which should be B_TRANSPARENT_32_BIT) so we have to change it to
-		// the color we want it to have before adding children to it.
 		fContainerBox->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
 		fContainerBox->AddChild(fWidthNumberControl);
 		fContainerBox->AddChild(fHeightNumberControl);
 		fContainerBox->AddChild(fSetSizeButton);
-		fContainerBox->AddChild(pop_up_list);
-		BMessage *help_message = new BMessage(HS_TOOL_HELP_MESSAGE);
-		help_message->AddString("message",_StringForId(SELECT_CANVAS_SIZE_STRING));
-		PostMessage(help_message,this);
-		delete help_message;
-		fSetSizeButton->MakeDefault(true);
+		fContainerBox->AddChild(popUpList);
+
+		BMessage msg(HS_TOOL_HELP_MESSAGE);
+		msg.AddString("message", _StringForId(SELECT_CANVAS_SIZE_STRING));
+		PostMessage(&msg, this);
 	}
 
 
 	// finally inform the app that new window has been created
-	BMessage *message_to_app = new BMessage(HS_PAINT_WINDOW_OPENED);
-	message_to_app->AddPointer("window",(void*)this);
-	be_app->PostMessage(message_to_app,be_app);
-	delete message_to_app;
+	BMessage message(HS_PAINT_WINDOW_OPENED);
+	message.AddPointer("window", (void*)this);
+	be_app->PostMessage(&message, be_app);
 
 	// resize so that all things are properly updated
 	ResizeBy(1,0);
@@ -362,7 +341,6 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 	Unlock();
 
 	fUserFrame = Frame();
-
 }
 
 
@@ -419,7 +397,6 @@ PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* file_name,
 	paintWindow->Lock();
 	paintWindow->displayMag(paintWindow->Settings()->zoom_level);
 	paintWindow->Unlock();
-
 
 	return paintWindow;
 }
@@ -545,7 +522,7 @@ PaintWindow::MenusBeginning()
 void
 PaintWindow::MenusEnded()
 {
-	SetHelpString(NULL,HS_TOOL_HELP_MESSAGE);
+	SetHelpString(NULL, HS_TOOL_HELP_MESSAGE);
 }
 
 
@@ -1021,6 +998,7 @@ PaintWindow::openMenuBar()
 	BMenu* menu = new BMenu(_StringForId(FILE_STRING));
 	fMenubar->AddItem(menu);
 
+	// the File menu
 	menu_item fileMenu[] = {
 		{ OPEN_IMAGE_STRING, HS_SHOW_IMAGE_OPEN_PANEL, 'O', 0, be_app, OPEN_IMAGE_HELP_STRING },
 		{ SAVE_IMAGE_STRING, HS_SAVE_IMAGE, 'S', 0, this, SAVE_IMAGE_HELP_STRING },
@@ -1030,7 +1008,7 @@ PaintWindow::openMenuBar()
 		{ OPEN_PROJECT_STRING, HS_SHOW_PROJECT_OPEN_PANEL, 'O', B_SHIFT_KEY, be_app, OPEN_PROJECT_HELP_STRING },
 		{ SAVE_PROJECT_STRING, HS_SAVE_PROJECT, 'S', B_SHIFT_KEY, this, SAVE_PROJECT_HELP_STRING },
 		{ SAVE_PROJECT_AS_STRING, HS_SHOW_PROJECT_SAVE_PANEL, NULL, 0, this, SAVE_PROJECT_AS_HELP_STRING },
-		{ SEPARATOR, 0, NULL, 0, NULL, SEPARATOR },	// separator
+		{ SEPARATOR, 0, NULL, 0, NULL, SEPARATOR }	// separator
 	};
 
 	for (uint32 i = 0; i < (sizeof(fileMenu) / sizeof(menu_item)); ++i) {
@@ -1064,12 +1042,22 @@ PaintWindow::openMenuBar()
 	// menu->AddItem(new BMenuItem("Save Layer As Cursor",
 	// new BMessage(HS_SAVE_IMAGE_AS_CURSOR)));
 
-	// The Edit menu.
+	// the Edit menu
 	menu = new BMenu(_StringForId(EDIT_STRING));
 	fMenubar->AddItem(menu);
-	menu->AddItem(new PaintWindowMenuItem(_StringForId(UNDO_NOT_AVAILABLE_STRING),new BMessage(HS_UNDO),'Z',0,this,_StringForId(UNDO_HELP_STRING)));
-	menu->AddItem(new PaintWindowMenuItem(_StringForId(REDO_NOT_AVAILABLE_STRING),new BMessage(HS_REDO),'Z',B_SHIFT_KEY,this,_StringForId(REDO_HELP_STRING)));
-	menu->AddItem(new BSeparatorItem());
+
+	menu_item editMenu[] = {
+		{ UNDO_NOT_AVAILABLE_STRING, HS_UNDO,'Z', 0, this, UNDO_HELP_STRING },
+		{ REDO_NOT_AVAILABLE_STRING, HS_REDO,'Z', B_SHIFT_KEY, this, REDO_HELP_STRING },
+		{ SEPARATOR, 0, NULL, 0, NULL, SEPARATOR }	// separator
+	};
+
+	for (uint32 i = 0; i < (sizeof(editMenu) / sizeof(menu_item)); ++i) {
+		_AddMenuItems(menu, editMenu[i].label, editMenu[i].what,
+			editMenu[i].shortcut, editMenu[i].modifiers, editMenu[i].target,
+			editMenu[i].help);
+	}
+
 	subMenu = new BMenu(_StringForId(CUT_STRING));
 	menu->AddItem(subMenu);
 
