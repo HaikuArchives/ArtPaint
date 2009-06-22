@@ -41,7 +41,7 @@ public:
 
 
 	static	void				HomeDirectory(BPath& path);
-			global_settings*	GlobalSettings() { return fGlobalSettings; }
+			global_settings*	GlobalSettings() const { return fGlobalSettings; }
 
 private:
 			void				_ReadPreferences();

@@ -352,7 +352,7 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 
 
 PaintWindow*
-PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* file_name,
+PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* fileName,
 	int32 type, const entry_ref& ref, translator_id outTranslator)
 {
 	window_settings default_window_settings =
@@ -360,13 +360,13 @@ PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* file_name,
 
 	uint32 flags = HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW ;
 	BString title;
-	if (file_name == NULL) {
+	if (fileName == NULL) {
 		// sprintf(title,"%s - %d",_StringForId(UNTITLED_STRING),
 		//		sgUntitledWindowNumber);
 		flags = flags | HS_SIZING_VIEW;
 		title = _StringForId(EMPTY_PAINT_WINDOW_STRING);
 	} else {
-		title = file_name;
+		title = fileName;
 	}
 
 	PaintWindow* paintWindow = new PaintWindow(title.String(),
@@ -536,345 +536,364 @@ PaintWindow::MenusEnded()
 void
 PaintWindow::MessageReceived(BMessage *message)
 {
-	// handles all the messages that come to PaintWindow
-	// this path can be used when saving the image or project
-	BPath path;
-	BEntry parent_entry;
-	entry_ref a_save_ref;
-	BPath a_path;
-	char a_name[B_FILE_NAME_LENGTH];
-	BMessage *a_save_message;
-
 	switch ( message->what ) {
-		// this comes from fMenubar->"Window"->"Resize Window to Fit" and informs us that
-		// we should fit the window to display exactly the image
-		case HS_RESIZE_WINDOW_TO_FIT:
-			// use a private function to do resizing
+		case HS_RESIZE_WINDOW_TO_FIT: {
+			// this comes from fMenubar->"Window"->"Resize Window to Fit" and
+			// informs us that we should fit the window to display exactly the
+			// image use a private function to do resizing
 			resizeToFit();
-			break;
+		}	break;
 
-		// This comes from the recent image-size pop-up-list.
-		case HS_RECENT_IMAGE_SIZE:
+		case HS_RECENT_IMAGE_SIZE: {
+			// This comes from the recent image-size pop-up-list.
 			fWidthNumberControl->SetValue(message->FindInt32("width"));
 			fHeightNumberControl->SetValue(message->FindInt32("height"));
-			break;
+		}	break;
 
-		// this comes from a button and it informs that the user has decided the image size
-		// and we should create a canvas
-		case HS_IMAGE_SIZE_SET:
-			{
-				// Here we have to take the measurements from NumberControls.
-				// The units might be something else than pixels. This reading and
-				// conversion should be done in a separate function.
-				bool image_created;
-				int32 width,height;
-				width = atoi(fWidthNumberControl->Text());
-				height = atoi(fHeightNumberControl->Text());
+		case HS_IMAGE_SIZE_SET: {
+			// this comes from a button and it informs that the user has
+			// decided the image size and we should create a canvas
 
-				try {
-					// Open the image view
-					OpenImageView(width,height);
-					// Add a layer to it.
-					fImageView->ReturnImage()->InsertLayer();
-					image_created = true;
-				}
-				catch (std::bad_alloc) {
-					image_created = false;
-					delete fImageView;
-					fImageView = NULL;
-					BAlert *memory_alert = new BAlert("memory_alert",_StringForId(CANNOT_CREATE_IMAGE_STRING),_StringForId(OK_STRING),NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-					memory_alert->Go();
-				}
-				if (image_created == true) {
-					// Record the window's frame and also put the new size to the most recently used
-					// list.
-					((PaintApplication*)be_app)->GlobalSettings()->default_window_settings.frame_rect = Frame();
-					// Only record the new size to the list if it does not already contain the
-					// selected size.
-					global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-					int32 *widths = settings->recent_image_width_list;
-					int32 *heights = settings->recent_image_height_list;
-					int32 list_position = -1;
-					for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
-						if ((widths[i] == width) && (heights[i]==height)) {
-							list_position = i;
-						}
-					}
-					if (list_position == -1) {
-						for (int32 i=RECENT_LIST_LENGTH-1;i>0;i--) {
-							widths[i] = widths[i-1];
-							heights[i] = heights[i-1];
-						}
-						widths[0] = width;
-						heights[0] = height;
-					}
-					else {
-						// Move it to the head of the list.
-						for (int32 i=list_position;i>0;i--) {
-							widths[i] = widths[i-1];
-							heights[i] = heights[i-1];
-						}
-						widths[0] = width;
-						heights[0] = height;
-					}
+			// Here we have to take the measurements from NumberControls.
+			// The units might be something else than pixels. This reading and
+			// conversion should be done in a separate function.
+			int32 width, height;
+			width = atoi(fWidthNumberControl->Text());
+			height = atoi(fHeightNumberControl->Text());
 
-					// Remove the sizing buttons.
-					fContainerBox->RemoveSelf();
-					delete fContainerBox;
-
-					// NULL this because it will be used later to check if we
-					// are still resizing
-					fContainerBox = NULL;
-					fSetSizeButton = NULL;
-
-					// Add the view to view hierarchy.
-					AddImageView();
-				}
-				break;
+			bool success = false;
+			try {
+				// Open the image view
+				OpenImageView(width, height);
+				// Add a layer to it.
+				fImageView->ReturnImage()->InsertLayer();
+				success = true;
+			}
+			catch (std::bad_alloc) {
+				delete fImageView;
+				fImageView = NULL;
+				BAlert* alert = new BAlert("",
+					_StringForId(CANNOT_CREATE_IMAGE_STRING),
+					_StringForId(OK_STRING), NULL, NULL,
+					B_WIDTH_AS_USUAL,B_WARNING_ALERT);
+				alert->Go();
 			}
 
-	// this is the case where mouse has been pressed down in the background-view
-		// this comes from backgrounview, we should then put the actual imageview
-		// to follow the mouse
-		case HS_MOUSE_DOWN_IN_BACKGROUNDVIEW:
-			if ((fImageView != NULL) && (fImageView->Window() != NULL)) {
+			if (success) {
+				// Record the window's frame and also put the new size to
+				// the most recently used list.
+				global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
+				settings->default_window_settings.frame_rect = Frame();
+
+				// Only record the new size to the list if it does not
+				// already contain the selected size.
+				int32 *widths = settings->recent_image_width_list;
+				int32 *heights = settings->recent_image_height_list;
+
+				int32 position = -1;
+				for (int32 i = 0; i < RECENT_LIST_LENGTH; ++i) {
+					if ((widths[i] == width) && (heights[i] == height)) {
+						position = i;
+					}
+				}
+
+				if (position == -1)
+					position = RECENT_LIST_LENGTH - 1;
+
+				// Move it to the head of the list.
+				for (int32 i = position; i > 0; --i) {
+					widths[i] = widths[i - 1];
+					heights[i] = heights[i - 1];
+				}
+				widths[0] = width;
+				heights[0] = height;
+
+				// Remove the sizing buttons.
+				fContainerBox->RemoveSelf();
+				delete fContainerBox;
+
+				// NULL this because it will be used later to check if we
+				// are still resizing
+				fContainerBox = NULL;
+				fSetSizeButton = NULL;
+
+				// Add the view to view hierarchy.
+				AddImageView();
+			}
+		}	break;
+
+		case HS_MOUSE_DOWN_IN_BACKGROUNDVIEW: {
+			// this is the case where mouse has been pressed down in the
+			// background-view, we should then put the actual imageview
+			// to follow the mouse
+			if (fImageView && fImageView->Window())
 				fImageView->MouseDown(message->FindPoint("point"));
-			}
-			break;
+		}	break;
 
 
-
-		// this comes from fMenubar->"Window"->"Show Layer Window" and tells us to show the
-		// layer window
-		case HS_SHOW_LAYER_WINDOW:
+		case HS_SHOW_LAYER_WINDOW: {
+			// this comes from fMenubar->"Window"->"Show Layer Window" and tells
+			// us to show the layer window
 			LayerWindow::showLayerWindow();
-			if (fImageView != NULL) {
-				LayerWindow::ActiveWindowChanged(this,fImageView->ReturnImage()->LayerList(),fImageView->ReturnImage()->ReturnThumbnailImage());
-			}
-			else {
+			if (fImageView) {
+				LayerWindow::ActiveWindowChanged(this,
+					fImageView->ReturnImage()->LayerList(),
+					fImageView->ReturnImage()->ReturnThumbnailImage());
+			} else {
 				LayerWindow::ActiveWindowChanged(this);
 			}
-			break;
+		}	break;
 
-	// this shows us a view setup window
-		// this comes from fMenubar->"Window"->"Window Settings…" and tells us to show the
-		// window for setting the parameters of this window and it's views
-		case HS_SHOW_VIEW_SETUP_WINDOW:
+		case HS_SHOW_VIEW_SETUP_WINDOW: {
+			// his comes from fMenubar->"Window"->"Window Settings…" and tells
+			// us to show the  window for setting the parameters of this window
+			// and it's views
 			ViewSetupWindow::showViewSetupWindow(this,fImageView);
-			break;
+		}	break;
 
-		// this comes from fMenubar->"Window"->"Global Settings…"
-		case HS_SHOW_GLOBAL_SETUP_WINDOW:
+		case HS_SHOW_GLOBAL_SETUP_WINDOW: {
+			// this comes from fMenubar->"Window"->"Global Settings…"
 			GlobalSetupWindow::showGlobalSetupWindow();
-			break;
+		}	break;
 
-	// this tells us that user wants to open a save-panel for saving the image in a new file-name
-		// This comes from fMenubar->"File"->"Save Image As…" and we should show a save-panel
-		case HS_SHOW_IMAGE_SAVE_PANEL:
+		case HS_SHOW_IMAGE_SAVE_PANEL: {
+			// This comes from fMenubar->"File"->"Save Image As…" and we should
+			// show a save-panel
 			if (fImageSavePanel == NULL) {
-				entry_ref *ref = new entry_ref();
+				BPath path;
 				if (fImageEntry.InitCheck() != B_OK) {
 					// This might actually fail if the user has removed the directory.
-					if (path.SetTo(((PaintApplication*)be_app)->GlobalSettings()->image_save_path) != B_OK) {
+					global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
+					if (path.SetTo(s->image_save_path) != B_OK) {
 						PaintApplication::HomeDirectory(path);
 					}
 				}
 				else {
 					fImageEntry.GetPath(&path);
-					// get the dir that the file lives in
 					path.GetParent(&path);
 				}
-				get_ref_for_path(path.Path(),ref);
+
+				entry_ref ref;
+				get_ref_for_path(path.Path(), &ref);
 				BMessenger window(this);
-				fImageSavePanel = new ImageSavePanel(ref, &window,
+				fImageSavePanel = new ImageSavePanel(&ref, &window,
 					fSettings->file_type,
 					fImageView->ReturnImage()->ReturnThumbnailImage());
-				delete ref;
 			}
+
 			fImageSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 			set_filepanel_strings(fImageSavePanel);
 			if (!fImageSavePanel->IsShowing())
 				fImageSavePanel->Show();
-			break;
+		}	break;
 
-		// This comes from fMenubar->"File"->"Save Project As…"
-		case HS_SHOW_PROJECT_SAVE_PANEL:
+		case HS_SHOW_PROJECT_SAVE_PANEL: {
+			// This comes from fMenubar->"File"->"Save Project As…"
 			if (fProjectSavePanel == NULL) {
-				entry_ref *ref = new entry_ref();
+				BPath path;
 				if (fProjectEntry.InitCheck() != B_OK) {
-					path.SetTo(((PaintApplication*)be_app)->GlobalSettings()->project_save_path);
-				}
-				else {
+					global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
+					path.SetTo(s->project_save_path);
+				} else {
 					fProjectEntry.GetPath(&path);
-					// get the dir that the file lives in
 					path.GetParent(&path);
 				}
-				get_ref_for_path(path.Path(),ref);
+
+				entry_ref ref;
+				get_ref_for_path(path.Path(), &ref);
 				BMessenger window(this);
-				fProjectSavePanel = new BFilePanel(B_SAVE_PANEL, &window, ref,
+				fProjectSavePanel = new BFilePanel(B_SAVE_PANEL, &window, &ref,
 					0, false, new BMessage(HS_PROJECT_SAVE_REFS));
-				delete ref;
 			}
+
 			fProjectSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 			char string[256];
-			sprintf(string,"ArtPaint: %s",_StringForId(SAVE_PROJECT_STRING));
+			sprintf(string, "ArtPaint: %s", _StringForId(SAVE_PROJECT_STRING));
 			fProjectSavePanel->Window()->SetTitle(string);
 			set_filepanel_strings(fProjectSavePanel);
 			if (!fProjectSavePanel->IsShowing())
 				fProjectSavePanel->Show();
-			break;
+		}	break;
 
-		// This comes from fMenubar->"Window"->"Show Color Window". We should open the color window.
-		case HS_SHOW_COLOR_WINDOW:
+		case HS_SHOW_COLOR_WINDOW: {
+			// This comes from fMenubar->"Window"->"Show Color Window".
+			// We should open the color window.
 			ColorPaletteWindow::showPaletteWindow(false);
-			break;
+		}	break;
 
-		// This comes from fMenubar->"Window"->"Show Tool Window". We should open the tool window.
-		case HS_SHOW_TOOL_WINDOW:
+		case HS_SHOW_TOOL_WINDOW: {
+			// This comes from fMenubar->"Window"->"Show Tool Window". We should
+			// open the tool window.
 			ToolSelectionWindow::showWindow();
-			break;
+		}	break;
 
-		// This comes from fMenubar->"Window"->"Show Tool Setup Window". We should open the tool window.
-		case HS_SHOW_TOOL_SETUP_WINDOW:
-			ToolSetupWindow::showWindow(((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool);
-			break;
+		case HS_SHOW_TOOL_SETUP_WINDOW: {
+			// This comes from fMenubar->"Window"->"Show Tool Setup Window". We
+			// should open the tool window.
+			ToolSetupWindow::showWindow(
+				((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool);
+		}	break;
 
-		case HS_SHOW_BRUSH_STORE_WINDOW:
+		case HS_SHOW_BRUSH_STORE_WINDOW: {
 			BrushStoreWindow::showWindow();
-			break;
+		}	break;
 
-		// this comes from the image save panel and contains the refs with which to save the image
-		case HS_IMAGE_SAVE_REFS:
-			// Here we call the function that saves the image.
-			// We should actually call it in another thread while ensuring that it saves the
-			// correct bitmap. We should also protect the bitmap from being modified while we save.
-			// We should also inform the user about saving of the.
+		case HS_IMAGE_SAVE_REFS: {
+			// this comes from the image save panel and contains the refs with
+			// which to save the image
+
+			// Here we call the function that saves the image. We actually call
+			// it in another thread while ensuring that it saves the correct
+			// bitmap. We should also protect the bitmap from being modified
+			// while we save. We should also inform the user about saving.
 			delete fImageSavePanel;
 			fImageSavePanel = NULL;
-			if (fImageView != NULL) {
-				thread_id save_thread = spawn_thread(PaintWindow::save_image,"save image",B_NORMAL_PRIORITY,(void*)this);
-				resume_thread(save_thread);
-				BMessage *sendable_message = new BMessage(*message);
-				send_data(save_thread,0,(void*)&sendable_message,sizeof(BMessage*));
-			}
-			break;
 
-		// This comes from project save-panel and contains refs for the file to which the project
-		// should be saved.
-		case HS_PROJECT_SAVE_REFS:
+			if (fImageView) {
+				thread_id saveThread = spawn_thread(PaintWindow::save_image,
+					"save image", B_NORMAL_PRIORITY, (void*)this);
+				resume_thread(saveThread);
+
+				// TODO: check if this leaks the message
+				BMessage* data = new BMessage(*message);
+				send_data(saveThread, 0, (void*)&data, sizeof(BMessage*));
+			}
+		}	break;
+
+		case HS_PROJECT_SAVE_REFS: {
+			// This comes from project save-panel and contains refs for the file
+			// to which the project should be saved.
+
 			// We call the function that saves the project.
 			delete fProjectSavePanel;
 			fProjectSavePanel = NULL;
-			if (fImageView != NULL) {
-				thread_id save_thread = spawn_thread(PaintWindow::save_project,"save project",B_NORMAL_PRIORITY,(void*)this);
-				resume_thread(save_thread);
-				BMessage *sendable_message = new BMessage(*message);
-				send_data(save_thread,0,(void*)&sendable_message,sizeof(BMessage*));
-			}
-			break;
 
-		case HS_SAVE_IMAGE:
+			if (fImageView) {
+				thread_id saveThread = spawn_thread(PaintWindow::save_project,
+					"save project", B_NORMAL_PRIORITY, (void*)this);
+				resume_thread(saveThread);
+
+				// TODO: check if this leaks the message
+				BMessage* data = new BMessage(*message);
+				send_data(saveThread, 0, (void*)&data, sizeof(BMessage*));
+			}
+		}	break;
+
+		case HS_SAVE_IMAGE: {
 			// We make a message containing the file name and ref for its dir.
-			fImageEntry.GetParent(&parent_entry);
-			fImageEntry.GetName(a_name);
-			parent_entry.GetPath(&a_path);
-			get_ref_for_path(a_path.Path(),&a_save_ref);
-			a_save_message = new BMessage(HS_IMAGE_SAVE_REFS);
-			a_save_message->AddRef("directory",&a_save_ref);
-			a_save_message->AddString("name",a_name);
-			PostMessage(a_save_message,this);
-			delete a_save_message;
-			break;
+			BEntry parent;
+			fImageEntry.GetParent(&parent);
 
-		case HS_SAVE_PROJECT:
+			BPath path;
+			parent.GetPath(&path);
+
+			entry_ref ref;
+			get_ref_for_path(path.Path(), &ref);
+
+			char name[B_FILE_NAME_LENGTH];
+			fImageEntry.GetName(name);
+
+			BMessage msg(HS_IMAGE_SAVE_REFS);
+			msg.AddString("name", name);
+			msg.AddRef("directory", &ref);
+			PostMessage(&msg, this);
+		}	break;
+
+		case HS_SAVE_PROJECT: {
+			// Create a message containing file-name and ref for its dir.
 			if (fProjectEntry.InitCheck() == B_OK) {
-				// We make a message containing the file name and ref for its dir.
-				fProjectEntry.GetParent(&parent_entry);
-				fProjectEntry.GetName(a_name);
-				parent_entry.GetPath(&a_path);
-				get_ref_for_path(a_path.Path(),&a_save_ref);
-				a_save_message = new BMessage(HS_PROJECT_SAVE_REFS);
-				a_save_message->AddRef("directory",&a_save_ref);
-				a_save_message->AddString("name",a_name);
-				PostMessage(a_save_message,this);
-				delete a_save_message;
-			}
-			else {
-				PostMessage(HS_SHOW_PROJECT_SAVE_PANEL,this);
-			}
-			break;
+				BEntry parent;
+				fProjectEntry.GetParent(&parent);
 
-		// this comes from the image save panel's format menu and informs that the wanted save
-		// format has changed
-		case HS_SAVE_FORMAT_CHANGED:
-			{
-				fSettings->file_type = message->FindInt32("be:type");
-				fCurrentHandler = message->FindInt32("be:translator");
-				DatatypeSetupWindow::ChangeHandler(fCurrentHandler);
+				BPath path;
+				parent.GetPath(&path);
 
-				BTranslatorRoster *roster = BTranslatorRoster::Default();
-				int32 num_formats;
-				const translation_format *formats = NULL;
-				if (roster->GetOutputFormats(fCurrentHandler,&formats,&num_formats) == B_OK) {
-					for (int32 i=0;i<num_formats;i++) {
-						if (formats[i].type == fSettings->file_type) {
-							strcpy(fSettings->file_mime,formats[i].MIME);
-						}
-					}
+				entry_ref ref;
+				get_ref_for_path(path.Path(), &ref);
+
+				char name[B_FILE_NAME_LENGTH];
+				fProjectEntry.GetName(name);
+
+				BMessage msg(HS_PROJECT_SAVE_REFS);
+				msg.AddString("name", name);
+				msg.AddRef("directory", &ref);
+				PostMessage(&msg, this);
+			} else {
+				PostMessage(HS_SHOW_PROJECT_SAVE_PANEL, this);
+			}
+		}	break;
+
+		case HS_SAVE_FORMAT_CHANGED: {
+			// this comes from the image save panel's format menu and informs
+			// that the wanted save format has changed
+			fSettings->file_type = message->FindInt32("be:type");
+			fCurrentHandler = message->FindInt32("be:translator");
+			DatatypeSetupWindow::ChangeHandler(fCurrentHandler);
+
+			int32 count;
+			const translation_format* formats = NULL;
+			BTranslatorRoster* roster = BTranslatorRoster::Default();
+			if (roster->GetOutputFormats(fCurrentHandler, &formats, &count) == B_OK) {
+				for (int32 i = 0; i < count; ++i) {
+					if (formats[i].type == fSettings->file_type)
+						strcpy(fSettings->file_mime, formats[i].MIME);
 				}
-				break;
 			}
+		}	break;
 
-		// This comes from image-save-panel's setting-button and tells us to show the datatype-
-		// setup-window.
-		case HS_SHOW_DATATYPE_SETTINGS:
+		case HS_SHOW_DATATYPE_SETTINGS: {
+			// This comes from image-save-panel's setting-button and tells us to
+			// show the datatype-setup-window.
 			DatatypeSetupWindow::showWindow(fCurrentHandler);
-			break;
+		}	break;
 
-		// this might come from a lot of places, but it is assumed that it comes from the
-		// image save panel
-		case B_CANCEL:
-			// cancel might come from somewhere else than just fImageSavePanel
-			// we should check that somewhow
-			if ((fImageSavePanel != NULL) && (fImageSavePanel->IsShowing() == false)) {
-				delete fImageSavePanel;
-				fImageSavePanel = NULL;
+		case B_CANCEL: {
+			if (fImageSavePanel) {
+				if (fImageSavePanel->IsShowing() == false) {
+					delete fImageSavePanel;
+					fImageSavePanel = NULL;
+				}
 			}
-			else if ((fProjectSavePanel != NULL) && (fProjectSavePanel->IsShowing() == false)) {
-				delete fProjectSavePanel;
-				fProjectSavePanel = NULL;
-			}
-			break;
 
-		// This might come from many places and it informs us to display a message
-		// in the help view.
+			if (fProjectSavePanel) {
+				if (fProjectSavePanel->IsShowing() == false) {
+					delete fProjectSavePanel;
+					fProjectSavePanel = NULL;
+				}
+			}
+		}	break;
+
+		case HS_TOOL_HELP_MESSAGE: {
 		case HS_TEMPORARY_HELP_MESSAGE:
-		case HS_TOOL_HELP_MESSAGE:
-			const char *help_msg[256];
-			if (message->FindString("message",help_msg) == B_OK)
-				SetHelpString(*help_msg,message->what);
-			else
-				SetHelpString(NULL,message->what);
-			break;
+			// This might come from many places and it informs us to display a
+			// message in the help view.
+			static BString helpMessage;
+			message->FindString("message", &helpMessage);
+			SetHelpString(helpMessage.String(), message->what);
+		}	break;
 
-
-		// This comes from menuitem in file-menu. We should save the image into a resource-file.
-		// At the moment that file will be hardcoded to ArtPaint's resources and we have to type
-		// the resource ID from the shell.
-		case HS_SAVE_IMAGE_INTO_RESOURCES:
+/*
+		case HS_SAVE_IMAGE_INTO_RESOURCES: {
+			// This comes from menuitem in file-menu. We should save the image
+			// into a resource-file. At the moment that file will be hardcoded
+			// to ArtPaint's resources and we have to type the resource ID from
+			// the shell. (TODO: the menu items are not added to the menu)
 			saveImageIntoResources();
-			break;
+		}	break;
 
-		case HS_SAVE_IMAGE_AS_CURSOR:
+		case HS_SAVE_IMAGE_AS_CURSOR: {
+			// (TODO: the menu items are not added to the menu)
 			saveImageAsCursor();
-			break;
+		}	break;
+*/
 
-		case HS_SHOW_ABOUT_WINDOW:
+		case HS_SHOW_ABOUT_WINDOW: {
 			AboutWindow::showWindow();
-	// otherwise call inherited function
-		default:
+		}	break;
+
+		default: {
 			BWindow::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
