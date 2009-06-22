@@ -628,7 +628,7 @@
 
 // These strings are the contents of the About ArtPaint-window
 
-#define	FRENCH_ABOUT_1_TEXT_STRING				"ArtPaint est un logiciel de dessin et de retouche d'image pour BeOS."\
+#define	FRENCH_ABOUT_1_TEXT_STRING				"ArtPaint est un logiciel de dessin et de retouche d'image pour Haiku."\
 												" Il peut être utilisé pour réaliser un grand choix de travaux depuis le design d'un site web"\
 												" à la retouche de photos. Pour bien débuter, regardez le didacticiel dans le manuel."
 

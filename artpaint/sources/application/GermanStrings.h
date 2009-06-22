@@ -172,7 +172,7 @@
 #define	GERMAN_RANDOM_STRING							"Zufall"
 #define	GERMAN_RECTANGLE_STRING							"Rechteck"
 #define	GERMAN_REDO_HELP_STRING							"Wiederholt die Aktion, die als letztes rückgängig gemacht wurde."
-#define	GERMAN_REDO_NOT_AVAILABLE_STRING				"Wiederholen nicht möglich"
+#define	GERMAN_REDO_NOT_AVAILABLE_STRING				"Wiederholen"
 #define	GERMAN_REDO_STRING								"Wiederholen: "
 #define	GERMAN_RESIZE_TO_FIT_HELP_STRING				"Stellt eine für Bildschirm und Bild optimale Fenstergröße ein."
 #define	GERMAN_RESIZE_TO_FIT_STRING						"Optimale Fenstergröße"
@@ -236,9 +236,9 @@
 #define	GERMAN_TRANSPARENT_STRING						"Transparent"
 #define	GERMAN_TRANSPARENCY_STRING						"Transparenz"
 #define	GERMAN_UNDO_HELP_STRING							"Macht die vorige Aktion rückgängig."
-#define	GERMAN_UNDO_NOT_AVAILABLE_STRING				"Rückgängigmachen nicht möglich"
+#define	GERMAN_UNDO_NOT_AVAILABLE_STRING				"Rückgängig"
 #define	GERMAN_UNDO_SETTINGS_STRING						"Puffer"
-#define	GERMAN_UNDO_STRING								"Rückgängigmachen: "
+#define	GERMAN_UNDO_STRING								"Rückgängig: "
 #define	GERMAN_UNLIMITED_STRING							"Unbegrenzt"
 #define	GERMAN_UNTITLED_STRING							"Ohne Name"
 #define GERMAN_EMPTY_PAINT_WINDOW_STRING				"Ohne Bild"
@@ -335,26 +335,26 @@
 #define GERMAN_TOOL_CURSOR_STRING						"mit Werkzeugsymbol"
 
 #define GERMAN_MEMORY_ALERT_1_STRING					"Der freie Speicher reicht leider nicht zum Hinzufügen einer weiteren Ebene."\
-														"Sie können Speicher freisetzen, indem sie die Puffer-Option ausschalten oder andere offene Bilder schliessen. "\
-														"Auch sollten sie das Bild jetzt zu speichern, da Speichermangel dazu führen kann, daß es später "\
+														"Sie können Speicher freibeben, indem sie die Puffer-Option ausschalten oder andere offene Bilder schliessen. "\
+														"Auch sollten Sie das Bild jetzt speichern, da Speichermangel dazu führen kann, daß es später "\
 														"schwierig oder gar unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!"
 
 #define	GERMAN_MEMORY_ALERT_2_STRING					"Nicht genügend Speicher für den gewünschten Effekt frei. Sie können andere Bilder schliessen und es sodann nochmal versuchen. "\
 														"Es kann auch helfen die Puffer-Tiefe zu reduzieren oder den Puffer ganz abzuschalten. "\
 														"Ebenso kann das Schliessen anderer eventuell laufender Applikationen den freien Speicher erhöhen. "\
-														"Auch sollten sie das Bild jetzt zu speichern, da Speichermangel dazu führen kann, daß es später "\
+														"Auch sollten sie das Bild jetzt speichern, da Speichermangel dazu führen kann, daß es später "\
 														"schwierig oder gar unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!"
 
 #define	GERMAN_MEMORY_ALERT_3_STRING					"Nicht genügend Speicher frei, um den Effekt zu beenden. Sie können andere Bilder schliessen und es sodann nochmal versuchen. "\
 														"Auch kann es helfen die Puffer-Tiefe zu reduzieren oder den Puffer ganz abzuschalten. "\
 														"Auch das Schliessen anderer eventuell laufender Applikationen kann den freien Speicher erhöhen. "\
-														"Auch sollten sie das Bild jetzt zu speichern, da Speichermangel dazu führen kann, daß es später "\
+														"Auch sollten sie das Bild jetzt speichern, da Speichermangel dazu führen kann, daß es später "\
 														"schwierig oder gar unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!"
 
 #define	GERMAN_ABOUT_ARTPAINT_STRING					"Über ArtPaint…"
 #define	GERMAN_ABOUT_HELP_STRING						"Zeigt in einem Fenster Informationen über dieses Programm."
 
-#define	GERMAN_ABOUT_1_TEXT_STRING						"ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für BeOS."\
+#define	GERMAN_ABOUT_1_TEXT_STRING						"ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für Haiku."\
 														" Es eignet sich für einen weiten Bereich von Web-Grafiken bis hin zu Bildverarbeitung."\
 														" Werfen Sie einen Blick in die Anleitung. Dort finden Sie eine Einleitung."
 
