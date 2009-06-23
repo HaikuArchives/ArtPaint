@@ -123,7 +123,7 @@ private:
 
 			// These function will save the image.
 	static	int32				save_image(void*);
-			status_t			saveImage(BMessage *message);
+			status_t			_SaveImage(BMessage *message);
 
 			// These functions will save the project.
 	static	int32				save_project(void*);

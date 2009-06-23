@@ -750,13 +750,13 @@ PaintWindow::MessageReceived(BMessage *message)
 			fImageSavePanel = NULL;
 
 			if (fImageView) {
-				thread_id saveThread = spawn_thread(PaintWindow::save_image,
+				thread_id threadId = spawn_thread(PaintWindow::save_image,
 					"save image", B_NORMAL_PRIORITY, (void*)this);
-				resume_thread(saveThread);
-
-				// TODO: check if this leaks the message
-				BMessage* data = new BMessage(*message);
-				send_data(saveThread, 0, (void*)&data, sizeof(BMessage*));
+				if (threadId > 0) {
+					BMessage* data = new BMessage(*message);
+					send_data(threadId, 0, (void*)&data, sizeof(BMessage*));
+					resume_thread(threadId);
+				}
 			}
 		}	break;
 
@@ -1492,7 +1492,8 @@ PaintWindow::AddImageView()
 	Unlock();
 
 	// We can update ourselves to the layer-window.
-	LayerWindow::ActiveWindowChanged(this,fImageView->ReturnImage()->LayerList(),fImageView->ReturnImage()->ReturnThumbnailImage());
+	LayerWindow::ActiveWindowChanged(this, fImageView->ReturnImage()->LayerList(),
+		fImageView->ReturnImage()->ReturnThumbnailImage());
 
 	return B_OK;
 }
@@ -1585,93 +1586,96 @@ PaintWindow::getPreferredSize()
 
 
 int32
-PaintWindow::save_image(void *data)
+PaintWindow::save_image(void* data)
 {
-	PaintWindow *window = (PaintWindow*)data;
-	BMessage *message = NULL;
-	thread_id sender;
-	receive_data(&sender,(void*)&message,sizeof(BMessage*));
-	if (window != NULL) {
-		status_t error = window->saveImage(message);
+	int32 status = B_ERROR;
+	if (PaintWindow *window = static_cast<PaintWindow*>(data)) {
+		thread_id sender;
+		BMessage *message = NULL;
+		receive_data(&sender, (void*)&message, sizeof(BMessage*));
+
+		status = window->_SaveImage(message);
 		delete message;
-		return error;
 	}
-	else
-		return B_ERROR;
+	return status;
 }
 
 
 status_t
-PaintWindow::saveImage(BMessage *message)
+PaintWindow::_SaveImage(BMessage *message)
 {
+	status_t status = B_ERROR;
 	if (fImageView->Freeze() == B_OK) {
+		BString name;
 		entry_ref ref;
-		message->FindRef("directory",&ref);
-		BDirectory directory = BDirectory(&ref);
-		status_t err;
+		if (message->FindString("name", &name) != B_OK
+			|| message->FindRef("directory", &ref) != B_OK)
+			return status;
 
+		BDirectory directory(&ref);
 		// store the entry-ref
-		err = fImageEntry.SetTo(&directory,message->FindString("name"),true);
+		status = fImageEntry.SetTo(&directory, name.String(), true);
 
 		// Only one save ref is received so we do not need to loop.
 		BFile file;
-		if ((err = file.SetTo(&directory,message->FindString("name"),B_WRITE_ONLY|B_CREATE_FILE|B_ERASE_FILE)) != B_OK) {
+		if ((status = file.SetTo(&directory, name.String(), B_WRITE_ONLY |
+			B_CREATE_FILE | B_ERASE_FILE)) != B_OK) {
 			fImageView->UnFreeze();
-			return err;
+			return status;
 		}
 
-		// get the applications signature
-		app_info info;
-		be_app->GetAppInfo(&info);
+		// Create a BNodeInfo for this file and set the MIME-type and preferred
+		// app. Get and set the app signature, not sure why it's commented out.
+		BNodeInfo nodeInfo(&file);
+		nodeInfo.SetType(fSettings->file_mime);
 
-		// Create a BNodeInfo for this file and set the MIME-type and preferred app.
-		BNodeInfo *nodeinfo = new BNodeInfo(&file);
-		nodeinfo->SetType(fSettings->file_mime);
-//		nodeinfo->SetPreferredApp(info.signature);
-		delete nodeinfo;
+		// app_info info;
+		// be_app->GetAppInfo(&info);
+		// nodeinfo.SetPreferredApp(info.signature);
 
 		// here we should save some attributes with the file
-		BNode *node = new BNode(&directory,message->FindString("name"));
-		writeAttributes(*node);
+		BNode node(&directory, message->FindString("name"));
+		writeAttributes(node);
 
 		// here translate the data using a BitmapStream-object
-		BBitmap *picture = fImageView->ReturnImage()->ReturnRenderedImage();
+		BBitmap* bitmap = fImageView->ReturnImage()->ReturnRenderedImage();
+		printf("Bitmap at 0,0: 0x%8lx\n",*((uint32*)(bitmap->Bits())));
 
-		printf("Picture at 0,0: 0x%8lx\n",*((uint32*)(picture->Bits())));
+		// TODO: check if we leak here
+		BBitmapStream* bitmapStream = new BBitmapStream(bitmap);
+		BTranslatorRoster* roster = BTranslatorRoster::Default();
 
-		BBitmapStream *image_stream = new BBitmapStream(picture);
-		BTranslatorRoster *roster = BTranslatorRoster::Default();
-
-		err = roster->Translate(image_stream,(const translator_info*)NULL,(BMessage*)NULL,&file,fSettings->file_type,B_TRANSLATOR_BITMAP);
+		status = roster->Translate(bitmapStream, (const translator_info*)NULL,
+			(BMessage*)NULL, &file, fSettings->file_type, B_TRANSLATOR_BITMAP);
 		fImageView->UnFreeze();
-		if (err == B_OK) {
+
+		if (status == B_OK) {
 			char title[B_FILE_NAME_LENGTH];
 			fImageEntry.GetName(title);
-			Lock();
-			fImageView->ResetChangeStatistics(false,true);
-			fImageView->SetImageName(title);
-//			BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
-//			if (item) item->SetEnabled(true);
-			Unlock();
-			// Also change this new path into the settings.
+			if (Lock()) {
+				fImageView->ResetChangeStatistics(false, true);
+				fImageView->SetImageName(title);
+//				BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
+//				if (item) item->SetEnabled(true);
+				Unlock();
+			}
 
+			// Also change this new path into the settings.
 			BPath path;
 			fImageEntry.GetPath(&path);
-			((PaintApplication*)be_app)->GlobalSettings()->insert_recent_image_path(path.Path());
-			path.GetParent(&path);
 
-			if (path.Path() != NULL) {
-				strcpy(((PaintApplication*)be_app)->GlobalSettings()->image_save_path,path.Path());
-			}
+			global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
+			s->insert_recent_image_path(path.Path());
+
+			path.GetParent(&path);
+			if (path.Path() != NULL)
+				strcpy(s->image_save_path, path.Path());
+		} else {
+			printf("Error while saving: %s\n", strerror(status));
 		}
-		else {
-			printf("error while saving\n");
-			strerror(err);
-		}
-		return err;
 	}
-	else
-		return B_ERROR;
+
+	return status;
 }
 
 
