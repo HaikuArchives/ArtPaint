@@ -749,7 +749,7 @@ PaintWindow::MessageReceived(BMessage *message)
 			if (fImageView) {
 				thread_id threadId = spawn_thread(PaintWindow::save_image,
 					"save image", B_NORMAL_PRIORITY, (void*)this);
-				if (threadId > 0) {
+				if (threadId >= 0) {
 					BMessage* data = new BMessage(*message);
 					send_data(threadId, 0, (void*)&data, sizeof(BMessage*));
 					resume_thread(threadId);
@@ -766,13 +766,13 @@ PaintWindow::MessageReceived(BMessage *message)
 			fProjectSavePanel = NULL;
 
 			if (fImageView) {
-				thread_id saveThread = spawn_thread(PaintWindow::save_project,
+				thread_id threadId = spawn_thread(PaintWindow::save_project,
 					"save project", B_NORMAL_PRIORITY, (void*)this);
-				resume_thread(saveThread);
-
-				// TODO: check if this leaks the message
-				BMessage* data = new BMessage(*message);
-				send_data(saveThread, 0, (void*)&data, sizeof(BMessage*));
+				if (threadId >= 0) {
+					BMessage* data = new BMessage(*message);
+					send_data(threadId, 0, (void*)&data, sizeof(BMessage*));
+					resume_thread(threadId);
+				}
 			}
 		}	break;
 
@@ -1632,15 +1632,17 @@ PaintWindow::_SaveImage(BMessage *message)
 			if (Lock()) {
 				fImageView->ResetChangeStatistics(false, true);
 				fImageView->SetImageName(title);
-//				BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
-//				if (item) item->SetEnabled(true);
+
+				// BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
+				// if (item) item->SetEnabled(true);
+
 				Unlock();
 			}
 
-			// Also change this new path into the settings.
 			BPath path;
 			fImageEntry.GetPath(&path);
 
+			// Also change this new path into the settings.
 			global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
 			s->insert_recent_image_path(path.Path());
 
@@ -1657,132 +1659,133 @@ PaintWindow::_SaveImage(BMessage *message)
 
 
 int32
-PaintWindow::save_project(void *data)
+PaintWindow::save_project(void* data)
 {
-	PaintWindow *window = (PaintWindow*)data;
-	BMessage *message = NULL;
-	thread_id sender;
-	receive_data(&sender,(void*)&message,sizeof(BMessage*));
-	if (window != NULL) {
-		status_t error = window->saveProject(message);
+	status_t status = B_ERROR;
+	if (PaintWindow* window = static_cast<PaintWindow*>(data)) {
+		thread_id sender;
+		BMessage* message = NULL;
+		receive_data(&sender, (void*)&message, sizeof(BMessage*));
+
+		status = window->_SaveProject(message);
 		delete message;
-		return error;
 	}
-	else
-		return B_ERROR;
+	return status;
 }
 
 
 status_t
-PaintWindow::saveProject(BMessage *message)
+PaintWindow::_SaveProject(BMessage *message)
 {
 	if (fImageView->Freeze() == B_OK) {
-		// We open the file that the ref and the name of message tells us.
+		BString name;
 		entry_ref ref;
-		message->FindRef("directory",&ref);
-		BDirectory directory = BDirectory(&ref);
-		status_t err;
+		if (message->FindString("name", &name) != B_OK
+			|| message->FindRef("directory", &ref) != B_OK)
+			return B_ERROR;
 
+		BDirectory directory(&ref);
 		// store the entry-ref
-		err = fProjectEntry.SetTo(&directory,message->FindString("name"),true);
+		fProjectEntry.SetTo(&directory, name.String(), true);
 
 		// Only one save ref is received so we do not need to loop.
 		BFile file;
-		if ((err = file.SetTo(&directory,message->FindString("name"),B_WRITE_ONLY|B_CREATE_FILE|B_ERASE_FILE)) != B_OK) {
+		if (file.SetTo(&directory, name.String(), B_WRITE_ONLY |
+			B_CREATE_FILE | B_ERASE_FILE) != B_OK) {
 			fImageView->UnFreeze();
-			return err;
+			return B_ERROR;
 		}
 
-		// get the applications signature
-		app_info info;
-		be_app->GetAppInfo(&info);
+		// Create a BNodeInfo for this file and set the MIME-type and preferred
+		// app. Get and set the app signature, not sure why it's commented out.
+		BNodeInfo nodeInfo(&file);
+		nodeInfo.SetType(HS_PROJECT_MIME_STRING);
 
-		// create a BNodeInfo for this file
-		BNodeInfo *nodeinfo = new BNodeInfo(&file);
-		nodeinfo->SetType(HS_PROJECT_MIME_STRING);
-//		nodeinfo->SetPreferredApp(info.signature);
-		delete nodeinfo;
+		// app_info info;
+		// be_app->GetAppInfo(&info);
+		// nodeinfo.SetPreferredApp(info.signature);
 
-		// The project-file will be written in the endianness of the host-computer
-		// First word of the file will mark the endianness. If its 0xFFFFFFFF the file is
-		// little-endian if it is 0x00000000, the file is big-endian.
-		int32 lendian;
-		if (B_HOST_IS_LENDIAN == 1)
-			lendian = 0xFFFFFFFF;
-		else
-			lendian = 0x00000000;
+		// The project-file will be written in the endianness of the host.
+		// First word of the file will mark the endianness. If its 0xFFFFFFFF
+		// the file is little-endian if it is 0x00000000, the file is big-endian.
+		int32 endianness = 0xFFFFFFFF;
+		if (B_HOST_IS_BENDIAN == 1)
+			endianness = 0x00000000;
 
 		// Write the endianness
-		if (file.Write(&lendian,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&endianness, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Write the file-id.
 		int32 id = PROJECT_FILE_ID;
-		if (file.Write(&id,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&id, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
-		// Write the number of sections that the file contains. Currently there are
-		// only two sections.
-		int32 section_count = 2;
-		if (file.Write(&section_count,sizeof(int32)) != sizeof(int32)) {
+		// Write the number of sections that the file contains. Currently there
+		// are only two sections.
+		int32 sectionCount = 2;
+		if (file.Write(&sectionCount, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
-		// First write the dimensions section. The real dimensions of the image are written to the file.
+		// First write the dimensions section. The real dimensions of the image
+		// are written to the file.
 		int32 marker = PROJECT_FILE_SECTION_START;
-		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&marker, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Here write the section type.
 		int32 type = PROJECT_FILE_DIMENSION_SECTION_ID;
-		if (file.Write(&type,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&type, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Leave room for the section-length
-		file.Seek(sizeof(int64),SEEK_CUR);
+		file.Seek(sizeof(int64), SEEK_CUR);
 
 		// Here write the width and height.
-		int32 width = (int32)fImageView->ReturnImage()->Width();
-		int32 height = (int32)fImageView->ReturnImage()->Height();
-		int64 written_bytes = 0;
-		written_bytes = file.Write(&width,sizeof(int32));
-		written_bytes += file.Write(&height,sizeof(int32));
+		int32 width = int32(fImageView->ReturnImage()->Width());
+		int32 height = int32(fImageView->ReturnImage()->Height());
 
-		if (written_bytes != 2*sizeof(int32)) {
+		int64 bytesWritten = 0;
+		bytesWritten = file.Write(&width, sizeof(int32));
+		bytesWritten += file.Write(&height, sizeof(int32));
+
+		if (bytesWritten != 2 * sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
-		file.Seek(-written_bytes-sizeof(int64),SEEK_CUR);
-		if (file.Write(&written_bytes,sizeof(int64)) != sizeof(int64)) {
+		file.Seek(-bytesWritten - sizeof(int64), SEEK_CUR);
+		if (file.Write(&bytesWritten, sizeof(int64)) != sizeof(int64)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
-		file.Seek(written_bytes,SEEK_CUR);
+		file.Seek(bytesWritten, SEEK_CUR);
 
 		marker = PROJECT_FILE_SECTION_END;
-		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&marker, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
 		// Here starts the layer-section.
 		marker = PROJECT_FILE_SECTION_START;
-		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&marker, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
+
 		id = PROJECT_FILE_LAYER_SECTION_ID;
-		if (file.Write(&id,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&id, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
@@ -1791,50 +1794,56 @@ PaintWindow::saveProject(BMessage *message)
 		file.Seek(sizeof(int64),SEEK_CUR);
 
 		// Here tell the image to write layers.
-		written_bytes = fImageView->ReturnImage()->WriteLayers(file);
+		bytesWritten = fImageView->ReturnImage()->WriteLayers(file);
 
-		file.Seek(-written_bytes-sizeof(int64),SEEK_CUR);
-		if (file.Write(&written_bytes,sizeof(int64)) != sizeof(int64)) {
+		file.Seek(-bytesWritten - sizeof(int64), SEEK_CUR);
+		if (file.Write(&bytesWritten, sizeof(int64)) != sizeof(int64)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
-		file.Seek(written_bytes,SEEK_CUR);
+		file.Seek(bytesWritten, SEEK_CUR);
 
 		// Write the end-marker for the layer-section.
 		marker = PROJECT_FILE_SECTION_END;
-		if (file.Write(&marker,sizeof(int32)) != sizeof(int32)) {
+		if (file.Write(&marker, sizeof(int32)) != sizeof(int32)) {
 			fImageView->UnFreeze();
 			return B_ERROR;
 		}
 
-
 		// Now we are happily at the end of writing.
-		fImageView->ResetChangeStatistics(true,false);
+		fImageView->ResetChangeStatistics(true, false);
 		fImageView->UnFreeze();
+
 		char title[256];
 		fProjectEntry.GetName(title);
-		Lock();
-		fImageView->SetProjectName(title);
+		if (Lock()) {
+			fImageView->SetProjectName(title);
 
-		// This must come after the project's name has been set.
-		LayerWindow::ActiveWindowChanged(this,fImageView->ReturnImage()->LayerList(),fImageView->ReturnImage()->ReturnThumbnailImage());
-//		BMenuItem *item = fMenubar->FindItem(HS_SAVE_PROJECT);
-//		if (item) item->SetEnabled(true);
-		Unlock();
-		// Also change this new path into the settings.
+			// This must come after the project's name has been set.
+			LayerWindow::ActiveWindowChanged(this,
+				fImageView->ReturnImage()->LayerList(),
+				fImageView->ReturnImage()->ReturnThumbnailImage());
+
+			// BMenuItem *item = fMenubar->FindItem(HS_SAVE_PROJECT);
+			// if (item) item->SetEnabled(true);
+
+			Unlock();
+		}
+
 		BPath path;
 		fProjectEntry.GetPath(&path);
-		((PaintApplication*)be_app)->GlobalSettings()->insert_recent_project_path(path.Path());
-		path.GetParent(&path);
 
-		if (path.Path() != NULL) {
-			strcpy(((PaintApplication*)be_app)->GlobalSettings()->project_save_path,path.Path());
-		}
+		// Also change this new path into the settings.
+		global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
+		s->insert_recent_project_path(path.Path());
+
+		path.GetParent(&path);
+		if (path.Path() != NULL)
+			strcpy(s->project_save_path,path.Path());
+
 		return B_OK;
 	}
-	else {
-		return B_ERROR;
-	}
+	return B_ERROR;
 }
 
 

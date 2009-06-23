@@ -127,7 +127,7 @@ private:
 
 			// These functions will save the project.
 	static	int32				save_project(void*);
-			status_t			saveProject(BMessage *message);
+			status_t			_SaveProject(BMessage *message);
 
 			// this function will write the attributes to node
 			void				writeAttributes(BNode& node);
