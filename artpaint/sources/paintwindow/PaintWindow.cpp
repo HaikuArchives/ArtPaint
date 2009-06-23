@@ -51,7 +51,6 @@
 #include <MenuBar.h>
 #include <NodeInfo.h>
 #include <Path.h>
-#include <Resources.h>
 #include <Roster.h>
 #include <Screen.h>
 #include <ScrollBar.h>
@@ -74,8 +73,6 @@ int32 PaintWindow::sgUntitledWindowNumber = 1;
 // these constants are for the internal communication of the PaintWindow-class
 #define	HS_SHOW_VIEW_SETUP_WINDOW		'SvsW'
 #define HS_SHOW_GLOBAL_SETUP_WINDOW		'SgsW'
-#define	HS_SAVE_IMAGE_INTO_RESOURCES	'Sirc'
-#define	HS_SAVE_IMAGE_AS_CURSOR			'Siac'
 #define	HS_RECENT_IMAGE_SIZE			'Rsis'
 #define	HS_SHOW_ABOUT_WINDOW			'Sabw'
 
@@ -872,21 +869,6 @@ PaintWindow::MessageReceived(BMessage *message)
 			SetHelpString(helpMessage.String(), message->what);
 		}	break;
 
-/*
-		case HS_SAVE_IMAGE_INTO_RESOURCES: {
-			// This comes from menuitem in file-menu. We should save the image
-			// into a resource-file. At the moment that file will be hardcoded
-			// to ArtPaint's resources and we have to type the resource ID from
-			// the shell. (TODO: the menu items are not added to the menu)
-			saveImageIntoResources();
-		}	break;
-
-		case HS_SAVE_IMAGE_AS_CURSOR: {
-			// (TODO: the menu items are not added to the menu)
-			saveImageAsCursor();
-		}	break;
-*/
-
 		case HS_SHOW_ABOUT_WINDOW: {
 			AboutWindow::showWindow();
 		}	break;
@@ -1062,11 +1044,6 @@ PaintWindow::openMenuBar()
 			fileMenu2[i].shortcut, fileMenu2[i].modifiers, fileMenu2[i].target,
 			fileMenu2[i].help);
 	}
-
-	// menu->AddItem(new BMenuItem("Save Image Into Resources",
-	//	new BMessage(HS_SAVE_IMAGE_INTO_RESOURCES)));
-	// menu->AddItem(new BMenuItem("Save Layer As Cursor",
-	// new BMessage(HS_SAVE_IMAGE_AS_CURSOR)));
 
 	// the Edit menu
 	menu = new BMenu(_StringForId(EDIT_STRING));
@@ -1676,123 +1653,6 @@ PaintWindow::_SaveImage(BMessage *message)
 	}
 
 	return status;
-}
-
-
-status_t
-PaintWindow::saveImageIntoResources()
-{
-	// Find a file named ArtPaint.rsrc in the apps directory an create a resource pointing to it.
-	BFile res_file;
-	BResources *resources;
-
-	if (res_file.SetTo("/boot/home/projects/ArtPaint/ArtPaint.rsrc",B_READ_WRITE) != B_OK) {
-		return B_ERROR;
-	}
-	resources = new BResources(&res_file);
-
-	// Read the id for the saved file.
-	int32 res_id;
-	printf("Please give an integer to represent the id for resource: ");
-	scanf("%ld",&res_id);
-
-	// While writing the image convert it to B_COLOR_8_BIT.
-	BBitmap *buffer = fImageView->ReturnImage()->ReturnRenderedImage();
-	char *image_8_bit = new char[buffer->BitsLength()/4];
-	uint32 *bits = (uint32*)buffer->Bits();
-	int32 bits_length = buffer->BitsLength()/4;
-	BScreen *screen = new BScreen();
-	for (int32 i=0;i<bits_length;i++) {
-		image_8_bit[i] = screen->IndexForColor(BGRAColorToRGB(*bits++));
-	}
-	delete screen;
-	// Write the resource
-	if (resources->HasResource(B_COLOR_8_BIT_TYPE,res_id))
-		resources->RemoveResource(B_COLOR_8_BIT_TYPE,res_id);
-
-	resources->AddResource(B_COLOR_8_BIT_TYPE,res_id,image_8_bit,bits_length,"ArtPaint");
-
-	// Finally delete resources and return B_OK.
-	delete resources;
-	delete image_8_bit;
-	return B_OK;
-}
-
-
-status_t
-PaintWindow::saveImageAsCursor()
-{
-	BFile cursor_file;
-	if (cursor_file.SetTo("/boot/home/Cursor.h",B_READ_WRITE|B_CREATE_FILE|B_ERASE_FILE) != B_OK) {
-		return B_ERROR;
-	}
-	BBitmap *buffer = fImageView->ReturnImage()->ReturnActiveBitmap();
-
-	int32 colors[16][2];
-	int32 transparency[16][2];
-
-
-	uint32 *bits = (uint32*)buffer->Bits();
-	int32 bpr = buffer->BytesPerRow()/4;
-
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} color;
-
-	for (int32 y=0;y<16;y++) {
-		int32 c = 0x00;
-		int32 t = 0x00;
-		for (int32 x=0;x<8;x++) {
-			color.word = *(bits+x+y*bpr);
-			c = c | ((color.bytes[2]>127?0:1) << (7-x));
-			t = t | ((color.bytes[3]>127?1:0) << (7-x));
-		}
-		colors[y][0] = c;
-		transparency[y][0] = t;
-		c = 0x00;
-		t = 0x00;
-		for (int32 x=8;x<16;x++) {
-			color.word = *(bits+x+y*bpr);
-			c = c | ((color.bytes[2]>127?0:1) << (7-(x-8)));
-			t = t | ((color.bytes[3]>127?1:0) << (7-(x-8)));
-		}
-		colors[y][1] = c;
-		transparency[y][1] = t;
-	}
-
-
-	// Here we print the data to a string.
-	char header_text[2048];
-	sprintf(header_text,"const unsigned char CURSOR[] =\n\t\t{\n\t\t\t0x10, 0x01,"
-		"0x01, 0x01,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx,"
-		"0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx,"
-		"0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t"
-		"0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,"
-		"\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx,"
-		"0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx,"
-		"0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx,"
-		"0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t"
-		"0x%0lx, 0x%0lx, 0x%0lx, 0x%0lx,\n\t\t\t0x%0lx, 0x%0lx,0x%0lx, 0x%0lx,"
-		"\n\t\t };", colors[0][0], colors[0][1], colors[1][0], colors[1][1],
-		colors[2][0], colors[2][1], colors[3][0], colors[3][1], colors[4][0],
-		colors[4][1], colors[5][0], colors[5][1], colors[6][0], colors[6][1],
-		colors[7][0], colors[7][1], colors[8][0], colors[8][1], colors[9][0],
-		colors[9][1], colors[10][0], colors[10][1], colors[11][0], colors[11][1],
-		colors[12][0], colors[12][1], colors[13][0], colors[13][1], colors[14][0],
-		colors[14][1], colors[15][0], colors[15][1],transparency[0][0],
-		transparency[0][1],transparency[1][0],transparency[1][1],transparency[2][0],
-		transparency[2][1],transparency[3][0],transparency[3][1],transparency[4][0],
-		transparency[4][1],transparency[5][0],transparency[5][1],transparency[6][0],
-		transparency[6][1],transparency[7][0],transparency[7][1],transparency[8][0],
-		transparency[8][1],transparency[9][0],transparency[9][1],transparency[10][0],
-		transparency[10][1],transparency[11][0],transparency[11][1],transparency[12][0],
-		transparency[12][1],transparency[13][0],transparency[13][1],transparency[14][0],
-		transparency[14][1],transparency[15][0],transparency[15][1]);
-
-	cursor_file.Write(header_text,strlen(header_text));
-
-	return B_OK;
 }
 
 

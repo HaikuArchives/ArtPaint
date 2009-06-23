@@ -129,10 +129,6 @@ private:
 	static	int32				save_project(void*);
 			status_t			saveProject(BMessage *message);
 
-			// this function will save the image in to a resource-file.
-			status_t			saveImageIntoResources();
-			status_t			saveImageAsCursor();
-
 			// this function will write the attributes to node
 			void				writeAttributes(BNode& node);
 
