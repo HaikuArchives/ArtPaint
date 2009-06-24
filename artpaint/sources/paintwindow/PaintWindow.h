@@ -23,6 +23,7 @@ class BMenu;
 class BNode;
 
 class BackgroundView;
+class Image;
 class ImageView;
 class ImageSavePanel;
 class LayerWindow;
@@ -115,8 +116,8 @@ private:
 			bool				openMenuBar();
 
 			// this function will resize the window to fit image
-			void				resizeToFit();
-			BRect				getPreferredSize();
+			void				_ResizeToImage();
+			BRect				_PreferredSize(Image* image) const;
 
 			// this function will show the layer-window
 			//void				showLayerWindow();

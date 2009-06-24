@@ -56,6 +56,7 @@
 #include <ScrollBar.h>
 #include <SupportDefs.h>
 #include <TranslatorRoster.h>
+#include <WindowInfo.h>
 
 
 #include <new>
@@ -538,7 +539,7 @@ PaintWindow::MessageReceived(BMessage *message)
 			// this comes from fMenubar->"Window"->"Resize Window to Fit" and
 			// informs us that we should fit the window to display exactly the
 			// image use a private function to do resizing
-			resizeToFit();
+			_ResizeToImage();
 		}	break;
 
 		case HS_RECENT_IMAGE_SIZE: {
@@ -579,13 +580,13 @@ PaintWindow::MessageReceived(BMessage *message)
 			if (success) {
 				// Record the window's frame and also put the new size to
 				// the most recently used list.
-				global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-				settings->default_window_settings.frame_rect = Frame();
+				global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
+				s->default_window_settings.frame_rect = Frame();
 
 				// Only record the new size to the list if it does not
 				// already contain the selected size.
-				int32 *widths = settings->recent_image_width_list;
-				int32 *heights = settings->recent_image_height_list;
+				int32 *widths = s->recent_image_width_list;
+				int32 *heights = s->recent_image_height_list;
 
 				int32 position = -1;
 				for (int32 i = 0; i < RECENT_LIST_LENGTH; ++i) {
@@ -938,17 +939,19 @@ PaintWindow::WorkspaceActivated(int32, bool active)
 void
 PaintWindow::Zoom(BPoint leftTop, float width, float height)
 {
-	bool resizedToFit = true;
-
-	if (Frame() != getPreferredSize())
-		resizedToFit = false;
-
-	if (resizedToFit) {
-		MoveTo(fUserFrame.LeftTop());
-		ResizeTo(fUserFrame.Width(), fUserFrame.Height());
-	} else {
-		resizeToFit();
+	if (fImageView) {
+		if (Image* image = fImageView->ReturnImage()) {
+			if (Frame() == _PreferredSize(image)) {
+				MoveTo(fUserFrame.LeftTop());
+				ResizeTo(fUserFrame.Width(), fUserFrame.Height());
+			} else {
+				_ResizeToImage();
+			}
+			return;
+		}
 	}
+
+	BWindow::Zoom(leftTop, width, height);
 }
 
 
@@ -1477,88 +1480,71 @@ PaintWindow::AddImageView()
 
 
 void
-PaintWindow::resizeToFit()
+PaintWindow::_ResizeToImage()
 {
-	// here we check if the window fits to screen when resized
-	// if not then we will make the window as big as will fit on screen
-
-	// we will get screens dimensions and then use min() function to decide
-	// what will be new window dimensions
-
-
-	// Store the user-frame
-	if (Frame() != getPreferredSize())
-		fUserFrame = Frame();
-
-	// here we should also take magify_scale into account
-	BRect screen_bounds;
-	{
-		screen_bounds = BScreen(this).Frame();
-	}
-	screen_bounds.OffsetTo(0,0);
-
-	if (!fImageView) {
-		screen_bounds.InsetBy(7.5, 7.5);
-		ResizeTo(screen_bounds.right, screen_bounds.bottom - 20.0);
-		MoveTo(screen_bounds.LeftTop() + BPoint(-5.0, 15.0));
+	if (!fImageView)
 		return;
+
+	if (Image* image = fImageView->ReturnImage()) {
+		BRect frame = _PreferredSize(image);
+
+		if (Frame() != frame)
+			fUserFrame = Frame();
+
+		MoveTo(frame.LeftTop());
+		ResizeTo(frame.Width(), frame.Height());
 	}
-
-	// we have to subtract a little from screen dimensions to leave some room
-	// around window
-	float width = min_c(screen_bounds.Width() - 30,
-		fImageView->getMagScale() * fImageView->ReturnImage()->Width() +
-		fAdditionalWidth);
-	float height = min_c(screen_bounds.Height() - 30,
-		fImageView->getMagScale()*fImageView->ReturnImage()->Height() +
-		fAdditionalHeight);
-	width = ceil(width);
-	height = ceil(height);
-
-	BPoint left_top;
-	left_top.x = min_c(max_c(5,Frame().LeftTop().x),screen_bounds.Width()-width);
-	left_top.y = min_c(max_c(5,Frame().LeftTop().y),screen_bounds.Height()-height);
-
-	left_top.x = floor(left_top.x);
-	left_top.y = floor(left_top.y);
-
-	ResizeTo(width,height);
-	MoveTo(left_top);
 }
 
 
 BRect
-PaintWindow::getPreferredSize()
+PaintWindow::_PreferredSize(Image* image) const
 {
-	// here we should also take magify_scale into account
-	BRect screen_bounds;
-	{
-		screen_bounds = BScreen(this).Frame();
+	int32* tokens = 0;
+	int32 tokenCount = 0;
+	status_t status = BPrivate::get_window_order(current_workspace(), &tokens,
+		&tokenCount);
+
+	float tabHeight = 21.0;
+	float borderSize = 5.0;
+	if (status == B_OK && tokens && tokenCount > 0) {
+		for (int32 i = 0; i < tokenCount; ++i) {
+			if (client_window_info* windowInfo = get_window_info(tokens[i])) {
+				if (!windowInfo->is_mini && !windowInfo->show_hide_level > 0) {
+					tabHeight = windowInfo->tab_height;
+					borderSize = windowInfo->border_size;
+					free(windowInfo);
+					break;
+				}
+				free(windowInfo);
+			}
+		}
+		free(tokens);
 	}
-	screen_bounds.OffsetTo(0,0);
 
-	if (!fImageView)
-		return screen_bounds;
+	BRect screenFrame = BScreen().Frame().OffsetToCopy(B_ORIGIN);
+	screenFrame.top += tabHeight;
+	screenFrame.InsetBy(borderSize, borderSize);
 
-	// we have to subtract a little from screen dimensions to leave some room
-	// around window
-	float width = min_c(screen_bounds.Width() - 30.0,
-		fImageView->getMagScale() * fImageView->ReturnImage()->Width() +
-		fAdditionalWidth);
-	float height = min_c(screen_bounds.Height() - 30.0,
-		fImageView->getMagScale() * fImageView->ReturnImage()->Height() +
-		fAdditionalHeight);
-	width = ceil(width);
-	height = ceil(height);
+	BRect rect = Frame();
+	const float scale = fImageView->getMagScale();
+	const float width = (scale * image->Width()) + fAdditionalWidth;
+	if (screenFrame.Width() < width) {
+		rect.left = borderSize;
+		rect.right = rect.left + screenFrame.Width();
+	} else {
+		rect.right = rect.left + width;
+	}
 
-	BPoint left_top;
-	left_top.x = min_c(max_c(5,Frame().LeftTop().x),screen_bounds.Width()-width);
-	left_top.y = min_c(max_c(5,Frame().LeftTop().y),screen_bounds.Height()-height);
+	const float height = (scale * image->Height()) + fAdditionalHeight;
+	if (screenFrame.Height() < height) {
+		rect.top = tabHeight + borderSize;
+		rect.bottom = rect.top + screenFrame.Height();
+	} else {
+		rect.bottom = rect.top + height;
+	}
 
-	left_top.x = floor(left_top.x);
-	left_top.y = floor(left_top.y);
-
-	return BRect(left_top.x, left_top.y, left_top.x + width, left_top.y + height);
+	return rect;
 }
 
 

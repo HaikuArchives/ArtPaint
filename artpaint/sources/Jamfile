@@ -19,6 +19,7 @@ SEARCH_SOURCE += [ FDirName $(SUBDIR) windows ] ;
 SEARCH_SOURCE += [ FDirName $(SUBDIR) $(DOTDOT) Utilities ] ;
 
 UseLibraryHeaders icon ;
+UsePrivateHeaders interface ;
 
 Application ArtPaint :
 	# application
@@ -103,7 +104,7 @@ Application ArtPaint :
 	ToolSelectionWindow.cpp
 	ToolSetupWindow.cpp
 	TransparencyTool.cpp
-	
+
 	# viewmanipulators
 	CropManipulator.cpp
 	FlipManipulator.cpp
