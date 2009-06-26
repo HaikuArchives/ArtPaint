@@ -133,7 +133,6 @@ Application ArtPaint :
 	BitmapUtilities.cpp
 
 	: be tracker translation $(TARGET_LIBSTDC++)
-	#: ../ArtPaint.rsrc
 	: ../ArtPaint.rdef
 ;
 

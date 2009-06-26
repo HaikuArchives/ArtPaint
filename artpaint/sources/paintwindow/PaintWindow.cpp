@@ -126,53 +126,42 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 	fSettings = new window_settings(setup);
 
 	if ((views & HS_MENU_BAR) != 0) {
-		// the menubar should be opened
-		openMenuBar();
+		openMenuBar();	// the menubar should be opened
 		fAdditionalHeight += fMenubar->Bounds().Height() + 1.0;
 	}
 
-	// here the scrollbars are opened and placed along window sides
-	// vertical bar is opened to begin under the menubar
+	BRect bounds = Bounds().InsetByCopy(-1.0, -1.0);
+	bounds.top = fMenubar ? fMenubar->Bounds().Height() : bounds.top;
 
-	float right = Bounds().right + 1;		// have to add one, otherwise scrollbars
-	float bottom = Bounds().bottom + 1;	// would be 1 pixel away from edges (why ????)
-	float top = 0;
-
-
-	if (fMenubar != NULL)	// here add the height of menubar if it is opened
-		top += fMenubar->Bounds().Height();
-
-	// Create the scrollbars, and disable them.
-	fHorizontalScrollbar = new BScrollBar(BRect(0.0,
-		bottom - B_H_SCROLL_BAR_HEIGHT, right - B_V_SCROLL_BAR_WIDTH, bottom),
+	fHorizontalScrollbar = new BScrollBar(BRect(bounds.left,
+		bounds.bottom - B_H_SCROLL_BAR_HEIGHT,
+		bounds.right - B_V_SCROLL_BAR_WIDTH, bounds.bottom),
 		"horizontal", NULL, 0, 0, B_HORIZONTAL);
-	fVerticalScrollbar = new BScrollBar(BRect(right - B_V_SCROLL_BAR_WIDTH,
-		top, right, bottom - B_H_SCROLL_BAR_HEIGHT), "vertical", NULL, 0, 0,
-		B_VERTICAL);
-	fHorizontalScrollbar->SetRange(0,0);
-	fVerticalScrollbar->SetRange(0,0);
-
-	// add the scroll bars to window
 	AddChild(fHorizontalScrollbar);
+	fHorizontalScrollbar->SetRange(0.0, 0.0);
+	fHorizontalScrollbar->SetSteps(8.0, 32.0);
+
+	fVerticalScrollbar = new BScrollBar(BRect(bounds.right - B_V_SCROLL_BAR_WIDTH,
+		bounds.top, bounds.right, bounds.bottom - B_H_SCROLL_BAR_HEIGHT),
+		"vertical", NULL, 0, 0, B_VERTICAL);
 	AddChild(fVerticalScrollbar);
-	fHorizontalScrollbar->SetSteps(8,32);
-	fVerticalScrollbar->SetSteps(8,32);
+	fVerticalScrollbar->SetRange(0.0, 0.0);
+	fVerticalScrollbar->SetSteps(8.0, 32.0);
 
-	// update the free area limits
-	bottom -= (B_H_SCROLL_BAR_HEIGHT + 1);
-	right -= (B_V_SCROLL_BAR_WIDTH + 1);
-	top += 1;			// start other views one pixel down from menubar
+	fAdditionalWidth += B_V_SCROLL_BAR_WIDTH - 1.0;
+	fAdditionalHeight += B_H_SCROLL_BAR_HEIGHT - 1.0;
 
-
-	// increase the additional width and height variables
-	fAdditionalWidth += B_V_SCROLL_BAR_WIDTH - 1;
-	fAdditionalHeight += B_H_SCROLL_BAR_HEIGHT - 1;
+	bounds.top += 1.0;
+	bounds.right -= B_V_SCROLL_BAR_WIDTH + 1.0;
+	bounds.bottom -= B_H_SCROLL_BAR_HEIGHT + 1.0;
 
 	// The status-view is not optional. It contains sometimes also buttons that
 	// can cause some actions to be taken.
-	if ((views & HS_STATUS_VIEW) != 0) {	// the statusbar should be opened
+	if ((views & HS_STATUS_VIEW) != 0) {
 		// Create the status-view and make it display nothing
-		fStatusView = new StatusView(BRect(BPoint(0,bottom),BPoint(right,bottom)));
+		// Note: this sucks, since the status view resizes himself...
+		fStatusView = new StatusView(BRect(0.0, bounds.bottom, bounds.right,
+			bounds.bottom));
 		fStatusView->DisplayNothing();
 
 		// place the statusbar along bottom of window on top of scrollbar
@@ -181,16 +170,16 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 		// here add the statusview to window's hierarchy
 		AddChild(fStatusView);
 
-		// update the bottom value to be 1 pixel above status_view
-		// status_view is resized in window FrameResized() function
-		bottom -= fStatusView->Bounds().Height() + 1.0;
+		// update the bottom value to be 1 pixel above status view
+		bounds.bottom -= fStatusView->Bounds().Height() + 1.0;
 
 		// update the fAdditionalHeight variable
 		fAdditionalHeight += fStatusView->Bounds().Height() + 1.0;
 	}
 
 	// make the background view (the backround for image)
-	fBackground = new BackgroundView(BRect(0,top,right,bottom));
+	fBackground = new BackgroundView(BRect(0.0, bounds.top, bounds.right,
+		bounds.bottom));
 	AddChild(fBackground);
 
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
@@ -321,7 +310,6 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 		msg.AddString("message", _StringForId(SELECT_CANVAS_SIZE_STRING));
 		PostMessage(&msg, this);
 	}
-
 
 	// finally inform the app that new window has been created
 	BMessage message(HS_PAINT_WINDOW_OPENED);
