@@ -12,7 +12,10 @@
 #include <InterfaceDefs.h>
 #include <Mime.h>
 #include <Rect.h>
+#include <String.h>
 #include <Window.h>
+
+#include <list>
 
 // each window has it's own window-settings and they are stored into
 // project-file or image-file's attributes
@@ -31,6 +34,7 @@
 
 
 #define	RECENT_LIST_LENGTH		10
+typedef std::list<BString> StringList;
 
 struct window_settings {
 	uint32		version;			// version number of this struct
@@ -102,29 +106,26 @@ struct global_settings {
 
 	int32		undo_queue_depth;
 
-	char		image_save_path[B_PATH_NAME_LENGTH];
-	char		project_save_path[B_PATH_NAME_LENGTH];
-	char		image_open_path[B_PATH_NAME_LENGTH];
-	char		project_open_path[B_PATH_NAME_LENGTH];
+	char			image_save_path[B_PATH_NAME_LENGTH];
+	char			project_save_path[B_PATH_NAME_LENGTH];
+	char			image_open_path[B_PATH_NAME_LENGTH];
+	char			project_open_path[B_PATH_NAME_LENGTH];
 
-	char		*recent_image_paths[RECENT_LIST_LENGTH];
-	char		*recent_project_paths[RECENT_LIST_LENGTH];
+	StringList		fRecentImagePaths;
+	StringList		fRecentProjectPaths;
+
+	void			insert_recent_image_path(const char *path);
+	void			insert_recent_project_path(const char *path);
+	void			_InsertRecentPath(StringList& list, const BString& path);
 
 	window_settings	default_window_settings;	// this stores the default-settings
 												// for a paint-window
-
-
 
 	global_settings();
 	~global_settings();
 
 status_t	read_from_file(BFile&);
 status_t	write_to_file(BFile&);
-
-
-
-void			insert_recent_image_path(const char*);
-void			insert_recent_project_path(const char*);
 };
 
 

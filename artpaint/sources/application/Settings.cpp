@@ -8,6 +8,8 @@
  */
 #include <FindDirectory.h>
 #include <Path.h>
+#include <String.h>
+
 #include <string.h>
 
 #include "Settings.h"
@@ -134,12 +136,7 @@ global_settings::global_settings()
 	for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
 		recent_image_width_list[i] = (i+1)*64;
 		recent_image_height_list[i] = (i+1)*64;
-		recent_image_paths[i] = NULL;
-		recent_project_paths[i] = NULL;
 	}
-
-//	recent_image_width_list[0] =
-
 
 	rgb_color c = {0,0,0,0};
 	primary_color = c;
@@ -156,10 +153,10 @@ global_settings::global_settings()
 	// Adjust the paths to the defaults.
 	BPath path;
 
-	find_directory(B_USER_DIRECTORY,&path);
+	find_directory(B_USER_DIRECTORY, &path);
 	if (path.Path() != NULL) {
-		strcpy(image_save_path,path.Path());
-		strcpy(image_open_path,path.Path());
+		strcpy(image_save_path, path.Path());
+		strcpy(image_open_path, path.Path());
 	}
 
 	if (path.Path() != NULL) {
@@ -170,10 +167,6 @@ global_settings::global_settings()
 
 global_settings::~global_settings()
 {
-	for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
-		delete recent_image_paths[i];
-		delete recent_project_paths[i];
-	}
 }
 
 status_t global_settings::read_from_file(BFile &file)
@@ -275,31 +268,29 @@ status_t global_settings::read_from_file(BFile &file)
 	if (file.Read(project_open_path,sizeof(project_open_path)) != sizeof(project_open_path))
 		return B_ERROR;
 
-	int32 recent_image_path_count;
-
-	if (file.Read(&recent_image_path_count,sizeof(int32)) != sizeof(int32))
+	int32 recentPathCount;
+	if (file.Read(&recentPathCount, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	for (int32 i=0;i<recent_image_path_count;i++) {
-		recent_image_paths[i] = new char[B_PATH_NAME_LENGTH];
-		if (file.Read(recent_image_paths[i],B_PATH_NAME_LENGTH) != B_PATH_NAME_LENGTH)
+	for (int32 i = 0; i < recentPathCount; ++i) {
+		char path[B_PATH_NAME_LENGTH];
+		if (file.Read(path, B_PATH_NAME_LENGTH) != B_PATH_NAME_LENGTH)
 			return B_ERROR;
+		fRecentImagePaths.push_back(BString(path));
 	}
 
-	int32 recent_project_path_count;
-	if (file.Read(&recent_project_path_count,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&recentPathCount, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	for (int32 i=0;i<recent_project_path_count;i++) {
-		recent_project_paths[i] = new char[B_PATH_NAME_LENGTH];
-		if (file.Read(recent_project_paths[i],B_PATH_NAME_LENGTH) != B_PATH_NAME_LENGTH)
+	for (int32 i = 0; i < recentPathCount; ++i) {
+		char path[B_PATH_NAME_LENGTH];
+		if (file.Read(path, B_PATH_NAME_LENGTH) != B_PATH_NAME_LENGTH)
 			return B_ERROR;
+		fRecentProjectPaths.push_back(BString(path));
 	}
 
-
-	if (default_window_settings.read_from_file(file) != B_NO_ERROR) {
+	if (default_window_settings.read_from_file(file) != B_OK)
 		return B_ERROR;
-	}
 
 	return B_OK;
 }
@@ -402,110 +393,48 @@ status_t global_settings::write_to_file(BFile &file)
 	if (file.Write(project_open_path,sizeof(project_open_path)) != sizeof(project_open_path))
 		return B_ERROR;
 
-	int32 recent_image_path_count = 0;
-	for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
-		if (recent_image_paths[i] != NULL)
-			recent_image_path_count++;
-	}
-
-	if (file.Write(&recent_image_path_count,sizeof(int32)) != sizeof(int32))
+	int32 count = fRecentImagePaths.size();
+	if (file.Write(&count, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	for (int32 i=0;i<recent_image_path_count;i++) {
-		if (file.Write(recent_image_paths[i],B_PATH_NAME_LENGTH) != B_PATH_NAME_LENGTH)
+	StringList::const_iterator it;
+	const ssize_t lenght = B_PATH_NAME_LENGTH;
+	for (it = fRecentImagePaths.begin(); it != fRecentImagePaths.end(); ++it) {
+		if (file.Write((*it).String(), lenght) != lenght)
 			return B_ERROR;
 	}
 
-	int32 recent_project_path_count = 0;
-	for (int32 i=0;i<RECENT_LIST_LENGTH;i++) {
-		if (recent_project_paths[i] != NULL)
-			recent_project_path_count++;
-	}
-
-	if (file.Write(&recent_project_path_count,sizeof(int32)) != sizeof(int32))
+	count = fRecentProjectPaths.size();
+	if (file.Write(&count, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	for (int32 i=0;i<recent_project_path_count;i++) {
-		if (file.Write(recent_project_paths[i],B_PATH_NAME_LENGTH) != B_PATH_NAME_LENGTH)
+	for (it = fRecentProjectPaths.begin(); it != fRecentProjectPaths.end(); ++it) {
+		if (file.Write((*it).String(), lenght) != lenght)
 			return B_ERROR;
 	}
 
-
-	if (default_window_settings.write_to_file(file) != B_NO_ERROR) {
+	if (default_window_settings.write_to_file(file) != B_OK)
 		return B_ERROR;
-	}
 
 	return B_OK;
 }
 
 void global_settings::insert_recent_image_path(const char *path)
 {
-	int32 i = 0;
-	while ((i < RECENT_LIST_LENGTH) && (recent_image_paths[i] != NULL)
-		&& (strcmp(recent_image_paths[i], path) != 0)) {
-		++i;
-	}
-
-	if ((i < RECENT_LIST_LENGTH) && (recent_image_paths[i] != NULL)) {
-		// The entry is already in the list, move it to the front.
-		--i;
-		while (i >= 0) {
-			strcpy(recent_image_paths[i + 1], recent_image_paths[i]);
-			--i;
-		}
-	} else {
-		// The entry is not in the list. Move everything one step closer to the
-		// rear of the list and then insert the path in the front of the list.
-		if ((recent_image_paths[i] == NULL) && (i > 0))
-			--i;
-
-		i = min_c(i, RECENT_LIST_LENGTH - 2);
-
-		while ((i >= 0) && (recent_image_paths[i] != NULL)) {
-			if (recent_image_paths[i + 1] == NULL)
-				recent_image_paths[i + 1] = new char[B_PATH_NAME_LENGTH];
-			strcpy(recent_image_paths[i + 1], recent_image_paths[i]);
-			--i;
-		}
-
-		if (recent_image_paths[0] == NULL)
-			recent_image_paths[0] = new char[B_PATH_NAME_LENGTH];
-	}
-	strcpy(recent_image_paths[0], path);
+	_InsertRecentPath(fRecentImagePaths, path);
 }
 
 void global_settings::insert_recent_project_path(const char *path)
 {
-	int32 i = 0;
-	while ((i < RECENT_LIST_LENGTH) && (recent_project_paths[i] != NULL)
-		&& (strcmp(recent_project_paths[i], path) != 0)) {
-		++i;
+	_InsertRecentPath(fRecentProjectPaths, path);
+}
+
+void global_settings::_InsertRecentPath(StringList& list, const BString& path)
+{
+	if (path.Length() > 0) {
+		list.remove(path);
+		list.push_front(path);
+		if (list.size() > RECENT_LIST_LENGTH)
+			list.resize(RECENT_LIST_LENGTH);
 	}
-
-	if ((i < RECENT_LIST_LENGTH) && (recent_project_paths[i] != NULL)) {
-		// The entry is already in the list, move it to the front.
-		--i;
-		while (i >= 0) {
-			strcpy(recent_project_paths[i + 1], recent_project_paths[i]);
-			--i;
-		}
-	} else {
-		// The entry is not in the list. Move everything one step closer to the
-		// rear of the list and then insert the path in the front of the list.
-		if ((recent_project_paths[i] == NULL) && (i>0))
-			--i;
-
-		i = min_c(i, RECENT_LIST_LENGTH - 2);
-
-		while ((i >= 0) && (recent_project_paths[i] != NULL)) {
-			if (recent_project_paths[i + 1] == NULL)
-				recent_project_paths[i + 1] = new char[B_PATH_NAME_LENGTH];
-			strcpy(recent_project_paths[i + 1], recent_project_paths[i]);
-			i--;
-		}
-
-		if (recent_project_paths[0] == NULL)
-			recent_project_paths[0] = new char[B_PATH_NAME_LENGTH];
-	}
-	strcpy(recent_project_paths[0], path);
 }

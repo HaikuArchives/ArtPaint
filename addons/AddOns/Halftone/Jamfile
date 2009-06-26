@@ -114,7 +114,7 @@ Addon Halftone.so :
 	YIQControl.o
 	YUVControl.o
 
-	: be tracker translation
+	: be tracker translation $(TARGET_LIBSTDC++)
 ;
 
 ObjectReferences

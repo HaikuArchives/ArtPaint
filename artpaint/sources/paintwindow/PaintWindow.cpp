@@ -1890,15 +1890,21 @@ PaintWindow::_AddMenuItems(BMenu* menu, string_id label, uint32 what,
 void
 PaintWindow::_AddRecentMenuItems(BMenu* menu, string_id id)
 {
+	menu->RemoveItems(0, menu->CountItems(), true);
+
 	BPath path;
 	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	for (int32 i = 0; i < RECENT_LIST_LENGTH; ++i) {
-		if (id == RECENT_IMAGES_STRING)
-			path.SetTo(settings->recent_image_paths[i], NULL, true);
-		else if (id == RECENT_PROJECTS_STRING)
-			path.SetTo(settings->recent_project_paths[i], NULL, true);
 
+	StringList* list;
+	if (id == RECENT_IMAGES_STRING)
+		list = &settings->fRecentImagePaths;
+	else if (id == RECENT_PROJECTS_STRING)
+		list = &settings->fRecentProjectPaths;
+
+	StringList::const_iterator it;
+	for (it = list->begin(); it != list->end(); ++it) {
 		entry_ref ref;
+		path.SetTo((*it).String(), NULL, true);
 		if (get_ref_for_path(path.Path(), &ref) == B_OK) {
 			BMessage* message = new BMessage(B_REFS_RECEIVED);
 			message->AddRef("refs", &ref);

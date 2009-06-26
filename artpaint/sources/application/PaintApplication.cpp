@@ -282,6 +282,9 @@ PaintApplication::RefsReceived(BMessage* message)
 		memset(mimeType, 0, B_MIME_TYPE_LENGTH);
 		BNodeInfo(&file).GetType(mimeType);
 
+		BPath path;
+		BEntry(&ref).GetPath(&path);
+
 		// here compare the mime-type to all possible mime types for the
 		// types we have created, type strings are defined in
 		// FileIdentificationStrings.h
@@ -295,18 +298,14 @@ PaintApplication::RefsReceived(BMessage* message)
 		}
 		else if ((strcmp(mimeType, HS_PROJECT_MIME_STRING) == 0)
 			|| (strcmp(mimeType, _OLD_HS_PROJECT_MIME_STRING) == 0)) {
-			if (_ReadProject(file, ref) == B_OK) {
-				BPath path;
-				BEntry(&ref).GetPath(&path);
-				fGlobalSettings->insert_recent_project_path(path.Path());
-				_StorePath(message, ref, fGlobalSettings->project_open_path);
-			}
+			fGlobalSettings->insert_recent_project_path(path.Path());
+			_StorePath(message, ref, fGlobalSettings->project_open_path);
+			if (_ReadProject(file, ref) != B_OK)
+				fGlobalSettings->fRecentProjectPaths.remove(path.Path());
 		}
 		else if (strncmp(mimeType, "image/", 6) == 0 || strcmp(mimeType, "") == 0) {
 			// The file was not one of ArtPaint's file types. Perhaps it is
 			// an image-file. Try to read it using the Translation-kit.
-			BPath path;
-			BEntry(&ref).GetPath(&path);
 			BBitmap* bitmap = BTranslationUtils::GetBitmapFile(path.Path());
 			if (bitmap) {
 				// The returned bitmap might be in 8-bit format. If that is
@@ -331,12 +330,12 @@ PaintApplication::RefsReceived(BMessage* message)
 					testInfo.translator = 0;
 				}
 
+				fGlobalSettings->insert_recent_image_path(path.Path());
+				_StorePath(message, ref, fGlobalSettings->image_open_path);
+
 				PaintWindow* window = PaintWindow::CreatePaintWindow(bitmap,
 					ref.name, orgInfo.type, ref, testInfo.translator);
 				window->ReadAttributes(file);
-
-				fGlobalSettings->insert_recent_image_path(path.Path());
-				_StorePath(message, ref, fGlobalSettings->image_open_path);
 			} else {
 				char text[255];
 				sprintf(text,
@@ -565,7 +564,7 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 	// Create a paint-window using the width and height
 	PaintWindow* paintWindow = PaintWindow::CreatePaintWindow(NULL, ref.name);
 
-	paintWindow->OpenImageView(width,height);
+	paintWindow->OpenImageView(width, height);
 	// Then read the layer-data. Rewind the file and put the image-view to read
 	// the data.
 	ImageView* image_view = paintWindow->ReturnImageView();
