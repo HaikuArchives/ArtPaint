@@ -28,9 +28,8 @@
 
 
 ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
-		int32 saveFormat, BBitmap* savedBitmap)
-	: BFilePanel(B_SAVE_PANEL, &target, &startDir, 0, false,
-		new BMessage(HS_IMAGE_SAVE_REFS))
+		BMessage& message, int32 saveFormat, BBitmap* savedBitmap)
+	: BFilePanel(B_SAVE_PANEL, &target, &startDir, 0, false, &message)
 {
 	if (Window()->Lock()) {
 		BString title = "ArtPaint: ";

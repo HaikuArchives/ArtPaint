@@ -662,8 +662,9 @@ PaintWindow::MessageReceived(BMessage *message)
 				get_ref_for_path(path.Path(), &ref);
 
 				BMessenger panelTarget(this);
+				BMessage message(HS_IMAGE_SAVE_REFS);
 				fImageSavePanel = new ImageSavePanel(ref, panelTarget,
-					fSettings->file_type,
+					message, fSettings->file_type,
 					fImageView->ReturnImage()->ReturnThumbnailImage());
 			}
 
@@ -687,9 +688,11 @@ PaintWindow::MessageReceived(BMessage *message)
 
 				entry_ref ref;
 				get_ref_for_path(path.Path(), &ref);
+
 				BMessenger window(this);
+				BMessage message(HS_PROJECT_SAVE_REFS);
 				fProjectSavePanel = new BFilePanel(B_SAVE_PANEL, &window, &ref,
-					0, false, new BMessage(HS_PROJECT_SAVE_REFS));
+					0, false, &message);
 			}
 
 			fProjectSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);

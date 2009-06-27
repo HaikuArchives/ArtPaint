@@ -257,10 +257,13 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				PaintApplication::HomeDirectory(path);
 			}
 
-			entry_ref *ref = new entry_ref();
-			get_ref_for_path(path.Path(),ref);
+			entry_ref ref;
+			get_ref_for_path(path.Path(), &ref);
 
-			open_panel = new BFilePanel(B_OPEN_PANEL,new BMessenger(this),ref,B_FILE_NODE,true,new BMessage(HS_PALETTE_OPEN_REFS));
+			BMessenger target(this);
+			BMessage message(HS_PALETTE_OPEN_REFS);
+			open_panel = new BFilePanel(B_OPEN_PANEL, &target, &ref,
+				B_FILE_NODE, true, &message);
 		}
 		char string[256];
 		sprintf(string,"ArtPaint: %s",StringServer::ReturnString(OPEN_COLOR_SET_STRING));
@@ -282,10 +285,13 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				PaintApplication::HomeDirectory(path);
 			}
 			// convert it to entry_ref
-			entry_ref *ref = new entry_ref();
-			get_ref_for_path(path.Path(),ref);
+			entry_ref ref;
+			get_ref_for_path(path.Path(), &ref);
 
-			save_panel = new BFilePanel(B_SAVE_PANEL,new BMessenger(this),ref,0,false,new BMessage(HS_PALETTE_SAVE_REFS));
+			BMessenger target(this);
+			BMessage message(HS_PALETTE_SAVE_REFS);
+			save_panel = new BFilePanel(B_SAVE_PANEL, &target, &ref, 0, false,
+				&message);
 		}
 		save_panel->SetSaveText(ColorSet::currentSet()->getName());
 		sprintf(string,"ArtPaint: %s",StringServer::ReturnString(SAVE_COLOR_SET_STRING));

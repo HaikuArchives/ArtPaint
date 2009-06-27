@@ -21,7 +21,7 @@ struct entry_ref;
 class ImageSavePanel : public BFilePanel {
 public:
 				ImageSavePanel(const entry_ref& startDir, BMessenger& target,
-					int32 saveFormat, BBitmap* savedBitmap = NULL);
+					BMessage& message, int32 saveFormat, BBitmap* bitmap = NULL);
 	virtual			~ImageSavePanel();
 };
 
