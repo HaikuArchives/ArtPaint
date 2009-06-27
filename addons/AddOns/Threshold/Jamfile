@@ -30,8 +30,8 @@ Addon Threshold.so :
 	Brush.o
 	BrushStoreWindow.o
 	BrushTool.o
-	ClipBoardManager.o
-	ClipBoardView.o
+#	ClipBoardManager.o
+#	ClipBoardView.o
 	CMYControl.o
 	ColorPalette.o
 	ColorSelectorTool.o

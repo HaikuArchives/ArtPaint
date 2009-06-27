@@ -23,8 +23,8 @@ UsePrivateHeaders interface ;
 
 Application ArtPaint :
 	# application
-	ClipBoardManager.cpp
-	ClipBoardView.cpp
+#	ClipBoardManager.cpp
+#	ClipBoardView.cpp
 	FilePanels.cpp
 	FloaterManager.cpp
 	HSPolygon.cpp
