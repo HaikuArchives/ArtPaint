@@ -653,16 +653,16 @@ PaintWindow::MessageReceived(BMessage *message)
 					if (path.SetTo(s->image_save_path) != B_OK) {
 						PaintApplication::HomeDirectory(path);
 					}
-				}
-				else {
+				} else {
 					fImageEntry.GetPath(&path);
 					path.GetParent(&path);
 				}
 
 				entry_ref ref;
 				get_ref_for_path(path.Path(), &ref);
-				BMessenger window(this);
-				fImageSavePanel = new ImageSavePanel(&ref, &window,
+
+				BMessenger panelTarget(this);
+				fImageSavePanel = new ImageSavePanel(ref, panelTarget,
 					fSettings->file_type,
 					fImageView->ReturnImage()->ReturnThumbnailImage());
 			}
@@ -1895,10 +1895,8 @@ PaintWindow::_AddRecentMenuItems(BMenu* menu, string_id id)
 	BPath path;
 	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
 
-	StringList* list;
-	if (id == RECENT_IMAGES_STRING)
-		list = &settings->fRecentImagePaths;
-	else if (id == RECENT_PROJECTS_STRING)
+	StringList* list = &settings->fRecentImagePaths;
+	if (id == RECENT_PROJECTS_STRING)
 		list = &settings->fRecentProjectPaths;
 
 	StringList::const_iterator it;
