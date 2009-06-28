@@ -639,7 +639,7 @@ PaintWindow::MessageReceived(BMessage *message)
 
 		case HS_SHOW_GLOBAL_SETUP_WINDOW: {
 			// this comes from fMenubar->"Window"->"Global Settings…"
-			GlobalSetupWindow::showGlobalSetupWindow();
+			GlobalSetupWindow::ShowGlobalSetupWindow();
 		}	break;
 
 		case HS_SHOW_IMAGE_SAVE_PANEL: {
