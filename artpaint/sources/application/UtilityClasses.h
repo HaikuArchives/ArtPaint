@@ -27,16 +27,20 @@ public:
 
 
 // this class creates a view that draws a bitmap in it
-
 class BitmapView : public BView {
-		BBitmap		*the_bitmap;
-
 public:
-		BitmapView(BBitmap *bitmap, BPoint location);
-		BitmapView(BBitmap *bitmap, BRect frame);
-void	Draw(BRect updateRect);
+						BitmapView(BBitmap* bitmap, BRect frame);
+						BitmapView(BBitmap* bitmap, BPoint leftTop);
+	virtual				~BitmapView();
 
-inline	void	ChangeBitmap(BBitmap *bitmap) { the_bitmap = bitmap; }
+	virtual	void		AttachedToWindow();
+	virtual	void		Draw(BRect updateRect);
+
+			BBitmap*	Bitmap() const;
+			void		SetBitmap(BBitmap* bitmap);
+
+private:
+			BBitmap*	fBitmap;
 };
 
 

@@ -98,27 +98,64 @@ HelpWindow::HelpWindow(BPoint location, char **text_lines, int32 line_count)
 }
 
 
-BitmapView::BitmapView(BBitmap *bitmap, BPoint location)
-		:	BView(BRect(location,location),"bitmap_view",B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW)
-{
-	the_bitmap = bitmap;
-	ResizeTo(bitmap->Bounds().Width(),bitmap->Bounds().Height());
-}
+// #pragma mark -- BitmapView
 
-BitmapView::BitmapView(BBitmap *bitmap, BRect frame)
-		:	BView(frame,"bitmap_view",B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW)
+
+BitmapView::BitmapView(BBitmap* bitmap, BRect frame)
+	: BView(frame, "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW)
+	, fBitmap(bitmap)
 {
-	the_bitmap = bitmap;
 }
 
 
-void BitmapView::Draw(BRect updateRect)
+BitmapView::BitmapView(BBitmap* bitmap, BPoint leftTop)
+	: BView(BRect(leftTop, leftTop), "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP,
+		B_WILL_DRAW)
+	, fBitmap(bitmap)
 {
-	if (the_bitmap != NULL)
-		DrawBitmap(the_bitmap,updateRect,updateRect);
-
+	if (fBitmap)
+		ResizeTo(fBitmap->Bounds().Width(), fBitmap->Bounds().Height());
 }
 
+
+BitmapView::~BitmapView()
+{
+	delete fBitmap;
+}
+
+
+void
+BitmapView::AttachedToWindow()
+{
+	if (Parent())
+		SetViewColor(Parent()->ViewColor());
+}
+
+
+void
+BitmapView::Draw(BRect updateRect)
+{
+	if (fBitmap)
+		DrawBitmap(fBitmap, updateRect, updateRect);
+}
+
+
+BBitmap*
+BitmapView::Bitmap() const
+{
+	return fBitmap;
+}
+
+
+void
+BitmapView::SetBitmap(BBitmap* bitmap)
+{
+	delete fBitmap;
+	fBitmap = bitmap;
+}
+
+
+// #pragma mark -- BitmapViewBox
 
 
 BitmapViewBox::BitmapViewBox(BBitmap *bitmap,BRect frame, char *label)
