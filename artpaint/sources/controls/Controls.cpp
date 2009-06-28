@@ -6,22 +6,69 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
+#include "Controls.h"
+
+#include "MessageConstants.h"
+#include "UtilityClasses.h"
+
+
+#include <String.h>
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Controls.h"
-#include "UtilityClasses.h"
-#include "MessageConstants.h"
-#include "ToolSetupWindow.h"
 
-NumberControl::NumberControl(BRect frame, const char *name, const char *label, const char *text, BMessage *message, int32 maxBytes,bool allow_negative,bool continuos)
-				: BTextControl(frame,name,label,text,message)
+NumberControl::NumberControl(const char* label, const char* text,
+		BMessage* message, int32 maxBytes, bool allowNegative, bool continuos)
+	: BTextControl(label, text, message)
 {
-	// here we set the control to only accept numbers
-	// here disallow all chars
-	for (int32 i=0;i<256;i++)
+	_InitControl(maxBytes, allowNegative, continuos);
+}
+
+
+NumberControl::NumberControl(BRect frame, const char* name, const char* label,
+		const char* text, BMessage* message, int32 maxBytes, bool allowNegative,
+		bool continuos)
+	: BTextControl(frame, name, label, text, message)
+{
+	_InitControl(maxBytes, allowNegative, continuos);
+}
+
+
+int32
+NumberControl::Value() const
+{
+	return atoi(Text());
+}
+
+
+void
+NumberControl::SetValue(int32 value)
+{
+	BTextControl::SetValue(value);
+
+	BString text;
+	text << value;
+
+	SetText(text.String());
+}
+
+
+void
+NumberControl::AttachedToWindow()
+{
+	BTextControl::AttachedToWindow();
+}
+
+
+void
+NumberControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuos)
+{
+	for (uint32 i = 0; i < 256; ++i)
 		TextView()->DisallowChar(i);
-	// and here allow the numbers
+
 	TextView()->AllowChar('0');
 	TextView()->AllowChar('1');
 	TextView()->AllowChar('2');
@@ -32,38 +79,21 @@ NumberControl::NumberControl(BRect frame, const char *name, const char *label, c
 	TextView()->AllowChar('7');
 	TextView()->AllowChar('8');
 	TextView()->AllowChar('9');
-	if (allow_negative == TRUE)
+
+	if (allowNegative)
 		TextView()->AllowChar('-');
 
-	// there is a bug in alignment function
-	// SetAlignment(B_ALIGN_RIGHT,B_ALIGN_LEFT);
 	TextView()->SetMaxBytes(maxBytes);
+	SetAlignment(B_ALIGN_RIGHT, B_ALIGN_LEFT);
 }
 
 
-void NumberControl::AttachedToWindow()
-{
-	BTextControl::AttachedToWindow();
-}
 
 
-int32 NumberControl::Value()
-{
-	int32 value;
-	value = atoi(Text());
-	return value;
-}
 
 
-void NumberControl::SetValue(int32 value)
-{
-	BTextControl::SetValue(value);
 
-	char text[256];
-	sprintf(text,"%ld", value);
 
-	SetText(text);
-}
 
 #define KNOB_WIDTH 10.0
 

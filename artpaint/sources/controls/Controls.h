@@ -18,11 +18,24 @@
 class NumberControl : public BTextControl {
 
 public:
-		NumberControl(BRect frame, const char *name, const char *label, const char *text, BMessage *message,int32 maxBytes=5,bool allow_negative=false,bool continuos=true);
+						NumberControl(const char *label, const char *text,
+							BMessage* message, int32 maxBytes = 5,
+							bool allowNegative = false, bool continuos = true);
 
-void	AttachedToWindow();
-int32	Value();
-void	SetValue(int32);
+						NumberControl(BRect frame, const char* name,
+							const char* label, const char* text,
+							BMessage* message, int32 maxBytes = 5,
+							bool allowNegative = false, bool continuos = true);
+
+
+			int32		Value() const;
+	virtual	void		SetValue(int32);
+
+	virtual	void		AttachedToWindow();
+
+private:
+			void		_InitControl(int32 maxBytes, bool allowNegative,
+							bool continuos);
 };
 
 
