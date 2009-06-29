@@ -22,7 +22,7 @@ ToolButton::ToolButton(BRect frame,int32 tool,const char *name)
 	: BPictureButton(frame,"tool_button",ToolImages::getPicture(tool,BIG_TOOL_PICTURE_SIZE,0),ToolImages::getPicture(tool,BIG_TOOL_PICTURE_SIZE,1),NULL)
 	, tool_name(name)
 
-{	
+{
 	BMessage *model_message = new BMessage(HS_TOOL_CHANGED);
 	model_message->AddInt32("tool",tool);
 	model_message->AddInt32("buttons",0);
@@ -63,7 +63,7 @@ void ToolButton::MouseDown(BPoint point)
 		BPictureButton::MouseDown(point);
 
 	if (buttons & B_SECONDARY_MOUSE_BUTTON)
-		ToolSetupWindow::showWindow(tool_type);
+		ToolSetupWindow::ShowToolSetupWindow(tool_type);
 
 	/* The third button might be used for example
 	to load the mouse with single shot operations

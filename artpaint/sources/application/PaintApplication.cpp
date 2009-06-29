@@ -235,7 +235,7 @@ PaintApplication::ReadyToRun()
 
 	// Open here the ToolSetupWindow
 	if (fGlobalSettings->tool_setup_window_visible)
-		ToolSetupWindow::showWindow(fGlobalSettings->setup_window_tool);
+		ToolSetupWindow::ShowToolSetupWindow(fGlobalSettings->setup_window_tool);
 
 	// Test here the brush store window
 	if (fGlobalSettings->brush_window_visible) {

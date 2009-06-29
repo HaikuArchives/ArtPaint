@@ -148,7 +148,7 @@ BRect ToolManager::LastUpdatedRect(ImageView *view)
 status_t ToolManager::ChangeTool(int32 tool_type)
 {
 	active_drawing_tool = ToolListEntry::ReturnTool(tool_type);
-	ToolSetupWindow::changeToolForTheSetupWindow(tool_type);
+	ToolSetupWindow::CurrentToolChanged(tool_type);
 	ToolSelectionWindow::ChangeTool(tool_type);
 
 	((PaintApplication*)be_app)->GlobalSettings()->primary_tool = tool_type;

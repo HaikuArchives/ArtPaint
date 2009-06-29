@@ -221,7 +221,7 @@ void
 GlobalSetupWindow::WindowFeelView::ApplyChanges()
 {
 	ToolSelectionWindow::setFeel(fToolWindowFeel);
-	ToolSetupWindow::setFeel(fToolSetupWindowFeel);
+	ToolSetupWindow::SetWindowFeel(fToolSetupWindowFeel);
 	ColorPaletteWindow::setFeel(fPaletteWindowFeel);
 	BrushStoreWindow::setFeel(fBrushWindowFeel);
 	LayerWindow::setFeel(fLayerWindowFeel);

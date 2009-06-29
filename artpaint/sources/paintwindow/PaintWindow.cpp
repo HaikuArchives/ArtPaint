@@ -719,7 +719,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		case HS_SHOW_TOOL_SETUP_WINDOW: {
 			// This comes from fMenubar->"Window"->"Show Tool Setup Window". We
 			// should open the tool window.
-			ToolSetupWindow::showWindow(
+			ToolSetupWindow::ShowToolSetupWindow(
 				((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool);
 		}	break;
 

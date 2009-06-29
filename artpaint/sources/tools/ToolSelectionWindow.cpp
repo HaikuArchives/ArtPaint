@@ -172,7 +172,7 @@ ToolSelectionWindow::MessageReceived(BMessage* message)
 				// informs that a tool for a mouse-button has changed
 				tool_manager->ChangeTool(tool);
 				ToolButton::ChangeActiveButton(tool);
-				ToolSetupWindow::changeToolForTheSetupWindow(tool);
+				ToolSetupWindow::CurrentToolChanged(tool);
 			}
 		} break;
 
