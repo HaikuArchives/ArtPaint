@@ -7,8 +7,15 @@
  *
  */
 #include "SimpleTool.h"
-#include "StringServer.h"
+
 #include "Cursors.h"
+#include "CoordinateQueue.h"
+#include "StringServer.h"
+
+
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+
 
 // this class is for simple test tool
 SimpleTool::SimpleTool()
@@ -210,33 +217,27 @@ int32 SimpleTool::read_coordinates()
 }
 
 
+// #pragma mark -- SimpleToolConfigView
 
 
-
-
-SimpleToolConfigView::SimpleToolConfigView(BRect rect, DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+SimpleToolConfigView::SimpleToolConfigView(BRect rect, DrawingTool* t)
+	: DrawingToolConfigView(rect, t)
 {
-	BMessage *message;
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SIZE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	BRect controller_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+2*EXTRA_EDGE,EXTRA_EDGE);
+	size_slider = new ControlSliderBox("size",
+		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
 
-	// First add the controller for size.
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);
-	AddChild(size_slider);
-	// Remember to offset the controller_frame
-	controller_frame.OffsetBy(0,size_slider->Bounds().Height() + EXTRA_EDGE);
-
-
-	ResizeTo(controller_frame.Width()+2*EXTRA_EDGE,size_slider->Frame().bottom + EXTRA_EDGE);
+	SetLayout(new BGroupLayout(B_VERTICAL));
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0).Add(size_slider));
 }
 
 
 
-void SimpleToolConfigView::AttachedToWindow()
+void
+SimpleToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 	size_slider->SetTarget(new BMessenger(this));

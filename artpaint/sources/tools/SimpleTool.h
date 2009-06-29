@@ -10,45 +10,49 @@
 #define SIMPLE_TOOL_H
 
 #include "LineTool.h"
-#include "CoordinateQueue.h"
-#include "BitmapDrawer.h"
 
 
+class BBitmap;
+class BView;
+class CoordinateQueue;
+class ImageView;
+class ToolScript;
 
-// This class is defines the first actual tool.
+
 class SimpleTool : public LineTool {
-	CoordinateQueue	*coordinate_queue;
-
-	bool		reading_coordinates;
-
-	ImageView	*image_view;
-
-static	int32	CoordinateReader(void*);
-		int32	read_coordinates();
-
-
 public:
-			SimpleTool();
-virtual		~SimpleTool();
+									SimpleTool();
+	virtual							~SimpleTool();
 
-ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
-int32		UseToolWithScript(ToolScript*,BBitmap*);
+			int32					UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*				UseTool(ImageView*, uint32, BPoint, BPoint);
 
-		BView*	makeConfigView();
-const	char*	ReturnHelpString(bool);
-const	void*	ReturnToolCursor();
+			BView*					makeConfigView();
+			const void*				ReturnToolCursor();
+			const char*				ReturnHelpString(bool isInUse);
+
+private:
+			int32					read_coordinates();
+	static	int32					CoordinateReader(void*);
+
+private:
+			bool					reading_coordinates;
+
+			ImageView*				image_view;
+			CoordinateQueue*		coordinate_queue;
 };
 
 
 
 class SimpleToolConfigView : public DrawingToolConfigView {
-		ControlSliderBox	*size_slider;
-
 public:
-		SimpleToolConfigView(BRect rect,DrawingTool *t);
+									SimpleToolConfigView(BRect rect,
+										DrawingTool* tool);
 
-void	AttachedToWindow();
+	virtual	void					AttachedToWindow();
+
+private:
+			ControlSliderBox*		size_slider;
 };
-
 
 #endif
