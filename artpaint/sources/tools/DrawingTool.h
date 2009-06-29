@@ -22,7 +22,6 @@
 #define	HS_MAX_TOOL_NAME_LENGTH		50
 
 // These are used in tool setup-window.
-#define TOOL_CHANGED 	'Tlcg'
 #define OPTION_CHANGED	'Opcg'
 
 
@@ -47,33 +46,33 @@ protected:
 	BRect		last_updated_rect;
 
 public:
-		DrawingTool(const char *tool_name, int32 tool_type);
-virtual	~DrawingTool();
+	DrawingTool(const char *tool_name, int32 tool_type);
+	virtual	~DrawingTool();
 
-virtual	ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
-virtual	int32		UseToolWithScript(ToolScript*,BBitmap*);
+	virtual	ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
+	virtual	int32		UseToolWithScript(ToolScript*,BBitmap*);
 
-virtual	BView*		makeConfigView();
-virtual	void		UpdateConfigView(BView*) {};
+	virtual	BView*		makeConfigView();
+	virtual	void		UpdateConfigView(BView*) {}
 
 
-inline	int32	Options() { return options; }
-virtual	void	SetOption(int32 option,int32 value, BHandler *source=NULL);
+	inline	int32	Options() { return options; }
+	virtual	void	SetOption(int32 option,int32 value, BHandler *source=NULL);
 
-virtual	int32	GetCurrentValue(int32 option);
+	virtual	int32	GetCurrentValue(int32 option);
 
-inline	const	char*	GetName() const { return name; }
-inline	const	int32	GetType() const { return type; }
+	inline	const	char*	GetName() const { return name; }
+	inline	const	int32	GetType() const { return type; }
 
-// these functions read and write tool's settings to a file
-virtual status_t	readSettings(BFile &file,bool is_little_endian);
-virtual	status_t	writeSettings(BFile &file);
+	// these functions read and write tool's settings to a file
+	virtual status_t	readSettings(BFile &file,bool is_little_endian);
+	virtual	status_t	writeSettings(BFile &file);
 
-		BRect	LastUpdatedRect();
+	BRect	LastUpdatedRect();
 
-virtual	const	void*	ReturnToolCursor();
+	virtual	const	void*	ReturnToolCursor();
 
-virtual	const	char*	ReturnHelpString(bool is_in_use);
+	virtual	const	char*	ReturnHelpString(bool is_in_use);
 };
 
 
@@ -84,12 +83,12 @@ protected:
 	DrawingTool		*tool;
 
 public:
-		DrawingToolConfigView(BRect,DrawingTool*);
-		~DrawingToolConfigView();
+	DrawingToolConfigView(BRect,DrawingTool*);
+	~DrawingToolConfigView();
 
-void	AttachedToWindow();
+	void	AttachedToWindow();
 
-void	MessageReceived(BMessage*);
+	void	MessageReceived(BMessage*);
 };
 
 #endif
