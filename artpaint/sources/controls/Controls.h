@@ -1,24 +1,26 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
+
 #include <Box.h>
 #include <Slider.h>
 #include <TextControl.h>
 
-#define EXTRA_EDGE	4
 
 class NumberControl : public BTextControl {
 
 public:
-						NumberControl(const char *label, const char *text,
+						NumberControl(const char* label, const char* text,
 							BMessage* message, int32 maxBytes = 5,
 							bool allowNegative = false, bool continuos = true);
 
@@ -39,86 +41,78 @@ private:
 };
 
 
-// this class creates an object derived from BControl
-// that has horizontal slider and it reports its value
-// to target whenever value is changed
-//class ControlSlider : public BControl {
-//	float max_range,min_range;
-//	BRect knob_rect;
-//	thread_id slider_thread;
-//
-//static	int32	thread_func(void *data);
-//void	threadFunc();
-//
-//public:
-//	ControlSlider(BRect frame,char *name,char *label,BMessage *message,int32 rangeMin,int32 rangeMax);
-//	~ControlSlider();
-//
-//void	Draw(BRect);
-//void	MouseDown(BPoint);
-//};
-
-
-
 class ControlSlider : public BSlider {
-
-static	int32	track_entry(void*);
-		int32	track_mouse();
 public:
-		ControlSlider(BRect,const char*,const char*,BMessage*,int32,int32,thumb_style);
+						ControlSlider(const char* name, const char* label,
+							BMessage* message, int32 minValue, int32 maxValue,
+							thumb_style thumbType);
 
-void	MouseDown(BPoint);
+						ControlSlider(BRect frame, const char* name,
+							const char* label, BMessage* message, int32 rangeMin,
+							int32 rangeMax, thumb_style knob);
+
+	virtual	void		MouseDown(BPoint where);
+
+private:
+	static	int32		track_entry(void*);
+			int32		track_mouse();
+
 };
 
 
 // this class groups a NumberControl and ControlSlider - objects under the
 // same parent and takes care that whenever the others value is changed, the
-// other will be also updated
-// then this informs the target about the change
+// other will be also updated then this informs the target about the change
 class ControlSliderBox : public BBox {
-	BSlider 	*slider;
+	BSlider			*slider;
 	NumberControl 	*number_control;
 
-// this stores the model-message that is to be sent to the target
+	// this stores the model-message that is to be sent to the target
 	BMessage 		*msg;
 	bool			continuos_messages;
 
-	BMessenger		*target;		// If this is NULL, the target will be the window.
-	float 			max_value,min_value;
+	BMessenger		*target;	// If this is NULL, the target will be the window.
+	float			min_value;
+	float 			max_value;
 	// this posts the message to the target
-	void			sendMessage(int32 value,bool final=TRUE);
+	void			sendMessage(int32 value, bool final = true);
 
 	float			divider;
 
 	int32			CheckValue(int32);
 
 public:
-	// The message that is passed to this constructor must not be NULL. It must also contain
-	// an int32 named "value". Whatever the value is will be used as the initial value for controller.
-	ControlSliderBox(BRect frame,const char *name, const char *label, const char *text, BMessage *message,int32 rangeMin, int32 rangeMax, border_style border = B_PLAIN_BORDER,bool continuos=TRUE,thumb_style knob=B_TRIANGLE_THUMB);
-	~ControlSliderBox();
+	// The message that is passed to this constructor must not be NULL. It must
+	// also contain an int32 named "value". Whatever the value is will be used
+	// as the initial value for controller.
+					ControlSliderBox(const char* name, const char* label,
+						 const char* text, BMessage* message, int32 rangeMin,
+						 int32 rangeMax, border_style border = B_PLAIN_BORDER,
+						 bool continuos = true, thumb_style knob = B_TRIANGLE_THUMB);
 
-void	AllAttached();
-void	MessageReceived(BMessage *message);
+					ControlSliderBox(BRect frame, const char *name,
+						 const char *label, const char *text,
+						 BMessage *message, int32 rangeMin, int32 rangeMax,
+						 border_style border = B_PLAIN_BORDER,
+						 bool continuos=TRUE,thumb_style knob=B_TRIANGLE_THUMB);
 
-void	setValue(int32 value);
+					virtual		~ControlSliderBox();
 
-// The caller of this function retains the ownership of the message.
-void	SetMessage(BMessage*);
+	virtual	void	AllAttached();
+	virtual	void	MessageReceived(BMessage *message);
 
-void	SetTarget(BMessenger *t) { target = t; }
+	void	setValue(int32 value);
 
-// These functions return and set the point where the number-control and slider meet.
-// They can be used to arrange many controls to have equal look.
-float	Divider();
-void	SetDivider(float,bool resize_text_field=FALSE);
+	// The caller of this function retains the ownership of the message.
+	void	SetMessage(BMessage*);
 
+	void	SetTarget(BMessenger *t) { target = t; }
 
+	// These functions return and set the point where the number-control and
+	// slider meet. They can be used to arrange many controls to have equal look.
+	float	Divider();
+	void	SetDivider(float, bool resize_text_field = false);
 };
-
-
-
-
 
 
 #endif

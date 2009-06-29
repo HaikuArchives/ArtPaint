@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 
@@ -13,6 +15,8 @@
 #include "UtilityClasses.h"
 
 
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <String.h>
 
 
@@ -84,42 +88,49 @@ NumberControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuos)
 		TextView()->AllowChar('-');
 
 	TextView()->SetMaxBytes(maxBytes);
-	SetAlignment(B_ALIGN_RIGHT, B_ALIGN_LEFT);
+	SetAlignment(B_ALIGN_LEFT, B_ALIGN_RIGHT);
 }
 
 
+// #pragma mark -- ControlSlider
 
-
-
-
-
-
-
-#define KNOB_WIDTH 10.0
 
 // This is for communication between control-slider and it's parent.
 #define	CONTROL_SLIDER_FINISHED	'CslF'
 
 
-ControlSlider::ControlSlider(BRect frame,const char *name,const char *label,BMessage *msg,int32 rangeMin,int32 rangeMax,thumb_style knob)
+ControlSlider::ControlSlider(const char* name, const char* label,
+		BMessage* message, int32 minValue, int32 maxValue, thumb_style thumbType)
+	: BSlider(name, label, message, minValue, maxValue, B_HORIZONTAL, thumbType)
+{
+}
+
+
+ControlSlider::ControlSlider(BRect frame, const char *name, const char *label,
+		BMessage *msg, int32 rangeMin, int32 rangeMax, thumb_style knob)
 	: BSlider(frame,name,label,msg,rangeMin,rangeMax,knob)
 {
 }
 
-void ControlSlider::MouseDown(BPoint)
+
+void
+ControlSlider::MouseDown(BPoint where)
 {
-	thread_id track_thread = spawn_thread(track_entry,"track_thread",B_NORMAL_PRIORITY,(void*)this);
-	resume_thread(track_thread);
+	thread_id threadId = spawn_thread(track_entry, "track_thread",
+		B_NORMAL_PRIORITY,(void*)this);
+	resume_thread(threadId);
 }
 
 
-int32 ControlSlider::track_entry(void *p)
+int32
+ControlSlider::track_entry(void* p)
 {
 	return ((ControlSlider*)p)->track_mouse();
 }
 
 
-int32 ControlSlider::track_mouse()
+int32
+ControlSlider::track_mouse()
 {
 	uint32 buttons;
 	BPoint point;
@@ -175,20 +186,65 @@ int32 ControlSlider::track_mouse()
 #define HS_NUMBER_CONTROL_INVOKED	'NcIv'
 #define HS_CONTROL_SLIDER_INVOKED	'CslI'
 
-ControlSliderBox::ControlSliderBox(BRect frame,const char *name, const char *label, const char *text, BMessage *message,int32 rangeMin, int32 rangeMax, border_style border,bool continuos,thumb_style)
-		: BBox(frame,name,B_FOLLOW_LEFT|B_FOLLOW_TOP,B_WILL_DRAW|B_FRAME_EVENTS|B_NAVIGABLE_JUMP,border)
+
+ControlSliderBox::ControlSliderBox(const char* name, const char* label,
+		const char* text, BMessage* message, int32 rangeMin, int32 rangeMax,
+		border_style border, bool continuos, thumb_style knob)
+	: BBox(border, NULL)
+	, continuos_messages(continuos)
+	, target(NULL)
+	, min_value(rangeMin)
+	, max_value(rangeMax)
+{
+	AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
+		.Add(number_control = new NumberControl(label, text,
+				new BMessage(HS_NUMBER_CONTROL_INVOKED), 3, (rangeMin < 0)))
+		.Add(slider = new ControlSlider(name, NULL,
+				new BMessage(CONTROL_SLIDER_FINISHED), rangeMin, rangeMax,
+				B_BLOCK_THUMB))
+	);
+	slider->SetSnoozeAmount(50 * 1000);
+	slider->SetModificationMessage(new BMessage(HS_CONTROL_SLIDER_INVOKED));
+
+	if (message) {
+		msg = message;
+		if (msg->HasInt32("value") == false)
+			msg->AddInt32("value", 0);
+
+		if (msg->HasBool("final") == false)
+			msg->AddBool("final", true);
+	} else {
+		// We have to create a dummy-message.
+		msg = new BMessage();
+		msg->AddInt32("value", 0);
+		msg->AddBool("final", true);
+	}
+	SetExplicitMinSize(BSize(number_control->PreferredSize().Width() * 2.5,
+		MinSize().Height()));
+}
+
+
+ControlSliderBox::ControlSliderBox(BRect frame, const char* name,
+		const char* label, const char* text, BMessage* message, int32 rangeMin,
+		int32 rangeMax, border_style border, bool continuos, thumb_style)
+	: BBox(frame, name, B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW |
+		B_FRAME_EVENTS | B_NAVIGABLE_JUMP, border)
 {
 	target = NULL;
-	number_control = new NumberControl(BRect(2,2,2,2),name,label,text,new BMessage(HS_NUMBER_CONTROL_INVOKED),3,(rangeMin<0));
+	number_control = new NumberControl(BRect(2,2,2,2),name,label,text,
+		new BMessage(HS_NUMBER_CONTROL_INVOKED),3,(rangeMin<0));
 	number_control->ResizeToPreferred();
-	number_control->TextView()->ResizeTo(number_control->TextView()->StringWidth("0000"),number_control->TextView()->Bounds().Height());
-	number_control->ResizeTo(number_control->TextView()->Frame().right+2,number_control->Frame().Height());
+	number_control->TextView()->ResizeTo(number_control->TextView()->StringWidth("0000"),
+			number_control->TextView()->Bounds().Height());
+	number_control->ResizeTo(number_control->TextView()->Frame().right+2,
+		number_control->Frame().Height());
 	AddChild(number_control);
 	divider = Divider();
 
-	BRect slider_frame = BRect(number_control->Frame().right+2,number_control->Frame().top,frame.Width()-4,number_control->Frame().bottom);
-//	slider = new ControlSlider(BRect(number_control->Frame().right+5,number_control->Frame().top,frame.Width()-4,number_control->Frame().bottom),name,label,new BMessage(HS_CONTROL_SLIDER_INVOKED),rangeMin,rangeMax);
-	slider = new ControlSlider(slider_frame,name,NULL,new BMessage(CONTROL_SLIDER_FINISHED),rangeMin,rangeMax,B_BLOCK_THUMB);
+	BRect slider_frame = BRect(number_control->Frame().right+2,
+		number_control->Frame().top,frame.Width()-4,number_control->Frame().bottom);
+	slider = new ControlSlider(slider_frame,name,NULL,
+		new BMessage(CONTROL_SLIDER_FINISHED),rangeMin,rangeMax,B_BLOCK_THUMB);
 	slider->SetSnoozeAmount(50 * 1000);
 	slider->SetModificationMessage(new BMessage(HS_CONTROL_SLIDER_INVOKED));
 
@@ -200,42 +256,42 @@ ControlSliderBox::ControlSliderBox(BRect frame,const char *name, const char *lab
 	min_value = rangeMin;
 	max_value = rangeMax;
 
-	if (message != NULL) {
+	if (message) {
 		msg = message;
-		if (msg->HasInt32("value") == FALSE) {
-			msg->AddInt32("value",0);
-		}
-		if (msg->HasBool("final") == FALSE) {
-			msg->AddBool("final",TRUE);
-		}
-	}
-	else {
+		if (msg->HasInt32("value") == false)
+			msg->AddInt32("value", 0);
+
+		if (msg->HasBool("final") == false)
+			msg->AddBool("final", true);
+	} else {
 		// We have to create a dummy-message.
 		msg = new BMessage();
-		msg->AddInt32("value",0);
-		msg->AddBool("final",TRUE);
+		msg->AddInt32("value", 0);
+		msg->AddBool("final", true);
 	}
 }
+
 
 ControlSliderBox::~ControlSliderBox()
 {
-	if (target != NULL) {
+	if (target)
 		delete target;
-		target = NULL;
-	}
+	if (msg)
+		delete msg;
 }
 
-void ControlSliderBox::AllAttached()
+
+void
+ControlSliderBox::AllAttached()
 {
 	number_control->SetTarget(this);
 	slider->SetTarget(this);
 	setValue(msg->FindInt32("value"));
-
-//	SetDivider(divider);
 }
 
 
-void ControlSliderBox::MessageReceived(BMessage *message)
+void
+ControlSliderBox::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
 
@@ -246,8 +302,8 @@ void ControlSliderBox::MessageReceived(BMessage *message)
 		slider->SetValue(CheckValue(atoi(number_control->Text())));
 		sendMessage(atoi(number_control->Text()));
 		break;
-	// this comes from the slider and tells us that it's value has changed
-	// we should then set the new value for number_control and inform the window also
+	// this comes from the slider and tells us that it's value has changed we
+	// should then set the new value for number_control and inform the window
 	case HS_CONTROL_SLIDER_INVOKED:
 		char value[10];
 		sprintf(value, "%ld", slider->Value());
@@ -267,7 +323,8 @@ void ControlSliderBox::MessageReceived(BMessage *message)
 }
 
 
-void ControlSliderBox::setValue(int32 value)
+void
+ControlSliderBox::setValue(int32 value)
 {
 	// this sets the value for both of the views
 	value = CheckValue(value);
@@ -280,7 +337,8 @@ void ControlSliderBox::setValue(int32 value)
 }
 
 
-int32 ControlSliderBox::CheckValue(int32 value)
+int32
+ControlSliderBox::CheckValue(int32 value)
 {
 	if (value>max_value)
 		value = (int32)max_value;
@@ -292,10 +350,11 @@ int32 ControlSliderBox::CheckValue(int32 value)
 
 
 // this posts a message that contains the new value to the window
-void ControlSliderBox::sendMessage(int32 value,bool final)
+void
+ControlSliderBox::sendMessage(int32 value, bool final)
 {
-	msg->ReplaceInt32("value",value);
-	msg->ReplaceBool("final",final);
+	msg->ReplaceInt32("value", value);
+	msg->ReplaceBool("final", final);
 
 	if (target == NULL)
 		Window()->PostMessage(msg,Window());
@@ -303,23 +362,28 @@ void ControlSliderBox::sendMessage(int32 value,bool final)
 		target->SendMessage(msg);
 }
 
-void ControlSliderBox::SetMessage(BMessage *new_message)
+
+void
+ControlSliderBox::SetMessage(BMessage *new_message)
 {
+	delete msg;
 	msg = new BMessage(*new_message);
 }
 
 
-
-float ControlSliderBox::Divider()
+float
+ControlSliderBox::Divider()
 {
 	return number_control->Frame().right;
 }
 
 
-void ControlSliderBox::SetDivider(float position,bool resize_text_field)
+void
+ControlSliderBox::SetDivider(float position,bool resize_text_field)
 {
 	float delta = position - Divider();
-	number_control->ResizeTo(position-number_control->Frame().left,number_control->Bounds().Height());
+	number_control->ResizeTo(position-number_control->Frame().left,
+		number_control->Bounds().Height());
 	if (resize_text_field)
 		number_control->TextView()->ResizeBy(delta,0);
 	else
@@ -330,9 +394,3 @@ void ControlSliderBox::SetDivider(float position,bool resize_text_field)
 
 	divider = position;
 }
-
-
-
-
-
-
