@@ -662,16 +662,6 @@ GlobalSetupWindow::~GlobalSetupWindow()
 
 
 void
-GlobalSetupWindow::Show()
-{
-	BSize size = GetLayout()->PreferredSize();
-	ResizeTo(size.Width(), size.Height());
-
-	BWindow::Show();
-}
-
-
-void
 GlobalSetupWindow::MessageReceived(BMessage* message)
 {
 	switch (message->what) {

@@ -23,7 +23,6 @@ public:
 	static	void					ShowGlobalSetupWindow();
 	static	void					CloseGlobalSetupWindow();
 
-	virtual void					Show();
 	virtual	void					MessageReceived(BMessage* message);
 
 private:
