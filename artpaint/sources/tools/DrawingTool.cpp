@@ -1,28 +1,36 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <CheckBox.h>
-#include <ClassInfo.h>
-#include <File.h>
-#include <Handler.h>
-#include <string.h>
-#include <unistd.h>
-#include <StringView.h>
 
 #include "DrawingTool.h"
+
 #include "Cursors.h"
 #include "StringServer.h"
 
-DrawingTool::DrawingTool(const char *tool_name, int32 tool_type)
+
+#include <CheckBox.h>
+#include <ClassInfo.h>
+#include <File.h>
+#include <GroupLayout.h>
+#include <Handler.h>
+#include <StringView.h>
+
+
+#include <string.h>
+
+
+DrawingTool::DrawingTool(const char* toolName, int32 toolType)
 {
 	// Here copy the arguments to member variables
-	type = tool_type;
-	strcpy(name,tool_name);
+	type = toolType;
+	strcpy(name,toolName);
 
 	// In derived classes set whatever options tool happens to use.
 	// Base-class has none.
@@ -31,47 +39,52 @@ DrawingTool::DrawingTool(const char *tool_name, int32 tool_type)
 	last_updated_rect = BRect(0,0,-1,-1);
 }
 
+
 DrawingTool::~DrawingTool()
 {
 }
 
-ToolScript* DrawingTool::UseTool(ImageView*,uint32,BPoint,BPoint)
-{
-	// this function will do the drawing in the derived classes
-	// ImageView must provide necessary data with a function that can
-	// be called from here
 
-	// this base-class version does nothing
+ToolScript*
+DrawingTool::UseTool(ImageView*, uint32, BPoint, BPoint)
+{
+	// This function will do the drawing in the derived classes
+	// ImageView must provide necessary data with a function that can
+	// be called from here. This base-class version does nothing.
 	return NULL;
 }
 
-int32 DrawingTool::UseToolWithScript(ToolScript*,BBitmap*)
+
+int32
+DrawingTool::UseToolWithScript(ToolScript*, BBitmap*)
 {
-	return B_NO_ERROR;
-}
-
-BView* DrawingTool::makeConfigView()
-{
-	BView *config_view = new DrawingToolConfigView(BRect(0,0,0,0),this);
-
-	BStringView *string_view = new BStringView(BRect(0,0,0,0),"string_view",StringServer::ReturnString(NO_OPTIONS_STRING));
-	string_view->ResizeBy(string_view->StringWidth(StringServer::ReturnString(NO_OPTIONS_STRING)),0);
-	font_height fHeight;
-	string_view->GetFontHeight(&fHeight);
-	string_view->ResizeBy(0,fHeight.ascent+fHeight.descent);
-	config_view->AddChild(string_view);
-	config_view->ResizeTo(string_view->Bounds().Width(),string_view->Bounds().Height());
-
-	return config_view;
+	return B_OK;
 }
 
 
-void DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
+BView*
+DrawingTool::makeConfigView()
+{
+	BView* configView = new DrawingToolConfigView(BRect(0, 0, 0, 0), this);
+	configView->SetLayout(new BGroupLayout(B_VERTICAL));
+	configView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	BStringView* stringView =
+		new BStringView("", StringServer::ReturnString(NO_OPTIONS_STRING));
+	configView->AddChild(stringView);
+	stringView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	return configView;
+}
+
+
+void
+DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 {
 	// If option is valid for this tool, set it.
 	// If handler is NULL, the boolean options should use value as the new value.
 	// Otherwise they should use value that can be gotten from the source.
-	BCheckBox *boolean_box;
+	;
 	BControl *control;
 	if (option & options) {
 		switch (option) {
@@ -81,15 +94,13 @@ void DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 			case PRESSURE_OPTION:
 				settings.pressure = value;
 				break;
-			case MODE_OPTION:
-				boolean_box = cast_as(source,BCheckBox);
-				if (boolean_box != NULL) {
-					settings.mode = boolean_box->Value();
-				}
-				else {
-					settings.mode = value;
-				}
-				break;
+
+			case MODE_OPTION: {
+				settings.mode = value;
+				if (BCheckBox* booleanBox = dynamic_cast<BCheckBox*>(source))
+					settings.mode = booleanBox->Value();
+			} break;
+
 			case SHAPE_OPTION:
 				settings.shape = value;
 				break;
@@ -162,7 +173,9 @@ void DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 	}
 }
 
-int32 DrawingTool::GetCurrentValue(int32 option)
+
+int32
+DrawingTool::GetCurrentValue(int32 option)
 {
 	if (option & options) {
 		switch (option) {
@@ -196,66 +209,69 @@ int32 DrawingTool::GetCurrentValue(int32 option)
 				return 0;
 		}
 	}
-	else
-		return 0;
+	return 0;
 }
 
-status_t DrawingTool::readSettings(BFile &file,bool is_little_endian)
+
+status_t
+DrawingTool::readSettings(BFile &file, bool isLittleEndian)
 {
 	int32 length;
-	if (file.Read(&length,sizeof(int32)) != sizeof(int32)) {
+	if (file.Read(&length,sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-	}
-	if (is_little_endian)
+
+	if (isLittleEndian)
 		length = B_LENDIAN_TO_HOST_INT32(length);
 	else
 		length = B_BENDIAN_TO_HOST_INT32(length);
 
 	int32 version;
-	if (file.Read(&version,sizeof(int32)) != sizeof(int32)) {
+	if (file.Read(&version,sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-	}
-	if (is_little_endian)
+
+	if (isLittleEndian)
 		version = B_LENDIAN_TO_HOST_INT32(version);
 	else
 		version = B_BENDIAN_TO_HOST_INT32(version);
 
 	if (version != TOOL_SETTINGS_STRUCT_VERSION) {
-		file.Seek(length-sizeof(int32),SEEK_CUR);
+		file.Seek(length - sizeof(int32), SEEK_CUR);
 		return B_ERROR;
-	}
-	else {
+	} else {
 		// This should also be converted to right endianness
-		if (file.Read(&settings,sizeof(struct tool_settings)) != sizeof(struct tool_settings))
+		int32 settingsSize = sizeof(struct tool_settings);
+		if (file.Read(&settings, settingsSize) != settingsSize)
 			return B_ERROR;
 	}
 
 	return B_OK;
 }
 
-status_t DrawingTool::writeSettings(BFile &file)
-{
-	if (file.Write(&type,sizeof(int32)) != sizeof(int32)) {
-		return B_ERROR;
-	}
-	int32 settings_size = sizeof(struct tool_settings) + sizeof(int32);
-	if (file.Write(&settings_size,sizeof(int32)) != sizeof(int32)) {
-		return B_ERROR;
-	}
-	int32 settings_version = TOOL_SETTINGS_STRUCT_VERSION;
-	if (file.Write(&settings_version,sizeof(int32)) != sizeof(int32)) {
-		return B_ERROR;
-	}
 
-	if (file.Write(&settings,sizeof(struct tool_settings)) != sizeof(struct tool_settings))
+status_t
+DrawingTool::writeSettings(BFile &file)
+{
+	if (file.Write(&type,sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	int32 settingsSize = sizeof(struct tool_settings) + sizeof(int32);
+	if (file.Write(&settingsSize,sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	int32 settingsVersion = TOOL_SETTINGS_STRUCT_VERSION;
+	if (file.Write(&settingsVersion,sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	settingsSize = sizeof(struct tool_settings);
+	if (file.Write(&settings, settingsSize) != settingsSize)
 		return B_ERROR;
 
 	return B_OK;
 }
 
 
-
-BRect DrawingTool::LastUpdatedRect()
+BRect
+DrawingTool::LastUpdatedRect()
 {
 	BRect rect = last_updated_rect;
 	last_updated_rect = BRect(0,0,-1,-1);
@@ -263,58 +279,63 @@ BRect DrawingTool::LastUpdatedRect()
 }
 
 
-
-
-const void* DrawingTool::ReturnToolCursor()
+const void*
+DrawingTool::ReturnToolCursor()
 {
 	return HS_CROSS_CURSOR;
 }
 
 
-const char* DrawingTool::ReturnHelpString(bool is_in_use)
+const char*
+DrawingTool::ReturnHelpString(bool isInUse)
 {
-	if (!is_in_use)
-		return StringServer::ReturnString(USE_THE_TOOL_STRING);
-	else
-		return StringServer::ReturnString(USING_THE_TOOL_STRING);
+	return StringServer::ReturnString(isInUse ? USING_THE_TOOL_STRING
+		: USE_THE_TOOL_STRING);
 }
 
 
+// #pragma mark -- DrawingToolConfigView
 
-DrawingToolConfigView::DrawingToolConfigView(BRect rect,DrawingTool *t)
-	: BView(rect,"drawing_tool_config_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
+
+DrawingToolConfigView::DrawingToolConfigView(BRect rect, DrawingTool* newTool)
+	: BView(rect, "drawing tool config view", B_FOLLOW_ALL_SIDES, B_WILL_DRAW)
+	, tool(newTool)
 {
-	tool = t;
 }
 
 
 DrawingToolConfigView::~DrawingToolConfigView()
 {
-
-}
-
-void DrawingToolConfigView::AttachedToWindow()
-{
-	if (Parent() != NULL)
-		SetViewColor(Parent()->ViewColor());
 }
 
 
-
-void DrawingToolConfigView::MessageReceived(BMessage *message)
+void
+DrawingToolConfigView::AttachedToWindow()
 {
-	BHandler *handler;
-	message->FindPointer("source",(void**)&handler);
+	if (Parent())
+		SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+}
 
+
+void
+DrawingToolConfigView::MessageReceived(BMessage* message)
+{
 	switch (message->what) {
-		// this comes from one of the controls in this window, it tells us that the value
-		// for that slider has changed, it contains int32 "option" and int32 "value" data members
-		case OPTION_CHANGED:
-			tool->SetOption(message->FindInt32("option"),message->FindInt32("value"),handler);
-			break;
+		case OPTION_CHANGED: {
+			// This comes from one of the controls in this window, it tells us
+			// that the value for that slider has changed, it contains
+			// int32 "option" and int32 "value" data members
+			BHandler* handler;
+			if (message->FindPointer("source", (void**)&handler) == B_OK) {
+				if (tool) {
+					tool->SetOption(message->FindInt32("option"),
+						message->FindInt32("value"), handler);
+				}
+			}
+		}	break;
 
-		default:
+		default: {
 			BView::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
