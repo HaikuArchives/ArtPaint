@@ -373,10 +373,11 @@ status_t BrushTool::writeSettings(BFile &file)
 }
 
 
+// #pragma mark -- BrushToolConfigView
 
 
-BrushToolConfigView::BrushToolConfigView(BRect rect,DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+BrushToolConfigView::BrushToolConfigView(BRect rect, DrawingTool* t)
+	: DrawingToolConfigView(rect, t)
 {
 	BRect editor_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE);
 //	BrushEditor *editor = new BrushEditor(editor_frame,((BrushTool*)tool)->GetBrush());
