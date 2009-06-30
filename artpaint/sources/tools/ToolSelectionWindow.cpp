@@ -8,9 +8,11 @@
  */
 #include "ToolSelectionWindow.h"
 
+#include "Controls.h"
 #include "DrawingTools.h"
 #include "FloaterManager.h"
 #include "MatrixView.h"
+#include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "PaintApplication.h"
 #include "Settings.h"
@@ -20,6 +22,7 @@
 #include "ToolImages.h"
 #include "ToolManager.h"
 #include "ToolSetupWindow.h"
+#include "UtilityClasses.h"
 
 
 ToolSelectionWindow* ToolSelectionWindow::fSelectionWindow = NULL;

@@ -14,11 +14,17 @@
 #include <stdlib.h>
 #include <Window.h>
 
+#include "BitmapDrawer.h"
 #include "Cursors.h"
 #include "ColorSelectorTool.h"
+#include "Controls.h"
 #include "StatusView.h"
 #include "ColorPalette.h"
 #include "StringServer.h"
+#include "UtilityClasses.h"
+#include "PaintApplication.h"
+#include "Image.h"
+#include "MessageConstants.h"
 
 ColorSelectorTool::ColorSelectorTool()
 	: DrawingTool(StringServer::ReturnString(COLOR_SELECTOR_TOOL_NAME_STRING),COLOR_SELECTOR_TOOL)

@@ -15,13 +15,20 @@
 
 
 #include "AirBrushTool.h"
+#include "BitmapDrawer.h"
 #include "PixelOperations.h"
 #include "Selection.h"
 #include "StringServer.h"
 #include "Cursors.h"
 #include "CoordinateReader.h"
 #include "RandomNumberGenerator.h"
+#include "Image.h"
 #include "ImageUpdater.h"
+#include "PaintApplication.h"
+#include "Controls.h"
+#include "UtilityClasses.h"
+
+#include <Window.h>
 
 AirBrushTool::AirBrushTool()
 	: DrawingTool(StringServer::ReturnString(AIR_BRUSH_TOOL_NAME_STRING),AIR_BRUSH_TOOL)

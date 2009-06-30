@@ -14,9 +14,11 @@
 #include "DrawingTools.h"
 #include "FloaterManager.h"
 #include "MessageFilters.h"
+#include "PaintApplication.h"
 #include "Settings.h"
 #include "StringServer.h"
 #include "ToolManager.h"
+#include "UtilityClasses.h"
 
 
 #include <GroupLayout.h>

@@ -14,6 +14,11 @@
 #include "DrawingTool.h"
 #include "ToolEventAdapter.h"
 
+
+class BitmapDrawer;
+class PointStack;
+class ControlSliderBox;
+
 class SelectorTool : public DrawingTool, public ToolEventAdapter {
 			// These functions handle the magic wand thing.
 			// They have been copied from FillTool and altered

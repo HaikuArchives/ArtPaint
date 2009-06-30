@@ -9,8 +9,13 @@
 #include <Bitmap.h>
 
 #include "Cursors.h"
+#include "Controls.h"
 #include "TransparencyTool.h"
 #include "StringServer.h"
+#include "PaintApplication.h"
+#include "Image.h"
+
+#include <Window.h>
 
 TransparencyTool::TransparencyTool()
 	: DrawingTool(StringServer::ReturnString(TRANSPARENCY_TOOL_NAME_STRING),TRANSPARENCY_TOOL)

@@ -16,9 +16,17 @@
 #include "BrushTool.h"
 #include "CoordinateReader.h"
 #include "Cursors.h"
+#include "Controls.h"
+#include "Image.h"
 #include "ImageUpdater.h"
+#include "PaintApplication.h"
 #include "PixelOperations.h"
 #include "StringServer.h"
+#include "UtilityClasses.h"
+
+
+#include <Window.h>
+
 
 BrushTool::BrushTool()
 	:	DrawingTool(StringServer::ReturnString(BRUSH_TOOL_NAME_STRING),BRUSH_TOOL)

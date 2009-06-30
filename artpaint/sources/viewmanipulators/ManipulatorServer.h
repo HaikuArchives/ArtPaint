@@ -12,6 +12,9 @@
 #include "Manipulator.h"
 
 
+class BNode;
+
+
 class ManipulatorServer {
 
 static	int32		number_of_addons;

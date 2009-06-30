@@ -11,15 +11,21 @@
 
 #include "StraightLineTool.h"
 
+#include "BitmapDrawer.h"
+#include "Controls.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
+#include "Image.h"
+#include "PaintApplication.h"
 #include "Selection.h"
 #include "StringServer.h"
+#include "UtilityClasses.h"
 
 
 #include <CheckBox.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <Window.h>
 
 
 #include <math.h>

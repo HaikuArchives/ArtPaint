@@ -17,6 +17,10 @@
 #include "CoordinateReader.h"
 #include "ImageUpdater.h"
 #include "RandomNumberGenerator.h"
+#include "PaintApplication.h"
+#include "UtilityClasses.h"
+#include "Image.h"
+#include "Controls.h"
 
 HairyBrushTool::HairyBrushTool()
 		: DrawingTool(StringServer::ReturnString(HAIRY_BRUSH_TOOL_NAME_STRING),HAIRY_BRUSH_TOOL)

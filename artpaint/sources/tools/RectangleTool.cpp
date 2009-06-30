@@ -17,6 +17,13 @@
 #include "Selection.h"
 #include "StringServer.h"
 #include "Cursors.h"
+#include "PaintApplication.h"
+#include "BitmapDrawer.h"
+#include "UtilityClasses.h"
+#include "Controls.h"
+#include "Image.h"
+
+#include <Window.h>
 
 #define	PI	M_PI
 

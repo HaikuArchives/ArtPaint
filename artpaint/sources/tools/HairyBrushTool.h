@@ -14,6 +14,10 @@
 #include "BitmapDrawer.h"
 
 
+class ControlSlider;
+class ControlSliderBox;
+
+
 #define COLOR_VARIANCE_CHANGED	'Cvar'
 #define	COLOR_AMOUNT_CHANGED	'Camt'
 

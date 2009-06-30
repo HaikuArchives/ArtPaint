@@ -15,6 +15,8 @@
 #include "DrawingTool.h"
 
 class Selection;
+class BitmapDrawer;
+class PointStack;
 
 class FillTool : public DrawingTool {
 BBitmap		*filled_bitmap;
@@ -61,6 +63,7 @@ const	char*	ReturnHelpString(bool);
 
 class ColorView;
 class GradientView;
+class ControlSliderBox;
 
 #define	GRADIENT_ADJUSTED	'gRad'
 

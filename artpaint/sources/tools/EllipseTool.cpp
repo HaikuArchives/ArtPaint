@@ -11,9 +11,13 @@
 
 #include "EllipseTool.h"
 
+#include "BitmapDrawer.h"
 #include "Cursors.h"
+#include "Image.h"
+#include "PaintApplication.h"
 #include "Selection.h"
 #include "StringServer.h"
+#include "UtilityClasses.h"
 
 
 #include <Box.h>
@@ -21,6 +25,7 @@
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <Window.h>
 
 
 EllipseTool::EllipseTool()

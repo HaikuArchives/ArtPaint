@@ -8,13 +8,19 @@
  */
 #include "SimpleTool.h"
 
+#include "BitmapDrawer.h"
+#include "Controls.h"
 #include "Cursors.h"
 #include "CoordinateQueue.h"
+#include "Image.h"
+#include "PaintApplication.h"
 #include "StringServer.h"
+#include "UtilityClasses.h"
 
 
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <Window.h>
 
 
 // this class is for simple test tool

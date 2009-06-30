@@ -1,23 +1,22 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef DRAWING_TOOL_H
 #define	DRAWING_TOOL_H
 
-#include "PaintApplication.h"
 #include "ImageView.h"
 #include "Tools.h"
-#include "MessageConstants.h"
-#include "UtilityClasses.h"
-#include "Controls.h"
-#include "BitmapDrawer.h"
 #include "ToolScript.h"
-#include "Image.h"
+
+
+class BFile;
 
 
 #define	HS_MAX_TOOL_NAME_LENGTH		50

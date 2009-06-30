@@ -10,8 +10,11 @@
 #define COLOR_SELECTOR_TOOL_H
 
 #include <StringView.h>
+#include <Window.h>
 
 #include "DrawingTool.h"
+
+class ControlSliderBox;
 
 class ColorSelectorTool : public DrawingTool {
 

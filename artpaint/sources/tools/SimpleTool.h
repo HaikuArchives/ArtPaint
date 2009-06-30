@@ -14,6 +14,7 @@
 
 class BBitmap;
 class BView;
+class ControlSliderBox;
 class CoordinateQueue;
 class ImageView;
 class ToolScript;

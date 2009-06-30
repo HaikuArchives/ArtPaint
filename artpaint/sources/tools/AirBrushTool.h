@@ -12,6 +12,9 @@
 #include "DrawingTool.h"
 
 
+class ControlSliderBox;
+
+
 class AirBrushTool : public DrawingTool {
 		int32	*sqrt_table;
 

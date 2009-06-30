@@ -11,6 +11,7 @@
 
 #include "DrawingTool.h"
 
+class ControlSliderBox;
 
 class TransparencyTool : public DrawingTool {
 

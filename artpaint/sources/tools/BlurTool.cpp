@@ -11,7 +11,11 @@
 
 #include "BlurTool.h"
 
+#include "BitmapDrawer.h"
+#include "Controls.h"
 #include "Cursors.h"
+#include "Image.h"
+#include "PaintApplication.h"
 #include "Selection.h"
 #include "StringServer.h"
 
@@ -19,6 +23,7 @@
 #include <CheckBox.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <Window.h>
 
 
 BlurTool::BlurTool()

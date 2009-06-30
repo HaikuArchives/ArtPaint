@@ -18,6 +18,14 @@
 #include "StringServer.h"
 #include "IntelligentPathFinder.h"
 #include "Patterns.h"
+#include "PaintApplication.h"
+#include "BitmapDrawer.h"
+#include "Image.h"
+#include "UtilityClasses.h"
+#include "Controls.h"
+
+#include <Window.h>
+
 
 SelectorTool::SelectorTool()
 		:	DrawingTool(StringServer::ReturnString(SELECTOR_TOOL_NAME_STRING),SELECTOR_TOOL),

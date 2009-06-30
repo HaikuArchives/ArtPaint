@@ -13,7 +13,7 @@
 #include "CoordinateQueue.h"
 #include "BitmapDrawer.h"
 
-
+class ControlSliderBox;
 
 // This class is defines the first actual tool.
 class EraserTool : public LineTool {

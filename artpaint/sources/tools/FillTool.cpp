@@ -17,6 +17,11 @@
 #include "ColorPalette.h"
 #include "StringServer.h"
 #include "Cursors.h"
+#include "PaintApplication.h"
+#include "UtilityClasses.h"
+#include "BitmapDrawer.h"
+#include "Image.h"
+#include "Controls.h"
 
 FillTool::FillTool()
 	: DrawingTool(StringServer::ReturnString(FILL_TOOL_NAME_STRING),FILL_TOOL)

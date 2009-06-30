@@ -9,8 +9,13 @@
 #include <RadioButton.h>
 
 #include "Cursors.h"
+#include "Controls.h"
 #include "EraserTool.h"
 #include "StringServer.h"
+#include "PaintApplication.h"
+#include "Image.h"
+
+#include <Window.h>
 
 // this class is for simple test tool
 EraserTool::EraserTool()
