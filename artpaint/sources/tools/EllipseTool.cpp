@@ -1,24 +1,31 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
+
+#include "EllipseTool.h"
+
+#include "Cursors.h"
+#include "Selection.h"
+#include "StringServer.h"
+
+
 #include <Box.h>
 #include <CheckBox.h>
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
 
 
-#include "EllipseTool.h"
-#include "Selection.h"
-#include "StringServer.h"
-#include "Cursors.h"
-
-
 EllipseTool::EllipseTool()
-	: DrawingTool(StringServer::ReturnString(ELLIPSE_TOOL_NAME_STRING),ELLIPSE_TOOL)
+	: DrawingTool(StringServer::ReturnString(ELLIPSE_TOOL_NAME_STRING),
+		ELLIPSE_TOOL)
 {
 	options = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION;
 	number_of_options = 3;
@@ -31,21 +38,22 @@ EllipseTool::EllipseTool()
 
 EllipseTool::~EllipseTool()
 {
-
 }
 
 
-ToolScript* EllipseTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint)
+ToolScript*
+EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == TRUE)
+	while (last_updated_rect.IsValid() == true)
 		snooze(50 * 1000);
 
 	BWindow *window = view->Window();
 	drawing_mode old_mode;
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
+	ToolScript* the_script = new ToolScript(type, settings,
+		((PaintApplication*)be_app)->Color(true));
 	Selection *selection = view->GetSelection();
 
 	if (window != NULL) {
@@ -55,7 +63,7 @@ ToolScript* EllipseTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPo
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
-		rgb_color c=((PaintApplication*)be_app)->Color(TRUE);
+		rgb_color c=((PaintApplication*)be_app)->Color(true);
 		original_point = point;
 		bitmap_rect = BRect(point,point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
@@ -108,8 +116,9 @@ ToolScript* EllipseTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPo
 		}
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 		bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
-		bool use_anti_aliasing = FALSE;
-		drawer->DrawEllipse(bitmap_rect,RGBColorToBGRA(c),use_fill,use_anti_aliasing,selection);
+		bool use_anti_aliasing = false;
+		drawer->DrawEllipse(bitmap_rect,RGBColorToBGRA(c), use_fill,
+			use_anti_aliasing, selection);
 		delete drawer;
 
 		the_script->AddPoint(bitmap_rect.LeftTop());
@@ -130,89 +139,91 @@ ToolScript* EllipseTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPo
 }
 
 
-int32 EllipseTool::UseToolWithScript(ToolScript*,BBitmap*)
+int32
+EllipseTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
 	return B_NO_ERROR;
 }
 
-BView* EllipseTool::makeConfigView()
-{
-	EllipseToolConfigView *target_view = new EllipseToolConfigView(BRect(0,0,150,0),this);
 
-	return target_view;
+BView*
+EllipseTool::makeConfigView()
+{
+	return new EllipseToolConfigView(BRect(0, 0, 150, 0), this);
 }
 
 
-const char* EllipseTool::ReturnHelpString(bool is_in_use)
-{
-	if (!is_in_use)
-		return StringServer::ReturnString(ELLIPSE_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(ELLIPSE_TOOL_IN_USE_STRING);
-}
-
-const void* EllipseTool::ReturnToolCursor()
+const void*
+EllipseTool::ReturnToolCursor()
 {
 	return HS_ELLIPSE_CURSOR;
 }
 
 
-EllipseToolConfigView::EllipseToolConfigView(BRect rect,DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+const char*
+EllipseTool::ReturnHelpString(bool isInUse)
 {
-	BRect controller_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE);
-
-	BBox *container = new BBox(controller_frame,"enable ellipse fill-box");
-	AddChild(container);
-
-	BMessage *control_message;
-	// Add a check-box for enabling the fill.
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",FILL_ENABLED_OPTION);
-	control_message->AddInt32("value",0x00000000);
-	fill_checkbox = new BCheckBox(BRect(EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE),"enable fill box",StringServer::ReturnString(FILL_ELLIPSE_STRING),control_message);
-	container->AddChild(fill_checkbox);
-	fill_checkbox->ResizeToPreferred();
-	if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF) {
-		fill_checkbox->SetValue(B_CONTROL_ON);
-	}
-
-	container->ResizeBy(0,fill_checkbox->Bounds().Height()+2*EXTRA_EDGE);
-
-	controller_frame.OffsetBy(0,container->Bounds().Height()+EXTRA_EDGE);
-	container = new BBox(controller_frame,"ellipse mode select buttons");
-	AddChild(container);
-
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",SHAPE_OPTION);
-	control_message->AddInt32("value",HS_CORNER_TO_CORNER);
-
-	radio_button_1 = new BRadioButton(BRect(EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE),"a radio button",StringServer::ReturnString(CORNER_TO_CORNER_STRING),control_message);
-	radio_button_1->ResizeToPreferred();
-	container->AddChild(radio_button_1);
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
-		radio_button_1->SetValue(B_CONTROL_ON);
-
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",SHAPE_OPTION);
-	control_message->AddInt32("value",HS_CENTER_TO_CORNER);
-	radio_button_2 = new BRadioButton(BRect(EXTRA_EDGE,radio_button_1->Frame().bottom,EXTRA_EDGE,radio_button_1->Frame().bottom)," a radio button",StringServer::ReturnString(CENTER_TO_CORNER_STRING),control_message);
-	radio_button_2->ResizeToPreferred();
-	container->AddChild(radio_button_2);
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
-		radio_button_2->SetValue(B_CONTROL_ON);
-	container->ResizeBy(0,radio_button_2->Frame().bottom+EXTRA_EDGE);
-
-	// Finally resize the target-view to proper size.
-	ResizeTo(container->Bounds().Width()+2*EXTRA_EDGE,container->Frame().bottom + EXTRA_EDGE);
+	string_id id = (isInUse ? ELLIPSE_TOOL_IN_USE_STRING
+		: ELLIPSE_TOOL_READY_STRING);
+	return StringServer::ReturnString(id);
 }
 
 
-void EllipseToolConfigView::AttachedToWindow()
+// #pragma mark -- EllipseToolConfigView
+
+
+EllipseToolConfigView::EllipseToolConfigView(BRect rect, DrawingTool* t)
+	: DrawingToolConfigView(rect, t)
+{
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option",FILL_ENABLED_OPTION);
+	message->AddInt32("value", 0x00000000);
+	fFillEllipse = new BCheckBox(StringServer::ReturnString(FILL_ELLIPSE_STRING),
+		message);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SHAPE_OPTION);
+	message->AddInt32("value", HS_CORNER_TO_CORNER);
+	fCorner2Corner =
+		new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
+			message);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SHAPE_OPTION);
+	message->AddInt32("value", HS_CENTER_TO_CORNER);
+	fCenter2Corner =
+		new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
+			message);
+
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
+				.Add(fFillEllipse)
+				.SetInsets(5.0, 5.0, 0.0, 5.0)))
+		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 2.5)
+				.Add(fCorner2Corner)
+				.Add(fCenter2Corner)
+				.SetInsets(5.0, 5.0, 0.0, 5.0)))
+	);
+
+	if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
+		fFillEllipse->SetValue(B_CONTROL_ON);
+
+	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
+		fCorner2Corner->SetValue(B_CONTROL_ON);
+
+	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
+		fCenter2Corner->SetValue(B_CONTROL_ON);
+}
+
+
+void
+EllipseToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fill_checkbox->SetTarget(BMessenger(this));
-	radio_button_1->SetTarget(BMessenger(this));
-	radio_button_2->SetTarget(BMessenger(this));
+	fFillEllipse->SetTarget(BMessenger(this));
+	fCorner2Corner->SetTarget(BMessenger(this));
+	fCenter2Corner->SetTarget(BMessenger(this));
 }

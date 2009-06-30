@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef ELLIPSE_TOOL_H
@@ -11,31 +13,36 @@
 
 #include "DrawingTool.h"
 
+
+class BCheckBox;
+class BRadioButton;
+
+
 class EllipseTool : public DrawingTool {
-
 public:
-		EllipseTool();
-virtual	~EllipseTool();
+							EllipseTool();
+	virtual					~EllipseTool();
 
-ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
-int32		UseToolWithScript(ToolScript*,BBitmap*);
+			int32			UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
 
-BView*	makeConfigView();
-const	char*	ReturnHelpString(bool);
-const	void*	ReturnToolCursor();
+
+			BView*			makeConfigView();
+			const void*		ReturnToolCursor();
+			const char*		ReturnHelpString(bool isInUse);
 };
-
 
 
 class EllipseToolConfigView : public DrawingToolConfigView {
-		BCheckBox			*fill_checkbox;
-		BRadioButton		*radio_button_1;
-		BRadioButton		*radio_button_2;
-
-
 public:
-		EllipseToolConfigView(BRect rect,DrawingTool *t);
+							EllipseToolConfigView(BRect rect, DrawingTool* t);
 
-void	AttachedToWindow();
+	virtual	void			AttachedToWindow();
+
+private:
+			BCheckBox*		fFillEllipse;
+			BRadioButton*	fCorner2Corner;
+			BRadioButton*	fCenter2Corner;
 };
+
 #endif
