@@ -29,10 +29,10 @@ class VisualColorControl : public BControl {
 	NumberControl	*control3;
 	NumberControl	*control4;
 
-	char			*label1;
-	char			*label2;
-	char			*label3;
-	char			*label4;
+	const char			*label1;
+	const char			*label2;
+	const char			*label3;
+	const char			*label4;
 
 
 	int32			previous_value_at_1;
@@ -78,7 +78,8 @@ virtual		float	min_value_at_3() { return 0; }
 virtual		float	min_value_at_4() { return 0; }
 
 public:
-		VisualColorControl(BPoint position, rgb_color c,char*,char*,char*,char*);
+		VisualColorControl(BPoint position, rgb_color c, const char*,
+			const char*, const char*, const char*);
 virtual	~VisualColorControl();
 
 		void		AttachedToWindow();

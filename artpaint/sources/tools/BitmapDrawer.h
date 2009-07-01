@@ -69,10 +69,10 @@ inline uint32 BitmapDrawer::MixColors(uint32 c1, uint32 c2, float mix)
 	// Mixes two colors. c1 will get the weight mix and c2 1.0-mix.
 	float inv_mix = 1.0-mix;
 
-	return 	((uint32)(((c1 >> 24) & 0xFF) * mix)<<24) + ((uint32)(((c2 >> 24) & 0xFF) * inv_mix)<<24) |
-			((uint32)(((c1 >> 16) & 0xFF) * mix)<<16) + ((uint32)(((c2 >> 16) & 0xFF) * inv_mix)<<16) |
-			((uint32)(((c1 >> 8) & 0xFF) * mix)<<8) + ((uint32)(((c2 >> 8) & 0xFF) * inv_mix)<<8) |
-			((uint32)(((c1) & 0xFF) * mix)) + ((uint32)(((c2) & 0xFF) * inv_mix));
+	return 	(((uint32)(((c1 >> 24) & 0xFF) * mix)<<24) + ((uint32)(((c2 >> 24) & 0xFF) * inv_mix)<<24)) |
+			(((uint32)(((c1 >> 16) & 0xFF) * mix)<<16) + ((uint32)(((c2 >> 16) & 0xFF) * inv_mix)<<16)) |
+			(((uint32)(((c1 >> 8) & 0xFF) * mix)<<8) + ((uint32)(((c2 >> 8) & 0xFF) * inv_mix)<<8)) |
+			(((uint32)(((c1) & 0xFF) * mix)) + ((uint32)(((c2) & 0xFF) * inv_mix)));
 
 
 }

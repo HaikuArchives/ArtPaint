@@ -193,10 +193,10 @@ inline uint32 mix_2_pixels(uint32 p1,uint32 p2,float c)
 {
 	register float inv_c = 1.0-c;
 
-	return 	((uint32)(((p1 >> 24) & 0xFF) * c)<<24) + ((uint32)(((p2 >> 24) & 0xFF) * inv_c)<<24) |
-			((uint32)(((p1 >> 16) & 0xFF) * c)<<16) + ((uint32)(((p2 >> 16) & 0xFF) * inv_c)<<16) |
-			((uint32)(((p1 >> 8) & 0xFF) * c)<<8) + ((uint32)(((p2 >> 8) & 0xFF) * inv_c)<<8) |
-			((uint32)(((p1) & 0xFF) * c)) + ((uint32)(((p2) & 0xFF) * inv_c));
+	return 	(((uint32)(((p1 >> 24) & 0xFF) * c)<<24) + ((uint32)(((p2 >> 24) & 0xFF) * inv_c)<<24)) |
+			(((uint32)(((p1 >> 16) & 0xFF) * c)<<16) + ((uint32)(((p2 >> 16) & 0xFF) * inv_c)<<16)) |
+			(((uint32)(((p1 >> 8) & 0xFF) * c)<<8) + ((uint32)(((p2 >> 8) & 0xFF) * inv_c)<<8)) |
+			(((uint32)(((p1) & 0xFF) * c)) + ((uint32)(((p2) & 0xFF) * inv_c)));
 }
 
 

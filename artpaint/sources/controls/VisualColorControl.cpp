@@ -14,7 +14,8 @@
 #include "UtilityClasses.h"
 #include "Patterns.h"
 
-VisualColorControl::VisualColorControl(BPoint position, rgb_color c,char *s1, char *s2, char *s3,char *s4)
+VisualColorControl::VisualColorControl(BPoint position, rgb_color c,
+		const char *s1, const char *s2, const char *s3, const char *s4)
 	:	BControl(BRect(position,position),"rgb control","RGB-Control",NULL,B_FOLLOW_TOP|B_FOLLOW_LEFT,B_WILL_DRAW)
 {
 //	value = ( 	((c.blue<<24) & 0xFF000000) | ((c.green<<16) & 0x00FF0000)
@@ -31,6 +32,7 @@ VisualColorControl::VisualColorControl(BPoint position, rgb_color c,char *s1, ch
 	ramp3 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);
 	ramp4 = new BBitmap(BRect(0,0,255,0),B_RGB_32_BIT);
 
+	// TODO: check this
 	label1 = s1;
 	label2 = s2;
 	label3 = s3;
