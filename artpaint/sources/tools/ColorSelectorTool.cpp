@@ -29,7 +29,7 @@
 #include <InterfaceDefs.h>
 #include <RadioButton.h>
 #include <Screen.h>
-#include <Window.h>
+#include <StringView.h>
 
 
 #include <stdio.h>
@@ -72,7 +72,7 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		uint32 old_color,color;
 		color = drawer->GetPixel(point);
 		old_color = color - 1;
-		bool select_foreground = (buttons & B_PRIMARY_MOUSE_BUTTON != 0x00);
+		bool select_foreground = (buttons & B_PRIMARY_MOUSE_BUTTON) != 0x00;
 
 		// for the quick calculation of square-roots
 		float sqrt_table[500];
@@ -164,16 +164,11 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			window->Unlock();
 		}
 		rgb_color new_color = BGRAColorToRGB(color);
-		if (select_foreground) {
-			((PaintApplication*)be_app)->SetColor(new_color,true);
-		}
-		else {
-			((PaintApplication*)be_app)->SetColor(new_color,false);
-		}
+		((PaintApplication*)be_app)->SetColor(new_color, select_foreground);
+
 		// Inform all the selected color views about change in colors.
-		BMessage *color_change_message = new BMessage(HS_COLOR_CHANGED);
-		SelectedColorsView::sendMessageToAll(color_change_message);
-		delete color_change_message;
+		BMessage message(HS_COLOR_CHANGED);
+		SelectedColorsView::sendMessageToAll(&message);
 
 		delete drawer;
 	}

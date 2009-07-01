@@ -11,49 +11,56 @@
 #ifndef COLOR_SELECTOR_TOOL_H
 #define COLOR_SELECTOR_TOOL_H
 
-#include <StringView.h>
-#include <Window.h>
-
 #include "DrawingTool.h"
 
+
+#include <Window.h>
+
+
 class ControlSliderBox;
+class BStringView;
+
 
 class ColorSelectorTool : public DrawingTool {
-
 public:
-		ColorSelectorTool();
-virtual	~ColorSelectorTool();
+								ColorSelectorTool();
+	virtual						~ColorSelectorTool();
 
-ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
+			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-BView*	makeConfigView();
-const	char*	ReturnHelpString(bool);
-const	void*	ReturnToolCursor();
+			BView*				makeConfigView();
+			const void*			ReturnToolCursor();
+			const char*			ReturnHelpString(bool isInUse);
 };
+
 
 class ColorSelectorView : public BView {
-		uint32		selected_color;
-		BStringView	*red_view;
-		BStringView *green_view;
-		BStringView	*blue_view;
-		BStringView	*alpha_view;
-
 public:
-		ColorSelectorView(BRect);
+								ColorSelectorView(BRect frame);
 
-void	Draw(BRect);
+	virtual	void				Draw(BRect updateRect);
 
-void	ChangeValue(uint32);
+			void				ChangeValue(uint32);
+
+private:
+			uint32				selected_color;
+			BStringView*		red_view;
+			BStringView*		green_view;
+			BStringView*		blue_view;
+			BStringView*		alpha_view;
 };
 
-class ColorSelectorWindow : public BWindow {
-		BRect 				screen_bounds;
-		ColorSelectorView	*cs_view;
-public:
-		ColorSelectorWindow(BPoint);
 
-void	ChangeValue(uint32);
-void	Move(BPoint);
+class ColorSelectorWindow : public BWindow {
+public:
+								ColorSelectorWindow(BPoint cursorLocation);
+
+			void				ChangeValue(uint32 color);
+			void				Move(BPoint cursorLocation);
+
+private:
+			BRect 				screen_bounds;
+			ColorSelectorView*	cs_view;
 };
 
 
