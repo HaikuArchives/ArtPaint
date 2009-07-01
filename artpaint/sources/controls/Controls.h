@@ -90,7 +90,7 @@ public:
 	// as the initial value for controller.
 					ControlSliderBox(const char* name, const char* label,
 						 const char* text, BMessage* message, int32 rangeMin,
-						 int32 rangeMax, border_style border = B_PLAIN_BORDER,
+						 int32 rangeMax, border_style border = B_NO_BORDER,
 						 bool continuos = true, thumb_style knob = B_TRIANGLE_THUMB);
 
 					ControlSliderBox(BRect frame, const char *name,
