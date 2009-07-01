@@ -1,24 +1,31 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <Bitmap.h>
+
+#include "TransparencyTool.h"
 
 #include "Cursors.h"
 #include "Controls.h"
-#include "TransparencyTool.h"
-#include "StringServer.h"
-#include "PaintApplication.h"
 #include "Image.h"
+#include "PaintApplication.h"
+#include "StringServer.h"
 
+
+#include <Bitmap.h>
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <Window.h>
 
 TransparencyTool::TransparencyTool()
-	: DrawingTool(StringServer::ReturnString(TRANSPARENCY_TOOL_NAME_STRING),TRANSPARENCY_TOOL)
+	: DrawingTool(StringServer::ReturnString(TRANSPARENCY_TOOL_NAME_STRING),
+		TRANSPARENCY_TOOL)
 {
 	// The pressure option controls the speed of transparency change.
 	options = SIZE_OPTION | PRESSURE_OPTION;
@@ -31,26 +38,25 @@ TransparencyTool::TransparencyTool()
 
 TransparencyTool::~TransparencyTool()
 {
-
 }
 
 
-ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint)
+ToolScript*
+TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == TRUE)
+	while (last_updated_rect.IsValid() == true)
 		snooze(50 * 1000);
 
-	BWindow *window = view->Window();
-	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
+	BWindow* window = view->Window();
+	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
+	ToolScript* the_script = new ToolScript(type, settings,
+		((PaintApplication*)be_app)->Color(true));
 
 	BRect bounds = bitmap->Bounds();
-	uint32 *bits_origin = (uint32*)bitmap->Bits();
-	int32 bpr = bitmap->BytesPerRow()/4;
-
-	BRect rc;
+	uint32* bits_origin = (uint32*)bitmap->Bits();
+	int32 bpr = bitmap->BytesPerRow() / 4;
 
 	// for the quick calculation of square-roots
 	float sqrt_table[5500];
@@ -58,7 +64,8 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		sqrt_table[i] = sqrt(i);
 
 	float half_size = settings.size/2;
-	rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));
+	BRect rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
+		ceil(point.x + half_size), ceil(point.y + half_size));
 	rc = rc & bounds;
 	last_updated_rect = rc;
 
@@ -66,9 +73,10 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 		uint8 bytes[4];
 		uint32 word;
 	} color;
+
 	while (buttons) {
 		the_script->AddPoint(point);
-		uint32 transparency_value = ((PaintApplication*)be_app)->Color(TRUE).alpha;
+		uint32 transparency_value = ((PaintApplication*)be_app)->Color(true).alpha;
 		int32 x_dist,y_sqr;
 
 		int32 width = rc.IntegerWidth();
@@ -85,11 +93,12 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 //					for (int32 i=0;i<(float)GetCurrentValue(PRESSURE_OPTION)/4.0;i++) {
 						color.word = *(bits_origin + real_y*bpr + real_x);
 						if (color.bytes[3] < transparency_value) {
-							color.bytes[3] = (uint8)min_c(color.bytes[3] + GetCurrentValue(PRESSURE_OPTION)/4.0,transparency_value);
+							color.bytes[3] = (uint8)min_c(color.bytes[3] +
+								GetCurrentValue(PRESSURE_OPTION)/4.0,transparency_value);
 							*(bits_origin + real_y*bpr + real_x) = color.word;
-						}
-						else if (color.bytes[3] > transparency_value) {
-							color.bytes[3] = (uint8)max_c(color.bytes[3] - GetCurrentValue(PRESSURE_OPTION)/4.0,transparency_value);
+						} else if (color.bytes[3] > transparency_value) {
+							color.bytes[3] = (uint8)max_c(color.bytes[3] -
+								GetCurrentValue(PRESSURE_OPTION)/4.0,transparency_value);
 							*(bits_origin + real_y*bpr + real_x) = color.word;
 						}
 //					}
@@ -104,17 +113,18 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			half_size = settings.size/2;
-			rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));
+			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
+				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;
 			last_updated_rect = last_updated_rect | rc;
 			//snooze(20.0 * 1000.0);
-		}
-		else {
+		} else {
 			window->Lock();
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			half_size = settings.size/2;
-			rc = BRect(floor(point.x-half_size),floor(point.y-half_size),ceil(point.x+half_size),ceil(point.y+half_size));
+			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
+				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;
 			last_updated_rect = last_updated_rect | rc;
 			snooze(20 * 1000);
@@ -130,78 +140,67 @@ ToolScript* TransparencyTool::UseTool(ImageView *view,uint32 buttons,BPoint poin
 	return the_script;
 }
 
-int32 TransparencyTool::UseToolWithScript(ToolScript*,BBitmap*)
-{
-	return B_NO_ERROR;
-}
 
-BView* TransparencyTool::makeConfigView()
+int32
+TransparencyTool::UseToolWithScript(ToolScript*, BBitmap*)
 {
-	TransparencyToolConfigView *target_view = new TransparencyToolConfigView(BRect(0,0,150,0),this);
-	return target_view;
+	return B_OK;
 }
 
 
-const char* TransparencyTool::ReturnHelpString(bool is_in_use)
+BView*
+TransparencyTool::makeConfigView()
 {
-	if (!is_in_use)
-		return StringServer::ReturnString(TRANSPARENCY_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(TRANSPARENCY_TOOL_IN_USE_STRING);
+	return (new TransparencyToolConfigView(BRect(0, 0, 150, 0), this));
 }
 
-const void* TransparencyTool::ReturnToolCursor()
+
+const void*
+TransparencyTool::ReturnToolCursor()
 {
 	return HS_TRANSPARENCY_CURSOR;
 }
 
 
-TransparencyToolConfigView::TransparencyToolConfigView(BRect rect,DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+const char*
+TransparencyTool::ReturnHelpString(bool isInUse)
 {
-	BMessage *message;
-
-	BRect controller_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE);
-
-	// First add the controller for size.
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);
-	AddChild(size_slider);
-
-	// Then add the controller for speed.
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",PRESSURE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(PRESSURE_OPTION));
-	controller_frame = size_slider->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	speed_slider = new ControlSliderBox(controller_frame,"speed",StringServer::ReturnString(SPEED_STRING),"1",message,1,100);
-	AddChild(speed_slider);
-
-	float divider = max_c(size_slider->Divider(),speed_slider->Divider());
-
-	size_slider->SetDivider(divider);
-	speed_slider->SetDivider(divider);
-
-//	// Then add the controller for target transparency.
-//	message = new BMessage(OPTION_CHANGED);
-//	message->AddInt32("option",TRANSPARENCY_OPTION);
-//	message->AddInt32("value",tool->GetCurrentValue(TRANSPARENCY_OPTION));
-//	controller_frame = size_slider->Frame();
-//	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-//	transparency_slider = new ControlSliderBox(controller_frame,"transparency","","100",message,0,100);
-//	AddChild(speed_slider);
-
-	ResizeTo(speed_slider->Frame().right+EXTRA_EDGE,speed_slider->Frame().bottom + EXTRA_EDGE);
+	return StringServer::ReturnString(isInUse ? TRANSPARENCY_TOOL_IN_USE_STRING
+		: TRANSPARENCY_TOOL_READY_STRING);
 }
 
 
+// #pragma mark -- TransparencyToolConfigView
 
-void TransparencyToolConfigView::AttachedToWindow()
+
+TransparencyToolConfigView::TransparencyToolConfigView(BRect rect,DrawingTool* t)
+	: DrawingToolConfigView(rect, t)
+{
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SIZE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
+	fSizeSlider = new ControlSliderBox("size",
+		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", PRESSURE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+	fSpeedSlider = new ControlSliderBox("speed",
+		StringServer::ReturnString(SPEED_STRING), "1", message, 1, 100);
+
+	SetLayout(new BGroupLayout(B_VERTICAL));
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(fSizeSlider)
+		.Add(fSpeedSlider)
+	);
+}
+
+
+void
+TransparencyToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	size_slider->SetTarget(new BMessenger(this));
-	speed_slider->SetTarget(new BMessenger(this));
+	fSizeSlider->SetTarget(new BMessenger(this));
+	fSpeedSlider->SetTarget(new BMessenger(this));
 }
