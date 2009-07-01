@@ -1,33 +1,44 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
+
+#include "ColorSelectorTool.h"
+
+#include "BitmapDrawer.h"
+#include "ColorPalette.h"
+#include "Controls.h"
+#include "Cursors.h"
+#include "Image.h"
+#include "MessageConstants.h"
+#include "PaintApplication.h"
+#include "StatusView.h"
+#include "StringServer.h"
+#include "UtilityClasses.h"
+
+
 #include <Bitmap.h>
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <InterfaceDefs.h>
 #include <RadioButton.h>
 #include <Screen.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <Window.h>
 
-#include "BitmapDrawer.h"
-#include "Cursors.h"
-#include "ColorSelectorTool.h"
-#include "Controls.h"
-#include "StatusView.h"
-#include "ColorPalette.h"
-#include "StringServer.h"
-#include "UtilityClasses.h"
-#include "PaintApplication.h"
-#include "Image.h"
-#include "MessageConstants.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
 
 ColorSelectorTool::ColorSelectorTool()
-	: DrawingTool(StringServer::ReturnString(COLOR_SELECTOR_TOOL_NAME_STRING),COLOR_SELECTOR_TOOL)
+	: DrawingTool(StringServer::ReturnString(COLOR_SELECTOR_TOOL_NAME_STRING),
+		COLOR_SELECTOR_TOOL)
 {
 	options = SIZE_OPTION | MODE_OPTION;
 	number_of_options = 2;
@@ -39,11 +50,12 @@ ColorSelectorTool::ColorSelectorTool()
 
 ColorSelectorTool::~ColorSelectorTool()
 {
-
 }
 
 
-ToolScript* ColorSelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint view_point)
+ToolScript*
+ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
+	BPoint view_point)
 {
 	BWindow *window = view->Window();
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
@@ -68,12 +80,14 @@ ToolScript* ColorSelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint poi
 			sqrt_table[i] = sqrt(i);
 
 		float half_size = settings.size/2;
-		BRect rc = BRect(point.x-half_size,point.y-half_size,point.x+half_size,point.y+half_size);
+		BRect rc = BRect(point.x - half_size, point.y - half_size,
+			point.x + half_size, point.y + half_size);
 		BRect bounds = bitmap->Bounds();
 		rc = rc & bounds;
 
 		while (buttons) {
-			rc = BRect(point.x-half_size,point.y-half_size,point.x+half_size,point.y+half_size);
+			rc = BRect(point.x - half_size, point.y - half_size,
+				point.x + half_size, point.y + half_size);
 			rc = rc & bounds;
 			int32 x_dist,y_sqr;
 
@@ -108,15 +122,18 @@ ToolScript* ColorSelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint poi
 				green /= number_of_pixels;
 				blue /= number_of_pixels;
 				alpha /= number_of_pixels;
-				color = (((uint32)blue) << 24) | (((uint32)green) << 16) | (((uint32)red) << 8) | ((uint32)alpha);
+				color = (((uint32)blue) << 24) | (((uint32)green) << 16)
+					| (((uint32)red) << 8) | ((uint32)alpha);
 			}
 
 			window->Lock();
 			view->getCoords(&point,&buttons,&view_point);
 			// If we have not yet opened the cs window and the user moves the mouse,
 			// we open the window
-			if ((cs_window == NULL) && ((fabs(point.x-original_point.x)>4) || (fabs(point.y-original_point.y)>4)))
+			if ((cs_window == NULL) && ((fabs(point.x-original_point.x)>4)
+				|| (fabs(point.y-original_point.y)>4))) {
 				cs_window = new ColorSelectorWindow(view->ConvertToScreen(view_point));
+			}
 
 			// If we have opened the cs_window, we can operate on it.
 			if (cs_window != NULL)	{
@@ -148,10 +165,10 @@ ToolScript* ColorSelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint poi
 		}
 		rgb_color new_color = BGRAColorToRGB(color);
 		if (select_foreground) {
-			((PaintApplication*)be_app)->SetColor(new_color,TRUE);
+			((PaintApplication*)be_app)->SetColor(new_color,true);
 		}
 		else {
-			((PaintApplication*)be_app)->SetColor(new_color,FALSE);
+			((PaintApplication*)be_app)->SetColor(new_color,false);
 		}
 		// Inform all the selected color views about change in colors.
 		BMessage *color_change_message = new BMessage(HS_COLOR_CHANGED);
@@ -160,35 +177,37 @@ ToolScript* ColorSelectorTool::UseTool(ImageView *view,uint32 buttons,BPoint poi
 
 		delete drawer;
 	}
-
 	return NULL;
 }
 
 
-BView* ColorSelectorTool::makeConfigView()
+BView*
+ColorSelectorTool::makeConfigView()
 {
-	ColorSelectorToolConfigView *target_view = new ColorSelectorToolConfigView(BRect(0,0,150,0),this);
-
-	return target_view;
+	return (new ColorSelectorToolConfigView(BRect(0, 0, 150, 0), this));
 }
 
 
-const char* ColorSelectorTool::ReturnHelpString(bool is_in_use)
-{
-	if (!is_in_use)
-		return StringServer::ReturnString(COLOR_SELECTOR_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(COLOR_SELECTOR_TOOL_IN_USE_STRING);
-}
-
-const void* ColorSelectorTool::ReturnToolCursor()
+const void*
+ColorSelectorTool::ReturnToolCursor()
 {
 	return HS_COLOR_SELECTOR_CURSOR;
 }
 
 
+const char*
+ColorSelectorTool::ReturnHelpString(bool isInUse)
+{
+	return StringServer::ReturnString(isInUse ? COLOR_SELECTOR_TOOL_IN_USE_STRING
+		: COLOR_SELECTOR_TOOL_READY_STRING);
+}
+
+
+// #pragma mark -- ColorSelectorView
+
+
 ColorSelectorView::ColorSelectorView(BRect frame)
-	:	BView(frame,"color selector-view",B_FOLLOW_NONE,B_WILL_DRAW)
+	: BView(frame, "color selector-view", B_FOLLOW_NONE, B_WILL_DRAW)
 {
 	char string[256];
 	float width = 0;
@@ -221,7 +240,8 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 	AddChild(red_view);
 
 	sprintf(string,"%s:",StringServer::ReturnString(GREEN_STRING));
-	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,label_view->Frame().bottom),"label view",string);
+	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,
+		label_view->Frame().bottom),"label view",string);
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
 	AddChild(label_view);
@@ -231,7 +251,8 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 	AddChild(green_view);
 
 	sprintf(string,"%s:",StringServer::ReturnString(BLUE_STRING));
-	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,label_view->Frame().bottom),"label view",string);
+	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,
+		label_view->Frame().bottom),"label view",string);
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
 	AddChild(label_view);
@@ -241,7 +262,8 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 	AddChild(blue_view);
 
 	sprintf(string,"%s:",StringServer::ReturnString(ALPHA_STRING));
-	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,label_view->Frame().bottom),"label view",string);
+	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,
+		label_view->Frame().bottom),"label view",string);
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
 	AddChild(label_view);
@@ -254,10 +276,12 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 }
 
 
-void ColorSelectorView::Draw(BRect area)
+void
+ColorSelectorView::Draw(BRect area)
 {
 	BView::Draw(area);
-	BRect color_rect = BRect(red_view->Frame().right+2,red_view->Frame().top+2,Bounds().right-2,alpha_view->Frame().bottom-2);
+	BRect color_rect = BRect(red_view->Frame().right+2,red_view->Frame().top+2,
+		Bounds().right-2,alpha_view->Frame().bottom-2);
 	SetHighColor(120,120,0,255);
 	StrokeRect(color_rect,B_MIXED_COLORS);
 	color_rect.InsetBy(1,1);
@@ -265,7 +289,9 @@ void ColorSelectorView::Draw(BRect area)
 	FillRect(color_rect);
 }
 
-void ColorSelectorView::ChangeValue(uint32 new_color)
+
+void
+ColorSelectorView::ChangeValue(uint32 new_color)
 {
 	union {
 		uint8 bytes[4];
@@ -289,13 +315,14 @@ void ColorSelectorView::ChangeValue(uint32 new_color)
 	alpha_view->SetText(a_string);
 }
 
+
+// #pragma mark -- ColorSelectorWindow
+
+
 ColorSelectorWindow::ColorSelectorWindow(BPoint cursor_location)
-	:	BWindow(BRect(0,0,0,0),"Color Selector Window",B_BORDERED_WINDOW,0)
+	: BWindow(BRect(0,0,0,0), "Color Selector Window", B_BORDERED_WINDOW, 0)
 {
-	// Here store the screen's bounds rectangle.
-	BScreen *a_screen = new BScreen();
-	screen_bounds = a_screen->Frame();
-	delete a_screen;
+	screen_bounds = BScreen().Frame();
 	cs_view = new ColorSelectorView(Bounds());
 	AddChild(cs_view);
 
@@ -306,13 +333,16 @@ ColorSelectorWindow::ColorSelectorWindow(BPoint cursor_location)
 	Show();
 }
 
-void ColorSelectorWindow::ChangeValue(uint32 color)
+
+void
+ColorSelectorWindow::ChangeValue(uint32 color)
 {
 	cs_view->ChangeValue(color);
 }
 
 
-void ColorSelectorWindow::Move(BPoint cursor_location)
+void
+ColorSelectorWindow::Move(BPoint cursor_location)
 {
 	// This function moves the window so that it is near the cursor, but does not
 	// interfere with it and does not go over screen borders. The cursor location
@@ -337,30 +367,26 @@ void ColorSelectorWindow::Move(BPoint cursor_location)
 }
 
 
+// #pragma mark -- ColorSelectorToolConfigView
 
 
-ColorSelectorToolConfigView::ColorSelectorToolConfigView(BRect rect,DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+ColorSelectorToolConfigView::ColorSelectorToolConfigView(BRect rect,
+		DrawingTool* drawingTool)
+	: DrawingToolConfigView(rect, drawingTool)
 {
-	// The ownership of this message is then transferred to the controller.
-	BMessage *message;
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SIZE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	BRect controller_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE);
-
-
-	// First add the controller for size.
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,10);
-	AddChild(size_slider);
-
-	ResizeTo(size_slider->Bounds().Width()+2*EXTRA_EDGE,size_slider->Frame().bottom + EXTRA_EDGE);
+	SetLayout(new BGroupLayout(B_VERTICAL));
+	AddChild(fSizeSlider = new ControlSliderBox("size",
+		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 10));
 }
 
 
 void ColorSelectorToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
-	size_slider->SetTarget(new BMessenger(this));
+
+	fSizeSlider->SetTarget(new BMessenger(this));
 }

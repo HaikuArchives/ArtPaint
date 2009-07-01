@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef COLOR_SELECTOR_TOOL_H
@@ -56,10 +58,14 @@ void	Move(BPoint);
 
 
 class ColorSelectorToolConfigView : public DrawingToolConfigView {
-		ControlSliderBox	*size_slider;
 public:
-		ColorSelectorToolConfigView(BRect rect,DrawingTool *t);
+								ColorSelectorToolConfigView(BRect rect,
+									DrawingTool* drawingTool);
 
-void	AttachedToWindow();
+	virtual	void				AttachedToWindow();
+
+private:
+			ControlSliderBox*	fSizeSlider;
 };
+
 #endif
