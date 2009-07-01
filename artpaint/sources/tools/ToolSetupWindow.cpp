@@ -31,7 +31,7 @@ ToolSetupWindow* ToolSetupWindow::fToolSetupWindow = NULL;
 ToolSetupWindow::ToolSetupWindow(BRect frame)
 	: BWindow(frame, StringServer::ReturnString(TOOL_SETUP_STRING),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
-		B_NOT_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT |
+		B_NOT_V_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT |
 		B_AUTO_UPDATE_SIZE_LIMITS)
 	, fCurrentTool(-1)
 {
