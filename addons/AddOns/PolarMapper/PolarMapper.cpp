@@ -65,7 +65,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 
 	for (int32 y=0;y<height;y++) {
 		for (int32 x=0;x<width;x++) {
-			float angle = (float)(height-1-y)/(float)height*PI*2;
+			float angle = (float)(height-1-y)/(float)height * M_PI * 2;
 			float radius = (float)x/(float)width*max_radius;
 
 			int32 new_x = radius * cos(angle) + mid_x;
