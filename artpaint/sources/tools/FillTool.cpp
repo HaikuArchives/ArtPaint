@@ -1,38 +1,54 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <CheckBox.h>
-#include <File.h>
-#include <stdlib.h>
 
-#include "ColorView.h"
 #include "FillTool.h"
+
+#include "BitmapDrawer.h"
+#include "ColorPalette.h"
+#include "ColorView.h"
+#include "Controls.h"
+#include "Cursors.h"
+#include "Image.h"
+#include "PaintApplication.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-#include "ColorPalette.h"
 #include "StringServer.h"
-#include "Cursors.h"
-#include "PaintApplication.h"
 #include "UtilityClasses.h"
-#include "BitmapDrawer.h"
-#include "Image.h"
-#include "Controls.h"
+
+
+#include <CheckBox.h>
+#include <Control.h>
+#include <File.h>
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+
+
+#include <stdlib.h>
+#include <string.h>
+
 
 FillTool::FillTool()
-	: DrawingTool(StringServer::ReturnString(FILL_TOOL_NAME_STRING),FILL_TOOL)
+	: DrawingTool(StringServer::ReturnString(FILL_TOOL_NAME_STRING), FILL_TOOL)
 {
-	// Set options here. The MODE_OPTION is used for determining if we do flood fill or some other type of fill.
-	options = GRADIENT_ENABLED_OPTION | PREVIEW_ENABLED_OPTION | TOLERANCE_OPTION | MODE_OPTION;
+	// Set options here. The MODE_OPTION is used for determining if we do flood
+	// fill or some other type of fill.
+	options = GRADIENT_ENABLED_OPTION | PREVIEW_ENABLED_OPTION
+		| TOLERANCE_OPTION | MODE_OPTION;
 	number_of_options = 4;
 	binary_fill_map = NULL;
 
-	SetOption(GRADIENT_ENABLED_OPTION,B_CONTROL_OFF);	// Initially disable the gradient.
-	SetOption(PREVIEW_ENABLED_OPTION,B_CONTROL_ON);	// Initially enable the preview.
+	// Initially disable the gradient.
+	SetOption(GRADIENT_ENABLED_OPTION, B_CONTROL_OFF);
+	// Initially enable the preview.
+	SetOption(PREVIEW_ENABLED_OPTION,B_CONTROL_ON);
 	SetOption(TOLERANCE_OPTION,0);
 	SetOption(MODE_OPTION,B_CONTROL_ON);
 
@@ -43,55 +59,49 @@ FillTool::FillTool()
 
 FillTool::~FillTool()
 {
-
 }
 
 
-ToolScript* FillTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint view_point)
+ToolScript*
+FillTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
-	the_script->AddPoint(point);
-	Selection *selection = view->GetSelection();
-	if (selection->IsEmpty() == TRUE) {
-		if (settings.gradient_enabled == B_CONTROL_OFF) {
-			// Do just a normal fill without gradient
-			NormalFill(view,buttons,point);
-		}
-		else {
-			// Do the gradient.
-			the_script->AddPoint(GradientFill(view,buttons,point,view_point));
-		}
+	ToolScript* toolScript = new ToolScript(type, settings,
+		((PaintApplication*)be_app)->Color(true));
+	toolScript->AddPoint(point);
+
+	Selection* selection = view->GetSelection();
+	selection = (selection->IsEmpty() ? NULL : selection);
+
+	if (settings.gradient_enabled == B_CONTROL_ON) {
+		// Do just a fill with gradient
+		toolScript->AddPoint(GradientFill(view, buttons, point, viewPoint,
+			selection));
+	} else {
+		// Do just a normal fill without gradient
+		NormalFill(view, buttons, point, selection);
 	}
-	else {
-		if (settings.gradient_enabled == B_CONTROL_OFF) {
-			// Do just a normal fill without gradient
-			NormalFill(view,buttons,point,selection);
-		}
-		else {
-			// Do the gradient.
-			the_script->AddPoint(GradientFill(view,buttons,point,view_point,selection));
-		}
-	}
-	return the_script;
+
+	return toolScript;
 }
 
 
-int32 FillTool::UseToolWithScript(ToolScript*,BBitmap*)
+int32
+FillTool::UseToolWithScript(ToolScript*, BBitmap*)
 {
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-BView* FillTool::makeConfigView()
+BView*
+FillTool::makeConfigView()
 {
-	FillToolConfigView *target_view = new FillToolConfigView(BRect(0,0,150,0),this,gradient_color1,gradient_color2);
-
-	return target_view;
+	return new FillToolConfigView(BRect(0, 0, 150, 0), this, gradient_color1,
+		gradient_color2);
 }
 
 
-
-status_t FillTool::NormalFill(ImageView *view,uint32 buttons,BPoint start,Selection *sel)
+status_t
+FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* sel)
 {
 	// Get the necessary parameters
 	BWindow *window = view->Window();
@@ -149,23 +159,27 @@ status_t FillTool::NormalFill(ImageView *view,uint32 buttons,BPoint start,Select
 				for (uint32 i = 0; i < binary_bitslength; i++)
 					*binary_bits++ = 0x00;
 			}
-			while (stack->IsEmpty() == FALSE) {
+			while (stack->IsEmpty() == false) {
 				BPoint span_start = stack->Pop();
 				if ( (span_start.y == min_y) && (min_y != max_y) ) {
 					// Only check the spans below this line
-					CheckLowerSpans(span_start,drawer,*stack,min_x,max_x,color,old_color,tolerance,sel);
+					CheckLowerSpans(span_start, drawer, *stack, min_x, max_x,
+						color, old_color, tolerance, sel);
 				}
 				else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 					// Only check the spans above this line.
-					CheckUpperSpans(span_start,drawer,*stack,min_x,max_x,color,old_color,tolerance,sel);
+					CheckUpperSpans(span_start, drawer, *stack, min_x, max_x,
+						color, old_color, tolerance, sel);
 				}
 				else if (min_y != max_y) {
 					// Check the spans above and below this line.
-					CheckBothSpans(span_start,drawer,*stack,min_x,max_x,color,old_color,tolerance,sel);
+					CheckBothSpans(span_start, drawer, *stack, min_x, max_x,
+						color, old_color, tolerance, sel);
 				}
 				else {
 					// The image is only one pixel high. Fill the only span.
-					FillSpan(span_start,drawer,min_x,max_x,color,old_color,tolerance,sel);
+					FillSpan(span_start, drawer, min_x, max_x, color, old_color,
+						tolerance, sel);
 				}
 			}
 			if (tolerance != 0) {
@@ -175,7 +189,7 @@ status_t FillTool::NormalFill(ImageView *view,uint32 buttons,BPoint start,Select
 			delete stack;
 		}
 		else {	// Fill all the pixels that are within the tolerance.
-			if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
+			if ((sel == NULL) || (sel->IsEmpty() == true)) {
 				for (int32 y=min_y;y<=max_y;y++) {
 					for (int32 x=min_x;x<=max_x;x++) {
 						if (compare_2_pixels_with_variance(old_color,drawer->GetPixel(x,y),tolerance)) {
@@ -206,7 +220,8 @@ status_t FillTool::NormalFill(ImageView *view,uint32 buttons,BPoint start,Select
 }
 
 
-void FillTool::CheckLowerSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
+void
+FillTool::CheckLowerSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
 {
 	// First get the vital data.
 	int32 x,start_x;
@@ -1062,12 +1077,15 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 	return binary_map;
 }
 
-BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,int32 min_y,int32 max_y,uint32 old_color, BPoint start,Selection *sel)
+BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
+	int32 max_x, int32 min_y, int32 max_y, uint32 old_color, BPoint start,
+	Selection *sel)
 {
 	// This function makes a binary bitmap of the image. It contains ones where the
 	// flood fill should fill and zeroes elsewhere.
 	BBitmap *binary_map;
-	binary_map = binary_fill_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),B_MONOCHROME_1_BIT);
+	binary_map = binary_fill_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),
+		B_MONOCHROME_1_BIT);
 	uchar *binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bitslength = binary_map->BitsLength();
 	// Clear the binary map.
@@ -1124,7 +1142,9 @@ BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max
 }
 
 
-void FillTool::FillGradient(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,int32 dy,int32 min_x,int32 max_x,int32 min_y,int32 max_y,uint32 new_color,uint32 gradient_color)
+void FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
+	int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
+	uint32 new_color, uint32 gradient_color)
 {
 	uchar *binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
@@ -1132,18 +1152,15 @@ void FillTool::FillGradient(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,in
 	uint32 x_source,x_target;
 	uint32 y_source,y_target;
 
-
-	if (dx<0) {
+	if (dx < 0)
 		x_target = gradient_color;
-	}
-	else {
+	else
 		x_target = new_color;
-	}
+
 	if (dy<0) {
 		y_target = gradient_color;
 		y_source = new_color;
-	}
-	else {
+	} else {
 		y_target = new_color;
 		y_source = gradient_color;
 	}
@@ -1166,7 +1183,7 @@ void FillTool::FillGradient(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,in
 	y_alpha_diff = (int16)((y_target) & 0xFF) - (int16)((y_source) & 0xFF);
 
 
-	for (int32 y=min_y;y<=max_y;y++) {
+	for (int32 y = min_y; y <=max_y; ++y) {
 		int32 bytes_advanced = 0;
 		// Here we should move y-gradient 1 step closer to y-target
 		// and put x-source to y-gradient. We should also recalculate
@@ -1174,34 +1191,35 @@ void FillTool::FillGradient(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,in
 		if (dy<0) {
 			y_accumulation = (float)(abs(dy))/50.0*(float)(max_y-y)/(float)(max_y - min_y);
 			if (y_accumulation < 1.0) {
-				y_gradient = y_source 	+ (((int32)(y_blue_diff * (1.0-y_accumulation))) << 24)
-													+ (((int32)(y_green_diff * (1.0-y_accumulation))) << 16)
-													+ (((int32)(y_red_diff * (1.0-y_accumulation))) << 8)
-													+ (((int32)(y_alpha_diff * (1.0-y_accumulation))));
-			}
-			else
+				y_gradient = y_source
+					+ (((int32)(y_blue_diff * (1.0-y_accumulation))) << 24)
+					+ (((int32)(y_green_diff * (1.0-y_accumulation))) << 16)
+					+ (((int32)(y_red_diff * (1.0-y_accumulation))) << 8)
+					+ (((int32)(y_alpha_diff * (1.0-y_accumulation))));
+			} else {
 				y_gradient = y_source;
-		}
-		else {
+			}
+		} else {
 			y_accumulation = (float)dy/50.0*(float)y/(float)(max_y - min_y);
 			if (y_accumulation < 1.0) {
-				y_gradient = y_source 	+ (((int32)(y_blue_diff * y_accumulation)) << 24)
-													+ (((int32)(y_green_diff * y_accumulation)) << 16)
-													+ (((int32)(y_red_diff * y_accumulation)) << 8)
-													+ (((int32)(y_alpha_diff * y_accumulation)));
-			}
-			else
+				y_gradient = y_source
+					+ (((int32)(y_blue_diff * y_accumulation)) << 24)
+					+ (((int32)(y_green_diff * y_accumulation)) << 16)
+					+ (((int32)(y_red_diff * y_accumulation)) << 8)
+					+ (((int32)(y_alpha_diff * y_accumulation)));
+			} else {
 				y_gradient = y_target;
+			}
 		}
 
-		if (dx<0) {
+		if (dx < 0) {
 			x_source = new_color;
 			x_target = y_gradient;
-		}
-		else {
+		} else {
 			x_source = y_gradient;
 			x_target = new_color;
 		}
+
 		x_red_diff = (int16)((x_target>>8) & 0xFF) - (int16)((x_source>>8) & 0xFF);
 		x_green_diff = (int16)((x_target>>16) & 0xFF) - (int16)((x_source>>16) & 0xFF);
 		x_blue_diff = (int16)((x_target>>24) & 0xFF) - (int16)((x_source>>24) & 0xFF);
@@ -1223,25 +1241,24 @@ void FillTool::FillGradient(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,in
 				// Here we should put a new value into position x,y
 				if (dx<0) {
 					if (x_accumulation < 1.0) {
-						x_gradient = x_source 	+ (((int32)(x_blue_diff * (1.0-x_accumulation))) << 24)
-															+ (((int32)(x_green_diff * (1.0-x_accumulation))) << 16)
-															+ (((int32)(x_red_diff * (1.0-x_accumulation))) << 8)
-															+ (((int32)(x_alpha_diff * (1.0-x_accumulation))));
+						x_gradient = x_source
+							+ (((int32)(x_blue_diff * (1.0-x_accumulation))) << 24)
+							+ (((int32)(x_green_diff * (1.0-x_accumulation))) << 16)
+							+ (((int32)(x_red_diff * (1.0-x_accumulation))) << 8)
+							+ (((int32)(x_alpha_diff * (1.0-x_accumulation))));
 						drawer->SetPixel(x,y,x_gradient);
+					} else {
+						drawer->SetPixel(x, y, x_source);
 					}
-					else {
-						drawer->SetPixel(x,y,x_source);
-					}
-				}
-				else {
+				} else {
 					if (x_accumulation < 1.0) {
-						x_gradient = x_source 	+ (((int32)(x_blue_diff * x_accumulation)) << 24)
-															+ (((int32)(x_green_diff * x_accumulation)) << 16)
-															+ (((int32)(x_red_diff * x_accumulation)) << 8)
-															+ (((int32)(x_alpha_diff * x_accumulation)));
+						x_gradient = x_source
+							+ (((int32)(x_blue_diff * x_accumulation)) << 24)
+							+ (((int32)(x_green_diff * x_accumulation)) << 16)
+							+ (((int32)(x_red_diff * x_accumulation)) << 8)
+							+ (((int32)(x_alpha_diff * x_accumulation)));
 						drawer->SetPixel(x,y,x_gradient);
-					}
-					else {
+					} else {
 						drawer->SetPixel(x,y,x_target);
 					}
 				}
@@ -1252,7 +1269,9 @@ void FillTool::FillGradient(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,in
 }
 
 
-void FillTool::FillGradientPreview(BitmapDrawer *drawer,BBitmap *binary_map,int32 dx,int32 dy,int32 min_x,int32 max_x,int32 min_y,int32 max_y,uint32 new_color,uint32 gradient_color)
+void FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
+	int32 dx, int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
+	uint32 new_color, uint32 gradient_color)
 {
 	// This preview fill calculates only every other pixel.
 	uchar *binary_bits = (uchar*)binary_map->Bits();
@@ -1262,17 +1281,15 @@ void FillTool::FillGradientPreview(BitmapDrawer *drawer,BBitmap *binary_map,int3
 	uint32 y_source,y_target;
 
 
-	if (dx<0) {
+	if (dx<0)
 		x_target = gradient_color;
-	}
-	else {
+	else
 		x_target = new_color;
-	}
+
 	if (dy<0) {
 		y_target = gradient_color;
 		y_source = new_color;
-	}
-	else {
+	} else {
 		y_target = new_color;
 		y_source = gradient_color;
 	}
@@ -1295,8 +1312,7 @@ void FillTool::FillGradientPreview(BitmapDrawer *drawer,BBitmap *binary_map,int3
 	y_blue_diff = (int16)((y_target>>24) & 0xFF) - (int16)((y_source>>24) & 0xFF);
 	y_alpha_diff = (int16)((y_target) & 0xFF) - (int16)((y_source) & 0xFF);
 
-
-	for (int32 y=min_y;y<=max_y-1;y+=2) {
+	for (int32 y = min_y; y <= max_y - 1; y+=2) {
 		int32 bytes_advanced = 0;
 		// Here we should move y-gradient 1 step closer to y-target
 		// and put x-source to y-gradient. We should also recalculate
@@ -1304,34 +1320,35 @@ void FillTool::FillGradientPreview(BitmapDrawer *drawer,BBitmap *binary_map,int3
 		if (dy<0) {
 			y_accumulation = (float)(abs(dy))/50.0*(float)(max_y-y)/(float)(max_y - min_y);
 			if (y_accumulation < 1.0) {
-				y_gradient = y_source 	+ (((int32)(y_blue_diff * (1.0-y_accumulation))) << 24)
-													+ (((int32)(y_green_diff * (1.0-y_accumulation))) << 16)
-													+ (((int32)(y_red_diff * (1.0-y_accumulation))) << 8)
-													+ (((int32)(y_alpha_diff * (1.0-y_accumulation))));
-			}
-			else
+				y_gradient = y_source
+					+ (((int32)(y_blue_diff * (1.0-y_accumulation))) << 24)
+					+ (((int32)(y_green_diff * (1.0-y_accumulation))) << 16)
+					+ (((int32)(y_red_diff * (1.0-y_accumulation))) << 8)
+					+ (((int32)(y_alpha_diff * (1.0-y_accumulation))));
+			} else {
 				y_gradient = y_source;
-		}
-		else {
+			}
+		} else {
 			y_accumulation = (float)dy/50.0*(float)y/(float)(max_y - min_y);
 			if (y_accumulation < 1.0) {
-				y_gradient = y_source 	+ (((int32)(y_blue_diff * y_accumulation)) << 24)
-													+ (((int32)(y_green_diff * y_accumulation)) << 16)
-													+ (((int32)(y_red_diff * y_accumulation)) << 8)
-													+ (((int32)(y_alpha_diff * y_accumulation)));
-			}
-			else
+				y_gradient = y_source
+					+ (((int32)(y_blue_diff * y_accumulation)) << 24)
+					+ (((int32)(y_green_diff * y_accumulation)) << 16)
+					+ (((int32)(y_red_diff * y_accumulation)) << 8)
+					+ (((int32)(y_alpha_diff * y_accumulation)));
+			} else {
 				y_gradient = y_target;
+			}
 		}
 
 		if (dx<0) {
 			x_source = new_color;
 			x_target = y_gradient;
-		}
-		else {
+		} else {
 			x_source = y_gradient;
 			x_target = new_color;
 		}
+
 		x_red_diff = (int16)((x_target>>8) & 0xFF) - (int16)((x_source>>8) & 0xFF);
 		x_green_diff = (int16)((x_target>>16) & 0xFF) - (int16)((x_source>>16) & 0xFF);
 		x_blue_diff = (int16)((x_target>>24) & 0xFF) - (int16)((x_source>>24) & 0xFF);
@@ -1352,67 +1369,61 @@ void FillTool::FillGradientPreview(BitmapDrawer *drawer,BBitmap *binary_map,int3
 			}
 			if ( next_value & (0x01 << (7-(x%8))) ) {
 				// Here we should put a new value into position x,y
-				if (dx<0) {
+				if (dx < 0) {
 					if (x_accumulation < 1.0) {
-						x_gradient = x_source 	+ (((int32)(x_blue_diff * (1.0-x_accumulation))) << 24)
-															+ (((int32)(x_green_diff * (1.0-x_accumulation))) << 16)
-															+ (((int32)(x_red_diff * (1.0-x_accumulation))) << 8)
-															+ (((int32)(x_alpha_diff * (1.0-x_accumulation))));
+						x_gradient = x_source
+							+ (((int32)(x_blue_diff * (1.0-x_accumulation))) << 24)
+							+ (((int32)(x_green_diff * (1.0-x_accumulation))) << 16)
+							+ (((int32)(x_red_diff * (1.0-x_accumulation))) << 8)
+							+ (((int32)(x_alpha_diff * (1.0-x_accumulation))));
 						drawer->SetPixel(x,y,x_gradient);
-						if (next_value & (0x01 << (7-((x+1)%8)))) {
+
+						if (next_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y,x_gradient);
-						}
-						if (next_rows_value & (0x01 << (7-(x%8)))) {
+
+						if (next_rows_value & (0x01 << (7-(x%8))))
 							drawer->SetPixel(x,y+1,x_gradient);
-						}
-						if (next_rows_value & (0x01 << (7-((x+1)%8)))) {
+
+						if (next_rows_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y+1,x_gradient);
-						}
-					}
-					else {
+					} else {
 						drawer->SetPixel(x,y,x_source);
-						if (next_value & (0x01 << (7-((x+1)%8)))) {
+						if (next_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y,x_source);
-						}
-						if (next_rows_value & (0x01 << (7-(x%8)))) {
+
+						if (next_rows_value & (0x01 << (7-(x%8))))
 							drawer->SetPixel(x,y+1,x_source);
-						}
-						if (next_rows_value & (0x01 << (7-((x+1)%8)))) {
+
+						if (next_rows_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y+1,x_source);
-						}
-
 					}
-				}
-				else {
+				} else {
 					if (x_accumulation < 1.0) {
-						x_gradient = x_source 	+ (((int32)(x_blue_diff * x_accumulation)) << 24)
-															+ (((int32)(x_green_diff * x_accumulation)) << 16)
-															+ (((int32)(x_red_diff * x_accumulation)) << 8)
-															+ (((int32)(x_alpha_diff * x_accumulation)));
+						x_gradient = x_source
+							+ (((int32)(x_blue_diff * x_accumulation)) << 24)
+							+ (((int32)(x_green_diff * x_accumulation)) << 16)
+							+ (((int32)(x_red_diff * x_accumulation)) << 8)
+							+ (((int32)(x_alpha_diff * x_accumulation)));
 						drawer->SetPixel(x,y,x_gradient);
-						if (next_value & (0x01 << (7-((x+1)%8)))) {
+
+						if (next_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y,x_gradient);
-						}
-						if (next_rows_value & (0x01 << (7-(x%8)))) {
+
+						if (next_rows_value & (0x01 << (7-(x%8))))
 							drawer->SetPixel(x,y+1,x_gradient);
-						}
-						if (next_rows_value & (0x01 << (7-((x+1)%8)))) {
+
+						if (next_rows_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y+1,x_gradient);
-						}
-
-					}
-					else {
+					} else {
 						drawer->SetPixel(x,y,x_target);
-						if (next_value & (0x01 << (7-((x+1)%8)))) {
+						if (next_value & (0x01 << (7-((x+1)%8))))
 							drawer->SetPixel(x+1,y,x_target);
-						}
-						if (next_rows_value & (0x01 << (7-(x%8)))) {
-							drawer->SetPixel(x,y+1,x_target);
-						}
-						if (next_rows_value & (0x01 << (7-((x+1)%8)))) {
-							drawer->SetPixel(x+1,y+1,x_target);
-						}
 
+						if (next_rows_value & (0x01 << (7-(x%8))))
+							drawer->SetPixel(x,y+1,x_target);
+
+						if (next_rows_value & (0x01 << (7-((x+1)%8))))
+							drawer->SetPixel(x+1,y+1,x_target);
 					}
 				}
 			}
@@ -1421,10 +1432,12 @@ void FillTool::FillGradientPreview(BitmapDrawer *drawer,BBitmap *binary_map,int3
 	}
 }
 
-BRect FillTool::calcBinaryMapBounds(BBitmap *boolean_map)
+
+BRect
+FillTool::calcBinaryMapBounds(BBitmap *boolean_map)
 {
-	// it seems like the monochrome-bitmap is aligned at 16-bit boundary instead of
-	// 32-bit as the BeBook claims
+	// it seems like the monochrome-bitmap is aligned at 16-bit boundary instead
+	// of 32-bit as the BeBook claims
 	char *bits = (char*)boolean_map->Bits();
 	int32 bpr = boolean_map->BytesPerRow();
 	bool selected_line;
@@ -1455,10 +1468,10 @@ BRect FillTool::calcBinaryMapBounds(BBitmap *boolean_map)
 }
 
 
-
-status_t FillTool::readSettings(BFile &file,bool is_little_endian)
+status_t
+FillTool::readSettings(BFile &file,bool is_little_endian)
 {
-	if (DrawingTool::readSettings(file,is_little_endian) != B_NO_ERROR)
+	if (DrawingTool::readSettings(file,is_little_endian) != B_OK)
 		return B_ERROR;
 
 	if (file.Read(&gradient_color1,sizeof(uint32)) != sizeof(uint32))
@@ -1470,17 +1483,19 @@ status_t FillTool::readSettings(BFile &file,bool is_little_endian)
 	if (is_little_endian) {
 		gradient_color1 = B_LENDIAN_TO_HOST_INT32(gradient_color1);
 		gradient_color2 = B_LENDIAN_TO_HOST_INT32(gradient_color2);
-	}
-	else {
+	} else {
 		gradient_color1 = B_BENDIAN_TO_HOST_INT32(gradient_color1);
 		gradient_color2 = B_BENDIAN_TO_HOST_INT32(gradient_color2);
 	}
-	return B_NO_ERROR;;
+
+	return B_OK;
 }
 
-status_t FillTool::writeSettings(BFile &file)
+
+status_t
+FillTool::writeSettings(BFile &file)
 {
-	if (DrawingTool::writeSettings(file) != B_NO_ERROR)
+	if (DrawingTool::writeSettings(file) != B_OK)
 		return B_ERROR;
 
 	if (file.Write(&gradient_color1,sizeof(uint32)) != sizeof(uint32))
@@ -1489,244 +1504,281 @@ status_t FillTool::writeSettings(BFile &file)
 	if (file.Write(&gradient_color2,sizeof(uint32)) != sizeof(uint32))
 		return B_ERROR;
 
-	return B_NO_ERROR;;
+	return B_OK;
 
 }
 
-const void* FillTool::ReturnToolCursor()
+
+const void*
+FillTool::ReturnToolCursor()
 {
 	return HS_FILL_CURSOR;
 }
 
-const char* FillTool::ReturnHelpString(bool is_in_use)
+
+const char*
+FillTool::ReturnHelpString(bool isInUse)
 {
-	if (!is_in_use)
-		return StringServer::ReturnString(FILL_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(FILL_TOOL_IN_USE_STRING);
+	return StringServer::ReturnString(isInUse ? FILL_TOOL_IN_USE_STRING
+		: FILL_TOOL_READY_STRING);
 }
 
 
-FillToolConfigView::FillToolConfigView(BRect rect, DrawingTool *t,uint32 c1, uint32 c2)
-	: DrawingToolConfigView(rect,t)
+// #pragma mark -- GradientView
+
+
+#define	GRADIENT_ADJUSTED	'gRad'
+
+
+class FillToolConfigView::GradientView : public BControl {
+public:
+						GradientView(uint32,uint32);
+	virtual				~GradientView();
+
+	virtual	void		AttachedToWindow();
+	virtual	void		Draw(BRect);
+	virtual	void		MessageReceived(BMessage*);
+	virtual	void		MouseDown(BPoint);
+	virtual void		FrameResized(float newWidth, float newHeight);
+
+private:
+			void		_CalculateGradient();
+
+private:
+			rgb_color	fColor1;
+			rgb_color	fColor2;
+
+			BBitmap*	fGradient;
+};
+
+
+FillToolConfigView::GradientView::GradientView(uint32 c1, uint32 c2)
+	: BControl("gradient view", "Gradient", new BMessage(GRADIENT_ADJUSTED),
+		B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE | B_FRAME_EVENTS)
+	, fGradient(NULL)
 {
-	// BControl's and classes derived from it do not copy the message
-	// when they are created.
-	BMessage *control_message;
+	fColor1 = BGRAColorToRGB(c1);
+	fColor2 = BGRAColorToRGB(c2);
 
-	BRect controller_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE);
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",MODE_OPTION);
-	control_message->AddInt32("value",0x00000000);
-	flood_checkbox = new BCheckBox(controller_frame,"enable flood fill",StringServer::ReturnString(FLOOD_FILL_STRING),control_message);
-	AddChild(flood_checkbox);
+	Message()->AddInt32("color1",RGBColorToBGRA(fColor1));
+	Message()->AddInt32("color2",RGBColorToBGRA(fColor2));
 
-	if (tool->GetCurrentValue(MODE_OPTION) == B_CONTROL_ON)
-		flood_checkbox->SetValue(B_CONTROL_ON);
-	else
-		flood_checkbox->SetValue(B_CONTROL_OFF);
-
-	controller_frame.OffsetBy(0,flood_checkbox->Frame().Height()+EXTRA_EDGE);
-
-	BBox *container;
-	container = new BBox(controller_frame,"gradient box");
-	AddChild(container);
-
-
-	// First add a checkbox for enabling the gradient.
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",GRADIENT_ENABLED_OPTION);
-	control_message->AddInt32("value",0x00000000);
-	gradient_checkbox = new BCheckBox(BRect(EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE,EXTRA_EDGE),"enable gradient box",StringServer::ReturnString(ENABLE_GRADIENT_STRING),control_message);
-	container->AddChild(gradient_checkbox);
-	gradient_checkbox->ResizeToPreferred();
-	if (tool->GetCurrentValue(GRADIENT_ENABLED_OPTION) != B_CONTROL_OFF) {
-		gradient_checkbox->SetValue(B_CONTROL_ON);
-	}
-
-	// Then add a checkbox for enabling the preview.
-	controller_frame = gradient_checkbox->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",PREVIEW_ENABLED_OPTION);
-	control_message->AddInt32("value",0x00000000);
-	preview_checkbox = new BCheckBox(controller_frame,"enable preview box",StringServer::ReturnString(ENABLE_PREVIEW_STRING),control_message);
-	container->AddChild(preview_checkbox);
-	preview_checkbox->ResizeToPreferred();
-	if (tool->GetCurrentValue(PREVIEW_ENABLED_OPTION) != B_CONTROL_OFF) {
-		preview_checkbox->SetValue(B_CONTROL_ON);
-	}
-
-	container->ResizeTo(max_c(container->Frame().Width(),max_c(gradient_checkbox->Frame().Width(),preview_checkbox->Frame().Width())+2*EXTRA_EDGE),0);
-
-	// Then add a control-view for the gradient colors.
-	controller_frame = preview_checkbox->Frame();
-	controller_frame.OffsetBy(0,preview_checkbox->Bounds().Height() + EXTRA_EDGE-1);
-	controller_frame.right = container->Bounds().Width()-EXTRA_EDGE;
-	gradient_view = new GradientView(controller_frame,c1,c2);
-	container->AddChild(gradient_view);
-	container->ResizeBy(0,controller_frame.bottom+EXTRA_EDGE);
-
-	controller_frame = container->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	control_message = new BMessage(OPTION_CHANGED);
-	control_message->AddInt32("option",TOLERANCE_OPTION);
-	control_message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
-	tolerance_slider = new ControlSliderBox(controller_frame,"fill tolerance",StringServer::ReturnString(TOLERANCE_STRING),"0",control_message,0,100);
-	AddChild(tolerance_slider);
-	tolerance_slider->setValue(tool->GetCurrentValue(TOLERANCE_OPTION));
-
-	ResizeTo(tolerance_slider->Bounds().Width()+2*EXTRA_EDGE,tolerance_slider->Frame().bottom + EXTRA_EDGE);
+	SetExplicitMinSize(BSize(100.0, 20.0));
+	SetExplicitMaxSize(BSize(B_SIZE_UNSET, 20.0));
 }
 
 
-
-void FillToolConfigView::AttachedToWindow()
+FillToolConfigView::GradientView::~GradientView()
 {
-	DrawingToolConfigView::AttachedToWindow();
-	flood_checkbox->SetTarget(BMessenger(this));
-	gradient_checkbox->SetTarget(BMessenger(this));
-	preview_checkbox->SetTarget(BMessenger(this));
-//	color_view->SetTarget(BMessenger(this));
-	gradient_view->SetTarget(BMessenger(this));
-	tolerance_slider->SetTarget(new BMessenger(this));
+	delete fGradient;
 }
 
 
-void FillToolConfigView::MessageReceived(BMessage *message)
-{
-	uint32 color1;
-	uint32 color2;
-
-	switch (message->what) {
-		case GRADIENT_ADJUSTED:
-			message->FindInt32("color1",(int32*)&color1);
-			message->FindInt32("color2",(int32*)&color2);
-			((FillTool*)tool)->SetGradient(color1,color2);
-			break;
-		default:
-			DrawingToolConfigView::MessageReceived(message);
-			break;
-	}
-}
-
-
-
-GradientView::GradientView(BRect rect,uint32 c1,uint32 c2)
-	: BControl(rect,"gradient_control","Gradient",new BMessage(GRADIENT_ADJUSTED),B_FOLLOW_NONE,B_WILL_DRAW)
-{
-	rect.bottom = rect.top;
-	rect.InsetBy(1,0);
-	rect.OffsetTo(0,0);
-	gradient_map = new BBitmap(rect,B_RGB32);
-
-	color1 = BGRAColorToRGB(c1);
-	color2 = BGRAColorToRGB(c2);
-
-	CalculateGradient();
-	Message()->AddInt32("color1",RGBColorToBGRA(color1));
-	Message()->AddInt32("color2",RGBColorToBGRA(color2));
-}
-
-
-
-GradientView::~GradientView()
-{
-	delete gradient_map;
-}
-
-void GradientView::AttachedToWindow()
+void
+FillToolConfigView::GradientView::AttachedToWindow()
 {
 	BControl::AttachedToWindow();
+
+	delete fGradient;
+
+	BRect bounds = Bounds();
+	bounds.bottom = bounds.top;
+	fGradient = new BBitmap(bounds, B_RGB32);
+
+	_CalculateGradient();
 }
 
-void GradientView::Draw(BRect rect)
+
+void
+FillToolConfigView::GradientView::Draw(BRect rect)
 {
 	BControl::Draw(rect);
-	SetHighColor(0,0,0,255);
+
+	SetHighColor(0, 0, 0, 255);
 	StrokeRect(Bounds());
+
 	BRect bounds = Bounds();
-	bounds.InsetBy(1,1);
-	DrawBitmap(gradient_map,gradient_map->Bounds(),bounds);
+	bounds.InsetBy(1.0, 1.0);
+	DrawBitmap(fGradient, fGradient->Bounds(), bounds);
 }
 
 
-
-void GradientView::MessageReceived(BMessage *message)
+void
+FillToolConfigView::GradientView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case B_PASTE:
+		case B_PASTE: {
 			if (message->WasDropped()) {
-				BPoint drop_point = ConvertFromScreen(message->DropPoint());
-				rgb_color *new_color = new rgb_color();
-				int32 color_size = sizeof(rgb_color);
-				if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,(const void**)&new_color,&color_size) == B_OK) {
-					float half = Bounds().left + (Bounds().right-Bounds().left)/2.0;
-					if (drop_point.x < half)
-						color1 = *new_color;
-					else
-						color2 = *new_color;
+				BPoint dropPoint = ConvertFromScreen(message->DropPoint());
 
-					Message()->ReplaceInt32("color1",RGBColorToBGRA(color1));
-					Message()->ReplaceInt32("color2",RGBColorToBGRA(color2));
-					CalculateGradient();
+				ssize_t size;
+				const void* data;
+				if (message->FindData("RGBColor", B_RGB_COLOR_TYPE, &data,
+					&size) == B_OK && size == sizeof(rgb_color)) {
+					if (dropPoint.x < (Bounds().right / 2.0))
+						memcpy((void*)(&fColor1), data, size);
+					else
+						memcpy((void*)(&fColor2), data, size);
+
+					Message()->ReplaceInt32("color1", RGBColorToBGRA(fColor1));
+					Message()->ReplaceInt32("color2", RGBColorToBGRA(fColor2));
+
+					_CalculateGradient();
 					Draw(Bounds());
 					Invoke();
 				}
 			}
-			break;
-		default:
+		}	break;
+
+		default: {
 			BControl::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
 
-
-void GradientView::MouseDown(BPoint point)
+void
+FillToolConfigView::GradientView::MouseDown(BPoint point)
 {
 	BControl::MouseDown(point);
 
-	// Open the palette-view.
-	float half = Bounds().left + (Bounds().right-Bounds().left)/2.0;
-	rgb_color color;
-	if (point.x < half)
-		color = color1;
-	else
-		color = color2;
+	rgb_color color = fColor1;
+	if (point.x > (Bounds().right / 2.0))
+		color = fColor2;
 
+	// Open the palette-view.
 	ColorPaletteWindow::showPaletteWindow();
 	ColorPaletteWindow::ChangePaletteColor(color);
 }
 
 
-
-void GradientView::CalculateGradient()
+void
+FillToolConfigView::GradientView::FrameResized(float newWidth, float newHeight)
 {
-	uint32 c1 = RGBColorToBGRA(color1);
-	uint32 c2 = RGBColorToBGRA(color2);
+	delete fGradient;
+	fGradient = new BBitmap(BRect(0, 0, newWidth, 0), B_RGB32);
 
-	uint32 *bits = (uint32*)gradient_map->Bits();
+	_CalculateGradient();
+}
 
-	int32 width = gradient_map->BytesPerRow()/4;
+
+void
+FillToolConfigView::GradientView::_CalculateGradient()
+{
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} c;
 
-	for (int32 x=0;x<width;x++) {
-		c.word = mix_2_pixels(c1,c2,1-(float)x/(float)(width+1));
+	uint32 c1 = RGBColorToBGRA(fColor1);
+	uint32 c2 = RGBColorToBGRA(fColor2);
+
+	uint32 *bits = (uint32*)fGradient->Bits();
+	int32 width = fGradient->BytesPerRow() / 4;
+
+	for (int32 x = 0; x < width; ++x) {
+		c.word = mix_2_pixels(c1, c2, 1 - float(x) / float(width + 1.0));
 		float coeff = c.bytes[3] / 255.0;
 		if ((x % 2)	== 0) {
-			c.bytes[0] = (uint8)(c.bytes[0]*coeff);
-			c.bytes[1] = (uint8)(c.bytes[1]*coeff);
-			c.bytes[2] = (uint8)(c.bytes[2]*coeff);
-		}
-		else {
-			c.bytes[0] = (uint8)(c.bytes[0]*coeff + (1-coeff)*255);
-			c.bytes[1] = (uint8)(c.bytes[1]*coeff + (1-coeff)*255);
-			c.bytes[2] = (uint8)(c.bytes[2]*coeff + (1-coeff)*255);
+			c.bytes[0] = (uint8)(c.bytes[0] * coeff);
+			c.bytes[1] = (uint8)(c.bytes[1] * coeff);
+			c.bytes[2] = (uint8)(c.bytes[2] * coeff);
+		} else {
+			c.bytes[0] = (uint8)(c.bytes[0] * coeff + (1 - coeff) * 255);
+			c.bytes[1] = (uint8)(c.bytes[1] * coeff + (1 - coeff) * 255);
+			c.bytes[2] = (uint8)(c.bytes[2] * coeff + (1 - coeff) * 255);
 		}
 		*bits++ = c.word;
+	}
+}
+
+
+// #pragma mark -- FillToolConfigView
+
+
+FillToolConfigView::FillToolConfigView(BRect rect, DrawingTool *t,uint32 c1, uint32 c2)
+	: DrawingToolConfigView(rect,t)
+{
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", MODE_OPTION);
+	message->AddInt32("value", 0x00000000);
+	fFlod = new BCheckBox(StringServer::ReturnString(FLOOD_FILL_STRING), message);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", GRADIENT_ENABLED_OPTION);
+	message->AddInt32("value", 0x00000000);
+	fGradient = new BCheckBox(StringServer::ReturnString(ENABLE_GRADIENT_STRING),
+		message);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", PREVIEW_ENABLED_OPTION);
+	message->AddInt32("value", 0x00000000);
+	fPreview = new BCheckBox(StringServer::ReturnString(ENABLE_PREVIEW_STRING),
+		message);
+
+	fGradientView = new GradientView(c1, c2);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option",TOLERANCE_OPTION);
+	message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
+	fToleranceSlider = new ControlSliderBox("fill tolerance",
+		StringServer::ReturnString(TOLERANCE_STRING), "0", message, 0, 100);
+
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
+					.Add(fFlod)
+					.SetInsets(5.0, 5.0, 0.0, 5.0)))
+		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
+					.Add(fGradient)
+					.Add(fPreview)
+					.Add(fGradientView)
+					.SetInsets(5.0, 5.0, 5.0, 5.0)))
+		.Add(fToleranceSlider)
+	);
+
+	fFlod->SetValue(tool->GetCurrentValue(MODE_OPTION));
+
+	if (tool->GetCurrentValue(GRADIENT_ENABLED_OPTION) != B_CONTROL_OFF)
+		fGradient->SetValue(B_CONTROL_ON);
+
+	if (tool->GetCurrentValue(PREVIEW_ENABLED_OPTION) != B_CONTROL_OFF)
+		fPreview->SetValue(B_CONTROL_ON);
+
+	fToleranceSlider->setValue(tool->GetCurrentValue(TOLERANCE_OPTION));
+}
+
+
+void
+FillToolConfigView::AttachedToWindow()
+{
+	DrawingToolConfigView::AttachedToWindow();
+
+	BMessenger messenger(this);
+	fFlod->SetTarget(messenger);
+	fGradient->SetTarget(messenger);
+	fPreview->SetTarget(messenger);
+	fGradientView->SetTarget(messenger);
+
+	fToleranceSlider->SetTarget(new BMessenger(this));
+}
+
+
+void
+FillToolConfigView::MessageReceived(BMessage *message)
+{
+	switch (message->what) {
+		case GRADIENT_ADJUSTED: {
+			uint32 color1;
+			uint32 color2;
+			message->FindInt32("color1", (int32*)&color1);
+			message->FindInt32("color2", (int32*)&color2);
+			((FillTool*)tool)->SetGradient(color1, color2);
+		}	break;
+
+		default: {
+			DrawingToolConfigView::MessageReceived(message);
+		}	break;
 	}
 }
