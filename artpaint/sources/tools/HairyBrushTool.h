@@ -1,74 +1,69 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef HAIRY_BRUSH_TOOL_H
 #define HAIRY_BRUSH_TOOL_H
 
 #include "DrawingTool.h"
-#include "CoordinateQueue.h"
-#include "BitmapDrawer.h"
 
 
 class ControlSlider;
 class ControlSliderBox;
+class ImageView;
 
 
-#define COLOR_VARIANCE_CHANGED	'Cvar'
-#define	COLOR_AMOUNT_CHANGED	'Camt'
-
-// This class is defines the first actual tool.
 class HairyBrushTool : public DrawingTool {
-//	CoordinateQueue	*coordinate_queue;
-//
-//	bool		reading_coordinates;
-
-	ImageView	*image_view;
-
-//static	int32	CoordinateReader(void*);
-//		int32	read_coordinates();
-
-
 public:
-				HairyBrushTool();
-virtual			~HairyBrushTool();
+								HairyBrushTool();
+	virtual						~HairyBrushTool();
 
-ToolScript*		UseTool(ImageView*,uint32,BPoint,BPoint);
-		int32	UseToolWithScript(ToolScript*,BBitmap*);
+			int32				UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-virtual	BView*	makeConfigView();
-const	char*	ReturnHelpString(bool);
-const	void*	ReturnToolCursor();
+
+			BView*				makeConfigView();
+			const void*			ReturnToolCursor();
+			const char*			ReturnHelpString(bool isInUse);
+
+private:
+			ImageView*			image_view;
+//	CoordinateQueue	*coordinate_queue;
+//	bool		reading_coordinates;
+//	static	int32	CoordinateReader(void*);
+//	int32	read_coordinates();
 };
-
 
 
 class HairyBrushToolConfigView : public DrawingToolConfigView {
-		ControlSliderBox	*hair_amount_slider;
-		ControlSliderBox	*width_slider;
-		ControlSlider		*color_variance_slider;
-		ControlSlider		*color_amount_slider;
-
 public:
-		HairyBrushToolConfigView(BRect rect,DrawingTool *t);
+								HairyBrushToolConfigView(BRect rect,
+									DrawingTool* drawingTool);
 
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
+	virtual	void				AttachedToWindow();
+	virtual	void				MessageReceived(BMessage* message);
+
+private:
+			ControlSliderBox*	fHairAmountSlider;
+			ControlSliderBox*	fWidthSlider;
+			ControlSlider*		fColorVarianceSlider;
+			ControlSlider*		fColorAmountSlider;
+
 };
 
 
 
-inline float random_round(float number,float r)
+inline float
+random_round(float number, float r)
 {
-	float dec = number - floor(number);
-	if (dec < r)
-		return floor(number);
-	else
-		return ceil(number);
+	const float dec = number - floor(number);
+	return (dec < r ? floor(number) : ceil(number));
 }
 
 

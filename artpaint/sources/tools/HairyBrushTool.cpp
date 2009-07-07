@@ -1,60 +1,76 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
+
+#include "HairyBrushTool.h"
+
+#include "BitmapDrawer.h"
+#include "Controls.h"
+#include "CoordinateReader.h"
+#include "Cursors.h"
+#include "Image.h"
+#include "ImageUpdater.h"
+#include "PaintApplication.h"
+#include "RandomNumberGenerator.h"
+#include "StringServer.h"
+#include "UtilityClasses.h"
+
+
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+
+
 #include <stdlib.h>
 
 
-#include "HairyBrushTool.h"
-#include "Selection.h"
-#include "StringServer.h"
-#include "Cursors.h"
-#include "PixelOperations.h"
-#include "CoordinateReader.h"
-#include "ImageUpdater.h"
-#include "RandomNumberGenerator.h"
-#include "PaintApplication.h"
-#include "UtilityClasses.h"
-#include "Image.h"
-#include "Controls.h"
+#define COLOR_VARIANCE_CHANGED	'Cvar'
+#define	COLOR_AMOUNT_CHANGED	'Camt'
 
 HairyBrushTool::HairyBrushTool()
-		: DrawingTool(StringServer::ReturnString(HAIRY_BRUSH_TOOL_NAME_STRING),HAIRY_BRUSH_TOOL)
+	: DrawingTool(StringServer::ReturnString(HAIRY_BRUSH_TOOL_NAME_STRING),
+		HAIRY_BRUSH_TOOL)
 {
-	options = SIZE_OPTION | PRESSURE_OPTION | TOLERANCE_OPTION | CONTINUITY_OPTION;
+	options = SIZE_OPTION | PRESSURE_OPTION | TOLERANCE_OPTION
+		| CONTINUITY_OPTION;
 	number_of_options = 3;
-	SetOption(SIZE_OPTION,5);
-	SetOption(PRESSURE_OPTION,2);
-	SetOption(TOLERANCE_OPTION,10);
-	SetOption(CONTINUITY_OPTION,20);
+
+	SetOption(SIZE_OPTION, 5);
+	SetOption(PRESSURE_OPTION, 2);
+	SetOption(TOLERANCE_OPTION, 10);
+	SetOption(CONTINUITY_OPTION, 20);
 }
 
 
 HairyBrushTool::~HairyBrushTool()
 {
-	// free whatever storage this class allocated
 }
 
 
-ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint)
+ToolScript*
+HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 {
 	// here we first get the necessary data from view
 	// and then start drawing while mousebutton is held down
 
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == TRUE)
+	while (last_updated_rect.IsValid() == true)
 		snooze(50 * 1000);
 
 //	coordinate_queue = new CoordinateQueue();
 	image_view = view;
-//	thread_id coordinate_reader = spawn_thread(CoordinateReader,"read coordinates",B_NORMAL_PRIORITY,this);
+//	thread_id coordinate_reader = spawn_thread(CoordinateReader,
+//		"read coordinates",B_NORMAL_PRIORITY,this);
 //	resume_thread(coordinate_reader);
 //	reading_coordinates = TRUE;
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
+	ToolScript *the_script = new ToolScript(type, settings,
+		((PaintApplication*)be_app)->Color(true));
 
 	Selection *selection = view->GetSelection();
 
@@ -81,7 +97,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	float color_randomness = GetCurrentValue(TOLERANCE_OPTION);
 	float initial_color_amount = GetCurrentValue(CONTINUITY_OPTION) / 10.0;
 	float color_amount_randomness = 4;
-	rgb_color color =  ((PaintApplication*)be_app)->Color(TRUE);
+	rgb_color color =  ((PaintApplication*)be_app)->Color(true);
 	int32 hair_count = GetCurrentValue(SIZE_OPTION);
 
 	float *color_amount_array = new float[hair_count];
@@ -92,7 +108,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	for (int32 i=0;i<hair_count;i++) {
 		float red,green,blue,alpha;
 		color_amount_array[i] = initial_color_amount - color_amount_randomness + random()%1000/1000.0*color_amount_randomness*2.0;
-		color_array[i] = ((PaintApplication*)be_app)->Color(TRUE);
+		color_array[i] = ((PaintApplication*)be_app)->Color(true);
 		red = color_array[i].red;
 		green = color_array[i].green;
 		blue = color_array[i].blue;
@@ -212,7 +228,7 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	updater->ForceUpdate();
 
 	float number_of_consecutive_growths = 0;
-//	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == TRUE)) {
+//	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == true)) {
 	while (reader->GetPoint(point) == B_NO_ERROR) {
 //		if ( (status_of_read == B_OK) && (prev_point != point) ) {
 		if (prev_point != point) {
@@ -352,30 +368,34 @@ ToolScript* HairyBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,
 	return the_script;
 }
 
-int32 HairyBrushTool::UseToolWithScript(ToolScript*,BBitmap*)
+int32
+HairyBrushTool::UseToolWithScript(ToolScript*, BBitmap*)
 {
 	return B_ERROR;
 }
 
-BView* HairyBrushTool::makeConfigView()
-{
-	HairyBrushToolConfigView *target_view = new HairyBrushToolConfigView(BRect(0,0,150,0),this);
-	return target_view;
-}
 
-const char* HairyBrushTool::ReturnHelpString(bool is_in_use)
+BView*
+HairyBrushTool::makeConfigView()
 {
-	if (!is_in_use)
-		return StringServer::ReturnString(HAIRY_BRUSH_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(HAIRY_BRUSH_TOOL_IN_USE_STRING);
+	return (new HairyBrushToolConfigView(BRect(0, 0, 150, 0), this));
 }
 
 
-const void* HairyBrushTool::ReturnToolCursor()
+const void*
+HairyBrushTool::ReturnToolCursor()
 {
 	return HS_HAIRY_BRUSH_CURSOR;
 }
+
+
+const char*
+HairyBrushTool::ReturnHelpString(bool isInUse)
+{
+	return StringServer::ReturnString(isInUse ? HAIRY_BRUSH_TOOL_IN_USE_STRING
+		: HAIRY_BRUSH_TOOL_READY_STRING);
+}
+
 
 //int32 HairyBrushTool::CoordinateReader(void *data)
 //{
@@ -386,7 +406,7 @@ const void* HairyBrushTool::ReturnToolCursor()
 //
 //int32 HairyBrushTool::read_coordinates()
 //{
-//	reading_coordinates = TRUE;
+//	reading_coordinates = true;
 //	uint32 buttons;
 //	BPoint point,prev_point;
 //	BPoint view_point;
@@ -413,74 +433,78 @@ const void* HairyBrushTool::ReturnToolCursor()
 //}
 
 
+// #pragma mark -- HairyBrushToolConfigView
 
-HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect,DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+
+HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect, DrawingTool* t)
+	: DrawingToolConfigView(rect, t)
 {
-	BMessage *message;
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SIZE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	float divider = 0;
-	hair_amount_slider = new ControlSliderBox(BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE),"slider",StringServer::ReturnString(HAIRS_STRING),"0",message,5,100);
-	hair_amount_slider->ResizeToPreferred();
-	AddChild(hair_amount_slider);
-	BRect frame = hair_amount_slider->Frame();
-	frame.OffsetBy(0,frame.Height()+EXTRA_EDGE);
-	divider = hair_amount_slider->Divider();
+	fHairAmountSlider = new ControlSliderBox("amount slider",
+		StringServer::ReturnString(HAIRS_STRING), "0", message, 5, 100);
 
 	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",PRESSURE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(PRESSURE_OPTION));
-	width_slider = new ControlSliderBox(frame,"size_slider",StringServer::ReturnString(SIZE_STRING),"0",message,2,50);
-	AddChild(width_slider);
-	divider = max_c(divider,width_slider->Divider());
+	message->AddInt32("option", PRESSURE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+	fWidthSlider = new ControlSliderBox("size slider",
+		StringServer::ReturnString(SIZE_STRING), "0", message, 2, 50);
 
-	frame.OffsetBy(0,frame.Height()+EXTRA_EDGE);
 	message = new BMessage(COLOR_VARIANCE_CHANGED);
-	color_variance_slider = new ControlSlider(frame,"color_variance_slider",StringServer::ReturnString(COLOR_VARIANCE_STRING),message,0,128,B_BLOCK_THUMB);
-	color_variance_slider->SetLimitLabels(StringServer::ReturnString(NONE_STRING),StringServer::ReturnString(RANDOM_STRING));
-	color_variance_slider->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
-	color_variance_slider->ResizeToPreferred();
-	AddChild(color_variance_slider);
+	fColorVarianceSlider = new ControlSlider("color variance slider",
+		StringServer::ReturnString(COLOR_VARIANCE_STRING), message, 0, 128,
+		B_BLOCK_THUMB);
+	fColorVarianceSlider->SetLimitLabels(StringServer::ReturnString(NONE_STRING),
+		StringServer::ReturnString(RANDOM_STRING));
+	fColorVarianceSlider->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
-	frame = color_variance_slider->Frame();
-	frame.OffsetBy(0,frame.Height());
 	message = new BMessage(COLOR_AMOUNT_CHANGED);
-	color_amount_slider = new ControlSlider(frame,"color_amount_slider",StringServer::ReturnString(COLOR_AMOUNT_STRING),message,1,500,B_BLOCK_THUMB);
-	color_amount_slider->SetLimitLabels(StringServer::ReturnString(LITTLE_STRING),StringServer::ReturnString(MUCH_STRING));
-	color_amount_slider->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
-	color_amount_slider->ResizeToPreferred();
-	AddChild(color_amount_slider);
+	fColorAmountSlider = new ControlSlider("color amount slider",
+		StringServer::ReturnString(COLOR_AMOUNT_STRING), message, 1, 500,
+		B_BLOCK_THUMB);
+	fColorAmountSlider->SetLimitLabels(StringServer::ReturnString(LITTLE_STRING),
+		StringServer::ReturnString(MUCH_STRING));
+	fColorAmountSlider->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
 
-	hair_amount_slider->SetDivider(divider);
-	width_slider->SetDivider(divider);
-	ResizeTo(color_amount_slider->Bounds().Width()+2*EXTRA_EDGE,color_amount_slider->Frame().bottom+EXTRA_EDGE);
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(fHairAmountSlider)
+		.Add(fWidthSlider)
+		.AddStrut(5.0)
+		.Add(fColorVarianceSlider)
+		.Add(fColorAmountSlider)
+	);
 }
 
 
 void HairyBrushToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
-	hair_amount_slider->SetTarget(new BMessenger(this));
-	width_slider->SetTarget(new BMessenger(this));
-	color_variance_slider->SetTarget(BMessenger(this));
-	color_amount_slider->SetTarget(BMessenger(this));
+
+	fHairAmountSlider->SetTarget(new BMessenger(this));
+	fWidthSlider->SetTarget(new BMessenger(this));
+	fColorVarianceSlider->SetTarget(BMessenger(this));
+	fColorAmountSlider->SetTarget(BMessenger(this));
 }
 
 
 
-void HairyBrushToolConfigView::MessageReceived(BMessage *message)
+void HairyBrushToolConfigView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case COLOR_VARIANCE_CHANGED:
-			tool->SetOption(TOLERANCE_OPTION,color_variance_slider->Value());
-			break;
-		case COLOR_AMOUNT_CHANGED:
-			tool->SetOption(CONTINUITY_OPTION,color_amount_slider->Value());
-		default:
+		case COLOR_VARIANCE_CHANGED: {
+			tool->SetOption(TOLERANCE_OPTION,fColorVarianceSlider->Value());
+		}	break;
+
+		case COLOR_AMOUNT_CHANGED: {
+			tool->SetOption(CONTINUITY_OPTION, fColorAmountSlider->Value());
+		}	break;	// TODO: check since before it did fall through
+
+		default: {
 			DrawingToolConfigView::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
