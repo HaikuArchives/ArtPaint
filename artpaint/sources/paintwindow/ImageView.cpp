@@ -882,12 +882,11 @@ bool ImageView::Quit()
 
 status_t ImageView::Freeze()
 {
-
-	if (acquire_sem(mouse_mutex) == B_NO_ERROR)
-		if (acquire_sem(action_semaphore) == B_NO_ERROR)
-			return B_NO_ERROR;
-		else
-			release_sem(mouse_mutex);
+	if (acquire_sem(mouse_mutex) == B_OK) {
+		if (acquire_sem(action_semaphore) == B_OK)
+			return B_OK;
+		release_sem(mouse_mutex);
+	}
 
 	// This must restore whatever the manipulator had previewed. Here we
 	// also acquire mouse_mutex and action_semaphore semaphores to protect
@@ -904,8 +903,8 @@ status_t ImageView::Freeze()
 
 status_t ImageView::UnFreeze()
 {
-	// Release the semaphores. We could also tell the manipulator to preview with the settings
-	// that it last had, but we will not do it yet.
+	// Release the semaphores. We could also tell the manipulator to preview
+	// with the settings that it last had, but we will not do it yet.
 	release_sem(mouse_mutex);
 	release_sem(action_semaphore);
 
