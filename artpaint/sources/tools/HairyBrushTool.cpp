@@ -449,21 +449,20 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect, DrawingTool* t)
 	message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", PRESSURE_OPTION);
 	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+
 	fWidthSlider = new ControlSliderBox("size slider",
 		StringServer::ReturnString(SIZE_STRING), "0", message, 2, 50);
 
-	message = new BMessage(COLOR_VARIANCE_CHANGED);
 	fColorVarianceSlider = new ControlSlider("color variance slider",
-		StringServer::ReturnString(COLOR_VARIANCE_STRING), message, 0, 128,
-		B_BLOCK_THUMB);
+		StringServer::ReturnString(COLOR_VARIANCE_STRING),
+		new BMessage(COLOR_VARIANCE_CHANGED), 0, 128, B_BLOCK_THUMB);
 	fColorVarianceSlider->SetLimitLabels(StringServer::ReturnString(NONE_STRING),
 		StringServer::ReturnString(RANDOM_STRING));
 	fColorVarianceSlider->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
-	message = new BMessage(COLOR_AMOUNT_CHANGED);
 	fColorAmountSlider = new ControlSlider("color amount slider",
-		StringServer::ReturnString(COLOR_AMOUNT_STRING), message, 1, 500,
-		B_BLOCK_THUMB);
+		StringServer::ReturnString(COLOR_AMOUNT_STRING),
+		new BMessage(COLOR_AMOUNT_CHANGED), 1, 500, B_BLOCK_THUMB);
 	fColorAmountSlider->SetLimitLabels(StringServer::ReturnString(LITTLE_STRING),
 		StringServer::ReturnString(MUCH_STRING));
 	fColorAmountSlider->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
