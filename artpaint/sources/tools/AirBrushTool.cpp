@@ -1,62 +1,64 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <Debug.h>
-#include <math.h>
-#include <RadioButton.h>
-#include <stdlib.h>
-
-#define PI M_PI
-
 
 #include "AirBrushTool.h"
+
 #include "BitmapDrawer.h"
-#include "PixelOperations.h"
-#include "Selection.h"
-#include "StringServer.h"
-#include "Cursors.h"
+#include "Controls.h"
 #include "CoordinateReader.h"
-#include "RandomNumberGenerator.h"
+#include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
 #include "PaintApplication.h"
-#include "Controls.h"
+#include "PixelOperations.h"
+#include "RandomNumberGenerator.h"
+#include "Selection.h"
+#include "StringServer.h"
 #include "UtilityClasses.h"
 
+
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+#include <RadioButton.h>
 #include <Window.h>
 
+
 AirBrushTool::AirBrushTool()
-	: DrawingTool(StringServer::ReturnString(AIR_BRUSH_TOOL_NAME_STRING),AIR_BRUSH_TOOL)
+	: DrawingTool(StringServer::ReturnString(AIR_BRUSH_TOOL_NAME_STRING),
+		AIR_BRUSH_TOOL)
 {
 	options = SIZE_OPTION | PRESSURE_OPTION | MODE_OPTION;
 	number_of_options = 3;
 
-	SetOption(SIZE_OPTION,1);
-	SetOption(PRESSURE_OPTION,1);
-	SetOption(MODE_OPTION,HS_AIRBRUSH_MODE);
+	SetOption(SIZE_OPTION, 1);
+	SetOption(PRESSURE_OPTION, 1);
+	SetOption(MODE_OPTION, HS_AIRBRUSH_MODE);
 
 	sqrt_table = new int32[5500];
-	for (int32 i=0;i<5500;i++) {
+	for (int32 i = 0; i < 5500; ++i)
 		sqrt_table[i] = (int32)sqrt(i);
-	}
 }
 
 
 AirBrushTool::~AirBrushTool()
 {
-	delete[] sqrt_table;
+	delete [] sqrt_table;
 }
 
 
-ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint)
+ToolScript*
+AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == TRUE)
+	while (last_updated_rect.IsValid() == true)
 		snooze(50 * 1000);
 
 	BPoint prev_point;
@@ -65,7 +67,8 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 	Selection *selection = view->GetSelection();
 
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
+	ToolScript *the_script = new ToolScript(type, settings,
+		((PaintApplication*)be_app)->Color(true));
 
 	if (settings.mode == HS_AIRBRUSH_MODE) {		// Do the airbrush
 		BRect bounds = bitmap->Bounds();
@@ -78,14 +81,14 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 			the_script->AddPoint(point);
 
 			float half_size = settings.size/2;
-			rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
+			rgb_color c = ((PaintApplication*)be_app)->Color(true);
 			target_color = RGBColorToBGRA(c);
 			// we should only consider points that are inside this rectangle
 			rc = BRect(point.x-half_size,point.y-half_size,point.x+half_size,point.y+half_size);
 			rc = rc & bounds;
 			rc = rc & selection->GetBoundingRect();
 
-			if (rc.IsValid() == TRUE) {
+			if (rc.IsValid() == true) {
 				int32 height = rc.IntegerHeight();
 				int32 width = rc.IntegerWidth();
 				int32 left = (int32)rc.left;
@@ -108,24 +111,28 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 									uint32 word;
 								} color;
 								color.word = drawer->GetPixel(left+x,top+y);
-								if (color.bytes[3] != 0x00)
-									drawer->SetPixel(left+x,top+y,mix_2_pixels_fixed(target_color,color.word,(uint32)(32768*change)));
-								else {
+								if (color.bytes[3] != 0x00) {
+									drawer->SetPixel(left+x, top+y,
+										mix_2_pixels_fixed(target_color,
+											color.word, (uint32)(32768*change)));
+								} else {
 									color.word = target_color;
 									color.bytes[3] = 0x00;
-									drawer->SetPixel(left+x,top+y,mix_2_pixels_fixed(target_color,color.word,(uint32)(32768*change)));
+									drawer->SetPixel(left+x, top+y,
+										mix_2_pixels_fixed(target_color,
+											color.word, (uint32)(32768*change)));
 								}
 							}
 						}
 					}
-				}
-				else {
+				} else {
 					for (int32 y=0;y<=height;y++) {
 						int32 y_sqr = (int32)((point.y-rc.top-y)*(point.y-rc.top-y));
 						for (int32 x=0;x<=width;x++) {
 							int32 dx = (int32)(point.x-rc.left-x);
 							float distance = sqrt_table[dx*dx + y_sqr];
-							if ((distance <= half_size) && (selection->ContainsPoint(left+x,top+y))) {
+							if ((distance <= half_size)
+								&& (selection->ContainsPoint(left+x,top+y))) {
 								float change = (half_size-distance)/half_size;
 								change = change*(((float)settings.pressure)/100.0);
 
@@ -136,12 +143,16 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 									uint32 word;
 								} color;
 								color.word = drawer->GetPixel(left+x,top+y);
-								if (color.bytes[3] != 0x00)
-									drawer->SetPixel(left+x,top+y,mix_2_pixels_fixed(target_color,color.word,(uint32)(32768*change)));
-								else {
+								if (color.bytes[3] != 0x00) {
+									drawer->SetPixel(left+x, top+y,
+										mix_2_pixels_fixed(target_color,
+											color.word, (uint32)(32768*change)));
+								} else {
 									color.word = target_color;
 									color.bytes[3] = 0x00;
-									drawer->SetPixel(left+x,top+y,mix_2_pixels_fixed(target_color,color.word,(uint32)(32768*change)));
+									drawer->SetPixel(left+x, top+y,
+										mix_2_pixels_fixed(target_color,
+											color.word, (uint32)(32768*change)));
 								}
 							}
 						}
@@ -159,9 +170,9 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 			window->Unlock();
 			snooze(20 * 1000);
 		}
-	}
-	else if (settings.mode == HS_SPRAY_MODE) {	// Do the spray
-		CoordinateReader *coordinate_reader = new CoordinateReader(view,NO_INTERPOLATION,FALSE,TRUE);
+	} else if (settings.mode == HS_SPRAY_MODE) {	// Do the spray
+		CoordinateReader *coordinate_reader = new CoordinateReader(view,
+			NO_INTERPOLATION, false, true);
 		RandomNumberGenerator *generator = new RandomNumberGenerator(0,10000);
 		ImageUpdater *updater = new ImageUpdater(view,20000.0);
 		prev_point = point;
@@ -171,7 +182,7 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 			float width = settings.size;
 			float angle;
 			float opacity = 0.4;
-			rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
+			rgb_color c = ((PaintApplication*)be_app)->Color(true);
 			uint32 target_color = RGBColorToBGRA(c);
 
 			BRect rc(point,point);
@@ -180,9 +191,10 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 				if (point == prev_point) {
 					for (int32 i=0;i<flow;i++) {
 						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,sqrt((width*.5)*(width*.5)-x*x));
+						float y = generator->UniformDistribution(0,
+							sqrt((width*.5)*(width*.5)-x*x));
 
-						angle = generator->UniformDistribution(0,1.0)*2*PI;
+						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
 						float old_x = x;
 						x = cos(angle)*x - sin(angle)*y;
 						y = sin(angle)*old_x + cos(angle)*y;
@@ -191,14 +203,16 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						new_point.y = round(new_point.y);
 						rc = rc | BRect(new_point,new_point);
 
-						drawer->SetPixel(new_point,mix_2_pixels_fixed(target_color,drawer->GetPixel(new_point),(uint32)(32768*opacity)));
+						drawer->SetPixel(new_point,
+							mix_2_pixels_fixed(target_color,
+								drawer->GetPixel(new_point), (uint32)(32768*opacity)));
 					}
-				}
-				else {
+				} else {
 					BPoint center;
 					for (int32 i=0;i<flow;i++) {
 						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,sqrt((width*.5)*(width*.5)-x*x));
+						float y = generator->UniformDistribution(0,
+							sqrt((width*.5)*(width*.5)-x*x));
 
 						// Select center randomly from the line between prev_point and point.
 						// This is done by doing a linear interpolation between the
@@ -207,7 +221,7 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						center.x = round(a*prev_point.x + (1.0-a)*point.x);
 						center.y = round(a*prev_point.y + (1.0-a)*point.y);
 
-						angle = generator->UniformDistribution(0,1.0)*2*PI;
+						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
 						float old_x = x;
 						x = cos(angle)*x - sin(angle)*y;
 						y = sin(angle)*old_x + cos(angle)*y;
@@ -216,17 +230,19 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						new_point.y = round(new_point.y);
 						rc = rc | BRect(new_point,new_point);
 
-						drawer->SetPixel(new_point,mix_2_pixels_fixed(target_color,drawer->GetPixel(new_point),(uint32)(32768*opacity)));
+						drawer->SetPixel(new_point,
+							mix_2_pixels_fixed(target_color,
+								drawer->GetPixel(new_point), (uint32)(32768*opacity)));
 					}
 				}
-			}
-			else {
+			} else {
 				if (point == prev_point) {
 					for (int32 i=0;i<flow;i++) {
 						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,sqrt((width*.5)*(width*.5)-x*x));
+						float y = generator->UniformDistribution(0,
+							sqrt((width*.5)*(width*.5)-x*x));
 
-						angle = generator->UniformDistribution(0,1.0)*2*PI;
+						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
 						float old_x = x;
 						x = cos(angle)*x - sin(angle)*y;
 						y = sin(angle)*old_x + cos(angle)*y;
@@ -235,15 +251,18 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						new_point.y = round(new_point.y);
 						rc = rc | BRect(new_point,new_point);
 
-						if (selection->ContainsPoint(new_point))
-							drawer->SetPixel(new_point,mix_2_pixels_fixed(target_color,drawer->GetPixel(new_point),(uint32)(32768*opacity)));
+						if (selection->ContainsPoint(new_point)) {
+							drawer->SetPixel(new_point,
+								mix_2_pixels_fixed(target_color,
+									drawer->GetPixel(new_point), (uint32)(32768*opacity)));
+						}
 					}
-				}
-				else {
+				} else {
 					BPoint center;
 					for (int32 i=0;i<flow;i++) {
 						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,sqrt((width*.5)*(width*.5)-x*x));
+						float y = generator->UniformDistribution(0,
+							sqrt((width*.5)*(width*.5)-x*x));
 
 						// Select center randomly from the line between prev_point and point.
 						// This is done by doing a linear interpolation between the
@@ -252,7 +271,7 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						center.x = round(a*prev_point.x + (1.0-a)*point.x);
 						center.y = round(a*prev_point.y + (1.0-a)*point.y);
 
-						angle = generator->UniformDistribution(0,1.0)*2*PI;
+						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
 						float old_x = x;
 						x = cos(angle)*x - sin(angle)*y;
 						y = sin(angle)*old_x + cos(angle)*y;
@@ -261,8 +280,11 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 						new_point.y = round(new_point.y);
 						rc = rc | BRect(new_point,new_point);
 
-						if (selection->ContainsPoint(new_point))
-							drawer->SetPixel(new_point,mix_2_pixels_fixed(target_color,drawer->GetPixel(new_point),(uint32)(32768*opacity)));
+						if (selection->ContainsPoint(new_point)) {
+							drawer->SetPixel(new_point,
+								mix_2_pixels_fixed(target_color,
+									drawer->GetPixel(new_point), (uint32)(32768*opacity)));
+						}
 					}
 				}
 			}
@@ -284,106 +306,95 @@ ToolScript* AirBrushTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BP
 }
 
 
-int32 AirBrushTool::UseToolWithScript(ToolScript*,BBitmap*)
+int32
+AirBrushTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
 	return B_NO_ERROR;
 }
 
 
-BView* AirBrushTool::makeConfigView()
+BView*
+AirBrushTool::makeConfigView()
 {
-	AirBrushToolConfigView *target_view = new AirBrushToolConfigView(BRect(0,0,150,0),this);
-	return target_view;
+	return (new AirBrushToolConfigView(BRect(0, 0, 150, 0), this));
 }
 
-const void* AirBrushTool::ReturnToolCursor()
+
+const void*
+AirBrushTool::ReturnToolCursor()
 {
 	return HS_SPRAY_CURSOR;
 }
 
-const char* AirBrushTool::ReturnHelpString(bool is_in_use)
+
+const char*
+AirBrushTool::ReturnHelpString(bool isInUse)
 {
-	if (!is_in_use)
-		return StringServer::ReturnString(AIR_BRUSH_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(AIR_BRUSH_TOOL_IN_USE_STRING);
+	return StringServer::ReturnString(isInUse ? AIR_BRUSH_TOOL_IN_USE_STRING
+		: AIR_BRUSH_TOOL_READY_STRING);
 }
 
 
+// #pragma mark -- AirBrushToolConfigView
 
-AirBrushToolConfigView::AirBrushToolConfigView(BRect rect, DrawingTool *t)
-	: DrawingToolConfigView(rect,t)
+
+AirBrushToolConfigView::AirBrushToolConfigView(BRect rect, DrawingTool* t)
+	: DrawingToolConfigView(rect, t)
 {
-	BMessage *message;
-	BRect controller_frame = BRect(EXTRA_EDGE,EXTRA_EDGE,150+EXTRA_EDGE,EXTRA_EDGE);
+	BMessage* message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", SIZE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	float divider;
-
-	// First add the controller for size.
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",SIZE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(SIZE_OPTION));
-	size_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(SIZE_STRING),"1",message,1,100);
-	AddChild(size_slider);
-	controller_frame = size_slider->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-
-	// Then add the controller for flow.
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",PRESSURE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(PRESSURE_OPTION));
-	flow_slider = new ControlSliderBox(controller_frame,"size",StringServer::ReturnString(FLOW_STRING),"1",message,1,100);
-	AddChild(flow_slider);
-	controller_frame = flow_slider->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	divider = max_c(flow_slider->Divider(),size_slider->Divider());
-	size_slider->SetDivider(divider);
-	flow_slider->SetDivider(divider);
-
-	controller_frame = flow_slider->Frame();
-	controller_frame.OffsetBy(0,controller_frame.Height()+EXTRA_EDGE);
-	controller_frame.bottom = controller_frame.top;
-	// Add two radio-buttons for defining the mode of selector.
-	// Add a menu for defining the shape of the selector.
-
-	// Create a BBox for the radio-buttons.
-	BBox *container = new BBox(controller_frame,"airbrush_tool_type");
-	container->SetLabel(StringServer::ReturnString(MODE_STRING));
-	AddChild(container);
+	fSizeSlider = new ControlSliderBox("size",
+		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
 
 	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",MODE_OPTION);
-	message->AddInt32("value",HS_AIRBRUSH_MODE);
+	message->AddInt32("option", PRESSURE_OPTION);
+	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
-	// Create the first radio-button.
-	font_height fHeight;
-	container->GetFontHeight(&fHeight);
-	mode_button_1 = new BRadioButton(BRect(EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2,EXTRA_EDGE,EXTRA_EDGE+fHeight.descent+fHeight.ascent/2),"a radio button",StringServer::ReturnString(AIRBRUSH_STRING),new BMessage(*message));
-	mode_button_1->ResizeToPreferred();
-	container->AddChild(mode_button_1);
+	fFlowSlider = new ControlSliderBox("flow",
+		StringServer::ReturnString(FLOW_STRING), "1", message, 1, 100);
+
+	message = new BMessage(OPTION_CHANGED);
+	message->AddInt32("option", MODE_OPTION);
+	message->AddInt32("value", HS_AIRBRUSH_MODE);
+
+	fAirbrush = new BRadioButton(StringServer::ReturnString(AIRBRUSH_STRING),
+		new BMessage(*message));
+
+	message->ReplaceInt32("value", HS_SPRAY_MODE);
+	fSprayMode = new BRadioButton(StringServer::ReturnString(SPRAY_STRING),
+		message);
+
+	BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(fAirbrush)
+		.Add(fSprayMode)
+		.SetInsets(5.0, 5.0, 5.0, 5.0));
+	box->SetLabel(StringServer::ReturnString(MODE_STRING));
+
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(fSizeSlider)
+		.Add(fFlowSlider)
+		.Add(box)
+	);
+
 	if (tool->GetCurrentValue(MODE_OPTION) == HS_AIRBRUSH_MODE)
-		mode_button_1->SetValue(B_CONTROL_ON);
+		fAirbrush->SetValue(B_CONTROL_ON);
 
-	// Create the second radio-button.
-	message->ReplaceInt32("value",HS_SPRAY_MODE);
-	mode_button_2 = new BRadioButton(BRect(EXTRA_EDGE,mode_button_1->Frame().bottom,EXTRA_EDGE,mode_button_1->Frame().bottom)," a radio button",StringServer::ReturnString(SPRAY_STRING),message);
-	mode_button_2->ResizeToPreferred();
-	container->AddChild(mode_button_2);
 	if (tool->GetCurrentValue(MODE_OPTION) == HS_SPRAY_MODE)
-		mode_button_2->SetValue(B_CONTROL_ON);
-
-	container->ResizeBy(0,mode_button_2->Frame().bottom+EXTRA_EDGE);
-	controller_frame.OffsetBy(0,container->Frame().Height() + EXTRA_EDGE);
-
-	ResizeTo(container->Bounds().Width()+2*EXTRA_EDGE,container->Frame().bottom + EXTRA_EDGE);
+		fSprayMode->SetValue(B_CONTROL_ON);
 }
 
 
-void AirBrushToolConfigView::AttachedToWindow()
+void
+AirBrushToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
-	size_slider->SetTarget(new BMessenger(this));
-	flow_slider->SetTarget(new BMessenger(this));
-	mode_button_1->SetTarget(BMessenger(this));
-	mode_button_2->SetTarget(BMessenger(this));
+
+	fSizeSlider->SetTarget(new BMessenger(this));
+	fFlowSlider->SetTarget(new BMessenger(this));
+	fAirbrush->SetTarget(BMessenger(this));
+	fSprayMode->SetTarget(BMessenger(this));
 }
