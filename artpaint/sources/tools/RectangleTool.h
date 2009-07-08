@@ -12,32 +12,37 @@
 #include "DrawingTool.h"
 #include "ToolEventAdapter.h"
 
+
+class BCheckBox;
+class BRadioButton;
+
+
 class RectangleTool : public DrawingTool, public ToolEventAdapter {
-
 public:
-		RectangleTool();
-virtual	~RectangleTool();
+							RectangleTool();
+	virtual					~RectangleTool();
 
-ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
-int32		UseToolWithScript(ToolScript*,BBitmap*);
+			int32			UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
 
-BView*	makeConfigView();
-const	char*	ReturnHelpString(bool);
-const	void*	ReturnToolCursor();
+			BView*			makeConfigView();
+			const void*		ReturnToolCursor();
+			const char*		ReturnHelpString(bool isInUse);
 };
 
 
 class RectangleToolConfigView : public DrawingToolConfigView {
-		BCheckBox 			*fill_checkbox;
-		BRadioButton		*radio_button_1;
-		BRadioButton		*radio_button_2;
-		BCheckBox			*rotation_checkbox;
-		BCheckBox			*anti_alias_checkbox;
-
 public:
-		RectangleToolConfigView(BRect rect,DrawingTool *t);
+							RectangleToolConfigView(BRect rect, DrawingTool* t);
 
-void	AttachedToWindow();
+	virtual	void			AttachedToWindow();
+
+private:
+			BCheckBox* 		fFillCheckBox;
+			BRadioButton*	fCorner2Corner;
+			BRadioButton*	fCenter2Corner;
+			BCheckBox*		fRotationCheckBox;
+			BCheckBox*		fAntiAliasCheckBox;
 };
 
 #endif
