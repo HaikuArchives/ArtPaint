@@ -27,6 +27,9 @@
 #include <SupportDefs.h>
 
 
+class BBitmap;
+
+
 #define	BRUSH_PREVIEW_WIDTH		64
 #define	BRUSH_PREVIEW_HEIGHT	64
 

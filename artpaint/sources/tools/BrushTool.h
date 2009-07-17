@@ -1,72 +1,76 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef BRUSH_TOOL_H
 #define BRUSH_TOOL_H
 
 #include "Brush.h"
+#include "CoordinateQueue.h"
 #include "DrawingTool.h"
 #include "PixelOperations.h"
-#include "CoordinateQueue.h"
 #include "Selection.h"
 
+
 class BrushTool : public DrawingTool {
-		CoordinateQueue	*coordinate_queue;
-		bool			reading_coordinates;
-		ImageView		*image_view;
-
-		Brush			*brush;
-		uint32			*bits;
-		int32			bpr;
-		BPoint			last_point;
-		int32 			left_bound;
-		int32			right_bound;
-		int32			top_bound;
-		int32			bottom_bound;
-
-		Selection		*selection;
-
-
-		BRect	draw_line(BPoint,BPoint,uint32);
-inline	void	draw_brush_handle_selection(BPoint,int32,int32,uint32);
-inline	void	draw_brush(BPoint,int32,int32,uint32);
-		void	test_brush(BPoint,uint32);
-		void	test_brush2(BPoint,uint32);
-
-//static	int32	CoordinateReader(void*);
-//		int32	read_coordinates();
-//
-
 public:
-		BrushTool();
-virtual	~BrushTool();
+								BrushTool();
+	virtual						~BrushTool();
 
-ToolScript*	UseTool(ImageView*,uint32,BPoint,BPoint);
-int32		UseToolWithScript(ToolScript*,BBitmap*);
+			int32				UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-BView* 	makeConfigView();
-void	UpdateConfigView(BView*);
+			BView*				makeConfigView();
+			void				UpdateConfigView(BView*);
 
-const	char*	ReturnHelpString(bool);
-const	void*	ReturnToolCursor();
+			const void*			ReturnToolCursor();
+			const char*			ReturnHelpString(bool isInUse);
 
-status_t	readSettings(BFile&,bool);
-status_t	writeSettings(BFile&);
 
-Brush*	GetBrush() { return brush; }
+			status_t			readSettings(BFile& file, bool isLittleEndian);
+			status_t			writeSettings(BFile& file);
+
+			Brush*				GetBrush() { return brush; }
+
+private:
+			BRect				draw_line(BPoint,BPoint,uint32);
+	inline	void				draw_brush_handle_selection(BPoint, int32,
+									int32,uint32);
+	inline	void				draw_brush(BPoint,int32,int32,uint32);
+			void				test_brush(BPoint,uint32);
+			void				test_brush2(BPoint,uint32);
+
+//			int32				read_coordinates();
+//	static	int32				CoordinateReader(void*);
+
+
+private:
+			BPoint				last_point;
+			bool				reading_coordinates;
+
+			int32				bpr;
+			int32				left_bound;
+			int32				right_bound;
+			int32				top_bound;
+			int32				bottom_bound;
+
+			uint32*				bits;
+			Brush*				brush;
+			Selection*			selection;
+			ImageView*			image_view;
+			CoordinateQueue*	coordinate_queue;
 };
 
 
 class BrushToolConfigView : public DrawingToolConfigView {
 public:
-		BrushToolConfigView(BRect rect,DrawingTool *t);
-
-void	AttachedToWindow();
+								BrushToolConfigView(BRect rect, DrawingTool *t);
 };
 
 

@@ -1,13 +1,13 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-
-
 
 /*
 	The class BrushEditor allows user to edit brushes. It will
@@ -24,69 +24,68 @@
 #define BRUSH_EDITOR_H
 
 #include <Box.h>
+#include <View.h>
 
-#define	BRUSH_WIDTH_CHANGED		'BWCh'
-#define BRUSH_HEIGHT_CHANGED	'BHCh'
-#define BRUSH_EDGE_CHANGED		'BeCh'
-#define BRUSH_SHAPE_CHANGED		'Bshc'
-
-#define	BRUSH_ALTERED			'Bral'
-#define	BRUSH_STORING_REQUESTED	'Bsrq'
-
-#include <RadioButton.h>
-#include <Button.h>
 
 #include "Brush.h"
 
+
+class BButton;
+class BRadioButton;
 class BrushView;
 class ControlSliderBox;
 
+
+#define	BRUSH_ALTERED			'Bral'
+
+
 class BrushEditor : public BBox {
-
-Brush				*the_brush;
-BrushView			*brush_view;
-brush_info			b_info;
-
-ControlSliderBox	*width_slider;
-ControlSliderBox	*height_slider;
-ControlSliderBox	*fade_slider;
-BRadioButton		*rectangle_button;
-BRadioButton		*ellipse_button;
-BButton				*store_button;
-
-static	BrushEditor	*the_editor;
-
-		BrushEditor(BRect,Brush*);
-		~BrushEditor();
-
-
 public:
-void	AttachedToWindow();
-void	MessageReceived(BMessage *message);
+	virtual	void				AttachedToWindow();
+	virtual	void				MessageReceived(BMessage *message);
 
+	static	void				BrushModified();
+	static	BView*				CreateBrushEditor(Brush* brush);
 
-static	BView*	CreateBrushEditor(BRect,Brush*);
-static	void	BrushModified();
+private:
+								BrushEditor(Brush* brush);
+								~BrushEditor();
+
+private:
+			Brush*				fBrush;
+			BrushView*			fBrushView;
+			brush_info			fBrushInfo;
+
+			ControlSliderBox*	fWidthSlider;
+			ControlSliderBox*	fHeightSlider;
+			ControlSliderBox*	fFadeSlider;
+			BRadioButton*		fRectangle;
+			BRadioButton*		fEllipse;
+			BButton*			fStoreBrush;
+
+	static	BrushEditor*		fBrushEditor;
 };
 
 
 
 class BrushView : public BView {
-
-Brush	*the_brush;
-BBitmap	*brush_preview;
-bool		draw_controls;
-
 public:
-		BrushView(BRect,Brush*);
-		~BrushView();
+								BrushView(BRect, Brush*);
+	virtual						~BrushView();
 
-void	Draw(BRect);
-void	MessageReceived(BMessage*);
-void	MouseDown(BPoint);
-void	MouseMoved(BPoint,uint32,const BMessage*);
+	virtual	void				Draw(BRect);
+	virtual	void				MessageReceived(BMessage* message);
+	virtual	void				MouseDown(BPoint);
+	virtual	void				MouseMoved(BPoint,uint32, const BMessage*);
 
-void	BrushModified();
-void	ChangeBrush(Brush*);
+			void				BrushModified();
+			void				ChangeBrush(Brush*);
+
+private:
+			bool				fDrawControls;
+
+			Brush*				fBrush;
+			BBitmap*			fBrushPreview;
 };
+
 #endif

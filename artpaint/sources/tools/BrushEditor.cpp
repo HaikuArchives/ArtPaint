@@ -1,17 +1,16 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <Bitmap.h>
-#include <Button.h>
-#include <math.h>
-#include <RadioButton.h>
 
 #include "BrushEditor.h"
+
 #include "UtilityClasses.h"
 #include "Controls.h"
 #include "StringServer.h"
@@ -19,240 +18,268 @@
 #include "BrushStoreWindow.h"
 
 
-#define PI M_PI
+#include <Bitmap.h>
+#include <Box.h>
+#include <Button.h>
+#include <GridLayoutBuilder.h>
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+#include <RadioButton.h>
 
-BrushEditor* BrushEditor::the_editor = NULL;
+
+#include <math.h>
 
 
-BrushEditor::BrushEditor(BRect frame,Brush *brush)
-	: 	BBox(frame)
+#define	BRUSH_WIDTH_CHANGED		'BWCh'
+#define BRUSH_HEIGHT_CHANGED	'BHCh'
+#define BRUSH_EDGE_CHANGED		'BeCh'
+#define BRUSH_SHAPE_CHANGED		'Bshc'
+#define	BRUSH_STORING_REQUESTED	'Bsrq'
+
+
+BrushEditor* BrushEditor::fBrushEditor = NULL;
+
+
+BrushEditor::BrushEditor(Brush* brush)
+	: BBox(B_FANCY_BORDER, NULL)
+	, fBrush(brush)
 {
-	the_brush = brush;
-	b_info = the_brush->GetInfo();
+	fBrushInfo = fBrush->GetInfo();
 
-	float max_divider = 0;
+	float height = BRUSH_PREVIEW_HEIGHT - EXTRA_EDGE;
+	float width = BRUSH_PREVIEW_WIDTH - EXTRA_EDGE;
 
-	float height = BRUSH_PREVIEW_HEIGHT;
-	float width = BRUSH_PREVIEW_WIDTH;
-	ResizeTo(frame.Width(),height+2*EXTRA_EDGE);
-	BMessage *a_message;
-	brush_view = new BrushView(BRect(EXTRA_EDGE,EXTRA_EDGE,width-EXTRA_EDGE,height-EXTRA_EDGE),the_brush);
-	AddChild(brush_view);
-	BRect slider_frame = BRect(brush_view->Frame().RightTop()+BPoint(EXTRA_EDGE,0),Bounds().RightTop()+BPoint(-EXTRA_EDGE,20+EXTRA_EDGE));
+	fBrushView = new BrushView(BRect(EXTRA_EDGE, EXTRA_EDGE, width, height),
+		fBrush);
 
+	BMessage* message = new BMessage(BRUSH_SHAPE_CHANGED);
+	message->AddInt32("shape", HS_RECTANGULAR_BRUSH);
 
-	a_message = new BMessage(BRUSH_SHAPE_CHANGED);
-	a_message->AddInt32("shape",HS_RECTANGULAR_BRUSH);
-	rectangle_button = new BRadioButton(slider_frame,"rectangle button",StringServer::ReturnString(RECTANGLE_STRING),a_message);
-	AddChild(rectangle_button);
-	rectangle_button->ResizeToPreferred();
-	slider_frame = rectangle_button->Frame();
-	slider_frame.OffsetBy(0,slider_frame.Height());
+	fRectangle = new BRadioButton(StringServer::ReturnString(RECTANGLE_STRING),
+		message);
 
-	a_message = new BMessage(BRUSH_SHAPE_CHANGED);
-	a_message->AddInt32("shape",HS_ELLIPTICAL_BRUSH);
-	ellipse_button = new BRadioButton(slider_frame,"ellipse button",StringServer::ReturnString(ELLIPSE_STRING),a_message);
-	AddChild(ellipse_button);
+	message = new BMessage(BRUSH_SHAPE_CHANGED);
+	message->AddInt32("shape", HS_ELLIPTICAL_BRUSH);
 
-	slider_frame.OffsetBy(0,slider_frame.Height());
-	store_button = new BButton(slider_frame,"store_button",StringServer::ReturnString(STORE_BRUSH_STRING),new BMessage(BRUSH_STORING_REQUESTED));
-	store_button->ResizeTo(store_button->Frame().Width(),brush_view->Frame().bottom-store_button->Frame().top);
-	AddChild(store_button);
+	fEllipse = new BRadioButton(StringServer::ReturnString(ELLIPSE_STRING),
+		message);
 
-	slider_frame = BRect(brush_view->Frame().LeftBottom()+BPoint(0,EXTRA_EDGE),Bounds().RightBottom()-BPoint(EXTRA_EDGE,0));
-	a_message = new BMessage(BRUSH_WIDTH_CHANGED);
-	a_message->AddInt32("value", int32(b_info.width));
-	width_slider = new ControlSliderBox(slider_frame,"brush width",StringServer::ReturnString(WIDTH_STRING),"0",a_message,1,100);
-	AddChild(width_slider);
-	slider_frame = width_slider->Frame();
-	slider_frame.OffsetBy(0,slider_frame.Height()+EXTRA_EDGE);
-	max_divider = max_c(max_divider,width_slider->Divider());
+	fStoreBrush = new BButton(StringServer::ReturnString(STORE_BRUSH_STRING),
+		new BMessage(BRUSH_STORING_REQUESTED));
 
-	a_message = new BMessage(BRUSH_HEIGHT_CHANGED);
-	a_message->AddInt32("value", int32(b_info.height));
-	height_slider = new ControlSliderBox(slider_frame,"brush height",StringServer::ReturnString(HEIGHT_STRING),"0",a_message,1,100);
-	AddChild(height_slider);
-	slider_frame = height_slider->Frame();
-	slider_frame.OffsetBy(0,slider_frame.Height()+EXTRA_EDGE);
-	max_divider = max_c(max_divider,height_slider->Divider());
+	message = new BMessage(BRUSH_WIDTH_CHANGED);
+	message->AddInt32("value", int32(fBrushInfo.width));
 
+	fWidthSlider = new ControlSliderBox("brush width",
+		StringServer::ReturnString(WIDTH_STRING), "0", message, 0, 100);
 
-	a_message = new BMessage(BRUSH_EDGE_CHANGED);
-	a_message->AddInt32("value", int32(b_info.fade_length));
-	fade_slider = new ControlSliderBox(slider_frame,"brush edge",StringServer::ReturnString(FADE_STRING),"0",a_message,0,100);
-	AddChild(fade_slider);
-	max_divider = max_c(max_divider,fade_slider->Divider());
+	message = new BMessage(BRUSH_HEIGHT_CHANGED);
+	message->AddInt32("value", int32(fBrushInfo.height));
 
-	ResizeTo(Frame().Width(),fade_slider->Frame().bottom+EXTRA_EDGE);
+	fHeightSlider = new ControlSliderBox("brush height",
+		StringServer::ReturnString(HEIGHT_STRING), "0", message, 0, 100);
 
-	height_slider->SetDivider(max_divider);
-	width_slider->SetDivider(max_divider);
-	fade_slider->SetDivider(max_divider);
+	message = new BMessage(BRUSH_EDGE_CHANGED);
+	message->AddInt32("value", int32(fBrushInfo.fade_length));
+
+	fFadeSlider = new ControlSliderBox("brush edge",
+		StringServer::ReturnString(FADE_STRING), "0", message, 0, 100);
+
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.AddGroup(B_HORIZONTAL, 5.0)
+			.Add(fBrushView)
+			.AddGroup(B_VERTICAL, 5.0)
+				.Add(fRectangle)
+				.Add(fEllipse)
+				.AddGlue()
+			.End()
+			.AddGlue()
+		.End()
+		.Add(fWidthSlider)
+		.Add(fHeightSlider)
+		.Add(fFadeSlider)
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.Add(fStoreBrush)
+		.End()
+		.SetInsets(5.0, 5.0, 5.0, 5.0)
+	);
 }
 
 
 BrushEditor::~BrushEditor()
 {
-	the_editor = NULL;
+	fBrushEditor = NULL;
 }
 
 
-BView* BrushEditor::CreateBrushEditor(BRect rect,Brush *brush)
+BView*
+BrushEditor::CreateBrushEditor(Brush* brush)
 {
-	if (the_editor != NULL)
+	if (fBrushEditor)
 		return NULL;
 
-	else {
-		the_editor = new BrushEditor(rect,brush);
-		return the_editor;
-	}
+	fBrushEditor = new BrushEditor(brush);
+	return fBrushEditor;
 }
 
-void BrushEditor::BrushModified()
+
+void
+BrushEditor::BrushModified()
 {
-	if (the_editor != NULL) {
-		BWindow *window = the_editor->Window();
-		if (window != NULL)
-			window->Lock();
+	if (fBrushEditor) {
+		BWindow* window = fBrushEditor->Window();
 
-		the_editor->brush_view->BrushModified();
-		if (window != NULL) {
-			window->PostMessage(BRUSH_ALTERED,the_editor);
-		}
+		bool locked = false;
+		if (window && window->Lock())
+			locked = true;
 
-		if (window != NULL)
+		fBrushEditor->fBrushView->BrushModified();
+		if (window)
+			window->PostMessage(BRUSH_ALTERED,fBrushEditor);
+
+		if (window && locked)
 			window->Unlock();
 	}
 }
 
-void BrushEditor::AttachedToWindow()
+
+void
+BrushEditor::AttachedToWindow()
 {
-	BMessenger *a_messenger = new BMessenger(this);
-	width_slider->SetTarget(a_messenger);
+	fWidthSlider->SetTarget(new BMessenger(this));
+	fHeightSlider->SetTarget(new BMessenger(this));
+	fFadeSlider->SetTarget(new BMessenger(this));
 
-	a_messenger = new BMessenger(this);
-	height_slider->SetTarget(a_messenger);
+	fEllipse->SetTarget(this);
+	fRectangle->SetTarget(this);
+	fStoreBrush->SetTarget(this);
 
-	a_messenger = new BMessenger(this);
-	fade_slider->SetTarget(a_messenger);
+	if (fBrushInfo.shape == HS_RECTANGULAR_BRUSH)
+		fRectangle->SetValue(B_CONTROL_ON);
 
-	rectangle_button->SetTarget(this);
-	ellipse_button->SetTarget(this);
-	if (b_info.shape == HS_RECTANGULAR_BRUSH) {
-		rectangle_button->SetValue(B_CONTROL_ON);
-	}
-	else if (b_info.shape == HS_ELLIPTICAL_BRUSH) {
-		ellipse_button->SetValue(B_CONTROL_ON);
-	}
-
-	store_button->SetTarget(this);
+	if (fBrushInfo.shape == HS_ELLIPTICAL_BRUSH)
+		fEllipse->SetValue(B_CONTROL_ON);
 }
 
-void BrushEditor::MessageReceived(BMessage *message)
-{
-	int32 value;
-	bool final;
 
+void
+BrushEditor::MessageReceived(BMessage *message)
+{
 	switch (message->what) {
-		case BRUSH_WIDTH_CHANGED:
+		case BRUSH_WIDTH_CHANGED: {
+			int32 value;
+			if (message->FindInt32("value", &value) == B_OK) {
+				fBrushInfo.width = value;
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrushView->BrushModified();
+
+				bool final;
+				if (message->FindBool("final", &final) == B_OK && final)
+					fBrush->CreateDiffBrushes();
+			}
+		}	break;
+
+		case BRUSH_HEIGHT_CHANGED: {
+			int32 value;
+			if (message->FindInt32("value", &value) == B_OK) {
+				fBrushInfo.height = value;
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrushView->BrushModified();
+
+				bool final;
+				if (message->FindBool("final", &final) == B_OK && final)
+					fBrush->CreateDiffBrushes();
+			}
+		}	break;
+
+		case BRUSH_EDGE_CHANGED: {
+			int32 value;
 			if (message->FindInt32("value",&value) == B_OK) {
-				b_info.width = value;
-				the_brush->ModifyBrush(b_info);
-				brush_view->BrushModified();
-				if (message->FindBool("final",&final) == B_OK) {
-					if (final == TRUE)
-						the_brush->CreateDiffBrushes();
-				}
+				fBrushInfo.fade_length = value;
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrushView->BrushModified();
+
+				bool final;
+				if (message->FindBool("final", &final) == B_OK && final)
+					fBrush->CreateDiffBrushes();
 			}
-			break;
-		case BRUSH_HEIGHT_CHANGED:
-			if (message->FindInt32("value",&value) == B_OK) {
-				b_info.height = value;
-				the_brush->ModifyBrush(b_info);
-				brush_view->BrushModified();
-				if (message->FindBool("final",&final) == B_OK) {
-					if (final == TRUE)
-						the_brush->CreateDiffBrushes();
-				}
+		}	break;
+
+		case BRUSH_SHAPE_CHANGED: {
+			int32 value;
+			if (message->FindInt32("shape", &value) == B_OK) {
+				fBrushInfo.shape = value;
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrush->CreateDiffBrushes();
+				fBrushView->BrushModified();
 			}
-			break;
-		case BRUSH_EDGE_CHANGED:
-			if (message->FindInt32("value",&value) == B_OK) {
-				b_info.fade_length = value;
-				the_brush->ModifyBrush(b_info);
-				brush_view->BrushModified();
-				if (message->FindBool("final",&final) == B_OK) {
-					if (final == TRUE)
-						the_brush->CreateDiffBrushes();
-				}
-			}
-			break;
-		case BRUSH_SHAPE_CHANGED:
-			if (message->FindInt32("shape",&value) == B_OK) {
-				b_info.shape = value;
-				the_brush->ModifyBrush(b_info);
-				the_brush->CreateDiffBrushes();
-				brush_view->BrushModified();
-			}
-			break;
-		case BRUSH_ALTERED:
+		}	break;
+
+		case BRUSH_ALTERED: {
 			// Here something has altered the brush and we should reflect it
 			// in our controls and such things.
-			b_info = the_brush->GetInfo();
-			width_slider->setValue(int32(b_info.width));
-			height_slider->setValue(int32(b_info.height));
-			fade_slider->setValue(int32(b_info.fade_length));
-			brush_view->BrushModified();
-			// Also set the correct radio-button
-			if (b_info.shape == HS_RECTANGULAR_BRUSH) {
-				rectangle_button->SetValue(true);
-			}
-			else if (b_info.shape == HS_ELLIPTICAL_BRUSH) {
-				ellipse_button->SetValue(true);
-			}
-			break;
-		case BRUSH_STORING_REQUESTED:
-			BrushStoreWindow::AddBrush(the_brush);
-			break;
-		default:
-			BBox::MessageReceived(message);
-			break;
+			fBrushInfo = fBrush->GetInfo();
+			fWidthSlider->setValue(int32(fBrushInfo.width));
+			fHeightSlider->setValue(int32(fBrushInfo.height));
+			fFadeSlider->setValue(int32(fBrushInfo.fade_length));
+			fBrushView->BrushModified();
+
+			if (fBrushInfo.shape == HS_RECTANGULAR_BRUSH)
+				fRectangle->SetValue(B_CONTROL_ON);
+
+			if (fBrushInfo.shape == HS_ELLIPTICAL_BRUSH)
+				fEllipse->SetValue(B_CONTROL_ON);
+		}	break;
+
+		case BRUSH_STORING_REQUESTED: {
+			BrushStoreWindow::AddBrush(fBrush);
+		}	break;
+
+		default: {
+			BView::MessageReceived(message);
+		}	break;
 	}
 }
 
 
+// #pragma mark -- BrushView
 
 
-BrushView::BrushView(BRect frame,Brush *brush)
-	:	BView(frame,"Brush View",B_FOLLOW_TOP|B_FOLLOW_LEFT,B_WILL_DRAW)
+BrushView::BrushView(BRect frame, Brush* brush)
+	: BView(frame, "brush view", B_FOLLOW_NONE, B_WILL_DRAW)
+	, fDrawControls(false)
+	, fBrush(brush)
+	, fBrushPreview(NULL)
 {
-	the_brush = brush;
-	float preview_width = frame.Width()-2;
-	float preview_height = frame.Height()-2;
-	brush_preview = new BBitmap(BRect(0,0,preview_width-1,preview_height-1),B_RGB_32_BIT);
-	draw_controls = FALSE;
-	the_brush->PreviewBrush(brush_preview);
+	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
+	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
+
+	frame.InsetBy(1.0, 1.0);
+	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width() - 1.0,
+		frame.Height() - 1.0), B_RGBA32);
+	fBrush->PreviewBrush(fBrushPreview);
 }
 
 
 BrushView::~BrushView()
 {
-
+	delete fBrushPreview;
 }
 
 
-void BrushView::Draw(BRect)
+void
+BrushView::Draw(BRect)
 {
-	DrawBitmap(brush_preview,BPoint(1,1));
-	SetPenSize(1);
-	SetHighColor(0,0,0,255);
-	StrokeLine(BPoint(0,0),Bounds().LeftBottom());
-	StrokeLine(BPoint(0,0),Bounds().RightTop());
-//	SetHighColor(255,255,255,255);
-	StrokeLine(Bounds().RightTop(),Bounds().RightBottom());
-	StrokeLine(Bounds().LeftBottom(),Bounds().RightBottom());
+	DrawBitmap(fBrushPreview, BPoint(1.0, 1.0));
 
-	if (draw_controls == TRUE) {
+	SetPenSize(1);
+	SetHighColor(0, 0, 0, 255);
+	StrokeRect(Bounds());
+
+	if (fDrawControls) {
 		float r1 = Bounds().Width()/2;
 		float r2 = Bounds().Height()/2;
 		BPoint point_list[12];
@@ -269,20 +296,23 @@ void BrushView::Draw(BRect)
 		point_list[10] = BPoint(r1*.5,0);
 		point_list[11] = BPoint(0,0);
 
-		HSPolygon *poly = new HSPolygon(point_list, 12);
-		poly->Rotate(BPoint(0, 0), the_brush->GetInfo().angle);
-		poly->TranslateBy(int32(r1 - 1), int32(r2 - 1));
-		BPolygon *bpoly = poly->GetBPolygon();
+		HSPolygon poly(point_list, 12);
+		poly.Rotate(BPoint(0, 0), fBrush->GetInfo().angle);
+		poly.TranslateBy(int32(r1 - 1), int32(r2 - 1));
+
+		BPolygon* bpoly = poly.GetBPolygon();
+
 		SetHighColor(150, 0, 0, 255);
 		StrokePolygon(bpoly, false);
 		FillPolygon(bpoly);
-		delete poly;
+
 		delete bpoly;
 	}
 }
 
 
-void BrushView::MessageReceived(BMessage *message)
+void
+BrushView::MessageReceived(BMessage *message)
 {
 	brush_info *info;
 	int32 size;
@@ -290,10 +320,10 @@ void BrushView::MessageReceived(BMessage *message)
 		case HS_BRUSH_DRAGGED:
 			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
 			if (size == sizeof(brush_info)) {
-				the_brush->ModifyBrush(*info);
-				the_brush->PreviewBrush(brush_preview);
+				fBrush->ModifyBrush(*info);
+				fBrush->PreviewBrush(fBrushPreview);
 				Invalidate();
-				the_brush->CreateDiffBrushes();
+				fBrush->CreateDiffBrushes();
 				if ((Parent() != NULL) && (Window() != NULL)) {
 					Window()->PostMessage(BRUSH_ALTERED,Parent());
 				}
@@ -306,12 +336,13 @@ void BrushView::MessageReceived(BMessage *message)
 }
 
 
-void BrushView::MouseDown(BPoint point)
+void
+BrushView::MouseDown(BPoint point)
 {
 	BPoint c;
-	c.x = Bounds().Width()/2;
-	c.y = Bounds().Height()/2;
-	brush_info info = the_brush->GetInfo();
+	c.x = Bounds().Width() / 2.0;
+	c.y = Bounds().Height() / 2.0;
+	brush_info info = fBrush->GetInfo();
 	uint32 buttons;
 
 	GetMouse(&point,&buttons);
@@ -322,14 +353,15 @@ void BrushView::MouseDown(BPoint point)
 	else if (point.y == c.y)
 		angle = 90;
 	else {
-		angle = atan2(point.x-c.x,c.y-point.y)*180/PI;
+		angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
 	}
 	prev_angle = angle;
-	if (TRUE/*buttons == B_PRIMARY_MOUSE_BUTTON*/) {
+
+	if (true /*buttons == B_PRIMARY_MOUSE_BUTTON*/) {
 		while (buttons) {
 			if (angle != prev_angle) {
-				the_brush->ModifyBrush(info);
-				the_brush->PreviewBrush(brush_preview);
+				fBrush->ModifyBrush(info);
+				fBrush->PreviewBrush(fBrushPreview);
 				Window()->Lock();
 				Draw(Bounds());
 				Window()->Unlock();
@@ -343,43 +375,46 @@ void BrushView::MouseDown(BPoint point)
 			else if (point.y == c.y)
 				angle = 90;
 			else {
-				angle = atan2(point.x-c.x,c.y-point.y)*180/PI;
+				angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
 			}
 			info.angle += angle - prev_angle;
 			snooze(20 *1000);
 		}
 
-		the_brush->CreateDiffBrushes();
-		Window()->PostMessage(BRUSH_ALTERED,Parent());
-	}
-//	else {
-//		info = the_brush->GetInfo();
-//		BMessage *a_message = new BMessage(HS_BRUSH_DRAGGED);
-//		a_message->AddData("brush data",B_ANY_TYPE,&info,sizeof(brush_info));
-//		DragMessage(a_message,BRect(0,0,BRUSH_PREVIEW_WIDTH-1,BRUSH_PREVIEW_HEIGHT-1));
-//		delete a_message;
-//	}
+		fBrush->CreateDiffBrushes();
+		Window()->PostMessage(BRUSH_ALTERED, Parent());
+	} /* else {
+		info = fBrush->GetInfo();
+		BMessage *message = new BMessage(HS_BRUSH_DRAGGED);
+		message->AddData("brush data",B_ANY_TYPE,&info,sizeof(brush_info));
+		DragMessage(message,BRect(0,0,fBrushPreview_WIDTH-1,fBrushPreview_HEIGHT-1));
+		delete message;
+	} */
 }
 
-void BrushView::MouseMoved(BPoint,uint32 transit,const BMessage*)
+
+void
+BrushView::MouseMoved(BPoint,uint32 transit,const BMessage*)
 {
-	if (Window() != NULL) {
-		Window()->Lock();
+	if (Window() && Window()->Lock()) {
 		if (transit == B_ENTERED_VIEW) {
-			draw_controls = TRUE;
+			fDrawControls = true;
 			Draw(Bounds());
 		}
+
 		if (transit == B_EXITED_VIEW) {
-			draw_controls = FALSE;
+			fDrawControls = false;
 			Draw(Bounds());
 		}
+
 		Window()->Unlock();
 	}
 }
 
 
-void BrushView::BrushModified()
+void
+BrushView::BrushModified()
 {
-	the_brush->PreviewBrush(brush_preview);
+	fBrush->PreviewBrush(fBrushPreview);
 	Draw(Bounds());
 }

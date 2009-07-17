@@ -10,9 +10,12 @@
 #define PIXEL_OPERATIONS_H
 
 
+#include <math.h>
+
+
 union color_conversion_union {
-	char		bytes[4];
-	uint32	word;
+	char bytes[4];
+	uint32 word;
 };
 
 // This is just an utility-function for rounding the values.
