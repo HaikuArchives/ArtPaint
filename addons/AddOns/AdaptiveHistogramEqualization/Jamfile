@@ -23,7 +23,7 @@ Addon AHE.so :
 	RandomNumberGenerator.o
 	Selection.o
 
-	: be
+	: be $(TARGET_LIBSUPC++)
 ;
 
 ObjectReferences

@@ -27,7 +27,7 @@ Addon Dispersion.so :
 	Selection.o
 	WindowGUIManipulator.o
 
-	: be
+	: be $(TARGET_LIBSUPC++)
 ;
 
 ObjectReferences

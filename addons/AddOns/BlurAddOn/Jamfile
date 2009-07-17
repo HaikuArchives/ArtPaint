@@ -25,7 +25,7 @@ Addon Blur.so :
 	WindowGUIManipulator.o
 	RangeSlider.cpp
 
-	: be
+	: be $(TARGET_LIBSUPC++)
 ;
 
 ObjectReferences

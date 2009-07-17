@@ -24,7 +24,7 @@ Addon AntiDitherer.so :
 	WindowGUIManipulator.o
 	RangeSlider.cpp
 
-	: be
+	: be $(TARGET_LIBSUPC++)
 ;
 
 ObjectReferences

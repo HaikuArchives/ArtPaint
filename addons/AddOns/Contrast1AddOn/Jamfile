@@ -26,7 +26,7 @@ Addon ContrastManipulator1.so :
 	Selection.o
 	WindowGUIManipulator.o
 
-	: be
+	: be $(TARGET_LIBSUPC++)
 ;
 
 ObjectReferences
