@@ -56,15 +56,15 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				1/9		1/9		1/9
 	*/
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BPoint prev_point;
 	BWindow* window = view->Window();
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer* drawer = new BitmapDrawer(bitmap);
 
-	ToolScript* the_script = new ToolScript(type,settings,
+	ToolScript* the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	selection = view->GetSelection();
@@ -89,7 +89,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	half_size = settings.size/2;
 	prev_point = point - BPoint(1,1);
-	last_updated_rect = BRect(point,point);
+	SetLastUpdatedRect(BRect(point, point));
 	while (buttons) {
 		if ((settings.continuity == B_CONTROL_ON)
 			|| (settings.size != previous_size) || (point != prev_point)) {
@@ -167,7 +167,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		if (rc.IsValid()) {
 			view->UpdateImage(rc);
 			view->Sync();
-			last_updated_rect = last_updated_rect | rc;
+			SetLastUpdatedRect(LastUpdatedRect() | rc);
 		}
 		view->getCoords(&point,&buttons);
 		window->Unlock();

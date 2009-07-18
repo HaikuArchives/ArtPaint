@@ -45,13 +45,13 @@ ToolScript*
 TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BWindow* window = view->Window();
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script = new ToolScript(type, settings,
+	ToolScript* the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	BRect bounds = bitmap->Bounds();
@@ -67,7 +67,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	BRect rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 		ceil(point.x + half_size), ceil(point.y + half_size));
 	rc = rc & bounds;
-	last_updated_rect = rc;
+	SetLastUpdatedRect(rc);
 
 	union {
 		uint8 bytes[4];
@@ -116,7 +116,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;
-			last_updated_rect = last_updated_rect | rc;
+			SetLastUpdatedRect(LastUpdatedRect() | rc);
 			//snooze(20.0 * 1000.0);
 		} else {
 			window->Lock();
@@ -126,7 +126,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;
-			last_updated_rect = last_updated_rect | rc;
+			SetLastUpdatedRect(LastUpdatedRect() | rc);
 			snooze(20 * 1000);
 		}
 	}
@@ -134,7 +134,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	view->ReturnImage()->Render(rc);
 	window->Lock();
 	view->Draw(view->convertBitmapRectToView(rc));
-	last_updated_rect = last_updated_rect | rc;	// ???
+	SetLastUpdatedRect(LastUpdatedRect() | rc);	// ???
 	window->Unlock();
 
 	return the_script;

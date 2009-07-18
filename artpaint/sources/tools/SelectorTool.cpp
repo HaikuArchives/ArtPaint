@@ -65,7 +65,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 	if (window == NULL)
 		return NULL;
 
-	ToolScript* the_script = new ToolScript(type, settings,
+	ToolScript* the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	window->Lock();

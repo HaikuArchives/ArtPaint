@@ -50,14 +50,14 @@ ToolScript*
 EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BWindow *window = view->Window();
 	drawing_mode old_mode;
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script = new ToolScript(type, settings,
+	ToolScript* the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 	Selection *selection = view->GetSelection();
 
@@ -137,7 +137,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		view->UpdateImage(bitmap_rect);
 		view->Sync();
 		window->Unlock();
-		last_updated_rect = bitmap_rect;
+		SetLastUpdatedRect(bitmap_rect);
 	}
 
 	return the_script;

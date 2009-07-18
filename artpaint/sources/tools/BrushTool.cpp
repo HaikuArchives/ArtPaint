@@ -55,13 +55,13 @@ ToolScript*
 BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid())
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	CoordinateReader* coordinate_reader = new CoordinateReader(view,
 		LINEAR_INTERPOLATION, false);
 
-	ToolScript* the_script = new ToolScript(type, settings,
+	ToolScript* the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	selection = view->GetSelection();
@@ -106,7 +106,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	updated_rect = BRect(point.x - brush_width_per_2,
 		point.y - brush_height_per_2, point.x + brush_width_per_2,
 		point.y + brush_height_per_2);
-	last_updated_rect = updated_rect;
+	SetLastUpdatedRect(updated_rect);
 	prev_point = point;
 
 	ImageUpdater *image_updater = new ImageUpdater(view, 20000.0);
@@ -121,7 +121,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				point.y - brush_height_per_2, point.x + brush_width_per_2,
 				point.y + brush_height_per_2);
 			image_updater->AddRect(updated_rect);
-			last_updated_rect = updated_rect | last_updated_rect;
+			SetLastUpdatedRect(updated_rect | LastUpdatedRect());
 			prev_point = point;
 		}
 	} else {
@@ -133,7 +133,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				point.y - brush_height_per_2, point.x + brush_width_per_2,
 				point.y + brush_height_per_2);
 			image_updater->AddRect(updated_rect);
-			last_updated_rect = updated_rect | last_updated_rect;
+			SetLastUpdatedRect(updated_rect | LastUpdatedRect());
 			prev_point = point;
 		}
 	}
@@ -375,7 +375,8 @@ BrushTool::readSettings(BFile &file, bool isLittleEndian)
 status_t
 BrushTool::writeSettings(BFile &file)
 {
-	if (file.Write(&type,sizeof(int32)) != sizeof(int32))
+	int32 type = Type();
+	if (file.Write(&type, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 settings_size = sizeof(struct brush_info) + sizeof(int32);

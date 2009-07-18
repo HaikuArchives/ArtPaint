@@ -11,7 +11,7 @@
 #include "UndoEvent.h"
 
 
-UndoEvent::UndoEvent(const char *name, const BBitmap*)
+UndoEvent::UndoEvent(const BString& name, const BBitmap*)
 	: event_name(name)
 {
 	actions = NULL;

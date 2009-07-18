@@ -58,8 +58,8 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 	// rotating around the starting-point by proper angle.
 
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BWindow *window = view->Window();
 	drawing_mode old_mode;
@@ -69,7 +69,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 	Selection *selection = view->GetSelection();
 
 	if (window != NULL) {
-		ToolScript* the_script = new ToolScript(type, settings,
+		ToolScript* the_script = new ToolScript(Type(), settings,
 			((PaintApplication*)be_app)->Color(true));
 
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
@@ -288,7 +288,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		updated_rect.right += size/2;
 		updated_rect.bottom += size/2;
 
-		last_updated_rect = updated_rect;
+		SetLastUpdatedRect(updated_rect);
 		window->Lock();
 		view->SetDrawingMode(old_mode);
 		view->UpdateImage(updated_rect);

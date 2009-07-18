@@ -1193,7 +1193,7 @@ int32 ImageView::PaintToolThread()
 			ToolScript *the_script = tool_manager->StartTool(this,buttons,point,view_point,tool_type);
 			if ((the_script != NULL) && (tool_type != SELECTOR_TOOL)) {
 				const DrawingTool *used_tool = tool_manager->ReturnTool(tool_type);
-				UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->GetName(),the_image->ReturnThumbnailImage());
+				UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->Name(),the_image->ReturnThumbnailImage());
 				BList *layer_list = the_image->LayerList();
 				if (new_event != NULL) {
 					for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -1222,7 +1222,7 @@ int32 ImageView::PaintToolThread()
 				// Add selection-change to the undo-queue.
 				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
 					const DrawingTool *used_tool = tool_manager->ReturnTool(tool_type);
-					UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->GetName(),the_image->ReturnThumbnailImage());
+					UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->Name(),the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());

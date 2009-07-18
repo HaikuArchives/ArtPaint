@@ -58,8 +58,8 @@ ToolScript*
 AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BPoint prev_point;
 	BWindow *window = view->Window();
@@ -67,7 +67,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 	Selection *selection = view->GetSelection();
 
-	ToolScript *the_script = new ToolScript(type, settings,
+	ToolScript *the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	if (settings.mode == HS_AIRBRUSH_MODE) {		// Do the airbrush
@@ -75,7 +75,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		BRect rc;
 
 		prev_point = point - BPoint(1,1);
-		last_updated_rect = BRect(point,point);
+		SetLastUpdatedRect(BRect(point, point));
 		uint32 target_color;
 		while (buttons) {
 			the_script->AddPoint(point);
@@ -164,7 +164,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			if (rc.IsValid()) {
 				view->UpdateImage(rc);
 				view->Sync();
-				last_updated_rect = last_updated_rect | rc;
+				SetLastUpdatedRect(LastUpdatedRect() | rc);
 			}
 			view->getCoords(&point,&buttons);
 			window->Unlock();
@@ -291,7 +291,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			prev_point = point;
 
 			updater->AddRect(rc);
-			last_updated_rect = last_updated_rect | rc;
+			SetLastUpdatedRect(LastUpdatedRect() | rc);
 		}
 		updater->ForceUpdate();
 

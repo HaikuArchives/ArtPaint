@@ -10,6 +10,7 @@
 #define TOOL_BUTTON_H
 
 #include <PictureButton.h>
+#include <String.h>
 #include <Window.h>
 
 // This class keeps track of all its instances.
@@ -17,7 +18,7 @@ class ToolButton : public BPictureButton {
 static	BList		*tool_button_list;
 		int32		tool_type;
 
-const	char			*tool_name;
+		BString		tool_name;
 
 static	int32		active_tool;
 static	ToolButton	*active_button;

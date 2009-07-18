@@ -58,15 +58,15 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 	BPoint view_point)
 {
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BWindow *window = view->Window();
 	drawing_mode old_mode;
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 //	BView *bitmap_view = view->getBufferView();
 
-	ToolScript *the_script = new ToolScript(type, settings,
+	ToolScript *the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 	Selection *selection = view->GetSelection();
 
@@ -236,8 +236,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			}
 		}
 		bitmap->Unlock();
-		last_updated_rect = poly->BoundingBox();
-		last_updated_rect.InsetBy(-1,-1);
+		SetLastUpdatedRect(poly->BoundingBox().InsetByCopy(-1.0, -1.0));
 		if (poly->GetPointCount() == 4) {
 			BPoint *points = poly->GetPointList();
 			for (int32 i=0;i<4;i++)
@@ -251,7 +250,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 
 		window->Lock();
 		view->SetDrawingMode(old_mode);
-		view->UpdateImage(last_updated_rect);
+		view->UpdateImage(LastUpdatedRect());
 		view->Sync();
 		window->Unlock();
 

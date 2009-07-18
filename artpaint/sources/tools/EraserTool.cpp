@@ -49,8 +49,8 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	// and then start drawing while mousebutton is held down
 
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	coordinate_queue = new CoordinateQueue();
 	image_view = view;
@@ -59,7 +59,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
 
-	ToolScript *the_script = new ToolScript(type, settings,
+	ToolScript *the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
@@ -116,7 +116,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	view->Draw(view->convertBitmapRectToView(updated_rect));
 	view->Window()->Unlock();
 
-	last_updated_rect = updated_rect;
+	SetLastUpdatedRect(updated_rect);
 	the_script->AddPoint(point);
 	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
 		|| (reading_coordinates == true)) {
@@ -145,7 +145,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.right = max_c(point.x+diameter/2+1,prev_point.x+diameter/2+1);
 			updated_rect.bottom = max_c(point.y+diameter/2+1,prev_point.y+diameter/2+1);
 
-			last_updated_rect = last_updated_rect | updated_rect;
+			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
 			// We should do the composite picture and re-draw the window in
 			// a separate thread.

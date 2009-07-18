@@ -21,7 +21,7 @@ friend 	class		UndoQueue;
 		int32		max_action_count;
 		UndoQueue	*queue;
 
-const	char		*event_name;
+		BString		event_name;
 		BBitmap		*thumbnail_image;
 
 
@@ -31,7 +31,7 @@ const	char		*event_name;
 	SelectionData	*selection_data;
 
 public:
-		UndoEvent(const char *name, const BBitmap *thumbnail);
+		UndoEvent(const BString& name, const BBitmap *thumbnail);
 		~UndoEvent();
 
 
@@ -44,7 +44,7 @@ void			SetQueue(UndoQueue *q) { queue = q; }
 bool			IsEmpty();
 
 
-const	char*	ReturnName() { return event_name; }
+BString			ReturnName() { return event_name; }
 BBitmap*		ReturnThumbnail() { return thumbnail_image; }
 
 SelectionData*	ReturnSelectionData() { return selection_data; }

@@ -79,12 +79,13 @@ ToolScript* ToolManager::StartTool(ImageView *view,uint32 buttons,BPoint bitmap_
 
 		// When the tool has finished we should record the updated_rect into clients data.
 		client_data->last_updated_rect = client_data->active_tool->LastUpdatedRect();
+		client_data->active_tool->SetLastUpdatedRect(BRect());
 		client_data->active_tool = NULL;
 
 		return the_script;
 	}
-	else
-		return NULL;
+
+	return NULL;
 }
 
 
@@ -178,14 +179,15 @@ const void* ToolManager::ReturnCursor()
 }
 
 
-int32 ToolManager::ReturnActiveToolType()
+int32
+ToolManager::ReturnActiveToolType()
 {
 	if (active_drawing_tool != NULL)
-		return active_drawing_tool->GetType();
-	else
-		return NO_TOOL;
+		return active_drawing_tool->Type();
 
+	return NO_TOOL;
 }
+
 
 status_t ToolManager::SetCurrentBrush(brush_info *binfo)
 {
@@ -352,16 +354,12 @@ ToolManager::ToolManager()
 	ToolListEntry::AddTool(new SelectorTool());
 	ToolListEntry::AddTool(new ColorSelectorTool());
 
-
 	tool_pop_up_menu = new BPopUpMenu("tool_pop_up_menu");
 
-	int32 i=0;
-	DrawingTool *tool = ToolListEntry::ReturnToolAt(i++);
-
-	while (tool != NULL) {
-		BMessage *message = new BMessage(tool->GetType());
-		tool_pop_up_menu->AddItem(new BMenuItem(tool->GetName(),message));
-		tool = ToolListEntry::ReturnToolAt(i++);
+	int32 i = 0;
+	while (DrawingTool* tool = ToolListEntry::ReturnToolAt(i++)) {
+		tool_pop_up_menu->AddItem(new BMenuItem(tool->Name(),
+			new BMessage(tool->Type())));
 	}
 }
 
@@ -429,7 +427,7 @@ ToolListEntry* ToolListEntry::list_head = NULL;
 ToolListEntry::ToolListEntry(DrawingTool *tool)
 {
 	the_tool = tool;
-	tool_type = tool->GetType();
+	tool_type = tool->Type();
 	next_tool = NULL;
 }
 

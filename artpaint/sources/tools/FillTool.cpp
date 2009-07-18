@@ -65,7 +65,7 @@ FillTool::~FillTool()
 ToolScript*
 FillTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
-	ToolScript* toolScript = new ToolScript(type, settings,
+	ToolScript* toolScript = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 	toolScript->AddPoint(point);
 
@@ -208,9 +208,9 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 			}
 		}
 
-		last_updated_rect = filled_bitmap->Bounds();
+		SetLastUpdatedRect(filled_bitmap->Bounds());
 		window->Lock();
-		view->UpdateImage(last_updated_rect);
+		view->UpdateImage(LastUpdatedRect());
 		view->Sync();
 		window->Unlock();
 	}
@@ -852,8 +852,8 @@ BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint
 
 	// Get the necessary parameters
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == TRUE)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 	BWindow *window = view->Window();
 	if (window == NULL)
@@ -967,7 +967,7 @@ BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint
 		view->Draw(view->convertBitmapRectToView(filled_area_bounds) | ellipse_rect);
 		window->Unlock();
 		delete binary_map;
-		last_updated_rect = filled_area_bounds;
+		SetLastUpdatedRect(filled_area_bounds);
 	}
 	delete drawer;
 	return new_point;

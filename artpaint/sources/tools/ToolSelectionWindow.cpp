@@ -39,63 +39,63 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 	MatrixView* buttonMatrix = new MatrixView(pictureSize, pictureSize, EXTRA_EDGE);
 
 	BRect buttonRect(0, 0, pictureSize - 1, pictureSize - 1);
-	const DrawingTool* addedTool = tool_manager->ReturnTool(FREE_LINE_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	const DrawingTool* tool = tool_manager->ReturnTool(FREE_LINE_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(STRAIGHT_LINE_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(STRAIGHT_LINE_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(RECTANGLE_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(RECTANGLE_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(ELLIPSE_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(ELLIPSE_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
 	// Here we could add a separator to the tool window.
 
-	addedTool = tool_manager->ReturnTool(BRUSH_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(BRUSH_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(HAIRY_BRUSH_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(HAIRY_BRUSH_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(AIR_BRUSH_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(AIR_BRUSH_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(BLUR_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(BLUR_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(FILL_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(FILL_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(TEXT_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(TEXT_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(TRANSPARENCY_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(TRANSPARENCY_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(ERASER_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(ERASER_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(SELECTOR_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(SELECTOR_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
-	addedTool = tool_manager->ReturnTool(COLOR_SELECTOR_TOOL);
-	buttonMatrix->AddSubView(
-		new ToolButton(buttonRect, addedTool->GetType(), addedTool->GetName()));
+	tool = tool_manager->ReturnTool(COLOR_SELECTOR_TOOL);
+	buttonMatrix->AddSubView(new ToolButton(buttonRect, tool->Type(),
+		tool->Name()));
 
 	AddChild(buttonMatrix);
 	buttonMatrix->ResizeTo(Bounds().Width(), Bounds().Height());

@@ -16,6 +16,8 @@
 #include "ToolScript.h"
 
 
+#include <String.h>
+
 class BFile;
 
 
@@ -26,7 +28,7 @@ class BFile;
 // this is a base class that specific tool-classes will be based on
 class DrawingTool {
 public:
-							DrawingTool(const char *tool_name, int32 tool_type);
+							DrawingTool(const BString& name, int32 type);
 	virtual					~DrawingTool();
 
 	virtual	int32			UseToolWithScript(ToolScript*, BBitmap*);
@@ -41,31 +43,36 @@ public:
 
 	virtual	int32			GetCurrentValue(int32 option);
 
-	inline	const char*		GetName() const { return name; }
-	inline	const int32		GetType() const { return type; }
+			BBitmap*		Icon() const { return fIcon; }
+			BString			Name() const { return fName; }
+			int32			Type() const { return fType; }
+
 
 	// these functions read and write tool's settings to a file
 	virtual status_t		readSettings(BFile &file,bool is_little_endian);
 	virtual	status_t		writeSettings(BFile &file);
 
-			BRect			LastUpdatedRect();
+			BRect			LastUpdatedRect() const;
+			void			SetLastUpdatedRect(const BRect& rect);
 
 	virtual	const void*		ToolCursor() const;
 	virtual	const char*		HelpString(bool isInUse) const;
 
 protected:
-			char			name[HS_MAX_TOOL_NAME_LENGTH];
-			int32			type;
-
 			int32			options;
 			int32			number_of_options;
 
 			// this struct contains the tool's settings
 			tool_settings	settings;
 
+private:
+			BBitmap*		fIcon;
+			BString			fName;
+			int32			fType;
+
 			// The UseTool-function should set this region. Before starting the
 			// UseTool-function should wait for this region to become empty
-			BRect			last_updated_rect;
+			BRect			fLastUpdatedRect;
 };
 
 

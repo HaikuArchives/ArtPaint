@@ -26,17 +26,15 @@
 #include <string.h>
 
 
-DrawingTool::DrawingTool(const char* toolName, int32 toolType)
+DrawingTool::DrawingTool(const BString& name, int32 type)
+	: fIcon(NULL)
+	, fName(name)
+	, fType(type)
+	, fLastUpdatedRect(BRect())
 {
-	// Here copy the arguments to member variables
-	type = toolType;
-	strcpy(name,toolName);
-
 	// In derived classes set whatever options tool happens to use.
-	// Base-class has none.
 	options = 0;
 	number_of_options = 0;
-	last_updated_rect = BRect(0,0,-1,-1);
 }
 
 
@@ -48,9 +46,8 @@ DrawingTool::~DrawingTool()
 ToolScript*
 DrawingTool::UseTool(ImageView*, uint32, BPoint, BPoint)
 {
-	// This function will do the drawing in the derived classes
-	// ImageView must provide necessary data with a function that can
-	// be called from here. This base-class version does nothing.
+	// This function will do the drawing in the derived classes. ImageView must
+	// provide necessary data with a function that can be called from here.
 	return NULL;
 }
 
@@ -251,7 +248,7 @@ DrawingTool::readSettings(BFile &file, bool isLittleEndian)
 status_t
 DrawingTool::writeSettings(BFile &file)
 {
-	if (file.Write(&type,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&fType,sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 settingsSize = sizeof(struct tool_settings) + sizeof(int32);
@@ -271,11 +268,16 @@ DrawingTool::writeSettings(BFile &file)
 
 
 BRect
-DrawingTool::LastUpdatedRect()
+DrawingTool::LastUpdatedRect() const
 {
-	BRect rect = last_updated_rect;
-	last_updated_rect = BRect(0,0,-1,-1);
-	return rect;
+	return fLastUpdatedRect;
+}
+
+
+void
+DrawingTool::SetLastUpdatedRect(const BRect& rect)
+{
+	fLastUpdatedRect = rect;
 }
 
 

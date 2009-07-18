@@ -60,8 +60,8 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	// and then start drawing while mousebutton is held down
 
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == true)
-		snooze(50 * 1000);
+	while (LastUpdatedRect().IsValid())
+		snooze(50000);
 
 //	coordinate_queue = new CoordinateQueue();
 	image_view = view;
@@ -69,7 +69,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 //		"read coordinates",B_NORMAL_PRIORITY,this);
 //	resume_thread(coordinate_reader);
 //	reading_coordinates = TRUE;
-	ToolScript *the_script = new ToolScript(type, settings,
+	ToolScript *the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	Selection *selection = view->GetSelection();
@@ -133,7 +133,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		start_point_array[i] = point;
 	}
 
-	last_updated_rect = BRect(point,point);
+	SetLastUpdatedRect(BRect(point, point));
 	the_script->AddPoint(point);
 
 	bool initialized = false;
@@ -216,7 +216,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1,-1);
 			updater->AddRect(updated_rect);
-			last_updated_rect = updated_rect;
+			SetLastUpdatedRect(updated_rect);
 		}
 		else {
 			initial_width = min_c(maximum_width,initial_width+0.5);
@@ -343,7 +343,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1,-1);
 
-			last_updated_rect = last_updated_rect | updated_rect;
+			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
 			updater->AddRect(updated_rect);
 			updater->ForceUpdate();
