@@ -1,12 +1,15 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include "SimpleTool.h"
+
+#include "FreeLineTool.h"
 
 #include "BitmapDrawer.h"
 #include "Controls.h"
@@ -23,47 +26,37 @@
 #include <Window.h>
 
 
-// this class is for simple test tool
-SimpleTool::SimpleTool()
-		: LineTool(StringServer::ReturnString(FREE_LINE_TOOL_NAME_STRING),FREE_LINE_TOOL)
+FreeLineTool::FreeLineTool()
+	: LineTool(StringServer::ReturnString(FREE_LINE_TOOL_NAME_STRING),
+		FREE_LINE_TOOL)
 {
-	// here we initialize the settings
-
-	// tell which options we have
 	options = SIZE_OPTION;
 	number_of_options = 1;
 
-//	// set the max and min and current values
-//	size_max = 100;
-//	size_min = 1;
-	SetOption(SIZE_OPTION,1);
-
-//	pressure_max = 100;
-//	pressure_min = 0;
+	SetOption(SIZE_OPTION, 1);
 }
 
 
-SimpleTool::~SimpleTool()
+FreeLineTool::~FreeLineTool()
 {
-	// free whatever storage this class allocated
 }
 
 
-ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoint)
+ToolScript*
+FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {
-	// here we first get the necessary data from view
-	// and then start drawing while mousebutton is held down
-
 	// Wait for the last_updated_region to become empty
-	while (last_updated_rect.IsValid() == TRUE)
+	while (last_updated_rect.IsValid())
 		snooze(50 * 1000);
 
 	coordinate_queue = new CoordinateQueue();
 	image_view = view;
-	thread_id coordinate_reader = spawn_thread(CoordinateReader,"read coordinates",B_NORMAL_PRIORITY,this);
+	thread_id coordinate_reader = spawn_thread(CoordinateReader,
+		"read coordinates", B_NORMAL_PRIORITY, this);
 	resume_thread(coordinate_reader);
-	reading_coordinates = TRUE;
-	ToolScript *the_script = new ToolScript(type,settings,((PaintApplication*)be_app)->Color(TRUE));
+	reading_coordinates = true;
+	ToolScript *the_script = new ToolScript(type, settings,
+		((PaintApplication*)be_app)->Color(true));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	Selection *selection = view->GetSelection();
@@ -87,12 +80,12 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	if ((diameter%2) == 0)
 		diameter++;
 
-	new_color = ((PaintApplication*)be_app)->Color(TRUE);
+	new_color = ((PaintApplication*)be_app)->Color(true);
 	new_color_bgra = RGBColorToBGRA(new_color);
 	if (diameter != 1)
-		drawer->DrawCircle(prev_point,diameter/2,new_color_bgra,TRUE,TRUE,selection);
+		drawer->DrawCircle(prev_point,diameter/2,new_color_bgra,true, true,selection);
 	else
-		drawer->DrawHairLine(prev_point,point,new_color_bgra,(bool)FALSE,selection);
+		drawer->DrawHairLine(prev_point,point,new_color_bgra, false, selection);
 
 	// This makes sure that the view is updated even if just one point is drawn
 	updated_rect.left = min_c(point.x-diameter/2,prev_point.x-diameter/2);
@@ -111,7 +104,8 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 
 	last_updated_rect = updated_rect;
 	the_script->AddPoint(point);
-	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == TRUE)) {
+	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
+		|| (reading_coordinates == true)) {
 		if ( (status_of_read == B_OK) && (prev_point != point) ) {
 			the_script->AddPoint(point);
 //			if (modifiers() & B_LEFT_CONTROL_KEY) {
@@ -121,7 +115,7 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 //				set_mouse_speed(original_mouse_speed);
 //			}
 			// first set the color
-			new_color = ((PaintApplication*)be_app)->Color(TRUE);
+			new_color = ((PaintApplication*)be_app)->Color(true);
 			new_color_bgra = RGBColorToBGRA(new_color);
 			diameter = settings.size;
 			if ((diameter%2) == 0)
@@ -133,7 +127,7 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 				drawer->DrawLine(prev_point,point,new_color_bgra,diameter,false,selection);
 			}
 			else
-				drawer->DrawHairLine(prev_point,point,new_color_bgra,(bool)false,selection);
+				drawer->DrawHairLine(prev_point,point,new_color_bgra,false,selection);
 
 			updated_rect.left = min_c(point.x-diameter/2-1,prev_point.x-diameter/2-1);
 			updated_rect.top = min_c(point.y-diameter/2-1,prev_point.y-diameter/2-1);
@@ -162,28 +156,28 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 
 
 int32
-SimpleTool::UseToolWithScript(ToolScript*,BBitmap*)
+FreeLineTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
 	return B_OK;
 }
 
 
 BView*
-SimpleTool::makeConfigView()
+FreeLineTool::makeConfigView()
 {
-	return (new SimpleToolConfigView(this));
+	return (new FreeLineToolConfigView(this));
 }
 
 
 const void*
-SimpleTool::ToolCursor() const
+FreeLineTool::ToolCursor() const
 {
 	return HS_FREE_LINE_CURSOR;
 }
 
 
 const char*
-SimpleTool::HelpString(bool isInUse) const
+FreeLineTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? FREE_LINE_TOOL_IN_USE_STRING
 		: FREE_LINE_TOOL_READY_STRING);
@@ -191,16 +185,17 @@ SimpleTool::HelpString(bool isInUse) const
 
 
 int32
-SimpleTool::CoordinateReader(void *data)
+FreeLineTool::CoordinateReader(void *data)
 {
-	SimpleTool *this_pointer = (SimpleTool*)data;
+	FreeLineTool *this_pointer = (FreeLineTool*)data;
 	return this_pointer->read_coordinates();
 }
 
 
-int32 SimpleTool::read_coordinates()
+int32
+FreeLineTool::read_coordinates()
 {
-	reading_coordinates = TRUE;
+	reading_coordinates = true;
 	uint32 buttons;
 	BPoint point,prev_point;
 	BPoint view_point;
@@ -222,15 +217,15 @@ int32 SimpleTool::read_coordinates()
 		snooze(20 * 1000);
 	}
 
-	reading_coordinates = FALSE;
+	reading_coordinates = false;
 	return B_OK;
 }
 
 
-// #pragma mark -- SimpleToolConfigView
+// #pragma mark -- FreeLineToolConfigView
 
 
-SimpleToolConfigView::SimpleToolConfigView(DrawingTool* newTool)
+FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* newTool)
 	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
@@ -247,7 +242,7 @@ SimpleToolConfigView::SimpleToolConfigView(DrawingTool* newTool)
 
 
 void
-SimpleToolConfigView::AttachedToWindow()
+FreeLineToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 	size_slider->SetTarget(new BMessenger(this));

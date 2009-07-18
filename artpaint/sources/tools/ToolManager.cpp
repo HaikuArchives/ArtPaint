@@ -337,7 +337,7 @@ ToolManager::ToolManager()
 	active_drawing_tool = NULL;
 
 	// Add the tools to the tool-list
-	ToolListEntry::AddTool(new SimpleTool());
+	ToolListEntry::AddTool(new FreeLineTool());
 	ToolListEntry::AddTool(new StraightLineTool());
 	ToolListEntry::AddTool(new RectangleTool());
 	ToolListEntry::AddTool(new EllipseTool());

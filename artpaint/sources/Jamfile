@@ -89,11 +89,11 @@ Application ArtPaint :
 	EllipseTool.cpp
 	EraserTool.cpp
 	FillTool.cpp
+	FreeLineTool.cpp
 	HairyBrushTool.cpp
 	LineTool.cpp
 	RectangleTool.cpp
 	SelectorTool.cpp
-	SimpleTool.cpp
 	StraightLineTool.cpp
 	TextTool.cpp
 	ToolButton.cpp
