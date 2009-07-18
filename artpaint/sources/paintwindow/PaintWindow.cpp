@@ -833,7 +833,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		case HS_SHOW_DATATYPE_SETTINGS: {
 			// This comes from image-save-panel's setting-button and tells us to
 			// show the datatype-setup-window.
-			DatatypeSetupWindow::showWindow(fCurrentHandler);
+			DatatypeSetupWindow::ShowWindow(fCurrentHandler);
 		}	break;
 
 		case B_CANCEL: {
