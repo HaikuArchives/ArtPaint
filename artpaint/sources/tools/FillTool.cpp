@@ -1510,14 +1510,14 @@ FillTool::writeSettings(BFile &file)
 
 
 const void*
-FillTool::ReturnToolCursor()
+FillTool::ToolCursor() const
 {
 	return HS_FILL_CURSOR;
 }
 
 
 const char*
-FillTool::ReturnHelpString(bool isInUse)
+FillTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? FILL_TOOL_IN_USE_STRING
 		: FILL_TOOL_READY_STRING);

@@ -321,14 +321,14 @@ AirBrushTool::makeConfigView()
 
 
 const void*
-AirBrushTool::ReturnToolCursor()
+AirBrushTool::ToolCursor() const
 {
 	return HS_SPRAY_CURSOR;
 }
 
 
 const char*
-AirBrushTool::ReturnHelpString(bool isInUse)
+AirBrushTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? AIR_BRUSH_TOOL_IN_USE_STRING
 		: AIR_BRUSH_TOOL_READY_STRING);

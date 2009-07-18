@@ -38,8 +38,8 @@ public:
 									gradient_color2 = c2;
 								}
 
-			const void*			ReturnToolCursor();
-			const char*			ReturnHelpString(bool);
+			const void*			ToolCursor() const;
+			const char*			HelpString(bool isInUse) const;
 
 private:
 			uint32				gradient_color1;

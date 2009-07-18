@@ -184,14 +184,14 @@ ColorSelectorTool::makeConfigView()
 
 
 const void*
-ColorSelectorTool::ReturnToolCursor()
+ColorSelectorTool::ToolCursor() const
 {
 	return HS_COLOR_SELECTOR_CURSOR;
 }
 
 
 const char*
-ColorSelectorTool::ReturnHelpString(bool isInUse)
+ColorSelectorTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? COLOR_SELECTOR_TOOL_IN_USE_STRING
 		: COLOR_SELECTOR_TOOL_READY_STRING);

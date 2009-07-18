@@ -167,14 +167,14 @@ BView* BrushTool::makeConfigView()
 
 
 const void*
-BrushTool::ReturnToolCursor()
+BrushTool::ToolCursor() const
 {
 	return HS_BRUSH_CURSOR;
 }
 
 
 const char*
-BrushTool::ReturnHelpString(bool isInUse)
+BrushTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? BRUSH_TOOL_IN_USE_STRING
 		: BRUSH_TOOL_READY_STRING);

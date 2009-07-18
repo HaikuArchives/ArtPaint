@@ -280,14 +280,14 @@ DrawingTool::LastUpdatedRect()
 
 
 const void*
-DrawingTool::ReturnToolCursor()
+DrawingTool::ToolCursor() const
 {
 	return HS_CROSS_CURSOR;
 }
 
 
 const char*
-DrawingTool::ReturnHelpString(bool isInUse)
+DrawingTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? USING_THE_TOOL_STRING
 		: USE_THE_TOOL_STRING);

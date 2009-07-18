@@ -187,14 +187,14 @@ EraserTool::makeConfigView()
 
 
 const void*
-EraserTool::ReturnToolCursor()
+EraserTool::ToolCursor() const
 {
 	return HS_ERASER_CURSOR;
 }
 
 
 const char*
-EraserTool::ReturnHelpString(bool isInUse)
+EraserTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? ERASER_TOOL_IN_USE_STRING
 		: ERASER_TOOL_READY_STRING);

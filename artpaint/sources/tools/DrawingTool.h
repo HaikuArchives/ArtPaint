@@ -50,8 +50,8 @@ public:
 
 			BRect			LastUpdatedRect();
 
-	virtual	const void*		ReturnToolCursor();
-	virtual	const char*		ReturnHelpString(bool isInUse);
+	virtual	const void*		ToolCursor() const;
+	virtual	const char*		HelpString(bool isInUse) const;
 
 protected:
 			char			name[HS_MAX_TOOL_NAME_LENGTH];

@@ -29,8 +29,8 @@ public:
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
 			BView*				makeConfigView();
-			const void*			ReturnToolCursor();
-			const char*			ReturnHelpString(bool isInUse);
+			const void*			ToolCursor() const;
+			const char*			HelpString(bool isInUse) const;
 
 private:
 								// These functions handle the magic wand thing.
@@ -68,4 +68,5 @@ private:
 			BRadioButton*		fScissors;
 			ControlSliderBox*	fToleranceSlider;
 };
+
 #endif

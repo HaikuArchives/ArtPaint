@@ -159,18 +159,17 @@ EllipseTool::makeConfigView()
 
 
 const void*
-EllipseTool::ReturnToolCursor()
+EllipseTool::ToolCursor() const
 {
 	return HS_ELLIPSE_CURSOR;
 }
 
 
 const char*
-EllipseTool::ReturnHelpString(bool isInUse)
+EllipseTool::HelpString(bool isInUse) const
 {
-	string_id id = (isInUse ? ELLIPSE_TOOL_IN_USE_STRING
+	return StringServer::ReturnString(isInUse ? ELLIPSE_TOOL_IN_USE_STRING
 		: ELLIPSE_TOOL_READY_STRING);
-	return StringServer::ReturnString(id);
 }
 
 

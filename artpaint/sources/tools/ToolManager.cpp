@@ -73,9 +73,9 @@ ToolScript* ToolManager::StartTool(ImageView *view,uint32 buttons,BPoint bitmap_
 	// Here start the correct tool.
 	client_data->active_tool = used_tool;
 	if (client_data->active_tool != NULL) {
-		view->SetToolHelpString(used_tool->ReturnHelpString(TRUE));
+		view->SetToolHelpString(used_tool->HelpString(true));
 		ToolScript *the_script = client_data->active_tool->UseTool(view,buttons,bitmap_point,view_point);
-		view->SetToolHelpString(used_tool->ReturnHelpString(FALSE));
+		view->SetToolHelpString(used_tool->HelpString(false));
 
 		// When the tool has finished we should record the updated_rect into clients data.
 		client_data->last_updated_rect = client_data->active_tool->LastUpdatedRect();
@@ -167,7 +167,7 @@ const void* ToolManager::ReturnCursor()
 {
 	int32 cursor_mode = ((PaintApplication*)be_app)->GlobalSettings()->cursor_mode;
 	if ((active_drawing_tool != NULL) && (cursor_mode == TOOL_CURSOR_MODE)) {
-		return active_drawing_tool->ReturnToolCursor();
+		return active_drawing_tool->ToolCursor();
 	}
 	else if (active_drawing_tool == NULL) {
 		return B_HAND_CURSOR;
@@ -210,12 +210,12 @@ status_t ToolManager::NotifyViewEvent(ImageView *view,image_view_event_type type
 	ToolManagerClient *client_data = ReturnClientData(view);
 	if (type == CURSOR_ENTERED_VIEW) {
 		if (active_drawing_tool != NULL) {
-			view->SetToolHelpString(active_drawing_tool->ReturnHelpString(client_data->active_tool == active_drawing_tool));
+			view->SetToolHelpString(active_drawing_tool->HelpString(client_data->active_tool == active_drawing_tool));
 		}
 	}
 	else if (type == TOOL_ACTIVATED) {
 		if (active_drawing_tool != NULL) {
-			view->SetToolHelpString(active_drawing_tool->ReturnHelpString(client_data->active_tool == active_drawing_tool));
+			view->SetToolHelpString(active_drawing_tool->HelpString(client_data->active_tool == active_drawing_tool));
 		}
 	}
 	else if (type == CURSOR_EXITED_VIEW) {

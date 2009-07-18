@@ -160,10 +160,12 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 	return the_script;
 }
 
+
 int32 SimpleTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
 	return B_NO_ERROR;
 }
+
 
 BView* SimpleTool::makeConfigView()
 {
@@ -173,17 +175,18 @@ BView* SimpleTool::makeConfigView()
 }
 
 
-const char* SimpleTool::ReturnHelpString(bool is_in_use)
-{
-	if (!is_in_use)
-		return StringServer::ReturnString(FREE_LINE_TOOL_READY_STRING);
-	else
-		return StringServer::ReturnString(FREE_LINE_TOOL_IN_USE_STRING);
-}
-
-const void* SimpleTool::ReturnToolCursor()
+const void*
+SimpleTool::ToolCursor() const
 {
 	return HS_FREE_LINE_CURSOR;
+}
+
+
+const char*
+SimpleTool::HelpString(bool isInUse) const
+{
+	return StringServer::ReturnString(isInUse ? FREE_LINE_TOOL_IN_USE_STRING
+		: FREE_LINE_TOOL_READY_STRING);
 }
 
 

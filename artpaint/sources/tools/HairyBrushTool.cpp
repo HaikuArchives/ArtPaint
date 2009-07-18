@@ -383,14 +383,14 @@ HairyBrushTool::makeConfigView()
 
 
 const void*
-HairyBrushTool::ReturnToolCursor()
+HairyBrushTool::ToolCursor() const
 {
 	return HS_HAIRY_BRUSH_CURSOR;
 }
 
 
 const char*
-HairyBrushTool::ReturnHelpString(bool isInUse)
+HairyBrushTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? HAIRY_BRUSH_TOOL_IN_USE_STRING
 		: HAIRY_BRUSH_TOOL_READY_STRING);

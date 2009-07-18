@@ -156,14 +156,14 @@ TransparencyTool::makeConfigView()
 
 
 const void*
-TransparencyTool::ReturnToolCursor()
+TransparencyTool::ToolCursor() const
 {
 	return HS_TRANSPARENCY_CURSOR;
 }
 
 
 const char*
-TransparencyTool::ReturnHelpString(bool isInUse)
+TransparencyTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? TRANSPARENCY_TOOL_IN_USE_STRING
 		: TRANSPARENCY_TOOL_READY_STRING);

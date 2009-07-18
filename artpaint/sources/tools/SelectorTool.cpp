@@ -302,14 +302,14 @@ SelectorTool::makeConfigView()
 
 
 const void*
-SelectorTool::ReturnToolCursor()
+SelectorTool::ToolCursor() const
 {
 	return HS_SELECTOR_CURSOR;
 }
 
 
 const char*
-SelectorTool::ReturnHelpString(bool isInUse)
+SelectorTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? SELECTOR_TOOL_IN_USE_STRING
 		: SELECTOR_TOOL_READY_STRING);

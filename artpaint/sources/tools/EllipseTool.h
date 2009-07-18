@@ -28,8 +28,8 @@ public:
 
 
 			BView*			makeConfigView();
-			const void*		ReturnToolCursor();
-			const char*		ReturnHelpString(bool isInUse);
+			const void*		ToolCursor() const;
+			const char*		HelpString(bool isInUse) const;
 };
 
 

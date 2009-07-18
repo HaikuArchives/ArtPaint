@@ -29,8 +29,8 @@ public:
 			BView*				makeConfigView();
 			void				UpdateConfigView(BView*);
 
-			const void*			ReturnToolCursor();
-			const char*			ReturnHelpString(bool isInUse);
+			const void*			ToolCursor() const;
+			const char*			HelpString(bool isInUse) const;
 
 
 			status_t			readSettings(BFile& file, bool isLittleEndian);

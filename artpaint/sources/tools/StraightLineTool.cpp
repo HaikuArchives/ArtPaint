@@ -321,19 +321,17 @@ StraightLineTool::makeConfigView()
 
 
 const void*
-StraightLineTool::ReturnToolCursor()
+StraightLineTool::ToolCursor() const
 {
 	return HS_LINE_CURSOR;
 }
 
 
 const char*
-StraightLineTool::ReturnHelpString(bool isInUse)
+StraightLineTool::HelpString(bool isInUse) const
 {
-	string_id id = isInUse ? STRAIGHT_LINE_TOOL_IN_USE_STRING :
-		STRAIGHT_LINE_TOOL_READY_STRING;
-
-	return StringServer::ReturnString(id);
+	return StringServer::ReturnString(isInUse ? STRAIGHT_LINE_TOOL_IN_USE_STRING
+		: STRAIGHT_LINE_TOOL_READY_STRING);
 }
 
 

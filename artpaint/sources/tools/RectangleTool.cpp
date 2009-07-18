@@ -278,14 +278,14 @@ RectangleTool::makeConfigView()
 
 
 const void*
-RectangleTool::ReturnToolCursor()
+RectangleTool::ToolCursor() const
 {
 	return HS_RECTANGLE_CURSOR;
 }
 
 
 const char*
-RectangleTool::ReturnHelpString(bool isInUse)
+RectangleTool::HelpString(bool isInUse) const
 {
 	return StringServer::ReturnString(isInUse ? RECTANGLE_TOOL_IN_USE_STRING
 		: RECTANGLE_TOOL_READY_STRING);

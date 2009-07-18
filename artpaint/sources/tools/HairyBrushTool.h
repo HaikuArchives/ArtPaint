@@ -29,8 +29,8 @@ public:
 
 
 			BView*				makeConfigView();
-			const void*			ReturnToolCursor();
-			const char*			ReturnHelpString(bool isInUse);
+			const void*			ToolCursor() const;
+			const char*			HelpString(bool isInUse) const;
 
 private:
 			ImageView*			image_view;
@@ -65,6 +65,5 @@ random_round(float number, float r)
 	const float dec = number - floor(number);
 	return (dec < r ? floor(number) : ceil(number));
 }
-
 
 #endif

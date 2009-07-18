@@ -190,22 +190,22 @@ BlurTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 BlurTool::makeConfigView()
 {
-	return new BlurToolConfigView(BRect(0, 0, 150, 0), this);
+	return (new BlurToolConfigView(BRect(0, 0, 150, 0), this));
 }
 
 
 const void*
-BlurTool::ReturnToolCursor()
+BlurTool::ToolCursor() const
 {
 	return HS_BLUR_CURSOR;
 }
 
 
 const char*
-BlurTool::ReturnHelpString(bool isInUse)
+BlurTool::HelpString(bool isInUse) const
 {
-	string_id id = (isInUse ? BLUR_TOOL_IN_USE_STRING : BLUR_TOOL_READY_STRING);
-	return StringServer::ReturnString(id);
+	return StringServer::ReturnString((isInUse ? BLUR_TOOL_IN_USE_STRING
+		: BLUR_TOOL_READY_STRING));
 }
 
 

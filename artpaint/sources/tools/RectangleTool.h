@@ -28,8 +28,8 @@ public:
 			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
 
 			BView*			makeConfigView();
-			const void*		ReturnToolCursor();
-			const char*		ReturnHelpString(bool isInUse);
+			const void*		ToolCursor() const;
+			const char*		HelpString(bool isInUse) const;
 };
 
 
