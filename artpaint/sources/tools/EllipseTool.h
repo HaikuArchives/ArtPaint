@@ -35,7 +35,7 @@ public:
 
 class EllipseToolConfigView : public DrawingToolConfigView {
 public:
-							EllipseToolConfigView(BRect rect, DrawingTool* t);
+							EllipseToolConfigView(DrawingTool* newTool);
 
 	virtual	void			AttachedToWindow();
 

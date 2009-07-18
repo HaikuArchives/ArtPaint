@@ -190,7 +190,7 @@ BlurTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 BlurTool::makeConfigView()
 {
-	return (new BlurToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new BlurToolConfigView(this));
 }
 
 
@@ -212,8 +212,8 @@ BlurTool::HelpString(bool isInUse) const
 // #pragma mark -- BlurToolConfigView
 
 
-BlurToolConfigView::BlurToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+BlurToolConfigView::BlurToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 

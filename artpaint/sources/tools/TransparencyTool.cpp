@@ -151,7 +151,7 @@ TransparencyTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 TransparencyTool::makeConfigView()
 {
-	return (new TransparencyToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new TransparencyToolConfigView(this));
 }
 
 
@@ -173,8 +173,8 @@ TransparencyTool::HelpString(bool isInUse) const
 // #pragma mark -- TransparencyToolConfigView
 
 
-TransparencyToolConfigView::TransparencyToolConfigView(BRect rect,DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", SIZE_OPTION);

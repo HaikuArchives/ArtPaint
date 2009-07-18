@@ -154,7 +154,7 @@ EllipseTool::UseToolWithScript(ToolScript*,BBitmap*)
 BView*
 EllipseTool::makeConfigView()
 {
-	return new EllipseToolConfigView(BRect(0, 0, 150, 0), this);
+	return new EllipseToolConfigView(this);
 }
 
 
@@ -176,8 +176,8 @@ EllipseTool::HelpString(bool isInUse) const
 // #pragma mark -- EllipseToolConfigView
 
 
-EllipseToolConfigView::EllipseToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+EllipseToolConfigView::EllipseToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 

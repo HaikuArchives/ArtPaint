@@ -65,7 +65,7 @@ DrawingTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 DrawingTool::makeConfigView()
 {
-	BView* configView = new DrawingToolConfigView(BRect(0, 0, 0, 0), this);
+	BView* configView = new DrawingToolConfigView(this);
 	configView->SetLayout(new BGroupLayout(B_VERTICAL));
 	configView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -297,8 +297,8 @@ DrawingTool::HelpString(bool isInUse) const
 // #pragma mark -- DrawingToolConfigView
 
 
-DrawingToolConfigView::DrawingToolConfigView(BRect rect, DrawingTool* newTool)
-	: BView(rect, "drawing tool config view", B_FOLLOW_ALL_SIDES, B_WILL_DRAW)
+DrawingToolConfigView::DrawingToolConfigView(DrawingTool* newTool)
+	: BView("drawing tool config view", 0, NULL)
 	, tool(newTool)
 {
 }

@@ -66,8 +66,7 @@ private:
 
 class ColorSelectorToolConfigView : public DrawingToolConfigView {
 public:
-								ColorSelectorToolConfigView(BRect rect,
-									DrawingTool* drawingTool);
+								ColorSelectorToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

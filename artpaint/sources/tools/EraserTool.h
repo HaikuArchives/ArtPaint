@@ -46,7 +46,7 @@ private:
 
 class EraserToolConfigView : public DrawingToolConfigView {
 public:
-								EraserToolConfigView(BRect rect, DrawingTool* t);
+								EraserToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

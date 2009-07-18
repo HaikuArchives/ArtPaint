@@ -70,7 +70,7 @@ private:
 
 class BrushToolConfigView : public DrawingToolConfigView {
 public:
-								BrushToolConfigView(BRect rect, DrawingTool *t);
+								BrushToolConfigView(DrawingTool* newTool);
 };
 
 

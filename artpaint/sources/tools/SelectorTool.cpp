@@ -297,7 +297,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 BView*
 SelectorTool::makeConfigView()
 {
-	return (new SelectorToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new SelectorToolConfigView(this));
 }
 
 
@@ -595,8 +595,8 @@ SelectorTool::CheckLowerSpans(BPoint span_start, BitmapDrawer* drawer,
 // #pragma mark -- SelectorToolConfigView
 
 
-SelectorToolConfigView::SelectorToolConfigView(BRect rect, DrawingTool* tool)
-	: DrawingToolConfigView(rect, tool)
+SelectorToolConfigView::SelectorToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", MODE_OPTION);

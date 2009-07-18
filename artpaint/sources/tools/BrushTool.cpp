@@ -162,7 +162,7 @@ BrushTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 BView* BrushTool::makeConfigView()
 {
-	return (new BrushToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new BrushToolConfigView(this));
 }
 
 
@@ -398,8 +398,8 @@ BrushTool::writeSettings(BFile &file)
 // #pragma mark -- BrushToolConfigView
 
 
-BrushToolConfigView::BrushToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+BrushToolConfigView::BrushToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BrushEditor::CreateBrushEditor(((BrushTool*)tool)->GetBrush()));

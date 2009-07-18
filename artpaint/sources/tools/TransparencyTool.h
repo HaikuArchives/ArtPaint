@@ -34,8 +34,7 @@ public:
 
 class TransparencyToolConfigView : public DrawingToolConfigView {
 public:
-								TransparencyToolConfigView(BRect rect,
-									DrawingTool* drawingTool);
+								TransparencyToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

@@ -83,11 +83,11 @@ private:
 
 class FillToolConfigView : public DrawingToolConfigView {
 public:
-								FillToolConfigView(BRect rect,
-									DrawingTool* tool, uint32 c1, uint32 c2);
+								FillToolConfigView(DrawingTool* newTool,
+									uint32 c1, uint32 c2);
 
 	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage*);
+	virtual	void				MessageReceived(BMessage* message);
 
 private:
 			BCheckBox*			fFlod;

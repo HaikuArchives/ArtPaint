@@ -378,7 +378,7 @@ HairyBrushTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 HairyBrushTool::makeConfigView()
 {
-	return (new HairyBrushToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new HairyBrushToolConfigView(this));
 }
 
 
@@ -436,8 +436,8 @@ HairyBrushTool::HelpString(bool isInUse) const
 // #pragma mark -- HairyBrushToolConfigView
 
 
-HairyBrushToolConfigView::HairyBrushToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", SIZE_OPTION);

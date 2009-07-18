@@ -43,8 +43,7 @@ private:
 
 class HairyBrushToolConfigView : public DrawingToolConfigView {
 public:
-								HairyBrushToolConfigView(BRect rect,
-									DrawingTool* drawingTool);
+								HairyBrushToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 	virtual	void				MessageReceived(BMessage* message);

@@ -38,8 +38,7 @@ private:
 
 class AirBrushToolConfigView : public DrawingToolConfigView {
 public:
-								AirBrushToolConfigView(BRect rect,
-									DrawingTool* drawingTool);
+								AirBrushToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

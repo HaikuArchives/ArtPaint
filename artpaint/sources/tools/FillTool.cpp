@@ -95,8 +95,7 @@ FillTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 FillTool::makeConfigView()
 {
-	return new FillToolConfigView(BRect(0, 0, 150, 0), this, gradient_color1,
-		gradient_color2);
+	return (new FillToolConfigView(this, gradient_color1, gradient_color2));
 }
 
 
@@ -1696,8 +1695,8 @@ FillToolConfigView::GradientView::_CalculateGradient()
 // #pragma mark -- FillToolConfigView
 
 
-FillToolConfigView::FillToolConfigView(BRect rect, DrawingTool *t,uint32 c1, uint32 c2)
-	: DrawingToolConfigView(rect,t)
+FillToolConfigView::FillToolConfigView(DrawingTool* newTool,uint32 c1, uint32 c2)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", MODE_OPTION);

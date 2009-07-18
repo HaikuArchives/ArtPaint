@@ -179,7 +179,7 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 BView*
 ColorSelectorTool::makeConfigView()
 {
-	return (new ColorSelectorToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new ColorSelectorToolConfigView(this));
 }
 
 
@@ -365,9 +365,8 @@ ColorSelectorWindow::Move(BPoint cursor_location)
 // #pragma mark -- ColorSelectorToolConfigView
 
 
-ColorSelectorToolConfigView::ColorSelectorToolConfigView(BRect rect,
-		DrawingTool* drawingTool)
-	: DrawingToolConfigView(rect, drawingTool)
+ColorSelectorToolConfigView::ColorSelectorToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", SIZE_OPTION);

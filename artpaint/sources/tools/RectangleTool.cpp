@@ -273,7 +273,7 @@ RectangleTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 RectangleTool::makeConfigView()
 {
-	return (new RectangleToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new RectangleToolConfigView(this));
 }
 
 
@@ -295,8 +295,8 @@ RectangleTool::HelpString(bool isInUse) const
 // #pragma mark -- RectangleToolConfigView
 
 
-RectangleToolConfigView::RectangleToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+RectangleToolConfigView::RectangleToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", FILL_ENABLED_OPTION);

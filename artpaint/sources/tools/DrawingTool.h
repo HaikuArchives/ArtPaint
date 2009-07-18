@@ -71,7 +71,7 @@ protected:
 
 class DrawingToolConfigView : public BView {
 public:
-							DrawingToolConfigView(BRect rect, DrawingTool* tool);
+							DrawingToolConfigView(DrawingTool* newTool);
 	virtual					~DrawingToolConfigView();
 
 	virtual	void			AttachedToWindow();

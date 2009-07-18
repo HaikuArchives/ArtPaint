@@ -35,7 +35,7 @@ public:
 
 class RectangleToolConfigView : public DrawingToolConfigView {
 public:
-							RectangleToolConfigView(BRect rect, DrawingTool* t);
+							RectangleToolConfigView(DrawingTool* newTool);
 
 	virtual	void			AttachedToWindow();
 

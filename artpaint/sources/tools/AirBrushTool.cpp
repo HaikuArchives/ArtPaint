@@ -316,7 +316,7 @@ AirBrushTool::UseToolWithScript(ToolScript*,BBitmap*)
 BView*
 AirBrushTool::makeConfigView()
 {
-	return (new AirBrushToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new AirBrushToolConfigView(this));
 }
 
 
@@ -338,8 +338,8 @@ AirBrushTool::HelpString(bool isInUse) const
 // #pragma mark -- AirBrushToolConfigView
 
 
-AirBrushToolConfigView::AirBrushToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", SIZE_OPTION);

@@ -54,8 +54,7 @@ private:
 
 class SelectorToolConfigView : public DrawingToolConfigView {
 public:
-								SelectorToolConfigView(BRect rect,
-									DrawingTool* drawingTool);
+								SelectorToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

@@ -44,11 +44,9 @@ private:
 };
 
 
-
 class SimpleToolConfigView : public DrawingToolConfigView {
 public:
-									SimpleToolConfigView(BRect rect,
-										DrawingTool* tool);
+									SimpleToolConfigView(DrawingTool* newTool);
 
 	virtual	void					AttachedToWindow();
 

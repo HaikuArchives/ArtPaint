@@ -35,8 +35,7 @@ public:
 
 class StraightLineToolConfigView : public DrawingToolConfigView {
 public:
-								StraightLineToolConfigView(BRect rect,
-									DrawingTool* tool);
+								StraightLineToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

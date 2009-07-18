@@ -38,7 +38,7 @@ private:
 
 class BlurToolConfigView : public DrawingToolConfigView {
 public:
-								BlurToolConfigView(BRect rect, DrawingTool *t);
+								BlurToolConfigView(DrawingTool* newTool);
 
 	virtual	void				AttachedToWindow();
 

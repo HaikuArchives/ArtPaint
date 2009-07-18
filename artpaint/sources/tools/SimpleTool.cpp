@@ -161,17 +161,17 @@ ToolScript* SimpleTool::UseTool(ImageView *view,uint32 buttons,BPoint point,BPoi
 }
 
 
-int32 SimpleTool::UseToolWithScript(ToolScript*,BBitmap*)
+int32
+SimpleTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-BView* SimpleTool::makeConfigView()
+BView*
+SimpleTool::makeConfigView()
 {
-	SimpleToolConfigView *target_view = new SimpleToolConfigView(BRect(0,0,150,0),this);
-
-	return target_view;
+	return (new SimpleToolConfigView(this));
 }
 
 
@@ -190,7 +190,8 @@ SimpleTool::HelpString(bool isInUse) const
 }
 
 
-int32 SimpleTool::CoordinateReader(void *data)
+int32
+SimpleTool::CoordinateReader(void *data)
 {
 	SimpleTool *this_pointer = (SimpleTool*)data;
 	return this_pointer->read_coordinates();
@@ -229,8 +230,8 @@ int32 SimpleTool::read_coordinates()
 // #pragma mark -- SimpleToolConfigView
 
 
-SimpleToolConfigView::SimpleToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+SimpleToolConfigView::SimpleToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", SIZE_OPTION);

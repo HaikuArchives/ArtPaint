@@ -182,7 +182,7 @@ EraserTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 EraserTool::makeConfigView()
 {
-	return (new EraserToolConfigView(BRect(0, 0, 150, 0), this));
+	return (new EraserToolConfigView(this));
 }
 
 
@@ -242,8 +242,8 @@ EraserTool::read_coordinates()
 // #pragma mark -- EraserToolConfigView
 
 
-EraserToolConfigView::EraserToolConfigView(BRect rect, DrawingTool* t)
-	: DrawingToolConfigView(rect, t)
+EraserToolConfigView::EraserToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	BMessage* message = new BMessage(OPTION_CHANGED);
 	message->AddInt32("option", SIZE_OPTION);

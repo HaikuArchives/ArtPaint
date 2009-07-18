@@ -316,7 +316,7 @@ StraightLineTool::UseToolWithScript(ToolScript*,BBitmap*)
 BView*
 StraightLineTool::makeConfigView()
 {
-	return (new StraightLineToolConfigView(BRect(0.0, 0.0, 150.0, 0.0), this));
+	return (new StraightLineToolConfigView(this));
 }
 
 
@@ -338,8 +338,8 @@ StraightLineTool::HelpString(bool isInUse) const
 // #pragma mark -- StraightLineToolConfigView
 
 
-StraightLineToolConfigView::StraightLineToolConfigView(BRect rect, DrawingTool *t)
-	: DrawingToolConfigView(rect, t)
+StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* newTool)
+	: DrawingToolConfigView(newTool)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
