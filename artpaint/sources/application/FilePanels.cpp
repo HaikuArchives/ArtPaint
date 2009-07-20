@@ -120,3 +120,36 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 ImageSavePanel::~ImageSavePanel()
 {
 }
+
+
+status_t
+set_filepanel_strings(BFilePanel *panel)
+{
+	if (!panel)
+		return B_ERROR;
+
+	BWindow* window = panel->Window();
+	if (!window)
+		return B_ERROR;
+
+	if (window->Lock()) {
+		BButton* button =
+				dynamic_cast<BButton*>(window->FindView("default button"));
+
+		if (button) {
+			if (strcmp(button->Label(), "Save") == 0)
+				button->SetLabel(StringServer::ReturnString(SAVE_STRING));
+
+			if (strcmp(button->Label(), "Open") == 0)
+				button->SetLabel(StringServer::ReturnString(OPEN_STRING));
+		}
+
+		button = dynamic_cast<BButton*>(window->FindView("cancel button"));
+		if (button) {
+			if (strcmp(button->Label(), "Cancel") == 0)
+				button->SetLabel(StringServer::ReturnString(CANCEL_STRING));
+		}
+		window->Unlock();
+	}
+	return B_OK;
+}

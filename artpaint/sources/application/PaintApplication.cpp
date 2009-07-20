@@ -15,6 +15,7 @@
 #include "BrushStoreWindow.h"
 #include "ColorPalette.h"
 #include "FileIdentificationStrings.h"
+#include "FilePanels.h"
 #include "FloaterManager.h"
 #include "Image.h"
 #include "ImageView.h"
@@ -32,7 +33,6 @@
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
 #include "UndoQueue.h"
-#include "UtilityClasses.h"
 
 
 #include <Alert.h>

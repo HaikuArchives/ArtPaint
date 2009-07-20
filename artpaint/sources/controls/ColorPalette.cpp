@@ -38,6 +38,7 @@
 #include "ResourceServer.h"
 #include "Patterns.h"
 #include "PaletteWindowClient.h"
+#include "FilePanels.h"
 
 // Initialize the static variable to NULL.
 ColorPaletteWindow* ColorPaletteWindow::palette_window = NULL;

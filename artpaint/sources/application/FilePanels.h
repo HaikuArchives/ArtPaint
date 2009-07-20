@@ -25,4 +25,7 @@ public:
 	virtual			~ImageSavePanel();
 };
 
+// The next function translates the strings in filepanels (like 'Open' etc.)
+status_t set_filepanel_strings(BFilePanel*);
+
 #endif

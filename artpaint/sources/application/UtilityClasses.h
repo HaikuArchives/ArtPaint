@@ -119,10 +119,4 @@ inline rgb_color BGRAColorToRGB(uint32 bgra_color)
 // This function makes a rect out of two points after sorting the points
 BRect make_rect_from_points(BPoint&,BPoint&);
 
-// The next function translates the strings in filepanels (like 'Open' etc.)
-status_t set_filepanel_strings(BFilePanel*);
-
-// This function reads a bitmap from apps resources.
-//BBitmap* read_bitmap_from_resources(int32,int32,color_space,int32);
-
 #endif
