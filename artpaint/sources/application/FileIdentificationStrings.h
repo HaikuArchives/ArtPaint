@@ -20,8 +20,8 @@
 // These strings define the mime-type strings that are used with the files
 // The ones labeled with _OLD are here for the compability with the older
 // project-files.
-#define	HS_PALETTE_MIME_STRING	"application/x-vnd.hsuhonen.artpaint-palette-file"
-#define HS_PROJECT_MIME_STRING	"application/x-vnd.hsuhonen.artpaint-project-file"
+#define	HS_PALETTE_MIME_STRING	"application/x-vnd.artpaint-palette-file"
+#define HS_PROJECT_MIME_STRING	"application/x-vnd.artpaint-project-file"
 
 
 #define	_OLD_HS_PALETTE_MIME_STRING	"application/x-vnd.ArtPaint-Pale"

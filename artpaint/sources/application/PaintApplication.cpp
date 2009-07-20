@@ -56,7 +56,7 @@
 
 
 PaintApplication::PaintApplication()
-	: BApplication("application/x-vnd.hsuhonen-artpaint")
+	: BApplication("application/x-vnd.artpaint")
 	, fImageOpenPanel(NULL)
 	, fProjectOpenPanel(NULL)
 	, fGlobalSettings(NULL)
