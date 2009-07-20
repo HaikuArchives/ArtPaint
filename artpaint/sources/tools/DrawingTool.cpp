@@ -325,14 +325,13 @@ DrawingToolConfigView::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case OPTION_CHANGED: {
 			// This comes from one of the controls in this window, it tells us
-			// that the value for that slider has changed, it contains
+			// that the value for tool control(s) have changed, it contains
 			// int32 "option" and int32 "value" data members
 			BHandler* handler;
-			if (message->FindPointer("source", (void**)&handler) == B_OK) {
-				if (tool) {
-					tool->SetOption(message->FindInt32("option"),
-						message->FindInt32("value"), handler);
-				}
+			message->FindPointer("source", (void**)&handler);
+			if (tool) {
+				tool->SetOption(message->FindInt32("option"),
+					message->FindInt32("value"), handler);
 			}
 		}	break;
 

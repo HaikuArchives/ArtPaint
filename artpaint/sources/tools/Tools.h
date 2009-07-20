@@ -11,55 +11,34 @@
 
 #include <SupportDefs.h>
 
-// Here is enumeration that defines the drawing tool constants.
-// After adding a constant here we should make also adjustments to
-// places where tools are created (i.e. in ArtPaintApp.cpp).
-// We should also change the version number of the prefs-file, because
+
+// Here is enumeration that defines the drawing tool constants. After adding a
+// constant here we should make also adjustments to places where tools are
+// created. We should also change the version number of the prefs-file, because
 // tool settings are stored in that file.
+
 enum drawing_tools {
-	NO_TOOL =	'NoTl',
-	FREE_LINE_TOOL =	'SiTT',
-	SELECTOR_TOOL =	'SelT',
-	FILL_TOOL = 'FlTl',
-	RECTANGLE_TOOL = 'RcTl',
-	ELLIPSE_TOOL = 'EliT',
-	STRAIGHT_LINE_TOOL = 'SlnT',
-	BRUSH_TOOL = 'brTl',
-	BLUR_TOOL = 'BluT',
-	COLOR_SELECTOR_TOOL	= 'CslT',
-	TRANSPARENCY_TOOL = 'TraT',
-	AIR_BRUSH_TOOL = 'Abrt',
-	HAIRY_BRUSH_TOOL = 'Hbrt',
-	ERASER_TOOL = 'Erst',
-	TEXT_TOOL = 'Txtl'
+	NO_TOOL					= 999,
+	FREE_LINE_TOOL			= 1000,
+	STRAIGHT_LINE_TOOL		= 1010,
+	RECTANGLE_TOOL			= 1020,
+	ELLIPSE_TOOL			= 1030,
+	BRUSH_TOOL				= 1040,
+	HAIRY_BRUSH_TOOL		= 1050,
+	AIR_BRUSH_TOOL			= 1060,
+	BLUR_TOOL				= 1070,
+	FILL_TOOL				= 1080,
+	TEXT_TOOL				= 1090,
+	TRANSPARENCY_TOOL		= 1100,
+	ERASER_TOOL				= 1110,
+	SELECTOR_TOOL			= 1120,
+	COLOR_SELECTOR_TOOL		= 1130
 };
 
 
-//#define	NO_TOOL_NAME				"No Tool"
-//#define	SIMPLE_TEST_TOOL_NAME		"Free Line"
-//#define	SELECTOR_TOOL_NAME			"Selector Tool"
-//#define	FILL_TOOL_NAME				"Fill"
-//#define RECTANGLE_TOOL_NAME			"Rectangle"
-//#define	ELLIPSE_TOOL_NAME			"Ellipse"
-//#define STRAIGHT_LINE_TOOL_NAME		"Line"
-//#define	BRUSH_TOOL_NAME				"Brush Stroke"
-//#define BLUR_TOOL_NAME				"Blur"
-//#define COLOR_SELECTOR_TOOL_NAME	"Color Selector"
-//#define	TRANSPARENCY_TOOL_NAME		"Transparency Tool"
-//#define AIR_BRUSH_TOOL_NAME			"AirBrush"
-//#define	HAIRY_BRUSH_TOOL_NAME		"Hairy Brush"
-//#define ERASER_TOOL_NAME			"Eraser"
-//#define TEXT_TOOL_NAME				"Text Tool"
+// These constants define which options a tool can have. They are combined with
+// bitwise and.
 
-// This defines the tool name that has most letters.
-// But the name that has the longest display representation may
-// vary due to different fonts and such. The name should be
-// reasonably long because tool-setup-window's width is based on it.
-//#define HS_LONGEST_TOOL_NAME	"Transparency Tool"
-
-
-// These constants define which options a tool can have.
-// They are combined with bitwise and.
 enum option_constants {
 	SIZE_OPTION 				=	0x00000001,
 	PRESSURE_OPTION				=	0x00000002,
@@ -78,9 +57,10 @@ enum option_constants {
 };
 
 
-// These constants are used when an option controller doesn't have
-// a numerical value (e.g. RadioButtons and menus).
-// The items will have some of these constants as their "values".
+// These constants are used when an option controller doesn't have a numerical
+// value (e.g. RadioButtons and menus). The items will have some of these
+// constants as their "values".
+
 enum controller_values {
 	HS_FREE_LINE					=	'Frln',
 	HS_RECTANGLE					=	'Reng',
@@ -98,12 +78,11 @@ enum controller_values {
 };
 
 
+// This struct stores tool's settings, it contains a lot of information that is
+// not necessary for every tool, but it is easier to save and load. When we add
+// stuff here, we must also add corresponding cases to functions in the
+// DrawingTool-class.
 
-// this struct stores tool's settings, it contains a lot of
-// information that is not necessary for every tool, but it
-// is easier to save and load
-// When we add stuff here, we must also add corresponding cases
-// to functions in the DrawingTool-class.
 struct tool_settings {
 	int32	size;
 	int32	pressure;
