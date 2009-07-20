@@ -91,7 +91,7 @@ Addon Marble.so :
 	StatusView.o
 	StraightLineTool.o
 	StringServer.o
-	SymbolImageServer.o
+	ResourceServer.o
 	TextManipulator.o
 	TextTool.o
 	ToolButton.o
@@ -190,7 +190,7 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>StatusView.o
 		<3rdparty!artpaint!artpaint!sources>StraightLineTool.o
 		<3rdparty!artpaint!artpaint!sources>StringServer.o
-		<3rdparty!artpaint!artpaint!sources>SymbolImageServer.o
+		<3rdparty!artpaint!artpaint!sources>ResourceServer.o
 		<3rdparty!artpaint!artpaint!sources>TextManipulator.o
 		<3rdparty!artpaint!artpaint!sources>TextTool.o
 		<3rdparty!artpaint!artpaint!sources>ToolButton.o

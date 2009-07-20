@@ -25,11 +25,13 @@
 #include "HSPictureButton.h"
 #include "Patterns.h"
 #include "MagnificationView.h"
-#include "SymbolImageServer.h"
+#include "ResourceServer.h"
 #include "StringServer.h"
 
 StatusView::StatusView(BRect frame)
-				: BView(frame,"status view",B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT,B_WILL_DRAW)
+	: BView(frame,"status view", B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
+	, ok_button(NULL)
+	, cancel_button(NULL)
 {
 	status_bar = NULL;
 	manipulator_view = NULL;
@@ -90,22 +92,31 @@ StatusView::StatusView(BRect frame)
 	BMessage *cancel_message = new BMessage(HS_MANIPULATOR_FINISHED);
 	cancel_message->AddBool("status",FALSE);
 
-	// Create the OK-button
-	int32 button_w;
-	int32 button_h;
-	BPicture *on_picture = SymbolImageServer::ReturnSymbolAsPicture(OK_BUTTON,button_w,button_h);
-	BPicture *off_picture = SymbolImageServer::ReturnSymbolAsPicture(OK_BUTTON_PUSHED,button_w,button_h);
-	ok_button = new HSPictureButton(BRect(1,0,button_w-1+1,button_h-1),off_picture,on_picture,ok_message,NULL,"Push here to confirm changes.");
-	ok_button->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
+	ResourceServer* server = ResourceServer::Instance();
+	if (server) {
+		BPicture on_picture;
+		BPicture off_picture;
 
-	// Create the cancel-button.
-	on_picture = SymbolImageServer::ReturnSymbolAsPicture(CANCEL_BUTTON,button_w,button_h);
-	off_picture = SymbolImageServer::ReturnSymbolAsPicture(CANCEL_BUTTON_PUSHED,button_w,button_h);
-	cancel_button = new HSPictureButton(BRect(20,0,button_w+20-1,button_h-1),off_picture,on_picture,cancel_message,NULL,"Push here to cancel changes.");
-	cancel_button->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
+		server->GetPicture(OK_BUTTON, &on_picture);
+		server->GetPicture(OK_BUTTON_PUSHED, &off_picture);
 
-	// Here we set the background-color for status_view and all it's
-	// child views.
+		// Create the OK-button
+		ok_button = new HSPictureButton(BRect(1, 0, 2, 1), &off_picture,
+			&on_picture, ok_message, NULL, "Push here to confirm changes.");
+		ok_button->ResizeToPreferred();
+		ok_button->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
+
+		// Create the cancel-button.
+		server->GetPicture(CANCEL_BUTTON, &on_picture);
+		server->GetPicture(CANCEL_BUTTON_PUSHED, &off_picture);
+
+		cancel_button = new HSPictureButton(BRect(20, 0, 21, 1),
+			&off_picture, &on_picture, cancel_message, NULL,
+			"Push here to cancel changes.");
+		cancel_button->ResizeToPreferred();
+		cancel_button->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
+	}
+
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
@@ -127,10 +138,10 @@ StatusView::~StatusView()
 	if (color_container->Parent() == NULL)
 		delete color_container;
 
-	if (ok_button->Parent() == NULL)
+	if (ok_button && ok_button->Parent() == NULL)
 		delete ok_button;
 
-	if (cancel_button->Parent() == NULL)
+	if (cancel_button && cancel_button->Parent() == NULL)
 		delete cancel_button;
 }
 
@@ -511,7 +522,6 @@ bool SelectedColorsView::IsPointOverForegroundColor(BPoint point)
 	rect.left += 2;
 
 	if (rect.Contains(point))
-		return TRUE;
-	else
-		return FALSE;
+		return true;
+	return false;
 }

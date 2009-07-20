@@ -35,10 +35,10 @@ Application ArtPaint :
 	ProjectFileFunctions.cpp
 	RandomNumberGenerator.cpp
 	RefFilters.cpp
+	ResourceServer.cpp
 	Selection.cpp
 	Settings.cpp
 	StringServer.cpp
-	SymbolImageServer.cpp
 	UndoAction.cpp
 	UndoEvent.cpp
 	UndoQueue.cpp

@@ -35,7 +35,7 @@
 #include "MessageFilters.h"
 #include "UtilityClasses.h"
 #include "StringServer.h"
-#include "SymbolImageServer.h"
+#include "ResourceServer.h"
 #include "Patterns.h"
 #include "PaletteWindowClient.h"
 
@@ -417,23 +417,31 @@ bool ColorPaletteWindow::openControlViews(int32 mode)
 	top = color_container->Frame().bottom + 4;
 
 	// Here add the buttons that control the color-set.
-	int32 width;
-	int32 height;
-	BPicture *arrow_not_pushed = SymbolImageServer::ReturnSymbolAsPicture(LEFT_ARROW,width,height);
-	BPicture *arrow_pushed = SymbolImageServer::ReturnSymbolAsPicture(LEFT_ARROW_PUSHED,width,height);
-	previous_set = new BPictureButton(BRect(3,top,11,top+12),"left_arrow",arrow_not_pushed,arrow_pushed,new BMessage(HS_PREVIOUS_PALETTE));
+	ResourceServer* server = ResourceServer::Instance();
+	if (server) {
+		BPicture arrow_pushed;
+		BPicture arrow_not_pushed;
 
-	arrow_not_pushed = SymbolImageServer::ReturnSymbolAsPicture(RIGHT_ARROW,width,height);
-	arrow_pushed = SymbolImageServer::ReturnSymbolAsPicture(RIGHT_ARROW_PUSHED,width,height);
-	next_set = new BPictureButton(previous_set->Frame(),"right arrow",arrow_not_pushed,arrow_pushed,new BMessage(HS_NEXT_PALETTE));
+		server->GetPicture(LEFT_ARROW, &arrow_not_pushed);
+		server->GetPicture(LEFT_ARROW_PUSHED, &arrow_pushed);
 
-	next_set->MoveBy(next_set->Frame().Width()+3,0);
-	previous_set->SetTarget(this);
-	next_set->SetTarget(this);
-	box1->AddChild(previous_set);
+		previous_set = new BPictureButton(BRect(3, top, 11, top + 12),
+			"left_arrow", &arrow_not_pushed, &arrow_pushed,
+			new BMessage(HS_PREVIOUS_PALETTE));
+		box1->AddChild(previous_set);
+		previous_set->SetTarget(this);
+		previous_set->ResizeToPreferred();
 
-	box1->AddChild(next_set);
+		server->GetPicture(RIGHT_ARROW, &arrow_not_pushed);
+		server->GetPicture(RIGHT_ARROW_PUSHED, &arrow_pushed);
 
+		next_set = new BPictureButton(previous_set->Frame(), "right arrow",
+			&arrow_not_pushed, &arrow_pushed, new BMessage(HS_NEXT_PALETTE));
+		box1->AddChild(next_set);
+		next_set->SetTarget(this);
+		next_set->ResizeToPreferred();
+		next_set->MoveBy(next_set->Frame().Width() + 3,0);
+	}
 
 	// here resize the box1 to appropriate size
 	box1->ResizeTo(max_c(next_set->Frame().right + 20,color_container->Frame().Width()+6),next_set->Frame().bottom+3);
@@ -1174,27 +1182,31 @@ void ColorContainer::setUpContainer(BRect frame, int32 number_of_colors,bool add
 		horiz_c_size++;
 	horiz_c_size--;
 
-	if (add_arrows == TRUE) {
-		int32 width;
-		int32 height;
-		BPicture *arrow_not_pushed = SymbolImageServer::ReturnSymbolAsPicture(LEFT_ARROW,width,height);
-		BPicture *arrow_pushed = SymbolImageServer::ReturnSymbolAsPicture(LEFT_ARROW_PUSHED,width,height);
+	ResourceServer* server = ResourceServer::Instance();
+	if (add_arrows && server) {
+		BPicture arrow_pushed;
+		BPicture arrow_not_pushed;
 
-		left_arrow = new BPictureButton(BRect(0,0,width-1,height-1),"left_arrow",arrow_not_pushed,arrow_pushed,new BMessage(HS_PREVIOUS_PALETTE));
-		left_arrow->MoveTo(BPoint(2,2));
+		server->GetPicture(LEFT_ARROW, &arrow_not_pushed);
+		server->GetPicture(LEFT_ARROW_PUSHED, &arrow_pushed);
 
-		arrow_not_pushed = SymbolImageServer::ReturnSymbolAsPicture(RIGHT_ARROW,width,height);
-		arrow_pushed = SymbolImageServer::ReturnSymbolAsPicture(RIGHT_ARROW_PUSHED,width,height);
-
-		right_arrow = new BPictureButton(BRect(0,0,width-1,height-1),"right_arrow",arrow_not_pushed,arrow_pushed,new BMessage(HS_NEXT_PALETTE));
-		right_arrow->MoveTo(BPoint(2,left_arrow->Frame().bottom+3));
-
+		left_arrow = new BPictureButton(BRect(0, 0, 1, 1), "left_arrow",
+			&arrow_not_pushed, &arrow_pushed, new BMessage(HS_PREVIOUS_PALETTE));
 		AddChild(left_arrow);
+		left_arrow->ResizeToPreferred();
+		left_arrow->MoveTo(BPoint(2, 2));
+
+		server->GetPicture(RIGHT_ARROW, &arrow_not_pushed);
+		server->GetPicture(RIGHT_ARROW_PUSHED, &arrow_pushed);
+
+		right_arrow = new BPictureButton(BRect(0, 0, 1, 1), "right_arrow",
+			&arrow_not_pushed, &arrow_pushed, new BMessage(HS_NEXT_PALETTE));
 		AddChild(right_arrow);
+		right_arrow->ResizeToPreferred();
+		right_arrow->MoveTo(BPoint(2, left_arrow->Frame().bottom + 3));
 
-		contains_arrows = TRUE;
+		contains_arrows = true;
 	}
-
 
 	// here resize the view to just fit the colors
 	ResizeTo((color_count/row_count*(horiz_c_size+horiz_gutter) - horiz_gutter),(row_count*(vert_c_size + vert_gutter) - vert_gutter));

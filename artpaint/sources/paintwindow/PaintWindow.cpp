@@ -33,9 +33,9 @@
 #include "PaintWindowMenuItem.h"
 #include "ProjectFileFunctions.h"
 #include "PopUpList.h"
+#include "ResourceServer.h"
 #include "Settings.h"
 #include "StatusView.h"
-#include "SymbolImageServer.h"
 #include "ToolSetupWindow.h"
 #include "ToolSelectionWindow.h"
 #include "UtilityClasses.h"
@@ -235,11 +235,15 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 		float top = (fHeightNumberControl->Frame().bottom -
 			fWidthNumberControl->Frame().top) / 2.0;
 
-		int32 w, h;
+		BBitmap* listNormal;
+		BBitmap* listPushed;
+		ResourceServer* server = ResourceServer::Instance();
+		server->GetBitmap(POP_UP_LIST, &listNormal);
+		server->GetBitmap(POP_UP_LIST_PUSHED, &listPushed);
+
 		PopUpList* popUpList = new PopUpList(BRect(left, top, left + 9, top + 19),
-			SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST_PUSHED, w, h),
-			SymbolImageServer::ReturnSymbolAsBitmap(POP_UP_LIST, w, h),
-			message_list, RECENT_LIST_LENGTH, new BMessenger(NULL, this));
+			listPushed, listNormal, message_list, RECENT_LIST_LENGTH,
+			new BMessenger(NULL, this));
 
 		BMenu* standardSize = new BMenu(_StringForId(STANDARD_SIZES_STRING));
 

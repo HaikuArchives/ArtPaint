@@ -24,6 +24,7 @@
 #include "PaintWindow.h"
 #include "ProjectFileFunctions.h"
 #include "RefFilters.h"
+#include "ResourceServer.h"
 #include "Settings.h"
 #include "StringServer.h"
 #include "ToolImages.h"
@@ -60,6 +61,8 @@ PaintApplication::PaintApplication()
 	, fProjectOpenPanel(NULL)
 	, fGlobalSettings(NULL)
 {
+	ResourceServer::Instantiate();
+
 	// Some of the things in this function depend on the previously initialized
 	// things, so the order may be important. This should be fixed in future.
 
@@ -101,6 +104,7 @@ PaintApplication::~PaintApplication()
 	_WritePreferences();
 	delete fGlobalSettings;
 
+	ResourceServer::DestroyServer();
 	ToolManager::DestroyToolManager();
 }
 
