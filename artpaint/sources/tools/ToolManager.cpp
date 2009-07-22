@@ -1,198 +1,323 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <MenuItem.h>
-#include <PopUpMenu.h>
-#include <stdio.h>
 
-#include "ImageView.h"
 #include "ToolManager.h"
-#include "DrawingTools.h"
+
 #include "BrushEditor.h"
+#include "Cursors.h"
+#include "DrawingTools.h"
+#include "ImageView.h"
+#include "PaintApplication.h"
 #include "Settings.h"
 #include "ToolEventAdapter.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
-#include "PaintApplication.h"
-#include "Cursors.h"
 
-ToolManager	*tool_manager;
 
-// These functions are the public interface to ToolManager-class
-status_t ToolManager::CreateToolManager()
+#include <MenuItem.h>
+#include <PopUpMenu.h>
+
+
+struct ToolManagerClient {
+	ToolManagerClient(ImageView *view)
+		: fLastUpdatedRect(BRect())
+		, fClient(view)
+		, fActiveTool(NULL)
+		, fNextClient(NULL) {}
+
+	BRect				fLastUpdatedRect;
+
+	ImageView*			fClient;
+	DrawingTool*		fActiveTool;
+	ToolManagerClient*	fNextClient;
+};
+
+
+// #pragma mark -- ToolListEntry
+
+
+class ToolListEntry {
+public:
+	static	void			AddTool(DrawingTool*);
+	static	DrawingTool*	ReturnTool(int32);
+	static	DrawingTool*	ReturnToolAt(int32);
+	static	void			DeleteToolEntries();
+
+private:
+	DrawingTool		*the_tool;
+	int32			tool_type;
+	ToolListEntry	*next_tool;
+
+	static	ToolListEntry	*list_head;
+	ToolListEntry(DrawingTool*);
+	~ToolListEntry();
+};
+
+
+ToolListEntry* ToolListEntry::list_head = NULL;
+
+
+ToolListEntry::ToolListEntry(DrawingTool *tool)
 {
-	if (tool_manager == NULL) {
-		tool_manager = new ToolManager();
-		return B_NO_ERROR;
+	the_tool = tool;
+	tool_type = tool->Type();
+	next_tool = NULL;
+}
+
+
+ToolListEntry::~ToolListEntry()
+{
+	delete the_tool;
+}
+
+
+void
+ToolListEntry::AddTool(DrawingTool *tool)
+{
+	ToolListEntry *new_entry = new ToolListEntry(tool);
+
+	ToolListEntry *previous_entry = list_head;
+	while ((previous_entry != NULL) && (previous_entry->next_tool != NULL)) {
+		previous_entry = previous_entry->next_tool;
+	}
+
+	if (previous_entry == NULL) {
+		list_head = new_entry;
 	}
 	else {
-		return B_ERROR;
+		previous_entry->next_tool = new_entry;
 	}
 }
 
-status_t ToolManager::DestroyToolManager()
+
+DrawingTool*
+ToolListEntry::ReturnTool(int32 tool_type)
 {
-	if (tool_manager != NULL) {
-		delete tool_manager;
-		tool_manager = NULL;
-		return B_NO_ERROR;
-	}
-	else {
-		return B_ERROR;
-	}
-}
+	ToolListEntry *tool = list_head;
+	while ((tool != NULL) && (tool->tool_type != tool_type))
+		tool = tool->next_tool;
 
-
-
-// These are the ImageView-interface functions.
-ToolScript* ToolManager::StartTool(ImageView *view,uint32 buttons,BPoint bitmap_point,BPoint view_point, int32 toolType)
-{
-	DrawingTool *used_tool = NULL;
-
-	if (toolType != 0) {
-		used_tool = ToolListEntry::ReturnTool(toolType);
-	}
-
-	if (used_tool == NULL) {
-		used_tool = active_drawing_tool;
-	}
-
-	ToolManagerClient *client_data = ReturnClientData(view);
-
-	if (client_data->last_updated_rect.IsValid() == TRUE) {
-		// The client has not yet consumed the updated rect.
-		// We return NULL.
-		return NULL;
-	}
-
-	// Here start the correct tool.
-	client_data->active_tool = used_tool;
-	if (client_data->active_tool != NULL) {
-		view->SetToolHelpString(used_tool->HelpString(true));
-		ToolScript *the_script = client_data->active_tool->UseTool(view,buttons,bitmap_point,view_point);
-		view->SetToolHelpString(used_tool->HelpString(false));
-
-		// When the tool has finished we should record the updated_rect into clients data.
-		client_data->last_updated_rect = client_data->active_tool->LastUpdatedRect();
-		client_data->active_tool->SetLastUpdatedRect(BRect());
-		client_data->active_tool = NULL;
-
-		return the_script;
-	}
-
+	if (tool)
+		return tool->the_tool;
 	return NULL;
 }
 
 
-
-status_t ToolManager::MouseDown(ImageView *view,BPoint view_point,BPoint bitmap_point,uint32 buttons,int32 clicks)
+DrawingTool*
+ToolListEntry::ReturnToolAt(int32 index)
 {
-	// Here inform the client_data->active_tool about the mouse-event if it accepts
-	// that information.
+	ToolListEntry *tool = list_head;
+	while ((tool != NULL) && (index > 0)) {
+		tool = tool->next_tool;
+		index--;
+	}
+
+	if (tool)
+		return tool->the_tool;
+	return NULL;
+}
+
+
+void
+ToolListEntry::DeleteToolEntries()
+{
+	ToolListEntry *entry = list_head;
+	while (entry != NULL) {
+		ToolListEntry *helper = entry->next_tool;
+		delete entry;
+		entry = helper;
+	}
+}
+
+
+// #pragma mark -- ToolManager
+
+
+ToolManager* tool_manager;
+#define	TOOL_SETTINGS_FILE_ID		0x12345678
+#define	TOOL_SETTINGS_FILE_VERSION	0x00000001
+
+
+status_t
+ToolManager::CreateToolManager()
+{
+	if (tool_manager == NULL) {
+		tool_manager = new ToolManager();
+		return B_OK;
+	}
+	return B_ERROR;
+}
+
+
+status_t
+ToolManager::DestroyToolManager()
+{
+	if (tool_manager) {
+		delete tool_manager;
+		tool_manager = NULL;
+		return B_OK;
+	}
+	return B_ERROR;
+}
+
+
+// These are the ImageView-interface functions.
+ToolScript*
+ToolManager::StartTool(ImageView *view, uint32 buttons, BPoint bitmap_point,
+	BPoint view_point, int32 toolType)
+{
+	DrawingTool* activeTool = NULL;
+
+	if (toolType != 0)
+		activeTool = ToolListEntry::ReturnTool(toolType);
+
+	if (activeTool == NULL)
+		activeTool = fActiveTool;
+
+	ToolManagerClient* clientData = ReturnClientData(view);
+
+	// If the client has not yet consumed the updated rect,
+	if (clientData->fLastUpdatedRect.IsValid()) {
+		// we return NULL.
+		return NULL;
+	}
+
+	// Here start the correct tool.
+	clientData->fActiveTool = activeTool;
+	if (clientData->fActiveTool != NULL) {
+		view->SetToolHelpString(activeTool->HelpString(true));
+		ToolScript *the_script = clientData->fActiveTool->UseTool(view,buttons,bitmap_point,view_point);
+		view->SetToolHelpString(activeTool->HelpString(false));
+
+		// When the tool has finished we should record the updated_rect into clients data.
+		clientData->fLastUpdatedRect = clientData->fActiveTool->LastUpdatedRect();
+		clientData->fActiveTool->SetLastUpdatedRect(BRect());
+		clientData->fActiveTool = NULL;
+
+		return the_script;
+	}
+	return NULL;
+}
+
+
+status_t
+ToolManager::MouseDown(ImageView *view, BPoint view_point, BPoint bitmap_point,
+	uint32 buttons, int32 clicks)
+{
+	// Here inform the client_data->fActiveTool about the mouse-event if it
+	// accepts that information.
 	ToolManagerClient *client_data = ReturnClientData(view);
 
-	if (client_data->active_tool != NULL) {
-		ToolEventAdapter *adapter = dynamic_cast<ToolEventAdapter*>(client_data->active_tool);
+	if (client_data->fActiveTool != NULL) {
+		ToolEventAdapter *adapter =
+			dynamic_cast<ToolEventAdapter*>(client_data->fActiveTool);
 		if (adapter != NULL) {
 			adapter->SetClickEvent(view_point,bitmap_point,buttons,clicks);
 		}
 	}
-
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-status_t ToolManager::KeyDown(ImageView *view,const char *bytes,int32 numBytes)
+status_t
+ToolManager::KeyDown(ImageView* view, const char* bytes, int32 numBytes)
 {
-	// Here inform the client_data->active_tool about the key-event if it accepts
-	// that information.
+	// Here inform the client_data->fActiveTool about the key-event if it
+	// accepts that information.
 	ToolManagerClient *client_data = ReturnClientData(view);
 
 	if (client_data != NULL) {
-		if (client_data->active_tool != NULL) {
-			ToolEventAdapter *adapter = dynamic_cast<ToolEventAdapter*>(client_data->active_tool);
+		if (client_data->fActiveTool != NULL) {
+			ToolEventAdapter *adapter =
+				dynamic_cast<ToolEventAdapter*>(client_data->fActiveTool);
 			if (adapter != NULL) {
 				adapter->SetKeyEvent(bytes,numBytes);
 			}
 		}
 	}
-
-	return B_NO_ERROR;
+	return B_OK;
 }
 
-status_t ToolManager::KeyUp(ImageView *view,const char *bytes,int32 numBytes)
+
+status_t
+ToolManager::KeyUp(ImageView *view,const char *bytes,int32 numBytes)
 {
-	// Here inform the client_data->active_tool about the key-event if it accepts
-	// that information.
-
-	return B_NO_ERROR;
+	// Here inform the client_data->fActiveTool about the key-event if it
+	// accepts that information.
+	return B_OK;
 }
 
 
-BRect ToolManager::LastUpdatedRect(ImageView *view)
+BRect
+ToolManager::LastUpdatedRect(ImageView *view)
 {
 	ToolManagerClient *client_data = ReturnClientData(view);
 
-	BRect temp_rect = client_data->last_updated_rect;
-	client_data->last_updated_rect = BRect(0,0,-1,-1);
+	BRect temp_rect = client_data->fLastUpdatedRect;
+	client_data->fLastUpdatedRect = BRect(0, 0, -1, -1);
 
 	return temp_rect;
 }
 
 
-
-status_t ToolManager::ChangeTool(int32 tool_type)
+status_t
+ToolManager::ChangeTool(int32 tool_type)
 {
-	active_drawing_tool = ToolListEntry::ReturnTool(tool_type);
+	fActiveTool = ToolListEntry::ReturnTool(tool_type);
 	ToolSetupWindow::CurrentToolChanged(tool_type);
 	ToolSelectionWindow::ChangeTool(tool_type);
 
 	((PaintApplication*)be_app)->GlobalSettings()->primary_tool = tool_type;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-const DrawingTool* ToolManager::ReturnTool(int32 tool_type)
+const DrawingTool*
+ToolManager::ReturnTool(int32 tool_type) const
 {
 	return ToolListEntry::ReturnTool(tool_type);
 }
 
 
-const void* ToolManager::ReturnCursor()
+const void*
+ToolManager::ReturnCursor() const
 {
-	int32 cursor_mode = ((PaintApplication*)be_app)->GlobalSettings()->cursor_mode;
-	if ((active_drawing_tool != NULL) && (cursor_mode == TOOL_CURSOR_MODE)) {
-		return active_drawing_tool->ToolCursor();
-	}
-	else if (active_drawing_tool == NULL) {
+	if (fActiveTool == NULL)
 		return B_HAND_CURSOR;
-	}
-	else {
-		return HS_CROSS_CURSOR;
-	}
+
+	int32 cursor_mode = ((PaintApplication*)be_app)->GlobalSettings()->cursor_mode;
+	if (cursor_mode == TOOL_CURSOR_MODE)
+		return fActiveTool->ToolCursor();
+
+	return HS_CROSS_CURSOR;
 }
 
 
 int32
 ToolManager::ReturnActiveToolType()
 {
-	if (active_drawing_tool != NULL)
-		return active_drawing_tool->Type();
+	if (fActiveTool != NULL)
+		return fActiveTool->Type();
 
 	return NO_TOOL;
 }
 
 
-status_t ToolManager::SetCurrentBrush(brush_info *binfo)
+status_t
+ToolManager::SetCurrentBrush(brush_info *binfo)
 {
 	// Set the new brush for all tools that use brushes.
-	BrushTool *brush_tool = dynamic_cast<BrushTool*>(ToolListEntry::ReturnTool(BRUSH_TOOL));
+	BrushTool *brush_tool =
+		dynamic_cast<BrushTool*>(ToolListEntry::ReturnTool(BRUSH_TOOL));
 
 	if (brush_tool != NULL) {
 		Brush *a_brush = brush_tool->GetBrush();
@@ -203,52 +328,56 @@ status_t ToolManager::SetCurrentBrush(brush_info *binfo)
 //		ToolSetupWindow::updateTool(BRUSH_TOOL);
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-status_t ToolManager::NotifyViewEvent(ImageView *view,image_view_event_type type)
+status_t
+ToolManager::NotifyViewEvent(ImageView *view, image_view_event_type type)
 {
-	ToolManagerClient *client_data = ReturnClientData(view);
-	if (type == CURSOR_ENTERED_VIEW) {
-		if (active_drawing_tool != NULL) {
-			view->SetToolHelpString(active_drawing_tool->HelpString(client_data->active_tool == active_drawing_tool));
-		}
-	}
-	else if (type == TOOL_ACTIVATED) {
-		if (active_drawing_tool != NULL) {
-			view->SetToolHelpString(active_drawing_tool->HelpString(client_data->active_tool == active_drawing_tool));
-		}
-	}
-	else if (type == CURSOR_EXITED_VIEW) {
-		if (active_drawing_tool != NULL) {
+	if (fActiveTool) {
+		ToolManagerClient *client_data = ReturnClientData(view);
+		bool show = (client_data->fActiveTool == fActiveTool);
+
+		if (type == CURSOR_ENTERED_VIEW) {
+				view->SetToolHelpString(fActiveTool->HelpString(show));
+		} else if (type == TOOL_ACTIVATED) {
+			view->SetToolHelpString(fActiveTool->HelpString(show));
+		} else if (type == CURSOR_EXITED_VIEW) {
 			view->SetToolHelpString("");
 		}
 	}
-
-	return B_NO_ERROR;
+	return B_OK;
 }
 
-BView* ToolManager::ReturnConfigurationView(int32 tool_type)
-{
-	DrawingTool *tool = ToolListEntry::ReturnTool(tool_type);
 
-	if (tool != NULL) {
+BView*
+ToolManager::ReturnConfigurationView(int32 tool_type)
+{
+	if (DrawingTool* tool = ToolListEntry::ReturnTool(tool_type))
 		return tool->makeConfigView();
-	}
-	else
-		return NULL;
+	return NULL;
 }
 
 
-BPopUpMenu* ToolManager::ReturnToolPopUpMenu()
+BPopUpMenu*
+ToolManager::ToolPopUpMenu()
 {
-	return tool_pop_up_menu;
+	if (!fToolPopUpMenu) {
+		fToolPopUpMenu = new BPopUpMenu("");
+
+		int32 i = 0;
+		while (DrawingTool* tool = ToolListEntry::ReturnToolAt(i++)) {
+			fToolPopUpMenu->AddItem(new BMenuItem(tool->Name(),
+				new BMessage(tool->Type())));
+		}
+	}
+	return fToolPopUpMenu;
 }
 
 
-
-status_t ToolManager::ReadToolSettings(BFile &file)
+status_t
+ToolManager::ReadToolSettings(BFile &file)
 {
 	// Read the endianness of the file.
 	int32 endianness;
@@ -296,12 +425,12 @@ status_t ToolManager::ReadToolSettings(BFile &file)
 			tool->readSettings(file,is_little_endian);
 		}
 	}
-
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
-status_t ToolManager::WriteToolSettings(BFile &file)
+status_t
+ToolManager::WriteToolSettings(BFile &file)
 {
 	int32 endianness;
 	if (B_HOST_IS_LENDIAN == 1)
@@ -334,11 +463,10 @@ status_t ToolManager::WriteToolSettings(BFile &file)
 
 // Here begin the definitions of private ToolManager-class functions.
 ToolManager::ToolManager()
+	: fToolPopUpMenu(NULL)
+	, fActiveTool(NULL)
+	, fClientListHead(NULL)
 {
-	client_list_head = NULL;
-	active_drawing_tool = NULL;
-
-	// Add the tools to the tool-list
 	ToolListEntry::AddTool(new FreeLineTool());
 	ToolListEntry::AddTool(new StraightLineTool());
 	ToolListEntry::AddTool(new RectangleTool());
@@ -353,14 +481,6 @@ ToolManager::ToolManager()
 	ToolListEntry::AddTool(new EraserTool());
 	ToolListEntry::AddTool(new SelectorTool());
 	ToolListEntry::AddTool(new ColorSelectorTool());
-
-	tool_pop_up_menu = new BPopUpMenu("tool_pop_up_menu");
-
-	int32 i = 0;
-	while (DrawingTool* tool = ToolListEntry::ReturnToolAt(i++)) {
-		tool_pop_up_menu->AddItem(new BMenuItem(tool->Name(),
-			new BMessage(tool->Type())));
-	}
 }
 
 
@@ -370,123 +490,47 @@ ToolManager::~ToolManager()
 	// and that each client knows that the tools are not available anymore.
 
 
-
-
 	// Delete the client-structs
-	ToolManagerClient *client = client_list_head;
+	ToolManagerClient *client = fClientListHead;
 	while (client != NULL) {
-		ToolManagerClient *helper = client->next_client;
+		ToolManagerClient *helper = client->fNextClient;
 		delete client;
 		client = helper;
 	}
 	// Delete the tool-list-entries
 	ToolListEntry::DeleteToolEntries();
 
-	delete tool_pop_up_menu;
+	delete fToolPopUpMenu;
 }
 
 
-
-ToolManagerClient* ToolManager::ReturnClientData(ImageView *view)
+ToolManagerClient*
+ToolManager::ReturnClientData(ImageView *view)
 {
 	// What is the purpose of this function. What are the
 	// clients. Some commentation about them would not
 	// be a bad idea.
 	// First search from the client-list for an entry with view.
-	ToolManagerClient *current_entry = client_list_head;
+	ToolManagerClient *current_entry = fClientListHead;
 	ToolManagerClient *previous_entry = NULL;
-	while ((current_entry != NULL) && (current_entry->the_client != view)) {
+	while ((current_entry != NULL) && (current_entry->fClient != view)) {
 		previous_entry = current_entry;
-		current_entry = current_entry->next_client;
+		current_entry = current_entry->fNextClient;
 	}
 
 	if (current_entry != NULL) {
 		if (previous_entry != NULL) {
-			previous_entry->next_client = current_entry->next_client;
+			previous_entry->fNextClient = current_entry->fNextClient;
 		}
-		if (current_entry != client_list_head) {	// This if is very important.
-			current_entry->next_client = client_list_head;
-			client_list_head = current_entry;
+		if (current_entry != fClientListHead) {	// This if is very important.
+			current_entry->fNextClient = fClientListHead;
+			fClientListHead = current_entry;
 		}
-	}
-	else if (current_entry == NULL) {
+	} else if (current_entry == NULL) {
 		current_entry = new ToolManagerClient(view);
-		current_entry->next_client = client_list_head;
-		client_list_head = current_entry;
+		current_entry->fNextClient = fClientListHead;
+		fClientListHead = current_entry;
 	}
 
 	return current_entry;
-}
-
-
-
-
-// Here begin the definitions for ToolListEntry-class.
-ToolListEntry* ToolListEntry::list_head = NULL;
-
-ToolListEntry::ToolListEntry(DrawingTool *tool)
-{
-	the_tool = tool;
-	tool_type = tool->Type();
-	next_tool = NULL;
-}
-
-
-ToolListEntry::~ToolListEntry()
-{
-	delete the_tool;
-}
-
-
-void ToolListEntry::AddTool(DrawingTool *tool)
-{
-	ToolListEntry *new_entry = new ToolListEntry(tool);
-
-	ToolListEntry *previous_entry = list_head;
-	while ((previous_entry != NULL) && (previous_entry->next_tool != NULL)) {
-		previous_entry = previous_entry->next_tool;
-	}
-
-	if (previous_entry == NULL) {
-		list_head = new_entry;
-	}
-	else {
-		previous_entry->next_tool = new_entry;
-	}
-}
-
-DrawingTool* ToolListEntry::ReturnTool(int32 tool_type)
-{
-	ToolListEntry *tool = list_head;
-	while ((tool != NULL) && (tool->tool_type != tool_type))
-		tool = tool->next_tool;
-
-	if (tool != NULL)
-		return tool->the_tool;
-	else
-		return NULL;
-}
-
-DrawingTool* ToolListEntry::ReturnToolAt(int32 index)
-{
-	ToolListEntry *tool = list_head;
-	while ((tool != NULL) && (index > 0)) {
-		tool = tool->next_tool;
-		index--;
-	}
-
-	if (tool != NULL)
-		return tool->the_tool;
-	else
-		return NULL;
-}
-
-void ToolListEntry::DeleteToolEntries()
-{
-	ToolListEntry *entry = list_head;
-	while (entry != NULL) {
-		ToolListEntry *helper = entry->next_tool;
-		delete entry;
-		entry = helper;
-	}
 }

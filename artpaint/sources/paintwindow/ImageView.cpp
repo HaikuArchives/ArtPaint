@@ -760,7 +760,7 @@ void ImageView::MouseDown(BPoint view_point)
 		}
 		else if (the_manipulator == NULL){
 			if (buttons & B_SECONDARY_MOUSE_BUTTON) {
-				BMenuItem *item = tool_manager->ReturnToolPopUpMenu()->Go(ConvertToScreen(view_point));
+				BMenuItem *item = tool_manager->ToolPopUpMenu()->Go(ConvertToScreen(view_point));
 				if (item != NULL) {
 					tool_manager->ChangeTool(item->Command());
 					SetCursor();	// If the tool changes, the cursor should change too.
