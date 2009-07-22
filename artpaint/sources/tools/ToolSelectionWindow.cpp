@@ -21,10 +21,16 @@
 #include "ToolButton.h"
 #include "ToolManager.h"
 #include "ToolSetupWindow.h"
-#include "ResourceServer.h"
 #include "UtilityClasses.h"
 
 
+#include <map>
+
+
+typedef std::map<int32, ToolButton* > ToolMap;
+
+
+ToolMap gToolMap;
 ToolSelectionWindow* ToolSelectionWindow::fSelectionWindow = NULL;
 
 
@@ -37,26 +43,29 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
 	settings->tool_select_window_visible = true;
 
-	int32 activeTool = tool_manager->ReturnActiveToolType();
 	fMatrixView = new MatrixView(pictureSize, pictureSize, EXTRA_EDGE);
 
-	_AddTool(tool_manager->ReturnTool(FREE_LINE_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(STRAIGHT_LINE_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(RECTANGLE_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(ELLIPSE_TOOL), activeTool);
+	_AddTool(tool_manager->ReturnTool(FREE_LINE_TOOL));
+	_AddTool(tool_manager->ReturnTool(STRAIGHT_LINE_TOOL));
+	_AddTool(tool_manager->ReturnTool(RECTANGLE_TOOL));
+	_AddTool(tool_manager->ReturnTool(ELLIPSE_TOOL));
 
 	// Here we could add a separator to the tool window.
 
-	_AddTool(tool_manager->ReturnTool(BRUSH_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(HAIRY_BRUSH_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(AIR_BRUSH_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(BLUR_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(FILL_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(TEXT_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(TRANSPARENCY_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(ERASER_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(SELECTOR_TOOL), activeTool);
-	_AddTool(tool_manager->ReturnTool(COLOR_SELECTOR_TOOL), activeTool);
+	_AddTool(tool_manager->ReturnTool(BRUSH_TOOL));
+	_AddTool(tool_manager->ReturnTool(HAIRY_BRUSH_TOOL));
+	_AddTool(tool_manager->ReturnTool(AIR_BRUSH_TOOL));
+	_AddTool(tool_manager->ReturnTool(BLUR_TOOL));
+	_AddTool(tool_manager->ReturnTool(FILL_TOOL));
+	_AddTool(tool_manager->ReturnTool(TEXT_TOOL));
+	_AddTool(tool_manager->ReturnTool(TRANSPARENCY_TOOL));
+	_AddTool(tool_manager->ReturnTool(ERASER_TOOL));
+	_AddTool(tool_manager->ReturnTool(SELECTOR_TOOL));
+	_AddTool(tool_manager->ReturnTool(COLOR_SELECTOR_TOOL));
+
+	ToolMap::iterator it = gToolMap.find(tool_manager->ReturnActiveToolType());
+	if (it != gToolMap.end())
+		it->second->SetValue(B_CONTROL_ON);
 
 	AddChild(fMatrixView);
 	fMatrixView->ResizeTo(Bounds().Width(), Bounds().Height());
@@ -187,30 +196,25 @@ ToolSelectionWindow::setFeel(window_feel feel)
 void
 ToolSelectionWindow::ChangeTool(int32 tool)
 {
-//	if (fSelectionWindow && fSelectionWindow->Lock()) {
-//		ToolButton::ChangeActiveButton(tool);
-//		fSelectionWindow->Unlock();
-//	}
+	if (fSelectionWindow && fSelectionWindow->Lock()) {
+		ToolMap::const_iterator it = gToolMap.find(tool);
+		if (it != gToolMap.end())
+			it->second->SetValue(B_CONTROL_ON);
+		fSelectionWindow->Unlock();
+	}
 }
 
 
 void
-ToolSelectionWindow::_AddTool(const DrawingTool* tool, int32 activeTool)
+ToolSelectionWindow::_AddTool(const DrawingTool* tool)
 {
-	int32 toolType = tool->Type();
-
 	BMessage* message = new BMessage(HS_TOOL_CHANGED);
 	message->AddUInt32("buttons", 0);
-	message->AddInt32("tool", toolType);
+	message->AddInt32("tool", tool->Type());
 
-	BBitmap* icon;
-	ResourceServer::Instance()->GetBitmap(B_VECTOR_ICON_TYPE, toolType,
-		LARGE_TOOL_ICON_SIZE, LARGE_TOOL_ICON_SIZE, &icon);
-
-	ToolButton* button = new ToolButton(tool->Name(), message, icon);
+	ToolButton* button = new ToolButton(tool->Name(), message, tool->Icon());
 	button->ResizeToPreferred();
 	fMatrixView->AddSubView(button);
 
-	if (toolType == activeTool)
-		button->SetValue(B_CONTROL_ON);
+	gToolMap.insert(make_pair(tool->Type(), button));
 }

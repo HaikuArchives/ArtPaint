@@ -31,8 +31,7 @@ private:
 									ToolSelectionWindow(BRect frame);
 	virtual							~ToolSelectionWindow();
 
-			void					_AddTool(const DrawingTool* tool,
-										int32 activeTool);
+			void					_AddTool(const DrawingTool* tool);
 
 private:
 			MatrixView*				fMatrixView;
