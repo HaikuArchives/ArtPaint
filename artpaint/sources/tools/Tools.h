@@ -12,6 +12,20 @@
 #include <SupportDefs.h>
 
 
+enum {
+	SMALL_TOOL_ICON_SIZE	= 16,
+	LARGE_TOOL_ICON_SIZE	= 32
+};
+
+
+enum {
+	OPTION_CHANGED = 'Opcg'
+};
+
+
+#define	TOOL_SETTINGS_STRUCT_VERSION	0x00000001
+
+
 // Here is enumeration that defines the drawing tool constants. After adding a
 // constant here we should make also adjustments to places where tools are
 // created. We should also change the version number of the prefs-file, because
@@ -98,7 +112,5 @@ struct tool_settings {
 	int32	tolerance;
 	int32	transparency;
 };
-
-#define	TOOL_SETTINGS_STRUCT_VERSION	0x00000001
 
 #endif

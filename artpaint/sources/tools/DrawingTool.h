@@ -9,23 +9,24 @@
  *
  */
 #ifndef DRAWING_TOOL_H
-#define	DRAWING_TOOL_H
+#define DRAWING_TOOL_H
 
-#include "ImageView.h"
 #include "Tools.h"
+#include "ImageView.h"
 #include "ToolScript.h"
 
 
 #include <String.h>
+#include <View.h>
 
+
+class BBitmap;
 class BFile;
+class BHandler;
+class ImageView;
+class ToolScript;
 
 
-#define	HS_MAX_TOOL_NAME_LENGTH		50
-#define OPTION_CHANGED				'Opcg'
-
-
-// this is a base class that specific tool-classes will be based on
 class DrawingTool {
 public:
 							DrawingTool(const BString& name, int32 type);
