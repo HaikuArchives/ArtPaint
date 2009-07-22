@@ -11,13 +11,19 @@
 
 #include "BrushTool.h"
 
+#include "Brush.h"
 #include "BrushEditor.h"
 #include "CoordinateReader.h"
+#include "CoordinateQueue.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
+#include "ImageView.h"
 #include "PaintApplication.h"
+#include "PixelOperations.h"
+#include "Selection.h"
 #include "StringServer.h"
+#include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
@@ -275,6 +281,62 @@ BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
 		}
 	}
 	return a_rect;
+}
+
+
+void
+BrushTool::draw_brush_handle_selection(BPoint point, int32 dx, int32 dy, uint32 c)
+{
+	span* spans;
+	int32 px = (int32)point.x;
+	int32 	py = (int32)point.y;
+	uint32** brush_matrix = brush->GetData(&spans, dx, dy);
+
+	uint32* target_bits = bits;
+	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
+		int32 left = max_c(px + spans->span_start, left_bound) ;
+		int32 right = min_c(px + spans->span_end, right_bound);
+		int32 y = spans->row;
+		if (y + py >= top_bound) {
+			// This works even if there are many spans in one row.
+			target_bits = bits + (y + py) * bpr + left;
+			for (int32 x = left; x <= right; ++x) {
+				if (selection->ContainsPoint(x, y + py)) {
+					*target_bits = mix_2_pixels_fixed(c, *target_bits,
+						brush_matrix[y][x-px]);
+				}
+				target_bits++;
+			}
+		}
+		spans = spans->next;
+	}
+}
+
+
+void
+BrushTool::draw_brush(BPoint point, int32 dx, int32 dy, uint32 c)
+{
+	span* spans;
+	int32 px = (int32)point.x;
+	int32 py = (int32)point.y;
+	uint32** brush_matrix = brush->GetData(&spans, dx, dy);
+
+	uint32* target_bits = bits;
+	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
+		int32 left = max_c(px + spans->span_start, left_bound) ;
+		int32 right = min_c(px + spans->span_end, right_bound);
+		int32 y = spans->row;
+		if (y + py >= top_bound) {
+			// This works even if there are many spans in one row.
+			target_bits = bits + (y + py) * bpr + left;
+			for (int32 x = left; x <= right; ++x) {
+				*target_bits = mix_2_pixels_fixed(c, *target_bits,
+						brush_matrix[y][x-px]);
+				target_bits++;
+			}
+		}
+		spans = spans->next;
+	}
 }
 
 

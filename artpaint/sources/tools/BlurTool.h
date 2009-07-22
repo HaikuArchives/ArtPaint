@@ -16,6 +16,7 @@
 
 class BCheckBox;
 class ControlSliderBox;
+class ImageView;
 class Selection;
 
 

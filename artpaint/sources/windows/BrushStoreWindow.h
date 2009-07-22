@@ -9,11 +9,12 @@
 #ifndef BRUSH_STORE_WINDOW_H
 #define BRUSH_STORE_WINDOW_H
 
-#include <File.h>
 #include <View.h>
 #include <Window.h>
 
 class Brush;
+class BFile;
+
 
 #define HS_DELETE_SELECTED_BRUSH	'Dslb'
 
@@ -29,46 +30,46 @@ class BrushStoreView : public BView {
 	int32	get_point_index(BPoint);
 
 public:
-		BrushStoreView(BRect);
-		~BrushStoreView();
+	BrushStoreView(BRect);
+	~BrushStoreView();
 
-void	DetachedFromWindow();
-void	Draw(BRect);
-void	FrameResized(float,float);
-void	MessageReceived(BMessage*);
-void	KeyDown(const char *bytes,int32);
-void	MouseDown(BPoint);
+	void	DetachedFromWindow();
+	void	Draw(BRect);
+	void	FrameResized(float,float);
+	void	MessageReceived(BMessage*);
+	void	KeyDown(const char *bytes,int32);
+	void	MouseDown(BPoint);
 
-void	AddBrush(Brush*);
+	void	AddBrush(Brush*);
 };
 
 
 class BrushStoreWindow : public BWindow {
 
-BScrollBar		*scroll_bar;
-BrushStoreView	*store_view;
+	BScrollBar		*scroll_bar;
+	BrushStoreView	*store_view;
 
-static	BList	*brush_data;
+	static	BList	*brush_data;
 
-static	BrushStoreWindow	*brush_window;
+	static	BrushStoreWindow	*brush_window;
 
 
-static	int32	brush_adder(void*);
+	static	int32	brush_adder(void*);
 
 public:
-		BrushStoreWindow();
-		~BrushStoreWindow();
+	BrushStoreWindow();
+	~BrushStoreWindow();
 
-void	MessageReceived(BMessage*);
+	void	MessageReceived(BMessage*);
 
-static	void	writeBrushes(BFile&);
-static	void	readBrushes(BFile&);
-static	void	AddBrush(Brush*);
-static	void	DeleteBrush(int32);
+	static	void	writeBrushes(BFile&);
+	static	void	readBrushes(BFile&);
+	static	void	AddBrush(Brush*);
+	static	void	DeleteBrush(int32);
 
-static	void	showWindow();
+	static	void	showWindow();
 
-static	void	setFeel(window_feel);
+	static	void	setFeel(window_feel);
 };
 
 #endif

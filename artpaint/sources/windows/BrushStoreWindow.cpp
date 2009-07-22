@@ -6,24 +6,29 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <InterfaceDefs.h>
+
+#include "BrushStoreWindow.h"
+
+#include "Brush.h"
+#include "BrushEditor.h"
+#include "DrawingTools.h"
+#include "FloaterManager.h"
+#include "MessageFilters.h"
+#include "PaintApplication.h"
+#include "Settings.h"
+#include "StringServer.h"
+#include "ToolManager.h"
+#include "ToolSetupWindow.h"
+#include "UtilityClasses.h"
+
+
+#include <Bitmap.h>
+#include <File.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
 #include <ScrollBar.h>
 
-#include "FloaterManager.h"
-#include "BrushStoreWindow.h"
-#include "PaintApplication.h"
-#include "Brush.h"
-#include "Settings.h"
-#include "UtilityClasses.h"
-#include "DrawingTools.h"
-#include "ToolSetupWindow.h"
-#include "MessageFilters.h"
-#include "BrushEditor.h"
-#include "StringServer.h"
-#include "ToolManager.h"
 
 #define	BRUSH_INSET	2
 #define	BRUSH_VAULT_WIDTH	(BRUSH_PREVIEW_WIDTH+2*BRUSH_INSET)

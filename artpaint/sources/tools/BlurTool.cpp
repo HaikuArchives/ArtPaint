@@ -15,9 +15,11 @@
 #include "Controls.h"
 #include "Cursors.h"
 #include "Image.h"
+#include "ImageView.h"
 #include "PaintApplication.h"
 #include "Selection.h"
 #include "StringServer.h"
+#include "ToolScript.h"
 
 
 #include <CheckBox.h>

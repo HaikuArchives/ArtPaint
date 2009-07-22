@@ -16,6 +16,7 @@
 
 class BRadioButton;
 class ControlSliderBox;
+class ImageView;
 
 
 class AirBrushTool : public DrawingTool {

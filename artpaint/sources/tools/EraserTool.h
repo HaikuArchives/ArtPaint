@@ -17,6 +17,8 @@
 class BRadioButton;
 class ControlSliderBox;
 class CoordinateQueue;
+class ImageView;
+class ToolScript;
 
 
 class EraserTool : public LineTool {

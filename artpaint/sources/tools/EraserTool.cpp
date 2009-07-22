@@ -16,8 +16,10 @@
 #include "CoordinateQueue.h"
 #include "Cursors.h"
 #include "Image.h"
+#include "ImageView.h"
 #include "PaintApplication.h"
 #include "StringServer.h"
+#include "ToolScript.h"
 
 
 #include <GroupLayout.h>

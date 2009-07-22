@@ -17,8 +17,10 @@
 class BCheckBox;
 class BitmapDrawer;
 class ControlSliderBox;
+class ImageView;
 class PointStack;
 class Selection;
+class ToolScript;
 
 
 class FillTool : public DrawingTool {

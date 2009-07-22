@@ -17,6 +17,7 @@
 class ControlSlider;
 class ControlSliderBox;
 class ImageView;
+class ToolScript;
 
 
 class HairyBrushTool : public DrawingTool {

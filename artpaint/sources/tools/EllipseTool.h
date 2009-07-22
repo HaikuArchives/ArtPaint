@@ -16,6 +16,8 @@
 
 class BCheckBox;
 class BRadioButton;
+class ImageView;
+class ToolScript;
 
 
 class EllipseTool : public DrawingTool {

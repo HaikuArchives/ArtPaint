@@ -17,8 +17,9 @@
 #include <Window.h>
 
 
-class ControlSliderBox;
 class BStringView;
+class ControlSliderBox;
+class ImageView;
 
 
 class ColorSelectorTool : public DrawingTool {

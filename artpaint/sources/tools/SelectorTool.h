@@ -18,7 +18,9 @@
 class BitmapDrawer;
 class BRadioButton;
 class ControlSliderBox;
+class ImageView;
 class PointStack;
+class ToolScript;
 
 
 class SelectorTool : public DrawingTool, public ToolEventAdapter {

@@ -17,6 +17,8 @@
 
 class BCheckBox;
 class ControlSliderBox;
+class ImageView;
+class ToolScript;
 
 
 class StraightLineTool : public DrawingTool, public ToolEventAdapter {

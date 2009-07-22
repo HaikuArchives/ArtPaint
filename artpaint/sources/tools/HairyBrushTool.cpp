@@ -17,9 +17,11 @@
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
+#include "ImageView.h"
 #include "PaintApplication.h"
 #include "RandomNumberGenerator.h"
 #include "StringServer.h"
+#include "ToolScript.h"
 #include "UtilityClasses.h"
 
 

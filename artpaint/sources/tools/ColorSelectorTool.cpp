@@ -16,6 +16,7 @@
 #include "Controls.h"
 #include "Cursors.h"
 #include "Image.h"
+#include "ImageView.h"
 #include "MessageConstants.h"
 #include "PaintApplication.h"
 #include "StatusView.h"

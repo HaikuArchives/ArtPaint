@@ -15,6 +15,8 @@
 
 
 class ControlSliderBox;
+class ImageView;
+class ToolScript;
 
 
 class TransparencyTool : public DrawingTool {

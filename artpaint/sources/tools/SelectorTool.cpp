@@ -17,11 +17,13 @@
 #include "HSPolygon.h"
 #include "Image.h"
 #include "IntelligentPathFinder.h"
+#include "ImageView.h"
 #include "PaintApplication.h"
 #include "Patterns.h"
 #include "PixelOperations.h"
 #include "Selection.h"
 #include "StringServer.h"
+#include "ToolScript.h"
 #include "UtilityClasses.h"
 
 

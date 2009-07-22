@@ -17,6 +17,8 @@
 
 class BCheckBox;
 class BRadioButton;
+class ImageView;
+class ToolScript;
 
 
 class RectangleTool : public DrawingTool, public ToolEventAdapter {

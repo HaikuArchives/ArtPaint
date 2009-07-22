@@ -12,8 +12,6 @@
 #define DRAWING_TOOL_H
 
 #include "Tools.h"
-#include "ImageView.h"
-#include "ToolScript.h"
 
 
 #include <String.h>

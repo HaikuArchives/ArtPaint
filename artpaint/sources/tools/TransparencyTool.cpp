@@ -14,8 +14,10 @@
 #include "Cursors.h"
 #include "Controls.h"
 #include "Image.h"
+#include "ImageView.h"
 #include "PaintApplication.h"
 #include "StringServer.h"
+#include "ToolScript.h"
 
 
 #include <Bitmap.h>
