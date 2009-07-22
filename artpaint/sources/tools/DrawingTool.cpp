@@ -12,18 +12,15 @@
 #include "DrawingTool.h"
 
 #include "Cursors.h"
+#include "ImageView.h"
 #include "StringServer.h"
 
 
 #include <CheckBox.h>
-#include <ClassInfo.h>
 #include <File.h>
 #include <GroupLayout.h>
 #include <Handler.h>
 #include <StringView.h>
-
-
-#include <string.h>
 
 
 DrawingTool::DrawingTool(const BString& name, int32 type)
@@ -66,8 +63,8 @@ DrawingTool::makeConfigView()
 	configView->SetLayout(new BGroupLayout(B_VERTICAL));
 	configView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	BStringView* stringView =
-		new BStringView("", StringServer::ReturnString(NO_OPTIONS_STRING));
+	BStringView* stringView = new BStringView("",
+		StringServer::ReturnString(NO_OPTIONS_STRING));
 	configView->AddChild(stringView);
 	stringView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -81,91 +78,76 @@ DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 	// If option is valid for this tool, set it.
 	// If handler is NULL, the boolean options should use value as the new value.
 	// Otherwise they should use value that can be gotten from the source.
-	;
-	BControl *control;
+
 	if (option & options) {
 		switch (option) {
-			case SIZE_OPTION:
+			case SIZE_OPTION: {
 				settings.size = value;
-				break;
-			case PRESSURE_OPTION:
+			}	break;
+
+			case PRESSURE_OPTION: {
 				settings.pressure = value;
-				break;
+			}	break;
 
 			case MODE_OPTION: {
 				settings.mode = value;
-				if (BCheckBox* booleanBox = dynamic_cast<BCheckBox*>(source))
+				if (BCheckBox* booleanBox = dynamic_cast<BCheckBox*> (source))
 					settings.mode = booleanBox->Value();
 			} break;
 
-			case SHAPE_OPTION:
+			case SHAPE_OPTION: {
 				settings.shape = value;
-				break;
-			case GRADIENT_ENABLED_OPTION:
-				control = cast_as(source,BControl);
-				if (control != NULL) {
+			}	break;
+
+			case GRADIENT_ENABLED_OPTION: {
+				settings.gradient_enabled = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
 					settings.gradient_enabled = control->Value();
-				}
-				else {
-					settings.gradient_enabled = value;
-				}
-				break;
-			case GRADIENT_COLOR_OPTION:
+			} break;
+
+			case GRADIENT_COLOR_OPTION: {
 				settings.gradient_color = value;
-				break;
-			case PREVIEW_ENABLED_OPTION:
-				control = cast_as(source,BControl);
-				if (control != NULL) {
+			}	break;
+
+			case PREVIEW_ENABLED_OPTION: {
+				settings.preview_enabled = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
 					settings.preview_enabled = control->Value();
-				}
-				else {
-					settings.preview_enabled = value;
-				}
-				break;
-			case FILL_ENABLED_OPTION:
-				control = cast_as(source,BControl);
-				if (control != NULL) {
+			}	break;
+
+			case FILL_ENABLED_OPTION: {
+				settings.fill_enabled = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
 					settings.fill_enabled = control->Value();
-				}
-				else {
-					settings.fill_enabled = value;
-				}
-				break;
-			case ROTATION_ENABLED_OPTION:
-				control = cast_as(source,BControl);
-				if (control != NULL) {
+			}	break;
+
+			case ROTATION_ENABLED_OPTION: {
+				settings.rotation_enabled = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
 					settings.rotation_enabled = control->Value();
-				}
-				else {
-					settings.rotation_enabled = value;
-				}
-				break;
-			case ANTI_ALIASING_LEVEL_OPTION:
-				control = cast_as(source,BControl);
-				if (control != NULL) {
+			}	break;
+
+			case ANTI_ALIASING_LEVEL_OPTION: {
+				settings.anti_aliasing_level = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
 					settings.anti_aliasing_level = control->Value();
-				}
-				else {
-					settings.anti_aliasing_level = value;
-				}
-				break;
-			case CONTINUITY_OPTION:
-				control = cast_as(source,BControl);
-				if (control != NULL) {
+			}	break;
+
+			case CONTINUITY_OPTION: {
+				settings.continuity = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
 					settings.continuity = control->Value();
-				}
-				else {
-					settings.continuity = value;
-				}
-				break;
-			case TOLERANCE_OPTION:
+			}	break;
+
+			case TOLERANCE_OPTION: {
 				settings.tolerance = value;
-				break;
-			case TRANSPARENCY_OPTION:
+			}	break;
+
+			case TRANSPARENCY_OPTION: {
 				settings.transparency = value;
-				break;
-			default:
-				break;
+			}	break;
+
+			default:	break;
 		}
 	}
 }
