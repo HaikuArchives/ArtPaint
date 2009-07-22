@@ -65,8 +65,8 @@ public:
 
 			status_t				ChangeTool(int32);
 			const void*				ReturnCursor() const;
-			const DrawingTool*		ReturnTool(int32) const;
-			int32					ReturnActiveToolType();
+			DrawingTool*			ReturnTool(int32) const;
+			int32					ReturnActiveToolType() const;
 			BView*					ReturnConfigurationView(int32);
 			status_t				SetCurrentBrush(brush_info*);
 
@@ -84,7 +84,8 @@ private:
 									ToolManager();
 									~ToolManager();
 
-			ToolManagerClient*		ReturnClientData(ImageView*);
+			void					_AddTool(DrawingTool* tool);
+			ToolManagerClient*		_ReturnClientData(ImageView* imageView);
 
 private:
 			BPopUpMenu*				fToolPopUpMenu;

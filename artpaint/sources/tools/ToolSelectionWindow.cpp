@@ -219,5 +219,5 @@ ToolSelectionWindow::_AddTool(const DrawingTool* tool)
 	button->ResizeToPreferred();
 	fMatrixView->AddSubView(button);
 
-	gToolMap.insert(make_pair(tool->Type(), button));
+	gToolMap.insert(std::make_pair(tool->Type(), button));
 }
