@@ -1,146 +1,293 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
- * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <stdio.h>
 
 #include "ToolButton.h"
-#include "ToolImages.h"
-#include "MessageConstants.h"
-#include "ToolSetupWindow.h"
+
+#include "Tools.h"
 #include "UtilityClasses.h"
 
-BList* ToolButton::tool_button_list = new BList();
-ToolButton* ToolButton::active_button = NULL;
-int32 ToolButton::active_tool = -1;
 
-ToolButton::ToolButton(BRect frame,int32 tool,const char *name)
-	: BPictureButton(frame,"tool_button",ToolImages::getPicture(tool,BIG_TOOL_PICTURE_SIZE,0),ToolImages::getPicture(tool,BIG_TOOL_PICTURE_SIZE,1),NULL)
-	, tool_name(name)
+#include <Bitmap.h>
+#include <ControlLook.h>
+#include <LayoutUtils.h>
+#include <Window.h>
 
+
+const float gInset = 2.0;
+
+
+ToolButton::ToolButton(const char* name, BMessage* message, BBitmap* icon)
+	: BControl(name, NULL, message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS)
+	, fName(name)
+	, fInside(false)
+	, fMouseButton(0)
+	, fIcon(icon)
+	, fToolTip(NULL)
 {
-	BMessage *model_message = new BMessage(HS_TOOL_CHANGED);
-	model_message->AddInt32("tool",tool);
-	model_message->AddInt32("buttons",0);
-	SetMessage(model_message);
-
-	tool_type = tool;
-//	tool_name = name;
-
-	SetBehavior(B_TWO_STATE_BUTTON);
-
-	tool_button_list->AddItem(this);
-
-	if (active_tool == tool)
-		SetValue(B_CONTROL_ON);
-	else
-		SetValue(B_CONTROL_OFF);
-
-	help_window = NULL;
 }
 
 
 ToolButton::~ToolButton()
 {
-	tool_button_list->RemoveItem(this);
-	if (active_button == this) {
-		active_button = NULL;
-		active_tool = -1;
+	delete fIcon;
+}
+
+
+void
+ToolButton::SetValue(int32 value)
+{
+	if (value != Value()) {
+		BControl::SetValueNoUpdate(value);
+		Invalidate(Bounds());
+	}
+
+	if (!value)
+		return;
+
+	BView* child = NULL;
+	BView* parent = Parent();
+	if (parent)
+		child = parent->ChildAt(0);
+	else if (Window())
+		child = Window()->ChildAt(0);
+
+	while (child) {
+		ToolButton* button = dynamic_cast<ToolButton*> (child);
+		if (button && (button != this))
+			button->SetValue(B_CONTROL_OFF);
+		child = child->NextSibling();
 	}
 }
 
 
-void ToolButton::MouseDown(BPoint point)
+void
+ToolButton::Pulse()
 {
 	uint32 buttons;
-	GetMouse(&point,&buttons);
-
-	if (Value() == B_CONTROL_OFF)
-		BPictureButton::MouseDown(point);
-
-	if (buttons & B_SECONDARY_MOUSE_BUTTON)
-		ToolSetupWindow::ShowToolSetupWindow(tool_type);
-
-	/* The third button might be used for example
-	to load the mouse with single shot operations
-	if (buttons & B_TERTIARY_MOUSE_BUTTON) {
-
-	}*/
-
-}
-
-void ToolButton::MouseMoved(BPoint point, uint32 transit,const BMessage*)
-{
-	if (transit == B_ENTERED_VIEW) {
-		SetFlags(Flags() | B_PULSE_NEEDED);
-	}
-	else if (transit == B_EXITED_VIEW) {
-		SetFlags(Flags() & ~B_PULSE_NEEDED);
-		if (help_window != NULL) {
-			help_window->PostMessage(B_QUIT_REQUESTED,help_window);
-			help_window = NULL;
-		}
-	}
-	else if (transit == B_INSIDE_VIEW) {
-		uint32 buttons;
-		GetMouse(&point,&buttons);
-		if ((help_window != NULL) && (opening_point != point)) {
-			help_window->PostMessage(B_QUIT_REQUESTED,help_window);
-			help_window = NULL;
-		}
-	}
-
-}
-
-
-void ToolButton::Pulse()
-{
-	// here we open a help window if user has been idle for long enough
-	// and help window is not open yet
 	BPoint location;
-	uint32 buttons;
-	GetMouse(&location,&buttons);
+	GetMouse(&location, &buttons);
 
-	// if the location is not inside the view we should not open a help-window
-	if (Bounds().Contains(location) != TRUE) {
-		// set the pulse off as the mouse is not anymore inside the view
+	if (Bounds().Contains(location)) {
+		if ((idle_time() > (500000)) && fToolTip == NULL) {
+			fToolTip = new HelpWindow(ConvertToScreen(location), fName);
+			fToolTip->Show();
+		}
+	} else {
 		SetFlags(Flags() & ~B_PULSE_NEEDED);
 	}
-	else if ((idle_time() > (600 * 1000)) && help_window == NULL) {
-		help_window = new HelpWindow(ConvertToScreen(location),tool_name);
-		help_window->Show();
-		opening_point = location;
-	}
 }
 
-void ToolButton::ChangeActiveButton(int32 new_tool)
+
+void
+ToolButton::AttachedToWindow()
 {
-	if (active_tool != new_tool) {
-		active_tool = new_tool;
-		if (active_button != NULL) {
-			active_button->SetValue(B_CONTROL_OFF);
-			active_button = NULL;
-		}
+	BControl::AttachedToWindow();
+	SetViewColor(B_TRANSPARENT_COLOR);
+}
 
-		bool continue_search = TRUE;
-		int32 i = 0;
 
-		while (continue_search) {
-			ToolButton *button = (ToolButton*)tool_button_list->ItemAt(i);
-			if (button->tool_type == new_tool) {
-				button->SetValue(B_CONTROL_ON);
-				continue_search = FALSE;
-				active_button = button;
-			}
-			i++;
-			if (i>=tool_button_list->CountItems())
-				continue_search = FALSE;
-		}
+void
+ToolButton::Draw(BRect updateRect)
+{
+	if (be_control_look) {
+		rgb_color base = LowColor();
+		rgb_color background = ui_color(B_PANEL_BACKGROUND_COLOR);
+		if (Parent())
+			background = Parent()->ViewColor();
+
+		uint32 flags = be_control_look->Flags(this);
+		if (fInside)
+			flags |= BControlLook::B_ACTIVATED;
+
+		BRect rect = Bounds();
+		be_control_look->DrawButtonFrame(this, rect, updateRect,
+			base, background, flags);
+		be_control_look->DrawButtonBackground(this, rect, updateRect,
+			base, flags);
+	}
+
+	if (fIcon) {
+		SetDrawingMode(B_OP_ALPHA);
+		DrawBitmap(fIcon, BPoint(gInset, gInset));
 	}
 }
 
 
+void
+ToolButton::MouseUp(BPoint point)
+{
+	if (!IsTracking())
+		return;
+
+	if (Bounds().Contains(point)) {
+		SetValue(B_CONTROL_ON);
+		Message()->ReplaceUInt32("buttons", fMouseButton);
+		Invoke();
+	}
+
+	fInside = false;
+	Invalidate();
+	SetTracking(false);
+}
+
+
+void
+ToolButton::MouseDown(BPoint point)
+{
+	if (!IsEnabled())
+		return;
+
+	fInside = true;
+	GetMouse(&point, &fMouseButton);
+
+	Invalidate();
+	SetTracking(true);
+	SetMouseEventMask(B_POINTER_EVENTS, B_LOCK_WINDOW_FOCUS);
+}
+
+
+void
+ToolButton::MouseMoved(BPoint point, uint32 transit, const BMessage* message)
+{
+	if (transit == B_ENTERED_VIEW)
+		SetFlags(Flags() | B_PULSE_NEEDED);
+
+	if (transit == B_EXITED_VIEW) {
+		SetFlags(Flags() & ~B_PULSE_NEEDED);
+		if (fToolTip) {
+			fToolTip->PostMessage(B_QUIT_REQUESTED);
+			fToolTip = NULL;
+		}
+	}
+
+	if (transit == B_INSIDE_VIEW) {
+		if (fToolTip) {
+			fToolTip->PostMessage(B_QUIT_REQUESTED);
+			fToolTip = NULL;
+		}
+	}
+
+	if (!IsTracking())
+		return;
+
+	bool inside = Bounds().Contains(point);
+	if (fInside != inside) {
+		fInside = inside;
+		Invalidate();
+	}
+}
+
+
+void
+ToolButton::KeyDown(const char* bytes, int32 numBytes)
+{
+	switch (bytes[0]) {
+		case B_SPACE: {
+		case B_RETURN:
+			if (IsEnabled() && !Value()) {
+				SetValue(B_CONTROL_ON);
+				Invoke();
+			}
+		}	break;
+
+		case B_UP_ARROW: {
+		case B_DOWN_ARROW:
+		case B_LEFT_ARROW:
+		case B_RIGHT_ARROW:
+			_SelectNextToolButton(bytes[0]);
+		}	break;
+
+		default: {
+			BControl::KeyDown(bytes, numBytes);
+		}	break;
+	}
+}
+
+
+BSize
+ToolButton::MaxSize()
+{
+	float width, height;
+	GetPreferredSize(&width, &height);
+
+	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(width, height));
+}
+
+
+void
+ToolButton::GetPreferredSize(float* width, float* height)
+{
+	if (!width || !height)
+		return;
+
+	*width = *height = LARGE_TOOL_ICON_SIZE + (2.0 * gInset);
+
+	if (fIcon) {
+		*width = fIcon->Bounds().Width() + (2.0 * gInset) + 1.0;
+		*height = fIcon->Bounds().Height() + (2.0 * gInset) + 1.0;
+	}
+}
+
+
+void
+ToolButton::_SelectNextToolButton(uchar key)
+{
+	if (BView* parent = Parent()) {
+		BRect frame = Frame();
+		float difference = 10000;
+		ToolButton* nextButton = NULL;
+		for (int32  i = 0; i < parent->CountChildren(); ++i) {
+			ToolButton* button = dynamic_cast<ToolButton*> (parent->ChildAt(i));
+			if (button && button != this) {
+				float diff = 0.0;
+				float offset = 0.0;
+				switch (key) {
+					case B_UP_ARROW: {
+						BRect nextFrame = button->Frame();
+						diff = frame.top - nextFrame.bottom;
+						offset = nextFrame.left - frame.left;
+					}	break;
+
+					case B_DOWN_ARROW: {
+						BRect nextFrame = button->Frame();
+						diff = nextFrame.top - frame.bottom;
+						offset = nextFrame.left - frame.left;
+					}	break;
+
+					case B_LEFT_ARROW: {
+						BRect nextFrame = button->Frame();
+						offset = nextFrame.top - frame.top;
+						diff = frame.left - nextFrame.right;
+					}	break;
+
+					case B_RIGHT_ARROW: {
+						BRect nextFrame = button->Frame();
+						offset = nextFrame.top - frame.top;
+						diff = nextFrame.left - frame.right;
+					}	break;
+				}
+
+				if (offset > -5.0 && offset < 5.0) {
+					if ((difference > diff) && (diff > 0.0)) {
+						difference = diff;
+						nextButton = button;
+					}
+				}
+			}
+		}
+
+		if (nextButton) {
+			nextButton->MakeFocus(true);
+			nextButton->SetValue(B_CONTROL_ON);
+			nextButton->Invoke();
+		}
+	}
+}

@@ -13,20 +13,25 @@
 
 
 MatrixView::MatrixView(int32 cell_w,int32 cell_h,int32 spacing)
-	: 	BView(BRect(0,0,0,0),"matrix_view",B_FOLLOW_ALL_SIDES,B_FRAME_EVENTS)
-		,cell_height(cell_h), cell_width(cell_w), cell_spacing(spacing)
+	: BView(BRect(0,0,0,0),"matrix_view",B_FOLLOW_ALL,
+		B_FRAME_EVENTS | B_NAVIGABLE_JUMP)
+	, cell_height(cell_h)
+	, cell_width(cell_w)
+	, cell_spacing(spacing)
 {
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
 
-void MatrixView::AttachedToWindow()
+void
+MatrixView::AttachedToWindow()
 {
 	FrameResized(Frame().Width(),Frame().Height());
 }
 
 
-void MatrixView::FrameResized(float width,float)
+void
+MatrixView::FrameResized(float width, float)
 {
 	width -= cell_spacing;
 	int32 row_length = (int32)width / (cell_width + cell_spacing);
@@ -39,7 +44,9 @@ void MatrixView::FrameResized(float width,float)
 	}
 }
 
-void MatrixView::GetPreferredSize(float *width,float *height)
+
+void
+MatrixView::GetPreferredSize(float *width, float *height)
 {
 //	// The preferred size depends on the current size
 //	if (Bounds().IntegerWidth() >= Bounds().IntegerHeight()) {
@@ -72,24 +79,25 @@ void MatrixView::GetPreferredSize(float *width,float *height)
 //	}
 }
 
-status_t MatrixView::AddSubView(BView *view)
+status_t
+MatrixView::AddSubView(BView *view)
 {
 	if (view == NULL)
 		return B_ERROR;
 
-	if ((view->Bounds().IntegerWidth() != (cell_width-1)) ||
-		(view->Bounds().IntegerHeight() != (cell_height-1))) {
+	if ((view->Bounds().IntegerWidth() != cell_width) ||
+		(view->Bounds().IntegerHeight() != cell_height)) {
 		return B_ERROR;
 	}
 
 	// position the view correctly
-	if (LockLooper() == true) {
+	if (LockLooper()) {
 		AddChild(view);
-		FrameResized(Frame().Width(),Frame().Height());
+		FrameResized(Frame().Width(), Frame().Height());
 		UnlockLooper();
-	}
-	else {
+	} else {
 		AddChild(view);
 	}
+
 	return B_OK;
 }

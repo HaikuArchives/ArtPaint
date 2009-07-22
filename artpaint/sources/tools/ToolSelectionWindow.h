@@ -9,8 +9,11 @@
 #ifndef TOOL_SELECTION_WINDOW_H
 #define	TOOL_SELECTION_WINDOW_H
 
-
 #include <Window.h>
+
+
+class DrawingTool;
+class MatrixView;
 
 
 class ToolSelectionWindow : public BWindow {
@@ -28,9 +31,12 @@ private:
 									ToolSelectionWindow(BRect frame);
 	virtual							~ToolSelectionWindow();
 
+			void					_AddTool(const DrawingTool* tool,
+										int32 activeTool);
+
 private:
+			MatrixView*				fMatrixView;
 	static	ToolSelectionWindow*	fSelectionWindow;
 };
-
 
 #endif

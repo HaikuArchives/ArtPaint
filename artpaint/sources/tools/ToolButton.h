@@ -1,40 +1,53 @@
 /*
- * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
- * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef TOOL_BUTTON_H
 #define TOOL_BUTTON_H
 
-#include <PictureButton.h>
+#include <Control.h>
 #include <String.h>
-#include <Window.h>
 
-// This class keeps track of all its instances.
-class ToolButton : public BPictureButton {
-static	BList		*tool_button_list;
-		int32		tool_type;
 
-		BString		tool_name;
+class HelpWindow;
 
-static	int32		active_tool;
-static	ToolButton	*active_button;
 
-		BWindow		*help_window;
-		BPoint		opening_point;
-
+class ToolButton : public BControl {
 public:
-		ToolButton(BRect frame,int32 tool,const char *name);
-		~ToolButton();
+								ToolButton(const char* name, BMessage* message,
+									BBitmap* icon = NULL);
+								~ToolButton();
 
-		void	MouseDown(BPoint);
-		void	MouseMoved(BPoint,uint32,const BMessage*);
-		void	Pulse();
+	virtual	void				SetValue(int32 value);
 
-static	void	ChangeActiveButton(int32);
+	virtual	void				Pulse();
+	virtual	void				AttachedToWindow();
+	virtual	void				Draw(BRect updateRect);
+
+	virtual	void				MouseUp(BPoint point);
+	virtual	void				MouseDown(BPoint point);
+	virtual	void				MouseMoved(BPoint point, uint32 transit,
+									const BMessage* message);
+
+	virtual	void				KeyDown(const char* bytes, int32 numBytes);
+
+	virtual	BSize				MaxSize();
+	virtual	void				GetPreferredSize(float* width, float* height);
+
+private:
+			void				_SelectNextToolButton(uchar key);
+
+private:
+			BString				fName;
+			bool				fInside;
+			uint32				fMouseButton;
+
+			BBitmap*			fIcon;
+			HelpWindow*			fToolTip;
 };
 
 #endif

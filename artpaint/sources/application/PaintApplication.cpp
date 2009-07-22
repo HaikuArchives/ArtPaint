@@ -28,7 +28,6 @@
 #include "ResourceServer.h"
 #include "Settings.h"
 #include "StringServer.h"
-#include "ToolImages.h"
 #include "ToolManager.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
@@ -78,12 +77,6 @@ PaintApplication::PaintApplication()
 
 	// Set the undo-queue to right depth
 	UndoQueue::SetQueueDepth(fGlobalSettings->undo_queue_depth);
-
-//	// the first untitled window will have number 1
-//	untitled_window_number = 1;
-
-	// create the tool-images here
-	ToolImages::createToolImages();
 
 	// Read the add-ons. They will be read in another thread by the manipulator
 	// server. This should be the last thing to read so that it does not
