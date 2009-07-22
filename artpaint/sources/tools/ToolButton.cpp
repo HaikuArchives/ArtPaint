@@ -25,7 +25,7 @@ const float gInset = 2.0;
 
 
 ToolButton::ToolButton(const char* name, BMessage* message, BBitmap* icon)
-	: BControl(name, NULL, message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS)
+	: BControl(name, "?", message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS)
 	, fName(name)
 	, fInside(false)
 	, fMouseButton(0)
@@ -112,11 +112,31 @@ ToolButton::Draw(BRect updateRect)
 			base, background, flags);
 		be_control_look->DrawButtonBackground(this, rect, updateRect,
 			base, flags);
-	}
 
-	if (fIcon) {
-		SetDrawingMode(B_OP_ALPHA);
-		DrawBitmap(fIcon, BPoint(gInset, gInset));
+		if (!fIcon) {
+			if (be_control_look) {
+				SetFont(be_bold_font);
+				SetFontSize(LARGE_TOOL_ICON_SIZE);
+
+				rect.InsetBy(gInset, gInset);
+				be_control_look->DrawLabel(this, Label(), rect, updateRect,
+					base, flags, BAlignment(B_ALIGN_CENTER, B_ALIGN_MIDDLE));
+			}
+		} else {
+			SetDrawingMode(B_OP_ALPHA);
+			DrawBitmap(fIcon, BPoint(gInset, gInset));
+		}
+	} else {
+		SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		FillRect(Bounds());
+
+		SetHighColor(0, 0, 0, 255);
+		StrokeRect(Bounds());
+
+		if (fIcon) {
+			SetDrawingMode(B_OP_ALPHA);
+			DrawBitmap(fIcon, BPoint(gInset, gInset));
+		}
 	}
 }
 
@@ -284,10 +304,7 @@ ToolButton::_SelectNextToolButton(uchar key)
 			}
 		}
 
-		if (nextButton) {
+		if (nextButton)
 			nextButton->MakeFocus(true);
-			nextButton->SetValue(B_CONTROL_ON);
-			nextButton->Invoke();
-		}
 	}
 }
