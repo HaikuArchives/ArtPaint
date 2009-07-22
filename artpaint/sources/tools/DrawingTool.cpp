@@ -13,6 +13,7 @@
 
 #include "Cursors.h"
 #include "ImageView.h"
+#include "ResourceServer.h"
 #include "StringServer.h"
 
 
@@ -32,6 +33,9 @@ DrawingTool::DrawingTool(const BString& name, int32 type)
 	// In derived classes set whatever options tool happens to use.
 	options = 0;
 	number_of_options = 0;
+
+	ResourceServer::Instance()->GetBitmap(B_VECTOR_ICON_TYPE, type,
+		LARGE_TOOL_ICON_SIZE, LARGE_TOOL_ICON_SIZE, &fIcon);
 }
 
 
