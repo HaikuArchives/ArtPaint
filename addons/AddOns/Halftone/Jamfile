@@ -95,7 +95,6 @@ Addon Halftone.so :
 	TextTool.o
 	ToolButton.o
 	ToolEventAdapter.o
-	ToolImages.o
 	ToolManager.o
 	ToolScript.o
 	ToolSelectionWindow.o
@@ -194,7 +193,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>TextTool.o
 		<3rdparty!artpaint!artpaint!sources>ToolButton.o
 		<3rdparty!artpaint!artpaint!sources>ToolEventAdapter.o
-		<3rdparty!artpaint!artpaint!sources>ToolImages.o
 		<3rdparty!artpaint!artpaint!sources>ToolManager.o
 		<3rdparty!artpaint!artpaint!sources>ToolScript.o
 		<3rdparty!artpaint!artpaint!sources>ToolSelectionWindow.o

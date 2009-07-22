@@ -98,7 +98,6 @@ Application ArtPaint :
 	TextTool.cpp
 	ToolButton.cpp
 	ToolEventAdapter.cpp
-	ToolImages.cpp
 	ToolManager.cpp
 	ToolScript.cpp
 	ToolSelectionWindow.cpp
