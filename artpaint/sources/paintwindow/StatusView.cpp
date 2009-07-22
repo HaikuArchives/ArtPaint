@@ -18,7 +18,6 @@
 #include "ColorPalette.h"
 #include "PaintApplication.h"
 #include "MessageConstants.h"
-#include "ToolImages.h"
 #include "ToolSetupWindow.h"
 #include "Controls.h"
 #include "UtilityClasses.h"
