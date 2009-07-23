@@ -21,11 +21,12 @@ class PopUpList : public BView {
 		BBitmap 	*not_pushed;
 
 		BBitmap		*current_bitmap;
-		BMessenger	*target;
+		BMessenger	fTarget;
 		BPopUpMenu	*the_menu;
 
 public:
-		PopUpList(BRect,BBitmap*,BBitmap*,BMessage**,int32,BMessenger*);
+		PopUpList(BRect,BBitmap*,BBitmap*, const BMessage& list, int32 count,
+			const BMessenger& target);
 		PopUpList(BRect,BBitmap*,BBitmap*,BPopUpMenu*,BMessenger*);
 		~PopUpList();
 

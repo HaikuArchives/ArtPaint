@@ -34,7 +34,6 @@
 #include "ProjectFileFunctions.h"
 #include "PopUpList.h"
 #include "ResourceServer.h"
-#include "Settings.h"
 #include "SettingsServer.h"
 #include "StatusView.h"
 #include "ToolSetupWindow.h"
@@ -63,7 +62,6 @@
 #include <new>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 
 // initialize the static variable
@@ -214,19 +212,21 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		fSetSizeButton->MakeDefault(true);
 		fSetSizeButton->ResizeToPreferred();
 
-		char label[256];
-		BMessage* message_list[RECENT_LIST_LENGTH];
-		global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-		for (int32 i = 0; i < RECENT_LIST_LENGTH; ++i) {
-			const int32 width = settings->recent_image_width_list[i];
-			const int32 height = settings->recent_image_height_list[i];
+		SettingsServer* settings = SettingsServer::Instance();
+		const ImageSizeList& list = settings->RecentImageSizes();
 
-			message_list[i] = new BMessage(HS_RECENT_IMAGE_SIZE);
-			message_list[i]->AddInt32("width", width);
-			message_list[i]->AddInt32("height", height);
+		BMessage messages;
+		ImageSizeList::const_iterator it;
+		for (it = list.begin(); it != list.end(); ++it) {
+			BString label;
+			label << int32((*it).width) << " x " << int32((*it).height);
 
-			sprintf(label,"%ld x %ld", width, height);
-			message_list[i]->AddString("label", label);
+			BMessage msg(HS_RECENT_IMAGE_SIZE);
+			msg.AddInt32("width", (*it).width);
+			msg.AddInt32("height", (*it).height);
+			msg.AddString("label", label.String());
+
+			messages.AddMessage("list", &msg);
 		}
 
 		float left = fHeightNumberControl->Frame().right + 5.0;
@@ -240,8 +240,7 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		server->GetBitmap(POP_UP_LIST_PUSHED, &listPushed);
 
 		PopUpList* popUpList = new PopUpList(BRect(left, top, left + 9, top + 19),
-			listPushed, listNormal, message_list, RECENT_LIST_LENGTH,
-			new BMessenger(NULL, this));
+			listPushed, listNormal, messages, list.size(), this);
 
 		BMenu* standardSize = new BMenu(_StringForId(STANDARD_SIZES_STRING));
 
@@ -573,29 +572,8 @@ PaintWindow::MessageReceived(BMessage *message)
 				windowSettings.ReplaceRect(skFrame, Frame());
 				server->SetWindowSettings(windowSettings);
 
-				// Only record the new size to the list if it does not
-				// already contain the selected size.
-				global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-				int32 *widths = s->recent_image_width_list;
-				int32 *heights = s->recent_image_height_list;
-
-				int32 position = -1;
-				for (int32 i = 0; i < RECENT_LIST_LENGTH; ++i) {
-					if ((widths[i] == width) && (heights[i] == height)) {
-						position = i;
-					}
-				}
-
-				if (position == -1)
-					position = RECENT_LIST_LENGTH - 1;
-
-				// Move it to the head of the list.
-				for (int32 i = position; i > 0; --i) {
-					widths[i] = widths[i - 1];
-					heights[i] = heights[i - 1];
-				}
-				widths[0] = width;
-				heights[0] = height;
+				// record the new size to the recent list
+				server->AddRecentImageSize(BSize(width, height));
 
 				// Remove the sizing buttons.
 				fContainerBox->RemoveSelf();
@@ -651,10 +629,14 @@ PaintWindow::MessageReceived(BMessage *message)
 			if (fImageSavePanel == NULL) {
 				BPath path;
 				if (fImageEntry.InitCheck() != B_OK) {
-					// This might actually fail if the user has removed the directory.
-					global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-					if (path.SetTo(s->image_save_path) != B_OK) {
-						PaintApplication::HomeDirectory(path);
+					BMessage settings;
+					SettingsServer* server = SettingsServer::Instance();
+					if (server->GetApplicationSettings(&settings) == B_OK) {
+						// This might actually fail if the user has removed the
+						// directory.
+						BString tmp = settings.FindString("image_save_path");
+						if (path.SetTo(tmp.String()) != B_OK)
+							PaintApplication::HomeDirectory(path);
 					}
 				} else {
 					fImageEntry.GetPath(&path);
@@ -685,8 +667,13 @@ PaintWindow::MessageReceived(BMessage *message)
 			if (fProjectSavePanel == NULL) {
 				BPath path;
 				if (fProjectEntry.InitCheck() != B_OK) {
-					global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-					path.SetTo(s->project_save_path);
+					BMessage settings;
+					SettingsServer* server = SettingsServer::Instance();
+					if (server->GetApplicationSettings(&settings) == B_OK) {
+						BString tmp = settings.FindString("project_save_path");
+						if (path.SetTo(tmp.String()) != B_OK)
+							PaintApplication::HomeDirectory(path);
+					}
 				} else {
 					fProjectEntry.GetPath(&path);
 					path.GetParent(&path);
@@ -723,10 +710,10 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_TOOL_SETUP_WINDOW: {
-			// This comes from fMenubar->"Window"->"Show Tool Setup Window". We
-			// should open the tool window.
-			ToolSetupWindow::ShowToolSetupWindow(
-				((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool);
+			BMessage settings;
+			SettingsServer* server = SettingsServer::Instance();
+			if (server->GetApplicationSettings(&settings) == B_OK)
+				ToolSetupWindow::ShowToolSetupWindow(settings.FindInt32("tool"));
 		}	break;
 
 		case HS_SHOW_BRUSH_STORE_WINDOW: {
@@ -1630,12 +1617,17 @@ PaintWindow::_SaveImage(BMessage *message)
 			fImageEntry.GetPath(&path);
 
 			// Also change this new path into the settings.
-			global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-			s->insert_recent_image_path(path.Path());
+			SettingsServer* server = SettingsServer::Instance();
+			server->AddRecentImagePath(path.Path());
 
 			path.GetParent(&path);
-			if (path.Path() != NULL)
-				strcpy(s->image_save_path, path.Path());
+			if (path.Path() != NULL) {
+				server->SetValue(SettingsServer::Application, "image_save_path",
+					path.Path());
+				BMessage m;
+				server->GetApplicationSettings(&m);
+				m.PrintToStream();
+			}
 		} else {
 			printf("Error while saving: %s\n", strerror(status));
 		}
@@ -1821,13 +1813,14 @@ PaintWindow::_SaveProject(BMessage *message)
 		fProjectEntry.GetPath(&path);
 
 		// Also change this new path into the settings.
-		global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-		s->insert_recent_project_path(path.Path());
+		SettingsServer* server = SettingsServer::Instance();
+		server->AddRecentProjectPath(path.Path());
 
 		path.GetParent(&path);
-		if (path.Path() != NULL)
-			strcpy(s->project_save_path,path.Path());
-
+		if (path.Path() != NULL) {
+			server->SetValue(SettingsServer::Application, "project_save_path",
+				path.Path());
+		}
 		return B_OK;
 	}
 	return B_ERROR;
@@ -1910,15 +1903,15 @@ PaintWindow::_AddRecentMenuItems(BMenu* menu, string_id id)
 {
 	menu->RemoveItems(0, menu->CountItems(), true);
 
-	BPath path;
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
+	SettingsServer* server = SettingsServer::Instance();
 
-	StringList* list = &settings->fRecentImagePaths;
+	StringList list = server->RecentImagePaths();
 	if (id == RECENT_PROJECTS_STRING)
-		list = &settings->fRecentProjectPaths;
+		list = server->RecentProjectPaths();
 
+	BPath path;
 	StringList::const_iterator it;
-	for (it = list->begin(); it != list->end(); ++it) {
+	for (it = list.begin(); it != list.end(); ++it) {
 		entry_ref ref;
 		path.SetTo((*it).String(), NULL, true);
 		if (get_ref_for_path(path.Path(), &ref) == B_OK) {
