@@ -30,11 +30,11 @@
 
 
 struct ToolManagerClient {
-	ToolManagerClient(ImageView *view)
-		: fLastUpdatedRect(BRect())
-		, fClient(view)
-		, fActiveTool(NULL)
-		, fNextClient(NULL) {}
+						ToolManagerClient(ImageView *view)
+							: fLastUpdatedRect(BRect())
+							, fClient(view)
+							, fActiveTool(NULL)
+							, fNextClient(NULL) {}
 
 	BRect				fLastUpdatedRect;
 
