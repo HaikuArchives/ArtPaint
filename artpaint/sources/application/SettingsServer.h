@@ -36,54 +36,73 @@ class SettingsServer
 	friend class PaintApplication;
 
 public:
-	static	SettingsServer*		Instance();
+			enum Setting {
+				Application = 1000,
+				PaintWindow = 2000
+			};
 
-			void				Sync();
+	static	SettingsServer*			Instance();
 
-			status_t			GetWindowSettings(BMessage* message);
-			void				SetWindowSettings(const BMessage& message);
-			status_t			GetDefaultWindowSettings(BMessage* message);
+			void					Sync();
 
-			status_t			GetApplicationSettings(BMessage* message);
-			void				SetApplicationSettings(const BMessage& message);
-			status_t			GetDefaultApplicationSettings(BMessage* message);
+			status_t				GetWindowSettings(BMessage* message);
+			void					SetWindowSettings(const BMessage& message);
+			status_t				GetDefaultWindowSettings(BMessage* message);
 
-			const StringList&	RecentImagePaths() const;
-			void				AddRecentImagePath(const BString& path);
+			status_t				GetApplicationSettings(BMessage* message);
 
-			const StringList&	RecentProjectPaths() const;
-			void				AddRecentProjectPath(const BString& path);
+			status_t				SetValue(Setting type, const BString& field,
+										bool value);
+			status_t				SetValue(Setting type, const BString& field,
+										int32 value);
+			status_t				SetValue(Setting type, const BString& field,
+										const BRect& value);
+			status_t				SetValue(Setting type, const BString& field,
+										const BPoint& value);
+			status_t				SetValue(Setting type, const BString& field,
+										const char* value);
+			status_t				SetValue(Setting type, const BString& field,
+										const BString& value);
+			status_t				SetValue(Setting type, const BString& field,
+										type_code typeCode, const void* value);
+
+			const StringList&		RecentImagePaths() const;
+			void					AddRecentImagePath(const BString& path);
+
+			const StringList&		RecentProjectPaths() const;
+			void					AddRecentProjectPath(const BString& path);
 
 			const ImageSizeList&	RecentImageSizes() const;
 			void					AddRecentImageSize(const BSize& size);
 
 private:
-								SettingsServer();
-								SettingsServer(const SettingsServer& server);
-								~SettingsServer();
+									SettingsServer();
+									SettingsServer(const SettingsServer& server);
+									~SettingsServer();
 
-	static	SettingsServer*		Instantiate();
-	static	void				DestroyServer();
+	static	SettingsServer*			Instantiate();
+	static	void					DestroyServer();
 
-			status_t			_ReadSettings(const BString& name,
-									BMessage& message);
-			void				_InsertRecentPath(const BString& path,
-									StringList& list);
+			status_t				_ReadSettings(const BString& name,
+										BMessage& message);
+			void					_InsertRecentPath(const BString& path,
+										StringList& list);
+			BMessage*				_SettingsForType(Setting type);
+			void					_GetDefaultAppSettings(BMessage* message);
 
 private:
-			BMessage			fWindowSettings;
-			BMessage			fDefaultWindowSettings;
+			BMessage				fWindowSettings;
+			BMessage				fDefaultWindowSettings;
 
-			BMessage			fApplicationSettings;
-			BMessage			fDefaultApplicationSettings;
+			BMessage				fApplicationSettings;
 
-			StringList			fRecentImagePaths;
-			StringList			fRecentProjectPaths;
+			StringList				fRecentImagePaths;
+			StringList				fRecentProjectPaths;
 
-			ImageSizeList		fRecentImageSizeList;
+			ImageSizeList			fRecentImageSizeList;
 
-	static	BLocker				fLocker;
-	static	SettingsServer*		fSettingsServer;
+	static	BLocker					fLocker;
+	static	SettingsServer*			fSettingsServer;
 };
 
 #endif // SETTINGSSERVER_H
