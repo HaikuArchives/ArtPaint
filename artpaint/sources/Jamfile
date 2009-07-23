@@ -38,6 +38,7 @@ Application ArtPaint :
 	ResourceServer.cpp
 	Selection.cpp
 	Settings.cpp
+	SettingsServer.cpp
 	StringServer.cpp
 	UndoAction.cpp
 	UndoEvent.cpp
