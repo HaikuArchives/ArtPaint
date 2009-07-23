@@ -96,10 +96,17 @@ SettingsServer::Sync()
 				for (it = it; it != fRecentProjectPaths.end(); ++it)
 					fApplicationSettings.AddString("recent_project_path", *it);
 
+				ImageSizeList::const_iterator si = fRecentImageSizeList.begin();
+				for (it = it; it != fRecentProjectPaths.end(); ++it) {
+					fApplicationSettings.AddData("recent_image_size", B_RAW_TYPE,
+						(const void*)&(*si), sizeof(BSize));
+				}
+
 				fApplicationSettings.Flatten(&file);
 
 				fApplicationSettings.RemoveName("recent_image_path");
 				fApplicationSettings.RemoveName("recent_project_path");
+				fApplicationSettings.RemoveName("recent_image_size");
 			}
 
 			if (dir.CreateFile("window", &file, false) == B_OK)
@@ -221,8 +228,8 @@ SettingsServer::GetDefaultApplicationSettings(BMessage* message)
 			sizeof(rgb_color));
 
 		for (int32 i = 0; i < 10; ++i) {
-			tmp.AddInt32("recent_image_width", (i + 1) * 64);
-			tmp.AddInt32("recent_image_height", (i + 1) * 64);
+			const int32 size = (i + 1) * 64;
+			fRecentImageSizeList.push_back(BSize(size, size));
 		}
 
 		window_feel feel = B_NORMAL_WINDOW_FEEL;
@@ -295,6 +302,23 @@ void
 SettingsServer::AddRecentProjectPath(const BString& path)
 {
 	_InsertRecentPath(path, fRecentProjectPaths);
+}
+
+
+const ImageSizeList&
+SettingsServer::RecentImageSizes() const
+{
+	return fRecentImageSizeList;
+}
+
+
+void
+SettingsServer::AddRecentImageSize(const BSize& size)
+{
+	list.remove(size);
+	list.push_front(size);
+	if (list.size() > 10)
+		list.resize(10);
 }
 
 

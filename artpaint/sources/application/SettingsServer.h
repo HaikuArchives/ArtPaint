@@ -20,6 +20,7 @@ class BString;
 
 
 typedef std::list<BString> StringList;
+typedef std::list<BSize> ImageSizeList;
 
 
 class SettingsServer
@@ -45,6 +46,9 @@ public:
 			const StringList&	RecentProjectPaths() const;
 			void				AddRecentProjectPath(const BString& path);
 
+			const ImageSizeList&	RecentImageSizes() const;
+			void					AddRecentImageSize(const BSize& size);
+
 private:
 								SettingsServer();
 								SettingsServer(const SettingsServer& server);
@@ -67,6 +71,8 @@ private:
 
 			StringList			fRecentImagePaths;
 			StringList			fRecentProjectPaths;
+
+			ImageSizeList		fRecentImageSizeList;
 
 	static	BLocker				fLocker;
 	static	SettingsServer*		fSettingsServer;
