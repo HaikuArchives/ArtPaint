@@ -208,25 +208,37 @@ BBitmap* CopyBitmap(BBitmap *to_be_copied,bool deep)
 }
 
 
-BRect FitRectToScreen(BRect old_rect)
+BRect FitRectToScreen(BRect source)
 {
-	// This function returns the old_rect moved and resized so that
-	// it fits onto current screen.
-	BRect new_rect,screen_bounds;
-	BScreen *screen = new BScreen();
-	screen_bounds = screen->Frame();
-	delete screen;
-	new_rect = old_rect;
+	// This function returns the source moved and resized so that it fits onto
+	// current screen.
+	BRect result = source;
+	BRect screenFrame = BScreen().Frame();
 
-	if (screen_bounds.Contains(new_rect.RightBottom()) == FALSE) {
-		new_rect.OffsetTo(BPoint(15,15));
-	}
-	if (screen_bounds.Contains(new_rect.RightBottom()) == FALSE) {
-		new_rect.bottom = min_c(screen_bounds.bottom,new_rect.bottom);
-		new_rect.right = min_c(screen_bounds.right,new_rect.right);
+	if (!screenFrame.Contains(result.RightBottom()))
+		result.OffsetTo(BPoint(15.0, 15.0));
+
+	if (!screenFrame.Contains(result.RightBottom())) {
+		result.bottom = min_c(screenFrame.bottom, result.bottom);
+		result.right = min_c(screenFrame.right, result.right);
 	}
 
-	return new_rect;
+	return result;
+}
+
+
+BRect
+CenterRectOnScreen(BRect source)
+{
+	BRect screenFrame = BScreen().Frame();
+
+	BPoint leftTop((screenFrame.Width() + source.Width()) / 2.0,
+		(screenFrame.Height() + source.Height()) / 2.0);
+
+	if (leftTop.x < 0.0) leftTop.x = 0.0;
+	if (leftTop.y < 0.0) leftTop.y = 0.0;
+
+	return source.OffsetToCopy(leftTop);
 }
 
 
