@@ -23,6 +23,14 @@ typedef std::list<BString> StringList;
 typedef std::list<BSize> ImageSizeList;
 
 
+static const char*	skZoom				= "zoom";
+static const char*	skFrame				= "frame";
+static const char*	skTranslatorType	= "translator_type";
+static const char*	skPosition			= "position";
+static const char*	skMimeType			= "mime_type";
+static const char*	skViews				= "views";
+
+
 class SettingsServer
 {
 	friend class PaintApplication;

@@ -152,12 +152,12 @@ SettingsServer::GetDefaultWindowSettings(BMessage* message)
 		return B_ERROR;
 
 	if (fDefaultWindowSettings.IsEmpty()) {
-		fDefaultWindowSettings.AddRect("frame", BRect(74.0, 92.0, 507.0, 466.0));
-		fDefaultWindowSettings.AddFloat("zoom", 1.0);
-		fDefaultWindowSettings.AddUInt32("file_type", 0);
-		fDefaultWindowSettings.AddPoint("position", BPoint(0.0, 0.0));
-		fDefaultWindowSettings.AddString("mime_type", "image/x-be-bitmap");
-		fDefaultWindowSettings.AddUInt32("views", HS_STATUS_VIEW | HS_HELP_VIEW);
+		fDefaultWindowSettings.AddRect(skFrame, BRect(74.0, 92.0, 507.0, 466.0));
+		fDefaultWindowSettings.AddFloat(skZoom, 1.0);
+		fDefaultWindowSettings.AddUInt32(skTranslatorType, 0);
+		fDefaultWindowSettings.AddPoint(skPosition, BPoint(0.0, 0.0));
+		fDefaultWindowSettings.AddString(skMimeType, "image/x-be-bitmap");
+		fDefaultWindowSettings.AddUInt32(skViews, HS_STATUS_VIEW | HS_HELP_VIEW);
 	}
 	*message = fDefaultWindowSettings;
 	return B_OK;
