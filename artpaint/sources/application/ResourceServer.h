@@ -10,9 +10,6 @@
 #ifndef RESOURCESERVER_H
 #define RESOURCESERVER_H
 
-#include "PaintApplication.h"
-
-
 #include <Locker.h>
 #include <Resources.h>
 
