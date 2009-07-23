@@ -1624,9 +1624,6 @@ PaintWindow::_SaveImage(BMessage *message)
 			if (path.Path() != NULL) {
 				server->SetValue(SettingsServer::Application, "image_save_path",
 					path.Path());
-				BMessage m;
-				server->GetApplicationSettings(&m);
-				m.PrintToStream();
 			}
 		} else {
 			printf("Error while saving: %s\n", strerror(status));
