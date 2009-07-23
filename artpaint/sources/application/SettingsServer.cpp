@@ -66,6 +66,13 @@ SettingsServer::DestroyServer()
 }
 
 
+SettingsServer*
+SettingsServer::Instance()
+{
+	return Instantiate();
+}
+
+
 void
 SettingsServer::Sync()
 {
@@ -141,6 +148,7 @@ SettingsServer::GetDefaultWindowSettings(BMessage* message)
 		fDefaultWindowSettings.AddRect("frame", BRect(0.0, 0.0, 420, 300));
 		fDefaultWindowSettings.AddFloat("zoom", 1.0);
 		fDefaultWindowSettings.AddUInt32("file_type", 0);
+		fDefaultWindowSettings.AddPoint("position", BPoint(0.0, 0.0));
 		fDefaultWindowSettings.AddString("mime_type", "image/x-be-bitmap");
 		fDefaultWindowSettings.AddUInt32("views", HS_STATUS_VIEW | HS_HELP_VIEW);
 	}
