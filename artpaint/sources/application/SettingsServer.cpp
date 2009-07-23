@@ -128,10 +128,10 @@ SettingsServer::GetWindowSettings(BMessage* message)
 	if (fWindowSettings.IsEmpty()) {
 		status = _ReadSettings("window", fWindowSettings);
 		if (status == B_OK)
-			message = &fWindowSettings;
+			*message = fWindowSettings;
 	} else {
 		status = B_OK;
-		message = &fWindowSettings;
+		*message = fWindowSettings;
 	}
 
 	return status;
@@ -152,15 +152,14 @@ SettingsServer::GetDefaultWindowSettings(BMessage* message)
 		return B_ERROR;
 
 	if (fDefaultWindowSettings.IsEmpty()) {
-		fDefaultWindowSettings.AddRect("frame", BRect(0.0, 0.0, 420, 300));
+		fDefaultWindowSettings.AddRect("frame", BRect(74.0, 92.0, 507.0, 466.0));
 		fDefaultWindowSettings.AddFloat("zoom", 1.0);
 		fDefaultWindowSettings.AddUInt32("file_type", 0);
 		fDefaultWindowSettings.AddPoint("position", BPoint(0.0, 0.0));
 		fDefaultWindowSettings.AddString("mime_type", "image/x-be-bitmap");
 		fDefaultWindowSettings.AddUInt32("views", HS_STATUS_VIEW | HS_HELP_VIEW);
 	}
-
-	message = &fDefaultWindowSettings;
+	*message = fDefaultWindowSettings;
 	return B_OK;
 }
 
@@ -173,23 +172,41 @@ SettingsServer::GetApplicationSettings(BMessage* message)
 	if (!message)
 		return status;
 
+	int32 i = 0;
 	message->MakeEmpty();
 	if (fApplicationSettings.IsEmpty()) {
 		status = _ReadSettings("app", fApplicationSettings);
-		if (status == B_OK)
-			message = &fApplicationSettings;
-
-			int32 i = 0;
-			BString path;
-			while (message->FindString("recent_image_path", i++, &path) == B_OK)
+		if (status == B_OK) {
+			BString path;	// Read the recent image paths
+			while (fApplicationSettings.FindString("recent_image_path", i++,
+				&path) == B_OK) {
 				fRecentImagePaths.push_back(path);
+			}
+			fApplicationSettings.RemoveName("recent_image_path");
+
+			i = 0;	// Read the recent project paths
+			while (fApplicationSettings.FindString("recent_project_path", i++,
+				&path) == B_OK) {
+				fRecentProjectPaths.push_back(path);
+			}
+			fApplicationSettings.RemoveName("recent_project_path");
 
 			i = 0;
-			while (message->FindString("recent_project_path", i++, &path) == B_OK)
-				fRecentProjectPaths.push_back(path);
+			BSize size;
+			ssize_t dataSize;
+			BSize* data = &size;	// Read the recent image sizes
+			while (fApplicationSettings.FindData("recent_image_size", B_RAW_TYPE,
+				i++, (const void**)&data, &dataSize) == B_OK) {
+				if (dataSize == sizeof(BSize))
+					fRecentImageSizeList.push_back(size);
+			}
+			fApplicationSettings.RemoveName("recent_image_size");
+
+			*message = fApplicationSettings;
+		}
 	} else {
 		status = B_OK;
-		message = &fApplicationSettings;
+		*message = fApplicationSettings;
 	}
 
 	return status;
@@ -272,7 +289,7 @@ SettingsServer::GetDefaultApplicationSettings(BMessage* message)
 		fApplicationSettings = tmp;
 	}
 
-	message = &fDefaultApplicationSettings;
+	*message = fDefaultApplicationSettings;
 	return B_OK;
 }
 
@@ -330,7 +347,7 @@ SettingsServer::_ReadSettings(const BString& name, BMessage& message)
 		path.Append("ArtPaint");
 
 		BDirectory dir(path.Path());
-		if (dir.InitCheck() && dir.IsDirectory()) {
+		if (dir.InitCheck() == B_OK && dir.IsDirectory()) {
 			BEntry entry;
 			if (dir.FindEntry(name.String(), &entry) == B_OK) {
 				BFile file(&entry, B_READ_ONLY);
