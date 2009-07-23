@@ -14,6 +14,7 @@
 #include "StringServer.h"
 
 #include <Entry.h>
+#include <Message.h>
 #include <TranslatorRoster.h>
 #include <Window.h>
 
@@ -30,8 +31,6 @@ class LayerWindow;
 class NumberControl;
 class StatusView;
 
-struct window_settings;
-
 
 // views of a paint window
 #define	HS_QUICK_TOOLS 	0x0001
@@ -39,6 +38,7 @@ struct window_settings;
 #define	HS_STATUS_VIEW	0x0004
 #define	HS_MENU_BAR		0x0008
 #define HS_SIZING_VIEW	0x0010
+
 
 enum menu_modes {
 	FULL_MENU,
@@ -51,7 +51,7 @@ class PaintWindow : public BWindow {
 public:
 	static	PaintWindow*		CreatePaintWindow(BBitmap* bitmap = NULL,
 									const char* fileName = NULL,
-									int32 fileType = 0,
+									uint32 translatorType = 0,
 									const entry_ref& entryRef = entry_ref(),
 									translator_id outTranslator = 0);
 
@@ -73,7 +73,7 @@ public:
 
 			void				SetHelpString(const char* string, int32 type);
 
-	inline	window_settings*	Settings() { return fSettings; }
+			BMessage*			Settings() { return &fSettings; }
 
 			// this function will read the attributes from a node, it is called
 			// whenever an image is loaded
@@ -109,8 +109,8 @@ public:
 			StatusView*			ReturnStatusView() const { return fStatusView; }
 
 private:
-								PaintWindow(const char* name, BRect frame,
-									uint32 views, const window_settings *setup);
+								PaintWindow(BRect frame, const char* name,
+									uint32 views, const BMessage& settings);
 
 			// this function will create the main menubar
 			bool				openMenuBar();
@@ -145,7 +145,7 @@ private:
 			void				_DisableMenuItem(const char* label);
 
 private:
-			window_settings*	fSettings;
+			BMessage			fSettings;
 			ImageView*			fImageView;
 			BackgroundView*		fBackground;
 

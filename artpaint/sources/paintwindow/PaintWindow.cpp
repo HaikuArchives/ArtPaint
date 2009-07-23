@@ -35,6 +35,7 @@
 #include "PopUpList.h"
 #include "ResourceServer.h"
 #include "Settings.h"
+#include "SettingsServer.h"
 #include "StatusView.h"
 #include "ToolSetupWindow.h"
 #include "ToolSelectionWindow.h"
@@ -88,11 +89,11 @@ struct menu_item {
 };
 
 
-PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
-		const window_settings *setup)
+PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
+		const BMessage& settings)
 	: BWindow(frame, name, B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
 		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE)
-	, fSettings(NULL)
+	, fSettings(settings)
 	, fImageView(NULL)
 	, fBackground(NULL)
 	, fVerticalScrollbar(NULL)
@@ -120,10 +121,7 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 	}
 
 	if (views == 0)
-		views = setup->views;
-
-	// Record the settings.
-	fSettings = new window_settings(setup);
+		fSettings.FindUInt32(skViews, &views);
 
 	if ((views & HS_MENU_BAR) != 0) {
 		openMenuBar();	// the menubar should be opened
@@ -323,8 +321,6 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 	// resize so that all things are properly updated
 	ResizeBy(1,0);
 	ResizeBy(-1,0);
-	// show the window to user
-	Show();
 
 	// Add ourselves to the sgPaintWindowList
 	sgPaintWindowList.AddItem(this);
@@ -343,59 +339,60 @@ PaintWindow::PaintWindow(const char* name, BRect frame, uint32 views,
 
 PaintWindow*
 PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* fileName,
-	int32 type, const entry_ref& ref, translator_id outTranslator)
+	uint32 translatorType, const entry_ref& ref, translator_id outTranslator)
 {
-	window_settings default_window_settings =
-		((PaintApplication*)be_app)->GlobalSettings()->default_window_settings;
+	BMessage tmpSettings;
+	status_t status = B_ERROR;
+	SettingsServer* server = SettingsServer::Instance();
+	if ((status = server->GetWindowSettings(&tmpSettings)) != B_OK)
+		status = server->GetDefaultWindowSettings(&tmpSettings);
 
-	uint32 flags = HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW ;
-	BString title;
-	if (fileName == NULL) {
-		// sprintf(title,"%s - %d",_StringForId(UNTITLED_STRING),
-		//		sgUntitledWindowNumber);
-		flags = flags | HS_SIZING_VIEW;
-		title = _StringForId(EMPTY_PAINT_WINDOW_STRING);
-	} else {
-		title = fileName;
+	if (status == B_OK) {
+		uint32 flags = HS_MENU_BAR | HS_STATUS_VIEW | HS_HELP_VIEW ;
+		if (fileName == NULL) {
+			flags = flags | HS_SIZING_VIEW;
+			fileName = _StringForId(EMPTY_PAINT_WINDOW_STRING);
+		}
+
+		BRect frame;
+		if (tmpSettings.FindRect(skFrame, &frame) == B_OK) {
+			PaintWindow* paintWindow = new (std::nothrow) PaintWindow(frame,
+				fileName, flags, tmpSettings);
+
+			if (paintWindow) {
+				BMessage* settings = paintWindow->Settings();
+				paintWindow->fCurrentHandler = outTranslator;
+
+				if (paintWindow->Lock()) {
+					float zoom;
+					if (settings->FindFloat(skZoom, &zoom) == B_OK)
+						paintWindow->displayMag(zoom);
+					paintWindow->Unlock();
+				}
+
+				if (bitmap) {
+					BNode node(&ref);
+					BNodeInfo nodeInfo(&node);
+
+					char mime[B_MIME_TYPE_LENGTH];
+					nodeInfo.GetType(mime);
+
+					settings->ReplaceString(skMimeType, mime);
+					settings->ReplaceUInt32(skTranslatorType, translatorType);
+
+					paintWindow->SetImageEntry(BEntry(&ref, true));
+
+					BRect bounds = bitmap->Bounds();
+					paintWindow->OpenImageView(bounds.IntegerWidth() + 1,
+						bounds.IntegerHeight() + 1);
+					paintWindow->ReturnImageView()->ReturnImage()->InsertLayer(bitmap);
+					paintWindow->AddImageView();
+				}
+			}
+			return paintWindow;
+		}
 	}
-
-	PaintWindow* paintWindow = new PaintWindow(title.String(),
-		default_window_settings.frame_rect, flags, &(default_window_settings));
-
-	if (bitmap != NULL) {
-		// some of these might also come from attributes
-		window_settings* settings = paintWindow->Settings();
-
-		settings->file_type = type;
-		settings->zoom_level = default_window_settings.zoom_level;
-		settings->view_position = default_window_settings.view_position;
-
-		BNode node(&ref);
-		BNodeInfo nodeInfo(&node);
-		nodeInfo.GetType(paintWindow->Settings()->file_mime);
-
-		paintWindow->SetImageEntry(BEntry(&ref, true));
-
-// This is done elsewhere to make it possible to read the attributes
-// after creating the image-view.
-//		// make the window read it's attributes
-//		paintWindow->ReadAttributes(node);
-
-		// Open an imageview for the window and add a layer to it.
-		paintWindow->OpenImageView(int32(bitmap->Bounds().Width() + 1),
-			int32(bitmap->Bounds().Height() + 1));
-		paintWindow->ReturnImageView()->ReturnImage()->InsertLayer(bitmap);
-		paintWindow->AddImageView();
-	}
-
-	paintWindow->fCurrentHandler = outTranslator;
-
-	// Change the zoom-level to be correct
-	paintWindow->Lock();
-	paintWindow->displayMag(paintWindow->Settings()->zoom_level);
-	paintWindow->Unlock();
-
-	return paintWindow;
+	return NULL;
 }
 
 
@@ -418,7 +415,6 @@ PaintWindow::~PaintWindow()
 		delete fImageView;
 	}
 
-	delete fSettings;
 	// Decrement the window-count by 1.
 	sgPaintWindowCount--;
 
@@ -428,18 +424,16 @@ PaintWindow::~PaintWindow()
 
 
 void
-PaintWindow::FrameResized(float, float)
+PaintWindow::FrameResized(float newWidth, float newHeight)
 {
-	// Store the new frame to settings.
-	fSettings->frame_rect = Frame();
+	fSettings.ReplaceRect(skFrame, Frame());
 }
 
 
 void
-PaintWindow::FrameMoved(BPoint)
+PaintWindow::FrameMoved(BPoint newPosition)
 {
-	// Store the new frame to settings.
-	fSettings->frame_rect = Frame();
+	fSettings.ReplaceRect(skFrame, Frame());
 }
 
 
@@ -570,13 +564,18 @@ PaintWindow::MessageReceived(BMessage *message)
 			}
 
 			if (success) {
-				// Record the window's frame and also put the new size to
-				// the most recently used list.
-				global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-				s->default_window_settings.frame_rect = Frame();
+				BMessage windowSettings;
+				SettingsServer* server = SettingsServer::Instance();
+				if (server->GetWindowSettings(&windowSettings) != B_OK)
+					server->GetDefaultWindowSettings(&windowSettings);
+
+				// Record the window's frame
+				windowSettings.ReplaceRect(skFrame, Frame());
+				server->SetWindowSettings(windowSettings);
 
 				// Only record the new size to the list if it does not
 				// already contain the selected size.
+				global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
 				int32 *widths = s->recent_image_width_list;
 				int32 *heights = s->recent_image_height_list;
 
@@ -665,10 +664,13 @@ PaintWindow::MessageReceived(BMessage *message)
 				entry_ref ref;
 				get_ref_for_path(path.Path(), &ref);
 
+				uint32 translatorType;
+				fSettings.FindUInt32(skTranslatorType, &translatorType);
+
 				BMessenger panelTarget(this);
 				BMessage message(HS_IMAGE_SAVE_REFS);
 				fImageSavePanel = new ImageSavePanel(ref, panelTarget,
-					message, fSettings->file_type,
+					message, translatorType,
 					fImageView->ReturnImage()->ReturnThumbnailImage());
 			}
 
@@ -819,17 +821,19 @@ PaintWindow::MessageReceived(BMessage *message)
 		case HS_SAVE_FORMAT_CHANGED: {
 			// this comes from the image save panel's format menu and informs
 			// that the wanted save format has changed
-			fSettings->file_type = message->FindInt32("be:type");
 			fCurrentHandler = message->FindInt32("be:translator");
 			DatatypeSetupWindow::ChangeHandler(fCurrentHandler);
+
+			uint32 translatorType = message->FindInt32("be:type");
+			fSettings.ReplaceUInt32(skTranslatorType, translatorType);
 
 			int32 count;
 			const translation_format* formats = NULL;
 			BTranslatorRoster* roster = BTranslatorRoster::Default();
 			if (roster->GetOutputFormats(fCurrentHandler, &formats, &count) == B_OK) {
 				for (int32 i = 0; i < count; ++i) {
-					if (formats[i].type == fSettings->file_type)
-						strcpy(fSettings->file_mime, formats[i].MIME);
+					if (formats[i].type == translatorType)
+						fSettings.ReplaceString(skMimeType, BString(formats[i].MIME));
 				}
 			}
 		}	break;
@@ -1585,7 +1589,7 @@ PaintWindow::_SaveImage(BMessage *message)
 		// Create a BNodeInfo for this file and set the MIME-type and preferred
 		// app. Get and set the app signature, not sure why it's commented out.
 		BNodeInfo nodeInfo(&file);
-		nodeInfo.SetType(fSettings->file_mime);
+		nodeInfo.SetType(fSettings.FindString(skMimeType));
 
 		// app_info info;
 		// be_app->GetAppInfo(&info);
@@ -1603,8 +1607,10 @@ PaintWindow::_SaveImage(BMessage *message)
 		BBitmapStream* bitmapStream = new BBitmapStream(bitmap);
 		BTranslatorRoster* roster = BTranslatorRoster::Default();
 
+		uint32 translatorType;
+		fSettings.FindUInt32(skTranslatorType, &translatorType);
 		status = roster->Translate(bitmapStream, (const translator_info*)NULL,
-			(BMessage*)NULL, &file, fSettings->file_type, B_TRANSLATOR_BITMAP);
+			(BMessage*)NULL, &file, translatorType, B_TRANSLATOR_BITMAP);
 		fImageView->UnFreeze();
 
 		if (status == B_OK) {
@@ -1831,18 +1837,22 @@ PaintWindow::_SaveProject(BMessage *message)
 void
 PaintWindow::writeAttributes(BNode& node)
 {
-	BRect frame(Frame());
-	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame, sizeof(BRect));
-	if (fImageView && fImageView->LockLooper()) {
-		fSettings->zoom_level = fImageView->getMagScale();
-		node.WriteAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0,
-			&(fSettings->zoom_level), sizeof(float));
+	float zoom = 1;
+	BPoint point(0.0, 0.0);
 
-		fSettings->view_position = fImageView->LeftTop();
-		node.WriteAttr("ArtP:view_position", B_POINT_TYPE, 0,
-			&(fSettings->view_position), sizeof(BPoint));
+	if (fImageView && fImageView->LockLooper()) {
+		point = fImageView->LeftTop();
+		zoom = fImageView->getMagScale();
 		fImageView->UnlockLooper();
 	}
+
+	fSettings.ReplaceFloat(skZoom, zoom);
+	fSettings.ReplacePoint(skPosition, point);
+
+	BRect frame = Frame();
+	node.WriteAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0, &zoom, sizeof(float));
+	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame, sizeof(BRect));
+	node.WriteAttr("ArtP:view_position", B_POINT_TYPE, 0, &point, sizeof(BPoint));
 }
 
 
@@ -1850,27 +1860,28 @@ void
 PaintWindow::ReadAttributes(const BNode& node)
 {
 	if (Lock()) {
-		float zoom_level;
-		if (node.ReadAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0, &zoom_level,
-			sizeof(float)) > 0) {
-			fSettings->zoom_level = zoom_level;
+		float zoom;
+		if (node.ReadAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0, &zoom,
+			sizeof(float)) == sizeof(float)) {
 			if (fImageView)
-				fImageView->setMagScale(zoom_level);
+				fImageView->setMagScale(zoom);
+			fSettings.ReplaceFloat(skZoom, zoom);
 		}
 
-		BPoint view_position;
-		if (node.ReadAttr("ArtP:view_position" ,B_POINT_TYPE, 0, &view_position,
-			sizeof(BPoint)) > 0) {
-			fSettings->view_position = view_position;
+		BPoint position;
+		if (node.ReadAttr("ArtP:view_position" ,B_POINT_TYPE, 0, &position,
+			sizeof(BPoint)) == sizeof(BPoint)) {
 			if (fImageView)
-				fImageView->ScrollTo(view_position);
+				fImageView->ScrollTo(position);
+			fSettings.ReplacePoint(skPosition, position);
 		}
 
 		BRect frame;
 		if (node.ReadAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame,
-			sizeof(BRect)) > 0) {
+			sizeof(BRect)) == sizeof(BRect)) {
 			frame = FitRectToScreen(frame);
 			MoveTo(frame.left, frame.top);
+			fSettings.ReplaceRect(skFrame, frame);
 			ResizeTo(frame.Width(), frame.Height());
 		}
 

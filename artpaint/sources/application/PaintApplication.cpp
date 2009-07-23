@@ -27,6 +27,7 @@
 #include "RefFilters.h"
 #include "ResourceServer.h"
 #include "Settings.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolManager.h"
 #include "ToolSelectionWindow.h"
@@ -60,6 +61,7 @@ PaintApplication::PaintApplication()
 	, fProjectOpenPanel(NULL)
 	, fGlobalSettings(NULL)
 {
+	SettingsServer::Instantiate();
 	ResourceServer::Instantiate();
 
 	// Some of the things in this function depend on the previously initialized
@@ -97,8 +99,10 @@ PaintApplication::~PaintApplication()
 	_WritePreferences();
 	delete fGlobalSettings;
 
-	ResourceServer::DestroyServer();
 	ToolManager::DestroyToolManager();
+
+	ResourceServer::DestroyServer();
+	SettingsServer::DestroyServer();
 }
 
 
@@ -108,7 +112,9 @@ PaintApplication::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case HS_NEW_PAINT_WINDOW: {
 			// issued from paint-window's menubar->"Window"->"New Paint Window"
-			PaintWindow::CreatePaintWindow();
+			PaintWindow* window = PaintWindow::CreatePaintWindow();
+			if (window)
+				window->Show();
 		}	break;
 
 		case HS_SHOW_IMAGE_OPEN_PANEL: {
@@ -185,7 +191,10 @@ PaintApplication::MessageReceived(BMessage* message)
 						BBitmap* pastedBitmap = new BBitmap(&message);
 						if (pastedBitmap && pastedBitmap->IsValid()) {
 							char name[] = "Clip 1";
-							PaintWindow::CreatePaintWindow(pastedBitmap, name);
+							PaintWindow* window =
+								PaintWindow::CreatePaintWindow(pastedBitmap, name);
+							if (window)
+								window->Show();
 						}
 					}
 				}
@@ -248,8 +257,11 @@ PaintApplication::ReadyToRun()
 
 	// Here we will open a PaintWindow if no image was loaded on startup. This
 	// should be the last window opened so that it will be the active window.
-	if (PaintWindow::CountPaintWindows() == 0)
-		PaintWindow::CreatePaintWindow();
+	if (PaintWindow::CountPaintWindows() == 0) {
+		PaintWindow* window = PaintWindow::CreatePaintWindow();
+		if (window)
+			window->Show();
+	}
 }
 
 
@@ -332,7 +344,10 @@ PaintApplication::RefsReceived(BMessage* message)
 
 				PaintWindow* window = PaintWindow::CreatePaintWindow(bitmap,
 					ref.name, orgInfo.type, ref, testInfo.translator);
-				window->ReadAttributes(file);
+				if (window) {
+					window->ReadAttributes(file);
+					window->Show();
+				}
 			} else {
 				char text[255];
 				sprintf(text,
@@ -560,21 +575,23 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 
 	// Create a paint-window using the width and height
 	PaintWindow* paintWindow = PaintWindow::CreatePaintWindow(NULL, ref.name);
+	if (paintWindow) {
+		paintWindow->OpenImageView(width, height);
+		// Then read the layer-data. Rewind the file and put the image-view to
+		// read the data.
+		ImageView* image_view = paintWindow->ReturnImageView();
+		image_view->ReturnImage()->ReadLayers(file);
 
-	paintWindow->OpenImageView(width, height);
-	// Then read the layer-data. Rewind the file and put the image-view to read
-	// the data.
-	ImageView* image_view = paintWindow->ReturnImageView();
-	image_view->ReturnImage()->ReadLayers(file);
+		// This must be before the image-view is added
+		paintWindow->SetProjectEntry(BEntry(&ref, true));
+		paintWindow->AddImageView();
 
-	// This must be before the image-view is added
-	paintWindow->SetProjectEntry(BEntry(&ref, true));
-	paintWindow->AddImageView();
-
-	// As last thing read the attributes from the file
-	paintWindow->ReadAttributes(file);
-
-	return B_OK;
+		// As last thing read the attributes from the file
+		paintWindow->ReadAttributes(file);
+		paintWindow->Show();
+		return B_OK;
+	}
+	return B_ERROR;
 }
 
 
@@ -640,28 +657,30 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 
 	// We should create a PaintWindow and also an ImageView for it.
 	PaintWindow* window = PaintWindow::CreatePaintWindow(NULL, ref.name);
-	window->OpenImageView(width, height);
+	if (window) {
+		window->OpenImageView(width, height);
 
-	// Read the layers from the file. First read how many layers there are.
-	int32 layerCount;
-	if (file.Read(&layerCount,sizeof(int32)) == sizeof(int32)) {
-		layerCount = B_BENDIAN_TO_HOST_INT32(layerCount);
-		Image* image = window->ReturnImageView()->ReturnImage();
-		if (image->ReadLayersOldStyle(file, layerCount) == B_OK) {
-			// This must be before the image-view is added
-			window->SetProjectEntry(BEntry(&ref, true));
-			window->AddImageView();
-			window->ReadAttributes(file);
-			return B_OK;
+		// Read the layers from the file. First read how many layers there are.
+		int32 layerCount;
+		if (file.Read(&layerCount,sizeof(int32)) == sizeof(int32)) {
+			layerCount = B_BENDIAN_TO_HOST_INT32(layerCount);
+			Image* image = window->ReturnImageView()->ReturnImage();
+			if (image->ReadLayersOldStyle(file, layerCount) == B_OK) {
+				// This must be before the image-view is added
+				window->SetProjectEntry(BEntry(&ref, true));
+				window->AddImageView();
+				window->ReadAttributes(file);
+				window->Show();
+				return B_OK;
+			}
 		}
+
+		_ShowAlert(text);
+
+		delete window->ReturnImageView();
+		window->Lock();
+		window->Quit();
 	}
-
-	_ShowAlert(text);
-
-	delete window->ReturnImageView();
-	window->Lock();
-	window->Quit();
-
 	return B_ERROR;
 }
 

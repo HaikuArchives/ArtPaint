@@ -86,6 +86,7 @@ Addon Halftone.so :
 	Selection.o
 	SelectorTool.o
 	Settings.o
+	SettingsServer.o
 	FreeLineTool.o
 	StatusView.o
 	StraightLineTool.o
@@ -184,6 +185,7 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>Selection.o
 		<3rdparty!artpaint!artpaint!sources>SelectorTool.o
 		<3rdparty!artpaint!artpaint!sources>Settings.o
+		<3rdparty!artpaint!artpaint!sources>SettingsServer.o
 		<3rdparty!artpaint!artpaint!sources>FreeLineTool.o
 		<3rdparty!artpaint!artpaint!sources>StatusView.o
 		<3rdparty!artpaint!artpaint!sources>StraightLineTool.o
