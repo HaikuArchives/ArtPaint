@@ -315,10 +315,10 @@ SettingsServer::RecentImageSizes() const
 void
 SettingsServer::AddRecentImageSize(const BSize& size)
 {
-	list.remove(size);
-	list.push_front(size);
-	if (list.size() > 10)
-		list.resize(10);
+	fRecentImageSizeList.remove(size);
+	fRecentImageSizeList.push_front(size);
+	if (fRecentImageSizeList.size() > 10)
+		fRecentImageSizeList.resize(10);
 }
 
 
