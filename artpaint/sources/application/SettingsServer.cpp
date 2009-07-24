@@ -28,6 +28,7 @@
 #include <new>
 
 
+const int32 gListSize = 10;
 BLocker SettingsServer::fLocker;
 SettingsServer* SettingsServer::fSettingsServer = NULL;
 
@@ -346,8 +347,8 @@ SettingsServer::AddRecentImageSize(const BSize& size)
 {
 	fRecentImageSizeList.remove(size);
 	fRecentImageSizeList.push_front(size);
-	if (fRecentImageSizeList.size() > 10)
-		fRecentImageSizeList.resize(10);
+	if (fRecentImageSizeList.size() > gListSize)
+		fRecentImageSizeList.resize(gListSize);
 }
 
 
@@ -377,8 +378,8 @@ SettingsServer::_InsertRecentPath(const BString& path, StringList& list)
 	if (path.Length() > 0) {
 		list.remove(path);
 		list.push_front(path);
-		if (list.size() > 10)
-			list.resize(10);
+		if (list.size() > gListSize)
+			list.resize(gListSize);
 	}
 }
 
@@ -423,7 +424,7 @@ SettingsServer::_GetDefaultAppSettings(BMessage* message)
 	message->AddData("secondary_color", B_RGB_COLOR_TYPE, (const void*)&white,
 		sizeof(rgb_color));
 
-	for (int32 i = 0; i < 10; ++i) {
+	for (int32 i = 0; i < gListSize; ++i) {
 		const int32 size = (i + 1) * 64;
 		fRecentImageSizeList.push_back(BSize(size, size));
 	}
