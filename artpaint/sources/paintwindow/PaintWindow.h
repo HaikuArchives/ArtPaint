@@ -154,6 +154,8 @@ private:
 
 			BMenuBar*			fMenubar;
 			StatusView*			fStatusView;
+			BMenu*				fRecentImages;
+			BMenu*				fRecentProjects;
 
 			BBox*				fContainerBox;
 			BButton*			fSetSizeButton;

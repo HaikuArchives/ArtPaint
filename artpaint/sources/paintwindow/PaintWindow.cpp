@@ -441,6 +441,9 @@ PaintWindow::MenusBeginning()
 {
 	BWindow::MenusBeginning();
 
+	_AddRecentMenuItems(fRecentImages, RECENT_IMAGES_STRING);
+	_AddRecentMenuItems(fRecentProjects, RECENT_PROJECTS_STRING);
+
 	BMenuItem *item = fMenubar->FindItem(_StringForId(PASTE_AS_NEW_LAYER_STRING));
 	if (item != NULL) {
 		be_clipboard->Lock();
@@ -997,13 +1000,11 @@ PaintWindow::openMenuBar()
 			fileMenu[i].help);
 	}
 
-	BMenu* subMenu = new BMenu(_StringForId(RECENT_IMAGES_STRING));
-	menu->AddItem(subMenu);
-	_AddRecentMenuItems(subMenu, RECENT_IMAGES_STRING);
+	fRecentImages = new BMenu(_StringForId(RECENT_IMAGES_STRING));
+	menu->AddItem(fRecentImages);
 
-	subMenu = new BMenu(_StringForId(RECENT_PROJECTS_STRING));
-	menu->AddItem(subMenu);
-	_AddRecentMenuItems(subMenu, RECENT_PROJECTS_STRING);
+	fRecentProjects = new BMenu(_StringForId(RECENT_PROJECTS_STRING));
+	menu->AddItem(fRecentProjects);
 
 	menu_item fileMenu2[] = {
 		{ SEPARATOR, 0, NULL, 0, NULL, SEPARATOR },	// separator
@@ -1033,7 +1034,7 @@ PaintWindow::openMenuBar()
 			editMenu[i].help);
 	}
 
-	subMenu = new BMenu(_StringForId(CUT_STRING));
+	BMenu* subMenu = new BMenu(_StringForId(CUT_STRING));
 	menu->AddItem(subMenu);
 
 	BMessage *a_message = new BMessage(B_CUT);
