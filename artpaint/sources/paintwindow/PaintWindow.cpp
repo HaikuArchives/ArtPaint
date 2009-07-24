@@ -624,16 +624,13 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_IMAGE_SAVE_PANEL: {
-			// This comes from fMenubar->"File"->"Save Image As…" and we should
-			// show a save-panel
-			if (fImageSavePanel == NULL) {
+			if (!fImageSavePanel) {
 				BPath path;
 				if (fImageEntry.InitCheck() != B_OK) {
 					BMessage settings;
 					SettingsServer* server = SettingsServer::Instance();
 					if (server->GetApplicationSettings(&settings) == B_OK) {
-						// This might actually fail if the user has removed the
-						// directory.
+						// Might fail if the user has removed the directory.
 						BString tmp = settings.FindString("image_save_path");
 						if (path.SetTo(tmp.String()) != B_OK)
 							PaintApplication::HomeDirectory(path);
@@ -652,8 +649,8 @@ PaintWindow::MessageReceived(BMessage *message)
 				BMessenger panelTarget(this);
 				BMessage message(HS_IMAGE_SAVE_REFS);
 				fImageSavePanel = new ImageSavePanel(ref, panelTarget,
-					message, translatorType,
-					fImageView->ReturnImage()->ReturnThumbnailImage());
+					message, translatorType);
+					//fImageView->ReturnImage()->ReturnThumbnailImage());
 			}
 
 			fImageSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
@@ -664,7 +661,7 @@ PaintWindow::MessageReceived(BMessage *message)
 
 		case HS_SHOW_PROJECT_SAVE_PANEL: {
 			// This comes from fMenubar->"File"->"Save Project As…"
-			if (fProjectSavePanel == NULL) {
+			if (!fProjectSavePanel) {
 				BPath path;
 				if (fProjectEntry.InitCheck() != B_OK) {
 					BMessage settings;
@@ -721,16 +718,12 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_IMAGE_SAVE_REFS: {
-			// this comes from the image save panel and contains the refs with
-			// which to save the image
-
+			if (fImageSavePanel)
+				fImageSavePanel->Hide();
 			// Here we call the function that saves the image. We actually call
 			// it in another thread while ensuring that it saves the correct
 			// bitmap. We should also protect the bitmap from being modified
 			// while we save. We should also inform the user about saving.
-			delete fImageSavePanel;
-			fImageSavePanel = NULL;
-
 			if (fImageView) {
 				thread_id threadId = spawn_thread(PaintWindow::save_image,
 					"save image", B_NORMAL_PRIORITY, (void*)this);
@@ -743,14 +736,10 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_PROJECT_SAVE_REFS: {
-			// This comes from project save-panel and contains refs for the file
-			// to which the project should be saved.
-
-			// We call the function that saves the project.
-			delete fProjectSavePanel;
-			fProjectSavePanel = NULL;
-
+			if (fProjectSavePanel)
+				fProjectSavePanel->Hide();
 			if (fImageView) {
+				// We call the function that saves the project.
 				thread_id threadId = spawn_thread(PaintWindow::save_project,
 					"save project", B_NORMAL_PRIORITY, (void*)this);
 				if (threadId >= 0) {
@@ -832,19 +821,11 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case B_CANCEL: {
-			if (fImageSavePanel) {
-				if (fImageSavePanel->IsShowing() == false) {
-					delete fImageSavePanel;
-					fImageSavePanel = NULL;
-				}
-			}
+			if (fImageSavePanel && fImageSavePanel->IsShowing())
+					fImageSavePanel->Hide();
 
-			if (fProjectSavePanel) {
-				if (fProjectSavePanel->IsShowing() == false) {
-					delete fProjectSavePanel;
-					fProjectSavePanel = NULL;
-				}
-			}
+			if (fProjectSavePanel && fProjectSavePanel->IsShowing())
+					fProjectSavePanel->Hide();
 		}	break;
 
 		case HS_TOOL_HELP_MESSAGE: {
@@ -870,15 +851,17 @@ PaintWindow::MessageReceived(BMessage *message)
 bool
 PaintWindow::QuitRequested()
 {
-	// here we should ask the user if changes to picture should be saved
-	// we also tell the application that the number of paint windows
-	// has decreased by one
+	// here we should ask the user if changes to picture should be saved we also
+	// tell the application that the number of paint windows has decreased by one
 	if (fImageView) {
 		if (fImageView->Quit() == false)
 			return false;
 
-		if (fImageSavePanel != NULL)
+		if (fImageSavePanel)
 			delete fImageSavePanel;
+
+		if (fProjectSavePanel)
+			delete fProjectSavePanel;
 	}
 
 	LayerWindow::ActiveWindowChanged(NULL);
