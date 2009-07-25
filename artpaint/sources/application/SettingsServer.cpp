@@ -28,7 +28,7 @@
 #include <new>
 
 
-const int32 gListSize = 10;
+const uint32 gListSize = 10;
 BLocker SettingsServer::fLocker;
 SettingsServer* SettingsServer::fSettingsServer = NULL;
 
@@ -424,7 +424,7 @@ SettingsServer::_GetDefaultAppSettings(BMessage* message)
 	message->AddData("secondary_color", B_RGB_COLOR_TYPE, (const void*)&white,
 		sizeof(rgb_color));
 
-	for (int32 i = 0; i < gListSize; ++i) {
+	for (uint32 i = 0; i < gListSize; ++i) {
 		const int32 size = (i + 1) * 64;
 		fRecentImageSizeList.push_back(BSize(size, size));
 	}
@@ -451,7 +451,6 @@ SettingsServer::_GetDefaultAppSettings(BMessage* message)
 	message->AddBool("brush_window_visible", false);
 	message->AddRect("brush_window_frame", BRect(20, 20, 220, 220));
 
-	message->AddBool("preferences_window_visible", false);
 	message->AddRect("preferences_window_frame", BRect(100, 100, 350, 300));
 
 	message->AddInt32("add_on_window_feel", feel);
