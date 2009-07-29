@@ -29,6 +29,13 @@
 
 
 const uint32 gListSize = 10;
+
+
+const char skRecentImageSize[] = "recent_image_size";
+const char skRecentImagePath[] = "recent_image_path";
+const char skRecentProjectPath[] = "recent_project_path";
+
+
 BLocker SettingsServer::fLocker;
 SettingsServer* SettingsServer::fSettingsServer = NULL;
 
@@ -94,25 +101,25 @@ SettingsServer::Sync()
 				// out, so we can restore them on the next application start
 				StringList::const_iterator it = fRecentImagePaths.begin();
 				for (it = it; it != fRecentImagePaths.end(); ++it)
-					fApplicationSettings.AddString("recent_image_path", *it);
+					fApplicationSettings.AddString(skRecentImagePath, *it);
 
 				it = fRecentProjectPaths.begin();
 				for (it = it; it != fRecentProjectPaths.end(); ++it)
-					fApplicationSettings.AddString("recent_project_path", *it);
+					fApplicationSettings.AddString(skRecentProjectPath, *it);
 
 				// Add the recent image sizes to the massage before written
 				// out, so we can restore them on the next application start
 				ImageSizeList::const_iterator si = fRecentImageSizeList.begin();
 				for (si = si; si != fRecentImageSizeList.end(); ++si) {
-					fApplicationSettings.AddData("recent_image_size", B_RAW_TYPE,
+					fApplicationSettings.AddData(skRecentImageSize, B_RAW_TYPE,
 						(const void*)&(*si), sizeof(BSize));
 				}
 
 				fApplicationSettings.Flatten(&file);
 
-				fApplicationSettings.RemoveName("recent_image_path");
-				fApplicationSettings.RemoveName("recent_project_path");
-				fApplicationSettings.RemoveName("recent_image_size");
+				fApplicationSettings.RemoveName(skRecentImagePath);
+				fApplicationSettings.RemoveName(skRecentProjectPath);
+				fApplicationSettings.RemoveName(skRecentImageSize);
 			}
 
 			if (dir.CreateFile("window", &file, false) == B_OK) {
@@ -167,7 +174,7 @@ SettingsServer::GetDefaultWindowSettings(BMessage* message)
 		fDefaultWindowSettings.AddPoint(skPosition, BPoint(0.0, 0.0));
 		fDefaultWindowSettings.AddString(skMimeType, "image/x-be-bitmap");
 		fDefaultWindowSettings.AddUInt32(skViews, HS_STATUS_VIEW | HS_HELP_VIEW);
-		fDefaultWindowSettings.AddRect(skFrame, BRect(74.0, 92.0, 507.0, 466.0));
+		fDefaultWindowSettings.AddRect(skFrame, BRect(74.0, 112.0, 507.0, 486.0));
 	}
 	*message = fDefaultWindowSettings;
 	return B_OK;
@@ -188,31 +195,31 @@ SettingsServer::GetApplicationSettings(BMessage* message)
 		status = _ReadSettings("app", fApplicationSettings);
 		if (status == B_OK && !fApplicationSettings.IsEmpty()) {
 			BString path;	// Read the recent image paths
-			while (fApplicationSettings.FindString("recent_image_path", i++,
+			while (fApplicationSettings.FindString(skRecentImagePath, i++,
 				&path) == B_OK) {
 				fRecentImagePaths.push_back(path);
 			}
-			fApplicationSettings.RemoveName("recent_image_path");
+			fApplicationSettings.RemoveName(skRecentImagePath);
 
 			i = 0;	// Read the recent project paths
-			while (fApplicationSettings.FindString("recent_project_path", i++,
+			while (fApplicationSettings.FindString(skRecentProjectPath, i++,
 				&path) == B_OK) {
 				fRecentProjectPaths.push_back(path);
 			}
-			fApplicationSettings.RemoveName("recent_project_path");
+			fApplicationSettings.RemoveName(skRecentProjectPath);
 
 			i = 0;
 			BSize size;
 			ssize_t dataSize;
 			const BSize* data;	// Read the recent image sizes
-			while (fApplicationSettings.FindData("recent_image_size", B_RAW_TYPE,
+			while (fApplicationSettings.FindData(skRecentImageSize, B_RAW_TYPE,
 				i++, (const void**)&data, &dataSize) == B_OK) {
 				if (dataSize == sizeof(BSize)) {
 					memcpy(&size, data, sizeof(BSize));
 					fRecentImageSizeList.push_back(size);
 				}
 			}
-			fApplicationSettings.RemoveName("recent_image_size");
+			fApplicationSettings.RemoveName(skRecentImageSize);
 
 			*message = fApplicationSettings;
 		} else {
@@ -321,6 +328,13 @@ SettingsServer::AddRecentImagePath(const BString& path)
 }
 
 
+void
+SettingsServer::RemoveRecentImagePath(const BString& path)
+{
+	fRecentImagePaths.remove(path);
+}
+
+
 const StringList&
 SettingsServer::RecentProjectPaths() const
 {
@@ -332,6 +346,13 @@ void
 SettingsServer::AddRecentProjectPath(const BString& path)
 {
 	_InsertRecentPath(path, fRecentProjectPaths);
+}
+
+
+void
+SettingsServer::RemoveRecentProjectPath(const BString& path)
+{
+	fRecentProjectPaths.remove(path);
 }
 
 
@@ -408,20 +429,20 @@ SettingsServer::_SettingsForType(Setting type)
 void
 SettingsServer::_GetDefaultAppSettings(BMessage* message)
 {
-	message->AddInt32("tool", FREE_LINE_TOOL);
-	message->AddInt32("language", ENGLISH_LANGUAGE);
-	message->AddInt32("cursor_mode", TOOL_CURSOR_MODE);
-	message->AddInt32("settings_window_tab", 0);
-	message->AddInt32("quit_confirm_mode", B_CONTROL_ON);
-	message->AddInt32("undo_queue_depth", 20);
-	message->AddInt32("palette_color_mode", HS_RGB_COLOR_MODE);
+	message->AddInt32(skTool, FREE_LINE_TOOL);
+	message->AddInt32(skLanguage, ENGLISH_LANGUAGE);
+	message->AddInt32(skCursorMode, TOOL_CURSOR_MODE);
+	message->AddInt32(skSettingsWindowTab, 0);
+	message->AddInt32(skQuitConfirmMode, B_CONTROL_ON);
+	message->AddInt32(skUndoQueueDepth, 20);
+	message->AddInt32(skPaletteColorMode, HS_RGB_COLOR_MODE);
 
 	rgb_color black = { 0, 0, 0, 255 };
-	message->AddData("primary_color", B_RGB_COLOR_TYPE, (const void*)&black,
+	message->AddData(skPrimaryColor, B_RGB_COLOR_TYPE, (const void*)&black,
 		sizeof(rgb_color));
 
 	rgb_color white = { 255, 255, 255, 255 };
-	message->AddData("secondary_color", B_RGB_COLOR_TYPE, (const void*)&white,
+	message->AddData(skSecondaryColor, B_RGB_COLOR_TYPE, (const void*)&white,
 		sizeof(rgb_color));
 
 	for (uint32 i = 0; i < gListSize; ++i) {
@@ -431,37 +452,37 @@ SettingsServer::_GetDefaultAppSettings(BMessage* message)
 
 	window_feel feel = B_NORMAL_WINDOW_FEEL;
 
-	message->AddInt32("layer_window_feel", feel);
-	message->AddBool("layer_window_visible", false);
-	message->AddRect("layer_window_frame", BRect(300, 300, 400, 400));
+	message->AddInt32(skLayerWindowFeel, feel);
+	message->AddBool(skLayerWindowVisible, false);
+	message->AddRect(skLayerWindowFrame, BRect(300, 300, 400, 400));
 
-	message->AddInt32("setup_tool_window_feel", feel);
-	message->AddBool("setup_tool_window_visible", true);
-	message->AddRect("setup_tool_window_frame", BRect(70, 31, 300, 72));
+	message->AddInt32(skToolSetupWindowFeel, feel);
+	message->AddBool(skToolSetupWindowVisible, true);
+	message->AddRect(skToolSetupWindowFrame, BRect(70, 31, 300, 72));
 
-	message->AddInt32("select_tool_window_feel", feel);
-	message->AddBool("select_tool_window_visible", true);
-	message->AddRect("select_tool_window_frame", BRect(10, 31, 54, 596));
+	message->AddInt32(skSelectToolWindowFeel, feel);
+	message->AddBool(skSelectToolWindowVisible, true);
+	message->AddRect(skSelectToolWindowFrame, BRect(10, 31, 54, 596));
 
-	message->AddInt32("palette_window_feel", feel);
-	message->AddBool("palette_window_visible", false);
-	message->AddRect("palette_window_frame", BRect(300, 100, 400, 200));
+	message->AddInt32(skPaletteWindowFeel, feel);
+	message->AddBool(skPaletteWindowVisible, false);
+	message->AddRect(skPaletteWindowFrame, BRect(300, 100, 400, 200));
 
-	message->AddInt32("brush_window_feel", feel);
-	message->AddBool("brush_window_visible", false);
-	message->AddRect("brush_window_frame", BRect(20, 20, 220, 220));
+	message->AddInt32(skBrushWindowFeel, feel);
+	message->AddBool(skBrushWindowVisible, false);
+	message->AddRect(skBrushWindowFrame, BRect(20, 20, 220, 220));
 
-	message->AddRect("preferences_window_frame", BRect(100, 100, 350, 300));
+	message->AddInt32(skAddOnWindowFeel, feel);
+	message->AddRect(skAddOnWindowFrame, BRect(100, 100, 200, 200));
 
-	message->AddInt32("add_on_window_feel", feel);
-	message->AddRect("add_on_window_frame", BRect(100, 100, 200, 200));
+	message->AddRect(skSettingsWindowFrame, BRect(100, 100, 350, 300));
 
 	BPath path;
 	find_directory(B_USER_DIRECTORY, &path);
 
-	message->AddString("image_open_path", path.Path());
-	message->AddString("image_save_path", path.Path());
+	message->AddString(skImageOpenPath, path.Path());
+	message->AddString(skImageSavePath, path.Path());
 
-	message->AddString("project_open_path", path.Path());
-	message->AddString("project_save_path", path.Path());
+	message->AddString(skProjectOpenPath, path.Path());
+	message->AddString(skProjectSavePath, path.Path());
 }
