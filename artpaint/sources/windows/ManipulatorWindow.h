@@ -15,14 +15,10 @@ class ManipulatorWindow : public BWindow {
 static	BList		*window_list;
 static	sem_id		list_mutex;
 
-static	window_feel	feel;
-static	window_look	look;
-
 		BView		*manipulator_view;
-		BMessenger	*target;
 
 public:
-		ManipulatorWindow(BRect,BView*,char*,BWindow *master,BMessenger*);
+		ManipulatorWindow(BRect,BView*,const char*,BWindow *master,BMessenger*);
 		~ManipulatorWindow();
 
 

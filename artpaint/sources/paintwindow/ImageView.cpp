@@ -6,7 +6,6 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#define HS_DEBUG
 
 #include <Alert.h>
 #include <ClassInfo.h>
@@ -37,7 +36,7 @@
 #include "Patterns.h"
 #include "ProjectFileFunctions.h"
 #include "Selection.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "StatusBarGUIManipulator.h"
 #include "StatusView.h"
 #include "TextManipulator.h"
@@ -595,7 +594,7 @@ void ImageView::MessageReceived(BMessage *message)
 			Redo();
 			break;
 
-		case HS_START_MANIPULATOR:
+		case HS_START_MANIPULATOR: {
 //			// If a manipulator is currently working make it finish it's job and then repost this message.
 //			if (the_manipulator != NULL) {
 //				BMessage *finish_message = new BMessage(HS_MANIPULATOR_FINISHED);
@@ -604,80 +603,92 @@ void ImageView::MessageReceived(BMessage *message)
 //				delete finish_message;
 //				manipulator_finishing_message = Window()->DetachCurrentMessage();
 //			}
-			if (!PostponeMessageAndFinishManipulator()) {
-				if (message->FindInt32("manipulator_type",&manip_type) == B_NO_ERROR) {
-					message->FindInt32("add_on_id",&add_on_id);
-					try {
-						the_manipulator = ManipulatorServer::ReturnManipulator((manipulator_type)manip_type,add_on_id);
-						status_t err = message->FindInt32("layers",&manipulated_layers);
-						if ((err == B_NO_ERROR) && (the_manipulator != NULL)) {
-							GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
-							ImageAdapter *adapter = cast_as(the_manipulator,ImageAdapter);
-							if (adapter != NULL)
-								adapter->SetImage(the_image);
+			if (PostponeMessageAndFinishManipulator())
+				break;
 
-							SetCursor();
-							// If the manipulator is not a GUIManipulator we put it to finish its
-							// business. If the manipulator is actually a GUIManipulator we give the
-							// correct preview-bitmap to the manipulator and set up its GUI.
-							if (gui_manipulator == NULL) {
-								start_thread(MANIPULATOR_FINISHER_THREAD);
-							}
-							else {
-								// The order is important, first set the preview-bitmap
-								// and only after that open the GUI for the manipulator.
-								if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
-									gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
-								}
-								else {
-									gui_manipulator->SetPreviewBitmap(the_image->ReturnRenderedImage());
-								}
-								StatusBarGUIManipulator *status_bar_gui_manipulator = cast_as(gui_manipulator,StatusBarGUIManipulator);
-								WindowGUIManipulator *window_gui_manipulator = cast_as(gui_manipulator,WindowGUIManipulator);
+			if (message->FindInt32("manipulator_type", &manip_type) != B_OK)
+				break;
 
-								((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
-								BMessenger *the_messenger = new BMessenger(this);
-								StatusView *status_view = ((PaintWindow*)Window())->ReturnStatusView();
-								if (status_bar_gui_manipulator != NULL) {
-									BView *manipulator_gui = status_bar_gui_manipulator->MakeConfigurationView(300,status_view->Bounds().Height(),the_messenger);
-									status_view->DisplayManipulatorView(manipulator_gui);
-								}
-								else if (window_gui_manipulator != NULL) {
-									char window_name[256];
-									sprintf(window_name,"%s: %s",ReturnProjectName(),window_gui_manipulator->ReturnName());
-									BRect frame = FitRectToScreen(((PaintApplication*)be_app)->GlobalSettings()->add_on_window_frame);
-									manipulator_window = new ManipulatorWindow(frame,window_gui_manipulator->MakeConfigurationView(the_messenger),window_name,Window(),the_messenger);
-									// This is commented out because there doesn't seem to be any problem
-									// with leaving the tools and colors when a manipulator has its own
-									// window. In fact, using the Insert Text menu command, you need to
-									// remove this line in order to change the text color.
-									//status_view->RemoveToolsAndColors();
-								}
-								delete the_messenger;	// The manipulator should copy the messenger
+			message->FindInt32("add_on_id", &add_on_id);
+			try {
+				the_manipulator = ManipulatorServer::ReturnManipulator((manipulator_type)manip_type,add_on_id);
+				status_t err = message->FindInt32("layers",&manipulated_layers);
+				if ((err == B_OK) && (the_manipulator != NULL)) {
+					GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+					ImageAdapter *adapter = cast_as(the_manipulator,ImageAdapter);
+					if (adapter != NULL)
+						adapter->SetImage(the_image);
 
-								cursor_mode = MANIPULATOR_CURSOR_MODE;
-								SetCursor();
-
-								// The manipulator might have updated the bitmap and might also want to
-								// draw some GUI. We send a HS_MANIPULATOR_ADJUSTING_FINISHED to this view
-								// to get the manipulator update the correct bitmap.
-								BWindow *window = Window();
-								if (window != NULL) {
-									window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
-								}
-							}
+					SetCursor();
+					// If the manipulator is not a GUIManipulator we put it to finish its
+					// business. If the manipulator is actually a GUIManipulator we give the
+					// correct preview-bitmap to the manipulator and set up its GUI.
+					if (gui_manipulator == NULL) {
+						start_thread(MANIPULATOR_FINISHER_THREAD);
+					} else {
+						// The order is important, first set the preview-bitmap
+						// and only after that open the GUI for the manipulator.
+						if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
+							gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
 						}
-					}
-					catch (std::bad_alloc) {
-						ShowAlert(CANNOT_START_MANIPULATOR_ALERT);
-						delete the_manipulator;
-						the_manipulator = NULL;
+						else {
+							gui_manipulator->SetPreviewBitmap(the_image->ReturnRenderedImage());
+						}
+						StatusBarGUIManipulator *status_bar_gui_manipulator = cast_as(gui_manipulator,StatusBarGUIManipulator);
+						WindowGUIManipulator *window_gui_manipulator = cast_as(gui_manipulator,WindowGUIManipulator);
+
+						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
+						BMessenger *the_messenger = new BMessenger(this);
+						StatusView *status_view = ((PaintWindow*)Window())->ReturnStatusView();
+						if (status_bar_gui_manipulator != NULL) {
+							BView *manipulator_gui = status_bar_gui_manipulator->MakeConfigurationView(300,status_view->Bounds().Height(),the_messenger);
+							status_view->DisplayManipulatorView(manipulator_gui);
+						}
+						else if (window_gui_manipulator != NULL) {
+							char window_name[256];
+							sprintf(window_name, "%s: %s",
+								ReturnProjectName(),
+								window_gui_manipulator->ReturnName());
+
+							BRect frame(100, 100, 200, 200);
+							if (SettingsServer* server = SettingsServer::Instance()) {
+								BMessage settings;
+								server->GetApplicationSettings(&settings);
+								settings.FindRect(skAddOnWindowFrame, &frame);
+							}
+
+							frame = FitRectToScreen(frame);
+							manipulator_window = new ManipulatorWindow(frame,
+									window_gui_manipulator->MakeConfigurationView(the_messenger),
+									window_name,Window(),the_messenger);
+							// This is commented out because there doesn't seem to be any problem
+							// with leaving the tools and colors when a manipulator has its own
+							// window. In fact, using the Insert Text menu command, you need to
+							// remove this line in order to change the text color.
+							//status_view->RemoveToolsAndColors();
+						}
+						delete the_messenger;	// The manipulator should copy the messenger
+
+						cursor_mode = MANIPULATOR_CURSOR_MODE;
+						SetCursor();
+
+						// The manipulator might have updated the bitmap and might also want to
+						// draw some GUI. We send a HS_MANIPULATOR_ADJUSTING_FINISHED to this view
+						// to get the manipulator update the correct bitmap.
+						BWindow *window = Window();
+						if (window != NULL)
+							window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
 					}
 				}
 			}
-			break;
-		case HS_MANIPULATOR_FINISHED:
-			{
+			catch (std::bad_alloc) {
+				ShowAlert(CANNOT_START_MANIPULATOR_ALERT);
+				delete the_manipulator;
+				the_manipulator = NULL;
+			}
+		}	break;
+
+		case HS_MANIPULATOR_FINISHED: {
 				// First find whether the manipulator finished cancelling or OKing.
 				bool finish_status;
 				message->FindBool("status",&finish_status);
@@ -851,30 +862,46 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 }
 
 
-bool ImageView::Quit()
+bool
+ImageView::Quit()
 {
-	if (((PaintApplication*)be_app)->GlobalSettings()->quit_confirm_mode == B_CONTROL_ON) {
+	 int32 mode = B_CONTROL_ON;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skQuitConfirmMode, &mode);
+	}
+
+	if (mode == B_CONTROL_ON) {
 		if (project_changed > 0) {
-			char alert_text[256];
-			sprintf(alert_text,StringServer::ReturnString(SAVE_CHANGES_STRING),project_changed);
-			BAlert *changes_alert;
-			changes_alert = new BAlert("changes_alert",alert_text,StringServer::ReturnString(CANCEL_STRING),StringServer::ReturnString(DO_NOT_SAVE_STRING),StringServer::ReturnString(SAVE_STRING),B_WIDTH_AS_USUAL,B_OFFSET_SPACING);
-			int32 return_value = changes_alert->Go();	// deletes itself
-			if (return_value == 0)			// Cancel
+			char text[256];
+			sprintf(text, StringServer::ReturnString(SAVE_CHANGES_STRING),
+				project_changed);
+
+			BAlert* alert = new BAlert("Unsaved Changes!", text,
+				StringServer::ReturnString(CANCEL_STRING),
+				StringServer::ReturnString(DO_NOT_SAVE_STRING),
+				StringServer::ReturnString(SAVE_STRING), B_WIDTH_AS_USUAL,
+				B_OFFSET_SPACING);
+
+			int32 value = alert->Go();
+			if (value == 0)		// Cancel
 				return false;
-			else if (return_value == 1)		// Don't save
+
+			if (value == 1)		// Don't save
 				return true;
-			else if (return_value == 2) {	// Save
+
+			if (value == 2) {	// Save
 				Window()->PostMessage(HS_SAVE_PROJECT,Window());
 				return false;
 			}
-			else
-				return true;
+
+			return true;
 		}
 	}
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) != B_NO_ERROR) {
+
+	if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) != B_OK)
 		return false;
-	}
 
 	return true;
 }
@@ -1974,16 +2001,17 @@ void ImageView::SetImageName(const char *name)
 
 
 
-void ImageView::setWindowTitle()
+void
+ImageView::setWindowTitle()
 {
-	char title[256];
+	BString title;
 	if (true) {
 		// Experimental style title
-		char *pname = project_name;
-		char *iname = image_name;
+		BString pname = project_name;
+		BString iname = image_name;
 
-		char *pchanged = "";
-		char *ichanged = "";
+		BString pchanged = "";
+		BString ichanged = "";
 
 		if (project_name == NULL)
 			pname = "";
@@ -1993,10 +2021,9 @@ void ImageView::setWindowTitle()
 		if (image_changed > 0)
 			ichanged = "(*)";
 
+		title << pchanged << pname;
 		if (iname != NULL)
-			sprintf(title,"%s%s | (%s)",pchanged,pname,iname);
-		else
-			sprintf(title,"%s%s",pchanged,pname);
+			title << " | (" << iname << ")";
 	}
 
 	if (LockLooper()) {

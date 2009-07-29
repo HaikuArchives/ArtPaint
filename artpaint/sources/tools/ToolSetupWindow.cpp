@@ -15,7 +15,7 @@
 #include "FloaterManager.h"
 #include "MessageFilters.h"
 #include "PaintApplication.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolManager.h"
 #include "UtilityClasses.h"
@@ -42,15 +42,18 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
 	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	SetWindowFeel(settings->tool_setup_window_feel);
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	SettingsServer* server = SettingsServer::Instance();
+	if (server) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skToolSetupWindowFeel, (int32*)&feel);
+	}
+	SetWindowFeel(feel);
 
-	// Add a filter that will be used to catch mouse-down-messages in order to
-	// activate this window when required
 	if (Lock()) {
-		BMessageFilter *activationFilter = new BMessageFilter(B_ANY_DELIVERY,
-			B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
-		AddCommonFilter(activationFilter);
+		AddCommonFilter(new BMessageFilter(B_ANY_DELIVERY, B_ANY_SOURCE,
+			B_MOUSE_DOWN, window_activation_filter));
 		AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
 		Unlock();
 	}
@@ -59,15 +62,22 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 
 	fToolSetupWindow = this;
 	FloaterManager::AddFloater(this);
-	settings->tool_setup_window_visible = true;
+
+	if (server) {
+		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible,
+			true);
+	}
 }
 
 
 ToolSetupWindow::~ToolSetupWindow()
 {
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	settings->tool_setup_window_frame = Frame();
-	settings->tool_setup_window_visible = false;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible,
+			false);
+		server->SetValue(SettingsServer::Application, skToolSetupWindowFrame,
+			Frame());
+	}
 
 	fToolSetupWindow = NULL;
 	FloaterManager::RemoveFloater(this);
@@ -78,8 +88,13 @@ void
 ToolSetupWindow::ShowToolSetupWindow(int32 toolType)
 {
 	if (fToolSetupWindow == NULL) {
-		global_settings* s = ((PaintApplication*)be_app)->GlobalSettings();
-		new ToolSetupWindow(s->tool_setup_window_frame);
+		BRect frame(70, 31, 300, 72);
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+			settings.FindRect(skToolSetupWindowFrame, &frame);
+		}
+		new ToolSetupWindow(frame);
 	}
 
 	if (fToolSetupWindow->Lock()) {
@@ -109,12 +124,16 @@ ToolSetupWindow::ShowToolSetupWindow(int32 toolType)
 void
 ToolSetupWindow::SetWindowFeel(window_feel feel)
 {
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skToolSetupWindowFeel,
+			int32(feel));
+	}
+
 	if (fToolSetupWindow) {
 		fToolSetupWindow->SetFeel(feel);
 		fToolSetupWindow->SetLook((feel == B_NORMAL_WINDOW_FEEL
 			? B_TITLED_WINDOW_LOOK : B_FLOATING_WINDOW_LOOK));
 	}
-	((PaintApplication*)be_app)->GlobalSettings()->tool_setup_window_feel = feel;
 }
 
 
@@ -125,7 +144,6 @@ ToolSetupWindow::CurrentToolChanged(int32 newTool)
 		fToolSetupWindow->_UpdateConfigurationView(newTool);
 		fToolSetupWindow->Unlock();
 	}
-	((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool = newTool;
 }
 
 
@@ -133,7 +151,6 @@ void ToolSetupWindow::_UpdateConfigurationView(int32 newTool)
 {
 	if (newTool != fCurrentTool) {
 		fCurrentTool = newTool;
-		((PaintApplication*)be_app)->GlobalSettings()->setup_window_tool = newTool;
 
 		// Remove previous tool config views.
 		while (BView* oldConfigView = fContainer->ChildAt(0)) {

@@ -23,7 +23,7 @@
 #include "FloaterManager.h"
 #include "ColorPalette.h"
 #include "MessageConstants.h"
-#include "PaintApplication.h"
+#include "SettingsServer.h"
 #include "FileIdentificationStrings.h"
 #include "StatusView.h"
 #include "RGBControl.h"
@@ -31,92 +31,91 @@
 #include "HSVControl.h"
 #include "YIQControl.h"
 #include "YUVControl.h"
-#include "Settings.h"
 #include "MessageFilters.h"
 #include "UtilityClasses.h"
 #include "StringServer.h"
 #include "ResourceServer.h"
 #include "Patterns.h"
+#include "PaintApplication.h"
 #include "PaletteWindowClient.h"
 #include "FilePanels.h"
+
 
 // Initialize the static variable to NULL.
 ColorPaletteWindow* ColorPaletteWindow::palette_window = NULL;
 BList* ColorPaletteWindow::master_window_list = new BList();
 BList* ColorPaletteWindow::palette_window_clients = new BList();
 
+
 ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
-				: BWindow(frame,StringServer::ReturnString(PALETTE_WINDOW_NAME_STRING),B_FLOATING_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK|B_AVOID_FRONT)
+	: BWindow(frame, StringServer::ReturnString(PALETTE_WINDOW_NAME_STRING),
+		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_RESIZABLE |
+		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
+	, open_panel(NULL)
+	, save_panel(NULL)
 {
 	// here we just record the mode that user has requested
 	// for displaying the controls (eg. RGBA, HSV, something else)
 	selector_mode = mode;
-	((PaintApplication*)be_app)->GlobalSettings()->palette_window_visible = TRUE;
-
-	open_panel = NULL;
-	save_panel = NULL;
 
 	color_control = NULL;
 	color_slider = NULL;
 
-	openMenuBar();
-	// here we call some function that initializes the views
-	// depending on the mode selected
-	if (!openControlViews(mode)) {
-		// if for some reason view opening did not succeed
-		// we delete all of them that were created
-		deleteControlViews(mode);
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skPaletteWindowVisible,
+			true);
+
+		BMessage settings;
+		if (server->GetApplicationSettings(&settings) == B_OK)
+			settings.FindInt32(skPaletteWindowFeel, (int32*)&feel);
 	}
-	else {
-		// we can assume that everything went OK
-		// show ourselves on screen
+	SetFeel(feel);
+
+	window_look look = B_FLOATING_WINDOW_LOOK;
+	if (feel == B_NORMAL_WINDOW_FEEL)
+		look = B_TITLED_WINDOW_LOOK;
+	SetLook(look);
+
+	openMenuBar();
+	// call some function that initializes the views depending on the mode
+	if (!openControlViews(mode)) {
+		// if for some reason view opening did not succeed we delete all of them
+		// that were created
+		deleteControlViews(mode);
+	} else {
+		// we can assume that everything went OK show ourselves on screen
 		Show();
 	}
 
-	// Put the static pointer to point to this window.
+	if (Lock()) {
+		AddCommonFilter(new BMessageFilter(B_ANY_DELIVERY, B_ANY_SOURCE,
+			B_MOUSE_DOWN, window_activation_filter));
+		AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
+		Unlock();
+	}
+
 	palette_window = this;
-
-	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->palette_window_feel;
-	SetFeel(feel);
-
-	// Add a filter that will be used to catch mouse-down-messages in order
-	// to activate this window when required
-	Lock();
-	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,B_ANY_SOURCE,B_MOUSE_DOWN,window_activation_filter);
-	AddCommonFilter(activation_filter);
-	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
-	Unlock();
-
-	if (feel == B_NORMAL_WINDOW_FEEL)
-		SetLook(B_TITLED_WINDOW_LOOK);
-	else
-		SetLook(B_FLOATING_WINDOW_LOOK);
-
 	FloaterManager::AddFloater(this);
 }
 
 
 ColorPaletteWindow::~ColorPaletteWindow()
 {
-	// here delete the file-panels
-	if (open_panel != NULL)
-		delete open_panel;
+	delete open_panel;
+	delete save_panel;
 
-	if (save_panel != NULL)
-		delete save_panel;
-
-	// Put the static to point to NULL.
-	palette_window = NULL;
-
-	// Store our frame in the settings
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	settings->palette_window_frame = Frame();
-	settings->palette_window_visible = FALSE;
-
-	// Store the mode in the settings
-	settings->palette_window_mode = selector_mode;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skPaletteWindowFrame,
+			Frame());
+		server->SetValue(SettingsServer::Application, skPaletteWindowVisible,
+			false);
+		server->SetValue(SettingsServer::Application, skPaletteColorMode,
+			selector_mode);
+	}
 
 	FloaterManager::RemoveFloater(this);
+	palette_window = NULL;
 }
 
 
@@ -744,43 +743,51 @@ void ColorPaletteWindow::handlePaletteSave(BMessage *message)
 }
 
 
-void ColorPaletteWindow::showPaletteWindow(BMessage *msg)
+void
+ColorPaletteWindow::showPaletteWindow(BMessage *msg)
 {
-	// If there is already a palette window, we should only show it.
-	// Remember to check the workspace.
 	if (palette_window == NULL) {
-		global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-		palette_window = new ColorPaletteWindow(settings->palette_window_frame,
-			settings->palette_window_mode);
-		for (int32 i=0;i<master_window_list->CountItems();i++) {
-			((BWindow*)master_window_list->ItemAt(i))->AddToSubset(palette_window);
+		BRect frame(300, 100, 400, 200);
+		color_window_modes mode = HS_RGB_COLOR_MODE;
+
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+			settings.FindRect(skPaletteWindowFrame, &frame);
+			settings.FindInt32(skPaletteColorMode, (int32*)&mode);
+		}
+
+		ColorPaletteWindow* window = new ColorPaletteWindow(frame, mode);
+		for (int32 i = 0; i < master_window_list->CountItems(); ++i)
+			((BWindow*)master_window_list->ItemAt(i))->AddToSubset(window);
+	} else {
+		if (palette_window->Lock()) {
+			palette_window->SetWorkspaces(B_CURRENT_WORKSPACE);
+			if (palette_window->IsHidden())
+				palette_window->Show();
+
+			if (!palette_window->IsActive())
+				palette_window->Activate(TRUE);
+
+			palette_window->Unlock();
 		}
 	}
-	else {
-		palette_window->Lock();
-		palette_window->SetWorkspaces(B_CURRENT_WORKSPACE);
-		if (palette_window->IsHidden()) {
-			palette_window->Show();
-		}
-		if (!palette_window->IsActive()) {
-			palette_window->Activate(TRUE);
-		}
+
+	if (palette_window->Lock()) {
+		BRect palette_window_frame = palette_window->Frame();
+		palette_window_frame = FitRectToScreen(palette_window_frame);
+		palette_window->MoveTo(palette_window_frame.LeftTop());
 		palette_window->Unlock();
 	}
 
-	palette_window->Lock();
-	BRect palette_window_frame = palette_window->Frame();
-	palette_window_frame = FitRectToScreen(palette_window_frame);
-	palette_window->MoveTo(palette_window_frame.LeftTop());
-	palette_window->Unlock();
-
 	// If we got a message we should try to use it for loading a palette.
-	if (msg != NULL) {
+	if (msg)
 		palette_window->handlePaletteLoad(msg);
-	}
 }
 
-void ColorPaletteWindow::ChangePaletteColor(rgb_color& c)
+
+void
+ColorPaletteWindow::ChangePaletteColor(rgb_color& c)
 {
 	if (palette_window != NULL) {
 		palette_window->Lock();
@@ -795,60 +802,73 @@ void ColorPaletteWindow::ChangePaletteColor(rgb_color& c)
 }
 
 
-void ColorPaletteWindow::setFeel(window_feel feel)
+void
+ColorPaletteWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->GlobalSettings()->palette_window_feel = feel;
-	if (palette_window != NULL) {
-		palette_window->SetFeel(feel);
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skPaletteWindowFeel,
+			int32(feel));
+	}
+
+	if (palette_window) {
+		window_look look = B_FLOATING_WINDOW_LOOK;
 		if (feel == B_NORMAL_WINDOW_FEEL)
-			palette_window->SetLook(B_TITLED_WINDOW_LOOK);
-		else
-			palette_window->SetLook(B_FLOATING_WINDOW_LOOK);
+			look = B_TITLED_WINDOW_LOOK;
+
+		palette_window->SetFeel(feel);
+		palette_window->SetLook(look);
 	}
 }
 
 
-void ColorPaletteWindow::AddMasterWindow(BWindow *window)
+void
+ColorPaletteWindow::AddMasterWindow(BWindow *window)
 {
 	master_window_list->AddItem(window);
-	if (palette_window != NULL) {
+	if (palette_window)
 		window->AddToSubset(palette_window);
-	}
 }
 
 
-void ColorPaletteWindow::RemoveMasterWindow(BWindow *window)
+void
+ColorPaletteWindow::RemoveMasterWindow(BWindow *window)
 {
 	master_window_list->RemoveItem(window);
 }
 
 
 
-void ColorPaletteWindow::AddPaletteWindowClient(PaletteWindowClient *client)
+void
+ColorPaletteWindow::AddPaletteWindowClient(PaletteWindowClient *client)
 {
-	if (palette_window_clients->HasItem(client) == FALSE)
+	if (!palette_window_clients->HasItem(client))
 		palette_window_clients->AddItem(client);
 }
 
 
-void ColorPaletteWindow::RemovePaletteWindowClient(PaletteWindowClient *client)
+void
+ColorPaletteWindow::RemovePaletteWindowClient(PaletteWindowClient *client)
 {
 	palette_window_clients->RemoveItem(client);
 }
 
 
-void ColorPaletteWindow::InformClients(const rgb_color &c)
+void
+ColorPaletteWindow::InformClients(const rgb_color& c)
 {
-	for (int32 i=0;i<palette_window_clients->CountItems();i++) {
-		PaletteWindowClient *client = static_cast<PaletteWindowClient*>(palette_window_clients->ItemAt(i));
-		if (client != NULL)
+	for (int32 i = 0; i < palette_window_clients->CountItems(); ++i) {
+		PaletteWindowClient* client =
+			static_cast<PaletteWindowClient*>(palette_window_clients->ItemAt(i));
+		if (client)
 			client->PaletteColorChanged(c);
 	}
 }
-// here is the definition of HSColorControl-class
 
-HSColorControl::HSColorControl(BPoint location, color_control_layout matrix, float cellSide, const char *name)
-					: BColorControl(location,matrix,cellSide,name)
+
+// here is the definition of HSColorControl-class
+HSColorControl::HSColorControl(BPoint location, color_control_layout matrix,
+		float cellSide, const char *name)
+	: BColorControl(location, matrix, cellSide, name)
 {
 	// Set the message here so that using the text boxes before the sliders will work
 	BMessage *message = new BMessage(HS_COLOR_CONTROL_INVOKED);

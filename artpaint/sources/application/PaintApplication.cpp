@@ -26,7 +26,6 @@
 #include "ProjectFileFunctions.h"
 #include "RefFilters.h"
 #include "ResourceServer.h"
-#include "Settings.h"
 #include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolManager.h"
@@ -59,26 +58,30 @@ PaintApplication::PaintApplication()
 	: BApplication("application/x-vnd.artpaint")
 	, fImageOpenPanel(NULL)
 	, fProjectOpenPanel(NULL)
-	, fGlobalSettings(NULL)
 {
 	SettingsServer::Instantiate();
 	ResourceServer::Instantiate();
 
 	// Some of the things in this function depend on the previously initialized
 	// things, so the order may be important. This should be fixed in future.
+	BMessage settings;
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->GetApplicationSettings(&settings);
+
+	languages language = ENGLISH_LANGUAGE;
+	settings.FindInt32(skLanguage, (int32*)&language);
+	StringServer::SetLanguage(language);
 
 	// create the settings
-	fGlobalSettings = new global_settings();
 	_ReadPreferences();
 
-	// Set the language
-	StringServer::SetLanguage(languages(fGlobalSettings->language));
+	int32 tool = FREE_LINE_TOOL;
+	settings.FindInt32(skTool, &tool);
+	tool_manager->ChangeTool(tool);
 
-	// Set the tool
-	tool_manager->ChangeTool(fGlobalSettings->primary_tool);
-
-	// Set the undo-queue to right depth
-	UndoQueue::SetQueueDepth(fGlobalSettings->undo_queue_depth);
+	int32 depth = 20;
+	settings.FindInt32(skUndoQueueDepth, &depth);
+	UndoQueue::SetQueueDepth(depth);
 
 	// Read the add-ons. They will be read in another thread by the manipulator
 	// server. This should be the last thing to read so that it does not
@@ -97,7 +100,6 @@ PaintApplication::~PaintApplication()
 	delete fProjectOpenPanel;
 
 	_WritePreferences();
-	delete fGlobalSettings;
 
 	ToolManager::DestroyToolManager();
 
@@ -122,7 +124,11 @@ PaintApplication::MessageReceived(BMessage* message)
 			BMessage filePanelMessage(B_REFS_RECEIVED);
 			if (fImageOpenPanel == NULL) {
 				entry_ref ref;
-				get_ref_for_path(fGlobalSettings->image_open_path, &ref);
+				BMessage settings;
+				if (SettingsServer* server = SettingsServer::Instance())
+					server->GetApplicationSettings(&settings);
+
+				get_ref_for_path(settings.FindString(skImageOpenPath), &ref);
 				filePanelMessage.AddBool("from_filepanel", true);
 
 				BMessenger app(this);
@@ -143,7 +149,11 @@ PaintApplication::MessageReceived(BMessage* message)
 			BMessage filePanelMessage(B_REFS_RECEIVED);
 			if (fProjectOpenPanel == NULL) {
 				entry_ref ref;
-				get_ref_for_path(fGlobalSettings->project_open_path, &ref);
+				BMessage settings;
+				if (SettingsServer* server = SettingsServer::Instance())
+					server->GetApplicationSettings(&settings);
+
+				get_ref_for_path(settings.FindString(skProjectOpenPath), &ref);
 				filePanelMessage.AddBool("from_filepanel", true);
 
 				BMessenger app(this);
@@ -212,20 +222,31 @@ PaintApplication::MessageReceived(BMessage* message)
 bool
 PaintApplication::QuitRequested()
 {
+	BMessage settings;
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->GetApplicationSettings(&settings);
+
 	// Here we must collect information about the window's that are still open
 	// because they will be closed in BApplication::QuitRequested().
-	bool layer_window_visible = fGlobalSettings->layer_window_visible;
-	bool tool_setup_window_visible = fGlobalSettings->tool_setup_window_visible;
-	bool tool_select_window_visible = fGlobalSettings->tool_select_window_visible;
-	bool palette_window_visible = fGlobalSettings->palette_window_visible;
-	bool brush_window_visible = fGlobalSettings->brush_window_visible;
+	bool layer_window_visible = settings.FindBool(skLayerWindowVisible);
+	bool tool_setup_window_visible = settings.FindBool(skToolSetupWindowVisible);
+	bool tool_select_window_visible = settings.FindBool(skSelectToolWindowVisible);
+	bool palette_window_visible = settings.FindBool(skPaletteWindowVisible);
+	bool brush_window_visible = settings.FindBool(skBrushWindowVisible);
 
 	if (BApplication::QuitRequested()) {
-		fGlobalSettings->layer_window_visible = layer_window_visible;
-		fGlobalSettings->tool_setup_window_visible = tool_setup_window_visible;
-		fGlobalSettings->tool_select_window_visible = tool_select_window_visible;
-		fGlobalSettings->palette_window_visible = palette_window_visible;
-		fGlobalSettings->brush_window_visible = brush_window_visible;
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			server->SetValue(SettingsServer::Application,
+				skToolSetupWindowVisible, tool_setup_window_visible);
+			server->SetValue(SettingsServer::Application,
+				skSelectToolWindowVisible, tool_select_window_visible);
+			server->SetValue(SettingsServer::Application,
+				skPaletteWindowVisible, palette_window_visible);
+			server->SetValue(SettingsServer::Application, skBrushWindowVisible,
+				brush_window_visible);
+			server->SetValue(SettingsServer::Application, skLayerWindowVisible,
+				layer_window_visible);
+		}
 		return true;
 	}
 	return false;
@@ -235,24 +256,35 @@ PaintApplication::QuitRequested()
 void
 PaintApplication::ReadyToRun()
 {
-	// Open here the ToolSelectionWindow
-	if (fGlobalSettings->tool_select_window_visible)
+	BMessage settings;
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->GetApplicationSettings(&settings);
+
+	bool visible = true;
+	settings.FindBool(skSelectToolWindowVisible, &visible);
+	if (visible)
 		ToolSelectionWindow::showWindow();
 
-	// Open here the ToolSetupWindow
-	if (fGlobalSettings->tool_setup_window_visible)
-		ToolSetupWindow::ShowToolSetupWindow(fGlobalSettings->setup_window_tool);
+	visible = true;
+	settings.FindBool(skToolSetupWindowVisible, &visible);
+	if (visible)
+		ToolSetupWindow::ShowToolSetupWindow(settings.FindInt32(skTool));
 
-	// Test here the brush store window
-	if (fGlobalSettings->brush_window_visible) {
+	visible = true;
+	settings.FindBool(skBrushWindowVisible, &visible);
+	if (visible) {
 		BrushStoreWindow* brush_window = new BrushStoreWindow();
 		brush_window->Show();
 	}
 
-	if (fGlobalSettings->palette_window_visible)
+	visible = true;
+	settings.FindBool(skPaletteWindowVisible, &visible);
+	if (visible)
 		ColorPaletteWindow::showPaletteWindow(false);
 
-	if (fGlobalSettings->layer_window_visible)
+	visible = true;
+	settings.FindBool(skLayerWindowVisible, &visible);
+	if (visible)
 		LayerWindow::showLayerWindow();
 
 	// Here we will open a PaintWindow if no image was loaded on startup. This
@@ -307,10 +339,16 @@ PaintApplication::RefsReceived(BMessage* message)
 		}
 		else if ((strcmp(mimeType, HS_PROJECT_MIME_STRING) == 0)
 			|| (strcmp(mimeType, _OLD_HS_PROJECT_MIME_STRING) == 0)) {
-			fGlobalSettings->insert_recent_project_path(path.Path());
-			_StorePath(message, ref, fGlobalSettings->project_open_path);
-			if (_ReadProject(file, ref) != B_OK)
-				fGlobalSettings->fRecentProjectPaths.remove(path.Path());
+
+			SettingsServer* server = SettingsServer::Instance();
+			if (server) {
+				server->AddRecentProjectPath(path.Path());
+				server->SetValue(SettingsServer::Application, skProjectOpenPath,
+					_OpenPath(message, ref));
+			}
+
+			if (_ReadProject(file, ref) != B_OK && server)
+				server->RemoveRecentProjectPath(path.Path());
 		}
 		else if (strncmp(mimeType, "image/", 6) == 0 || strcmp(mimeType, "") == 0) {
 			// The file was not one of ArtPaint's file types. Perhaps it is
@@ -339,8 +377,11 @@ PaintApplication::RefsReceived(BMessage* message)
 					testInfo.translator = 0;
 				}
 
-				fGlobalSettings->insert_recent_image_path(path.Path());
-				_StorePath(message, ref, fGlobalSettings->image_open_path);
+				if (SettingsServer* server = SettingsServer::Instance()) {
+					server->AddRecentImagePath(path.Path());
+					server->SetValue(SettingsServer::Application,
+						skImageOpenPath, _OpenPath(message, ref));
+				}
 
 				PaintWindow* window = PaintWindow::CreatePaintWindow(bitmap,
 					ref.name, orgInfo.type, ref, testInfo.translator);
@@ -366,26 +407,39 @@ PaintApplication::RefsReceived(BMessage* message)
 }
 
 
-// These functions get and set color for particular button. The ability to have
-// different colors for each button is removed and thus only foreground and
-// background-color can be defined.
 rgb_color
 PaintApplication::Color(bool foreground) const
 {
-	// here we return the tool that corresponds to button
-	if (foreground)
-		return fGlobalSettings->primary_color;
-	return fGlobalSettings->secondary_color;
+	rgb_color primary = { 0, 0, 0, 255 };
+	rgb_color secondary = { 255, 255, 255, 255 };
+
+	rgb_color* color = foreground ? &primary : &secondary;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		ssize_t dataSize;
+		const rgb_color* data;
+		if (settings.FindData((foreground ? skPrimaryColor : skSecondaryColor),
+			B_RGB_COLOR_TYPE, (const void**)&data, &dataSize) == B_OK) {
+			if (dataSize == sizeof(rgb_color)) {
+				memcpy(color, data, sizeof(rgb_color));
+			}
+		}
+	}
+
+	return *color;
 }
 
 
 void
 PaintApplication::SetColor(rgb_color color, bool foreground)
 {
-	if (foreground)
-		fGlobalSettings->primary_color = color;
-	else
-		fGlobalSettings->secondary_color = color;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BString field = foreground ? skPrimaryColor : skSecondaryColor;
+		server->SetValue(SettingsServer::Application, field, B_RGB_COLOR_TYPE,
+			&color);
+	}
 }
 
 
@@ -420,23 +474,6 @@ PaintApplication::_ReadPreferences()
 
 			if (status != B_OK)
 				;// We might create some default brushes.
-
-			status = settingsDir.FindEntry("main_preferences",&entry, true);
-			if ((status != B_OK) && spareDirExists)
-				status = spareDir.FindEntry("main_preferences",&entry, true);
-
-			if (status == B_OK) {
-				BFile mainPreferences(&entry, B_READ_ONLY);
-				status = mainPreferences.InitCheck();
-				if (status == B_OK)
-					status = fGlobalSettings->read_from_file(mainPreferences);
-			}
-
-			if (status != B_OK)
-				;// Settings have the default values.
-
-			// Here set the language for the StringServer
-			StringServer::SetLanguage(languages(fGlobalSettings->language));
 
 			// Create a tool-manager object. Depends on the language being set.
 			ToolManager::CreateToolManager();
@@ -499,12 +536,6 @@ PaintApplication::_WritePreferences()
 			BFile brushes;
 			if (settingsDir.CreateFile("brushes", &brushes, false) == B_OK)
 				BrushStoreWindow::writeBrushes(brushes);
-
-			BFile mainPreferences;
-			if (settingsDir.CreateFile("main_preferences",
-				&mainPreferences, false) == B_OK) {
-					fGlobalSettings->write_to_file(mainPreferences);
-			}
 
 			BFile tools;
 			if (settingsDir.CreateFile("tool_preferences", &tools, false) == B_OK)
@@ -705,18 +736,18 @@ PaintApplication::_ShowAlert(const BString& text)
 }
 
 
-void
-PaintApplication::_StorePath(const BMessage* message, const entry_ref& ref,
-	char* target)
+const char*
+PaintApplication::_OpenPath(const BMessage* message, const entry_ref& ref)
 {
 	bool storePath = false;
 	if (message->FindBool("from_filepanel", &storePath) == B_OK) {
 		if (storePath) {
 			BPath path = _GetParentPath(ref);
 			if (path.InitCheck() == B_OK && path.Path() != NULL)
-				strcpy(target, path.Path());
+				return path.Path();
 		}
 	}
+	return "";
 }
 
 

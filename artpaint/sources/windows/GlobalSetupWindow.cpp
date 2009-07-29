@@ -18,8 +18,7 @@
 #include "Flags.h"
 #include "LayerWindow.h"
 #include "ManipulatorWindow.h"
-#include "PaintApplication.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
@@ -94,14 +93,24 @@ private:
 
 GlobalSetupWindow::WindowFeelView::WindowFeelView()
 	:	BView("window feel view", 0)
+	, fToolWindowFeel(B_NORMAL_WINDOW_FEEL)
+	, fToolSetupWindowFeel(B_NORMAL_WINDOW_FEEL)
+	, fPaletteWindowFeel(B_NORMAL_WINDOW_FEEL)
+	, fBrushWindowFeel(B_NORMAL_WINDOW_FEEL)
+	, fLayerWindowFeel(B_NORMAL_WINDOW_FEEL)
+	, fAddOnWindowFeel(B_NORMAL_WINDOW_FEEL)
 {
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	fToolWindowFeel = settings->tool_select_window_feel;
-	fToolSetupWindowFeel = settings->tool_setup_window_feel;
-	fPaletteWindowFeel = settings->palette_window_feel;
-	fBrushWindowFeel = settings->brush_window_feel;
-	fLayerWindowFeel = settings->layer_window_feel;
-	fAddOnWindowFeel = settings->add_on_window_feel;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		settings.FindInt32(skLayerWindowFeel, (int32*)&fLayerWindowFeel);
+		settings.FindInt32(skToolSetupWindowFeel, (int32*)&fToolSetupWindowFeel);
+		settings.FindInt32(skSelectToolWindowFeel, (int32*)&fToolWindowFeel);
+		settings.FindInt32(skPaletteWindowFeel, (int32*)&fPaletteWindowFeel);
+		settings.FindInt32(skBrushWindowFeel, (int32*)&fBrushWindowFeel);
+		settings.FindInt32(skAddOnWindowFeel, (int32*)&fAddOnWindowFeel);
+	}
 
 	fColor = new BCheckBox(StringServer::ReturnString(COLOR_WINDOW_STRING),
 		new BMessage(kColorWindowFeelChanged));
@@ -382,11 +391,13 @@ private:
 
 GlobalSetupWindow::LanguageControlView::LanguageControlView()
 	: BView("language control view", 0)
+	, fLanguage(ENGLISH_LANGUAGE)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
 	BRect rect = BRect(0.0, 0.0, gFlagWidth - 1.0, gFlagHeight - 1.0);
 	fEnglish = new BRadioButton("English", new BMessage(kEnglishLanguageSet));
+	fEnglish->SetValue(B_CONTROL_ON);
 	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
 	fFrench = new BRadioButton("Française", new BMessage(kFrenchLanguageSet));
 
@@ -418,11 +429,11 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 		.SetInsets(20.0, 20.0, 10.0, 10.0)
 	);
 
-	fLanguage = ((PaintApplication*)be_app)->GlobalSettings()->language;
-	fOriginalLanguage = fLanguage;
-
-	if (fLanguage == ENGLISH_LANGUAGE)
-		fEnglish->SetValue(B_CONTROL_ON);
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skLanguage, &fLanguage);
+	}
 
 	if (fLanguage == GERMAN_LANGUAGE)
 		fGerman->SetValue(B_CONTROL_ON);
@@ -475,7 +486,8 @@ GlobalSetupWindow::LanguageControlView::MessageReceived(BMessage* message)
 void
 GlobalSetupWindow::LanguageControlView::ApplyChanges()
 {
-	((PaintApplication*)be_app)->GlobalSettings()->language = fLanguage;
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->SetValue(SettingsServer::Application, skLanguage, fLanguage);
 }
 
 
@@ -483,10 +495,10 @@ void
 GlobalSetupWindow::LanguageControlView::_Update(int language)
 {
 	fLanguage = language;
+	fMessageView->SetText("");
+
 	if (fLanguage != fOriginalLanguage)
 		fMessageView->SetText(StringServer::ReturnString(CHANGES_TAKE_EFFECT_STRING));
-	else
-		fMessageView->SetText("");
 }
 
 
@@ -515,6 +527,8 @@ private:
 
 GlobalSetupWindow::GeneralControlView::GeneralControlView()
 	: BView("general control view", 0)
+	, fCursorMode(TOOL_CURSOR_MODE)
+	, fShutdownMode(B_CONTROL_ON)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
@@ -527,6 +541,7 @@ GlobalSetupWindow::GeneralControlView::GeneralControlView()
 			new BMessage(kToolCursorMode)))
 		.SetInsets(20.0, 5.0, 10.0, 0.0)
 	);
+	fToolCursor->SetValue(B_CONTROL_ON);
 	box->SetLabel(StringServer::ReturnString(CURSOR_STRING));
 
 	BBox* box2 = new BBox(B_NO_BORDER, BGroupLayoutBuilder(B_VERTICAL)
@@ -545,14 +560,16 @@ GlobalSetupWindow::GeneralControlView::GeneralControlView()
 		.SetInsets(10.0, 10.0, 10.0, 10.0)
 	);
 
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	fCursorMode = settings->cursor_mode;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skCursorMode, &fCursorMode);
+		settings.FindInt32(skQuitConfirmMode, &fShutdownMode);
+	}
+
 	if (fCursorMode == CROSS_HAIR_CURSOR_MODE)
 		fCrossHairCursor->SetValue(B_CONTROL_ON);
-	else if (fCursorMode == TOOL_CURSOR_MODE)
-		fToolCursor->SetValue(B_CONTROL_ON);
 
-	fShutdownMode = settings->quit_confirm_mode;
 	fConfirmShutdown->SetValue(fShutdownMode);
 }
 
@@ -595,9 +612,11 @@ GlobalSetupWindow::GeneralControlView::MessageReceived(BMessage* message)
 void
 GlobalSetupWindow::GeneralControlView::ApplyChanges()
 {
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	settings->cursor_mode = fCursorMode;
-	settings->quit_confirm_mode = fShutdownMode;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skQuitConfirmMode,
+			fShutdownMode);
+		server->SetValue(SettingsServer::Application, skCursorMode, fCursorMode);
+	}
 }
 
 
@@ -646,18 +665,25 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
 	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	fTabView->Select(settings->settings_window_tab_number);
+	int32 activeTab = 0;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skSettingsWindowTab, &activeTab);
+	}
+	fTabView->Select(activeTab);
 }
 
 
 GlobalSetupWindow::~GlobalSetupWindow()
 {
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skSettingsWindowFrame,
+			Frame());
+		server->SetValue(SettingsServer::Application, skSettingsWindowTab,
+			fTabView->Selection());
+	}
 	fSetupWindow = NULL;
-
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	settings->global_setup_window_frame = Frame();
-	settings->settings_window_tab_number = fTabView->Selection();
 }
 
 
@@ -692,8 +718,12 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 void
 GlobalSetupWindow::ShowGlobalSetupWindow()
 {
-	BRect frame =
-		((PaintApplication*)be_app)->GlobalSettings()->global_setup_window_frame;
+	BRect frame(100, 100, 350, 300);
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindRect(skSettingsWindowFrame, &frame);
+	}
 
 	if (fSetupWindow == NULL)
 		fSetupWindow = new GlobalSetupWindow(frame.LeftTop());

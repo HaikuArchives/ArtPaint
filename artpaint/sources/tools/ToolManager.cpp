@@ -15,14 +15,14 @@
 #include "Cursors.h"
 #include "DrawingTools.h"
 #include "ImageView.h"
-#include "PaintApplication.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "ToolEventAdapter.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
 
 
 #include <MenuItem.h>
+#include <File.h>
 #include <PopUpMenu.h>
 
 
@@ -111,7 +111,8 @@ ToolManager::StartTool(ImageView *view, uint32 buttons, BPoint bitmap_point,
 			buttons, bitmap_point, view_point);
 		view->SetToolHelpString(activeTool->HelpString(false));
 
-		// When the tool has finished we should record the updated_rect into clients data.
+		// When the tool has finished we should record the updated_rect into
+		// clients data.
 		clientData->fLastUpdatedRect = clientData->fActiveTool->LastUpdatedRect();
 		clientData->fActiveTool->SetLastUpdatedRect(BRect());
 		clientData->fActiveTool = NULL;
@@ -192,8 +193,8 @@ ToolManager::ChangeTool(int32 toolType)
 		ToolSelectionWindow::ChangeTool(toolType);
 		ToolSetupWindow::CurrentToolChanged(toolType);
 
-		((PaintApplication*)be_app)->GlobalSettings()->primary_tool = toolType;
-
+		if (SettingsServer* server = SettingsServer::Instance())
+			server->SetValue(SettingsServer::Application, skTool, toolType);
 		return B_OK;
 	}
 	return B_ERROR;
@@ -216,9 +217,17 @@ ToolManager::ReturnCursor() const
 	if (fActiveTool == NULL)
 		return B_HAND_CURSOR;
 
-	int32 cursor_mode = ((PaintApplication*)be_app)->GlobalSettings()->cursor_mode;
-	if (cursor_mode == TOOL_CURSOR_MODE)
-		return fActiveTool->ToolCursor();
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		int32 cursorMode = TOOL_CURSOR_MODE;
+		settings.FindInt32(skCursorMode, &cursorMode);
+
+		if (cursorMode == TOOL_CURSOR_MODE)
+			return fActiveTool->ToolCursor();
+	}
+
 	return HS_CROSS_CURSOR;
 }
 

@@ -6,10 +6,6 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <InterfaceDefs.h>
-#include <ScrollBar.h>
-#include <stdio.h>
-#include <StringView.h>
 
 #include "FloaterManager.h"
 #include "LayerWindow.h"
@@ -18,8 +14,15 @@
 #include "Layer.h"
 #include "UtilityClasses.h"
 #include "LayerView.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
+
+
+#include <ScrollBar.h>
+#include <StringView.h>
+
+
+#include <stdio.h>
 
 
 // Initialize the static pointer to the layer window.
@@ -33,8 +36,9 @@ BBitmap* LayerWindow::composite_image = NULL;
 const char* LayerWindow::window_title = NULL;
 sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphore");
 
+
 LayerWindow::LayerWindow(BRect frame)
-	: BWindow(frame,StringServer::ReturnString(LAYERS_STRING),
+	: BWindow(frame, StringServer::ReturnString(LAYERS_STRING),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
 		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK)
 {
@@ -61,16 +65,25 @@ LayerWindow::LayerWindow(BRect frame)
 	scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,100);
 	AddChild(scroll_bar);
 
-	layer_window = this;
 	layer_count = 0;
 
-	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->layer_window_feel;
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		settings.FindInt32(skLayerWindowFeel, (int32*)&feel);
+		server->SetValue(SettingsServer::Application, skLayerWindowVisible,
+			true);
+	}
 	setFeel(feel);
-	((PaintApplication*)be_app)->GlobalSettings()->layer_window_visible = TRUE;
+
 	ResizeBy(1,0);
 	ResizeBy(-1,0);
 
 	Show();
+
+	layer_window = this;
 	FloaterManager::AddFloater(this);
 }
 
@@ -78,19 +91,19 @@ LayerWindow::LayerWindow(BRect frame)
 LayerWindow::~LayerWindow()
 {
 	acquire_sem(layer_window_semaphore);
-	// Here we must remove any existing layer views.
-	while (layer_window->list_view->CountChildren() != 0) {
+	while (layer_window->list_view->CountChildren() != 0)
 		layer_window->list_view->RemoveChild(layer_window->list_view->ChildAt(0));
-	}
-
-	layer_window = NULL;
 	release_sem(layer_window_semaphore);
 
-	// Then we must record our frame to the app's preferences.
-	((PaintApplication*)be_app)->GlobalSettings()->layer_window_frame = Frame();
-	((PaintApplication*)be_app)->GlobalSettings()->layer_window_visible = FALSE;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skLayerWindowFrame,
+			Frame());
+		server->SetValue(SettingsServer::Application, skLayerWindowVisible,
+			false);
+	}
 
 	FloaterManager::RemoveFloater(this);
+	layer_window = NULL;
 }
 
 
@@ -104,9 +117,10 @@ void LayerWindow::MessageReceived(BMessage *message)
 	}
 }
 
+
 bool LayerWindow::QuitRequested()
 {
-	return TRUE;
+	return true;
 }
 
 void LayerWindow::ActiveWindowChanged(BWindow *active_window,BList *list,BBitmap *composite)
@@ -137,11 +151,18 @@ void LayerWindow::ActiveWindowChanged(BWindow *active_window,BList *list,BBitmap
 	release_sem(layer_window_semaphore);
 }
 
-void LayerWindow::showLayerWindow()
+
+void
+LayerWindow::showLayerWindow()
 {
 	acquire_sem(layer_window_semaphore);
 	if (layer_window == NULL) {
-		BRect frame = ((PaintApplication*)be_app)->GlobalSettings()->layer_window_frame;
+		BRect frame(300, 300, 400, 400);
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+			settings.FindRect(skLayerWindowFrame, &frame);
+		}
 		new LayerWindow(FitRectToScreen(frame));
 		layer_window->Update();
 	}
@@ -157,11 +178,15 @@ void LayerWindow::showLayerWindow()
 }
 
 
-void LayerWindow::setFeel(window_feel feel)
+void
+LayerWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->GlobalSettings()->layer_window_feel = feel;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skLayerWindowFeel,
+			int32(feel));
+	}
 
-	if (layer_window != NULL) {
+	if (layer_window) {
 		layer_window->Lock();
 		layer_window->SetFeel(feel);
 		if (feel == B_NORMAL_WINDOW_FEEL) {

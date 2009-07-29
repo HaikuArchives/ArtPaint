@@ -15,7 +15,7 @@
 #include "FloaterManager.h"
 #include "MessageFilters.h"
 #include "PaintApplication.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolManager.h"
 #include "ToolSetupWindow.h"
@@ -38,10 +38,23 @@ BList* BrushStoreWindow::brush_data = new BList();
 BrushStoreWindow* BrushStoreWindow::brush_window = NULL;
 
 BrushStoreWindow::BrushStoreWindow()
-	:	BWindow(BRect(20,20,220,220),StringServer::ReturnString(BRUSHES_STRING),B_DOCUMENT_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK)
+	: BWindow(BRect(20,20,220,220), StringServer::ReturnString(BRUSHES_STRING),
+		B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE
+		| B_WILL_ACCEPT_FIRST_CLICK)
 {
-	BRect frame = ((PaintApplication*)be_app)->GlobalSettings()->brush_window_frame;
-	((PaintApplication*)be_app)->GlobalSettings()->brush_window_visible = TRUE;
+	BRect frame(20,20,220,220);
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		settings.FindRect(skBrushWindowFrame, &frame);
+		settings.FindInt32(skBrushWindowFeel, (int32*)&feel);
+		server->SetValue(SettingsServer::Application, skBrushWindowVisible,
+			true);
+	}
+	setFeel(feel);
+
 	frame = FitRectToScreen(frame);
 	MoveTo(frame.LeftTop());
 	ResizeTo(frame.Width(),frame.Height());
@@ -75,9 +88,6 @@ BrushStoreWindow::BrushStoreWindow()
 
 	SetSizeLimits(scroll_bar->Frame().Width()+BRUSH_VAULT_WIDTH,10000,menu_bar->Frame().Height() + 1 + BRUSH_VAULT_HEIGHT,10000);
 
-	window_feel feel = ((PaintApplication*)be_app)->GlobalSettings()->brush_window_feel;
-	setFeel(feel);
-
 	// Add a filter that will be used to catch mouse-down-messages in order
 	// to activate this window when required
 	Lock();
@@ -97,11 +107,15 @@ BrushStoreWindow::BrushStoreWindow()
 
 BrushStoreWindow::~BrushStoreWindow()
 {
-	((PaintApplication*)be_app)->GlobalSettings()->brush_window_frame	= Frame();
-	((PaintApplication*)be_app)->GlobalSettings()->brush_window_visible = FALSE;
-	brush_window = NULL;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skBrushWindowFrame,
+			Frame());
+		server->SetValue(SettingsServer::Application, skBrushWindowVisible,
+			false);
+	}
 
 	FloaterManager::RemoveFloater(this);
+	brush_window = NULL;
 }
 
 
@@ -179,7 +193,11 @@ void BrushStoreWindow::showWindow()
 
 void BrushStoreWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->GlobalSettings()->brush_window_feel = feel;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skBrushWindowFeel,
+			int32(feel));
+	}
+
 	if (brush_window != NULL) {
 		brush_window->Lock();
 		brush_window->SetFeel(feel);

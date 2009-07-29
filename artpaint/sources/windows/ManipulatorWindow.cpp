@@ -6,29 +6,39 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Button.h>
-#include <InterfaceDefs.h>
 
 #include "ManipulatorWindow.h"
+
+#include "ColorPalette.h"
 #include "MessageConstants.h"
 #include "PaintApplication.h"
-#include "Settings.h"
-#include "ColorPalette.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
 
-BList* ManipulatorWindow::window_list = new BList();
-sem_id ManipulatorWindow::list_mutex = create_sem(1,"list_mutex");
-window_look ManipulatorWindow::look = B_TITLED_WINDOW_LOOK;
-window_feel ManipulatorWindow::feel = B_NORMAL_WINDOW_FEEL;
 
-ManipulatorWindow::ManipulatorWindow(BRect rect,BView *view,char *name,BWindow *master,BMessenger *t)
-	: BWindow(rect,name,look,feel,B_NOT_RESIZABLE|B_NOT_ZOOMABLE|B_NOT_ANCHORED_ON_ACTIVATE|B_NOT_CLOSABLE)
+#include <Button.h>
+
+
+BList* ManipulatorWindow::window_list = new BList();
+sem_id ManipulatorWindow::list_mutex = create_sem(1, "list_mutex");
+
+
+ManipulatorWindow::ManipulatorWindow(BRect rect, BView *view, const char *name,
+		BWindow *master, BMessenger *t)
+	: BWindow(rect ,name, B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+		B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_NOT_ANCHORED_ON_ACTIVATE
+		| B_NOT_CLOSABLE)
 {
-	feel = ((PaintApplication*)be_app)->GlobalSettings()->add_on_window_feel;
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skAddOnWindowFeel, (int32*)&feel);
+	}
+
+	window_look look = B_FLOATING_WINDOW_LOOK;
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		look = B_TITLED_WINDOW_LOOK;
-	else
-		look = B_FLOATING_WINDOW_LOOK;
 
 	SetFeel(feel);
 	SetLook(look);
@@ -42,7 +52,7 @@ ManipulatorWindow::ManipulatorWindow(BRect rect,BView *view,char *name,BWindow *
 	release_sem(list_mutex);
 
 	// Here create the background-view
-	ManipulatorWindowBackgroundView *bg_view = new ManipulatorWindowBackgroundView(view->Bounds());
+	ManipulatorWindowBackgroundView* bg_view = new ManipulatorWindowBackgroundView(view->Bounds());
 	bg_view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	// Create the ok and cancel-buttons
@@ -77,9 +87,8 @@ ManipulatorWindow::ManipulatorWindow(BRect rect,BView *view,char *name,BWindow *
 	bg_view->AddChild(ok_button);
 	bg_view->AddChild(cancel_button);
 
-	target = new BMessenger(*t);
-	ok_button->SetTarget(*target);
-	cancel_button->SetTarget(*target);
+	ok_button->SetTarget(*t);
+	cancel_button->SetTarget(*t);
 
 	AddChild(bg_view);
 
@@ -99,32 +108,34 @@ ManipulatorWindow::~ManipulatorWindow()
 	release_sem(list_mutex);
 	manipulator_view->RemoveSelf();	// The manipulator will delete this.
 
-	// Store the frame in the settings.
-	((PaintApplication*)be_app)->GlobalSettings()->add_on_window_frame = Frame();
-
-	delete target;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skAddOnWindowFrame,
+			Frame());
+	}
 
 	ColorPaletteWindow::RemoveMasterWindow(this);
 }
 
 
 
-void ManipulatorWindow::setFeel(window_feel f)
+void ManipulatorWindow::setFeel(window_feel feel)
 {
-	feel = f;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skAddOnWindowFeel,
+			int32(feel));
+	}
 
+	window_look look = B_FLOATING_WINDOW_LOOK;
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		look = B_TITLED_WINDOW_LOOK;
-	else
-		look = B_FLOATING_WINDOW_LOOK;
 
 	acquire_sem(list_mutex);
-	for (int32 i=0;i<window_list->CountItems();i++) {
-		BWindow *window = (BWindow*)window_list->ItemAt(i);
+
+	for (int32 i = 0; i < window_list->CountItems(); ++i) {
+		BWindow *window = static_cast<BWindow*> (window_list->ItemAt(i));
 		window->SetFeel(feel);
 		window->SetLook(look);
 	}
-	release_sem(list_mutex);
 
-	((PaintApplication*)be_app)->GlobalSettings()->add_on_window_feel = feel;
+	release_sem(list_mutex);
 }

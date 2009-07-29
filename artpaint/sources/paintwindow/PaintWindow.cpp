@@ -630,14 +630,13 @@ PaintWindow::MessageReceived(BMessage *message)
 			if (!fImageSavePanel) {
 				BPath path;
 				if (fImageEntry.InitCheck() != B_OK) {
-					BMessage settings;
-					SettingsServer* server = SettingsServer::Instance();
-					if (server->GetApplicationSettings(&settings) == B_OK) {
-						// Might fail if the user has removed the directory.
-						BString tmp = settings.FindString("image_save_path");
-						if (path.SetTo(tmp.String()) != B_OK)
-							PaintApplication::HomeDirectory(path);
-					}
+					BMessage setting;
+					if (SettingsServer* server = SettingsServer::Instance())
+						server->GetApplicationSettings(&setting);
+
+					// Might fail if the user has removed the directory.
+					if (path.SetTo(setting.FindString(skImageSavePath)) != B_OK)
+						PaintApplication::HomeDirectory(path);
 				} else {
 					fImageEntry.GetPath(&path);
 					path.GetParent(&path);
@@ -670,7 +669,7 @@ PaintWindow::MessageReceived(BMessage *message)
 					BMessage settings;
 					SettingsServer* server = SettingsServer::Instance();
 					if (server->GetApplicationSettings(&settings) == B_OK) {
-						BString tmp = settings.FindString("project_save_path");
+						BString tmp = settings.FindString(skProjectSavePath);
 						if (path.SetTo(tmp.String()) != B_OK)
 							PaintApplication::HomeDirectory(path);
 					}
@@ -710,10 +709,11 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_TOOL_SETUP_WINDOW: {
-			BMessage settings;
-			SettingsServer* server = SettingsServer::Instance();
-			if (server->GetApplicationSettings(&settings) == B_OK)
-				ToolSetupWindow::ShowToolSetupWindow(settings.FindInt32("tool"));
+			if (SettingsServer* server = SettingsServer::Instance()) {
+				BMessage settings;
+				server->GetApplicationSettings(&settings);
+				ToolSetupWindow::ShowToolSetupWindow(settings.FindInt32(skTool));
+			}
 		}	break;
 
 		case HS_SHOW_BRUSH_STORE_WINDOW: {
@@ -1606,7 +1606,7 @@ PaintWindow::_SaveImage(BMessage *message)
 
 			path.GetParent(&path);
 			if (path.Path() != NULL) {
-				server->SetValue(SettingsServer::Application, "image_save_path",
+				server->SetValue(SettingsServer::Application, skImageSavePath,
 					path.Path());
 			}
 		} else {
@@ -1799,7 +1799,7 @@ PaintWindow::_SaveProject(BMessage *message)
 
 		path.GetParent(&path);
 		if (path.Path() != NULL) {
-			server->SetValue(SettingsServer::Application, "project_save_path",
+			server->SetValue(SettingsServer::Application, skProjectSavePath,
 				path.Path());
 		}
 		return B_OK;

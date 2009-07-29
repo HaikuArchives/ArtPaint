@@ -6,21 +6,26 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Alert.h>
-#include <MenuItem.h>
-#include <new>
-#include <stdio.h>
 
 #include "UndoQueue.h"
-#include "PaintApplication.h"
-#include "Settings.h"
-#include "Selection.h"
+
 #include "Image.h"
+#include "Selection.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
+
+
+#include <Alert.h>
+#include <MenuItem.h>
+
+
+#include <new>
+#include <stdio.h>
 
 
 int32 UndoQueue::maximum_queue_depth = 10;
 BList* UndoQueue::queue_list = new BList();
+
 
 UndoQueue::UndoQueue(BMenuItem *undo_item,BMenuItem *redo_item,ImageView *iv)
 {
@@ -410,32 +415,36 @@ void UndoQueue::HandleLowMemorySituation()
 
 
 
-void UndoQueue::SetQueueDepth(int32 new_depth)
+void
+UndoQueue::SetQueueDepth(int32 depth)
 {
-	if ((new_depth != INFINITE_QUEUE_DEPTH) && ((new_depth < maximum_queue_depth) || (maximum_queue_depth == INFINITE_QUEUE_DEPTH))) {
-		maximum_queue_depth = new_depth;
-		for (int32 i=0;i<queue_list->CountItems();i++) {
+	if ((depth != INFINITE_QUEUE_DEPTH)
+		&& ((depth < maximum_queue_depth)
+			|| (maximum_queue_depth == INFINITE_QUEUE_DEPTH))) {
+		maximum_queue_depth = depth;
+		for (int32 i = 0; i < queue_list->CountItems(); i++) {
 			UndoQueue *queue = (UndoQueue*)queue_list->ItemAt(i);
 			queue->TruncateQueue();
 		}
 	}
-	if ((maximum_queue_depth == 0) && (new_depth != 0)) {
-		maximum_queue_depth = new_depth;
-		for (int32 i=0;i<queue_list->CountItems();i++) {
+
+	if ((maximum_queue_depth == 0) && (depth != 0)) {
+		maximum_queue_depth = depth;
+		for (int32 i = 0; i < queue_list->CountItems(); i++) {
 			UndoQueue *queue = (UndoQueue*)queue_list->ItemAt(i);
 			queue->image_view->ReturnImage()->RegisterLayersWithUndo();
 		}
 	}
 
+	maximum_queue_depth = depth;
 
-	maximum_queue_depth = new_depth;
-
-	((PaintApplication*)be_app)->GlobalSettings()->undo_queue_depth = new_depth;
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->SetValue(SettingsServer::Application, skUndoQueueDepth, depth);
 }
 
 
-
-void UndoQueue::TruncateQueue()
+void
+UndoQueue::TruncateQueue()
 {
 	if ((maximum_queue_depth != INFINITE_QUEUE_DEPTH) && (current_queue_depth > maximum_queue_depth)) {
 		while (current_queue_depth > maximum_queue_depth) {
@@ -517,8 +526,8 @@ void UndoQueue::TruncateQueue()
 }
 
 
-
-void UndoQueue::SetSelectionData(const SelectionData *s)
+void
+UndoQueue::SetSelectionData(const SelectionData *s)
 {
 	delete selection_data;
 	selection_data = new SelectionData(s);

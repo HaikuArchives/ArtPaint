@@ -14,14 +14,13 @@
 #include <Application.h>
 #include <MessageFilter.h>
 
+
 class BFile;
 class BFilePanel;
 class BPath;
-
 class ColorPaletteWindow;
 class ColorSet;
 class DrawingTool;
-
 struct entry_ref;
 struct global_settings;
 
@@ -41,15 +40,14 @@ public:
 
 
 	static	void				HomeDirectory(BPath& path);
-			global_settings*	GlobalSettings() const { return fGlobalSettings; }
 
 private:
 			void				_ReadPreferences();
 			void				_WritePreferences();
 
 			void				_ShowAlert(const BString& text);
-			void				_StorePath(const BMessage* message,
-									const entry_ref& ref, char* target);
+			const char*			_OpenPath(const BMessage* message,
+									const entry_ref& ref);
 	static	BPath				_GetParentPath(const entry_ref& entryRef);
 
 			status_t			_ReadProject(BFile& file, entry_ref& ref);
@@ -58,7 +56,6 @@ private:
 private:
 			BFilePanel*			fImageOpenPanel;
 			BFilePanel*			fProjectOpenPanel;
-			global_settings*	fGlobalSettings;
 };
 
 filter_result AppKeyFilterFunction(BMessage* message, BHandler** handler,

@@ -18,7 +18,7 @@
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "PaintApplication.h"
-#include "Settings.h"
+#include "SettingsServer.h"
 #include "StringServer.h"
 #include "Tools.h"
 #include "ToolButton.h"
@@ -43,8 +43,16 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
 {
 	int32 pictureSize = LARGE_TOOL_ICON_SIZE + 4.0;
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	settings->tool_select_window_visible = true;
+
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skSelectToolWindowVisible,
+			true);
+
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skSelectToolWindowFeel, (int32*)&feel);
+	}
 
 	fMatrixView = new MatrixView(pictureSize, pictureSize, EXTRA_EDGE);
 
@@ -73,7 +81,6 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 	AddChild(fMatrixView);
 	fMatrixView->ResizeTo(Bounds().Width(), Bounds().Height());
 
-	window_feel feel = settings->tool_select_window_feel;
 	SetFeel(feel);
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		SetLook(B_TITLED_WINDOW_LOOK);
@@ -109,10 +116,12 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 
 ToolSelectionWindow::~ToolSelectionWindow()
 {
-	// Record our frame to the settings.
-	global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-	settings->tool_select_window_frame = Frame();
-	settings->tool_select_window_visible = false;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skSelectToolWindowVisible,
+			false);
+		server->SetValue(SettingsServer::Application, skSelectToolWindowFrame,
+			Frame());
+	}
 
 	fSelectionWindow = NULL;
 	FloaterManager::RemoveFloater(this);
@@ -138,7 +147,7 @@ ToolSelectionWindow::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case HS_TOOL_CHANGED: {
 			int32 tool;
-			if (message->FindInt32("tool", &tool) == B_OK) {
+			if (message->FindInt32(skTool, &tool) == B_OK) {
 				tool_manager->ChangeTool(tool);
 
 				uint32 button;
@@ -172,8 +181,13 @@ ToolSelectionWindow::showWindow()
 			fSelectionWindow->Unlock();
 		}
 	} else {
-		global_settings* settings = ((PaintApplication*)be_app)->GlobalSettings();
-		new ToolSelectionWindow(settings->tool_select_window_frame);
+		BRect frame(10, 31, 54, 596);
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+			settings.FindRect(skSelectToolWindowFrame, &frame);
+		}
+		new ToolSelectionWindow(frame);
 	}
 
 	fSelectionWindow->MoveTo(FitRectToScreen(fSelectionWindow->Frame()).LeftTop());
@@ -183,14 +197,17 @@ ToolSelectionWindow::showWindow()
 void
 ToolSelectionWindow::setFeel(window_feel feel)
 {
-	((PaintApplication*)be_app)->GlobalSettings()->tool_select_window_feel = feel;
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skSelectToolWindowFeel,
+			int32(feel));
+	}
 
 	if (fSelectionWindow) {
-		fSelectionWindow->SetFeel(feel);
-
 		window_look look = B_TITLED_WINDOW_LOOK;
 		if (feel != B_NORMAL_WINDOW_FEEL)
 			look = B_FLOATING_WINDOW_LOOK;
+
+		fSelectionWindow->SetFeel(feel);
 		fSelectionWindow->SetLook(look);
 	}
 }
@@ -213,7 +230,7 @@ ToolSelectionWindow::_AddTool(const DrawingTool* tool)
 {
 	BMessage* message = new BMessage(HS_TOOL_CHANGED);
 	message->AddUInt32("buttons", 0);
-	message->AddInt32("tool", tool->Type());
+	message->AddInt32(skTool, tool->Type());
 
 	ToolButton* button = new ToolButton(tool->Name(), message, tool->Icon());
 	button->ResizeToPreferred();
