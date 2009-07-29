@@ -157,9 +157,10 @@ void ColorWell::create_color_map()
 
 	for (int32 y=0;y<rows;y++) {
 		for (int32 x=0;x<bpr;x++) {
-			red_val = (uint32)((float)x/(float)bpr * 255);
-			green_val = (uint32)((float)y/(float)rows * 255);
-			*bits++ =  (red_val<< 8) & 0xFF00 |  (green_val << 16) & 0xFF0000 | blue_value<<24;
+			red_val = (uint32)((float)x / (float)bpr * 255);
+			green_val = (uint32)((float)y / (float)rows * 255);
+			*bits++ = ((red_val<< 8) & 0xFF00) | ((green_val << 16) & 0xFF0000)
+				| (blue_value << 24);
 		}
 	}
 }
