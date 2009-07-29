@@ -42,6 +42,8 @@ void StringServer::SetLanguage(languages l)
 const char* StringServer::return_english_string(string_id id)
 {
 	switch (id) {
+		case SEPARATOR:
+			return "";
 		case ABOUT_ARTPAINT_STRING:
 			return ENGLISH_ABOUT_ARTPAINT_STRING;
 		case ABOUT_HELP_STRING:
@@ -668,6 +670,8 @@ const char* StringServer::return_english_string(string_id id)
 const char* StringServer::return_german_string(string_id id)
 {
 	switch (id) {
+		case SEPARATOR:
+			return "";
 		case ABOUT_ARTPAINT_STRING:
 			return GERMAN_ABOUT_ARTPAINT_STRING;
 		case ABOUT_HELP_STRING:
@@ -1296,6 +1300,8 @@ not_translated_yet:
 const char* StringServer::return_french_string(string_id id)
 {
 	switch (id) {
+		case SEPARATOR:
+			return "";
 		case ABOUT_ARTPAINT_STRING:
 			return FRENCH_ABOUT_ARTPAINT_STRING;
 		case ABOUT_HELP_STRING:
