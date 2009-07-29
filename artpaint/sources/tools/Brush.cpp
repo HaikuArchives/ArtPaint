@@ -578,9 +578,9 @@ float Brush::PreviewBrush(BBitmap *preview_bitmap)
 	bits = (uint32*)preview_bitmap->Bits();
 
 	// Here we draw the brush to the bitmap.
-	for (int32 y=0;y<preview_height;y++) {
-		for (int32 x=0;x<preview_width;x++) {
-			uchar value = 255-((brush[y*scale][x*scale]*255)>>15)&0xFF;
+	for (int32 y = 0; y < preview_height; ++y) {
+		for (int32 x = 0; x < preview_width; ++x) {
+			uchar value = (255 - ((brush[y * scale][x * scale] * 255) >> 15)) & 0xFF;
 			color.bytes[0] = value;
 			color.bytes[1] = value;
 			color.bytes[2] = value;
