@@ -293,12 +293,12 @@ void IntelligentPathFinder::ResetTotalCostsAndPaths()
 
 bool IntelligentPathFinder::IsExpanded(int32 x, int32 y)
 {
-	return (expanded_bits[x>>3][y] >> (7-x&0x7)) & 0x01;
+	return (expanded_bits[x>>3][y] >> ((7 - x) & 0x7)) & 0x01;
 }
 
 void IntelligentPathFinder::SetExpanded(int32 x, int32 y)
 {
-	expanded_bits[x>>3][y] |= 0x01 << (7-x&0x7);
+	expanded_bits[x>>3][y] |= 0x01 << ((7 - x) & 0x7);
 }
 
 void IntelligentPathFinder::ResetExpanded()
