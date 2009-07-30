@@ -11,7 +11,7 @@
 
 #include "ColorPalette.h"
 #include "MessageConstants.h"
-#include "PaintApplication.h"
+#include "MessageFilters.h"
 #include "SettingsServer.h"
 #include "StringServer.h"
 

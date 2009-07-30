@@ -115,8 +115,7 @@ ImageView::ImageView(BRect frame, float width, float height)
 	project_name = NULL;
 	image_name = NULL;
 
-	BMessageFilter *filter = new BMessageFilter(B_KEY_DOWN,KeyFilterFunction);
-	AddFilter(filter);
+	AddFilter(new BMessageFilter(B_KEY_DOWN, KeyFilterFunction));
 }
 
 

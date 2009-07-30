@@ -17,7 +17,6 @@
 #include "MatrixView.h"
 #include "MessageConstants.h"
 #include "MessageFilters.h"
-#include "PaintApplication.h"
 #include "SettingsServer.h"
 #include "StringServer.h"
 #include "Tools.h"

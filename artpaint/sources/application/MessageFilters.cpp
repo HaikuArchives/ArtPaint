@@ -6,43 +6,49 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Looper.h>
-#include <stdio.h>
-#include <View.h>
-#include <Window.h>
-#include <ClassInfo.h>
 
 #include "MessageFilters.h"
+#include "FloaterManager.h"
 
-filter_result window_activation_filter(BMessage*, BHandler**, BMessageFilter *messageFilter)
+
+#include <Looper.h>
+#include <Message.h>
+#include <View.h>
+#include <Window.h>
+
+
+filter_result
+window_activation_filter(BMessage* msg, BHandler** handler, BMessageFilter* filter)
 {
-	BWindow *window = cast_as(messageFilter->Looper(),BWindow);
-	if (window != NULL)
-		window->Activate(TRUE);
+	if (BWindow* window = dynamic_cast<BWindow*> (filter->Looper()))
+		window->Activate(true);
 
 	return B_DISPATCH_MESSAGE;
 }
 
 
-filter_result message_to_parent(BMessage *msg,BHandler **handler,BMessageFilter *messageFilter)
+filter_result
+message_to_parent(BMessage* msg, BHandler** handler, BMessageFilter* filter)
 {
-	BView *view = dynamic_cast<BView*>(*handler);
-	BLooper *looper = messageFilter->Looper();
-
-	if ((view != NULL) && (view->Parent() != NULL)) {
-		view = view->Parent();
-		if (looper != NULL)
-				looper->PostMessage(msg,view);
-
+	if (BLooper* looper = filter->Looper()) {
+		BView* view = dynamic_cast<BView*>(*handler);
+		if (view && view->Parent())
+			looper->PostMessage(msg, view->Parent());
 	}
 
 	return B_DISPATCH_MESSAGE;
 }
 
 
-filter_result test_filter(BMessage*,BHandler**,BMessageFilter*)
+filter_result
+AppKeyFilterFunction(BMessage* msg, BHandler** handler, BMessageFilter* filter)
 {
-	printf("Test Filter\n");
-
-	return B_SKIP_MESSAGE;
+	if ((modifiers() & B_COMMAND_KEY)) {
+		const char* bytes;
+		if (msg->FindString("bytes", &bytes) == B_OK) {
+			if (bytes[0] == B_TAB)
+				FloaterManager::ToggleFloaterVisibility();
+		}
+	}
+	return B_DISPATCH_MESSAGE;
 }

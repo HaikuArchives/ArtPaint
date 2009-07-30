@@ -11,10 +11,11 @@
 
 #include "DatatypeSetupWindow.h"
 
-#include "PaintApplication.h"
+#include "MessageFilters.h"
 #include "StringServer.h"
 
 
+#include <AppDefs.h>
 #include <GroupLayout.h>
 #include <String.h>
 #include <StringView.h>

@@ -12,7 +12,6 @@
 #define PAINT_APPLICATION_H
 
 #include <Application.h>
-#include <MessageFilter.h>
 
 
 class BFile;
@@ -22,7 +21,6 @@ class ColorPaletteWindow;
 class ColorSet;
 class DrawingTool;
 struct entry_ref;
-struct global_settings;
 
 
 class PaintApplication : public BApplication {
@@ -57,8 +55,5 @@ private:
 			BFilePanel*			fImageOpenPanel;
 			BFilePanel*			fProjectOpenPanel;
 };
-
-filter_result AppKeyFilterFunction(BMessage* message, BHandler** handler,
-	BMessageFilter* filter);
 
 #endif

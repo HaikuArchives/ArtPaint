@@ -14,7 +14,6 @@
 #include "DrawingTools.h"
 #include "FloaterManager.h"
 #include "MessageFilters.h"
-#include "PaintApplication.h"
 #include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolManager.h"

@@ -775,17 +775,3 @@ main(int argc, char* argv[])
 
 	return B_OK;
 }
-
-
-filter_result
-AppKeyFilterFunction(BMessage* message,BHandler** handler, BMessageFilter*)
-{
-	if ((modifiers() & B_COMMAND_KEY)) {
-		const char* bytes;
-		if (message->FindString("bytes", &bytes) == B_OK) {
-			if (bytes[0] == B_TAB)
-				FloaterManager::ToggleFloaterVisibility();
-		}
-	}
-	return B_DISPATCH_MESSAGE;
-}
