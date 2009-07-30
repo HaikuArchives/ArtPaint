@@ -37,7 +37,6 @@ Application ArtPaint :
 	RefFilters.cpp
 	ResourceServer.cpp
 	Selection.cpp
-	Settings.cpp
 	SettingsServer.cpp
 	StringServer.cpp
 	UndoAction.cpp
