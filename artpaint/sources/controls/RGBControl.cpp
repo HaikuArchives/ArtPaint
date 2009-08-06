@@ -6,11 +6,15 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Bitmap.h>
 
 #include "RGBControl.h"
 #include "UtilityClasses.h"
 #include "PixelOperations.h"
+
+
+#include <Bitmap.h>
+#include <Window.h>
+
 
 RGBControl::RGBControl(BPoint position, rgb_color c)
 	:	VisualColorControl(position,c,"R","G","B","A")

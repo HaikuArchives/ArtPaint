@@ -12,7 +12,6 @@
 #define UTILITY_CLASSES_H
 
 #include <View.h>
-#include <Window.h>
 
 
 #include <stack>

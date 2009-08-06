@@ -6,11 +6,15 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Bitmap.h>
 
 #include "HSVControl.h"
 #include "UtilityClasses.h"
 #include "PixelOperations.h"
+
+
+#include <Bitmap.h>
+#include <Window.h>
+
 
 HSVControl::HSVControl(BPoint position, rgb_color c)
 	:	VisualColorControl(position,c,"H","S","V","A")

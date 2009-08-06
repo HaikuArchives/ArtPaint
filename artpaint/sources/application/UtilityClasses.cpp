@@ -11,12 +11,9 @@
 
 #include "UtilityClasses.h"
 
-#include "StringServer.h"
-
 
 #include <Bitmap.h>
 #include <Screen.h>
-#include <StringView.h>
 
 
 BitmapView::BitmapView(BBitmap* bitmap, BRect frame)

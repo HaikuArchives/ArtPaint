@@ -12,6 +12,7 @@
 #include <MenuItem.h>
 #include <PopUpMenu.h>
 #include <TextControl.h>
+#include <Window.h>
 
 #include "LayerView.h"
 #include "UtilityClasses.h"

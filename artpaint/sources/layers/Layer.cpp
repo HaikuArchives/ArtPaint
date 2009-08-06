@@ -7,6 +7,7 @@
  *
  */
 #include <File.h>
+#include <Window.h>
 #include <new>
 #include <stdio.h>
 

@@ -18,6 +18,7 @@
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <String.h>
+#include <Window.h>
 
 
 #include <stdio.h>

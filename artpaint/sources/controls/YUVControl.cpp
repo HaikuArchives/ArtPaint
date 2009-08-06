@@ -6,11 +6,15 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Bitmap.h>
 
 #include "YUVControl.h"
 #include "UtilityClasses.h"
 #include "PixelOperations.h"
+
+
+#include <Bitmap.h>
+#include <Window.h>
+
 
 YUVControl::YUVControl(BPoint position, rgb_color c)
 	:	VisualColorControl(position,c,"Y","U","V","A")

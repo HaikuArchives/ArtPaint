@@ -16,6 +16,9 @@
 #include "StringServer.h"
 
 
+#include <Window.h>
+
+
 TransparencyManipulator::TransparencyManipulator(BBitmap *bm)
 	: WindowGUIManipulator()
 	, ImageAdapter()

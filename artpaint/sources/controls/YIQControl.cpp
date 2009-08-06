@@ -6,11 +6,15 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Bitmap.h>
 
 #include "YIQControl.h"
 #include "UtilityClasses.h"
 #include "PixelOperations.h"
+
+
+#include <Bitmap.h>
+#include <Window.h>
+
 
 YIQControl::YIQControl(BPoint position, rgb_color c)
 	:	VisualColorControl(position,c,"Y","I","Q","A")

@@ -6,11 +6,15 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Bitmap.h>
 
 #include "CMYControl.h"
 #include "UtilityClasses.h"
 #include "PixelOperations.h"
+
+
+#include <Bitmap.h>
+#include <Window.h>
+
 
 CMYControl::CMYControl(BPoint position, rgb_color c)
 	:	VisualColorControl(position,c,"C","M","Y","A")
