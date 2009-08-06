@@ -203,7 +203,7 @@ BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
 {
 	int32 brush_width_per_2 = (int32)floor(brush->Width()/2);
 	int32 brush_height_per_2 = (int32)floor(brush->Height()/2);
-	BRect a_rect = make_rect_from_points(start,end);
+	BRect a_rect = MakeRectFromPoints(start, end);
 	a_rect.InsetBy(-brush_width_per_2-1,-brush_height_per_2-1);
 	// first check whether the line is longer in x direction than y
 	bool increase_x = fabs(start.x - end.x) >= fabs(start.y - end.y);

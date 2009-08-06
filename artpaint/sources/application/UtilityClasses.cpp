@@ -19,10 +19,6 @@
 #include <StringView.h>
 
 
-#include <new>
-#include <string.h>
-
-
 BitmapView::BitmapView(BBitmap* bitmap, BRect frame)
 	: BView(frame, "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW)
 	, fBitmap(bitmap)
@@ -78,7 +74,8 @@ BitmapView::SetBitmap(BBitmap* bitmap)
 
 
 
-BRect FitRectToScreen(BRect source)
+BRect
+FitRectToScreen(BRect source)
 {
 	// This function returns the source moved and resized so that it fits onto
 	// current screen.
@@ -112,13 +109,9 @@ CenterRectOnScreen(BRect source)
 }
 
 
-BRect make_rect_from_points(BPoint &point1,BPoint &point2)
+BRect
+MakeRectFromPoints(const BPoint& point1, const BPoint& point2)
 {
-	BRect rect;
-	rect.left = min_c(point1.x,point2.x);
-	rect.right = max_c(point1.x,point2.x);
-	rect.top = min_c(point1.y,point2.y);
-	rect.bottom = max_c(point1.y,point2.y);
-
-	return rect;
+	return BRect(min_c(point1.x, point2.x), max_c(point1.x, point2.x),
+		min_c(point1.y, point2.y), max_c(point1.y, point2.y));
 }

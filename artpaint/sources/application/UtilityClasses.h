@@ -11,7 +11,6 @@
 #ifndef UTILITY_CLASSES_H
 #define UTILITY_CLASSES_H
 
-#include <Box.h>
 #include <View.h>
 #include <Window.h>
 
@@ -47,11 +46,14 @@ public:
 };
 
 
-BRect		FitRectToScreen(BRect);
+
+BRect FitRectToScreen(BRect source);
+BRect CenterRectOnScreen(BRect source);
+BRect MakeRectFromPoints(const BPoint& point1, const BPoint& point2);
 
 
-
-inline uint32 RGBColorToBGRA(rgb_color c)
+inline uint32
+RGBColorToBGRA(rgb_color c)
 {
 	union {
 		char bytes[4];
@@ -62,38 +64,27 @@ inline uint32 RGBColorToBGRA(rgb_color c)
 	color.bytes[1] = c.green;
 	color.bytes[2] = c.red;
 	color.bytes[3] = c.alpha;
-//	return ((c.blue << 24) & 0xFF000000) | ((c.green << 16) & 0x00FF0000) | ((c.red << 8) & 0x0000FF00) | (c.alpha & 0xFF);
+
 	return color.word;
 }
 
 
-
-#if __POWERPC__
-inline rgb_color BGRAColorToRGB(uint32 bgra_color)
+inline rgb_color
+BGRAColorToRGB(uint32 bgra_color)
 {
 	rgb_color c;
+#if __POWERPC__
 	c.red = (bgra_color >> 8) & 0xFF;
 	c.green = (bgra_color >> 16) & 0xFF;
 	c.blue = (bgra_color >> 24) & 0xFF;
 	c.alpha = (bgra_color) & 0xFF;
-
-	return c;
-}
 #else
-inline rgb_color BGRAColorToRGB(uint32 bgra_color)
-{
-	rgb_color c;
 	c.red = (bgra_color >> 16) & 0xFF;
 	c.green = (bgra_color >> 8) & 0xFF;
 	c.blue = (bgra_color >> 0) & 0xFF;
 	c.alpha = (bgra_color >> 24) & 0xFF;
-
+#endif
 	return c;
 }
-#endif
-
-
-// This function makes a rect out of two points after sorting the points
-BRect make_rect_from_points(BPoint&,BPoint&);
 
 #endif

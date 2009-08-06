@@ -282,7 +282,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		else
 			drawer->DrawHairLine(original_point,point,RGBColorToBGRA(c),anti_alias,selection);
 
-		BRect updated_rect = make_rect_from_points(original_point,point);
+		BRect updated_rect = MakeRectFromPoints(original_point, point);
 
 		// This extension might actually be too little.
 		updated_rect.left -= size/2;

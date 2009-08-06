@@ -95,7 +95,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			window->Lock();
 			view->getCoords(&point,&buttons,&view_point);
 			window->Unlock();
-			bitmap_rect = make_rect_from_points(original_point,point);
+			bitmap_rect = MakeRectFromPoints(original_point, point);
 			if (modifiers() & B_LEFT_CONTROL_KEY) {
 				// Make the rectangle square.
 				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
