@@ -1,38 +1,45 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef HS_PICTURE_BUTTON_H
 #define HS_PICTURE_BUTTON_H
 
 #include <PictureButton.h>
+#include <String.h>
 
-class HelpWindow;
-// this is a class that defines a PictureButton
-// that also records the mouse-button that was used
-// and also displays help message if mouse is on top of it and still
-// for long enough
+
 class HSPictureButton : public BPictureButton {
-	char		*help_message;
-	char		*long_help_message;
-
-	HelpWindow	*help_window;
-	BPoint		opening_point;
-
 public:
-	HSPictureButton(BRect,BPicture*,BPicture*,BMessage*,const char *help_msg=NULL,const char *longer_help=NULL,uint32 behavior = B_ONE_STATE_BUTTON,uint32 resizingMode = B_FOLLOW_LEFT|B_FOLLOW_TOP,uint32 flags = B_WILL_DRAW|B_NAVIGABLE);
-	HSPictureButton(BRect,BBitmap*,BBitmap*,BMessage*,const char *help_msg=NULL,const char *longer_help=NULL,uint32 behavior = B_ONE_STATE_BUTTON,uint32 resizingMode = B_FOLLOW_LEFT|B_FOLLOW_TOP,uint32 flags = B_WILL_DRAW|B_NAVIGABLE);
+								HSPictureButton(BRect rect, BPicture* off,
+									BPicture* on, BMessage* message,
+									const char* helpMessage = NULL,
+									const char* longHelpMessage = NULL,
+									uint32 behavior = B_ONE_STATE_BUTTON,
+									uint32 mode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
+									uint32 flags = B_WILL_DRAW | B_NAVIGABLE);
+								HSPictureButton(BRect rect, BBitmap* off,
+									BBitmap* on, BMessage* message,
+									const char* helpMessage = NULL,
+									const char* longHelpMessage = NULL,
+									uint32 behavior = B_ONE_STATE_BUTTON,
+									uint32 mode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
+									uint32 flags = B_WILL_DRAW | B_NAVIGABLE);
 
-	~HSPictureButton();
+	virtual						~HSPictureButton();
 
-void	MouseDown(BPoint location);
-void	MouseMoved(BPoint point, uint32 transit,const BMessage*);
+	virtual	void				MouseDown(BPoint location);
+	virtual	void				MouseMoved(BPoint point, uint32 transit,
+									const BMessage* message);
 
-void	Pulse();
+private:
+			BString				fLongHelpMessage;
 };
 
 #endif
