@@ -11,6 +11,7 @@
 
 #include <FilePanel.h>
 
+
 class ImageFilter : public BRefFilter {
 public:
 			bool		Filter(const entry_ref* entryRef, BNode* node,
