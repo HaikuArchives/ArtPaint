@@ -504,35 +504,35 @@ SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 
 	binary_bits = (uchar*)binary_map->Bits();
 
-	PointStack *stack = new PointStack(10000);
-	stack->Push(start);
-
 	// Here fill the area using drawer's SetPixel and GetPixel.
 	// The algorithm uses 4-connected version of flood-fill.
 	// The SetPixel and GetPixel functions are versions that
 	// do not check bounds so we have to be careful not to exceed
 	// bitmap's bounds.
 	uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
-	while (stack->IsEmpty() == false) {
-		BPoint span_start = stack->Pop();
+
+	PointStack stack;
+	stack.Push(start);
+
+	while (!stack.IsEmpty()) {
+		BPoint span_start = stack.Pop();
 		if ( (span_start.y == min_y) && (min_y != max_y) ) {
 			// Only check the spans below this line
-			CheckLowerSpans(span_start,drawer,*stack,min_x,max_x,old_color,tolerance,binary_map);
+			CheckLowerSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,binary_map);
 		}
 		else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 			// Only check the spans above this line.
-			CheckUpperSpans(span_start,drawer,*stack,min_x,max_x,old_color,tolerance,binary_map);
+			CheckUpperSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,binary_map);
 		}
 		else if (min_y != max_y) {
 			// Check the spans above and below this line.
-			CheckBothSpans(span_start,drawer,*stack,min_x,max_x,old_color,tolerance,binary_map);
+			CheckBothSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,binary_map);
 		}
 		else {
 			// The image is only one pixel high. Check the only span.
 			FillSpan(span_start,drawer,min_x,max_x,old_color,tolerance,binary_map);
 		}
 	}
-	delete stack;
 
 	// Remember to NULL the attribute binary_fill_map
 	return binary_map;

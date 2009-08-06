@@ -16,6 +16,9 @@
 #include <Window.h>
 
 
+#include <stack>
+
+
 // this class creates a view that draws a bitmap in it
 class BitmapView : public BView {
 public:
@@ -43,18 +46,17 @@ public:
 void	UpdateBitmap();
 };
 
-class PointStack {
-	BPoint	*stack;
-	BPoint	*top;
-	int 	size;
-public:
-		PointStack(int sz)	{ top = stack = new BPoint[size = sz]; }
-		~PointStack()		{ delete[] stack; }
 
-BPoint 	Pop()				{ return (top != stack ? *--top : *stack); }
-void	Push(BPoint p)		{ *top++ = p; }
-bool	IsEmpty()			{ return top <= stack; }
+class PointStack : public std::stack<BPoint> {
+public:
+						PointStack() {}
+						~PointStack() {}
+
+			bool		IsEmpty() const { return empty(); }
+			void		Push(const BPoint& point) { push(point); }
+			BPoint		Pop() { BPoint point = top(); pop(); return point; }
 };
+
 
 // This function just returns a copy of the parameter-bitmap. If the parameter
 // is true, the returned bitmap also contains any possible parameter views.

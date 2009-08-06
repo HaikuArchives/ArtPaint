@@ -139,14 +139,6 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 
 	if (bitmap_bounds.Contains(start) == TRUE) {
 		if (settings.mode == B_CONTROL_ON) { 	// Do the flood fill
-			// Create a stack for the points. This should be replaced by something
-			// more reliable. Perhaps a STL-stack would be good...
-			// This stack might overflow very easily. We should make it extendible
-			// and probably give it a larger initial value.
-
-			PointStack *stack = new PointStack(10000);
-			stack->Push(start);
-
 			// Here fill the area using drawer's SetPixel and GetPixel.
 			// The algorithm uses 4-connected version of flood-fill.
 			// The SetPixel and GetPixel functions are versions that
@@ -160,21 +152,25 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 				for (uint32 i = 0; i < binary_bitslength; i++)
 					*binary_bits++ = 0x00;
 			}
-			while (stack->IsEmpty() == false) {
-				BPoint span_start = stack->Pop();
+
+			PointStack stack;
+			stack.Push(start);
+
+			while (!stack.IsEmpty()) {
+				BPoint span_start = stack.Pop();
 				if ( (span_start.y == min_y) && (min_y != max_y) ) {
 					// Only check the spans below this line
-					CheckLowerSpans(span_start, drawer, *stack, min_x, max_x,
+					CheckLowerSpans(span_start, drawer, stack, min_x, max_x,
 						color, old_color, tolerance, sel);
 				}
 				else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 					// Only check the spans above this line.
-					CheckUpperSpans(span_start, drawer, *stack, min_x, max_x,
+					CheckUpperSpans(span_start, drawer, stack, min_x, max_x,
 						color, old_color, tolerance, sel);
 				}
 				else if (min_y != max_y) {
 					// Check the spans above and below this line.
-					CheckBothSpans(span_start, drawer, *stack, min_x, max_x,
+					CheckBothSpans(span_start, drawer, stack, min_x, max_x,
 						color, old_color, tolerance, sel);
 				}
 				else {
@@ -187,7 +183,6 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 				delete binary_fill_map;
 				binary_fill_map = NULL;
 			}
-			delete stack;
 		}
 		else {	// Fill all the pixels that are within the tolerance.
 			if ((sel == NULL) || (sel->IsEmpty() == true)) {
@@ -1100,13 +1095,6 @@ BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 
 	// Here we proceed just like in the case of a normal fill, except that we do not
 	// show the intermediate fill to the user.
-	// Create a stack for the points. This should be replaced by something
-	// more reliable. Perhaps a STL-stack would be good...
-	// This stack might overflow very easily. We should make it extendible
-	// and probably give it a larger initial value.
-
-	PointStack *stack = new PointStack(10000);
-	stack->Push(start);
 
 	// Here fill the area using drawer's SetPixel and GetPixel.
 	// The algorithm uses 4-connected version of flood-fill.
@@ -1116,26 +1104,29 @@ BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 	uint32 color = 0xFFFFFFFF;	// This is the temporary color that will be used
 								// to fill the bitmap.
 	uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
-	while (stack->IsEmpty() == FALSE) {
-		BPoint span_start = stack->Pop();
+
+	PointStack stack;
+	stack.Push(start);
+
+	while (!stack.IsEmpty()) {
+		BPoint span_start = stack.Pop();
 		if ( (span_start.y == min_y) && (min_y != max_y) ) {
 			// Only check the spans below this line
-			CheckLowerSpans(span_start,drawer,*stack,min_x,max_x,color,old_color,tolerance,sel);
+			CheckLowerSpans(span_start,drawer, stack,min_x,max_x,color,old_color,tolerance,sel);
 		}
 		else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 			// Only check the spans above this line.
-			CheckUpperSpans(span_start,drawer,*stack,min_x,max_x,color,old_color,tolerance,sel);
+			CheckUpperSpans(span_start,drawer, stack,min_x,max_x,color,old_color,tolerance,sel);
 		}
 		else if (min_y != max_y) {
 			// Check the spans above and below this line.
-			CheckBothSpans(span_start,drawer,*stack,min_x,max_x,color,old_color,tolerance,sel);
+			CheckBothSpans(span_start,drawer, stack,min_x,max_x,color,old_color,tolerance,sel);
 		}
 		else {
 			// The image is only one pixel high. Fill the only span.
 			FillSpan(span_start,drawer,min_x,max_x,color,old_color,tolerance,sel);
 		}
 	}
-	delete stack;
 
 	// Remember to NULL the attribute binary_fill_map
 	binary_fill_map = NULL;
