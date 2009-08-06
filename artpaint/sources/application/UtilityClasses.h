@@ -1,29 +1,19 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef UTILITY_CLASSES_H
 #define UTILITY_CLASSES_H
 
-
 #include <Box.h>
-#include <FilePanel.h>
 #include <View.h>
 #include <Window.h>
-
-
-// this class creates an object that can display help-text in a B_BORDERED_WINDOW
-class HelpWindow : public BWindow {
-
-public:
-		HelpWindow(BPoint location, const char *text);
-		HelpWindow(BPoint location, char **text_lines, int32 line_count);
-};
-
 
 
 // this class creates a view that draws a bitmap in it

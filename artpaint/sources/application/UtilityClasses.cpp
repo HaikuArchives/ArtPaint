@@ -1,104 +1,26 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <Application.h>
-#include <Bitmap.h>
-#include <Button.h>
-#include <InterfaceDefs.h>
-#include <new>
-#include <Resources.h>
-#include <Screen.h>
-#include <StringView.h>
-#include <string.h>
 
-#include "StringServer.h"
 #include "UtilityClasses.h"
 
-
-HelpWindow::HelpWindow(BPoint location, const char *text)
-		:	BWindow(BRect(location,location),"A help window",B_BORDERED_WINDOW_LOOK,B_FLOATING_APP_WINDOW_FEEL,B_AVOID_FOCUS)
-{
-	BStringView *message_view = new BStringView(BRect(BPoint(1,1),BPoint(1,1)),"help text here",text);
-
-	float width = message_view->StringWidth(text) + 2;
-	font_height height;
-
-	AddChild(message_view);
-	message_view->GetFontHeight(&height);
-	message_view->SetDrawingMode(B_OP_OVER);
-	message_view->SetViewColor(tint_color(ui_color(B_WINDOW_TAB_COLOR),B_LIGHTEN_2_TINT));
-	message_view->SetLowColor(tint_color(ui_color(B_WINDOW_TAB_COLOR),B_LIGHTEN_2_TINT));
-
-	message_view->ResizeTo(width,height.ascent + height.descent + height.leading + 1);
-	ResizeTo(message_view->Bounds().Width()+1,message_view->Bounds().Height());
-
-	MoveBy(0,-(Bounds().Height()+3));
-
-	// here we have to relocate ourselves in case we are not on screen
-	BScreen *the_screen = new BScreen();
-	BRect screen_bounds = the_screen->Frame();
-	delete the_screen;
-
-	if (!screen_bounds.Contains(Frame().LeftTop())) {
-		// here we move the window down from cursor
-		MoveBy(0,Bounds().Height()+3 + 16);
-	}
-	if (!screen_bounds.Contains(Frame().RightBottom())) {
-		// here we move the window down from cursor
-		MoveBy(-Bounds().Width(),0);
-	}
-}
+#include "StringServer.h"
 
 
-HelpWindow::HelpWindow(BPoint location, char **text_lines, int32 line_count)
-		:	BWindow(BRect(location,location),"A help window",B_BORDERED_WINDOW,0)
-{
-	BPoint left_top = BPoint(1,1);
-	float width=0;
-	font_height height;
-
-	// here measure the height and width of strings
-	BFont a_font = BFont();
-	a_font.GetHeight(&height);
-
-	for (int32 a=0;a<line_count;a++) {
-		width = max_c(width,a_font.StringWidth(text_lines[a]));
-	}
-	width += 2;
-	for (int32 i=0;i<line_count;i++) {
-		BStringView *message_view = new BStringView(BRect(left_top,left_top),"help text here",text_lines[i]);
-		AddChild(message_view);
-		message_view->SetViewColor(tint_color(ui_color(B_WINDOW_TAB_COLOR),B_LIGHTEN_2_TINT));
-		message_view->SetLowColor(tint_color(ui_color(B_WINDOW_TAB_COLOR),B_LIGHTEN_2_TINT));
-		message_view->SetDrawingMode(B_OP_OVER);
-		message_view->ResizeTo(width,height.ascent + height.descent);
-		left_top += BPoint(0,height.ascent + height.descent);
-	}
-
-	ResizeTo(width+1,line_count*(height.ascent + height.descent));
-	MoveBy(0,-(Bounds().Height()+3));
-	// here we have to relocate ourselves in case we are not on screen
-	BScreen *the_screen = new BScreen();
-	BRect screen_bounds = the_screen->Frame();
-	delete the_screen;
-
-	if (!screen_bounds.Contains(Frame().LeftTop())) {
-		// here we move the window down from cursor
-		MoveBy(0,Bounds().Height()+3 + 16);
-	}
-	if (!screen_bounds.Contains(Frame().RightBottom())) {
-		// here we move the window down from cursor
-		MoveBy(-Bounds().Width(),0);
-	}
-}
+#include <Bitmap.h>
+#include <Screen.h>
+#include <StringView.h>
 
 
-// #pragma mark -- BitmapView
+#include <new>
+#include <string.h>
 
 
 BitmapView::BitmapView(BBitmap* bitmap, BRect frame)
