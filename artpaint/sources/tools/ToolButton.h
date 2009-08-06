@@ -13,9 +13,6 @@
 #include <String.h>
 
 
-class HelpWindow;
-
-
 class ToolButton : public BControl {
 public:
 								ToolButton(const char* name, BMessage* message,
@@ -24,7 +21,6 @@ public:
 
 	virtual	void				SetValue(int32 value);
 
-	virtual	void				Pulse();
 	virtual	void				AttachedToWindow();
 	virtual	void				Draw(BRect updateRect);
 
@@ -47,7 +43,6 @@ private:
 			uint32				fMouseButton;
 
 			BBitmap*			fIcon;
-			HelpWindow*			fToolTip;
 };
 
 #endif

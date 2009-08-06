@@ -12,7 +12,6 @@
 #include "ToolButton.h"
 
 #include "Tools.h"
-#include "UtilityClasses.h"
 
 
 #include <Bitmap.h>
@@ -26,12 +25,11 @@ const float gInset = 2.0;
 
 ToolButton::ToolButton(const char* name, BMessage* message, BBitmap* icon)
 	: BControl(name, "?", message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS)
-	, fName(name)
 	, fInside(false)
 	, fMouseButton(0)
 	, fIcon(icon)
-	, fToolTip(NULL)
 {
+	SetToolTip(name);
 }
 
 
@@ -64,24 +62,6 @@ ToolButton::SetValue(int32 value)
 		if (button && (button != this))
 			button->SetValue(B_CONTROL_OFF);
 		child = child->NextSibling();
-	}
-}
-
-
-void
-ToolButton::Pulse()
-{
-	uint32 buttons;
-	BPoint location;
-	GetMouse(&location, &buttons);
-
-	if (Bounds().Contains(location)) {
-		if ((idle_time() > (500000)) && fToolTip == NULL) {
-			fToolTip = new HelpWindow(ConvertToScreen(location), fName);
-			fToolTip->Show();
-		}
-	} else {
-		SetFlags(Flags() & ~B_PULSE_NEEDED);
 	}
 }
 
@@ -177,24 +157,6 @@ ToolButton::MouseDown(BPoint point)
 void
 ToolButton::MouseMoved(BPoint point, uint32 transit, const BMessage* message)
 {
-	if (transit == B_ENTERED_VIEW)
-		SetFlags(Flags() | B_PULSE_NEEDED);
-
-	if (transit == B_EXITED_VIEW) {
-		SetFlags(Flags() & ~B_PULSE_NEEDED);
-		if (fToolTip) {
-			fToolTip->PostMessage(B_QUIT_REQUESTED);
-			fToolTip = NULL;
-		}
-	}
-
-	if (transit == B_INSIDE_VIEW) {
-		if (fToolTip) {
-			fToolTip->PostMessage(B_QUIT_REQUESTED);
-			fToolTip = NULL;
-		}
-	}
-
 	if (!IsTracking())
 		return;
 
