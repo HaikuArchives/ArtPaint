@@ -77,29 +77,6 @@ BitmapView::SetBitmap(BBitmap* bitmap)
 }
 
 
-BBitmap* CopyBitmap(BBitmap *to_be_copied,bool deep)
-{
-	BBitmap *new_bitmap;
-	if (deep == TRUE) {
-		new_bitmap = new BBitmap(to_be_copied->Bounds(),to_be_copied->ColorSpace(),TRUE);
-	}
-	else {
-		new_bitmap = new BBitmap(to_be_copied->Bounds(),to_be_copied->ColorSpace());
-	}
-	if (new_bitmap->IsValid() == FALSE)
-		throw std::bad_alloc();
-
-	// Copy the bitmap data.
-	uint32 *s_bits = (uint32*)to_be_copied->Bits();
-	uint32 *d_bits = (uint32*)new_bitmap->Bits();
-
-	int32 bitslength = to_be_copied->BitsLength()/4;
-	for (int32 i=0;i<bitslength;i++) {
-		*d_bits++ = *s_bits++;
-	}
-	return new_bitmap;
-}
-
 
 BRect FitRectToScreen(BRect source)
 {

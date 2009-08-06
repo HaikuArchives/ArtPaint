@@ -491,8 +491,7 @@ bool Image::ClearLayers(rgb_color &c)
 bool Image::DuplicateLayer(Layer *duplicated_layer,int32)
 {
 	if (duplicated_layer != NULL) {
-		BBitmap *to_be_duplicated = duplicated_layer->Bitmap();
-		BBitmap *new_bitmap = CopyBitmap(to_be_duplicated);
+		BBitmap *new_bitmap = new BBitmap(duplicated_layer->Bitmap());
 		AddLayer(new_bitmap,duplicated_layer,TRUE,duplicated_layer->GetTransparency());
 
 		return TRUE;

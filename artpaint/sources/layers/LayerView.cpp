@@ -146,7 +146,7 @@ void LayerView::MouseDown(BPoint location)
 		// This should start a real drag'n'drop session
 		a_message.what = HS_LAYER_DRAGGED;
 		a_message.AddPointer("layer_bitmap",(void*)the_layer->Bitmap());
-		BBitmap *layer_mini_image = CopyBitmap(the_layer->GetMiniatureImage());
+		BBitmap *layer_mini_image = new BBitmap(the_layer->GetMiniatureImage());
 		DragMessage(&a_message,layer_mini_image,B_OP_ALPHA,location-BPoint(5,5));
 	}
 	else {

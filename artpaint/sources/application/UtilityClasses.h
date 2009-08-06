@@ -19,7 +19,6 @@
 #include <stack>
 
 
-// this class creates a view that draws a bitmap in it
 class BitmapView : public BView {
 public:
 						BitmapView(BBitmap* bitmap, BRect frame);
@@ -47,10 +46,6 @@ public:
 			BPoint		Pop() { BPoint point = top(); pop(); return point; }
 };
 
-
-// This function just returns a copy of the parameter-bitmap. If the parameter
-// is true, the returned bitmap also contains any possible parameter views.
-BBitmap*	CopyBitmap(BBitmap*,bool=FALSE);
 
 BRect		FitRectToScreen(BRect);
 

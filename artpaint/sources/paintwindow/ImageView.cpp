@@ -477,8 +477,7 @@ void ImageView::MessageReceived(BMessage *message)
 				BBitmap *to_be_copied;
 				if (message->FindPointer("layer_bitmap",(void**)&to_be_copied) == B_OK) {
 					try {
-						BBitmap *new_bitmap;
-						new_bitmap = CopyBitmap(to_be_copied);
+						BBitmap *new_bitmap = new BBitmap(to_be_copied);
 						if (the_image->AddLayer(new_bitmap,NULL,TRUE) != NULL) {
 							Invalidate();
 							LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
