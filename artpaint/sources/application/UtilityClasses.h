@@ -37,16 +37,6 @@ private:
 };
 
 
-class BitmapViewBox : public BBox {
-	BitmapView	*bmap_view;
-
-public:
-		BitmapViewBox(BBitmap *bitmap,BRect frame,char *label);
-
-void	UpdateBitmap();
-};
-
-
 class PointStack : public std::stack<BPoint> {
 public:
 						PointStack() {}

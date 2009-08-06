@@ -77,35 +77,6 @@ BitmapView::SetBitmap(BBitmap* bitmap)
 }
 
 
-// #pragma mark -- BitmapViewBox
-
-
-BitmapViewBox::BitmapViewBox(BBitmap *bitmap,BRect frame, char *label)
-	:	BBox(frame)
-{
-	SetBorder(B_PLAIN_BORDER);
-
-	bmap_view = new BitmapView(bitmap,BPoint(4,4));
-	AddChild(bmap_view);
-
-	ResizeTo(frame.Width(),bmap_view->Frame().Height()+2*4);
-
-	BStringView *string_view = new BStringView(BRect(bmap_view->Frame().right+4,Bounds().top,Bounds().right-1,Bounds().bottom),"bitmap view label",label);
-	AddChild(string_view);
-	font_height fHeight;
-	string_view->GetFontHeight(&fHeight);
-	string_view->ResizeTo(string_view->Bounds().Width(),fHeight.ascent+fHeight.descent+fHeight.leading);
-	string_view->MoveBy(0,(Bounds().Height()- string_view->Bounds().Height())/2.0);
-
-}
-
-
-void BitmapViewBox::UpdateBitmap()
-{
-	bmap_view->Invalidate();
-}
-
-
 BBitmap* CopyBitmap(BBitmap *to_be_copied,bool deep)
 {
 	BBitmap *new_bitmap;
