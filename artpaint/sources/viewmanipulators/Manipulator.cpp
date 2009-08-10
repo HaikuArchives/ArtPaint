@@ -6,99 +6,105 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include "Manipulator.h"
+
+
 #include <new>
 #include <stdlib.h>
 
-BBitmap* Manipulator::DuplicateBitmap(BBitmap *original,int32 inset,bool accept_views)
+
+BBitmap*
+Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 {
-	BRect bounds = original->Bounds();
-	BRect new_bounds = bounds;
-	new_bounds.InsetBy(inset,inset);
+	if (inset == 0)
+		return (new (std::nothrow) BBitmap(source, acceptViews));
 
-	BBitmap *copy = new BBitmap(new_bounds,B_RGB32,accept_views);
-	if (copy->IsValid() == FALSE)
-		throw std::bad_alloc();
+	BRect sourceBounds = source->Bounds();
+	BRect targetBounds = sourceBounds;
+	targetBounds.InsetBy(inset, inset);
 
-	uint32 *target_bits = (uint32*)copy->Bits();
-	uint32 *source_bits = (uint32*)original->Bits();
-	uint32 bits_length = original->BitsLength()/4;
-	uint32 source_bpr = original->BytesPerRow()/4;
-
-	if (inset == 0) {
-		// Just copy the bitmap straight away.
-		for (uint32 i = 0; i < bits_length; i++)
-			*target_bits++ = *source_bits++;
+	BBitmap* target = new (std::nothrow) BBitmap(targetBounds, B_RGB32, acceptViews);
+	if (!target || !target->IsValid()) {
+		delete target;
+		return NULL;
 	}
-	else if (inset > 0) {
-		// Just leave some of the edge away from the copy
-		int32 width = new_bounds.IntegerWidth();
-		int32 height = new_bounds.IntegerHeight();
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				*target_bits++ = *(source_bits + inset+x + (inset+y)*source_bpr);
+
+	uint32* targetBits = (uint32*)target->Bits();
+	uint32* sourceBits = (uint32*)source->Bits();
+	uint32 sourceBpr = source->BytesPerRow() / 4;
+
+	if (inset > 0) {
+		// Just leave some of the edge away from the target
+		int32 width = targetBounds.IntegerWidth();
+		int32 height = targetBounds.IntegerHeight();
+		for (int32 y = 0; y <= height; ++y) {
+			for (int32 x = 0; x <= width; ++x) {
+				*targetBits++ =
+					*(sourceBits + inset + x + (inset + y) * sourceBpr);
 			}
 		}
-	}
-	else if (inset < 0) {
+	} else if (inset < 0) {
 		// This is the hardest case where we have to duplicate the edges.
 		// First duplicate the top row
-		int32 width = bounds.IntegerWidth();
-		int32 height = bounds.IntegerHeight();
-		for (int32 y=0;y<abs(inset);y++) {
+		int32 width = sourceBounds.IntegerWidth();
+		int32 height = sourceBounds.IntegerHeight();
+		for (int32 y = 0; y < abs(inset); ++y) {
 			// Duplicate the start of the row
-			for (int32 addx=0;addx<abs(inset);addx++) {
-				*target_bits++ = *source_bits;
-			}
+			for (int32 addx = 0; addx < abs(inset); ++addx)
+				*targetBits++ = *sourceBits;
+
 			// Duplicate the actual row
-			for (int32 x=0;x<=width;x++) {
-				*target_bits++ = *source_bits++;
-			}
+			for (int32 x = 0; x <= width; ++x)
+				*targetBits++ = *sourceBits++;
+
 			// Duplicate the end of the row
-			source_bits--;
-			for (int32 addx=0;addx<abs(inset);addx++) {
-				*target_bits++ = *source_bits;
-			}
-			source_bits = source_bits + 1 - source_bpr;
+			sourceBits--;
+			for (int32 addx = 0; addx < abs(inset); ++addx)
+				*targetBits++ = *sourceBits;
+
+			sourceBits = sourceBits + 1 - sourceBpr;
 		}
+
 		// Then duplicate the actual bitmap
-		for (int32 y=0;y<=height;y++) {
+		for (int32 y = 0; y <= height; ++y) {
 			// Duplicate the start of the row
-			for (int32 addx=0;addx<abs(inset);addx++) {
-				*target_bits++ = *source_bits;
-			}
+			for (int32 addx = 0; addx < abs(inset); ++addx)
+				*targetBits++ = *sourceBits;
+
 			// Duplicate the actual row
-			for (int32 x=0;x<=width;x++) {
-				*target_bits++ = *source_bits++;
-			}
+			for (int32 x = 0; x <= width; ++x)
+				*targetBits++ = *sourceBits++;
+
 			// Duplicate the end of the row
-			source_bits--;
-			for (int32 addx=0;addx<abs(inset);addx++) {
-				*target_bits++ = *source_bits;
-			}
-			source_bits++;
+			sourceBits--;
+			for (int32 addx = 0; addx < abs(inset); ++addx)
+				*targetBits++ = *sourceBits;
+
+			sourceBits++;
 		}
+
 		// Then duplicate the last row
-		source_bits = source_bits - source_bpr;
-		for (int32 y=0;y<abs(inset);y++) {
+		sourceBits = sourceBits - sourceBpr;
+		for (int32 y = 0; y < abs(inset); ++y) {
 			// Duplicate the start of the row
-			for (int32 addx=0;addx<abs(inset);addx++) {
-				*target_bits++ = *source_bits;
-			}
+			for (int32 addx = 0; addx < abs(inset); ++addx)
+				*targetBits++ = *sourceBits;
+
 			// Duplicate the actual row
-			for (int32 x=0;x<=width;x++) {
-				*target_bits++ = *source_bits++;
-			}
+			for (int32 x = 0; x <= width; ++x)
+				*targetBits++ = *sourceBits++;
+
 			// Duplicate the end of the row
-			source_bits--;
-			for (int32 addx=0;addx<abs(inset);addx++) {
-				*target_bits++ = *source_bits;
-			}
-			source_bits = source_bits + 1 - source_bpr;
+			sourceBits--;
+			for (int32 addx = 0; addx < abs(inset); ++addx)
+				*targetBits++ = *sourceBits;
+
+			sourceBits = sourceBits + 1 - sourceBpr;
 		}
 	}
 
-	return copy;
+	return target;
 }
 
 

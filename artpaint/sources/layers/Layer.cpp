@@ -14,7 +14,6 @@
 #include "Layer.h"
 #include "LayerView.h"
 #include "MessageConstants.h"
-#include "PaintApplication.h"
 #include "ImageView.h"
 #include "Selection.h"
 #include "UtilityClasses.h"

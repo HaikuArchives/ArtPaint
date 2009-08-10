@@ -9,7 +9,6 @@
 
 #include "FloaterManager.h"
 #include "LayerWindow.h"
-#include "PaintApplication.h"
 #include "MessageConstants.h"
 #include "Layer.h"
 #include "UtilityClasses.h"

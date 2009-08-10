@@ -10,7 +10,6 @@
 
 #include "ColorView.h"
 #include "UtilityClasses.h"
-#include "PaintApplication.h"
 #include "ColorPalette.h"
 
 ColorView::ColorView(BRect frame,char *label,BMessage *message,rgb_color initial_color)

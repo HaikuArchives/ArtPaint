@@ -15,6 +15,10 @@
 #include <SupportDefs.h>
 #include <Bitmap.h>
 
+
+class BFile;
+
+
 enum layer_type {
 	HS_NORMAL_LAYER		=	'NrLa'
 };
