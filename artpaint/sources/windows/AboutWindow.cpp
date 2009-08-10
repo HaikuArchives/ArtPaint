@@ -6,22 +6,25 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <stdio.h>
 
 #include "AboutWindow.h"
 #include "StringServer.h"
 #include "MessageFilters.h"
-#include "PaintApplication.h"
+
+
+#include <AppDefs.h>
+
+
+#include <stdio.h>
+
 
 BWindow* AboutWindow::the_window = NULL;
 
 AboutWindow::AboutWindow(BRect frame)
-	:	BWindow(frame,"about_window",B_TITLED_WINDOW_LOOK,B_NORMAL_WINDOW_FEEL,B_NOT_RESIZABLE|B_NOT_ZOOMABLE)
+	: BWindow(frame, StringServer::ReturnString(ABOUT_ARTPAINT_STRING),
+		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_RESIZABLE |
+		B_NOT_ZOOMABLE)
 {
-	char string[256];
-	sprintf(string,"%s",StringServer::ReturnString(ABOUT_ARTPAINT_STRING));
-	SetTitle(string);
-
 	ResizeTo(300,200);
 
 	TextScrollerView *scroller = new TextScrollerView(Bounds());
@@ -41,17 +44,20 @@ AboutWindow::AboutWindow(BRect frame)
 	italic_font.SetFace(B_ITALIC_FACE);
 
 	scroller->AddLine("ArtPaint v. 2.0",yellow,title_font);
-	sprintf(string,StringServer::ReturnString(RELEASE_DATE_STRING),"March 2003");
-	scroller->AddLine(string,white,italic_font);
+
+	char string[256];
+	sprintf(string, StringServer::ReturnString(RELEASE_DATE_STRING), __DATE__);
+	scroller->AddLine(string, white, italic_font);
+
 	scroller->AddEmptyLine();
 	scroller->AddLine(StringServer::ReturnString(ABOUT_1_TEXT_STRING),white,text_font);
 	scroller->AddEmptyLine();
 
 	scroller->AddLine(StringServer::ReturnString(ABOUT_3_TEXT_STRING),white,text_font);
-	scroller->AddLine("http://www.beunited.org/index.php?page=developer",red,text_font);
+	scroller->AddLine("http://dev.osdrawer.net/projects/list_files/artpaint",red,text_font);
 	scroller->AddEmptyLine();
 	scroller->AddLine(StringServer::ReturnString(ABOUT_4_TEXT_STRING),white,text_font);
-	scroller->AddLine("contact@beunited.org",red,text_font);
+	scroller->AddLine("http://dev.osdrawer.net/projects/artpaint/boards",red,text_font);
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
