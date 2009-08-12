@@ -55,16 +55,17 @@ enum layer_type {
 
 class Layer {
 public:
-								Layer(BRect frame, int32 id, BView* imageView,
-									int32 type = HS_NORMAL_LAYER,
+								Layer(BRect frame, int32 id,
+									ImageView* imageView,
+									layer_type type = HS_NORMAL_LAYER,
 									BBitmap* bitmap = NULL);
 								~Layer();
 
-			BBitmap*			Bitmap() const { return the_bitmap; }
+			BBitmap*			Bitmap() const { return fLayerData; }
 
-			bool				IsVisible() const { return visibility; }
+			bool				IsVisible() const { return fLayerVisible; }
 			void				SetVisibility(bool visible);
-			void				ToggleVisibility() { visibility = !visibility; }
+			void				ToggleVisibility() { fLayerVisible = !fLayerVisible; }
 
 			void				AddToImage(Image* image);
 
@@ -72,20 +73,20 @@ public:
 			void				Clear(rgb_color color);
 
 			BBitmap*			GetMiniatureImage() const {
-									return miniature_image;
+									return fLayerPreview;
 								}
 			void				ChangeBitmap(BBitmap* new_bitmap);
 			LayerView*			GetView() const {
-									return layer_view;
+									return fLayerView;
 								}
-			BView*				GetImageView() const {
-									return image_view;
+			ImageView*			GetImageView() const {
+									return fImageView;
 								}
 
 			void				ActivateLayer(bool activate);
-			bool				IsActive() const { return is_active; }
+			bool				IsActive() const { return fLayerActive; }
 
-			int32				Id() const { return layer_id; }
+			int32				Id() const { return fLayerId; }
 
 			void				Merge(Layer* top_layer);
 
@@ -104,10 +105,8 @@ public:
 									ImageView* imageView, int32 newId);
 			int64				writeLayer(BFile& file, int32 compressionMethod);
 
-			void				SetName(const char* c) {
-									strncpy(layer_name, c, 64);
-								}
-			const char*			ReturnLayerName() const { return layer_name; }
+			void				SetName(const char* c) { fLayerName = c; }
+			const char*			ReturnLayerName() const { return fLayerName; }
 
 			const uint32*		ReturnFixedAlphaTable() const {
 									return fixed_alpha_table;
@@ -125,52 +124,48 @@ public:
 
 private:
 			// this bitmap holds the actual image-data of this layer
-			BBitmap*			the_bitmap;
+			BBitmap*			fLayerData;
 
 			// this bitmap holds the miniature image of layers visible area
-			BBitmap*			miniature_image;
+			BBitmap*			fLayerPreview;
 
 			// This id identifies the layer within the image-view that it
 			// belongs to. It is set in the constructor.
-			int32				layer_id;
+			int32				fLayerId;
 
 			// this semaphore is used to guard the access to miniature image
 			// and the int32 tells how many threads are waiting to do this job
 			// the last one waiting should get to do the job
-			sem_id				mini_image_semaphore;
-			int32				mini_image_threads_waiting;
+			sem_id				fLayerPreviewSem;
+			int32				fLayerPreviewThreads;
 
 			// this tells whether the layer is visible at all
-			bool				visibility;
-			bool				is_active;
+			bool				fLayerVisible;
+			bool				fLayerActive;
 
 			// this is the type of the layer, HS_NORMAL_LAYER or HS_CONTROL_LAYER
-			int32				layer_type;
+			layer_type			fLayerType;
 
 			// this stores the layer name
-			char				layer_name[64];
+			BString				fLayerName;
 
 			// This is the view that owns this layer. All the controls in
-			// layer_view should send a message to this view. It will then
+			// fLayerView should send a message to this view. It will then
 			// change the properties for this layer.
-			BView*				image_view;
-
-			Image*				the_image;
+			Image*				fImage;
+			ImageView*			fImageView;
 
 			// This is the view tha contains layer's miniature representation
 			// and some controls for controlling layers properties.
-			LayerView*			layer_view;
+			LayerView*			fLayerView;
 
 			uint32				fixed_alpha_table[256];
 			float				float_alpha_table[256];
 
 			float				transparency_coefficient;
 
-			// this function calculates the miniature_image
+			// this function calculates the fLayerPreview
 			int32				calc_mini_image();
-
-			// a function to calculate the bounds_rectangle for actual image
-			BRect				ImageBounds();
 };
 
 #endif

@@ -6,6 +6,14 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
+#include "LayerView.h"
+
+#include "ImageView.h"
+#include "StringServer.h"
+#include "UtilityClasses.h"
+
+
 #include <Bitmap.h>
 #include <CheckBox.h>
 #include <InterfaceDefs.h>
@@ -14,9 +22,6 @@
 #include <TextControl.h>
 #include <Window.h>
 
-#include "LayerView.h"
-#include "UtilityClasses.h"
-#include "StringServer.h"
 
 LayerView::LayerView(BBitmap *image,Layer *layer)
 	:	BBox(BRect(0,0,120,LAYER_VIEW_HEIGHT-1),"a layer view",B_FOLLOW_TOP|B_FOLLOW_LEFT,B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS, B_NO_BORDER)

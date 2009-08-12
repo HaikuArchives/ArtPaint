@@ -26,31 +26,32 @@
 #include <stdio.h>
 
 
-Layer::Layer(BRect frame, int32 id, BView* imageView, int32 type, BBitmap* bitmap)
-	: the_bitmap(NULL)
-	, miniature_image(NULL)
-	, layer_id(id)
-	, mini_image_semaphore(-1)
-	, mini_image_threads_waiting(0)
-	, visibility(true)
-	, is_active(false)
-	, layer_type(type)
-	, image_view(imageView)
-	, the_image(NULL)
-	, layer_view(NULL)
+Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
+		BBitmap* bitmap)
+	: fLayerData(NULL)
+	, fLayerPreview(NULL)
+	, fLayerId(id)
+	, fLayerPreviewSem(-1)
+	, fLayerPreviewThreads(0)
+	, fLayerVisible(true)
+	, fLayerActive(false)
+	, fLayerType(type)
+	, fImage(NULL)
+	, fImageView(imageView)
+	, fLayerView(NULL)
 {
 	frame.OffsetTo(B_ORIGIN);
-	sprintf(layer_name, "Layer %ld", layer_id);
+	fLayerName << "Layer " << fLayerId;
 
-	if (layer_type == HS_NORMAL_LAYER) {
+	if (fLayerType == HS_NORMAL_LAYER) {
 		if (bitmap && bitmap->IsValid()) {
 			// change the frame size
 			frame.right = (max_c(frame.right, bitmap->Bounds().right));
 			frame.bottom = (max_c(frame.bottom, bitmap->Bounds().bottom));
 		}
 
-		the_bitmap = new BBitmap(frame, B_RGB_32_BIT);
-		if (!the_bitmap->IsValid())
+		fLayerData = new BBitmap(frame, B_RGB_32_BIT);
+		if (!fLayerData->IsValid())
 			throw std::bad_alloc();
 
 		union {
@@ -62,8 +63,8 @@ Layer::Layer(BRect frame, int32 id, BView* imageView, int32 type, BBitmap* bitma
 		color.bytes[2] = 0xFF;
 		color.bytes[3] = 0x00;
 
-		int32 bits_length = the_bitmap->BitsLength() / 4;
-		uint32* target_bits = (uint32*)the_bitmap->Bits();
+		int32 bits_length = fLayerData->BitsLength() / 4;
+		uint32* target_bits = (uint32*)fLayerData->Bits();
 
 		// Fill the bitmap with wanted initial color.
 		for (int32 i = 0; i < bits_length; ++i)
@@ -71,11 +72,11 @@ Layer::Layer(BRect frame, int32 id, BView* imageView, int32 type, BBitmap* bitma
 
 		if (bitmap && bitmap->IsValid()) {
 			uint32* source_bits = (uint32*)bitmap->Bits();
-			int32 target_bpr = the_bitmap->BytesPerRow() / 4;
+			int32 target_bpr = fLayerData->BytesPerRow() / 4;
 			int32 source_bpr = bitmap->BytesPerRow() / 4;
-			int32 width = (int32)min_c(the_bitmap->Bounds().Width(),
+			int32 width = (int32)min_c(fLayerData->Bounds().Width(),
 				bitmap->Bounds().Width());
-			int32 height = (int32)min_c(the_bitmap->Bounds().Height(),
+			int32 height = (int32)min_c(fLayerData->Bounds().Height(),
 				bitmap->Bounds().Height());
 
 			for (int32 y = 0; y <= height; ++y) {
@@ -87,12 +88,12 @@ Layer::Layer(BRect frame, int32 id, BView* imageView, int32 type, BBitmap* bitma
 		}
 
 		// create the miniature image for this layer and a semaphore for it
-		miniature_image = new BBitmap(BRect(0, 0, HS_MINIATURE_IMAGE_WIDTH - 1,
+		fLayerPreview = new BBitmap(BRect(0, 0, HS_MINIATURE_IMAGE_WIDTH - 1,
 			HS_MINIATURE_IMAGE_HEIGHT - 1), B_RGB_32_BIT);
-		mini_image_semaphore = create_sem(1, "mini image semaphore");
+		fLayerPreviewSem = create_sem(1, "mini image semaphore");
 	}
 
-	layer_view = new LayerView(miniature_image, this);
+	fLayerView = new LayerView(fLayerPreview, this);
 
 	SetTransparency(1.0);
 }
@@ -100,17 +101,17 @@ Layer::Layer(BRect frame, int32 id, BView* imageView, int32 type, BBitmap* bitma
 
 Layer::~Layer()
 {
-	delete layer_view;
+	delete fLayerView;
 
-	delete the_bitmap;
-	delete miniature_image;
+	delete fLayerData;
+	delete fLayerPreview;
 }
 
 
 void
 Layer::AddToImage(Image* im)
 {
-	the_image = im;
+	fImage = im;
 }
 
 
@@ -134,14 +135,14 @@ Layer::Clear(rgb_color color)
 	// This will copy the color (including alpha) to every pixel in this layer.
 	// If the selection is not empty, the color will be copied only to the
 	// selected points
-	Selection* selection = ((ImageView*)image_view)->GetSelection();
+	Selection* selection = fImageView->GetSelection();
 
 	// we will copy the color to this in correct order
 	uint32 color_bits = RGBColorToBGRA(color);
 
-	uint32* bits = (uint32*)the_bitmap->Bits();
+	uint32* bits = (uint32*)fLayerData->Bits();
 	if (selection->IsEmpty()) {
-		int32 bitslength = the_bitmap->BitsLength() / 4;
+		int32 bitslength = fLayerData->BitsLength() / 4;
 		for (int32 i = 0; i < bitslength; ++i)
 			*bits++ = color_bits;
 	} else {
@@ -150,7 +151,7 @@ Layer::Clear(rgb_color color)
 		int32 top = (int32)bounds.top;
 		int32 right = (int32)bounds.right;
 		int32 bottom = (int32)bounds.bottom;
-		int32 bpr = the_bitmap->BytesPerRow()/4;
+		int32 bpr = fLayerData->BytesPerRow()/4;
 		for (int32 y = top; y <= bottom; ++y) {
 			for (int32 x = left; x <= right; ++x) {
 				if (selection->ContainsPoint(x,y))
@@ -187,21 +188,21 @@ int32 Layer::calc_mini_image()
 	white.bytes[3] = 0x00;
 
 	// increase the number of waiting threads
-	atomic_add(&mini_image_threads_waiting,1);
-	// aquire the semaphore that is required to access the miniature_image
-	acquire_sem(mini_image_semaphore);
+	atomic_add(&fLayerPreviewThreads,1);
+	// aquire the semaphore that is required to access the fLayerPreview
+	acquire_sem(fLayerPreviewSem);
 	// decrease the number of waiting threads
-	atomic_add(&mini_image_threads_waiting,-1);
+	atomic_add(&fLayerPreviewThreads,-1);
 
 	int32 miniature_width = (int32)(HS_MINIATURE_IMAGE_WIDTH *
-		(min_c(the_bitmap->Bounds().Width()/the_bitmap->Bounds().Height(),1)));
+		(min_c(fLayerData->Bounds().Width()/fLayerData->Bounds().Height(),1)));
 	int32 miniature_height = (int32)(HS_MINIATURE_IMAGE_HEIGHT *
-		(min_c(the_bitmap->Bounds().Height()/the_bitmap->Bounds().Width(),1)));
+		(min_c(fLayerData->Bounds().Height()/fLayerData->Bounds().Width(),1)));
 
-	// Here we copy the contents of the_bitmap to miniature image.
+	// Here we copy the contents of fLayerData to miniature image.
 	// by using a DDA-scaling algorithm first take the dx and dy variables
-	float dx = 	(the_bitmap->Bounds().Width() + 1)/(float)miniature_width;
-	float dy = 	(the_bitmap->Bounds().Height() + 1)/(float)miniature_height;
+	float dx = 	(fLayerData->Bounds().Width() + 1)/(float)miniature_width;
+	float dy = 	(fLayerData->Bounds().Height() + 1)/(float)miniature_height;
 	int32 x=0,y=0;
 
 	int32 x_offset_left = (int32)floor((float)(HS_MINIATURE_IMAGE_WIDTH-miniature_width)/2.0);
@@ -210,19 +211,19 @@ int32 Layer::calc_mini_image()
 	int32 y_offset = (HS_MINIATURE_IMAGE_HEIGHT-miniature_height)/2;
 
 	// The bitmap might be changed and deleted while we are accessing it.
-	int32	b_bpr = the_bitmap->BytesPerRow()/4;
+	int32	b_bpr = fLayerData->BytesPerRow()/4;
 	uint32* big_image;
-	uint32* small_image = (uint32*)miniature_image->Bits();
-	big_image = (uint32*)the_bitmap->Bits();
+	uint32* small_image = (uint32*)fLayerPreview->Bits();
+	big_image = (uint32*)fLayerData->Bits();
 	// Clear the parts that we do not set.
 	for (int32 i=0;i<HS_MINIATURE_IMAGE_WIDTH*y_offset;i++)
 		*small_image++ = white.word;
 
-	while ((y < miniature_height) && (mini_image_threads_waiting == 0)) {
+	while ((y < miniature_height) && (fLayerPreviewThreads == 0)) {
 		for (int32 i=0;i<x_offset_left;i++)
 			*small_image++ = white.word;
 
-		while ((x < miniature_width) && (mini_image_threads_waiting == 0)) {
+		while ((x < miniature_width) && (fLayerPreviewThreads == 0)) {
 			color.word = *(big_image + ((int32)(y*dy))*b_bpr + (int32)(x*dx));
 			color.bytes[0] = (uint8)(color.bytes[0] *
 				float_alpha_table[color.bytes[3]] + 255 *
@@ -245,23 +246,23 @@ int32 Layer::calc_mini_image()
 	}
 
 	// Clear the rest of the image
-	while (small_image != ((uint32*)miniature_image->Bits() + miniature_image->BitsLength()/4))
+	while (small_image != ((uint32*)fLayerPreview->Bits() + fLayerPreview->BitsLength()/4))
 		*small_image++ = white.word;
 
-	if (mini_image_threads_waiting == 0) {
+	if (fLayerPreviewThreads == 0) {
 		snooze(50 * 1000);
-		if (mini_image_threads_waiting == 0) {
-			if (layer_view->LockLooper()) {
-				layer_view->UpdateImage();
+		if (fLayerPreviewThreads == 0) {
+			if (fLayerView->LockLooper()) {
+				fLayerView->UpdateImage();
 				BView* bmap_view;
-				if ((bmap_view = layer_view->Window()->FindView("bitmap_view")) != NULL) {
+				if ((bmap_view = fLayerView->Window()->FindView("bitmap_view")) != NULL) {
 					bmap_view->Draw(bmap_view->Bounds());
 				}
-				layer_view->UnlockLooper();
+				fLayerView->UnlockLooper();
 			}
 		}
 	}
-	release_sem(mini_image_semaphore);
+	release_sem(fLayerPreviewSem);
 
 	return B_OK;
 }
@@ -270,24 +271,24 @@ int32 Layer::calc_mini_image()
 void
 Layer::ChangeBitmap(BBitmap* newBitmap)
 {
-	delete the_bitmap;
-	the_bitmap = newBitmap;
+	delete fLayerData;
+	fLayerData = newBitmap;
 }
 
 
 void
 Layer::ActivateLayer(bool active)
 {
-	is_active = active;
-	layer_view->Activate(active);
+	fLayerActive = active;
+	fLayerView->Activate(active);
 }
 
 
 void
 Layer::SetVisibility(bool visible)
 {
-	visibility = visible;
-	layer_view->SetVisibility(visible);
+	fLayerVisible = visible;
+	fLayerView->SetVisibility(visible);
 }
 
 
@@ -356,7 +357,7 @@ Layer::Merge(Layer* top_layer)
 
 
 Layer*
-Layer::readLayer(BFile& file, ImageView* image_v, int32 new_id,
+Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 	bool is_little_endian, int32 compression_method)
 {
 	// This is the new way of reading the layers.
@@ -374,14 +375,14 @@ Layer::readLayer(BFile& file, ImageView* image_v, int32 new_id,
 
 	int32 width;
 	int32 height;
-	int32 layer_type;
+	layer_type layerType;
 	int32 layer_visibility;
 	int64 length;
 	if (file.Read(&width,sizeof(int32)) != sizeof(int32))
 		return NULL;
 	if (file.Read(&height,sizeof(int32)) != sizeof(int32))
 		return NULL;
-	if (file.Read(&layer_type,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&layerType,sizeof(int32)) != sizeof(int32))
 		return NULL;
 	if (file.Read(&layer_visibility,sizeof(int32)) != sizeof(int32))
 		return NULL;
@@ -391,17 +392,18 @@ Layer::readLayer(BFile& file, ImageView* image_v, int32 new_id,
 	if (is_little_endian) {
 		width = B_LENDIAN_TO_HOST_INT32(width);
 		height = B_LENDIAN_TO_HOST_INT32(height);
-		layer_type = B_LENDIAN_TO_HOST_INT32(layer_type);
+		layerType = layer_type(B_LENDIAN_TO_HOST_INT32(layerType));
 		length = B_LENDIAN_TO_HOST_INT64(length);
 	}
 	else {
 		width = B_BENDIAN_TO_HOST_INT32(width);
 		height = B_BENDIAN_TO_HOST_INT32(height);
-		layer_type = B_BENDIAN_TO_HOST_INT32(layer_type);
+		layerType = layer_type(B_BENDIAN_TO_HOST_INT32(layerType));
 		length = B_BENDIAN_TO_HOST_INT64(length);
 	}
 
-	Layer* layer = new Layer(BRect(0,0,width-1,height-1),new_id,image_v,layer_type);
+	Layer* layer = new Layer(BRect(0, 0, width - 1, height - 1), new_id,
+		imageView, layerType);
 	layer->SetVisibility((uint32(layer_visibility) == 0xFFFFFFFF));
 	int8* bits = (int8*)layer->Bitmap()->Bits();
 	if (file.Read(bits,length) != length) {
@@ -491,7 +493,7 @@ Layer::readLayer(BFile& file, ImageView* image_v, int32 new_id,
 
 
 Layer*
-Layer::readLayerOldStyle(BFile& file, ImageView* image_v, int32 new_id)
+Layer::readLayerOldStyle(BFile& file, ImageView* imageView, int32 new_id)
 {
 //	// Layer has stored the following things:
 //	//	1.	Layer frame (i.e. the frame of bitmap)
@@ -500,29 +502,25 @@ Layer::readLayerOldStyle(BFile& file, ImageView* image_v, int32 new_id)
 //	//	4.	Layer visibility
 //	//	5.	Bitmap data
 //	//
-	BRect layer_frame;
-	uint32 type;
-	int32 id;	// This is not actually used.
-	bool visi;
 
-	if (file.Read(&layer_frame,sizeof(BRect)) != sizeof(BRect)) {
+	BRect layer_frame;
+	if (file.Read(&layer_frame,sizeof(BRect)) != sizeof(BRect))
 		return NULL;
-	}
 
 	// The layer id is written to the file, so it must be read also, but it will
 	// not be used. Instead we use the id that is provided as a parameter
-	if (file.Read(&id,sizeof(uint32)) != sizeof(uint32)) {
+	int32 id;	// This is not actually used.
+	if (file.Read(&id,sizeof(uint32)) != sizeof(uint32))
 		return NULL;
-	}
-	else {
-		id = B_BENDIAN_TO_HOST_INT32(id);
-	}
-	if ((file.Read(&type,sizeof(uint32)) != sizeof(uint32))) {
+	id = B_BENDIAN_TO_HOST_INT32(id);
+
+	layer_type layerType;
+	if ((file.Read(&layerType, sizeof(uint32)) != sizeof(uint32)))
 		return NULL;
-	}
-	if (file.Read(&visi,sizeof(bool)) != sizeof(bool)) {
+
+	bool visi;
+	if (file.Read(&visi,sizeof(bool)) != sizeof(bool))
 		return NULL;
-	}
 
 	// Old files project-files are all big-endian so we convert data here.
 	layer_frame.left = B_BENDIAN_TO_HOST_FLOAT(layer_frame.left);
@@ -530,13 +528,12 @@ Layer::readLayerOldStyle(BFile& file, ImageView* image_v, int32 new_id)
 	layer_frame.top = B_BENDIAN_TO_HOST_FLOAT(layer_frame.top);
 	layer_frame.bottom = B_BENDIAN_TO_HOST_FLOAT(layer_frame.bottom);
 
-	type = B_BENDIAN_TO_HOST_INT32(type);
-	if (type != HS_NORMAL_LAYER) {
+	layerType =layer_type(B_BENDIAN_TO_HOST_INT32(layerType));
+	if (layerType != HS_NORMAL_LAYER)
 		return NULL;
-	}
 
 	// Create the layer
-	Layer* layer = new Layer(layer_frame, new_id, image_v,type);
+	Layer* layer = new Layer(layer_frame, new_id, imageView, layerType);
 	layer->SetVisibility(visi);
 
 	int8* bits = (int8*)layer->Bitmap()->Bits();
@@ -568,24 +565,24 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 	int64 written_bytes = 0;
 	int32 marker = PROJECT_FILE_LAYER_START_MARKER;
 	int32 visi;
-	if (visibility == TRUE)
+	if (fLayerVisible == TRUE)
 		visi = 0xFFFFFFFF;
 	else
 		visi = 0x00000000;
 
 	written_bytes += file.Write(&marker,sizeof(int32));
-	int32 width = the_bitmap->Bounds().IntegerWidth()+1;
-	int32 height = the_bitmap->Bounds().IntegerHeight()+1;
+	int32 width = fLayerData->Bounds().IntegerWidth()+1;
+	int32 height = fLayerData->Bounds().IntegerHeight()+1;
 
 	written_bytes += file.Write(&width,sizeof(int32));
 	written_bytes += file.Write(&height,sizeof(int32));
-	written_bytes += file.Write(&layer_type,sizeof(int32));
+	written_bytes += file.Write(&fLayerType,sizeof(int32));
 	written_bytes += file.Write(&visi,sizeof(int32));
 
-	int64 data_length = the_bitmap->BitsLength();
+	int64 data_length = fLayerData->BitsLength();
 	written_bytes += file.Write(&data_length,sizeof(int64));
 
-	written_bytes += file.Write(the_bitmap->Bits(), data_length);
+	written_bytes += file.Write(fLayerData->Bits(), data_length);
 
 	marker = PROJECT_FILE_LAYER_END_MARKER;
 	written_bytes += file.Write(&marker,sizeof(int32));
@@ -608,8 +605,8 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 Layer*
 Layer::ReturnUpperLayer()
 {
-	if (the_image)
-		return the_image->ReturnUpperLayer(this);
+	if (fImage)
+		return fImage->ReturnUpperLayer(this);
 	return NULL;
 }
 
@@ -617,8 +614,8 @@ Layer::ReturnUpperLayer()
 Layer*
 Layer::ReturnLowerLayer()
 {
-	if (the_image)
-		return the_image->ReturnLowerLayer(this);
+	if (fImage)
+		return fImage->ReturnLowerLayer(this);
 	return NULL;
 }
 
@@ -626,5 +623,5 @@ Layer::ReturnLowerLayer()
 const char*
 Layer::ReturnProjectName() const
 {
-	return ((ImageView*)image_view)->ReturnProjectName();
+	return fImageView->ReturnProjectName();
 }
