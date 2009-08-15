@@ -44,13 +44,14 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 	fLayerName << "Layer " << fLayerId;
 
 	if (fLayerType == HS_NORMAL_LAYER) {
-		if (bitmap && bitmap->IsValid()) {
-			// change the frame size
-			frame.right = (max_c(frame.right, bitmap->Bounds().right));
-			frame.bottom = (max_c(frame.bottom, bitmap->Bounds().bottom));
-		}
+		BRect sourceRect;
+		if (bitmap && bitmap->IsValid())
+			sourceRect = bitmap->Bounds();
 
-		fLayerData = new BBitmap(frame, B_RGB_32_BIT);
+		fLayerData = new BBitmap(BRect(frame.LeftTop(),
+			BPoint(max_c(frame.right, sourceRect.right),
+				max_c(frame.bottom, sourceRect.bottom))), B_RGB_32_BIT);
+
 		if (!fLayerData->IsValid())
 			throw std::bad_alloc();
 
@@ -66,25 +67,14 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 		int32 bits_length = fLayerData->BitsLength() / 4;
 		uint32* target_bits = (uint32*)fLayerData->Bits();
 
-		// Fill the bitmap with wanted initial color.
+		// Fill the layer data with initial color.
 		for (int32 i = 0; i < bits_length; ++i)
 			*target_bits++ = color.word;
 
 		if (bitmap && bitmap->IsValid()) {
-			uint32* source_bits = (uint32*)bitmap->Bits();
-			int32 target_bpr = fLayerData->BytesPerRow() / 4;
-			int32 source_bpr = bitmap->BytesPerRow() / 4;
-			int32 width = (int32)min_c(fLayerData->Bounds().Width(),
-				bitmap->Bounds().Width());
-			int32 height = (int32)min_c(fLayerData->Bounds().Height(),
-				bitmap->Bounds().Height());
-
-			for (int32 y = 0; y <= height; ++y) {
-				for (int32 x = 0; x <= width; ++x) {
-					*(target_bits + x + y * target_bpr) =
-						*(source_bits + x + y * source_bpr);
-				}
-			}
+			fLayerData->ImportBits(bitmap, BPoint(B_ORIGIN), BPoint(B_ORIGIN),
+				int32(min_c(frame.Width(), sourceRect.Width())),
+				int32(min_c(frame.Height(), sourceRect.Height())));
 		}
 
 		// create the miniature image for this layer and a semaphore for it
