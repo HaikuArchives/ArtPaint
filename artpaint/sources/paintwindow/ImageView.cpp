@@ -1513,10 +1513,8 @@ int32 ImageView::ManipulatorFinisherThread()
 
 	try {
 		if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
-			BList *layer_list = the_image->LayerList();
-			Layer *the_layer = the_image->ReturnActiveLayer();
-			BBitmap *buffer = the_image->ReturnActiveBitmap();;
-			BBitmap *new_buffer;
+			BBitmap *buffer = the_image->ReturnActiveBitmap();
+			BBitmap *new_buffer = NULL;
 			if (gui_manipulator != NULL) {
 				ManipulatorSettings *settings = gui_manipulator->ReturnSettings();
 				new_buffer = gui_manipulator->ManipulateBitmap(settings,buffer,selection,status_bar);
@@ -1525,13 +1523,15 @@ int32 ImageView::ManipulatorFinisherThread()
 			else {
 				new_buffer = the_manipulator->ManipulateBitmap(buffer,selection,status_bar);
 			}
-			if ((new_buffer != NULL) && (new_buffer != buffer)) {
-				the_layer->ChangeBitmap(new_buffer);
-			}
-			BRegion affected_region;
 
-			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),the_image->ReturnThumbnailImage());
+			Layer *the_layer = the_image->ReturnActiveLayer();
+			if (new_buffer && new_buffer != buffer)
+				the_layer->ChangeBitmap(new_buffer);
+
+			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),
+				the_image->ReturnThumbnailImage());
 			if (new_event != NULL) {
+				BList *layer_list = the_image->LayerList();
 				for (int32 i=0;i<layer_list->CountItems();i++) {
 					Layer *layer = (Layer*)layer_list->ItemAt(i);
 
@@ -1539,8 +1539,11 @@ int32 ImageView::ManipulatorFinisherThread()
 					if ((layer != the_layer) || (new_buffer == NULL))
 						new_action = new UndoAction(layer->Id());
 					else {
-						affected_region.Set(new_buffer->Bounds());
-						new_action = new UndoAction(layer->Id(),the_manipulator->ReturnSettings(),new_buffer->Bounds(),(manipulator_type)manip_type,add_on_id);
+						BRegion affected_region(new_buffer->Bounds());
+						new_action = new UndoAction(layer->Id(),
+							the_manipulator->ReturnSettings(),
+							new_buffer->Bounds(),
+							(manipulator_type)manip_type, add_on_id);
 					}
 					new_event->AddAction(new_action);
 					new_action->StoreUndo(layer->Bitmap());
@@ -1549,24 +1552,29 @@ int32 ImageView::ManipulatorFinisherThread()
 		}
 		else {
 			// Do all the layers.
-			// Here we record the dimensions of all the bitmaps. If the dimensions change
-			// the composite bitmap should be changed to smallest layer dimension.
-			BList *layer_list = the_image->LayerList();
-			if (status_bar != NULL)
-				status_bar->SetMaxValue(layer_list->CountItems()*100);
+			// Here we record the dimensions of all the bitmaps. If the
+			// dimensions change the composite bitmap should be changed to
+			// smallest layer dimension.
 
-			BRegion affected_region;
-			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),the_image->ReturnThumbnailImage());
-			for (int32 i=0;i<layer_list->CountItems();i++) {
-				char text[256];
-				sprintf(text,"%s %ld/%ld",StringServer::ReturnString(LAYER_STRING),i+1,layer_list->CountItems());
-				if (LockLooper() == true) {
+			BList* layer_list = the_image->LayerList();
+			int32 layerCount = layer_list->CountItems();
+			if (status_bar != NULL)
+				status_bar->SetMaxValue(layerCount * 100);
+
+			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),
+				the_image->ReturnThumbnailImage());
+
+			for (int32 i = 0; i < layerCount; ++i) {
+				if (LockLooper()) {
+					char text[256];
+					sprintf(text,"%s %ld / %ld",
+						StringServer::ReturnString(LAYER_STRING), i + 1, layerCount);
 					status_bar->SetTrailingText(text);
-//					status_bar->Invalidate();
 					UnlockLooper();
 				}
-				Layer *the_layer = (Layer*)layer_list->ItemAt(i);
-				BBitmap *buffer = the_layer->Bitmap();;
+
+				Layer* the_layer = static_cast<Layer*> (layer_list->ItemAt(i));
+				BBitmap *buffer = the_layer->Bitmap();
 				BBitmap *new_buffer;
 				if (gui_manipulator != NULL) {
 					ManipulatorSettings *settings = gui_manipulator->ReturnSettings();
@@ -1576,14 +1584,13 @@ int32 ImageView::ManipulatorFinisherThread()
 				else {
 					new_buffer = the_manipulator->ManipulateBitmap(buffer,selection,status_bar);
 				}
-				if ((new_buffer != NULL) && (new_buffer != buffer)) {
+
+				if (new_buffer && new_buffer != buffer)
 					the_layer->ChangeBitmap(new_buffer);
-	//				delete buffer;		The layer deletes this itself
-				}
 
 				if (new_event != NULL) {
 					if (new_buffer != NULL) {
-						affected_region.Set(new_buffer->Bounds());
+						BRegion affected_region(new_buffer->Bounds());
 						UndoAction *new_action;
 						new_action = new UndoAction(the_layer->Id(),the_manipulator->ReturnSettings(),new_buffer->Bounds(),(manipulator_type)manip_type,add_on_id);
 
