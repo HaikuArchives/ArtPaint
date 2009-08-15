@@ -17,10 +17,12 @@
 #include "StringServer.h"
 
 
+#include <Bitmap.h>
 #include <ScrollBar.h>
 #include <StringView.h>
 
 
+#include <new>
 #include <stdio.h>
 
 
@@ -270,7 +272,7 @@ void LayerWindow::Update()
 		layer_window->list_view->ScrollBar(B_VERTICAL)->SetValue(scroll_bar_old_value);
 
 		layer_window->title_view->SetText(window_title);
-		layer_window->bitmap_view->SetBitmap(composite_image);
+		layer_window->bitmap_view->SetBitmap(new (std::nothrow) BBitmap(composite_image));
 		layer_window->bitmap_view->Invalidate();
 
 		layer_window->Unlock();
