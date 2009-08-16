@@ -1211,7 +1211,7 @@ void ColorContainer::setUpContainer(BRect frame, int32 number_of_colors,bool add
 		server->GetPicture(LEFT_ARROW, &arrow_not_pushed);
 		server->GetPicture(LEFT_ARROW_PUSHED, &arrow_pushed);
 
-		left_arrow = new BPictureButton(BRect(0, 0, 1, 1), "left_arrow",
+		left_arrow = new BPictureButton(BRect(0, 0, 8, 12), "left_arrow",
 			&arrow_not_pushed, &arrow_pushed, new BMessage(HS_PREVIOUS_PALETTE));
 		AddChild(left_arrow);
 		left_arrow->ResizeToPreferred();
@@ -1220,7 +1220,7 @@ void ColorContainer::setUpContainer(BRect frame, int32 number_of_colors,bool add
 		server->GetPicture(RIGHT_ARROW, &arrow_not_pushed);
 		server->GetPicture(RIGHT_ARROW_PUSHED, &arrow_pushed);
 
-		right_arrow = new BPictureButton(BRect(0, 0, 1, 1), "right_arrow",
+		right_arrow = new BPictureButton(BRect(0, 0, 8, 12), "right_arrow",
 			&arrow_not_pushed, &arrow_pushed, new BMessage(HS_NEXT_PALETTE));
 		AddChild(right_arrow);
 		right_arrow->ResizeToPreferred();
