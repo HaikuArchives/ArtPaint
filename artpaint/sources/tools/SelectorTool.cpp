@@ -335,8 +335,8 @@ SelectorTool::CheckUpperSpans(BPoint span_start, BitmapDrawer* drawer,
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))
-		&& ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
+		&& ((*(binary_bits + y*binary_bpr + (x/*/8*/))&(0x01/* << (7-x%8)*/)) == 0x00) ) {
+		*(binary_bits + y*binary_bpr + (x/*/8*/))/* |= (0x01 << (7 - x%8))*/ = 0xff;
 		if ( (inside_upper_span == false)
 			&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y-1));
@@ -356,8 +356,8 @@ SelectorTool::CheckUpperSpans(BPoint span_start, BitmapDrawer* drawer,
 	x = start_x + 1;
 	while ((x <= max_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance))
-		&& ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
+		&& ((*(binary_bits + y*binary_bpr + (x/*/8*/))&(0x01/* << (7-x%8)*/)) == 0x00)  ) {
+		*(binary_bits + y*binary_bpr + (x/*/8*/))/* |= (0x01 << (7 - x%8))*/ = 0xff;
 		if ( (inside_upper_span == false)
 			&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y-1));
@@ -391,8 +391,8 @@ SelectorTool::CheckBothSpans(BPoint span_start, BitmapDrawer* drawer,
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance))
-		&& ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
+		&& ((*(binary_bits + y*binary_bpr + (x/*/8*/))&(0x01/* << (7-x%8)*/)) == 0x00)  ) {
+		*(binary_bits + y*binary_bpr + (x/*/8*/))/* |= (0x01 << (7 - x%8))*/ = 0xff;
 
 		if ( (inside_lower_span == false)
 			&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
@@ -426,8 +426,8 @@ SelectorTool::CheckBothSpans(BPoint span_start, BitmapDrawer* drawer,
 	x = start_x + 1;
 	while ( (x <= max_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))
-		&& ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
+		&& ((*(binary_bits + y*binary_bpr + (x/*/8*/))&(0x01/* << (7-x%8)*/)) == 0x00) ) {
+		*(binary_bits + y*binary_bpr + (x/*/8*/)) /*|= (0x01 << (7 - x%8))*/ = 0xff;
 
 		if ( (inside_lower_span == false)
 			&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
@@ -471,8 +471,8 @@ SelectorTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x,
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) ) {
-		*(binary_bits + y*binary_bpr + (x/8)) =
-			*(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
+		*(binary_bits + y*binary_bpr + (x/*/8*/)) = 0xff;
+			/**(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));*/
 		x--;
 	}
 
@@ -480,8 +480,8 @@ SelectorTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x,
 	x = start_x + 1;
 	while ( (x <= max_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) ) {
-		*(binary_bits + y*binary_bpr + (x/8)) =
-			*(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
+		*(binary_bits + y*binary_bpr + (x/*/8*/)) = 0xff;
+			/**(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));*/
 		x++;
 	}
 }
@@ -491,25 +491,17 @@ BBitmap*
 SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 	int32 min_y, int32 max_y, uint32 old_color, BPoint start)
 {
-	// This function makes a binary bitmap of the image. It contains ones where the
-	// flood fill should fill and zeroes elsewhere.
-	BBitmap *binary_map;
-	binary_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),B_MONOCHROME_1_BIT);
-	uchar *binary_bits = (uchar*)binary_map->Bits();
-	int32 binary_bitslength = binary_map->BitsLength();
-
-	// Clear the binary map.
-	for (int32 i=0;i<binary_bitslength;i++)
-		*binary_bits++ = 0x00;
-
-	binary_bits = (uchar*)binary_map->Bits();
+	// This function makes a binary bitmap of the image. It contains 255 where
+	// the flood fill should fill and zeroes elsewhere.
+	BBitmap* map = new BBitmap(BRect(min_x, min_y, max_x, max_y), B_GRAY8);
+	memset(map->Bits(), 0x00, map->BitsLength());
 
 	// Here fill the area using drawer's SetPixel and GetPixel.
 	// The algorithm uses 4-connected version of flood-fill.
 	// The SetPixel and GetPixel functions are versions that
 	// do not check bounds so we have to be careful not to exceed
 	// bitmap's bounds.
-	uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
+	uint32 tolerance = (uint32)((float)settings.tolerance / 100.0 * 255);
 
 	PointStack stack;
 	stack.Push(start);
@@ -518,24 +510,24 @@ SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 		BPoint span_start = stack.Pop();
 		if ( (span_start.y == min_y) && (min_y != max_y) ) {
 			// Only check the spans below this line
-			CheckLowerSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,binary_map);
+			CheckLowerSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,map);
 		}
 		else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 			// Only check the spans above this line.
-			CheckUpperSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,binary_map);
+			CheckUpperSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,map);
 		}
 		else if (min_y != max_y) {
 			// Check the spans above and below this line.
-			CheckBothSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,binary_map);
+			CheckBothSpans(span_start,drawer, stack,min_x,max_x,old_color,tolerance,map);
 		}
 		else {
 			// The image is only one pixel high. Check the only span.
-			FillSpan(span_start,drawer,min_x,max_x,old_color,tolerance,binary_map);
+			FillSpan(span_start, drawer, min_x, max_x, old_color, tolerance,map);
 		}
 	}
 
 	// Remember to NULL the attribute binary_fill_map
-	return binary_map;
+	return map;
 }
 
 
@@ -557,8 +549,8 @@ SelectorTool::CheckLowerSpans(BPoint span_start, BitmapDrawer* drawer,
 	// Then go from start towards the left side of the bitmap.
 	while ( (x >= min_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))
-		&& ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
+		&& ((*(binary_bits + y*binary_bpr + (x/*/8*/))&(0x01/* << (7-x%8)*/)) == 0x00) ) {
+		*(binary_bits + y*binary_bpr + (x/*/8*/))/* |= (0x01 << (7 - x%8))*/ = 0xff;
 		if ( (inside_lower_span == false)
 			&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y+1));
@@ -578,8 +570,8 @@ SelectorTool::CheckLowerSpans(BPoint span_start, BitmapDrawer* drawer,
 	x = start_x + 1;
 	while ( (x <= max_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))
-		&& ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-		*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
+		&& ((*(binary_bits + y*binary_bpr + (x/*/8*/))&(0x01/* << (7-x%8)*/)) == 0x00)  ) {
+		*(binary_bits + y*binary_bpr + (x/*/8*/))/* |= (0x01 << (7 - x%8))*/ = 0xff;
 		if ( (inside_lower_span == false)
 			&& (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
 			stack.Push(BPoint(x,y+1));

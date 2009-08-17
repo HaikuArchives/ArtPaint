@@ -1,123 +1,66 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <string.h>
 
 #include "Selection.h"
-#include "Patterns.h"
+
 #include "HSPolygon.h"
 #include "ImageView.h"
+#include "Patterns.h"
+
+
+#include <Debug.h>
 #include <Window.h>
 
 
-//#define DEBUG 1
-#include <Debug.h>
+#include <new>
+#include <string.h>
 
-Selection::Selection(BRect iBounds)
+
+Selection::Selection(BRect imageBounds)
+	: selection_data(NULL)
+	, original_selections(NULL)
+	, selection_map(NULL)
+	, selection_view(NULL)
+	, selection_bits(NULL)
+	, selection_bpr(0)
+	, selection_bounds(imageBounds)
+	, image_bounds(imageBounds)
+	, image_view(NULL)
+	, needs_recalculating(false)
+	, view_magnifying_scale(0)
+	, animation_offset(0)
+	, drawer_thread(-1)
+	, continue_drawing(false)
+	, selection_mutex(-1)
 {
-	// iBounds is the dimensions of the image.
-	number_of_rows = iBounds.IntegerHeight() + 1;
-	pixels_in_a_row = iBounds.IntegerWidth() + 1;
-	image_bounds = iBounds;
-	image_view = NULL;
-
-	view_magnifying_scale = 0;
-
-	selection_map = NULL;
-	selection_bits = NULL;
-	selection_bpr = 0;
-
-	// At this point the bounding rectangle of the selection is the same as the
-	// whole images bounding rectangle.
-	selection_bounds = image_bounds;
-
-	animation_offset = 0;
-
-//	selections = new BList();
 	selection_data = new SelectionData();
-	original_selections = NULL;
-	selection_iterator = NULL;
-	drawer_thread = -1;
-	continue_drawing = FALSE;
-
-	needs_recalculating = FALSE;
-
-	selection_mutex = create_sem(1,"selection_mutex");
-//	test_window = new BWindow(iBounds,"win",B_TITLED_WINDOW,NULL);
-//	test_view = new BView(iBounds,"view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW);
-//	test_window->AddChild(test_view);
-//	test_window->Show();
+	selection_mutex = create_sem(1, "selection_mutex");
 }
 
-
-Selection::Selection(const Selection *sel)
-{
-	number_of_rows = sel->number_of_rows;
-	pixels_in_a_row = sel->pixels_in_a_row;
-	needs_recalculating = sel->needs_recalculating;
-
-	selection_data = new SelectionData(sel->selection_data);
-
-	if (sel->original_selections != NULL) {
-		original_selections = new HSPolygon*[selection_data->SelectionCount()];
-		for (int32 i=0;i<sel->selection_data->SelectionCount();i++) {
-			original_selections[i] = new HSPolygon(sel->original_selections[i]);
-		}
-	}
-	else
-		original_selections = NULL;
-
-	if (sel->selection_map != NULL) {
-		sel->selection_map->Lock();
-		selection_map = new BBitmap(sel->selection_map->Bounds(),sel->selection_map->ColorSpace(),TRUE);
-		selection_map->Lock();
-		selection_view = new BView(sel->selection_view->Bounds(),"selection view",B_FOLLOW_NONE,B_WILL_DRAW);
-		selection_map->AddChild(selection_view);
-		selection_bits = (uint8*)selection_map->Bits();
-
-		selection_bpr = selection_map->BytesPerRow();
-		for (int32 i=0;i<selection_map->BitsLength();i++)
-			*(selection_bits + i) = *(sel->selection_bits + i);
-		sel->selection_map->Unlock();
-		selection_map->Unlock();
-	}
-	else {
-		selection_view = NULL;
-		selection_map = NULL;
-	}
-
-	image_bounds = sel->image_bounds;
-	selection_bounds = sel->selection_bounds;
-	needs_recalculating = sel->needs_recalculating;
-	image_view = NULL;
-	selection_iterator = NULL;
-	view_magnifying_scale = sel->view_magnifying_scale;
-	drawer_thread = -1;
-	continue_drawing = FALSE;
-	selection_mutex = create_sem(1,"selection_mutex");
-}
 
 Selection::~Selection()
 {
-	if (original_selections != NULL) {
-		for (int32 i=0;i<selection_data->SelectionCount();i++) {
+	if (original_selections) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		}
-		delete[] original_selections;
+		delete [] original_selections;
 		original_selections = NULL;
 	}
 
 	delete selection_data;
 
-	if (continue_drawing == TRUE) {
-		continue_drawing = FALSE;
+	if (continue_drawing) {
+		continue_drawing = false;
 		status_t value;
-		wait_for_thread(drawer_thread,&value);
+		wait_for_thread(drawer_thread, &value);
 	}
 
 	delete_sem(selection_mutex);
@@ -125,178 +68,208 @@ Selection::~Selection()
 
 
 
-void Selection::SetSelectionData(const SelectionData *data)
+void
+Selection::SetSelectionData(const SelectionData *data)
 {
 	acquire_sem(selection_mutex);
+
 	if (!(*selection_data == *data)) {
 		delete selection_data;
 		selection_data = new SelectionData(data);
 	}
-	if (selection_data->SelectionCount() == 0) {
+
+	if (selection_data->SelectionCount() == 0)
 		Clear();
-	}
 	else if (selection_map == NULL) {
-		selection_map = new BBitmap(image_bounds,B_GRAY1,TRUE);
-		selection_view = new BView(image_bounds,"selection view",B_FOLLOW_NONE,B_WILL_DRAW);
+		selection_map = new BBitmap(image_bounds ,B_GRAY8, true);
+		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE, B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
 		selection_bits = (uint8*)selection_map->Bits();
 		selection_bpr = selection_map->BytesPerRow();
+
+		if (selection_map->Lock()) {
+			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			selection_map->Unlock();
+		}
 	}
-	needs_recalculating = TRUE;
+
+	needs_recalculating = true;
 	Recalculate();
+
 	release_sem(selection_mutex);
 
-	// Restart drawing. If the drawing is already going on this does nothing.
-	StartDrawing(image_view,view_magnifying_scale);
+	StartDrawing(image_view, view_magnifying_scale);
 }
 
-void Selection::StartDrawing(BView *view, float mag_scale)
+
+void
+Selection::StartDrawing(BView *view, float mag_scale)
 {
-	if (continue_drawing == FALSE) {
+	if (continue_drawing == false) {
 		int32 value;
 		wait_for_thread(drawer_thread,&value);
-		continue_drawing = TRUE;
+		continue_drawing = true;
 
 		image_view = view;
 		view_magnifying_scale = mag_scale;
 
-		drawer_thread = spawn_thread(&thread_entry_func,"selection drawer",B_NORMAL_PRIORITY,(void*)this);
+		drawer_thread = spawn_thread(&thread_entry_func, "selection drawer",
+			B_NORMAL_PRIORITY, (void*)this);
 		resume_thread(drawer_thread);
 	}
 }
 
 
-void Selection::AddSelection(HSPolygon *poly,bool add_to_selection)
+void
+Selection::AddSelection(HSPolygon *poly, bool add_to_selection)
 {
-	// Selections are HS_POLYGON_CLOCKWISE and de-selections HS_POLYGON_COUNTERCLOCKWISE
 	acquire_sem(selection_mutex);
-	if (original_selections != NULL) {
-		for (int32 i=0;i<selection_data->SelectionCount();i++) {
+
+	if (original_selections) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		}
-		delete[] original_selections;
+		delete [] original_selections;
 		original_selections = NULL;
 	}
 
-	selection_bounds = BRect(0,0,-1,-1);
-	HSPolygon *bound_poly = NULL;
+	selection_bounds = BRect();
+	HSPolygon* bound_poly = NULL;
 
-	if (add_to_selection) {
-		poly->ChangeDirection(HS_POLYGON_CLOCKWISE);
-	}
-	else {
+	// Selections are HS_POLYGON_CLOCKWISE and de-selections
+	// HS_POLYGON_COUNTERCLOCKWISE
+	if (!add_to_selection) {
 		poly->ChangeDirection(HS_POLYGON_COUNTERCLOCKWISE);
-		if (IsEmpty() == TRUE) {
+		if (IsEmpty()) {
 			BPoint points[4];
 			points[0] = image_bounds.LeftTop();
 			points[1] = image_bounds.RightTop();
 			points[2] = image_bounds.RightBottom();
 			points[3] = image_bounds.LeftBottom();
-			bound_poly = new HSPolygon(points,4);
-			bound_poly->ChangeDirection(HS_POLYGON_CLOCKWISE);
-//			bound_poly->SetMaximumInterPointDistance(MAXIMUM_INTER_POINT_DISTANCE);
-			selection_data->AddSelection(bound_poly);
+			bound_poly = new (std::nothrow) HSPolygon(points, 4);
+			if (bound_poly) {
+				bound_poly->ChangeDirection(HS_POLYGON_CLOCKWISE);
+				selection_data->AddSelection(bound_poly);
+			}
 		}
+	} else {
+		poly->ChangeDirection(HS_POLYGON_CLOCKWISE);
 	}
 
 	selection_data->AddSelection(poly);
 
 	if (selection_map == NULL) {
-		selection_map = new BBitmap(image_bounds,B_GRAY1,TRUE);
-		selection_view = new BView(image_bounds,"selection view",B_FOLLOW_NONE,B_WILL_DRAW);
+		selection_map = new BBitmap(image_bounds, B_GRAY8, true);
+		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE, B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
 		selection_bits = (uint8*)selection_map->Bits();
 		selection_bpr = selection_map->BytesPerRow();
+
+		if (selection_map->Lock()) {
+			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			selection_map->Unlock();
+		}
 	}
 
-	BPolygon *p = poly->GetBPolygon();
-	selection_map->Lock();
-	if (add_to_selection)
-		selection_view->FillPolygon(p,B_SOLID_HIGH);
-	else {
-		if (bound_poly != NULL)
-			selection_view->FillPolygon(bound_poly->GetBPolygon(),B_SOLID_HIGH);
+	if (selection_map->Lock()) {
+		BPolygon *p = poly->GetBPolygon();
+		if (!add_to_selection) {
+			if (bound_poly) {
+				BPolygon* polygon = bound_poly->GetBPolygon();
+				selection_view->FillPolygon(polygon, B_SOLID_LOW);
+				delete polygon;
+			}
+			selection_view->FillPolygon(p, B_SOLID_HIGH);
+		} else {
+			selection_view->FillPolygon(p, B_SOLID_LOW);
+		}
 
-		selection_view->FillPolygon(p,B_SOLID_LOW);
+		selection_view->Sync();
+		selection_map->Unlock();
+		delete p;
 	}
-
-	selection_view->Sync();
-	selection_map->Unlock();
-	delete p;
-
 
 	SimplifySelection();
+
 	release_sem(selection_mutex);
 }
 
 
-
-void Selection::AddSelection(BBitmap *bitmap,bool add_to_selection)
+void
+Selection::AddSelection(BBitmap *bitmap, bool add_to_selection)
 {
+	if (!bitmap)
+		return;
+
 	acquire_sem(selection_mutex);
-	if (bitmap != NULL) {
-		selection_bounds = BRect(0,0,-1,-1);
-		if (original_selections != NULL) {
-			for (int32 i=0;i<selection_data->SelectionCount();i++) {
-				delete original_selections[i];
-			}
-			delete[] original_selections;
-			original_selections = NULL;
-		}
 
-		if (selection_map == NULL) {
-			selection_map = new BBitmap(image_bounds,B_GRAY1,TRUE);
-			selection_view = new BView(image_bounds,"selection view",B_FOLLOW_NONE,B_WILL_DRAW);
-			selection_map->AddChild(selection_view);
-			selection_bits = (uint8*)selection_map->Bits();
-			selection_bpr = selection_map->BytesPerRow();
-
-			if (add_to_selection == FALSE) {
-				selection_map->Lock();
-				selection_view->FillRect(selection_map->Bounds(),B_SOLID_HIGH);
-				selection_view->Sync();
-				selection_map->Unlock();
-			}
-		}
-		uint8 *old_bits = (uint8*)selection_map->Bits();
-		uint8 *new_bits = (uint8*)bitmap->Bits();
-
-		uint32 old_bpr = selection_map->BytesPerRow();
-		uint32 new_bpr = bitmap->BytesPerRow();
-		int32 width = min_c(old_bpr,new_bpr);
-		int32 height = min_c(selection_map->Bounds().IntegerHeight(),bitmap->Bounds().IntegerHeight());
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<width;x++) {
-				if (add_to_selection == TRUE) {
-					*(old_bits + x + y*old_bpr) = *(old_bits + x + y*old_bpr) | *(new_bits + x + y*new_bpr);
-				}
-				else {
-					*(old_bits + x + y*old_bpr) = *(old_bits + x + y*old_bpr) & ~(*(new_bits + x + y*new_bpr));
-				}
-			}
-		}
-		SimplifySelection();
-	}
-	release_sem(selection_mutex);
-}
-
-void Selection::Clear()
-{
-	if (original_selections != NULL) {
-		for (int32 i=0;i<selection_data->SelectionCount();i++) {
+	if (original_selections) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		}
-		delete[] original_selections;
+		delete [] original_selections;
 		original_selections = NULL;
 	}
 
-	if (IsEmpty() == FALSE) {
+	selection_bounds = BRect();
+
+	if (selection_map == NULL) {
+		selection_map = new BBitmap(image_bounds, B_GRAY8, true);
+		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE, B_WILL_DRAW);
+		selection_map->AddChild(selection_view);
+		selection_bits = (uint8*)selection_map->Bits();
+		selection_bpr = selection_map->BytesPerRow();
+
+		if (selection_map->Lock()) {
+			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			selection_map->Unlock();
+		}
+
+		if (!add_to_selection) {
+			selection_map->Lock();
+			selection_view->FillRect(selection_map->Bounds(), B_SOLID_LOW);
+			selection_view->Sync();
+			selection_map->Unlock();
+		}
+	}
+
+	uint32 new_bpr = bitmap->BytesPerRow();
+	uint8* new_bits = (uint8*)bitmap->Bits();
+
+	int32 width = min_c(selection_bpr, new_bpr);
+	int32 height
+		= min_c(image_bounds.IntegerHeight(), bitmap->Bounds().IntegerHeight());
+	for (int32 y = 0; y <= height; ++y) {
+		for (int32 x = 0; x < width; ++x) {
+			uint8* ptr = selection_bits + x + y * selection_bpr;
+			if (add_to_selection) {
+				*ptr = *ptr | *(new_bits + x + y * new_bpr);
+			} else {
+				*ptr = *ptr & ~(*(new_bits + x + y * new_bpr));
+			}
+		}
+	}
+
+	SimplifySelection();
+
+	release_sem(selection_mutex);
+}
+
+
+void
+Selection::Clear()
+{
+	if (original_selections) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
+			delete original_selections[i];
+		delete [] original_selections;
+		original_selections = NULL;
+	}
+
+	if (!IsEmpty()) {
 		delete selection_map;
 		selection_map = NULL;
 		selection_bits = NULL;
 		selection_bpr = 0;
 		selection_bounds = image_bounds;
-
 		selection_data->EmptySelectionData();
 	}
 
@@ -304,139 +277,150 @@ void Selection::Clear()
 }
 
 
-
-void Selection::Dilatate()
+void
+Selection::Dilatate()
 {
-	/*
-		This uses two bitmaps to dilatate the selection. Dilatation is done with the following
-		pattern:
-					0	0	0
-					0	X	0
-					0	0	0
-
-		The pattern is moved over the original selection and whenever the x is inside the selection,
-		all 0s and X will be marked selected in the new selection. Otherwise x will be marked not selected.
-		First and last row/column must be handled as a special case
-
-	*/
 	acquire_sem(selection_mutex);
-	selection_bounds = BRect(0,0,-1,-1);
+
+	/*
+		This uses two bitmaps to dilatate the selection. Dilatation is done with
+		the following pattern:
+
+		0	0	0
+		0	X	0
+		0	0	0
+
+		The pattern is moved over the original selection and whenever the x is
+		inside the selection, all 0s and X will be marked selected in the new
+		selection. Otherwise x will be marked not selected. First and last
+		row/column must be handled as a special case
+	*/
+	selection_bounds = BRect();
 
 	if (selection_map != NULL) {
-		BBitmap *new_map = new BBitmap(selection_map->Bounds(),B_GRAY1);
+		BBitmap *new_map = new BBitmap(selection_map->Bounds(), B_GRAY8);
+		int32 new_bpr = new_map->BytesPerRow();
+		int8 *new_bits = (int8*)new_map->Bits();
+
+		memcpy(new_bits, selection_map->Bits(), selection_map->BitsLength());
+
 		int32 width = selection_map->Bounds().IntegerWidth();
 		int32 height = selection_map->Bounds().IntegerHeight();
-		int8 *new_bits = (int8*)new_map->Bits();
-		int8 *old_bits = (int8*)selection_map->Bits();
-		int32 bits_length = selection_map->BitsLength();
-		int32 new_bpr = new_map->BytesPerRow();
-		memcpy(new_bits,old_bits,bits_length);
-
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				if (ContainsPoint(x,y)) {
-					if (x>0) {
-						*(new_bits + y*new_bpr + (x-1)/8) |= (0x80 >> ((x-1)%8));
+		for (int32 y = 0; y <= height; ++y) {
+			for (int32 x = 0; x <= width; ++x) {
+				if (ContainsPoint(x, y)) {
+					if (x > 0) {
+						*(new_bits + y * new_bpr + (x - 1)) = 0xff;
 						if (y > 0) {
-							*(new_bits + (y-1)*new_bpr + (x-1)/8) |= (0x80 >> ((x-1)%8));
-							*(new_bits + (y-1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y - 1) * new_bpr + (x - 1)) = 0xff;
+							*(new_bits + (y - 1) * new_bpr + x) = 0xff;
 						}
 						if (y < height) {
-							*(new_bits + (y+1)*new_bpr + (x-1)/8) |= (0x80 >> ((x-1)%8));
-							*(new_bits + (y+1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y + 1) * new_bpr + (x - 1)) = 0xff;
+							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
 						}
 					}
 					if (x<width) {
-						*(new_bits + y*new_bpr + (x+1)/8) |= (0x80 >> ((x+1)%8));
+						*(new_bits + y * new_bpr + (x + 1)) = 0xff;
 						if (y > 0) {
-							*(new_bits + (y-1)*new_bpr + (x+1)/8) |= (0x80 >> ((x+1)%8));
-							*(new_bits + (y-1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y - 1) * new_bpr + (x + 1)) = 0xff;
+							*(new_bits + (y - 1) * new_bpr + x) = 0xff;
 						}
 						if (y < height) {
-							*(new_bits + (y+1)*new_bpr + (x+1)/8) |= (0x80 >> ((x+1)%8));
-							*(new_bits + (y+1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y + 1) * new_bpr + (x + 1)) = 0xff;
+							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
 						}
 					}
 				}
 			}
 		}
 
-		memcpy(old_bits,new_bits,bits_length);
+		memcpy(selection_map->Bits(), new_bits, selection_map->BitsLength());
 		delete new_map;
 
 		SimplifySelection();
 	}
+
 	release_sem(selection_mutex);
 }
 
 
-void Selection::Erode()
+void
+Selection::Erode()
 {
-	// This is almost like dilatation. First we invert the bitmap, then dilatate and then invert again.
-
 	acquire_sem(selection_mutex);
-	selection_bounds = BRect(0,0,-1,-1);
-	if (selection_map != NULL) {
-		BBitmap *new_map = new BBitmap(selection_map->Bounds(),B_GRAY1);
-		int32 width = selection_map->Bounds().IntegerWidth();
-		int32 height = selection_map->Bounds().IntegerHeight();
-		int8 *new_bits = (int8*)new_map->Bits();
+
+	// This is almost like dilatation. First we invert the bitmap, then dilatate
+	// and then invert again.
+
+	selection_bounds = BRect();
+
+	if (selection_map) {
 		int8 *old_bits = (int8*)selection_map->Bits();
 		int32 bits_length = selection_map->BitsLength();
-		int32 new_bpr = new_map->BytesPerRow();
-		for (int32 i=0;i<bits_length;i++) {
+		for (int32 i = 0; i < bits_length; ++i) {
 			*old_bits = ~(*old_bits);
 			old_bits++;
 		}
 		old_bits = (int8*)selection_map->Bits();
 
-		memcpy(new_bits,old_bits,bits_length);
+		BBitmap* new_map = new BBitmap(selection_map->Bounds(), B_GRAY8);
+		int32 new_bpr = new_map->BytesPerRow();
+		int8 *new_bits = (int8*)new_map->Bits();
 
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				if (ContainsPoint(x,y)) {
-					if (x>0) {
-						*(new_bits + y*new_bpr + (x-1)/8) |= (0x80 >> ((x-1)%8));
+		memcpy(new_bits, old_bits, bits_length);
+
+		int32 width = selection_map->Bounds().IntegerWidth();
+		int32 height = selection_map->Bounds().IntegerHeight();
+		for (int32 y = 0; y <= height; ++y) {
+			for (int32 x = 0; x <= width; ++x) {
+				if (ContainsPoint(x, y)) {
+					if (x > 0) {
+						*(new_bits + y * new_bpr + (x - 1)) = 0xff;
 						if (y > 0) {
-							*(new_bits + (y-1)*new_bpr + (x-1)/8) |= (0x80 >> ((x-1)%8));
-							*(new_bits + (y-1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y - 1) * new_bpr + (x - 1)) = 0xff;
+							*(new_bits + (y - 1) * new_bpr + x) = 0xff;
 						}
 						if (y < height) {
-							*(new_bits + (y+1)*new_bpr + (x-1)/8) |= (0x80 >> ((x-1)%8));
-							*(new_bits + (y+1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y + 1) * new_bpr + (x - 1)) = 0xff;
+							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
 						}
 					}
 					if (x<width) {
-						*(new_bits + y*new_bpr + (x+1)/8) |= (0x80 >> ((x+1)%8));
+						*(new_bits + y * new_bpr + (x + 1)) = 0xff;
 						if (y > 0) {
-							*(new_bits + (y-1)*new_bpr + (x+1)/8) |= (0x80 >> ((x+1)%8));
-							*(new_bits + (y-1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y - 1) * new_bpr + (x + 1)) = 0xff;
+							*(new_bits + (y - 1) * new_bpr + x) = 0xff;
 						}
 						if (y < height) {
-							*(new_bits + (y+1)*new_bpr + (x+1)/8) |= (0x80 >> ((x+1)%8));
-							*(new_bits + (y+1)*new_bpr + x/8) |= (0x80 >> (x%8));
+							*(new_bits + (y + 1) * new_bpr + (x + 1)) = 0xff;
+							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
 						}
 					}
 				}
 			}
 		}
 
-		memcpy(old_bits,new_bits,bits_length);
+		memcpy(old_bits, new_bits, bits_length);
 		delete new_map;
-		for (int32 i=0;i<bits_length;i++) {
+
+		for (int32 i = 0; i < bits_length; ++i) {
 			*old_bits = ~(*old_bits);
 			old_bits++;
 		}
 
 		SimplifySelection();
 	}
+
 	release_sem(selection_mutex);
 }
 
 
-void Selection::Draw()
+void
+Selection::Draw()
 {
 	acquire_sem(selection_mutex);
+
 	BRect in_rect;
 	BRect out_rect;
 	int32 ao = animation_offset;
@@ -517,58 +501,65 @@ void Selection::Translate(int32 dx, int32 dy)
 	release_sem(selection_mutex);
 }
 
-void Selection::Recalculate()
+
+void
+Selection::Recalculate()
 {
-	if (needs_recalculating == TRUE) {
-		if (original_selections != NULL) {
-			for (int32 i=0;i<selection_data->SelectionCount();i++) {
+	if (needs_recalculating) {
+		if (original_selections) {
+			for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 				delete original_selections[i];
-			}
-			delete[] original_selections;
+			delete [] original_selections;
 			original_selections = NULL;
 		}
 
-		if (selection_map != NULL) {
+		if (selection_map && selection_map->Lock()) {
 			// First clear the selection
-			for (int32 i=0;i<selection_map->BitsLength();i++) {
-				selection_bits[i] = 0x00;
-			}
+			selection_view->FillRect(selection_map->Bounds(), B_SOLID_HIGH);
+			selection_view->Sync();
 
-			selection_map->Lock();
-			for (int32 i=0;i<selection_data->SelectionCount();i++) {
-				HSPolygon *p = selection_data->ReturnSelectionAt(i);
-				if (p->GetDirection() == HS_POLYGON_CLOCKWISE) {	// A selection
-					selection_view->FillPolygon(p->GetBPolygon(),B_SOLID_HIGH);
-				}
-				else if (p->GetDirection() == HS_POLYGON_COUNTERCLOCKWISE) {	// A de-selection
-					selection_view->FillPolygon(p->GetBPolygon(),B_SOLID_LOW);
+			for (int32 i = 0; i < selection_data->SelectionCount(); ++i) {
+				if (HSPolygon* p = selection_data->ReturnSelectionAt(i)) {
+					BPolygon* bPoly = p->GetBPolygon();
+					if (p->GetDirection() == HS_POLYGON_CLOCKWISE) {
+						// selection
+						selection_view->FillPolygon(bPoly, B_SOLID_LOW);
+					} else if (p->GetDirection() == HS_POLYGON_COUNTERCLOCKWISE) {
+						// a de-selection
+						selection_view->FillPolygon(bPoly, B_SOLID_HIGH);
+					}
+					delete bPoly;
 				}
 			}
 			selection_view->Sync();
 			selection_map->Unlock();
 		}
 
-//		SimplifySelection();
-		selection_bounds = BRect(0,0,-1,-1);
-		needs_recalculating = FALSE;
+		needs_recalculating = false;
+		selection_bounds = BRect(0, 0, -1, -1);
 	}
 }
 
 
-
-void Selection::ImageSizeChanged(BRect rect)
+void
+Selection::ImageSizeChanged(BRect rect)
 {
 	acquire_sem(selection_mutex);
 	if (rect != image_bounds) {
 		image_bounds = rect;
 		if (selection_map != NULL) {
 			BBitmap *previous_map = selection_map;
-			selection_map = new BBitmap(image_bounds, B_GRAY1, true);
+			selection_map = new BBitmap(image_bounds, B_GRAY8, true);
 			selection_view = new BView(image_bounds, "selection view",
 				B_FOLLOW_NONE, B_WILL_DRAW);
 			selection_map->AddChild(selection_view);
 			selection_bits = (uint8*)selection_map->Bits();
 			selection_bpr = selection_map->BytesPerRow();
+
+			if (selection_map->Lock()) {
+				selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+				selection_map->Unlock();
+			}
 
 			int32 height = min_c(previous_map->Bounds().IntegerHeight(),
 				selection_map->Bounds().IntegerHeight());
@@ -596,7 +587,7 @@ void Selection::ImageSizeChanged(BRect rect)
 
 BRect Selection::GetBoundingRect()
 {
-	if (selection_bounds.IsValid() != TRUE)
+	if (!selection_bounds.IsValid())
 		calculateBoundingRect();
 
 	return selection_bounds;
@@ -628,44 +619,33 @@ void Selection::Invert()
 }
 
 
-bool Selection::IsEmpty()
+bool
+Selection::IsEmpty()
 {
-	return (selection_map == NULL);
+	return selection_map == NULL;
 }
 
 
-void Selection::calculateBoundingRect()
+void
+Selection::calculateBoundingRect()
 {
-	if (selection_map == NULL)
-		selection_bounds = image_bounds;
-
-	else {
-		int32 bpr = selection_map->BytesPerRow();
-		uint8 *bits = (uint8*)selection_map->Bits();
-		int32 bytes = selection_map->BitsLength();
-
-		selection_bounds = BRect(1000000,1000000,-1000000,-1000000);
-
-		int32 x_base;
-		int32 y = 0;
-
-		for (int32 i=0;i<bytes;i++) {
-			x_base = (i % bpr)*8;
-			y = i / bpr;
-			if (*bits != 0x00) {
-				selection_bounds.top = min_c(selection_bounds.top,y);
-				selection_bounds.bottom = max_c(selection_bounds.bottom,y);
-				for (int32 offset = 7;offset>=0;offset--) {
-					if ( (*bits >> offset) & 0x01 ) {
-						selection_bounds.left = min_c(selection_bounds.left,x_base+(7-offset));
-						selection_bounds.right = max_c(selection_bounds.right,x_base+(7-offset));
-					}
+	if (selection_map) {
+		BRect selection(1000000, 1000000, -1000000, -1000000);
+		int32 width = selection_map->Bounds().IntegerWidth();
+		int32 height = selection_map->Bounds().IntegerHeight();
+		for (int32 y = 0; y <= height; y++) {
+			for (int32 x = 0; x <= width; x++) {
+				if (ContainsPoint(x, y)) {
+					selection.left = min_c(selection.left, x);
+					selection.top = min_c(selection.top, y);
+					selection.right = max_c(selection.right, x);
+					selection.bottom = max_c(selection.bottom, y);
 				}
-
 			}
-			bits++;
 		}
-		selection_bounds = selection_bounds & image_bounds;
+		selection_bounds = selection & image_bounds;
+	} else {
+		selection_bounds = image_bounds;
 	}
 }
 
@@ -979,7 +959,6 @@ void Selection::SimplifySelection()
 						new_polygon = new HSPolygon(point_list,point_count,HS_POLYGON_CLOCKWISE);
 					else
 						new_polygon = new HSPolygon(point_list,point_count,HS_POLYGON_COUNTERCLOCKWISE);
-
 					delete[] point_list;
 					selection_data->AddSelection(new_polygon);
 				}
@@ -992,16 +971,15 @@ void Selection::SimplifySelection()
 
 	if (selection_data->SelectionCount() == 0) {
 		Clear();
-	}
-	else if (selection_data->SelectionCount() == 1) {
+	} else if (selection_data->SelectionCount() == 1) {
 		// Count the included and excluded points points
 		int32 included=0;
 		int32 excluded=0;
 		int32 width = image_bounds.IntegerWidth();
 		int32 height = image_bounds.IntegerHeight();
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				if (ContainsPoint(x,y))
+		for (int32 y = 0; y <= height; ++y) {
+			for (int32 x = 0; x <= width; ++x) {
+				if (ContainsPoint(x, y))
 					included++;
 				else
 					excluded++;

@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef SELECTION_H
@@ -39,6 +41,7 @@ class HSPolygon;
 class SelectionIterator;
 class SelectionData;
 
+
 class Selection {
 		// This list holds pointers to HSPolygons. The polygons make up the selections.
 //		BList	*selections;
@@ -56,9 +59,6 @@ class Selection {
 
 		uint8	*selection_bits;
 		uint32	selection_bpr;
-
-		int32	number_of_rows;
-		int32	pixels_in_a_row;
 
 		// This attribute keeps track of the selection's bounds. If it is
 		// not valid it should be calculated again with the calculateBoundingRect
@@ -81,8 +81,9 @@ class Selection {
 		// This is used to animate the lines that bound the selected area.
 		int32	animation_offset;
 
-
-		SelectionIterator	*selection_iterator;
+		thread_id	drawer_thread;
+		bool		continue_drawing;
+		sem_id		selection_mutex;
 
 // This function calculates the smallest rectangle that contains all the points
 // that are selected. It records this fact in the bounding_rect attribute.
@@ -92,27 +93,13 @@ void	calculateBoundingRect();
 // This function deselects everything.
 void	deSelect();
 
-
-
-
-// These are used to test the selection
-BWindow	*test_window;
-BView *test_view;
-
-
-		thread_id	drawer_thread;
-		bool		continue_drawing;
 static	int32		thread_entry_func(void*);
 		int32		thread_func();
 
-
 		void		SimplifySelection();
-
-		sem_id		selection_mutex;
 
 public:
 		Selection(BRect);
-		Selection(const Selection*);
 		~Selection();
 
 
@@ -181,13 +168,6 @@ const	SelectionData*	ReturnSelectionData() { return selection_data; }
 // with the GetBoundingRect-function.
 inline	bool	ContainsPoint(BPoint);
 inline	bool	ContainsPoint(int32,int32);
-
-
-// This function returns an iterator that can be used to iterate through the
-// points in this selection. The iterator should be used when the selection will
-// be iterated through multiple times in a row.
-//SelectionIterator*	ReturnIterator();
-
 };
 
 
@@ -195,14 +175,16 @@ bool Selection::ContainsPoint(BPoint p)
 {
 	int32 y = (int32)p.y;
 	int32 x = (int32)p.x;
+
 	return ((selection_bits == NULL) || (image_bounds.Contains(p) &&
-		   ((*(selection_bits + y*selection_bpr + x/8) >> (7 - x%8)) & 0x01)));
+		((*(selection_bits + y * selection_bpr + x)) & 0x01)));
 }
 
 
 bool Selection::ContainsPoint(int32 x, int32 y)
 {
-	return ((selection_bits == NULL) || ((*(selection_bits + y*selection_bpr + x/8) >> (7 - x%8)) & 0x01));
+	return ((selection_bits == NULL)
+		|| ((*(selection_bits + y * selection_bpr + x)) & 0x01));
 }
 
 
@@ -239,7 +221,6 @@ void		AddSelection(HSPolygon*);
 void		EmptySelectionData();
 int32		SelectionCount() { return number_of_selections; }
 HSPolygon*	ReturnSelectionAt(int32 i) { return selections[i]; }
-
-
 };
+
 #endif
