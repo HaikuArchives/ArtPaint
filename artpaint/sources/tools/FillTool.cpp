@@ -145,7 +145,7 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 			// do not check bounds so we have to be careful not to exceed
 			// bitmap's bounds.
 			if (tolerance != 0) {
-				binary_fill_map = new BBitmap(filled_bitmap->Bounds(),B_MONOCHROME_1_BIT);
+				binary_fill_map = new BBitmap(filled_bitmap->Bounds(), B_GRAY1);
 				// Clear the binary map.
 				uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 				uint32 binary_bitslength = binary_fill_map->BitsLength();
@@ -976,7 +976,7 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 {
 	// This function makes a binary bitmap that has ones where the
 	// color of original bitmap is same as old_color, and zeroes elsewhere.
-	BBitmap *binary_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),B_MONOCHROME_1_BIT);
+	BBitmap *binary_map = new BBitmap(BRect(min_x,min_y,max_x,max_y), B_GRAY1);
 	uchar *binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
 
@@ -1077,11 +1077,11 @@ BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 	int32 max_x, int32 min_y, int32 max_y, uint32 old_color, BPoint start,
 	Selection *sel)
 {
-	// This function makes a binary bitmap of the image. It contains ones where the
-	// flood fill should fill and zeroes elsewhere.
+	// This function makes a binary bitmap of the image. It contains ones where
+	// the flood fill should fill and zeroes elsewhere.
 	BBitmap *binary_map;
 	binary_map = binary_fill_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),
-		B_MONOCHROME_1_BIT);
+		B_GRAY1);
 	uchar *binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bitslength = binary_map->BitsLength();
 	// Clear the binary map.
