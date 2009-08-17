@@ -70,6 +70,7 @@ void DirectionControl::Draw(BRect area)
 	delete a_poly;
 	a_poly = line->GetBPolygon();
 	StrokePolygon(a_poly);
+	delete a_poly;
 	if (area.IsValid()) {
 		StrokeArc(Bounds(),225,180);
 		SetHighColor(255,255,255,255);
