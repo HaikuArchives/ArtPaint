@@ -109,6 +109,6 @@ CenterRectOnScreen(BRect source)
 BRect
 MakeRectFromPoints(const BPoint& point1, const BPoint& point2)
 {
-	return BRect(min_c(point1.x, point2.x), max_c(point1.x, point2.x),
-		min_c(point1.y, point2.y), max_c(point1.y, point2.y));
+	return BRect(min_c(point1.x, point2.x), min_c(point1.y, point2.y),
+		max_c(point1.x, point2.x), max_c(point1.y, point2.y));
 }
