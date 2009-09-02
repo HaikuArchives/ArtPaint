@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef WINDOW_GUI_MANIPULATOR_H
@@ -11,23 +13,26 @@
 
 #include "GUIManipulator.h"
 
+
+#include <View.h>
+
+
 class WindowGUIManipulator : public GUIManipulator {
-
 public:
-				WindowGUIManipulator() {};
-				~WindowGUIManipulator() {};
+								WindowGUIManipulator() {}
+								~WindowGUIManipulator() {}
 
-virtual	BView*	MakeConfigurationView(BMessenger*) = 0;
+	virtual	BView*				MakeConfigurationView(BMessenger* target) = 0;
 };
-
 
 
 class WindowGUIManipulatorView : public BView {
-
 public:
-		WindowGUIManipulatorView(BRect);
+								WindowGUIManipulatorView();
+								WindowGUIManipulatorView(BRect rect);
 
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
+	virtual	void				AttachedToWindow();
+	virtual	void				MessageReceived(BMessage* message);
 };
-#endif
+
+#endif	// WINDOW_GUI_MANIPULATOR_H
