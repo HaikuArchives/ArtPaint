@@ -1,28 +1,30 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef CROP_MANIPULATOR_H
 #define	CROP_MANIPULATOR_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
 
-#define	TOP_CHANGED		'Toch'
-#define	BOTTOM_CHANGED	'Boch'
-#define LEFT_CHANGED	'Lech'
-#define RIGHT_CHANGED	'Rich'
 
+#include <Messenger.h>
+
+
+class NumberControl;
 class CropManipulatorView;
 class CropManipulatorSettings;
 
+
 class CropManipulator : public WindowGUIManipulator {
 	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+				{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
 
 	BBitmap		*target_bitmap;
 	float 		min_x,max_x;
@@ -44,30 +46,30 @@ class CropManipulator : public WindowGUIManipulator {
 	bool 		move_all;
 
 public:
-			CropManipulator(BBitmap*);
-			~CropManipulator();
+	CropManipulator(BBitmap*);
+	~CropManipulator();
 
-void		MouseDown(BPoint,uint32,BView*,bool);
+	void		MouseDown(BPoint,uint32,BView*,bool);
 
-BRegion		Draw(BView*,float);
+	BRegion		Draw(BView*,float);
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
-void		SetValues(float,float,float,float);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
+					Selection*, BStatusBar*);
+	void		SetValues(float,float,float,float);
 
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
+	int32		PreviewBitmap(Selection*, bool full_quality = false,
+					BRegion *updated_region = NULL);
+
+	BView*		MakeConfigurationView(BMessenger*);
+	void		Reset(Selection*) {}
+	void		SetPreviewBitmap(BBitmap*);
+
+	const	char*	ReturnHelpString();
+	const	char*	ReturnName();
 
 
-BView*		MakeConfigurationView(BMessenger*);
-void		Reset(Selection*) {};
-void		SetPreviewBitmap(BBitmap*);
-
-const	char*	ReturnHelpString();
-const	char*	ReturnName();
-
-
-ManipulatorSettings*	ReturnSettings();
+	ManipulatorSettings*	ReturnSettings();
 };
-
 
 
 class CropManipulatorSettings : public ManipulatorSettings {
@@ -93,28 +95,32 @@ public:
 };
 
 
-
 class CropManipulatorView : public WindowGUIManipulatorView {
-		float 		left;
-		float 		right;
-		float 		top;
-		float 		bottom;
-
-
-		NumberControl	*left_control;
-		NumberControl	*right_control;
-		NumberControl	*top_control;
-		NumberControl	*bottom_control;
-
-		BMessenger		*target;
-		CropManipulator	*manipulator;
 public:
-		CropManipulatorView(BRect,CropManipulator*,BMessenger*);
+								CropManipulatorView(CropManipulator* manipulator,
+									const BMessenger& target);
+	virtual						~CropManipulatorView() {}
 
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
+	virtual	void				AttachedToWindow();
+	virtual	void				MessageReceived(BMessage* message);
 
-void	SetValues(float,float,float,float);
+			void				SetValues(float left, float right, float top,
+									float bottom);
+
+private:
+			float				left;
+			float				right;
+			float				top;
+			float				bottom;
+
+
+			NumberControl*		fTopCrop;
+			NumberControl*		fLeftCrop;
+			NumberControl*		fRightCrop;
+			NumberControl*		fBottomCrop;
+
+			BMessenger			fTarget;
+			CropManipulator*	fManipulator;
 };
 
-#endif
+#endif	// CROP_MANIPULATOR_H

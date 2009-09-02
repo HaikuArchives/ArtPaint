@@ -1,22 +1,29 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#include <ClassInfo.h>
-#include <math.h>
-#include <new>
-#include <StatusBar.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <Window.h>
 
 #include "CropManipulator.h"
+
+#include "Controls.h"
 #include "MessageConstants.h"
 #include "StringServer.h"
+
+
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+#include <StatusBar.h>
+#include <Window.h>
+
+
+#include <new>
+
 
 CropManipulator::CropManipulator(BBitmap *bm)
 	:	WindowGUIManipulator()
@@ -195,9 +202,11 @@ BRegion CropManipulator::Draw(BView *view,float mag_scale)
 
 
 
-BBitmap* CropManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection*,BStatusBar *status_bar)
+BBitmap* CropManipulator::ManipulateBitmap(ManipulatorSettings *set,
+	BBitmap *original, Selection*, BStatusBar *status_bar)
 {
-	CropManipulatorSettings *new_settings = cast_as(set,CropManipulatorSettings);
+	CropManipulatorSettings* new_settings =
+		dynamic_cast<CropManipulatorSettings*> (set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -304,129 +313,139 @@ void CropManipulator::SetValues(float x1, float x2, float y1, float y2)
 }
 
 
-ManipulatorSettings* CropManipulator::ReturnSettings()
+ManipulatorSettings*
+CropManipulator::ReturnSettings()
 {
 	return new CropManipulatorSettings(settings);
 }
 
 
-
-BView* CropManipulator::MakeConfigurationView(BMessenger *target)
+BView*
+CropManipulator::MakeConfigurationView(BMessenger *target)
 {
-	config_view = new CropManipulatorView(BRect(0,0,0,0),this,target);
-	config_view->SetValues(settings->left,settings->right,settings->top,settings->bottom);
-
+	config_view = new CropManipulatorView(this, *target);
+	config_view->SetValues(settings->left, settings->right, settings->top,
+		settings->bottom);
 	return config_view;
 }
 
 
-const char* CropManipulator::ReturnName()
+const char*
+CropManipulator::ReturnName()
 {
 	return StringServer::ReturnString(CROP_STRING);
 }
 
-const char* CropManipulator::ReturnHelpString()
+
+const char*
+CropManipulator::ReturnHelpString()
 {
 	return StringServer::ReturnString(DO_CROP_HELP_STRING);
 }
 
-CropManipulatorView::CropManipulatorView(BRect rect,CropManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+
+// #pragma mark -- CropManipulatorView
+
+
+CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
+		const BMessenger& target)
+	: WindowGUIManipulatorView()
+	, fTarget(target)
+	, fManipulator(manipulator)
 {
-	manipulator = manip;
-	target = new BMessenger(*t);
+	fTopCrop = new NumberControl(StringServer::ReturnString(TOP_STRING), "",
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
+	fLeftCrop = new NumberControl(StringServer::ReturnString(LEFT_STRING), "",
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
+	fRightCrop = new NumberControl(StringServer::ReturnString(RIGHT_STRING),
+		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5);
+	fBottomCrop = new NumberControl(StringServer::ReturnString(BOTTOM_STRING),
+		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5);
 
-	left_control = new NumberControl(BRect(0,0,0,0),"left_control",StringServer::ReturnString(LEFT_STRING),"",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5,TRUE);
-	right_control = new NumberControl(BRect(0,0,0,0),"right_control",StringServer::ReturnString(RIGHT_STRING),"",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5);
-	top_control = new NumberControl(BRect(0,0,0,0),"top_control",StringServer::ReturnString(TOP_STRING),"",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5,TRUE);
-	bottom_control = new NumberControl(BRect(0,0,0,0),"bottom_control",StringServer::ReturnString(BOTTOM_STRING),"",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5);
+	SetLayout(new BGroupLayout(B_HORIZONTAL));
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.Add(fTopCrop)
+			.AddGlue()
+		.End()
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.Add(fLeftCrop)
+			.AddGlue()
+			.AddStrut(80.0)
+			.AddGlue()
+			.Add(fRightCrop)
+			.AddGlue()
+		.End()
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.Add(fBottomCrop)
+			.AddGlue()
+		.End()
+	);
 
-	AddChild(top_control);
-	AddChild(bottom_control);
-	AddChild(left_control);
-	AddChild(right_control);
-
-	left_control->ResizeToPreferred();
-	right_control->ResizeToPreferred();
-	bottom_control->ResizeToPreferred();
-	top_control->ResizeToPreferred();
-
-	BRect control_frame = bottom_control->Frame();
-	BRect text_frame = bottom_control->TextView()->Frame();
-	float divider = bottom_control->Divider();
-	left_control->ResizeTo(control_frame.Width(),control_frame.Height());
-	right_control->ResizeTo(control_frame.Width(),control_frame.Height());
-	top_control->ResizeTo(control_frame.Width(),control_frame.Height());
-	left_control->SetDivider(divider);
-	right_control->SetDivider(divider);
-	top_control->SetDivider(divider);
-
-	left_control->TextView()->ResizeTo(text_frame.Width(),text_frame.Height());
-	right_control->TextView()->ResizeTo(text_frame.Width(),text_frame.Height());
-	top_control->TextView()->ResizeTo(text_frame.Width(),text_frame.Height());
-
-	left_control->MoveBy(5,control_frame.Height()+10);
-	right_control->MoveBy(control_frame.Width() + 10,control_frame.Height()+10);
-	top_control->MoveBy((control_frame.Width() + 15)/2,5);
-	bottom_control->MoveBy((control_frame.Width() + 15)/2,2*control_frame.Height()+15);
-
-	ResizeTo(right_control->Frame().right+5,bottom_control->Frame().bottom+5);
-
-	left_control->SetValue(0);
-	right_control->SetValue(0);
-	top_control->SetValue(0);
-	bottom_control->SetValue(0);
-
+	fTopCrop->SetValue(0);
+	fLeftCrop->SetValue(0);
+	fRightCrop->SetValue(0);
+	fBottomCrop->SetValue(0);
 }
 
 
-
-void CropManipulatorView::AttachedToWindow()
+void
+CropManipulatorView::AttachedToWindow()
 {
-	left_control->SetTarget(this);
-	right_control->SetTarget(this);
-	top_control->SetTarget(this);
-	bottom_control->SetTarget(this);
+	fTopCrop->SetTarget(this);
+	fTopCrop->MakeFocus(true);
 
-	top_control->MakeFocus(true);
+	fLeftCrop->SetTarget(this);
+	fRightCrop->SetTarget(this);
+	fBottomCrop->SetTarget(this);
+
 	WindowGUIManipulatorView::AttachedToWindow();
 }
 
-void CropManipulatorView::SetValues(float x1, float x2, float y1, float y2)
-{
-	BWindow *window = Window();
 
+void
+CropManipulatorView::SetValues(float x1, float x2, float y1, float y2)
+{
+	BWindow* window = Window();
 	if (window && window->Lock()) {
 		left = x1;
 		right = x2;
 		top = y1;
 		bottom = y2;
 
-		if (left != left_control->Value())
-			left_control->SetValue(int32(left));
+		if (left != fLeftCrop->Value())
+			fLeftCrop->SetValue(int32(left));
 
-		if (right != right_control->Value())
-			right_control->SetValue(int32(right));
+		if (right != fRightCrop->Value())
+			fRightCrop->SetValue(int32(right));
 
-		if (top != top_control->Value())
-			top_control->SetValue(int32(top));
+		if (top != fTopCrop->Value())
+			fTopCrop->SetValue(int32(top));
 
-		if (bottom != bottom_control->Value())
-			bottom_control->SetValue(int32(bottom));
+		if (bottom != fBottomCrop->Value())
+			fBottomCrop->SetValue(int32(bottom));
 
 		window->Unlock();
 	}
 }
 
 
-void CropManipulatorView::MessageReceived(BMessage *message)
+void
+CropManipulatorView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case HS_MANIPULATOR_ADJUSTING_FINISHED:
-			manipulator->SetValues(left_control->Value(),right_control->Value(),top_control->Value(),bottom_control->Value());
-			target->SendMessage(message);
-			break;
-		default:
+		case HS_MANIPULATOR_ADJUSTING_FINISHED: {
+			fManipulator->SetValues(fLeftCrop->Value(),
+				fRightCrop->Value(), fTopCrop->Value(),
+				fBottomCrop->Value());
+			fTarget.SendMessage(message);
+		}	break;
+
+		default: {
 			WindowGUIManipulatorView::MessageReceived(message);
+		}	break;
 	}
 }
