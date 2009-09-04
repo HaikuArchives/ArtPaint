@@ -106,7 +106,7 @@ class TextEditor;
 
 class TextManipulatorView : public WindowGUIManipulatorView {
 		TextManipulator	*manipulator;
-		BMessenger		*target;
+		BMessenger		fTarget;
 
 		TextManipulatorSettings	settings;
 
@@ -126,7 +126,7 @@ class TextManipulatorView : public WindowGUIManipulatorView {
 void	FontFamilyAndStyleChanged(uint32);
 
 public:
-		TextManipulatorView(BRect,TextManipulator*,BMessenger*);
+		TextManipulatorView(TextManipulator*, const BMessenger& target);
 
 void	AttachedToWindow();
 void	AllAttached();
@@ -141,7 +141,7 @@ void	ChangeSettings(TextManipulatorSettings*);
 // of the ColorPaletteWindow.
 class TextEditor : public BTextView, PaletteWindowClient {
 public:
-						TextEditor(BRect rect);
+						TextEditor();
 	virtual				~TextEditor();
 
 			void		PaletteColorChanged(const rgb_color& color);
