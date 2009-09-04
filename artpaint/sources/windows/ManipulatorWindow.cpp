@@ -58,15 +58,15 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 	BSeparatorView* separator = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
 	separator->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	BMessage* okMessage = new BMessage(HS_MANIPULATOR_FINISHED);
-	okMessage->AddBool("status", true);
-	BButton* okButton = new BButton(StringServer::ReturnString(OK_STRING),
-		okMessage);
-
 	BMessage* cancelMessage = new BMessage(HS_MANIPULATOR_FINISHED);
 	cancelMessage->AddBool("status", true);
 	BButton* cancelButton =
 		new BButton(StringServer::ReturnString(CANCEL_STRING), cancelMessage);
+
+	BMessage* okMessage = new BMessage(HS_MANIPULATOR_FINISHED);
+	okMessage->AddBool("status", true);
+	BButton* okButton = new BButton(StringServer::ReturnString(OK_STRING),
+		okMessage);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 10.0)
@@ -74,8 +74,8 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 		.Add(separator)
 		.AddGroup(B_HORIZONTAL, 10.0)
 			.AddGlue()
-			.Add(okButton)
 			.Add(cancelButton)
+			.Add(okButton)
 		.End()
 		.SetInsets(10.0, 10.0, 10.0, 10.0)
 	);
