@@ -23,32 +23,33 @@
 
 #define	PROPORTION_CHANGED	'Prpc'
 
+class BButton;
 class ScaleManipulatorView;
 
 class ScaleManipulatorSettings : public ManipulatorSettings {
 public:
-		ScaleManipulatorSettings()
-			: ManipulatorSettings() {
-				width_coefficient = 1.0;
-				height_coefficient = 1.0;
-			 }
+	ScaleManipulatorSettings()
+		: ManipulatorSettings() {
+		width_coefficient = 1.0;
+		height_coefficient = 1.0;
+	}
 
-		ScaleManipulatorSettings(ScaleManipulatorSettings *s)
-			: ManipulatorSettings() {
-				width_coefficient = s->width_coefficient;
-				height_coefficient = s->height_coefficient;
-			}
+	ScaleManipulatorSettings(ScaleManipulatorSettings *s)
+		: ManipulatorSettings() {
+		width_coefficient = s->width_coefficient;
+		height_coefficient = s->height_coefficient;
+	}
 
 
-float	height_coefficient;
-float	width_coefficient;
+	float	height_coefficient;
+	float	width_coefficient;
 };
 
 
 
 class ScaleManipulator : public WindowGUIManipulator {
 	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
 
 	BBitmap						*preview_bitmap;
 	BBitmap						*copy_of_the_preview_bitmap;
@@ -62,49 +63,59 @@ class ScaleManipulator : public WindowGUIManipulator {
 	float						original_height;
 
 public:
-			ScaleManipulator(BBitmap*);
-			~ScaleManipulator();
+	ScaleManipulator(BBitmap*);
+	~ScaleManipulator();
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
-int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,
+					Selection*,BStatusBar*);
+	int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
 
-void		MouseDown(BPoint,uint32,BView*,bool);
-void		SetValues(float,float);
+	void		MouseDown(BPoint,uint32,BView*,bool);
+	void		SetValues(float,float);
 
-BView*		MakeConfigurationView(BMessenger*);
-void		Reset(Selection*);
-void		SetPreviewBitmap(BBitmap*);
+	BView*		MakeConfigurationView(BMessenger*);
+	void		Reset(Selection*);
+	void		SetPreviewBitmap(BBitmap*);
 
-const	char*	ReturnHelpString();
-const	char*	ReturnName();
+	const	char*	ReturnHelpString();
+	const	char*	ReturnName();
 
 
-ManipulatorSettings*	ReturnSettings();
+	ManipulatorSettings*	ReturnSettings();
 };
-
 
 
 class ScaleManipulatorView : public WindowGUIManipulatorView {
-		ScaleManipulator	*manipulator;
-		float				original_width;
-		float				original_height;
-		float				current_width;
-		float				current_height;
-		bool				maintain_proportions;
-
-		NumberControl		*width_control;
-		NumberControl		*height_control;
-
-		BMessenger *target;
-
 public:
-		ScaleManipulatorView(BRect,ScaleManipulator*,BMessenger*);
-		~ScaleManipulatorView();
+								ScaleManipulatorView(ScaleManipulator*,
+									const BMessenger& target);
+	virtual						~ScaleManipulatorView() {}
 
-void	AttachedToWindow();
+	virtual	void				AttachedToWindow();
+	virtual	void				MessageReceived(BMessage* message);
 
-void	MessageReceived(BMessage*);
-void	SetValues(float,float);
-bool	MaintainProportions() { return maintain_proportions; }
+			bool				MaintainProportions() {
+									return maintain_proportions;
+								}
+			void				SetValues(float width, float height);
+
+private:
+			void				_SetTarget(BView* view);
+			void				_SetValues(float width, float height);
+			BButton*			_MakeButton(const char* label,
+									uint32 what, float coefficient);
+
+private:
+			BMessenger			fTarget;
+			float				original_width;
+			float				original_height;
+			float				current_width;
+			float				current_height;
+			bool				maintain_proportions;
+
+			ScaleManipulator*	fManipulator;
+			NumberControl*		width_control;
+			NumberControl*		height_control;
 };
+
 #endif
