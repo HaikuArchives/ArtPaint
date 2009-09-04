@@ -90,24 +90,26 @@ public:
 
 
 class TransparencyManipulatorView : public WindowGUIManipulatorView {
-	BMessenger				*target;
-	TransparencyManipulator	*manipulator;
-
-	ControlSlider			*transparency_control;
-	bool					started_manipulating;
-
-	TransparencyManipulatorSettings	settings;
-
 public:
-		TransparencyManipulatorView(BRect,TransparencyManipulator*,BMessenger*);
-		~TransparencyManipulatorView();
+										TransparencyManipulatorView(
+											TransparencyManipulator* manipulator,
+											const BMessenger& target);
+	virtual								~TransparencyManipulatorView() {}
 
-void	AllAttached();
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
-void	ChangeSettings(TransparencyManipulatorSettings*);
+	virtual	void						AllAttached();
+	virtual	void						AttachedToWindow();
+	virtual	void						MessageReceived(BMessage* message);
+
+			void						ChangeSettings(TransparencyManipulatorSettings*);
+
+private:
+			BMessenger					fTarget;
+			bool						fTracking;
+			TransparencyManipulatorSettings	settings;
+
+			TransparencyManipulator*	fManipulator;
+			ControlSlider*				fTransparency;
 };
-
 
 #endif
 

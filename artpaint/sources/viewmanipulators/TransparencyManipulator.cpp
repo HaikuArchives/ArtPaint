@@ -16,6 +16,8 @@
 #include "StringServer.h"
 
 
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <Window.h>
 
 
@@ -44,7 +46,7 @@ TransparencyManipulator::TransparencyManipulator(BBitmap *bm)
 
 TransparencyManipulator::~TransparencyManipulator()
 {
-//	delete copy_of_the_preview_bitmap;
+	delete copy_of_the_preview_bitmap;
 	delete settings;
 	if (config_view) {
 		config_view->RemoveSelf();
@@ -133,8 +135,9 @@ TransparencyManipulator::Reset(Selection*)
 BView*
 TransparencyManipulator::MakeConfigurationView(BMessenger *target)
 {
-	config_view = new TransparencyManipulatorView(BRect(0,0,0,0), this, target);
-	config_view->ChangeSettings(settings);
+	config_view = new (std::nothrow) TransparencyManipulatorView(this, *target);
+	if (config_view)
+		config_view->ChangeSettings(settings);
 	return config_view;
 }
 
@@ -164,48 +167,38 @@ TransparencyManipulator::ReturnName()
 // #prgma mark -- TransparencyManipulatorView
 
 
-TransparencyManipulatorView::TransparencyManipulatorView(BRect rect,
-		TransparencyManipulator *manip, BMessenger *t)
-	: WindowGUIManipulatorView(rect)
-	, target(new BMessenger(*t))
-	, manipulator(manip)
-	, transparency_control(NULL)
-	, started_manipulating(false)
+TransparencyManipulatorView::TransparencyManipulatorView(
+		TransparencyManipulator* manipulator, const BMessenger& target)
+	: WindowGUIManipulatorView()
+	, fTarget(target)
+	, fTracking(false)
+	, fManipulator(manipulator)
 {
-	transparency_control = new ControlSlider(BRect(0, 0, 200, 40),
-		"transparency_control", StringServer::ReturnString(TRANSPARENCY_STRING),
+	SetLayout(new BGroupLayout(B_HORIZONTAL));
+	fTransparency = new ControlSlider("transparency",
+		StringServer::ReturnString(TRANSPARENCY_STRING),
 		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_TRIANGLE_THUMB);
-	transparency_control->SetValue(0);
-	transparency_control->SetLimitLabels(StringServer::ReturnString(TRANSPARENT_STRING),
+	fTransparency->SetValue(0);
+	fTransparency->SetLimitLabels(StringServer::ReturnString(TRANSPARENT_STRING),
 		StringServer::ReturnString(OPAQUE_STRING));
-	transparency_control->ResizeToPreferred();
-	transparency_control->MoveTo(10,10);
-	transparency_control->SetModificationMessage(new BMessage(TRANSPARENCY_CHANGED));
+	fTransparency->SetModificationMessage(new BMessage(TRANSPARENCY_CHANGED));
 
-	ResizeTo(transparency_control->Frame().Width() + 20,
-		transparency_control->Frame().Height() + 20);
-	AddChild(transparency_control);
-}
-
-
-TransparencyManipulatorView::~TransparencyManipulatorView()
-{
-	delete target;
+	AddChild(fTransparency);
 }
 
 
 void
 TransparencyManipulatorView::AttachedToWindow()
 {
+	fTransparency->SetTarget(BMessenger(this));
 	WindowGUIManipulatorView::AttachedToWindow();
-	transparency_control->SetTarget(BMessenger(this));
 }
 
 
 void
 TransparencyManipulatorView::AllAttached()
 {
-	transparency_control->SetValue(int32(settings.transparency));
+	fTransparency->SetValue(int32(settings.transparency));
 }
 
 
@@ -214,17 +207,17 @@ TransparencyManipulatorView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
 		case TRANSPARENCY_CHANGED: {
-			manipulator->SetTransparency(transparency_control->Value());
-			if (started_manipulating == FALSE) {
-				started_manipulating = TRUE;
-				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
+			fManipulator->SetTransparency(fTransparency->Value());
+			if (!fTracking) {
+				fTracking = true;
+				fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 			}
 		}	break;
 
 		case MOUSE_TRACKING_FINISHED: {
-			started_manipulating = FALSE;
-			manipulator->SetTransparency(transparency_control->Value());
-			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			fTracking = false;
+			fManipulator->SetTransparency(fTransparency->Value());
+			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 		}	break;
 
 		default: {
@@ -240,7 +233,7 @@ TransparencyManipulatorView::ChangeSettings(TransparencyManipulatorSettings *new
 	settings = *new_set;
 
 	if (Window() && Window()->Lock()) {
-		transparency_control->SetValue(int32(new_set->transparency));
+		fTransparency->SetValue(int32(new_set->transparency));
 		Window()->Unlock();
 	}
 }
