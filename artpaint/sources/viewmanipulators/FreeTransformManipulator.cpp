@@ -197,44 +197,45 @@ ManipulatorSettings* FreeTransformManipulator::ReturnSettings()
 
 BView* FreeTransformManipulator::MakeConfigurationView(BMessenger *messenger)
 {
-	configuration_view = new FreeTransformManipulatorView(BRect(0,0,0,0),this,messenger);
-	if (configuration_view != NULL) {
+	configuration_view = new (std::nothrow) FreeTransformManipulatorView(this,
+		*messenger);
+	if (configuration_view)
 		configuration_view->ChangeSettings(&settings);
-	}
 	return configuration_view;
 }
 
 
+// #pragma mark -- FreeTransformManipulatorView
 
 
-
-FreeTransformManipulatorView::FreeTransformManipulatorView(BRect rect,FreeTransformManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+FreeTransformManipulatorView::FreeTransformManipulatorView(
+		FreeTransformManipulator* manipulator, const BMessenger& target)
+	: WindowGUIManipulatorView()
 {
 }
+
 
 FreeTransformManipulatorView::~FreeTransformManipulatorView()
 {
-	delete target;
 }
 
 
-void FreeTransformManipulatorView::AttachedToWindow()
+void
+FreeTransformManipulatorView::AttachedToWindow()
 {
 }
 
 
-void FreeTransformManipulatorView::MessageReceived(BMessage *message)
+void
+FreeTransformManipulatorView::MessageReceived(BMessage *message)
 {
-	switch (message->what) {
-		default:
-			WindowGUIManipulatorView::MessageReceived(message);
-			break;
-	}
+	WindowGUIManipulatorView::MessageReceived(message);
 }
 
 
-/*void FreeTransformManipulatorView::SetValues(float width, float height)
+/*
+void
+FreeTransformManipulatorView::SetValues(float width, float height)
 {
 	original_width = width;
 	original_height = height;
@@ -265,11 +266,12 @@ void FreeTransformManipulatorView::MessageReceived(BMessage *message)
 */
 
 
-
-void FreeTransformManipulatorView::ChangeSettings(ManipulatorSettings *s)
+void
+FreeTransformManipulatorView::ChangeSettings(ManipulatorSettings *s)
 {
 	// change the values for controls whose values have changed
-	FreeTransformManipulatorSettings* newSettings = cast_as(s, FreeTransformManipulatorSettings);
+	FreeTransformManipulatorSettings* newSettings =
+		dynamic_cast<FreeTransformManipulatorSettings*> (s);
 	if (newSettings && *newSettings != settings)
 		settings = *newSettings;
 }

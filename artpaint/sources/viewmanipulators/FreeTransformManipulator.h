@@ -113,22 +113,24 @@ ManipulatorSettings*	ReturnSettings();
 
 
 class FreeTransformManipulatorView : public WindowGUIManipulatorView {
-		FreeTransformManipulator	*manipulator;
+	FreeTransformManipulator	*manipulator;
 
-		FreeTransformManipulatorSettings	settings;
+	FreeTransformManipulatorSettings	settings;
 
-		NumberControl		*width_control;
-		NumberControl		*height_control;
+	NumberControl		*width_control;
+	NumberControl		*height_control;
 
-		BMessenger *target;
+	BMessenger *target;
 
 public:
-		FreeTransformManipulatorView(BRect,FreeTransformManipulator*,BMessenger*);
-		~FreeTransformManipulatorView();
+	FreeTransformManipulatorView(FreeTransformManipulator* manipulator,
+								 const BMessenger& target);
+	~FreeTransformManipulatorView();
 
-void	AttachedToWindow();
+	void	AttachedToWindow();
 
-void	MessageReceived(BMessage*);
-void ChangeSettings(ManipulatorSettings* settings);
+	void	MessageReceived(BMessage*);
+	void ChangeSettings(ManipulatorSettings* settings);
 };
+
 #endif
