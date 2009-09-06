@@ -99,7 +99,7 @@ int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
 void			MouseDown(BPoint,uint32,BView*,bool);
 void			ChangeSettings(ManipulatorSettings* settings);
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*			MakeConfigurationView(const BMessenger& target);
 void			Reset(Selection*);
 void			SetPreviewBitmap(BBitmap*);
 

@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef TEXT_MANIPULATOR_H
@@ -82,7 +84,7 @@ public:
 
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		MouseDown(BPoint,uint32,BView*,bool);
 BRegion		Draw(BView*,float);

@@ -95,7 +95,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -115,7 +115,8 @@ class SaturationManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		SaturationManipulatorView(SaturationManipulator*,BMessenger*);
+		SaturationManipulatorView(SaturationManipulator*,const BMessenger& target);
+		~SaturationManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

@@ -80,7 +80,7 @@ char*		ReturnHelpString() { return "Use the sliders to adjust the color balance.
 char*		ReturnName() { return "Color Balance"; }
 
 ManipulatorSettings*	ReturnSettings();
-BView*	MakeConfigurationView(BMessenger*);
+BView*	MakeConfigurationView(const BMessenger& target);
 
 void	ChangeSettings(ManipulatorSettings*);
 };
@@ -99,8 +99,8 @@ class ColorBalanceManipulatorView : public WindowGUIManipulatorView {
 
 		bool					preview_started;
 public:
-		ColorBalanceManipulatorView(BRect,ColorBalanceManipulator*,BMessenger*);
-
+		ColorBalanceManipulatorView(BRect,ColorBalanceManipulator*,const BMessenger& target);
+		~ColorBalanceManipulatorView();
 
 void	AttachedToWindow();
 void	MessageReceived(BMessage*);

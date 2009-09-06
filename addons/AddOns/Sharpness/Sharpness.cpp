@@ -350,10 +350,10 @@ void SharpnessManipulator::Reset(Selection*)
 	}
 }
 
-BView* SharpnessManipulator::MakeConfigurationView(BMessenger *target)
+BView* SharpnessManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
-		config_view = new SharpnessManipulatorView(this,target);
+		config_view = new SharpnessManipulatorView(this, target);
 		config_view->ChangeSettings(&settings);
 	}
 
@@ -398,10 +398,11 @@ char* SharpnessManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -423,6 +424,9 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,B
 	ResizeTo(sharpness_slider->Bounds().Width()+8,blur_size_slider->Frame().bottom+4);
 }
 
+SharpnessManipulatorView::~SharpnessManipulatorView()
+{
+}
 
 void SharpnessManipulatorView::AttachedToWindow()
 {

@@ -81,7 +81,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -99,7 +99,8 @@ class ColorSeparatorManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		ColorSeparatorManipulatorView(ColorSeparatorManipulator*,BMessenger*);
+		ColorSeparatorManipulatorView(ColorSeparatorManipulator*,const BMessenger&);
+		~ColorSeparatorManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

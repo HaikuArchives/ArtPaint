@@ -352,7 +352,7 @@ void ContrastManipulator::Reset(Selection*)
 	}
 }
 
-BView* ContrastManipulator::MakeConfigurationView(BMessenger *target)
+BView* ContrastManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new ContrastManipulatorView(this,target);
@@ -392,10 +392,11 @@ char* ContrastManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-ContrastManipulatorView::ContrastManipulatorView(ContrastManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+ContrastManipulatorView::ContrastManipulatorView(ContrastManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -409,6 +410,9 @@ ContrastManipulatorView::ContrastManipulatorView(ContrastManipulator *manip,BMes
 	ResizeTo(contrast_slider->Bounds().Width()+8,contrast_slider->Bounds().Height()+8);
 }
 
+ContrastManipulatorView::~ContrastManipulatorView()
+{
+}
 
 void ContrastManipulatorView::AttachedToWindow()
 {

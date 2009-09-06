@@ -29,7 +29,7 @@ sem_id ManipulatorWindow::sfWindowListMutex = create_sem(1, "list_mutex");
 
 
 ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
-		BWindow* master, BMessenger* target)
+		BWindow* master, const BMessenger& target)
 	: BWindow(rect, name, B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
 		B_NOT_ZOOMABLE | B_NOT_ANCHORED_ON_ACTIVATE | B_NOT_CLOSABLE
 		| B_AUTO_UPDATE_SIZE_LIMITS)
@@ -59,7 +59,7 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 	separator->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	BMessage* cancelMessage = new BMessage(HS_MANIPULATOR_FINISHED);
-	cancelMessage->AddBool("status", true);
+	cancelMessage->AddBool("status", false);
 	BButton* cancelButton =
 		new BButton(StringServer::ReturnString(CANCEL_STRING), cancelMessage);
 
@@ -81,8 +81,8 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 	);
 
 	okButton->MakeDefault(true);
-	okButton->SetTarget(*target);
-	cancelButton->SetTarget(*target);
+	okButton->SetTarget(target);
+	cancelButton->SetTarget(target);
 
 	ColorPaletteWindow::AddMasterWindow(this);
 

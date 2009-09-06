@@ -104,7 +104,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 
@@ -129,7 +129,8 @@ class SharpnessManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		SharpnessManipulatorView(SharpnessManipulator*,BMessenger*);
+		SharpnessManipulatorView(SharpnessManipulator*, const BMessenger&);
+		~SharpnessManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

@@ -28,7 +28,7 @@ class Layer;
 
 class TransparencyManipulator : public WindowGUIManipulator, public ImageAdapter {
 	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
 
 BBitmap				*preview_bitmap;
 BBitmap				*copy_of_the_preview_bitmap;
@@ -54,7 +54,7 @@ public:
 
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 
 void		Reset(Selection*);

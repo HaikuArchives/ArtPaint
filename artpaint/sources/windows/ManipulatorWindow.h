@@ -18,7 +18,7 @@ class ManipulatorWindow : public BWindow {
 public:
 								ManipulatorWindow(BRect rect,
 									BView* manipulatorView, const char* name,
-									BWindow* master, BMessenger* target);
+									BWindow* master, const BMessenger& target);
 	virtual						~ManipulatorWindow();
 
 	static	void				setFeel(window_feel);

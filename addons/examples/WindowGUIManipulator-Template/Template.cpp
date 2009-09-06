@@ -58,7 +58,7 @@ void $MANIPULATOR_NAME::Reset(Selection*)
 {
 }
 
-BView* $MANIPULATOR_NAME::MakeConfigurationView(BMessenger *target)
+BView* $MANIPULATOR_NAME::MakeConfigurationView(const BMessenger& target)
 {
 }
 
@@ -78,5 +78,6 @@ char* $MANIPULATOR_NAME::ReturnName()
 
 char* $MANIPULATOR_NAME::ReturnHelpString()
 {
-	return "A string that is displayed in the status-bar while the manipulator is active. Should not be this long though.";
+	return "A string that is displayed in the status-bar while the manipulator"
+		" is active. Should not be this long though.";
 }

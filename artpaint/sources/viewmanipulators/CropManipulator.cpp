@@ -321,9 +321,9 @@ CropManipulator::ReturnSettings()
 
 
 BView*
-CropManipulator::MakeConfigurationView(BMessenger *target)
+CropManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new CropManipulatorView(this, *target);
+	config_view = new CropManipulatorView(this, target);
 	config_view->SetValues(settings->left, settings->right, settings->top,
 		settings->bottom);
 	return config_view;

@@ -357,7 +357,7 @@ void ThresholdManipulator::Reset(Selection*)
 	}
 }
 
-BView* ThresholdManipulator::MakeConfigurationView(BMessenger *target)
+BView* ThresholdManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new ThresholdManipulatorView(this,target);
@@ -406,10 +406,11 @@ status_t ThresholdManipulator::ReadSettings(BNode *node)
 
 
 // -------------------------------------
-ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -418,6 +419,11 @@ ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,B
 	AddChild(threshold_control);
 
 	ResizeTo(threshold_control->Bounds().Width()+8,threshold_control->Bounds().Height()+8);
+}
+
+
+ThresholdManipulatorView::~ThresholdManipulatorView()
+{
 }
 
 

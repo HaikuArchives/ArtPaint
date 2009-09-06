@@ -95,7 +95,7 @@ char*		ReturnName() { return "Twirl"; }
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 void		ChangeSettings(ManipulatorSettings *s);
 
 };
@@ -110,7 +110,8 @@ class TwirlManipulatorView : public WindowGUIManipulatorView {
 		bool						preview_started;
 
 public:
-		TwirlManipulatorView(BRect,TwirlManipulator*,BMessenger*);
+		TwirlManipulatorView(BRect,TwirlManipulator*, const BMessenger& target);
+		~TwirlManipulatorView();
 
 void	AttachedToWindow();
 void	AllAttached();

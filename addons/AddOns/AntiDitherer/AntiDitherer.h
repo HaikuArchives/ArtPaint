@@ -78,7 +78,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -98,7 +98,8 @@ class AntiDithererManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		AntiDithererManipulatorView(AntiDithererManipulator*,BMessenger*);
+		AntiDithererManipulatorView(AntiDithererManipulator*,const BMessenger& target);
+		~AntiDithererManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

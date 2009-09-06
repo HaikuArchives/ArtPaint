@@ -390,9 +390,9 @@ ScaleManipulator::ReturnSettings()
 
 
 BView*
-ScaleManipulator::MakeConfigurationView(BMessenger *messenger)
+ScaleManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	configuration_view = new (std::nothrow) ScaleManipulatorView(this, *messenger);
+	configuration_view = new (std::nothrow) ScaleManipulatorView(this, target);
 	if (configuration_view)
 		configuration_view->SetValues(original_width, original_height);
 	return configuration_view;

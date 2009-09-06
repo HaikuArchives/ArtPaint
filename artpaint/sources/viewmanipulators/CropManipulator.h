@@ -60,7 +60,7 @@ public:
 	int32		PreviewBitmap(Selection*, bool full_quality = false,
 					BRegion *updated_region = NULL);
 
-	BView*		MakeConfigurationView(BMessenger*);
+	BView*		MakeConfigurationView(const BMessenger& target);
 	void		Reset(Selection*) {}
 	void		SetPreviewBitmap(BBitmap*);
 

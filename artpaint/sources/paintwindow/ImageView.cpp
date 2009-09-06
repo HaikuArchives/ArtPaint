@@ -636,10 +636,12 @@ void ImageView::MessageReceived(BMessage *message)
 						WindowGUIManipulator *window_gui_manipulator = cast_as(gui_manipulator,WindowGUIManipulator);
 
 						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
-						BMessenger *the_messenger = new BMessenger(this);
 						StatusView *status_view = ((PaintWindow*)Window())->ReturnStatusView();
 						if (status_bar_gui_manipulator != NULL) {
-							BView *manipulator_gui = status_bar_gui_manipulator->MakeConfigurationView(300,status_view->Bounds().Height(),the_messenger);
+							BMessenger messenger(this);
+							BView *manipulator_gui =
+								status_bar_gui_manipulator->MakeConfigurationView(300,
+								status_view->Bounds().Height(), &messenger);
 							status_view->DisplayManipulatorView(manipulator_gui);
 						}
 						else if (window_gui_manipulator != NULL) {
@@ -657,15 +659,14 @@ void ImageView::MessageReceived(BMessage *message)
 
 							frame = FitRectToScreen(frame);
 							manipulator_window = new ManipulatorWindow(frame,
-									window_gui_manipulator->MakeConfigurationView(the_messenger),
-									window_name,Window(),the_messenger);
+								window_gui_manipulator->MakeConfigurationView(this),
+									window_name, Window(), this);
 							// This is commented out because there doesn't seem to be any problem
 							// with leaving the tools and colors when a manipulator has its own
 							// window. In fact, using the Insert Text menu command, you need to
 							// remove this line in order to change the text color.
 							//status_view->RemoveToolsAndColors();
 						}
-						delete the_messenger;	// The manipulator should copy the messenger
 
 						cursor_mode = MANIPULATOR_CURSOR_MODE;
 						SetCursor();
@@ -1275,11 +1276,11 @@ int32 ImageView::PaintToolThread()
 					((PaintWindow*)Window())->SetHelpString(text_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
 					UnlockLooper();
 				}
-				BMessenger *the_messenger = new BMessenger(this);
 				char window_name[256];
 				sprintf(window_name,"%s: %s",ReturnProjectName(),text_manipulator->ReturnName());
-				manipulator_window = new ManipulatorWindow(BRect(100,100,200,200),text_manipulator->MakeConfigurationView(the_messenger),window_name,Window(),the_messenger);
-				delete the_messenger;	// The manipulator should copy the messenger
+				manipulator_window = new ManipulatorWindow(BRect(100,100,200,200),
+					text_manipulator->MakeConfigurationView(this), window_name,
+					Window(), this);
 
 				BWindow *window = Window();
 				if (window != NULL) {

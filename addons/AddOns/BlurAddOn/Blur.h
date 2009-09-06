@@ -107,7 +107,7 @@ public:
 			~BlurManipulator();
 
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
@@ -140,7 +140,8 @@ class BlurManipulatorView : public WindowGUIManipulatorView {
 		bool			preview_started;
 
 public:
-		BlurManipulatorView(BRect rect, BlurManipulator *manip,BMessenger*);
+		BlurManipulatorView(BRect rect, BlurManipulator *manip,const BMessenger& target);
+		~BlurManipulatorView();
 
 void	AttachedToWindow();
 void	MessageReceived(BMessage*);

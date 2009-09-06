@@ -97,7 +97,7 @@ char*		ReturnName() { return "Wave"; }
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -114,7 +114,8 @@ class WaveManipulatorView : public WindowGUIManipulatorView {
 		bool					preview_started;
 
 public:
-		WaveManipulatorView(BRect,WaveManipulator*,BMessenger*);
+		WaveManipulatorView(BRect,WaveManipulator*, const BMessenger& target);
+		~WaveManipulatorView();
 
 void	AttachedToWindow();
 void	AllAttached();

@@ -223,7 +223,7 @@ void GaussianBlurManipulator::Reset(Selection*)
 	}
 }
 
-BView* GaussianBlurManipulator::MakeConfigurationView(BMessenger *target)
+BView* GaussianBlurManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new GaussianBlurManipulatorView(this,target);
@@ -262,10 +262,11 @@ char* GaussianBlurManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -278,6 +279,9 @@ GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator
 	ResizeTo(blur_slider->Bounds().Width()+8,blur_slider->Bounds().Height()+8);
 }
 
+GaussianBlurManipulatorView::~GaussianBlurManipulatorView()
+{
+}
 
 void GaussianBlurManipulatorView::AttachedToWindow()
 {

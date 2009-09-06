@@ -18,11 +18,16 @@
 #define PI M_PI
 
 
-extern "C" __declspec(dllexport) char name[255] = "Wave…";
-extern "C" __declspec(dllexport) char menu_help_string[255] = "Starts waving the active layer.";
-extern "C" __declspec(dllexport) int32 add_on_api_version = ADD_ON_API_VERSION;
-extern "C" __declspec(dllexport) add_on_types add_on_type = DISTORT_ADD_ON;
-
+#ifdef __cplusplus
+extern "C" {
+#endif
+	char name[255] = "Wave…";
+	char menu_help_string[255] = "Starts waving the active layer.";
+	int32 add_on_api_version = ADD_ON_API_VERSION;
+	add_on_types add_on_type = DISTORT_ADD_ON;
+#ifdef __cplusplus
+}
+#endif
 
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
@@ -920,9 +925,9 @@ void WaveManipulator::Reset(Selection*)
 	}
 }
 
-BView* WaveManipulator::MakeConfigurationView(BMessenger *target)
+BView* WaveManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new WaveManipulatorView(BRect(0,0,0,0),this,target);
+	config_view = new WaveManipulatorView(BRect(0,0,0,0),this, target);
 	config_view->ChangeSettings(&settings);
 	return config_view;
 }
@@ -945,11 +950,12 @@ void WaveManipulator::ChangeSettings(ManipulatorSettings *s)
 //-------------
 
 
-WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
 	manipulator = manip;
-	target = new BMessenger(*t);
+	target = new BMessenger(t);
 	preview_started = FALSE;
 
 	wave_length_slider = new ControlSlider(BRect(0,0,150,0),"wave_length_slider","Wave Length",new BMessage(WAVE_LENGTH_CHANGED),MIN_WAVE_LENGTH,MAX_WAVE_LENGTH,B_TRIANGLE_THUMB);
@@ -972,6 +978,11 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,BMess
 	ResizeTo(wave_amount_slider->Frame().Width()+8,wave_amount_slider->Frame().bottom+4);
 }
 
+
+WaveManipulatorView::~WaveManipulatorView()
+{
+	delete target;
+}
 
 
 void WaveManipulatorView::AttachedToWindow()

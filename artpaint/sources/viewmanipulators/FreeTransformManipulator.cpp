@@ -195,10 +195,10 @@ ManipulatorSettings* FreeTransformManipulator::ReturnSettings()
 	return new FreeTransformManipulatorSettings(settings);
 }
 
-BView* FreeTransformManipulator::MakeConfigurationView(BMessenger *messenger)
+BView* FreeTransformManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	configuration_view = new (std::nothrow) FreeTransformManipulatorView(this,
-		*messenger);
+		target);
 	if (configuration_view)
 		configuration_view->ChangeSettings(&settings);
 	return configuration_view;

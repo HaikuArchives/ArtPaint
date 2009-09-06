@@ -84,7 +84,7 @@ char*		ReturnName() { return "Interference"; }
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -101,7 +101,8 @@ class InterferenceManipulatorView : public WindowGUIManipulatorView {
 		bool					preview_started;
 
 public:
-		InterferenceManipulatorView(BRect,InterferenceManipulator*,BMessenger*);
+		InterferenceManipulatorView(BRect,InterferenceManipulator*, const BMessenger&);
+		~InterferenceManipulatorView() { delete target; }
 
 void	AttachedToWindow();
 void	AllAttached();

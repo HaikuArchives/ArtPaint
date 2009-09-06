@@ -152,7 +152,7 @@ void ReducerManipulator::Reset(Selection*)
 	}
 }
 
-BView* ReducerManipulator::MakeConfigurationView(BMessenger *target)
+BView* ReducerManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new ReducerManipulatorView(this,target);
@@ -254,10 +254,11 @@ void ReducerManipulator::do_dither(BBitmap *source,BBitmap *target,const rgb_col
 
 
 // -------------------------------------
-ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 
 	BMenu *dither_menu = new BMenu("dither_menu");
@@ -343,6 +344,11 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,BMessen
 	palette_mode_menu_field->ResizeToPreferred();
 
 	ResizeTo(palette_mode_menu_field->Frame().Width() + 8, palette_mode_menu_field->Frame().bottom + 4);
+}
+
+
+ReducerManipulatorView::~ReducerManipulatorView()
+{
 }
 
 

@@ -327,7 +327,7 @@ void BrightnessManipulator::Reset(Selection*)
 	}
 }
 
-BView* BrightnessManipulator::MakeConfigurationView(BMessenger *target)
+BView* BrightnessManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new BrightnessManipulatorView(this,target);
@@ -366,10 +366,11 @@ char* BrightnessManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-BrightnessManipulatorView::BrightnessManipulatorView(BrightnessManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+BrightnessManipulatorView::BrightnessManipulatorView(BrightnessManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -381,6 +382,11 @@ BrightnessManipulatorView::BrightnessManipulatorView(BrightnessManipulator *mani
 	AddChild(brightness_slider);
 
 	ResizeTo(brightness_slider->Bounds().Width()+8,brightness_slider->Bounds().Height()+8);
+}
+
+
+BrightnessManipulatorView::~BrightnessManipulatorView()
+{
 }
 
 

@@ -535,7 +535,7 @@ void BlurManipulator::ChangeSettings(ManipulatorSettings *set)
 	}
 }
 
-BView* BlurManipulator::MakeConfigurationView(BMessenger *target)
+BView* BlurManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new BlurManipulatorView(BRect(0,0,0,0),this,target);
 	config_view->ChangeSettings(&settings);
@@ -575,11 +575,12 @@ status_t BlurManipulator::WriteSettings(BNode *node)
 //***************
 
 
-BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
 	manipulator = manip;
-	target = new BMessenger(*t);
+	target = new BMessenger(t);
 
 	blur_amount_slider = new ControlSlider(BRect(0,0,150,0),"blur_amount_slider","Blur Amount",new BMessage(BLUR_AMOUNT_CHANGED),1,MAX_BLUR_AMOUNT,B_TRIANGLE_THUMB);
 	blur_amount_slider->SetLimitLabels("Little","Much");
@@ -599,7 +600,10 @@ BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,BMess
 	preview_started = FALSE;
 }
 
-
+BlurManipulatorView::~BlurManipulatorView()
+{
+	delete target;
+}
 
 
 void BlurManipulatorView::AttachedToWindow()

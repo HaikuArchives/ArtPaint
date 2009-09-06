@@ -305,7 +305,7 @@ void ThresholdManipulator::Reset(Selection*)
 	}
 }
 
-BView* ThresholdManipulator::MakeConfigurationView(BMessenger *target)
+BView* ThresholdManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new ThresholdManipulatorView(this,target);
@@ -343,10 +343,11 @@ char* ThresholdManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,BMessenger *t)
+ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,
+		const BMessenger& t)
 	: WindowGUIManipulatorView(BRect(0,0,0,0))
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 

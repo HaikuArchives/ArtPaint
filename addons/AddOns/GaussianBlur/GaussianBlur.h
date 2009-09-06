@@ -90,7 +90,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 ImageProcessingLibrary	*ipLibrary;
@@ -109,7 +109,8 @@ class GaussianBlurManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		GaussianBlurManipulatorView(GaussianBlurManipulator*,BMessenger*);
+		GaussianBlurManipulatorView(GaussianBlurManipulator*,const BMessenger& target);
+		~GaussianBlurManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

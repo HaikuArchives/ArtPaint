@@ -96,7 +96,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -117,7 +117,8 @@ class ReducerManipulatorView : public WindowGUIManipulatorView {
 		BMenuField		*palette_mode_menu_field;
 
 public:
-		ReducerManipulatorView(ReducerManipulator*,BMessenger*);
+		ReducerManipulatorView(ReducerManipulator*,const BMessenger& target);
+		~ReducerManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

@@ -95,7 +95,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger&);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -115,7 +115,8 @@ class ContrastManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		ContrastManipulatorView(ContrastManipulator*,BMessenger*);
+		ContrastManipulatorView(ContrastManipulator*,const BMessenger&);
+		~ContrastManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

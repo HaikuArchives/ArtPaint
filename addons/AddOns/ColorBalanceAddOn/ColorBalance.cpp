@@ -229,9 +229,9 @@ void ColorBalanceManipulator::Reset(Selection*)
 }
 
 
-BView* ColorBalanceManipulator::MakeConfigurationView(BMessenger *t)
+BView* ColorBalanceManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new ColorBalanceManipulatorView(BRect(0,0,0,0),this,t);
+	config_view = new ColorBalanceManipulatorView(BRect(0,0,0,0),this,target);
 	config_view->ChangeSettings(settings);
 
 	return config_view;
@@ -255,10 +255,11 @@ void ColorBalanceManipulator::ChangeSettings(ManipulatorSettings *s)
 
 
 
-ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,ColorBalanceManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
+		ColorBalanceManipulator *manip, const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = new BMessenger(*t);
+	target = new BMessenger(t);
 	manipulator = manip;
 	preview_started = FALSE;
 	rgb_color color;
@@ -304,7 +305,10 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,ColorBalance
 	ResizeTo(blue_slider->Bounds().Width()+8,blue_slider->Frame().bottom + 4);
 }
 
-
+ColorBalanceManipulatorView::~ColorBalanceManipulatorView()
+{
+	delete target;
+}
 
 void ColorBalanceManipulatorView::AttachedToWindow()
 {

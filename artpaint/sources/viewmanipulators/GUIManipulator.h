@@ -25,30 +25,31 @@ enum draw_resolutions {
 	DRAW_4_X_4 = 4,
 	DRAW_2_X_2 = 2,
 	DRAW_1_X_1 = 1
-};
+			 };
 
 class GUIManipulator : public Manipulator {
 protected:
-BBitmap*	ManipulateBitmap(BBitmap *b,Selection*,BStatusBar*) { return b; };
+	BBitmap*	ManipulateBitmap(BBitmap *b,Selection*,BStatusBar*) { return b; }
 
 public:
-					GUIManipulator() : Manipulator() {};
-virtual				~GUIManipulator() {};
+	GUIManipulator() : Manipulator() {}
+	virtual				~GUIManipulator() {}
 
 
-virtual	void		MouseDown(BPoint,uint32,BView*,bool) {};
-virtual	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL) = 0;
-virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*) = 0;
-virtual	BRegion		Draw(BView*,float) { return BRegion(); };
-virtual	void		Reset(Selection*) = 0;
-virtual	void		SetPreviewBitmap(BBitmap*) = 0;
-virtual	const	void*		ManipulatorCursor() { return NULL; };
-virtual	const	char*		ReturnHelpString() = 0;
-virtual	void		ChangeSettings(ManipulatorSettings*) {};
+	virtual	void		MouseDown(BPoint,uint32,BView*,bool) {}
+	virtual	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL) = 0;
+	virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*) = 0;
+	virtual	BRegion		Draw(BView*,float) { return BRegion(); }
+	virtual	void		Reset(Selection*) = 0;
+	virtual	void		SetPreviewBitmap(BBitmap*) = 0;
+	virtual	const	void*		ManipulatorCursor() { return NULL; }
+	virtual	const	char*		ReturnHelpString() = 0;
+	virtual	void		ChangeSettings(ManipulatorSettings*) {}
 
-ManipulatorSettings*	ReturnSettings() = 0;
+	ManipulatorSettings*	ReturnSettings() = 0;
 
-virtual	status_t	ReadSettings(BNode*) { return B_NO_ERROR; }
-virtual	status_t	WriteSettings(BNode*) { return B_NO_ERROR; }
+	virtual	status_t	ReadSettings(BNode*) { return B_NO_ERROR; }
+	virtual	status_t	WriteSettings(BNode*) { return B_NO_ERROR; }
 };
+
 #endif

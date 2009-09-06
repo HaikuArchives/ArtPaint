@@ -454,7 +454,7 @@ void TwirlManipulator::Reset(Selection*)
 }
 
 
-BView* TwirlManipulator::MakeConfigurationView(BMessenger *target)
+BView* TwirlManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new TwirlManipulatorView(BRect(0,0,0,0),this,target);
 	config_view->ChangeSettings(&settings);
@@ -478,11 +478,12 @@ void TwirlManipulator::ChangeSettings(ManipulatorSettings *s)
 }
 
 
-TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
 	manipulator = manip;
-	target = new BMessenger(*t);
+	target = new BMessenger(t);
 	preview_started = FALSE;
 
 	twirl_radius_slider = new ControlSlider(BRect(0,0,150,0),"twirl_radius_slider","Twirl Size",new BMessage(TWIRL_RADIUS_CHANGED),10,1000,B_TRIANGLE_THUMB);
@@ -506,6 +507,10 @@ TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,BM
 }
 
 
+TwirlManipulatorView::~TwirlManipulatorView()
+{
+	delete target;
+}
 
 void TwirlManipulatorView::AttachedToWindow()
 {

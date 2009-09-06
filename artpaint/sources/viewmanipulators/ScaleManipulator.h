@@ -75,7 +75,7 @@ public:
 	void		MouseDown(BPoint,uint32,BView*,bool);
 	void		SetValues(float,float);
 
-	BView*		MakeConfigurationView(BMessenger*);
+	BView*		MakeConfigurationView(const BMessenger& target);
 	void		Reset(Selection*);
 	void		SetPreviewBitmap(BBitmap*);
 

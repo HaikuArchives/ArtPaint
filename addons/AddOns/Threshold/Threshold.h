@@ -102,7 +102,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 
@@ -125,7 +125,8 @@ class ThresholdManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		ThresholdManipulatorView(ThresholdManipulator*,BMessenger*);
+		ThresholdManipulatorView(ThresholdManipulator*, const BMessenger& target);
+		~ThresholdManipulatorView();
 
 void	AttachedToWindow();
 void	MessageReceived(BMessage*);

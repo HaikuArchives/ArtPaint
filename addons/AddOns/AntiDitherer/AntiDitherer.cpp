@@ -216,7 +216,7 @@ void AntiDithererManipulator::anti_dither()
 	}
 }
 
-BView* AntiDithererManipulator::MakeConfigurationView(BMessenger *target)
+BView* AntiDithererManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new AntiDithererManipulatorView(this,target);
@@ -255,10 +255,11 @@ char* AntiDithererManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -274,6 +275,9 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	ResizeTo(reduce_resolution_box->Bounds().Width()+8,reduce_resolution_box->Frame().bottom+4);
 }
 
+AntiDithererManipulatorView::~AntiDithererManipulatorView()
+{
+}
 
 void AntiDithererManipulatorView::AttachedToWindow()
 {

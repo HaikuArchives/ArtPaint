@@ -133,9 +133,9 @@ TransparencyManipulator::Reset(Selection*)
 
 
 BView*
-TransparencyManipulator::MakeConfigurationView(BMessenger *target)
+TransparencyManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new (std::nothrow) TransparencyManipulatorView(this, *target);
+	config_view = new (std::nothrow) TransparencyManipulatorView(this, target);
 	if (config_view)
 		config_view->ChangeSettings(settings);
 	return config_view;

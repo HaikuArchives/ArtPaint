@@ -366,7 +366,7 @@ void SaturationManipulator::Reset(Selection*)
 	}
 }
 
-BView* SaturationManipulator::MakeConfigurationView(BMessenger *target)
+BView* SaturationManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new SaturationManipulatorView(this,target);
@@ -406,10 +406,11 @@ char* SaturationManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
@@ -423,6 +424,9 @@ SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *mani
 	ResizeTo(saturation_slider->Bounds().Width()+8,saturation_slider->Bounds().Height()+8);
 }
 
+SaturationManipulatorView::~SaturationManipulatorView()
+{
+}
 
 void SaturationManipulatorView::AttachedToWindow()
 {

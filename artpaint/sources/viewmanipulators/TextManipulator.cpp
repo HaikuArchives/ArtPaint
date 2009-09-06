@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 
@@ -571,9 +573,9 @@ TextManipulator::ReturnSettings()
 
 
 BView*
-TextManipulator::MakeConfigurationView(BMessenger *target)
+TextManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new (std::nothrow) TextManipulatorView(this, *target);
+	config_view = new (std::nothrow) TextManipulatorView(this, target);
 	if (config_view)
 		config_view->ChangeSettings(&settings);
 	return config_view;

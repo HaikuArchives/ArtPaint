@@ -91,7 +91,7 @@ char*		ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(BMessenger*);
+BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
 };
@@ -111,7 +111,8 @@ class BrightnessManipulatorView : public WindowGUIManipulatorView {
 
 		bool							started_adjusting;
 public:
-		BrightnessManipulatorView(BrightnessManipulator*,BMessenger*);
+		BrightnessManipulatorView(BrightnessManipulator*,const BMessenger& target);
+		~BrightnessManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

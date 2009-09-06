@@ -211,7 +211,7 @@ void InterferenceManipulator::Reset(Selection*)
 	}
 }
 
-BView* InterferenceManipulator::MakeConfigurationView(BMessenger *target)
+BView* InterferenceManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new InterferenceManipulatorView(BRect(0,0,0,0),this,target);
 	config_view->ChangeSettings(&settings);
@@ -236,11 +236,13 @@ void InterferenceManipulator::ChangeSettings(ManipulatorSettings *s)
 //-------------
 
 
-InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,InterferenceManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(rect)
+InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,
+	InterferenceManipulator *manip, const BMessenger& t)
+	: WindowGUIManipulatorView()
+	, target(NULL)
 {
 //	manipulator = manip;
-//	target = new BMessenger(*t);
+//	target = new BMessenger(t);
 //	preview_started = FALSE;
 //
 //	wave_length_slider = new ControlSlider(BRect(0,0,150,0),"wave_length_slider","Wave Length",new BMessage(WAVE_LENGTH_CHANGED),MIN_WAVE_LENGTH,MAX_WAVE_LENGTH,B_TRIANGLE_THUMB);

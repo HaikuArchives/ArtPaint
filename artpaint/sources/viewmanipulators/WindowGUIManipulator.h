@@ -20,9 +20,9 @@
 class WindowGUIManipulator : public GUIManipulator {
 public:
 								WindowGUIManipulator() {}
-								~WindowGUIManipulator() {}
+	virtual						~WindowGUIManipulator() {}
 
-	virtual	BView*				MakeConfigurationView(BMessenger* target) = 0;
+	virtual	BView*				MakeConfigurationView(const BMessenger& target) = 0;
 };
 
 
@@ -30,6 +30,8 @@ class WindowGUIManipulatorView : public BView {
 public:
 								WindowGUIManipulatorView();
 								WindowGUIManipulatorView(BRect rect);
+	virtual						~WindowGUIManipulatorView() {}
+
 
 	virtual	void				AttachedToWindow();
 	virtual	void				MessageReceived(BMessage* message);

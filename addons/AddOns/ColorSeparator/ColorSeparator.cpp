@@ -169,7 +169,7 @@ void ColorSeparatorManipulator::separate_colors()
 	}
 }
 
-BView* ColorSeparatorManipulator::MakeConfigurationView(BMessenger *target)
+BView* ColorSeparatorManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
 		config_view = new ColorSeparatorManipulatorView(this,target);
@@ -208,10 +208,11 @@ char* ColorSeparatorManipulator::ReturnHelpString()
 
 
 // -------------------------------------
-ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManipulator *manip,BMessenger *t)
-	: WindowGUIManipulatorView(BRect(0,0,0,0))
+ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManipulator *manip,
+		const BMessenger& t)
+	: WindowGUIManipulatorView()
 {
-	target = BMessenger(*t);
+	target = t;
 	manipulator = manip;
 
 	BMenu *cmyk_menu = new BMenu("cmyk_menu");
@@ -238,6 +239,11 @@ ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManip
 	cmyk_menu_field->ResizeToPreferred();
 
 	ResizeTo(cmyk_menu_field->Bounds().Width()+8,cmyk_menu_field->Frame().bottom+4);
+}
+
+
+ColorSeparatorManipulatorView::~ColorSeparatorManipulatorView()
+{
 }
 
 
