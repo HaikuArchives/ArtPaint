@@ -36,7 +36,6 @@ Addon Marble.so :
 	ColorPalette.o
 	ColorSelectorTool.o
 	ColorView.o
-	Controls.o
 	CoordinateQueue.o
 	CoordinateReader.o
 	CropManipulator.o
@@ -70,6 +69,8 @@ Addon Marble.so :
 	ManipulatorWindow.o
 	MatrixView.o
 	MessageFilters.o
+	Controls.o
+	NumberSliderControl.o
 	PaintApplication.o
 	PaintWindowMenuItem.o
 	PaintWindow.o
@@ -135,6 +136,7 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
 		<3rdparty!artpaint!artpaint!sources>ColorView.o
 		<3rdparty!artpaint!artpaint!sources>Controls.o
+		<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateQueue.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateReader.o
 		<3rdparty!artpaint!artpaint!sources>CropManipulator.o

@@ -17,6 +17,7 @@
 #include <PopUpMenu.h>
 #include <Screen.h>
 #include <ScrollBar.h>
+#include <Slider.h>
 #include <StatusBar.h>
 #include <Window.h>
 

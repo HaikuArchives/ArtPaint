@@ -11,6 +11,8 @@
 
 #include "TextManipulator.h"
 
+#include "Controls.h"
+#include "NumberSliderControl.h"
 #include "HSPolygon.h"
 #include "MessageConstants.h"
 #include "StringServer.h"
@@ -20,6 +22,7 @@
 
 #include <CheckBox.h>
 #include <File.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <Menu.h>
@@ -30,6 +33,20 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+#define TEXT_SETTINGS_VERSION	0x03
+
+
+#define TEXT_CHANGED							'Txch'
+#define	FONT_STYLE_CHANGED						'Fsch'
+#define FONT_SIZE_CHANGED						'Fsic'
+#define FONT_ROTATION_CHANGED					'Froc'
+#define	FONT_SHEAR_CHANGED						'Fshc'
+#define FONT_ANTI_ALIAS_CHANGED					'Faac'
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 TextManipulator::TextManipulator(BBitmap *bm)
@@ -552,14 +569,16 @@ void TextManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 }
 
-void TextManipulator::Reset(Selection*)
+
+void
+TextManipulator::Reset(Selection*)
 {
-	if (copy_of_the_preview_bitmap != NULL) {
+	if (copy_of_the_preview_bitmap) {
 		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 		int32 bits_length = preview_bitmap->BitsLength()/4;
 
-		for (int32 i=0;i<bits_length;i++)
+		for (int32 i = 0; i < bits_length; ++i)
 			*target_bits++ = *source_bits++;
 	}
 }
@@ -585,9 +604,10 @@ TextManipulator::MakeConfigurationView(const BMessenger& target)
 void
 TextManipulator::ChangeSettings(ManipulatorSettings *s)
 {
-	TextManipulatorSettings *new_settings = dynamic_cast<TextManipulatorSettings*> (s);
-	if (new_settings != NULL)
-		settings = *new_settings;
+	TextManipulatorSettings* newSettings =
+		dynamic_cast<TextManipulatorSettings*> (s);
+	if (newSettings)
+		settings = *newSettings;
 }
 
 
@@ -607,9 +627,10 @@ TextManipulator::ReadSettings(BNode *node)
 			settings.text_color_array = new rgb_color[settings.text_array_length];
 
 			file->Read(settings.text,settings.text_array_length);
-			file->Read(settings.text_color_array,settings.text_array_length*sizeof(int32));
-			file->Read(&(settings.font),sizeof(BFont));
-			file->Read(&settings.starting_point,sizeof(BPoint));
+			file->Read(settings.text_color_array,
+				settings.text_array_length * sizeof(int32));
+			file->Read(&(settings.font), sizeof(BFont));
+			file->Read(&settings.starting_point, sizeof(BPoint));
 		}
 	}
 	return B_OK;
@@ -624,9 +645,10 @@ TextManipulator::WriteSettings(BNode *node)
 		file->Write(&version,sizeof(int32));
 		file->Write(&settings.text_array_length,sizeof(int32));
 		file->Write(settings.text,settings.text_array_length);
-		file->Write(settings.text_color_array,settings.text_array_length*sizeof(int32));
-		file->Write(&settings.font,sizeof(BFont));
-		file->Write(&settings.starting_point,sizeof(BPoint));
+		file->Write(settings.text_color_array,
+			settings.text_array_length * sizeof(int32));
+		file->Write(&settings.font, sizeof(BFont));
+		file->Write(&settings.starting_point, sizeof(BPoint));
 	}
 	return B_OK;
 }
@@ -649,26 +671,27 @@ TextManipulator::ReturnHelpString()
 // #pragma mark -- TextManipulatorView
 
 
-TextManipulatorView::TextManipulatorView(TextManipulator *manip,
+TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 		const BMessenger& target)
 	: WindowGUIManipulatorView()
 	, fTarget(target)
+	, fTracking(false)
+	, fManipulator(manipulator)
 {
-	preview_started = FALSE;
-	manipulator = manip;
+	fTextView = new TextEditor();
+	fTextView->SetMessage(new BMessage(TEXT_CHANGED));
+	fTextView->SetExplicitMinSize(BSize(250.0, 100.0));
 
-	text_view = new TextEditor();
-	text_view->SetMessage(new BMessage(TEXT_CHANGED));
-	text_view->SetExplicitMinSize(BSize(200.0, 100.0));
+	fFontMenu = new BMenu("font menu");
 
-	font_menu = new BMenu("font_menu");
-	int32 numFamilies = count_font_families();
+	const int32 numFamilies = count_font_families();
 	font_family* families = new font_family[numFamilies];
 	for (int32 i = 0; i < numFamilies; ++i) {
 		uint32 flags;
 		get_font_family(i, &families[i], &flags);
 	}
-	typedef int (*FP) (const void*,const void*);
+
+	typedef int (*FP) (const void*, const void*);
 	qsort(families, numFamilies, sizeof(font_family), reinterpret_cast<FP>(&strcmp));
 
 	char family_and_style_name[256];
@@ -677,309 +700,285 @@ TextManipulatorView::TextManipulatorView(TextManipulator *manip,
 		font.SetFamilyAndStyle(families[i], NULL);
 		int32 numStyles = count_font_styles(families[i]);
 		if (numStyles > 1) {
-			BMenu* sub_menu = new BMenu(families[i]);
+			BMenu* subMenu = new BMenu(families[i]);
 			for (int32 j = 0; j < numStyles; ++j) {
 				font_style style;
 				uint32 flags;
 				if (get_font_style(families[i], j, &style, &flags) == B_OK) {
 					font.SetFamilyAndStyle(families[i],style);
-					BMessage* font_message = new BMessage(FONT_STYLE_CHANGED);
-					font_message->AddInt32("font_code", (int32)font.FamilyAndStyle());
-					sub_menu->AddItem(new BMenuItem(style, font_message));
+					BMessage* message = new BMessage(FONT_STYLE_CHANGED);
+					message->AddUInt32("font_code", font.FamilyAndStyle());
+					subMenu->AddItem(new BMenuItem(style, message));
 				}
 			}
-			BMenuItem *controlling_item = new BMenuItem(sub_menu);
-			font_menu->AddItem(controlling_item);
+			BMenuItem *controlling_item = new BMenuItem(subMenu);
+			fFontMenu->AddItem(controlling_item);
 		} else {
 			font_style style;
 			uint32 flags;
 			if (get_font_style(families[i], 0, &style, &flags) == B_OK) {
 				sprintf(family_and_style_name, "%s %s", families[i], style);
-				font.SetFamilyAndStyle(NULL,style);
-				BMessage *font_message = new BMessage(FONT_STYLE_CHANGED);
-				font_message->AddInt32("font_code", font.FamilyAndStyle());
-				font_menu->AddItem(new BMenuItem(family_and_style_name,font_message));
+				font.SetFamilyAndStyle(NULL, style);
+				BMessage* message = new BMessage(FONT_STYLE_CHANGED);
+				message->AddUInt32("font_code", font.FamilyAndStyle());
+				fFontMenu->AddItem(new BMenuItem(family_and_style_name, message));
 			}
 		}
 	}
-	font_menu_field = new BMenuField(StringServer::ReturnString(FONT_STRING),
-		font_menu);
+	fFontMenuField = new BMenuField(StringServer::ReturnString(FONT_STRING),
+		fFontMenu);
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
-	message->AddBool("final",FALSE);
-	message->AddInt32("value",0);
-	size_slider = new ControlSliderBox("size_slider",
-		StringServer::ReturnString(SIZE_STRING), "0", message, 5, 500);
+	message->AddBool("final", false);
+	fSizeControl =
+		new NumberSliderControl(StringServer::ReturnString(SIZE_STRING), "0",
+		message, 5, 500, false);
+	AddChild(fSizeControl);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
-	message->AddBool("final",FALSE);
-	message->AddInt32("value",0);
-	rotation_slider = new ControlSliderBox("rotation_slider",
-		StringServer::ReturnString(ROTATION_STRING), "0", message, -180, 180);
+	message->AddBool("final", false);
+	fRotationControl =
+		new NumberSliderControl(StringServer::ReturnString(ROTATION_STRING),
+		"0", message, -180, 180, false);
+	AddChild(fRotationControl);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
-	message->AddBool("final",FALSE);
-	message->AddInt32("value",0);
-	shear_slider = new ControlSliderBox("shear_slider",
-		StringServer::ReturnString(SHEAR_STRING), "45", message, 45, 135);
+	message->AddBool("final", false);
+	fShearControl =
+		new NumberSliderControl(StringServer::ReturnString(SHEAR_STRING),
+		"45", message, 45, 135, false);
+	AddChild(fShearControl);
 
-	anti_aliasing_box =
+	fAntiAliasing =
 		new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
 		new BMessage(FONT_ANTI_ALIAS_CHANGED));
 
+	BGridLayout* layout = BGridLayoutBuilder(5.0, 5.0)
+		.Add(fSizeControl->LabelLayoutItem(), 0, 0)
+		.Add(fSizeControl->TextViewLayoutItem(), 1, 0)
+		.Add(fSizeControl->Slider(), 2, 0)
+		.Add(fRotationControl->LabelLayoutItem(), 0, 1)
+		.Add(fRotationControl->TextViewLayoutItem(), 1, 1)
+		.Add(fRotationControl->Slider(), 2, 1)
+		.Add(fShearControl->LabelLayoutItem(), 0, 2)
+		.Add(fShearControl->TextViewLayoutItem(), 1, 2)
+		.Add(fShearControl->Slider(), 2, 2);
+	layout->SetMaxColumnWidth(1, fTextView->StringWidth("1000"));
+
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(new BBox(B_FANCY_BORDER, text_view))
-		.Add(font_menu_field)
-		.Add(size_slider)
-		.Add(rotation_slider)
-		.Add(shear_slider)
-		.Add(anti_aliasing_box)
+		.Add(new BBox(B_FANCY_BORDER, fTextView))
+		.Add(fFontMenuField)
+		.Add(layout->View())
+		.Add(fAntiAliasing)
 	);
 }
 
 
-void TextManipulatorView::AttachedToWindow()
+void
+TextManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 
-	font_menu->SetTargetForItems(BMessenger(this));
-
-	for (int32 i=0;i<font_menu->CountItems();i++) {
-		BMenu *sub_menu = font_menu->SubmenuAt(i);
-		if (sub_menu != NULL) {
-			sub_menu->SetTargetForItems(this);
-		}
+	fFontMenu->SetTargetForItems(BMessenger(this));
+	for (int32 i = 0; i < fFontMenu->CountItems(); ++i) {
+		if (BMenu* subMenu = fFontMenu->SubmenuAt(i))
+			subMenu->SetTargetForItems(this);
 	}
 
-	size_slider->SetTarget(new BMessenger(this));
-	rotation_slider->SetTarget(new BMessenger(this));
-	shear_slider->SetTarget(new BMessenger(this));
-	anti_aliasing_box->SetTarget(this);
+	fSizeControl->SetTarget(this);
+	fRotationControl->SetTarget(this);
+	fShearControl->SetTarget(this);
+	fAntiAliasing->SetTarget(this);
 }
 
 
-void TextManipulatorView::AllAttached()
+void
+TextManipulatorView::AllAttached()
 {
 	WindowGUIManipulatorView::AllAttached();
 
-	text_view->MakeFocus(true);
-	text_view->SetText(settings.text);
-	text_view->SetTarget(BMessenger(this,Window()));
-	int32 length = settings.text ? strlen(settings.text) : 0;
+	fTextView->MakeFocus(true);
+	fTextView->SetText(fSettings.text);
+	fTextView->SetTarget(BMessenger(this, Window()));
+
+	int32 length = fSettings.text ? strlen(fSettings.text) : 0;
 	for (int32 i = 0; i < length; ++i) {
-		text_view->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
-			&settings.text_color_array[i]);
+		fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
+			&fSettings.text_color_array[i]);
 	}
 
-	size_slider->setValue(int32(settings.font.Size()));
-	rotation_slider->setValue(int32(settings.font.Rotation()));
-	shear_slider->setValue(int32(settings.font.Shear()));
+	fSizeControl->SetValue(int32(fSettings.font.Size()));
+	fRotationControl->SetValue(int32(fSettings.font.Rotation()));
+	fShearControl->SetValue(int32(fSettings.font.Shear()));
 
-	FontFamilyAndStyleChanged(settings.font.FamilyAndStyle());
+	_FontFamilyAndStyleChanged(fSettings.font.FamilyAndStyle());
 
-	if (settings.font.Flags() & B_DISABLE_ANTIALIASING)
-		anti_aliasing_box->SetValue(B_CONTROL_OFF);
-	else
-		anti_aliasing_box->SetValue(B_CONTROL_ON);
+	fAntiAliasing->SetValue(B_CONTROL_ON);
+	if (fSettings.font.Flags() & B_DISABLE_ANTIALIASING)
+		fAntiAliasing->SetValue(B_CONTROL_OFF);
 }
 
 
-void TextManipulatorView::MessageReceived(BMessage *message)
+void
+TextManipulatorView::MessageReceived(BMessage* message)
 {
-	uint32 font_code;
-	bool final;
-	int32 value;
-	BFont f;
-
 	switch (message->what) {
-		case TEXT_CHANGED:
-			if (text_view->TextLength() > settings.text_array_length) {
-				settings.text_array_length = 2*text_view->TextLength();
-				delete[] settings.text;
-				delete[] settings.text_color_array;
-				settings.text = new char[settings.text_array_length];
-				settings.text_color_array = new rgb_color[settings.text_array_length];
+		case TEXT_CHANGED: {
+			const int32 textLength = fTextView->TextLength();
+			if (textLength > fSettings.text_array_length) {
+				fSettings.text_array_length = 2 * textLength;
+				delete[] fSettings.text;
+				delete[] fSettings.text_color_array;
+				fSettings.text = new char[fSettings.text_array_length];
+				fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
 			}
-			strcpy(settings.text,text_view->Text());
-			for (int32 i=0;i<text_view->TextLength();i++) {
-				text_view->GetFontAndColor(i,&f,&settings.text_color_array[i]);
+			strcpy(fSettings.text, fTextView->Text());
+
+			for (int32 i = 0; i < textLength; ++i) {
+				BFont font;
+				fTextView->GetFontAndColor(i, &font,
+					&fSettings.text_color_array[i]);
 			}
-			manipulator->ChangeSettings(&settings);
+
+			fManipulator->ChangeSettings(&fSettings);
 			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-			break;
+		}	break;
 
-
-		case FONT_STYLE_CHANGED:
-			if (message->FindInt32("font_code",(int32*)&font_code) == B_OK) {
-				font_family family;
-				font_style style;
-				settings.font.SetFamilyAndStyle(font_code);
-				manipulator->ChangeSettings(&settings);
+		case FONT_STYLE_CHANGED: {
+			uint32 fontCode;
+			if (message->FindUInt32("font_code", &fontCode) == B_OK) {
+				fSettings.font.SetFamilyAndStyle(fontCode);
+				fManipulator->ChangeSettings(&fSettings);
 				fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-				settings.font.GetFamilyAndStyle(&family,&style);
-				FontFamilyAndStyleChanged(font_code);
+
+				_FontFamilyAndStyleChanged(fontCode);
 			}
-			break;
+		}	break;
 
-
-
+		case FONT_SIZE_CHANGED: {
 		case FONT_SHEAR_CHANGED:
-			if ((message->FindBool("final",&final) == B_OK) && (message->FindInt32("value",&value) == B_OK)) {
-				settings.font.SetShear(value);
-				manipulator->ChangeSettings(&settings);
-				if (final == FALSE) {
-					if (preview_started == FALSE) {
-						preview_started = TRUE;
-						fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
-					}
-				}
-				else {
-					preview_started = FALSE;
-					fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-				}
-			}
-			break;
-
 		case FONT_ROTATION_CHANGED:
-			if ((message->FindBool("final",&final) == B_OK) && (message->FindInt32("value",&value) == B_OK)) {
-				settings.font.SetRotation(value);
-				manipulator->ChangeSettings(&settings);
-				if (final == FALSE) {
-					if (preview_started == FALSE) {
-						preview_started = TRUE;
+			bool final;
+			int32 value;
+			if ((message->FindBool("final", &final) == B_OK)
+				&& (message->FindInt32("value", &value) == B_OK)) {
+				const uint32 what = message->what;
+				if (what == FONT_SIZE_CHANGED)
+					fSettings.font.SetSize(value);
+
+				if (what == FONT_SHEAR_CHANGED)
+					fSettings.font.SetShear(value);
+
+				if (what == FONT_ROTATION_CHANGED)
+					fSettings.font.SetRotation(value);
+
+				fManipulator->ChangeSettings(&fSettings);
+				if (final == false) {
+					if (!fTracking) {
+						fTracking = true;
 						fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 					}
-				}
-				else {
-					preview_started = FALSE;
+				} else {
+					fTracking = false;
 					fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 				}
 			}
-			break;
+		}	break;
 
-		case FONT_SIZE_CHANGED:
-			if ((message->FindBool("final",&final) == B_OK) && (message->FindInt32("value",&value) == B_OK)) {
-				settings.font.SetSize(value);
-				manipulator->ChangeSettings(&settings);
-				if (final == FALSE) {
-					if (preview_started == FALSE) {
-						preview_started = TRUE;
-						fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
-					}
-				}
-				else {
-					preview_started = FALSE;
-					fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-				}
-			}
-			break;
+		case FONT_ANTI_ALIAS_CHANGED: {
+			if (fAntiAliasing->Value() == B_CONTROL_ON)
+				fSettings.font.SetFlags(fSettings.font.Flags() & ~B_DISABLE_ANTIALIASING);
+			else
+				fSettings.font.SetFlags(fSettings.font.Flags() | B_DISABLE_ANTIALIASING);
+			fManipulator->ChangeSettings(&fSettings);
+			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+		}	break;
 
-		case FONT_ANTI_ALIAS_CHANGED:
-			{
-				bool anti_alias = anti_aliasing_box->Value() == B_CONTROL_ON;
-				if (anti_alias == TRUE) {
-					settings.font.SetFlags(settings.font.Flags() & ~B_DISABLE_ANTIALIASING);
-				}
-				else {
-					settings.font.SetFlags(settings.font.Flags() | B_DISABLE_ANTIALIASING);
-				}
-				manipulator->ChangeSettings(&settings);
-				fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-				break;
-			}
-		default:
+		default: {
 			WindowGUIManipulatorView::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
 
-
-void TextManipulatorView::FontFamilyAndStyleChanged(uint32 font_code)
+void
+TextManipulatorView::_FontFamilyAndStyleChanged(uint32 fontCode)
 {
-	BFont a_font;
-	a_font.SetFamilyAndStyle(font_code);
+	BFont font;
+	font.SetFamilyAndStyle(fontCode);
 
 	font_family family;
 	font_style style;
-	a_font.GetFamilyAndStyle(&family,&style);
+	font.GetFamilyAndStyle(&family, &style);
+
 	char family_and_style_name[256];
-	sprintf(family_and_style_name,"%s %s",family,style);
+	sprintf(family_and_style_name, "%s %s", family, style);
 
-	BMenuItem *item = font_menu->FindMarked();
-
-	if (item != NULL) {
-		item->SetMarked(FALSE);
-		BMenu *sub_menu = item->Submenu();
-		if (sub_menu != NULL) {
-			item = sub_menu->FindMarked();
-			if (item != NULL) {
-				item->SetMarked(FALSE);
-			}
+	if (BMenuItem* item = fFontMenu->FindMarked()) {
+		item->SetMarked(false);
+		if (BMenu* subMenu = item->Submenu()) {
+			if ((item = subMenu->FindMarked()))
+				item->SetMarked(false);
 		}
 	}
 
+	BMenuItem* item = fFontMenu->FindItem(family);
+	if (!item)
+		item = fFontMenu->FindItem(family_and_style_name);
 
-	item = font_menu->FindItem(family);
-	if (item == NULL)
-		item = font_menu->FindItem(family_and_style_name);
-
-	if (item != NULL) {
-		item->SetMarked(TRUE);
-		BMenu *sub_menu = item->Submenu();
-		if (sub_menu != NULL) {
-			item = sub_menu->FindItem(style);
-			if (item != NULL) {
-				item->SetMarked(TRUE);
-			}
+	if (item) {
+		item->SetMarked(true);
+		if (BMenu* subMenu = item->Submenu()) {
+			if ((item = subMenu->FindItem(style)))
+				item->SetMarked(true);
 		}
 	}
 
-	BMenuItem *controlling_item = font_menu->Superitem();
-	if (controlling_item != NULL)
-		controlling_item->SetLabel(family_and_style_name);
+	if (BMenuItem* superItem = fFontMenu->Superitem())
+		superItem->SetLabel(family_and_style_name);
 }
 
 
-void TextManipulatorView::ChangeSettings(TextManipulatorSettings *s)
+void
+TextManipulatorView::ChangeSettings(TextManipulatorSettings* s)
 {
-	if (settings.font.FamilyAndStyle() != s->font.FamilyAndStyle())
-		FontFamilyAndStyleChanged(s->font.FamilyAndStyle());
+	if (fSettings.font.FamilyAndStyle() != s->font.FamilyAndStyle())
+		_FontFamilyAndStyleChanged(s->font.FamilyAndStyle());
 
 	if (Window() && Window()->Lock()) {
-		if (strcmp(settings.text,s->text) != 0) {
-			strcpy(settings.text,s->text);
-			text_view->SetText(settings.text);
+		if (strcmp(fSettings.text,s->text) != 0) {
+			strcpy(fSettings.text, s->text);
+			fTextView->SetText(fSettings.text);
 
-			int32 length = settings.text ? strlen(settings.text) : 0;
+			int32 length = fSettings.text ? strlen(fSettings.text) : 0;
 			for (int32 i = 0; i < length; ++i) {
-				text_view->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
-					&settings.text_color_array[i]);
+				fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
+					&fSettings.text_color_array[i]);
 			}
 		} else {
 			;// Here we should set the text-colors if needed.
 		}
 
-		if (settings.font.Size() != s->font.Size())
-			size_slider->setValue(int32(s->font.Size()));
+		if (fSettings.font.Size() != s->font.Size())
+			fSizeControl->SetValue(int32(s->font.Size()));
 
-		if (settings.font.Shear() != s->font.Shear())
-			shear_slider->setValue(int32(s->font.Shear()));
+		if (fSettings.font.Shear() != s->font.Shear())
+			fShearControl->SetValue(int32(s->font.Shear()));
 
-		if (settings.font.Rotation() != s->font.Rotation())
-			rotation_slider->setValue(int32(s->font.Rotation()));
+		if (fSettings.font.Rotation() != s->font.Rotation())
+			fRotationControl->SetValue(int32(s->font.Rotation()));
 
-		if (settings.font.Flags() != s->font.Flags()) {
-			if (settings.font.Flags() & B_DISABLE_ANTIALIASING)
-				anti_aliasing_box->SetValue(B_CONTROL_OFF);
+		if (fSettings.font.Flags() != s->font.Flags()) {
+			if (fSettings.font.Flags() & B_DISABLE_ANTIALIASING)
+				fAntiAliasing->SetValue(B_CONTROL_OFF);
 			else
-				anti_aliasing_box->SetValue(B_CONTROL_ON);
+				fAntiAliasing->SetValue(B_CONTROL_ON);
 		}
 		Window()->Unlock();
 	}
 
-	settings = *s;
+	fSettings = *s;
 }
 
 
@@ -987,7 +986,7 @@ void TextManipulatorView::ChangeSettings(TextManipulatorSettings *s)
 
 
 TextEditor::TextEditor()
-	: BTextView("text_view", B_WILL_DRAW)
+	: BTextView("text view", B_WILL_DRAW)
 	, PaletteWindowClient()
 	, fMessage(NULL)
 {

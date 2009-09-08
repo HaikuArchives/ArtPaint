@@ -50,6 +50,7 @@ Application ArtPaint :
 	ColorPalette.cpp
 	ColorView.cpp
 	Controls.cpp
+	NumberSliderControl.cpp
 	DirectionControl.cpp
 	HSPictureButton.cpp
 	HSVControl.cpp

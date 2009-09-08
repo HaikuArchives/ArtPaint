@@ -29,13 +29,14 @@ Addon Halftone.so :
 	Brush.o
 	BrushStoreWindow.o
 	BrushTool.o
+	Controls.o
 #	ClipBoardManager.o
 #	ClipBoardView.o
 	CMYControl.o
 	ColorPalette.o
 	ColorSelectorTool.o
 	ColorView.o
-	Controls.o
+	NumberSliderControl.o
 	CoordinateQueue.o
 	CoordinateReader.o
 	CropManipulator.o
@@ -134,6 +135,7 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
 		<3rdparty!artpaint!artpaint!sources>ColorView.o
 		<3rdparty!artpaint!artpaint!sources>Controls.o
+		<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateQueue.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateReader.o
 		<3rdparty!artpaint!artpaint!sources>CropManipulator.o

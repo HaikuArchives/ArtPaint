@@ -20,6 +20,8 @@ Addon Oil.so :
 	RangeSlider.cpp
 
 	BitmapDrawer.o
+	Controls.o
+	NumberSliderControl.o
 	HSPolygon.o
 	Manipulator.o
 	RandomNumberGenerator.o
@@ -31,6 +33,8 @@ Addon Oil.so :
 
 ObjectReferences
 	<3rdparty!artpaint!artpaint!sources>BitmapDrawer.o
+	<3rdparty!artpaint!artpaint!sources>Controls.o
+	<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 	<3rdparty!artpaint!artpaint!sources>HSPolygon.o
 	<3rdparty!artpaint!artpaint!sources>Manipulator.o
 	<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
