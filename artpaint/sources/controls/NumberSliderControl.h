@@ -6,8 +6,8 @@
  *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#ifndef _CONTROL_SLIDER_BOX_H_
-#define _CONTROL_SLIDER_BOX_H_
+#ifndef CONTROL_SLIDER_BOX_H
+#define CONTROL_SLIDER_BOX_H
 
 #include <Box.h>
 #include <Messenger.h>
@@ -66,4 +66,4 @@ private:
 	}	// namespace Interface
 }	// namespace ArtPaint
 
-#endif	//	_CONTROL_SLIDER_BOX_H_
+#endif	//	CONTROL_SLIDER_BOX_H
