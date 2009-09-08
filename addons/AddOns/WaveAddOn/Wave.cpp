@@ -29,6 +29,7 @@ extern "C" {
 }
 #endif
 
+
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	// Here create a view-manipulator. The class should inherit

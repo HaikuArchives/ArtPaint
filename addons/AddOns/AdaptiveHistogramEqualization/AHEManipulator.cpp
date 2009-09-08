@@ -10,10 +10,17 @@
 #include "AHEManipulator.h"
 #include "ImageProcessingLibrary.h"
 
-extern "C" __declspec(dllexport) char name[255] = "Adaptive Histogram Equalization";
-extern "C" __declspec(dllexport) char menu_help_string[255] = "Improves the contrast of the active layer by equalizing its histogram locally.";
-extern "C" __declspec(dllexport) int32 add_on_api_version = ADD_ON_API_VERSION;
-extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+	char name[255] = "Adaptive Histogram Equalization";
+	char menu_help_string[255] = "Improves the contrast of the active layer by equalizing its histogram locally.";
+	int32 add_on_api_version = ADD_ON_API_VERSION;
+	add_on_types add_on_type = COLOR_ADD_ON;
+#ifdef __cplusplus
+}
+#endif
 
 
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)

@@ -18,10 +18,16 @@
 #define PI M_PI
 
 
-extern "C" __declspec(dllexport) char name[255] = "Interference…";
-extern "C" __declspec(dllexport) char menu_help_string[255] = "Makes an interference-pattern on the active layer.";
-extern "C" __declspec(dllexport) int32 add_on_api_version = ADD_ON_API_VERSION;
-extern "C" __declspec(dllexport) add_on_types add_on_type = DISTORT_ADD_ON;
+#ifdef __cplusplus
+extern "C" {
+#endif
+	char name[255] = "Interference…";
+	char menu_help_string[255] = "Makes an interference-pattern on the active layer.";
+	int32 add_on_api_version = ADD_ON_API_VERSION;
+	add_on_types add_on_type = DISTORT_ADD_ON;
+#ifdef __cplusplus
+}
+#endif
 
 
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)

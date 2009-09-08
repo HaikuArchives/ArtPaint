@@ -16,10 +16,17 @@
 #include "GaussianBlur.h"
 #include "ImageProcessingLibrary.h"
 
-extern "C" __declspec(dllexport) char name[255] = "Gaussian Blur…";
-extern "C" __declspec(dllexport) char menu_help_string[255] = "Starts making gaussian blur to the image.";
-extern "C" __declspec(dllexport) int32 add_on_api_version = ADD_ON_API_VERSION;
-extern "C" __declspec(dllexport) add_on_types add_on_type = COLOR_ADD_ON;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+	char name[255] = "Gaussian Blur…";
+	char menu_help_string[255] = "Starts making gaussian blur to the image.";
+	int32 add_on_api_version = ADD_ON_API_VERSION;
+	add_on_types add_on_type = COLOR_ADD_ON;
+#ifdef __cplusplus
+}
+#endif
 
 
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
