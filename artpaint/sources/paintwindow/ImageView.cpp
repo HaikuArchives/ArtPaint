@@ -594,14 +594,6 @@ void ImageView::MessageReceived(BMessage *message)
 			break;
 
 		case HS_START_MANIPULATOR: {
-//			// If a manipulator is currently working make it finish it's job and then repost this message.
-//			if (the_manipulator != NULL) {
-//				BMessage *finish_message = new BMessage(HS_MANIPULATOR_FINISHED);
-//				finish_message->AddBool("status",TRUE);
-//				Window()->PostMessage(finish_message,this);
-//				delete finish_message;
-//				manipulator_finishing_message = Window()->DetachCurrentMessage();
-//			}
 			if (PostponeMessageAndFinishManipulator())
 				break;
 
@@ -672,12 +664,12 @@ void ImageView::MessageReceived(BMessage *message)
 						cursor_mode = MANIPULATOR_CURSOR_MODE;
 						SetCursor();
 
-						// The manipulator might have updated the bitmap and might also want to
-						// draw some GUI. We send a HS_MANIPULATOR_ADJUSTING_FINISHED to this view
+						// The manipulator might have updated the bitmap and
+						// might also want to draw some GUI. We send a
+						// HS_MANIPULATOR_ADJUSTING_FINISHED to this view
 						// to get the manipulator update the correct bitmap.
-						BWindow *window = Window();
-						if (window != NULL)
-							window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
+						if (BWindow* window = Window())
+							window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED, this);
 					}
 				}
 			}
@@ -689,54 +681,52 @@ void ImageView::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_MANIPULATOR_FINISHED: {
-				// First find whether the manipulator finished cancelling or OKing.
-				bool finish_status;
-				message->FindBool("status",&finish_status);
-				GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
-				if (gui_manipulator != NULL) {
-					WindowGUIManipulator *window_gui_manipulator = cast_as(gui_manipulator,WindowGUIManipulator);
-					if (window_gui_manipulator != NULL) {
-						if (manipulator_window != NULL) {
-							manipulator_window->Lock();
-							manipulator_window->Quit();
-							manipulator_window = NULL;
-						}
-					}
-					if (finish_status == TRUE) {
-						start_thread(MANIPULATOR_FINISHER_THREAD);
-						AddChange();
-					}
-					else {
-						// The manipulator should be instructed to restore whatever changes it has made
-						// and should be quit then.
-						gui_manipulator->Reset(selection);
-						((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
-						delete the_manipulator;
-						the_manipulator = NULL;
-						the_image->Render();
-						manipulated_layers = HS_MANIPULATE_NO_LAYER;
-						Invalidate();
+			// First find whether the manipulator finished cancelling or OKing.
+			bool finish_status = false;
+			message->FindBool("status", &finish_status);
+			if (GUIManipulator* guiManipulator =
+				dynamic_cast<GUIManipulator*> (the_manipulator)) {
+				if (WindowGUIManipulator* windowGuiManipulator =
+					dynamic_cast<WindowGUIManipulator*> (guiManipulator)) {
+					if (manipulator_window) {
+						manipulator_window->Lock();
+						manipulator_window->Quit();
+						manipulator_window = NULL;
 					}
 				}
-				cursor_mode = NORMAL_CURSOR_MODE;
-				SetCursor();
-				tool_manager->NotifyViewEvent(this,TOOL_ACTIVATED);	// changes the help-string
-				break;
+
+				if (finish_status) {
+					start_thread(MANIPULATOR_FINISHER_THREAD);
+					AddChange();
+				} else {
+					// The manipulator should be instructed to restore
+					// whatever changes it has made and should be quit then.
+					guiManipulator->Reset(selection);
+					((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
+					delete the_manipulator;
+					the_manipulator = NULL;
+					the_image->Render();
+					manipulated_layers = HS_MANIPULATE_NO_LAYER;
+					Invalidate();
+				}
 			}
-		case HS_MANIPULATOR_ADJUSTING_STARTED:
+			cursor_mode = NORMAL_CURSOR_MODE;
+			SetCursor();
+			// changes the help-string
+			tool_manager->NotifyViewEvent(this, TOOL_ACTIVATED);
+		}	break;
+
+		case HS_MANIPULATOR_ADJUSTING_STARTED: {
 		case HS_MANIPULATOR_ADJUSTING_FINISHED:
+			continue_manipulator_updating = false;
 			if (message->what == HS_MANIPULATOR_ADJUSTING_STARTED)
-				continue_manipulator_updating = TRUE;
-			else
-				continue_manipulator_updating = FALSE;
-
+				continue_manipulator_updating = true;
 			start_thread(MANIPULATOR_UPDATER_THREAD);
-			break;
+		}	break;
 
-
-		default:
+		default: {
 			BView::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
@@ -2071,17 +2061,15 @@ void ImageView::ResetChangeStatistics(bool project, bool image)
 
 bool ImageView::PostponeMessageAndFinishManipulator()
 {
-	if (the_manipulator != NULL) {
-		BMessage *finish_message = new BMessage(HS_MANIPULATOR_FINISHED);
-		finish_message->AddBool("status",true);
-		Window()->PostMessage(finish_message,this);
-		delete finish_message;
+	if (the_manipulator) {
+		BMessage message(HS_MANIPULATOR_FINISHED);
+		message.AddBool("status", true);
+		Window()->PostMessage(&message, this);
+
 		manipulator_finishing_message = Window()->DetachCurrentMessage();
 		return true;
 	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 
