@@ -14,7 +14,6 @@
 #include <Window.h>
 
 
-class BView;
 class DrawingTool;
 
 
@@ -33,12 +32,8 @@ private:
 private:
 			int32				fCurrentTool;
 
-			BView*				fContainer;
 			DrawingTool*		fDrawingTool;
-
-
 	static	ToolSetupWindow*	fToolSetupWindow;
 };
 
-
-#endif
+#endif	// TOOL_SETUP_WINDOW_H
