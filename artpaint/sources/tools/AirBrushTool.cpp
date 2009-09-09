@@ -12,12 +12,12 @@
 #include "AirBrushTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "CoordinateReader.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "PixelOperations.h"
 #include "RandomNumberGenerator.h"
@@ -27,10 +27,14 @@
 #include "UtilityClasses.h"
 
 
-#include <GroupLayout.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <SeparatorView.h>
 #include <Window.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 AirBrushTool::AirBrushTool()
@@ -340,53 +344,75 @@ AirBrushTool::HelpString(bool isInUse) const
 // #pragma mark -- AirBrushToolConfigView
 
 
-AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	fSizeSlider = new ControlSliderBox("size",
-		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
+		fBrushSize =
+			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			"1", message, 1, 100, false);
+		layout->AddView(fBrushSize);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", PRESSURE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PRESSURE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
-	fFlowSlider = new ControlSliderBox("flow",
-		StringServer::ReturnString(FLOW_STRING), "1", message, 1, 100);
+		fBrushFlow =
+			new NumberSliderControl(StringServer::ReturnString(FLOW_STRING),
+			"1", message, 1, 100, false);
+		layout->AddView(fBrushFlow);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", MODE_OPTION);
-	message->AddInt32("value", HS_AIRBRUSH_MODE);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", MODE_OPTION);
+		message->AddInt32("value", HS_SPRAY_MODE);
 
-	fAirbrush = new BRadioButton(StringServer::ReturnString(AIRBRUSH_STRING),
-		new BMessage(*message));
+		fSpray = new BRadioButton(StringServer::ReturnString(SPRAY_STRING),
+			message);
 
-	message->ReplaceInt32("value", HS_SPRAY_MODE);
-	fSprayMode = new BRadioButton(StringServer::ReturnString(SPRAY_STRING),
-		message);
+		message->ReplaceInt32("value", HS_AIRBRUSH_MODE);
+		fAirBrush = new BRadioButton(StringServer::ReturnString(AIRBRUSH_STRING),
+			new BMessage(*message));
 
-	BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fAirbrush)
-		.Add(fSprayMode)
-		.SetInsets(5.0, 5.0, 5.0, 5.0));
-	box->SetLabel(StringServer::ReturnString(MODE_STRING));
+		BSeparatorView* view =
+			new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+			B_ALIGN_VERTICAL_CENTER));
+		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
+		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+			.Add(fBrushSize->LabelLayoutItem(), 0, 0)
+			.Add(fBrushSize->TextViewLayoutItem(), 1, 0)
+			.Add(fBrushSize->Slider(), 2, 0)
+			.Add(fBrushFlow->LabelLayoutItem(), 0, 1)
+			.Add(fBrushFlow->TextViewLayoutItem(), 1, 1)
+			.Add(fBrushFlow->Slider(), 2, 1);
+		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fSizeSlider)
-		.Add(fFlowSlider)
-		.Add(box)
-	);
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(gridLayout->View())
+			.AddStrut(5.0)
+			.Add(view)
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fSpray)
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fAirBrush)
+			.End()
+		);
 
-	if (tool->GetCurrentValue(MODE_OPTION) == HS_AIRBRUSH_MODE)
-		fAirbrush->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(MODE_OPTION) == HS_SPRAY_MODE)
+			fSpray->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(MODE_OPTION) == HS_SPRAY_MODE)
-		fSprayMode->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(MODE_OPTION) == HS_AIRBRUSH_MODE)
+			fAirBrush->SetValue(B_CONTROL_ON);
+	}
 }
 
 
@@ -395,8 +421,9 @@ AirBrushToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fSizeSlider->SetTarget(new BMessenger(this));
-	fFlowSlider->SetTarget(new BMessenger(this));
-	fAirbrush->SetTarget(BMessenger(this));
-	fSprayMode->SetTarget(BMessenger(this));
+	fBrushSize->SetTarget(this);
+	fBrushFlow->SetTarget(this);
+
+	fSpray->SetTarget(this);
+	fAirBrush->SetTarget(this);
 }

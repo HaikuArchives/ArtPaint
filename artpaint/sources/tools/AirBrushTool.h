@@ -15,8 +15,15 @@
 
 
 class BRadioButton;
-class ControlSliderBox;
 class ImageView;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class AirBrushTool : public DrawingTool {
@@ -39,15 +46,16 @@ private:
 
 class AirBrushToolConfigView : public DrawingToolConfigView {
 public:
-								AirBrushToolConfigView(DrawingTool* newTool);
+								AirBrushToolConfigView(DrawingTool* tool);
+	virtual						~AirBrushToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
 
 private:
-			ControlSliderBox*	fSizeSlider;
-			ControlSliderBox*	fFlowSlider;
-			BRadioButton*		fAirbrush;
-			BRadioButton*		fSprayMode;
+		NumberSliderControl*	fBrushSize;
+		NumberSliderControl*	fBrushFlow;
+		BRadioButton*			fSpray;
+		BRadioButton*			fAirBrush;
 };
 
-#endif
+#endif	// AIR_BRUSH_TOOL_H
