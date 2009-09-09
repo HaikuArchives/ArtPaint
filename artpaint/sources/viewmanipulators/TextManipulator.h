@@ -158,4 +158,4 @@ private:
 			BCheckBox*				fAntiAliasing;
 };
 
-#endif
+#endif	// TEXT_MANIPULATOR_H
