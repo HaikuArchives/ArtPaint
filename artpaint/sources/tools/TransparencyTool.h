@@ -14,9 +14,16 @@
 #include "DrawingTool.h"
 
 
-class ControlSliderBox;
 class ImageView;
 class ToolScript;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class TransparencyTool : public DrawingTool {
@@ -36,13 +43,14 @@ public:
 
 class TransparencyToolConfigView : public DrawingToolConfigView {
 public:
-								TransparencyToolConfigView(DrawingTool* newTool);
+								TransparencyToolConfigView(DrawingTool* tool);
+	virtual						~TransparencyToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
 
 private:
-			ControlSliderBox*	fSizeSlider;
-			ControlSliderBox*	fSpeedSlider;
+		NumberSliderControl*	fSizeSlider;
+		NumberSliderControl*	fSpeedSlider;
 };
 
-#endif
+#endif	// TRANSPARENCY_TOOL_H

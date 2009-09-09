@@ -12,18 +12,21 @@
 #include "TransparencyTool.h"
 
 #include "Cursors.h"
-#include "Controls.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "StringServer.h"
 #include "ToolScript.h"
 
 
 #include <Bitmap.h>
-#include <GroupLayout.h>
-#include <GroupLayoutBuilder.h>
+#include <GridLayoutBuilder.h>
 #include <Window.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
+
 
 TransparencyTool::TransparencyTool()
 	: DrawingTool(StringServer::ReturnString(TRANSPARENCY_TOOL_NAME_STRING),
@@ -175,26 +178,39 @@ TransparencyTool::HelpString(bool isInUse) const
 // #pragma mark -- TransparencyToolConfigView
 
 
-TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
-	fSizeSlider = new ControlSliderBox("size",
-		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", PRESSURE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
-	fSpeedSlider = new ControlSliderBox("speed",
-		StringServer::ReturnString(SPEED_STRING), "1", message, 1, 100);
+		fSizeSlider =
+			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			"1", message, 1, 100, false);
+		layout->AddView(fSizeSlider);
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fSizeSlider)
-		.Add(fSpeedSlider)
-	);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PRESSURE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+
+		fSpeedSlider =
+			new NumberSliderControl(StringServer::ReturnString(SPEED_STRING),
+			"1", message, 1, 100, false);
+		layout->AddView(fSpeedSlider);
+
+		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+			.Add(fSizeSlider->LabelLayoutItem(), 0, 0)
+			.Add(fSizeSlider->TextViewLayoutItem(), 1, 0)
+			.Add(fSizeSlider->Slider(), 2, 0)
+			.Add(fSpeedSlider->LabelLayoutItem(), 0, 1)
+			.Add(fSpeedSlider->TextViewLayoutItem(), 1, 1)
+			.Add(fSpeedSlider->Slider(), 2, 1);
+		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+		layout->AddView(gridLayout->View());
+	}
 }
 
 
@@ -203,6 +219,6 @@ TransparencyToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fSizeSlider->SetTarget(new BMessenger(this));
-	fSpeedSlider->SetTarget(new BMessenger(this));
+	fSizeSlider->SetTarget(this);
+	fSpeedSlider->SetTarget(this);
 }
