@@ -21,6 +21,7 @@
 
 
 #include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <StringView.h>
 
 
@@ -30,14 +31,12 @@ ToolSetupWindow* ToolSetupWindow::fToolSetupWindow = NULL;
 ToolSetupWindow::ToolSetupWindow(BRect frame)
 	: BWindow(frame, StringServer::ReturnString(TOOL_SETUP_STRING),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
-		B_NOT_V_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT |
+		B_NOT_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT |
 		B_AUTO_UPDATE_SIZE_LIMITS)
 	, fCurrentTool(-1)
 {
 	BGroupLayout* layout = new BGroupLayout(B_VERTICAL);
 	SetLayout(layout);
-
-	layout->AddView(fContainer = new BView("", 0, new BGroupLayout(B_VERTICAL)));
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
 	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -146,22 +145,28 @@ ToolSetupWindow::CurrentToolChanged(int32 newTool)
 }
 
 
-void ToolSetupWindow::_UpdateConfigurationView(int32 newTool)
+void
+ToolSetupWindow::_UpdateConfigurationView(int32 newTool)
 {
 	if (newTool != fCurrentTool) {
 		fCurrentTool = newTool;
 
 		// Remove previous tool config views.
-		while (BView* oldConfigView = fContainer->ChildAt(0)) {
+		while (BView* oldConfigView = ChildAt(0)) {
 			oldConfigView->RemoveSelf();
 			delete oldConfigView;
 		}
 
-		BView* configView = tool_manager->ReturnConfigurationView(fCurrentTool);
+		BView* configView = tool_manager->ReturnConfigurationView(newTool);
 		if (configView == NULL) {
 			// TODO: translation
-			configView = new BStringView("", "No configuration available.");
+			BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
+				.Add(new BStringView("", "No configuration options available."))
+				.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0));
+			box->SetLabel(tool_manager->ReturnTool(newTool)->Name().String());
+			configView = box;
 		}
-		fContainer->AddChild(configView);
+		AddChild(configView);
+		configView->SetExplicitMaxSize(configView->PreferredSize());
 	}
 }
