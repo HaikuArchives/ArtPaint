@@ -14,10 +14,17 @@
 #include "DrawingTool.h"
 
 
-class ControlSlider;
-class ControlSliderBox;
+class BSlider;
 class ImageView;
 class ToolScript;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class HairyBrushTool : public DrawingTool {
@@ -44,19 +51,18 @@ private:
 
 class HairyBrushToolConfigView : public DrawingToolConfigView {
 public:
-								HairyBrushToolConfigView(DrawingTool* newTool);
+								HairyBrushToolConfigView(DrawingTool* tool);
+	virtual						~HairyBrushToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
 	virtual	void				MessageReceived(BMessage* message);
 
 private:
-			ControlSliderBox*	fHairAmountSlider;
-			ControlSliderBox*	fWidthSlider;
-			ControlSlider*		fColorVarianceSlider;
-			ControlSlider*		fColorAmountSlider;
-
+		NumberSliderControl*	fBrushSize;
+		NumberSliderControl*	fBrushHairs;
+		BSlider*				fColorAmount;
+		BSlider*				fColorVariance;
 };
-
 
 
 inline float
@@ -66,4 +72,4 @@ random_round(float number, float r)
 	return (dec < r ? floor(number) : ceil(number));
 }
 
-#endif
+#endif	// HAIRY_BRUSH_TOOL_H

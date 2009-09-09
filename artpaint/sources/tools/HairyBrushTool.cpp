@@ -12,12 +12,12 @@
 #include "HairyBrushTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "CoordinateReader.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "RandomNumberGenerator.h"
 #include "StringServer.h"
@@ -25,8 +25,9 @@
 #include "UtilityClasses.h"
 
 
-#include <GroupLayout.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
+#include <Slider.h>
 
 
 #include <stdlib.h>
@@ -34,6 +35,10 @@
 
 #define COLOR_VARIANCE_CHANGED	'Cvar'
 #define	COLOR_AMOUNT_CHANGED	'Camt'
+
+
+using ArtPaint::Interface::NumberSliderControl;
+
 
 HairyBrushTool::HairyBrushTool()
 	: DrawingTool(StringServer::ReturnString(HAIRY_BRUSH_TOOL_NAME_STRING),
@@ -438,70 +443,87 @@ HairyBrushTool::HelpString(bool isInUse) const
 // #pragma mark -- HairyBrushToolConfigView
 
 
-HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PRESSURE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
-	fHairAmountSlider = new ControlSliderBox("amount slider",
-		StringServer::ReturnString(HAIRS_STRING), "0", message, 5, 100);
+		fBrushSize =
+			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			"0", message, 2, 50, false);
+		layout->AddView(fBrushSize);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", PRESSURE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	fWidthSlider = new ControlSliderBox("size slider",
-		StringServer::ReturnString(SIZE_STRING), "0", message, 2, 50);
+		fBrushHairs =
+			new NumberSliderControl(StringServer::ReturnString(HAIRS_STRING),
+			"0", message, 5, 100, false);
+		layout->AddView(fBrushHairs);
 
-	fColorVarianceSlider = new ControlSlider("color variance slider",
-		StringServer::ReturnString(COLOR_VARIANCE_STRING),
-		new BMessage(COLOR_VARIANCE_CHANGED), 0, 128, B_BLOCK_THUMB);
-	fColorVarianceSlider->SetLimitLabels(StringServer::ReturnString(NONE_STRING),
-		StringServer::ReturnString(RANDOM_STRING));
-	fColorVarianceSlider->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
+		fColorAmount =
+			new BSlider("", StringServer::ReturnString(COLOR_AMOUNT_STRING),
+			new BMessage(COLOR_AMOUNT_CHANGED), 1, 500, B_HORIZONTAL,
+			B_TRIANGLE_THUMB);
+		fColorAmount->SetLimitLabels(StringServer::ReturnString(LITTLE_STRING),
+			StringServer::ReturnString(MUCH_STRING));
+		fColorAmount->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
 
-	fColorAmountSlider = new ControlSlider("color amount slider",
-		StringServer::ReturnString(COLOR_AMOUNT_STRING),
-		new BMessage(COLOR_AMOUNT_CHANGED), 1, 500, B_BLOCK_THUMB);
-	fColorAmountSlider->SetLimitLabels(StringServer::ReturnString(LITTLE_STRING),
-		StringServer::ReturnString(MUCH_STRING));
-	fColorAmountSlider->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
+		fColorVariance =
+			new BSlider("", StringServer::ReturnString(COLOR_VARIANCE_STRING),
+			new BMessage(COLOR_VARIANCE_CHANGED), 0, 128, B_HORIZONTAL,
+			B_TRIANGLE_THUMB);
+		fColorVariance->SetLimitLabels(StringServer::ReturnString(NONE_STRING),
+			StringServer::ReturnString(RANDOM_STRING));
+		fColorVariance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
+		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+			.Add(fBrushSize->LabelLayoutItem(), 0, 0)
+			.Add(fBrushSize->TextViewLayoutItem(), 1, 0)
+			.Add(fBrushSize->Slider(), 2, 0)
+			.Add(fBrushHairs->LabelLayoutItem(), 0, 1)
+			.Add(fBrushHairs->TextViewLayoutItem(), 1, 1)
+			.Add(fBrushHairs->Slider(), 2, 1);
+		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fHairAmountSlider)
-		.Add(fWidthSlider)
-		.AddStrut(5.0)
-		.Add(fColorVarianceSlider)
-		.Add(fColorAmountSlider)
-	);
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(gridLayout->View())
+			.AddStrut(10.0)
+			.Add(fColorAmount)
+			.Add(fColorVariance)
+		);
+	}
 }
 
 
-void HairyBrushToolConfigView::AttachedToWindow()
+void
+HairyBrushToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fHairAmountSlider->SetTarget(new BMessenger(this));
-	fWidthSlider->SetTarget(new BMessenger(this));
-	fColorVarianceSlider->SetTarget(BMessenger(this));
-	fColorAmountSlider->SetTarget(BMessenger(this));
+	fBrushSize->SetTarget(this);
+	fBrushHairs->SetTarget(this);
+
+	fColorAmount->SetTarget(this);
+	fColorVariance->SetTarget(this);
 }
 
 
-
-void HairyBrushToolConfigView::MessageReceived(BMessage* message)
+void
+HairyBrushToolConfigView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case COLOR_VARIANCE_CHANGED: {
-			tool->SetOption(TOLERANCE_OPTION,fColorVarianceSlider->Value());
+			tool->SetOption(TOLERANCE_OPTION, fColorVariance->Value());
 		}	break;
 
 		case COLOR_AMOUNT_CHANGED: {
-			tool->SetOption(CONTINUITY_OPTION, fColorAmountSlider->Value());
+			tool->SetOption(CONTINUITY_OPTION, fColorAmount->Value());
 		}	break;	// TODO: check since before it did fall through
 
 		default: {
