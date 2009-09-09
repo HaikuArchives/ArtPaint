@@ -63,16 +63,7 @@ DrawingTool::UseToolWithScript(ToolScript*, BBitmap*)
 BView*
 DrawingTool::makeConfigView()
 {
-	BView* configView = new DrawingToolConfigView(this);
-	configView->SetLayout(new BGroupLayout(B_VERTICAL));
-	configView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	BStringView* stringView = new BStringView("",
-		StringServer::ReturnString(NO_OPTIONS_STRING));
-	configView->AddChild(stringView);
-	stringView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	return configView;
+	return NULL;
 }
 
 
@@ -285,10 +276,14 @@ DrawingTool::HelpString(bool isInUse) const
 // #pragma mark -- DrawingToolConfigView
 
 
-DrawingToolConfigView::DrawingToolConfigView(DrawingTool* newTool)
-	: BView("drawing tool config view", 0, NULL)
-	, tool(newTool)
+DrawingToolConfigView::DrawingToolConfigView(DrawingTool* drawingTool)
+	: BBox(B_FANCY_BORDER, NULL)
+	, tool(drawingTool)
 {
+	SetLabel(drawingTool->Name().String());
+	BGroupLayout* layout = new BGroupLayout(B_VERTICAL);
+	SetLayout(layout);
+	layout->SetInsets(10.0, InnerFrame().top + 10.0, 10.0, 10.0);
 }
 
 

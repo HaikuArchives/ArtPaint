@@ -14,8 +14,8 @@
 #include "Tools.h"
 
 
+#include <Box.h>
 #include <String.h>
-#include <View.h>
 
 
 class BBitmap;
@@ -75,7 +75,7 @@ private:
 };
 
 
-class DrawingToolConfigView : public BView {
+class DrawingToolConfigView : public BBox {
 public:
 							DrawingToolConfigView(DrawingTool* newTool);
 	virtual					~DrawingToolConfigView();
@@ -87,4 +87,4 @@ protected:
 			DrawingTool*	tool;
 };
 
-#endif
+#endif	// DRAWING_TOOL_H
