@@ -11,7 +11,6 @@
 
 #include "ToolSelectionWindow.h"
 
-#include "Controls.h"
 #include "DrawingTools.h"
 #include "FloaterManager.h"
 #include "MatrixView.h"
@@ -29,6 +28,7 @@
 #include <map>
 
 
+const int32 kExtraEdge	= 4;
 typedef std::map<int32, ToolButton* > ToolMap;
 
 
@@ -53,7 +53,7 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 		settings.FindInt32(skSelectToolWindowFeel, (int32*)&feel);
 	}
 
-	fMatrixView = new MatrixView(pictureSize, pictureSize, EXTRA_EDGE);
+	fMatrixView = new MatrixView(pictureSize, pictureSize, kExtraEdge);
 
 	_AddTool(tool_manager->ReturnTool(FREE_LINE_TOOL));
 	_AddTool(tool_manager->ReturnTool(STRAIGHT_LINE_TOOL));
@@ -86,9 +86,9 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 	else
 		SetLook(B_FLOATING_WINDOW_LOOK);
 
-	float minDimension = 2 * EXTRA_EDGE + pictureSize;
-	float maxDimension = 1 + EXTRA_EDGE + fMatrixView->CountChildren() *
-		(pictureSize + EXTRA_EDGE);
+	float minDimension = 2 * kExtraEdge + pictureSize;
+	float maxDimension = 1 + kExtraEdge + fMatrixView->CountChildren() *
+		(pictureSize + kExtraEdge);
 	SetSizeLimits(minDimension, maxDimension, minDimension, maxDimension);
 
 	if (Lock()) {
@@ -102,8 +102,8 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 
 	// NOTE: this is broken/ not implemented in Haiku, so the tools window
 	//		 will not show up horizontal as it should be, enable if implemented
-	//SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, picture_size + EXTRA_EDGE,
-	//	EXTRA_EDGE + 1, 0, 0, picture_size + EXTRA_EDGE, EXTRA_EDGE + 1);
+	//SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, picture_size + kExtraEdge,
+	//	kExtraEdge + 1, 0, 0, picture_size + kExtraEdge, kExtraEdge + 1);
 
 	// remove this if SetWindowAlignment is implemented
 	ResizeBy(0.0, maxDimension - pictureSize);

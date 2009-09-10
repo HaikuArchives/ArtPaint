@@ -17,9 +17,6 @@
 #include <TextControl.h>
 
 
-#define EXTRA_EDGE 4
-
-
 class NumberControl : public BTextControl {
 
 public:
