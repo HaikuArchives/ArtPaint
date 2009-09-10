@@ -73,7 +73,8 @@ private:
 
 class BrushToolConfigView : public DrawingToolConfigView {
 public:
-								BrushToolConfigView(DrawingTool* newTool);
+								BrushToolConfigView(DrawingTool* tool);
+	virtual						~BrushToolConfigView() {}
 };
 
-#endif
+#endif	// BRUSH_TOOL_H

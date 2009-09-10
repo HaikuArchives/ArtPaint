@@ -28,8 +28,7 @@
 
 
 #include <File.h>
-#include <GroupLayout.h>
-#include <GroupLayoutBuilder.h>
+#include <Layout.h>
 #include <Window.h>
 
 
@@ -461,9 +460,11 @@ BrushTool::writeSettings(BFile &file)
 // #pragma mark -- BrushToolConfigView
 
 
-BrushToolConfigView::BrushToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+BrushToolConfigView::BrushToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	AddChild(BrushEditor::CreateBrushEditor(((BrushTool*)tool)->GetBrush()));
+	if (BLayout* layout = GetLayout()) {
+		BrushTool* brushTool = dynamic_cast<BrushTool*> (tool);
+		layout->AddView(BrushEditor::CreateBrushEditor(brushTool->GetBrush()));
+	}
 }

@@ -33,7 +33,14 @@
 class BButton;
 class BRadioButton;
 class BrushView;
-class ControlSliderBox;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 #define	BRUSH_ALTERED			'Bral'
@@ -41,51 +48,52 @@ class ControlSliderBox;
 
 class BrushEditor : public BBox {
 public:
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage *message);
+	virtual	void					AttachedToWindow();
+	virtual	void					MessageReceived(BMessage *message);
 
-	static	void				BrushModified();
-	static	BView*				CreateBrushEditor(Brush* brush);
-
-private:
-								BrushEditor(Brush* brush);
-								~BrushEditor();
+	static	void					BrushModified();
+	static	BView*					CreateBrushEditor(Brush* brush);
 
 private:
-			Brush*				fBrush;
-			BrushView*			fBrushView;
-			brush_info			fBrushInfo;
+									BrushEditor(Brush* brush);
+	virtual							~BrushEditor();
 
-			ControlSliderBox*	fWidthSlider;
-			ControlSliderBox*	fHeightSlider;
-			ControlSliderBox*	fFadeSlider;
-			BRadioButton*		fRectangle;
-			BRadioButton*		fEllipse;
-			BButton*			fStoreBrush;
+private:
+			Brush*					fBrush;
+			BrushView*				fBrushView;
+			brush_info				fBrushInfo;
 
-	static	BrushEditor*		fBrushEditor;
+			NumberSliderControl*	fBrushWidth;
+			NumberSliderControl*	fBrushHeight;
+			NumberSliderControl*	fBrushFade;
+			BRadioButton*			fRectangle;
+			BRadioButton*			fEllipse;
+			BButton*				fStoreBrush;
+			BButton*				fResetBrush;
+
+	static	BrushEditor*			fBrushEditor;
 };
-
 
 
 class BrushView : public BView {
 public:
-								BrushView(BRect, Brush*);
-	virtual						~BrushView();
+									BrushView(BRect frame, Brush* brush);
+	virtual							~BrushView();
 
-	virtual	void				Draw(BRect);
-	virtual	void				MessageReceived(BMessage* message);
-	virtual	void				MouseDown(BPoint);
-	virtual	void				MouseMoved(BPoint,uint32, const BMessage*);
+	virtual	void					Draw(BRect updateRect);
+	virtual	void					MessageReceived(BMessage* message);
+	virtual	void					MouseDown(BPoint where);
+	virtual	void					MouseMoved(BPoint where, uint32 transit,
+										const BMessage* messge);
 
-			void				BrushModified();
-			void				ChangeBrush(Brush*);
+			void					BrushModified();
+			void					ChangeBrush(Brush* brush);
 
 private:
-			bool				fDrawControls;
+			bool					fDrawControls;
 
-			Brush*				fBrush;
-			BBitmap*			fBrushPreview;
+			Brush*					fBrush;
+			BBitmap*				fBrushPreview;
 };
 
-#endif
+#endif	// BRUSH_EDITOR_H

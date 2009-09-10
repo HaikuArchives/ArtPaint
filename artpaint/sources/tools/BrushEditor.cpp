@@ -11,100 +11,131 @@
 
 #include "BrushEditor.h"
 
-#include "UtilityClasses.h"
-#include "Controls.h"
-#include "StringServer.h"
-#include "HSPolygon.h"
 #include "BrushStoreWindow.h"
+#include "HSPolygon.h"
+#include "NumberSliderControl.h"
+#include "StringServer.h"
+#include "UtilityClasses.h"
 
 
-#include <Bitmap.h>
-#include <Box.h>
 #include <Button.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <SeparatorView.h>
 
 
 #include <math.h>
 
 
-#define	BRUSH_WIDTH_CHANGED		'BWCh'
-#define BRUSH_HEIGHT_CHANGED	'BHCh'
-#define BRUSH_EDGE_CHANGED		'BeCh'
-#define BRUSH_SHAPE_CHANGED		'Bshc'
-#define	BRUSH_STORING_REQUESTED	'Bsrq'
+enum {
+	kExtraEdge				= 4,
+	kBrushWidthChanged		= 'kbwc',
+	kBrushHeightChanged		= 'kbhc',
+	kBrushFadeChanged		= 'kbfc',
+	kBrushShapeChanged		= 'kbsc',
+	kBrushStoreRequest		= 'kbsr',
+	kBrushResetRequest		= 'kbrr'
+};
 
 
 BrushEditor* BrushEditor::fBrushEditor = NULL;
+using ArtPaint::Interface::NumberSliderControl;
 
 
 BrushEditor::BrushEditor(Brush* brush)
 	: BBox(B_FANCY_BORDER, NULL)
 	, fBrush(brush)
+	, fBrushInfo(fBrush->GetInfo())
 {
-	fBrushInfo = fBrush->GetInfo();
+	float height = BRUSH_PREVIEW_HEIGHT - kExtraEdge;
+	float width = BRUSH_PREVIEW_WIDTH - kExtraEdge;
 
-	float height = BRUSH_PREVIEW_HEIGHT - EXTRA_EDGE;
-	float width = BRUSH_PREVIEW_WIDTH - EXTRA_EDGE;
-
-	fBrushView = new BrushView(BRect(EXTRA_EDGE, EXTRA_EDGE, width, height),
+	fBrushView = new BrushView(BRect(kExtraEdge, kExtraEdge, width, height),
 		fBrush);
 
-	BMessage* message = new BMessage(BRUSH_SHAPE_CHANGED);
+	BMessage* message = new BMessage(kBrushShapeChanged);
 	message->AddInt32("shape", HS_RECTANGULAR_BRUSH);
 
 	fRectangle = new BRadioButton(StringServer::ReturnString(RECTANGLE_STRING),
 		message);
 
-	message = new BMessage(BRUSH_SHAPE_CHANGED);
+	message = new BMessage(kBrushShapeChanged);
 	message->AddInt32("shape", HS_ELLIPTICAL_BRUSH);
 
 	fEllipse = new BRadioButton(StringServer::ReturnString(ELLIPSE_STRING),
 		message);
 
 	fStoreBrush = new BButton(StringServer::ReturnString(STORE_BRUSH_STRING),
-		new BMessage(BRUSH_STORING_REQUESTED));
+		new BMessage(kBrushStoreRequest));
 
-	message = new BMessage(BRUSH_WIDTH_CHANGED);
+	fResetBrush = new BButton("Reset Brush",new BMessage(kBrushResetRequest));
+	fResetBrush->SetEnabled(false);
+	fResetBrush->SetToolTip("Not implemented yet.");
+
+	message = new BMessage(kBrushWidthChanged);
 	message->AddInt32("value", int32(fBrushInfo.width));
 
-	fWidthSlider = new ControlSliderBox("brush width",
-		StringServer::ReturnString(WIDTH_STRING), "0", message, 0, 100);
+	fBrushWidth =
+		new NumberSliderControl(StringServer::ReturnString(WIDTH_STRING), "0",
+		message, 0, 100, false);
+	AddChild(fBrushWidth);
 
-	message = new BMessage(BRUSH_HEIGHT_CHANGED);
+	message = new BMessage(kBrushHeightChanged);
 	message->AddInt32("value", int32(fBrushInfo.height));
 
-	fHeightSlider = new ControlSliderBox("brush height",
-		StringServer::ReturnString(HEIGHT_STRING), "0", message, 0, 100);
+	fBrushHeight =
+		new NumberSliderControl(StringServer::ReturnString(HEIGHT_STRING), "0",
+		message, 0, 100, false);
+	AddChild(fBrushHeight);
 
-	message = new BMessage(BRUSH_EDGE_CHANGED);
+	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.fade_length));
 
-	fFadeSlider = new ControlSliderBox("brush edge",
-		StringServer::ReturnString(FADE_STRING), "0", message, 0, 100);
+	fBrushFade =
+		new NumberSliderControl(StringServer::ReturnString(FADE_STRING), "0",
+		message, 0, 100, false);
+	AddChild(fBrushFade);
+
+	BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
+	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+		.Add(fBrushWidth->LabelLayoutItem(), 0, 0)
+		.Add(fBrushWidth->TextViewLayoutItem(), 1, 0)
+		.Add(fBrushWidth->Slider(), 2, 0)
+		.Add(fBrushHeight->LabelLayoutItem(), 0, 1)
+		.Add(fBrushHeight->TextViewLayoutItem(), 1, 1)
+		.Add(fBrushHeight->Slider(), 2, 1)
+		.Add(fBrushFade->LabelLayoutItem(), 0, 2)
+		.Add(fBrushFade->TextViewLayoutItem(), 1, 2)
+		.Add(fBrushFade->Slider(), 2, 2);
+	gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
-
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 		.AddGroup(B_HORIZONTAL, 5.0)
+			.AddStrut(5.0)
 			.Add(fBrushView)
 			.AddGroup(B_VERTICAL, 5.0)
-				.Add(fRectangle)
 				.Add(fEllipse)
+				.Add(fRectangle)
 				.AddGlue()
 			.End()
 			.AddGlue()
 		.End()
-		.Add(fWidthSlider)
-		.Add(fHeightSlider)
-		.Add(fFadeSlider)
+		.AddStrut(1.0)
+		.Add(view)
+		.AddStrut(1.0)
+		.Add(gridLayout->View())
+		.AddStrut(1.0)
 		.AddGroup(B_HORIZONTAL)
+			.Add(fResetBrush)
 			.AddGlue()
 			.Add(fStoreBrush)
 		.End()
-		.SetInsets(5.0, 5.0, 5.0, 5.0)
 	);
 }
 
@@ -149,9 +180,9 @@ BrushEditor::BrushModified()
 void
 BrushEditor::AttachedToWindow()
 {
-	fWidthSlider->SetTarget(new BMessenger(this));
-	fHeightSlider->SetTarget(new BMessenger(this));
-	fFadeSlider->SetTarget(new BMessenger(this));
+	fBrushFade->SetTarget(this);
+	fBrushWidth->SetTarget(this);
+	fBrushHeight->SetTarget(this);
 
 	fEllipse->SetTarget(this);
 	fRectangle->SetTarget(this);
@@ -166,10 +197,10 @@ BrushEditor::AttachedToWindow()
 
 
 void
-BrushEditor::MessageReceived(BMessage *message)
+BrushEditor::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case BRUSH_WIDTH_CHANGED: {
+		case kBrushWidthChanged: {
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
 				fBrushInfo.width = value;
@@ -182,7 +213,7 @@ BrushEditor::MessageReceived(BMessage *message)
 			}
 		}	break;
 
-		case BRUSH_HEIGHT_CHANGED: {
+		case kBrushHeightChanged: {
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
 				fBrushInfo.height = value;
@@ -195,7 +226,7 @@ BrushEditor::MessageReceived(BMessage *message)
 			}
 		}	break;
 
-		case BRUSH_EDGE_CHANGED: {
+		case kBrushFadeChanged: {
 			int32 value;
 			if (message->FindInt32("value",&value) == B_OK) {
 				fBrushInfo.fade_length = value;
@@ -208,7 +239,7 @@ BrushEditor::MessageReceived(BMessage *message)
 			}
 		}	break;
 
-		case BRUSH_SHAPE_CHANGED: {
+		case kBrushShapeChanged: {
 			int32 value;
 			if (message->FindInt32("shape", &value) == B_OK) {
 				fBrushInfo.shape = value;
@@ -222,9 +253,9 @@ BrushEditor::MessageReceived(BMessage *message)
 			// Here something has altered the brush and we should reflect it
 			// in our controls and such things.
 			fBrushInfo = fBrush->GetInfo();
-			fWidthSlider->setValue(int32(fBrushInfo.width));
-			fHeightSlider->setValue(int32(fBrushInfo.height));
-			fFadeSlider->setValue(int32(fBrushInfo.fade_length));
+			fBrushWidth->SetValue(int32(fBrushInfo.width));
+			fBrushHeight->SetValue(int32(fBrushInfo.height));
+			fBrushFade->SetValue(int32(fBrushInfo.fade_length));
 			fBrushView->BrushModified();
 
 			if (fBrushInfo.shape == HS_RECTANGULAR_BRUSH)
@@ -234,8 +265,12 @@ BrushEditor::MessageReceived(BMessage *message)
 				fEllipse->SetValue(B_CONTROL_ON);
 		}	break;
 
-		case BRUSH_STORING_REQUESTED: {
+		case kBrushStoreRequest: {
 			BrushStoreWindow::AddBrush(fBrush);
+		}	break;
+
+		case kBrushResetRequest: {
+			// TODO: implement
 		}	break;
 
 		default: {
@@ -312,9 +347,9 @@ BrushView::Draw(BRect)
 
 
 void
-BrushView::MessageReceived(BMessage *message)
+BrushView::MessageReceived(BMessage* message)
 {
-	brush_info *info;
+	brush_info* info;
 	int32 size;
 	switch (message->what) {
 		case HS_BRUSH_DRAGGED:
@@ -353,7 +388,7 @@ BrushView::MouseDown(BPoint point)
 	else if (point.y == c.y)
 		angle = 90;
 	else {
-		angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
+		angle = atan2(point.x-c.x,c.y-point.y) * 180 / M_PI;
 	}
 	prev_angle = angle;
 
@@ -378,14 +413,14 @@ BrushView::MouseDown(BPoint point)
 				angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
 			}
 			info.angle += angle - prev_angle;
-			snooze(20 *1000);
+			snooze(20000);
 		}
 
 		fBrush->CreateDiffBrushes();
 		Window()->PostMessage(BRUSH_ALTERED, Parent());
 	} /* else {
 		info = fBrush->GetInfo();
-		BMessage *message = new BMessage(HS_BRUSH_DRAGGED);
+		BMessage* message = new BMessage(HS_BRUSH_DRAGGED);
 		message->AddData("brush data",B_ANY_TYPE,&info,sizeof(brush_info));
 		DragMessage(message,BRect(0,0,fBrushPreview_WIDTH-1,fBrushPreview_HEIGHT-1));
 		delete message;
@@ -394,17 +429,20 @@ BrushView::MouseDown(BPoint point)
 
 
 void
-BrushView::MouseMoved(BPoint,uint32 transit,const BMessage*)
+BrushView::MouseMoved(BPoint where, uint32 transit, const BMessage* message)
 {
 	if (Window() && Window()->Lock()) {
-		if (transit == B_ENTERED_VIEW) {
-			fDrawControls = true;
-			Draw(Bounds());
-		}
+		switch (transit) {
+			default:	break;
+			case B_ENTERED_VIEW: {
+				fDrawControls = true;
+				Draw(Bounds());
+			}	break;
 
-		if (transit == B_EXITED_VIEW) {
-			fDrawControls = false;
-			Draw(Bounds());
+			case B_EXITED_VIEW: {
+				fDrawControls = false;
+				Draw(Bounds());
+			}	break;
 		}
 
 		Window()->Unlock();
