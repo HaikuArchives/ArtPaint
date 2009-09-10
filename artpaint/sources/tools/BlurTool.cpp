@@ -12,10 +12,10 @@
 #include "BlurTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Selection.h"
 #include "StringServer.h"
@@ -23,9 +23,13 @@
 
 
 #include <CheckBox.h>
-#include <GroupLayout.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
+#include <SeparatorView.h>
 #include <Window.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 BlurTool::BlurTool()
@@ -214,32 +218,52 @@ BlurTool::HelpString(bool isInUse) const
 // #pragma mark -- BlurToolConfigView
 
 
-BlurToolConfigView::BlurToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("value", 0x00000000);
+		message->AddInt32("option", CONTINUITY_OPTION);
 
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
+		fContinuity = new BCheckBox(StringServer::ReturnString(CONTINUOUS_STRING),
+			message);
 
-	fControlSliderBox = new ControlSliderBox("size",
-		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("value", 0x00000000);
-	message->AddInt32("option", CONTINUITY_OPTION);
+		fBlurSize =
+			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			"1", message, 1, 100, false);
+		layout->AddView(fBlurSize);
 
-	fContinuityCheckBox =
-		new BCheckBox(StringServer::ReturnString(CONTINUOUS_STRING), message);
+		BSeparatorView* view =
+			new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+			B_ALIGN_VERTICAL_CENTER));
+		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fControlSliderBox)
-		.Add(fContinuityCheckBox)
-	);
+		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+			.Add(fBlurSize->LabelLayoutItem(), 0, 0)
+			.Add(fBlurSize->TextViewLayoutItem(), 1, 0)
+			.Add(fBlurSize->Slider(), 2, 0);
+		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
-	if (tool->GetCurrentValue(CONTINUITY_OPTION) != B_CONTROL_OFF)
-		fContinuityCheckBox->SetValue(B_CONTROL_ON);
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(gridLayout->View())
+			.AddStrut(5.0)
+			.Add(view)
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fContinuity)
+			.End()
+		);
+
+		if (tool->GetCurrentValue(CONTINUITY_OPTION) != B_CONTROL_OFF)
+			fContinuity->SetValue(B_CONTROL_ON);
+	}
 }
 
 
@@ -248,6 +272,6 @@ BlurToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fContinuityCheckBox->SetTarget(BMessenger(this));
-	fControlSliderBox->SetTarget(new BMessenger(this));
+	fBlurSize->SetTarget(this);
+	fContinuity->SetTarget(this);
 }

@@ -15,9 +15,16 @@
 
 
 class BCheckBox;
-class ControlSliderBox;
 class ImageView;
 class Selection;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class BlurTool : public DrawingTool {
@@ -39,13 +46,14 @@ private:
 
 class BlurToolConfigView : public DrawingToolConfigView {
 public:
-								BlurToolConfigView(DrawingTool* newTool);
+									BlurToolConfigView(DrawingTool* tool);
+	virtual							~BlurToolConfigView() {}
 
-	virtual	void				AttachedToWindow();
+	virtual	void					AttachedToWindow();
 
 private:
-			ControlSliderBox*	fControlSliderBox;
-			BCheckBox*			fContinuityCheckBox;
+			NumberSliderControl*	fBlurSize;
+			BCheckBox*				fContinuity;
 };
 
-#endif
+#endif	// BLUR_TOOL_H
