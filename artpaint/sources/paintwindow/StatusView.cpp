@@ -100,7 +100,7 @@ StatusView::StatusView(BRect frame)
 		server->GetPicture(OK_BUTTON_PUSHED, &off_picture);
 
 		// Create the OK-button
-		ok_button = new HSPictureButton(BRect(1, 0, 2, 1), &off_picture,
+		ok_button = new HSPictureButton(BRect(1, 0, 16, 15), &off_picture,
 			&on_picture, ok_message, NULL, "Push here to confirm changes.");
 		ok_button->ResizeToPreferred();
 		ok_button->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
@@ -109,7 +109,7 @@ StatusView::StatusView(BRect frame)
 		server->GetPicture(CANCEL_BUTTON, &on_picture);
 		server->GetPicture(CANCEL_BUTTON_PUSHED, &off_picture);
 
-		cancel_button = new HSPictureButton(BRect(20, 0, 21, 1),
+		cancel_button = new HSPictureButton(BRect(20, 0, 35, 16),
 			&off_picture, &on_picture, cancel_message, NULL,
 			"Push here to cancel changes.");
 		cancel_button->ResizeToPreferred();
