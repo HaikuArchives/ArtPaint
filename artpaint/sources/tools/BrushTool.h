@@ -30,7 +30,6 @@ public:
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
 			BView*				makeConfigView();
-			void				UpdateConfigView(BView*);
 
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
@@ -42,12 +41,12 @@ public:
 			Brush*				GetBrush() { return brush; }
 
 private:
-			BRect				draw_line(BPoint,BPoint,uint32);
+			BRect				draw_line(BPoint, BPoint, uint32);
 	inline	void				draw_brush_handle_selection(BPoint, int32,
 									int32,uint32);
-	inline	void				draw_brush(BPoint,int32,int32,uint32);
-			void				test_brush(BPoint,uint32);
-			void				test_brush2(BPoint,uint32);
+	inline	void				draw_brush(BPoint, int32, int32, uint32);
+			void				test_brush(BPoint, uint32);
+			void				test_brush2(BPoint, uint32);
 
 //			int32				read_coordinates();
 //	static	int32				CoordinateReader(void*);

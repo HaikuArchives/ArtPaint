@@ -186,17 +186,6 @@ BrushTool::HelpString(bool isInUse) const
 }
 
 
-void
-BrushTool::UpdateConfigView(BView *target)
-{
-	if (BWindow* window = target->Window()) {
-		BrushEditor* editor = dynamic_cast<BrushEditor*>(target->ChildAt(0));
-		if (editor)
-			window->PostMessage(BRUSH_ALTERED, editor);
-	}
-}
-
-
 BRect
 BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
 {

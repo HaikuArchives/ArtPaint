@@ -31,6 +31,7 @@
 
 enum {
 	kExtraEdge				= 4,
+	kBrushAltered			= 'kbal',
 	kBrushWidthChanged		= 'kbwc',
 	kBrushHeightChanged		= 'kbhc',
 	kBrushFadeChanged		= 'kbfc',
@@ -169,7 +170,7 @@ BrushEditor::BrushModified()
 
 		fBrushEditor->fBrushView->BrushModified();
 		if (window)
-			window->PostMessage(BRUSH_ALTERED,fBrushEditor);
+			window->PostMessage(kBrushAltered, fBrushEditor);
 
 		if (window && locked)
 			window->Unlock();
@@ -249,7 +250,7 @@ BrushEditor::MessageReceived(BMessage* message)
 			}
 		}	break;
 
-		case BRUSH_ALTERED: {
+		case kBrushAltered: {
 			// Here something has altered the brush and we should reflect it
 			// in our controls and such things.
 			fBrushInfo = fBrush->GetInfo();
@@ -349,25 +350,25 @@ BrushView::Draw(BRect)
 void
 BrushView::MessageReceived(BMessage* message)
 {
-	brush_info* info;
-	int32 size;
-	switch (message->what) {
-		case HS_BRUSH_DRAGGED:
-			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
-			if (size == sizeof(brush_info)) {
-				fBrush->ModifyBrush(*info);
-				fBrush->PreviewBrush(fBrushPreview);
-				Invalidate();
-				fBrush->CreateDiffBrushes();
-				if ((Parent() != NULL) && (Window() != NULL)) {
-					Window()->PostMessage(BRUSH_ALTERED,Parent());
-				}
-			}
-			break;
-		default:
+//	switch (message->what) {
+//		case HS_BRUSH_DRAGGED: {
+//			int32 size;
+//			brush_info* info;
+//			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
+//			if (size == sizeof(brush_info)) {
+//				fBrush->ModifyBrush(*info);
+//				fBrush->PreviewBrush(fBrushPreview);
+//				Invalidate();
+//				fBrush->CreateDiffBrushes();
+//				if (Window() && Parent())
+//					Window()->PostMessage(kBrushAltered, Parent());
+//			}
+//			break;
+//
+//		default: {
 			BView::MessageReceived(message);
-			break;
-	}
+//		}	break;
+//	}
 }
 
 
@@ -417,13 +418,13 @@ BrushView::MouseDown(BPoint point)
 		}
 
 		fBrush->CreateDiffBrushes();
-		Window()->PostMessage(BRUSH_ALTERED, Parent());
+		Window()->PostMessage(kBrushAltered, Parent());
 	} /* else {
-		info = fBrush->GetInfo();
-		BMessage* message = new BMessage(HS_BRUSH_DRAGGED);
-		message->AddData("brush data",B_ANY_TYPE,&info,sizeof(brush_info));
-		DragMessage(message,BRect(0,0,fBrushPreview_WIDTH-1,fBrushPreview_HEIGHT-1));
-		delete message;
+			info = fBrush->GetInfo();
+			BMessage* message = new BMessage(HS_BRUSH_DRAGGED);
+			message->AddData("brush data",B_ANY_TYPE,&info,sizeof(brush_info));
+			DragMessage(message,BRect(0,0,fBrushPreview_WIDTH-1,fBrushPreview_HEIGHT-1));
+			delete message;
 	} */
 }
 

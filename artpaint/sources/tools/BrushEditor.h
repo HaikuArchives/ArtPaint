@@ -10,13 +10,12 @@
  */
 
 /*
-	The class BrushEditor allows user to edit brushes. It will
-	display a preview of the brush and necessary controls for modifying it.
-	A brush-editor has one brush being edited at a time. It accepts and
-	generates brush drags and drops. The brush can be queried from the editor
-	and it can be copied to another object. BrushEditor tries to fit itself
-	inside the parameter rectangle, but if it does not fit it will be as small
-	as possible.
+	The class BrushEditor allows user to edit brushes. It will display a preview
+	of the brush and necessary controls for modifying it. A brush-editor has one
+	brush being edited at a time. It accepts and generates brush drags & drops.
+	The brush can be queried from the editor and it can be copied to another
+	object. BrushEditor tries to fit itself inside the parameter rectangle, but
+	if it does not fit it will be as small as possible.
 
 */
 
@@ -43,13 +42,10 @@ namespace ArtPaint {
 using ArtPaint::Interface::NumberSliderControl;
 
 
-#define	BRUSH_ALTERED			'Bral'
-
-
 class BrushEditor : public BBox {
 public:
 	virtual	void					AttachedToWindow();
-	virtual	void					MessageReceived(BMessage *message);
+	virtual	void					MessageReceived(BMessage* message);
 
 	static	void					BrushModified();
 	static	BView*					CreateBrushEditor(Brush* brush);
