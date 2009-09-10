@@ -51,7 +51,7 @@ Application ArtPaint :
 	ColorView.cpp
 	Controls.cpp
 	NumberSliderControl.cpp
-	DirectionControl.cpp
+#	DirectionControl.cpp
 	HSPictureButton.cpp
 	HSVControl.cpp
 	PopUpList.cpp

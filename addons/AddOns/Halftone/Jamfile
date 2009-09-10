@@ -30,8 +30,6 @@ Addon Halftone.so :
 	BrushStoreWindow.o
 	BrushTool.o
 	Controls.o
-#	ClipBoardManager.o
-#	ClipBoardView.o
 	CMYControl.o
 	ColorPalette.o
 	ColorSelectorTool.o
@@ -41,7 +39,6 @@ Addon Halftone.so :
 	CoordinateReader.o
 	CropManipulator.o
 	DatatypeSetupWindow.o
-	DirectionControl.o
 	DrawingTool.o
 	EllipseTool.o
 	EraserTool.o
@@ -128,8 +125,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>Brush.o
 		<3rdparty!artpaint!artpaint!sources>BrushStoreWindow.o
 		<3rdparty!artpaint!artpaint!sources>BrushTool.o
-		<3rdparty!artpaint!artpaint!sources>ClipBoardManager.o
-		<3rdparty!artpaint!artpaint!sources>ClipBoardView.o
 		<3rdparty!artpaint!artpaint!sources>CMYControl.o
 		<3rdparty!artpaint!artpaint!sources>ColorPalette.o
 		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
@@ -140,7 +135,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>CoordinateReader.o
 		<3rdparty!artpaint!artpaint!sources>CropManipulator.o
 		<3rdparty!artpaint!artpaint!sources>DatatypeSetupWindow.o
-		<3rdparty!artpaint!artpaint!sources>DirectionControl.o
 		<3rdparty!artpaint!artpaint!sources>DrawingTool.o
 		<3rdparty!artpaint!artpaint!sources>EllipseTool.o
 		<3rdparty!artpaint!artpaint!sources>EraserTool.o
