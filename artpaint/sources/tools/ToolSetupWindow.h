@@ -21,19 +21,19 @@ class ToolSetupWindow : public BWindow {
 public:
 	static	void				ShowToolSetupWindow(int32 tool);
 	static	void				SetWindowFeel(window_feel feel);
-	static	void				CurrentToolChanged(int32 newTool);
+	static	void				CurrentToolChanged(int32 tool);
 
 private:
 								ToolSetupWindow(BRect frame);
 	virtual						~ToolSetupWindow();
 
-			void				_UpdateConfigurationView(int32 newTool);
+			void				_UpdateConfigurationView(int32 tool);
 
 private:
 			int32				fCurrentTool;
 
 			DrawingTool*		fDrawingTool;
-	static	ToolSetupWindow*	fToolSetupWindow;
+	static	ToolSetupWindow*	sfToolSetupWindow;
 };
 
 #endif	// TOOL_SETUP_WINDOW_H

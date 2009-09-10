@@ -25,7 +25,7 @@
 #include <StringView.h>
 
 
-ToolSetupWindow* ToolSetupWindow::fToolSetupWindow = NULL;
+ToolSetupWindow* ToolSetupWindow::sfToolSetupWindow = NULL;
 
 
 ToolSetupWindow::ToolSetupWindow(BRect frame)
@@ -58,7 +58,7 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 
 	Show();
 
-	fToolSetupWindow = this;
+	sfToolSetupWindow = this;
 	FloaterManager::AddFloater(this);
 
 	if (server) {
@@ -77,7 +77,7 @@ ToolSetupWindow::~ToolSetupWindow()
 			Frame());
 	}
 
-	fToolSetupWindow = NULL;
+	sfToolSetupWindow = NULL;
 	FloaterManager::RemoveFloater(this);
 }
 
@@ -85,7 +85,7 @@ ToolSetupWindow::~ToolSetupWindow()
 void
 ToolSetupWindow::ShowToolSetupWindow(int32 toolType)
 {
-	if (fToolSetupWindow == NULL) {
+	if (sfToolSetupWindow == NULL) {
 		BRect frame(70, 31, 300, 72);
 		if (SettingsServer* server = SettingsServer::Instance()) {
 			BMessage settings;
@@ -95,26 +95,26 @@ ToolSetupWindow::ShowToolSetupWindow(int32 toolType)
 		new ToolSetupWindow(frame);
 	}
 
-	if (fToolSetupWindow->Lock()) {
-		fToolSetupWindow->SetWorkspaces(B_CURRENT_WORKSPACE);
-		if (fToolSetupWindow->IsHidden())
-			fToolSetupWindow->Show();
+	if (sfToolSetupWindow->Lock()) {
+		sfToolSetupWindow->SetWorkspaces(B_CURRENT_WORKSPACE);
+		if (sfToolSetupWindow->IsHidden())
+			sfToolSetupWindow->Show();
 
-		if (!fToolSetupWindow->IsActive() && !fToolSetupWindow->IsFront())
-			fToolSetupWindow->Activate(true);
+		if (!sfToolSetupWindow->IsActive() && !sfToolSetupWindow->IsFront())
+			sfToolSetupWindow->Activate(true);
 
-		fToolSetupWindow->Unlock();
+		sfToolSetupWindow->Unlock();
 	}
 
-	BRect newRect = FitRectToScreen(fToolSetupWindow->Frame());
-	fToolSetupWindow->MoveTo(newRect.LeftTop());
+	BRect newRect = FitRectToScreen(sfToolSetupWindow->Frame());
+	sfToolSetupWindow->MoveTo(newRect.LeftTop());
 
 	if (toolType == 0)
 		toolType = FREE_LINE_TOOL;
 
-	if (fToolSetupWindow->Lock()) {
-		fToolSetupWindow->_UpdateConfigurationView(toolType);
-		fToolSetupWindow->Unlock();
+	if (sfToolSetupWindow->Lock()) {
+		sfToolSetupWindow->_UpdateConfigurationView(toolType);
+		sfToolSetupWindow->Unlock();
 	}
 }
 
@@ -127,29 +127,29 @@ ToolSetupWindow::SetWindowFeel(window_feel feel)
 			int32(feel));
 	}
 
-	if (fToolSetupWindow) {
-		fToolSetupWindow->SetFeel(feel);
-		fToolSetupWindow->SetLook((feel == B_NORMAL_WINDOW_FEEL
+	if (sfToolSetupWindow) {
+		sfToolSetupWindow->SetFeel(feel);
+		sfToolSetupWindow->SetLook((feel == B_NORMAL_WINDOW_FEEL
 			? B_TITLED_WINDOW_LOOK : B_FLOATING_WINDOW_LOOK));
 	}
 }
 
 
 void
-ToolSetupWindow::CurrentToolChanged(int32 newTool)
+ToolSetupWindow::CurrentToolChanged(int32 tool)
 {
-	if (fToolSetupWindow && fToolSetupWindow->Lock()) {
-		fToolSetupWindow->_UpdateConfigurationView(newTool);
-		fToolSetupWindow->Unlock();
+	if (sfToolSetupWindow && sfToolSetupWindow->Lock()) {
+		sfToolSetupWindow->_UpdateConfigurationView(tool);
+		sfToolSetupWindow->Unlock();
 	}
 }
 
 
 void
-ToolSetupWindow::_UpdateConfigurationView(int32 newTool)
+ToolSetupWindow::_UpdateConfigurationView(int32 tool)
 {
-	if (newTool != fCurrentTool) {
-		fCurrentTool = newTool;
+	if (tool != fCurrentTool) {
+		fCurrentTool = tool;
 
 		// Remove previous tool config views.
 		while (BView* oldConfigView = ChildAt(0)) {
@@ -157,13 +157,13 @@ ToolSetupWindow::_UpdateConfigurationView(int32 newTool)
 			delete oldConfigView;
 		}
 
-		BView* configView = tool_manager->ReturnConfigurationView(newTool);
+		BView* configView = tool_manager->ReturnConfigurationView(tool);
 		if (configView == NULL) {
 			// TODO: translation
 			BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
 				.Add(new BStringView("", "No configuration options available."))
 				.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0));
-			box->SetLabel(tool_manager->ReturnTool(newTool)->Name().String());
+			box->SetLabel(tool_manager->ReturnTool(tool)->Name().String());
 			configView = box;
 		}
 		AddChild(configView);
