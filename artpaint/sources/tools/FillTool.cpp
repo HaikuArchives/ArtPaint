@@ -1775,7 +1775,7 @@ FillToolConfigView::MessageReceived(BMessage *message)
 			uint32 color2;
 			message->FindInt32("color1", (int32*)&color1);
 			message->FindInt32("color2", (int32*)&color2);
-			((FillTool*)tool)->SetGradient(color1, color2);
+			(dynamic_cast<FillTool*> (Tool()))->SetGradient(color1, color2);
 		}	break;
 
 		default: {

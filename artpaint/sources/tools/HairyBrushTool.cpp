@@ -519,11 +519,11 @@ HairyBrushToolConfigView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case COLOR_VARIANCE_CHANGED: {
-			tool->SetOption(TOLERANCE_OPTION, fColorVariance->Value());
+			Tool()->SetOption(TOLERANCE_OPTION, fColorVariance->Value());
 		}	break;
 
 		case COLOR_AMOUNT_CHANGED: {
-			tool->SetOption(CONTINUITY_OPTION, fColorAmount->Value());
+			Tool()->SetOption(CONTINUITY_OPTION, fColorAmount->Value());
 		}	break;	// TODO: check since before it did fall through
 
 		default: {

@@ -83,7 +83,9 @@ public:
 	virtual	void			AttachedToWindow();
 	virtual	void			MessageReceived(BMessage* message);
 
-protected:
+			DrawingTool*	Tool() const { return tool; }
+
+private:
 			DrawingTool*	tool;
 };
 
