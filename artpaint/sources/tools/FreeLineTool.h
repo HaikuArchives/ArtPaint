@@ -11,7 +11,7 @@
 #ifndef FREE_LINE_TOOL_H
 #define FREE_LINE_TOOL_H
 
-#include "LineTool.h"
+#include "DrawingTool.h"
 
 
 class BBitmap;
@@ -29,7 +29,7 @@ namespace ArtPaint {
 using ArtPaint::Interface::NumberSliderControl;
 
 
-class FreeLineTool : public LineTool {
+class FreeLineTool : public DrawingTool {
 public:
 									FreeLineTool();
 	virtual							~FreeLineTool();
@@ -56,6 +56,7 @@ private:
 class FreeLineToolConfigView : public DrawingToolConfigView {
 public:
 									FreeLineToolConfigView(DrawingTool* tool);
+	virtual							~FreeLineToolConfigView() {}
 
 	virtual	void					AttachedToWindow();
 

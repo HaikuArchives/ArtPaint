@@ -31,7 +31,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 FreeLineTool::FreeLineTool()
-	: LineTool(StringServer::ReturnString(FREE_LINE_TOOL_NAME_STRING),
+	: DrawingTool(StringServer::ReturnString(FREE_LINE_TOOL_NAME_STRING),
 		FREE_LINE_TOOL)
 {
 	options = SIZE_OPTION;
