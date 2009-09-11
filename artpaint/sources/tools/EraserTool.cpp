@@ -270,7 +270,8 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 
 		message->ReplaceInt32("value", HS_ERASE_TO_TRANSPARENT_MODE);
 		fTransparent =
-			new BRadioButton(StringServer::ReturnString(TRANSPARENT_STRING), message);
+			new BRadioButton(StringServer::ReturnString(TRANSPARENT_STRING),
+			message);
 
 		BSeparatorView* view =
 			new BSeparatorView(StringServer::ReturnString(COLOR_STRING),
