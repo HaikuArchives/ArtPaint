@@ -58,7 +58,6 @@ Addon Marble.so :
 	Layer.o
 	LayerView.o
 	LayerWindow.o
-	LineTool.o
 	MagnificationView.o
 	ManipulatorInformer.o
 	Manipulator.o
@@ -156,7 +155,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>Layer.o
 		<3rdparty!artpaint!artpaint!sources>LayerView.o
 		<3rdparty!artpaint!artpaint!sources>LayerWindow.o
-		<3rdparty!artpaint!artpaint!sources>LineTool.o
 		<3rdparty!artpaint!artpaint!sources>MagnificationView.o
 		<3rdparty!artpaint!artpaint!sources>ManipulatorInformer.o
 		<3rdparty!artpaint!artpaint!sources>Manipulator.o

@@ -92,7 +92,6 @@ Application ArtPaint :
 	FillTool.cpp
 	FreeLineTool.cpp
 	HairyBrushTool.cpp
-	LineTool.cpp
 	RectangleTool.cpp
 	SelectorTool.cpp
 	StraightLineTool.cpp

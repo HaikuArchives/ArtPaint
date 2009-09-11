@@ -11,7 +11,6 @@
 
 
 #include "DrawingTool.h"
-#include "LineTool.h"
 #include "FreeLineTool.h"
 #include "SelectorTool.h"
 #include "FillTool.h"
