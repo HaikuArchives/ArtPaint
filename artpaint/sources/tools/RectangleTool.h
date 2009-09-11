@@ -17,36 +17,41 @@
 
 class BCheckBox;
 class BRadioButton;
+class BSeparatorView;
 class ImageView;
 class ToolScript;
 
 
 class RectangleTool : public DrawingTool, public ToolEventAdapter {
 public:
-							RectangleTool();
-	virtual					~RectangleTool();
+								RectangleTool();
+	virtual						~RectangleTool();
 
-			int32			UseToolWithScript(ToolScript*, BBitmap*);
-			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
+			int32				UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-			BView*			makeConfigView();
-			const void*		ToolCursor() const;
-			const char*		HelpString(bool isInUse) const;
+			BView*				makeConfigView();
+			const void*			ToolCursor() const;
+			const char*			HelpString(bool isInUse) const;
 };
 
 
 class RectangleToolConfigView : public DrawingToolConfigView {
 public:
-							RectangleToolConfigView(DrawingTool* newTool);
+								RectangleToolConfigView(DrawingTool* tool);
+	virtual						~RectangleToolConfigView() {}
 
-	virtual	void			AttachedToWindow();
+	virtual	void				AttachedToWindow();
 
 private:
-			BCheckBox* 		fFillCheckBox;
-			BRadioButton*	fCorner2Corner;
-			BRadioButton*	fCenter2Corner;
-			BCheckBox*		fRotationCheckBox;
-			BCheckBox*		fAntiAliasCheckBox;
+			BSeparatorView*		_SeparatorView() const;
+
+private:
+			BCheckBox*			fFillRectangle;
+			BRadioButton*		fCorner2Corner;
+			BRadioButton*		fCenter2Corner;
+			BCheckBox*			fRotation;
+			BCheckBox*			fAntiAlias;
 };
 
-#endif
+#endif	// RECTANGLE_TOOL_H

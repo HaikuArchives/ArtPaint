@@ -22,11 +22,10 @@
 #include "UtilityClasses.h"
 
 
-#include <Box.h>
 #include <CheckBox.h>
-#include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <SeparatorView.h>
 #include <Window.h>
 
 
@@ -296,94 +295,124 @@ RectangleTool::HelpString(bool isInUse) const
 // #pragma mark -- RectangleToolConfigView
 
 
-RectangleToolConfigView::RectangleToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", FILL_ENABLED_OPTION);
-	message->AddInt32("value", 0x00000000);
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", FILL_ENABLED_OPTION);
+		message->AddInt32("value", 0x00000000);
 
-	fFillCheckBox =
-		new BCheckBox(StringServer::ReturnString(FILL_RECTANGLE_STRING), message);
+		fFillRectangle =
+			new BCheckBox(StringServer::ReturnString(FILL_RECTANGLE_STRING),
+			message);
 
-	BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
-		.Add(fFillCheckBox)
-		.SetInsets(5.0, 5.0, 5.0, 5.0));
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", HS_CORNER_TO_CORNER);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SHAPE_OPTION);
-	message->AddInt32("value", HS_CORNER_TO_CORNER);
+		fCorner2Corner =
+			new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
+			message);
 
-	fCorner2Corner =
-		new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
-		message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", HS_CENTER_TO_CORNER);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SHAPE_OPTION);
-	message->AddInt32("value", HS_CENTER_TO_CORNER);
+		fCenter2Corner =
+			new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
+			message);
 
-	fCenter2Corner =
-		new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
-		message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", ROTATION_ENABLED_OPTION);
+		message->AddInt32("value", 0x00000000);
 
-	BBox* box2 = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fCorner2Corner)
-		.Add(fCenter2Corner)
-		.SetInsets(5.0, 5.0, 5.0, 5.0));
+		fRotation =
+			new BCheckBox(StringServer::ReturnString(ENABLE_ROTATION_STRING),
+			message);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", ROTATION_ENABLED_OPTION);
-	message->AddInt32("value", 0x00000000);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
+		message->AddInt32("value", 0x00000000);
 
-	fRotationCheckBox =
-		new BCheckBox(StringServer::ReturnString(ENABLE_ROTATION_STRING),
-		message);
+		fAntiAlias =
+			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			message);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
-	message->AddInt32("value", 0x00000000);
+		BSeparatorView* view =
+			new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+			B_ALIGN_VERTICAL_CENTER));
+		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	fAntiAliasCheckBox =
-		new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
-		message);
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fFillRectangle)
+			.End()
+			.AddStrut(5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fCorner2Corner)
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fCenter2Corner)
+			.End()
+			.AddStrut(5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fRotation)
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fAntiAlias)
+			.End()
+		);
 
-	BBox* box3 = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fRotationCheckBox)
-		.Add(fAntiAliasCheckBox)
-		.SetInsets(5.0, 5.0, 5.0, 5.0));
+		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
+			fFillRectangle->SetValue(B_CONTROL_ON);
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
+			fCorner2Corner->SetValue(B_CONTROL_ON);
 
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(box)
-		.Add(box2)
-		.Add(box3)
-	);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
+			fCenter2Corner->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
-		fFillCheckBox->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(ROTATION_ENABLED_OPTION) != B_CONTROL_OFF)
+			fRotation->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
-		fCorner2Corner->SetValue(B_CONTROL_ON);
-
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
-		fCenter2Corner->SetValue(B_CONTROL_ON);
-
-	if (tool->GetCurrentValue(ROTATION_ENABLED_OPTION) != B_CONTROL_OFF)
-		fRotationCheckBox->SetValue(B_CONTROL_ON);
-
-	if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
-		fAntiAliasCheckBox->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
+			fAntiAlias->SetValue(B_CONTROL_ON);
+	}
 }
 
 
-void RectangleToolConfigView::AttachedToWindow()
+void
+RectangleToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fFillCheckBox->SetTarget(BMessenger(this));
-	fCorner2Corner->SetTarget(BMessenger(this));
-	fCenter2Corner->SetTarget(BMessenger(this));
-	fRotationCheckBox->SetTarget(BMessenger(this));
-	fAntiAliasCheckBox->SetTarget(BMessenger(this));
+	fFillRectangle->SetTarget(this);
+	fCorner2Corner->SetTarget(this);
+	fCenter2Corner->SetTarget(this);
+	fRotation->SetTarget(this);
+	fAntiAlias->SetTarget(this);
+}
+
+
+BSeparatorView*
+RectangleToolConfigView::_SeparatorView() const
+{
+	BSeparatorView* view =
+		new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+		B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+		B_ALIGN_VERTICAL_CENTER));
+	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
+	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	return view;
 }
