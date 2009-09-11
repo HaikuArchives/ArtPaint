@@ -168,8 +168,7 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		((PaintApplication*)be_app)->SetColor(new_color, select_foreground);
 
 		// Inform all the selected color views about change in colors.
-		BMessage message(HS_COLOR_CHANGED);
-		SelectedColorsView::sendMessageToAll(&message);
+		SelectedColorsView::SendMessageToAll(HS_COLOR_CHANGED);
 
 		delete drawer;
 	}
