@@ -69,7 +69,6 @@ Addon Halftone.so :
 	PaintApplication.o
 	PaintWindowMenuItem.o
 	PaintWindow.o
-	PopUpColorWindow.o
 	PopUpList.o
 	PopUpSlider.o
 	ProjectFileFunctions.o
@@ -164,7 +163,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>PaintApplication.o
 		<3rdparty!artpaint!artpaint!sources>PaintWindowMenuItem.o
 		<3rdparty!artpaint!artpaint!sources>PaintWindow.o
-		<3rdparty!artpaint!artpaint!sources>PopUpColorWindow.o
 		<3rdparty!artpaint!artpaint!sources>PopUpList.o
 		<3rdparty!artpaint!artpaint!sources>PopUpSlider.o
 		<3rdparty!artpaint!artpaint!sources>ProjectFileFunctions.o

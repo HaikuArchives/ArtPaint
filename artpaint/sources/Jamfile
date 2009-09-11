@@ -122,7 +122,6 @@ Application ArtPaint :
 	DatatypeSetupWindow.cpp
 	GlobalSetupWindow.cpp
 	ManipulatorWindow.cpp
-	PopUpColorWindow.cpp
 	ViewSetupWindow.cpp
 
 	# Utilities
