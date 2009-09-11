@@ -12,12 +12,12 @@
 #include "SelectorTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
 #include "IntelligentPathFinder.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Patterns.h"
 #include "PixelOperations.h"
@@ -27,11 +27,14 @@
 #include "UtilityClasses.h"
 
 
-#include <Box.h>
-#include <GroupLayout.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <SeparatorView.h>
 #include <Window.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 SelectorTool::SelectorTool()
@@ -589,90 +592,97 @@ SelectorTool::CheckLowerSpans(BPoint span_start, BitmapDrawer* drawer,
 // #pragma mark -- SelectorToolConfigView
 
 
-SelectorToolConfigView::SelectorToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", MODE_OPTION);
-	message->AddInt32("value", B_OP_ADD);
-	fAddArea = new BRadioButton(StringServer::ReturnString(ADD_AREA_STRING),
-		new BMessage(*message));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", MODE_OPTION);
+		message->AddInt32("value", B_OP_ADD);
+		fAddArea = new BRadioButton(StringServer::ReturnString(ADD_AREA_STRING),
+			new BMessage(*message));
 
-	message->ReplaceInt32("value", B_OP_SUBTRACT);
-	fSubstractArea = new
-		BRadioButton(StringServer::ReturnString(SUBTRACT_AREA_STRING), message);
+		message->ReplaceInt32("value", B_OP_SUBTRACT);
+		fSubstractArea =
+			new BRadioButton(StringServer::ReturnString(SUBTRACT_AREA_STRING),
+				message);
 
-	BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fAddArea)
-		.Add(fSubstractArea)
-		.SetInsets(5.0, 5.0, 0.0, 5.0)
-	);
-	box->SetLabel(StringServer::ReturnString(MODE_STRING));
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", HS_FREE_LINE);
+		fFreeLine = new BRadioButton(StringServer::ReturnString(FREE_LINE_STRING),
+			new BMessage(*message));
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SHAPE_OPTION);
-	message->AddInt32("value", HS_FREE_LINE);
-	fFreeLine = new BRadioButton(StringServer::ReturnString(FREE_LINE_STRING),
-		new BMessage(*message));
+		message->ReplaceInt32("value", HS_RECTANGLE);
+		fRectangle =
+			new BRadioButton(StringServer::ReturnString(RECTANGLE_STRING),
+				new BMessage(*message));
 
-	message->ReplaceInt32("value", HS_RECTANGLE);
-	fRectangle = new BRadioButton(StringServer::ReturnString(RECTANGLE_STRING),
-		new BMessage(*message));
+		message->ReplaceInt32("value", HS_MAGIC_WAND);
+		fMagicWand =
+			new BRadioButton(StringServer::ReturnString(MAGIC_WAND_STRING),
+				new BMessage(*message));
 
-	message->ReplaceInt32("value", HS_MAGIC_WAND);
-	fMagicWand = new BRadioButton(StringServer::ReturnString(MAGIC_WAND_STRING),
-		new BMessage(*message));
+		message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
+		fScissors =  new
+			BRadioButton(StringServer::ReturnString(INTELLIGENT_SCISSORS_STRING),
+			message);
 
-	message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
-	fScissors =  new
-		BRadioButton(StringServer::ReturnString(INTELLIGENT_SCISSORS_STRING),
-		message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", TOLERANCE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(TOLERANCE_OPTION));
+		fTolerance =
+			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
+				"10", message, 0, 100, false);
+		layout->AddView(fTolerance);
 
-	BBox* box2 = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fFreeLine)
-		.Add(fRectangle)
-		.Add(fMagicWand)
-		.Add(fScissors)
-		.SetInsets(5.0, 5.0, 0.0, 5.0)
-	);
-	box2->SetLabel(StringServer::ReturnString(SHAPE_STRING));
+		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+			.Add(fTolerance->LabelLayoutItem(), 0, 0)
+			.Add(fTolerance->TextViewLayoutItem(), 1, 0)
+			.Add(fTolerance->Slider(), 2, 0);
+		gridLayout->SetInsets(5.0, 0.0, 0.0, 0.0);
+		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", TOLERANCE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(TOLERANCE_OPTION));
-	fToleranceSlider = new ControlSliderBox("fToleranceSlider",
-		StringServer::ReturnString(TOLERANCE_STRING), "10", message, 0, 100);
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(_SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, 5.0)
+					.Add(fAddArea)
+					.Add(fSubstractArea)
+				.SetInsets(5.0, 0.0, 0.0, 0.0)
+			.End()
+			.AddStrut(5.0)
+			.Add(_SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
+			.AddGroup(B_VERTICAL, 5.0)
+				.Add(fFreeLine)
+				.Add(fRectangle)
+				.Add(fMagicWand)
+				.Add(fScissors)
+				.SetInsets(5.0, 0.0, 0.0, 0.0)
+			.End()
+			.AddStrut(5.0)
+			.Add(_SeparatorView(StringServer::ReturnString(WAND_TOLERANCE_STRING)))
+			.Add(gridLayout->View())
+		);
 
-	BBox* box3 = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
-		.Add(fToleranceSlider)
-		.SetInsets(5.0, 5.0, 5.0, 5.0)
-	);
-	box3->SetLabel(StringServer::ReturnString(WAND_TOLERANCE_STRING));
+		if (tool->GetCurrentValue(MODE_OPTION) == B_OP_ADD)
+			fAddArea->SetValue(B_CONTROL_ON);
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(box)
-		.Add(box2)
-		.Add(box3)
-	);
+		if (tool->GetCurrentValue(MODE_OPTION) == B_OP_SUBTRACT)
+			fSubstractArea->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(MODE_OPTION) == B_OP_ADD)
-		fAddArea->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_FREE_LINE)
+			fFreeLine->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(MODE_OPTION) == B_OP_SUBTRACT)
-		fSubstractArea->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_RECTANGLE)
+			fRectangle->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_FREE_LINE)
-		fFreeLine->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_MAGIC_WAND)
+			fMagicWand->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_RECTANGLE)
-		fRectangle->SetValue(B_CONTROL_ON);
-
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_MAGIC_WAND)
-		fMagicWand->SetValue(B_CONTROL_ON);
-
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_INTELLIGENT_SCISSORS)
-		fScissors->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_INTELLIGENT_SCISSORS)
+			fScissors->SetValue(B_CONTROL_ON);
+	}
 }
 
 
@@ -681,11 +691,24 @@ SelectorToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fAddArea->SetTarget(BMessenger(this));
-	fSubstractArea->SetTarget(BMessenger(this));
-	fFreeLine->SetTarget(BMessenger(this));
-	fRectangle->SetTarget(BMessenger(this));
-	fMagicWand->SetTarget(BMessenger(this));
-	fScissors->SetTarget(BMessenger(this));
-	fToleranceSlider->SetTarget(new BMessenger(this));
+	fAddArea->SetTarget(this);
+	fSubstractArea->SetTarget(this);
+	fFreeLine->SetTarget(this);
+	fRectangle->SetTarget(this);
+	fMagicWand->SetTarget(this);
+	fScissors->SetTarget(this);
+	fTolerance->SetTarget(this);
+}
+
+
+BSeparatorView*
+SelectorToolConfigView::_SeparatorView(const char* label) const
+{
+	BSeparatorView* view =
+		new BSeparatorView(label, B_HORIZONTAL, B_FANCY_BORDER,
+			BAlignment(B_ALIGN_LEFT, B_ALIGN_VERTICAL_CENTER));
+	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
+	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	return view;
 }

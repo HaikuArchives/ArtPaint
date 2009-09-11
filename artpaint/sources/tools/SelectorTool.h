@@ -17,10 +17,18 @@
 
 class BitmapDrawer;
 class BRadioButton;
-class ControlSliderBox;
+class BSeparatorView;
 class ImageView;
 class PointStack;
 class ToolScript;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class SelectorTool : public DrawingTool, public ToolEventAdapter {
@@ -56,18 +64,22 @@ private:
 
 class SelectorToolConfigView : public DrawingToolConfigView {
 public:
-								SelectorToolConfigView(DrawingTool* newTool);
+									SelectorToolConfigView(DrawingTool* tool);
+	virtual							~SelectorToolConfigView() {}
 
-	virtual	void				AttachedToWindow();
+	virtual	void					AttachedToWindow();
 
 private:
-			BRadioButton*		fAddArea;
-			BRadioButton*		fSubstractArea;
-			BRadioButton*		fFreeLine;
-			BRadioButton*		fRectangle;
-			BRadioButton*		fMagicWand;
-			BRadioButton*		fScissors;
-			ControlSliderBox*	fToleranceSlider;
+			BSeparatorView*			_SeparatorView(const char* label) const;
+
+private:
+			BRadioButton*			fAddArea;
+			BRadioButton*			fSubstractArea;
+			BRadioButton*			fFreeLine;
+			BRadioButton*			fRectangle;
+			BRadioButton*			fMagicWand;
+			BRadioButton*			fScissors;
+			NumberSliderControl*	fTolerance;
 };
 
-#endif
+#endif	// SELECTOR_TOOL_H
