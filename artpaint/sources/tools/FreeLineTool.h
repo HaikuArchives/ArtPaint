@@ -16,10 +16,17 @@
 
 class BBitmap;
 class BView;
-class ControlSliderBox;
 class CoordinateQueue;
 class ImageView;
 class ToolScript;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class FreeLineTool : public LineTool {
@@ -48,12 +55,12 @@ private:
 
 class FreeLineToolConfigView : public DrawingToolConfigView {
 public:
-									FreeLineToolConfigView(DrawingTool* newTool);
+									FreeLineToolConfigView(DrawingTool* tool);
 
 	virtual	void					AttachedToWindow();
 
 private:
-			ControlSliderBox*		size_slider;
+			NumberSliderControl*	fLineSize;
 };
 
-#endif
+#endif	// FREE_LINE_TOOL_H

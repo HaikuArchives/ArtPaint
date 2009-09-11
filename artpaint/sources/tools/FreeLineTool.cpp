@@ -12,20 +12,22 @@
 #include "FreeLineTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "Cursors.h"
 #include "CoordinateQueue.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
-#include <GroupLayout.h>
-#include <GroupLayoutBuilder.h>
+#include <Layout.h>
 #include <Window.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 FreeLineTool::FreeLineTool()
@@ -227,25 +229,26 @@ FreeLineTool::read_coordinates()
 // #pragma mark -- FreeLineToolConfigView
 
 
-FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	size_slider = new ControlSliderBox("size",
-		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
-
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0).Add(size_slider));
+		fLineSize =
+			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			"1", message, 1, 100, true);
+		layout->AddView(fLineSize);
+	}
 }
-
 
 
 void
 FreeLineToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
-	size_slider->SetTarget(new BMessenger(this));
+
+	fLineSize->SetTarget(this);
 }
