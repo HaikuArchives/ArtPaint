@@ -23,8 +23,6 @@ UsePrivateHeaders interface ;
 
 Application ArtPaint :
 	# application
-#	ClipBoardManager.cpp
-#	ClipBoardView.cpp
 	FilePanels.cpp
 	FloaterManager.cpp
 	HSPolygon.cpp
@@ -51,7 +49,6 @@ Application ArtPaint :
 	ColorView.cpp
 	Controls.cpp
 	NumberSliderControl.cpp
-#	DirectionControl.cpp
 	HSPictureButton.cpp
 	HSVControl.cpp
 	PopUpList.cpp
