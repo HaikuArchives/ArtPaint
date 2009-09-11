@@ -11,17 +11,24 @@
 #ifndef ERASER_TOOL_H
 #define ERASER_TOOL_H
 
-#include "LineTool.h"
+#include "DrawingTool.h"
 
 
 class BRadioButton;
-class ControlSliderBox;
 class CoordinateQueue;
 class ImageView;
 class ToolScript;
 
 
-class EraserTool : public LineTool {
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
+
+
+class EraserTool : public DrawingTool {
 public:
 								EraserTool();
 	virtual						~EraserTool();
@@ -48,14 +55,15 @@ private:
 
 class EraserToolConfigView : public DrawingToolConfigView {
 public:
-								EraserToolConfigView(DrawingTool* newTool);
+									EraserToolConfigView(DrawingTool* tool);
+	virtual							~EraserToolConfigView() {}
 
-	virtual	void				AttachedToWindow();
+	virtual	void					AttachedToWindow();
 
 private:
-			ControlSliderBox*	fSizeSlider;
-			BRadioButton*		fBackground;
-			BRadioButton*		fTransparent;
+			NumberSliderControl*	fSizeSlider;
+			BRadioButton*			fBackground;
+			BRadioButton*			fTransparent;
 };
 
-#endif
+#endif	// ERASER_TOOL_H

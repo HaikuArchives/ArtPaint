@@ -12,24 +12,28 @@
 #include "EraserTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "CoordinateQueue.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "StringServer.h"
 #include "ToolScript.h"
 
 
-#include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <SeparatorView.h>
 #include <Window.h>
 
 
+using ArtPaint::Interface::NumberSliderControl;
+
+
 EraserTool::EraserTool()
-	: LineTool(StringServer::ReturnString(ERASER_TOOL_NAME_STRING), ERASER_TOOL)
+	: DrawingTool(StringServer::ReturnString(ERASER_TOOL_NAME_STRING),
+		ERASER_TOOL)
 {
 	options = SIZE_OPTION | MODE_OPTION;
 	number_of_options = 2;
@@ -244,46 +248,56 @@ EraserTool::read_coordinates()
 // #pragma mark -- EraserToolConfigView
 
 
-EraserToolConfigView::EraserToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	fSizeSlider = new ControlSliderBox("size",
-		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
+		fSizeSlider =
+			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			"1", message, 1, 100, true);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", MODE_OPTION);
-	message->AddInt32("value", HS_ERASE_TO_BACKGROUND_MODE);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", MODE_OPTION);
+		message->AddInt32("value", HS_ERASE_TO_BACKGROUND_MODE);
 
-	fBackground =
-		new BRadioButton(StringServer::ReturnString(BACKGROUND_STRING),
-		new BMessage(*message));
+		fBackground =
+			new BRadioButton(StringServer::ReturnString(BACKGROUND_STRING),
+			new BMessage(*message));
 
-	message->ReplaceInt32("value", HS_ERASE_TO_TRANSPARENT_MODE);
-	fTransparent =
-		new BRadioButton(StringServer::ReturnString(TRANSPARENT_STRING), message);
+		message->ReplaceInt32("value", HS_ERASE_TO_TRANSPARENT_MODE);
+		fTransparent =
+			new BRadioButton(StringServer::ReturnString(TRANSPARENT_STRING), message);
 
-	BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fBackground)
-		.Add(fTransparent)
-		.SetInsets(5.0, 5.0, 5.0, 5.0));
-	box->SetLabel(StringServer::ReturnString(COLOR_STRING));
+		BSeparatorView* view =
+			new BSeparatorView(StringServer::ReturnString(COLOR_STRING),
+			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+			B_ALIGN_VERTICAL_CENTER));
+		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(fSizeSlider)
+			.AddStrut(5.0)
+			.Add(view)
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fBackground)
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fTransparent)
+			.End()
+		);
 
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(box)
-		.Add(fSizeSlider)
-	);
+		if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_BACKGROUND_MODE)
+			fBackground->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_BACKGROUND_MODE)
-		fBackground->SetValue(B_CONTROL_ON);
-
-	if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_TRANSPARENT_MODE)
-		fTransparent->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_TRANSPARENT_MODE)
+			fTransparent->SetValue(B_CONTROL_ON);
+	}
 }
 
 
@@ -292,7 +306,7 @@ EraserToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fSizeSlider->SetTarget(new BMessenger(this));
-	fBackground->SetTarget(BMessenger(this));
-	fTransparent->SetTarget(BMessenger(this));
+	fSizeSlider->SetTarget(this);
+	fBackground->SetTarget(this);
+	fTransparent->SetTarget(this);
 }
