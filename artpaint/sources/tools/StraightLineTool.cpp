@@ -12,11 +12,11 @@
 #include "StraightLineTool.h"
 
 #include "BitmapDrawer.h"
-#include "Controls.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Selection.h"
 #include "StringServer.h"
@@ -25,13 +25,16 @@
 
 
 #include <CheckBox.h>
-#include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <SeparatorView.h>
 #include <Window.h>
 
 
 #include <math.h>
 #include <stdio.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 StraightLineTool::StraightLineTool()
@@ -53,7 +56,8 @@ StraightLineTool::~StraightLineTool()
 
 
 ToolScript*
-StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view_point)
+StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
+	BPoint view_point)
 {
 	// In this function we calculate the line as a polygon. We make the polygon
 	// by first making a horizontal rectangle of appropriate size and the
@@ -340,40 +344,54 @@ StraightLineTool::HelpString(bool isInUse) const
 // #pragma mark -- StraightLineToolConfigView
 
 
-StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SIZE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SIZE_OPTION);
-	message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
-	size_slider = new ControlSliderBox("size",
-		StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100);
+		fLineSize = new NumberSliderControl(
+			StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100, true);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
-	message->AddInt32("value", 0x00000000);
-	anti_aliasing_checkbox =
-		new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
-		message);
-	if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
-		anti_aliasing_checkbox->SetValue(B_CONTROL_ON);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
+		message->AddInt32("value", 0x00000000);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", MODE_OPTION);
-	message->AddInt32("value", 0x00000000);
-	width_adjusting_checkbox =
-		new BCheckBox(StringServer::ReturnString(ADJUSTABLE_WIDTH_STRING),
-		message);
-	if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF)
-		width_adjusting_checkbox->SetValue(B_CONTROL_ON);
+		fAntiAliasing =
+			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			message);
+		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
+			fAntiAliasing->SetValue(B_CONTROL_ON);
 
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(size_slider)
-		.Add(width_adjusting_checkbox)
-		.Add(anti_aliasing_checkbox)
-	);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", MODE_OPTION);
+		message->AddInt32("value", 0x00000000);
+
+		fAdjustableWidth =
+			new BCheckBox(StringServer::ReturnString(ADJUSTABLE_WIDTH_STRING),
+			message);
+		if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF)
+			fAdjustableWidth->SetValue(B_CONTROL_ON);
+
+		BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
+		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(fLineSize)
+			.Add(view)
+			.Add(view)
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fAdjustableWidth)
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fAntiAliasing)
+			.End()
+		);
+	}
 }
 
 
@@ -382,7 +400,7 @@ StraightLineToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	size_slider->SetTarget(new BMessenger(this));
-	anti_aliasing_checkbox->SetTarget(BMessenger(this));
-	width_adjusting_checkbox->SetTarget(BMessenger(this));
+	fLineSize->SetTarget(this);
+	fAntiAliasing->SetTarget(this);
+	fAdjustableWidth->SetTarget(this);
 }
