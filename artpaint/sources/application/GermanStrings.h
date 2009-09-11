@@ -364,10 +364,13 @@
 
 #define	GERMAN_ABOUT_5_TEXT_STRING						"Programmierung & Design"
 #define	GERMAN_ABOUT_6_TEXT_STRING						"Englische Dokumentation"
-#define	GERMAN_ABOUT_7_TEXT_STRING						"Deutsche Lokalisierung"
+#define	GERMAN_ABOUT_7_TEXT_STRING						"Deutsche Übersetzung"
 #define	GERMAN_ABOUT_8_TEXT_STRING						"Besonderen Dank an"
+#define	GERMAN_ABOUT_9_TEXT_STRING						"Danke auch den interessanten Artikeln von"
+#define	GERMAN_ABOUT_10_TEXT_STRING						"Französiche Übersetzung"
 
 #define	GERMAN_UNSUPPORTED_FILE_TYPE_STRING				"Die Datei %s hat ein nicht unterstützes Format. Wenn möglich sollten Sie einen Translator dafür installieren."
 #define	GERMAN_RELEASE_DATE_STRING						"Veröffentlicht am: %s"
 
+#define	GERMAN_CHANGES_TAKE_EFFECT_STRING				"Änderungen werden erst nach einem Neustart wirksam."
 #endif

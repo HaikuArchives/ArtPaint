@@ -656,6 +656,8 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_MEMORY_ALERT_2_STRING;
 		case MEMORY_ALERT_3_STRING:
 			return ENGLISH_MEMORY_ALERT_3_STRING;
+
+		default:	break;
 	}
 
 	// The default case of the switch. Taken away from the switch
@@ -1270,6 +1272,10 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_ABOUT_7_TEXT_STRING;
 		case ABOUT_8_TEXT_STRING:
 			return GERMAN_ABOUT_8_TEXT_STRING;
+		case ABOUT_9_TEXT_STRING:
+			return GERMAN_ABOUT_9_TEXT_STRING;
+		case ABOUT_10_TEXT_STRING:
+			return GERMAN_ABOUT_10_TEXT_STRING;
 
 		// These are general alert string
 		case MEMORY_ALERT_1_STRING:
@@ -1279,17 +1285,14 @@ const char* StringServer::return_german_string(string_id id)
 		case MEMORY_ALERT_3_STRING:
 			return GERMAN_MEMORY_ALERT_3_STRING;
 
-		// TODO: check these
-		case ABOUT_9_TEXT_STRING:
-		case ABOUT_10_TEXT_STRING:
 		case CHANGES_TAKE_EFFECT_STRING:
-			goto not_translated_yet;
+			return GERMAN_CHANGES_TAKE_EFFECT_STRING;
+
+		default:	break;
 	}
 
-not_translated_yet:
-
-	// The default case of the switch. Taken away from the switch
-	// to allow warnings on missing cases.
+	// The default case of the switch. Taken away from the switch to allow
+	// warnings on missing cases.
 	char *string = new char[256];
 	sprintf(string,"GER: %s", return_english_string(id));
 	return string;
@@ -1914,6 +1917,8 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_MEMORY_ALERT_2_STRING;
 		case MEMORY_ALERT_3_STRING:
 			return FRENCH_MEMORY_ALERT_3_STRING;
+
+		default:	break;
 	}
 
 	// The default case of the switch. Taken away from the switch
