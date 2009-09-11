@@ -16,11 +16,19 @@
 
 class BCheckBox;
 class BitmapDrawer;
-class ControlSliderBox;
+class BSeparatorView;
 class ImageView;
 class PointStack;
 class Selection;
 class ToolScript;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class FillTool : public DrawingTool {
@@ -85,20 +93,24 @@ private:
 
 class FillToolConfigView : public DrawingToolConfigView {
 public:
-								FillToolConfigView(DrawingTool* newTool,
-									uint32 c1, uint32 c2);
+									FillToolConfigView(DrawingTool* tool,
+										uint32 c1, uint32 c2);
+	virtual							~FillToolConfigView() {}
 
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage* message);
+	virtual	void					AttachedToWindow();
+	virtual	void					MessageReceived(BMessage* message);
 
 private:
-			BCheckBox*			fFlod;
-			BCheckBox*			fGradient;
-			BCheckBox*			fPreview;
+			BSeparatorView*			_SeparatorView() const;
+
+private:
+			BCheckBox*				fFlodFill;
+			BCheckBox*				fGradient;
+			BCheckBox*				fPreview;
 
 	class	GradientView;
-			GradientView*		fGradientView;
-			ControlSliderBox*	fToleranceSlider;
+			GradientView*			fGradientView;
+			NumberSliderControl*	fTolerance;
 };
 
-#endif
+#endif	// FILL_TOOL_H

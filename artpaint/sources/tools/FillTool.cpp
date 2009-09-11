@@ -14,10 +14,10 @@
 #include "BitmapDrawer.h"
 #include "ColorPalette.h"
 #include "ColorView.h"
-#include "Controls.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "PixelOperations.h"
 #include "Selection.h"
@@ -29,12 +29,15 @@
 #include <CheckBox.h>
 #include <Control.h>
 #include <File.h>
-#include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <SeparatorView.h>
 
 
 #include <stdlib.h>
 #include <string.h>
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 FillTool::FillTool()
@@ -1688,57 +1691,65 @@ FillToolConfigView::GradientView::_CalculateGradient()
 // #pragma mark -- FillToolConfigView
 
 
-FillToolConfigView::FillToolConfigView(DrawingTool* newTool,uint32 c1, uint32 c2)
-	: DrawingToolConfigView(newTool)
+FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
+	: DrawingToolConfigView(tool)
 {
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", MODE_OPTION);
-	message->AddInt32("value", 0x00000000);
-	fFlod = new BCheckBox(StringServer::ReturnString(FLOOD_FILL_STRING), message);
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", MODE_OPTION);
+		message->AddInt32("value", 0x00000000);
+		fFlodFill = new BCheckBox(StringServer::ReturnString(FLOOD_FILL_STRING),
+			message);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", GRADIENT_ENABLED_OPTION);
-	message->AddInt32("value", 0x00000000);
-	fGradient = new BCheckBox(StringServer::ReturnString(ENABLE_GRADIENT_STRING),
-		message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", GRADIENT_ENABLED_OPTION);
+		message->AddInt32("value", 0x00000000);
+		fGradient =
+			new BCheckBox(StringServer::ReturnString(ENABLE_GRADIENT_STRING),
+				message);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", PREVIEW_ENABLED_OPTION);
-	message->AddInt32("value", 0x00000000);
-	fPreview = new BCheckBox(StringServer::ReturnString(ENABLE_PREVIEW_STRING),
-		message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PREVIEW_ENABLED_OPTION);
+		message->AddInt32("value", 0x00000000);
+		fPreview = new BCheckBox(StringServer::ReturnString(ENABLE_PREVIEW_STRING),
+			message);
 
-	fGradientView = new GradientView(c1, c2);
+		fGradientView = new GradientView(c1, c2);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",TOLERANCE_OPTION);
-	message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
-	fToleranceSlider = new ControlSliderBox("fill tolerance",
-		StringServer::ReturnString(TOLERANCE_STRING), "0", message, 0, 100);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option",TOLERANCE_OPTION);
+		message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
+		fTolerance =
+			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
+				"0", message, 0, 100, true);
+		fTolerance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
-					.Add(fFlod)
-					.SetInsets(5.0, 5.0, 0.0, 5.0)))
-		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(fTolerance)
+			.AddStrut(5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
+				.Add(fFlodFill)
+			.End()
+			.AddStrut(5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_VERTICAL, 5.0)
 					.Add(fGradient)
 					.Add(fPreview)
 					.Add(fGradientView)
-					.SetInsets(5.0, 5.0, 5.0, 5.0)))
-		.Add(fToleranceSlider)
-	);
+				.SetInsets(5.0, 0.0, 0.0, 0.0)
+			.End()
+		);
 
-	fFlod->SetValue(tool->GetCurrentValue(MODE_OPTION));
+		fFlodFill->SetValue(tool->GetCurrentValue(MODE_OPTION));
 
-	if (tool->GetCurrentValue(GRADIENT_ENABLED_OPTION) != B_CONTROL_OFF)
-		fGradient->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(GRADIENT_ENABLED_OPTION) != B_CONTROL_OFF)
+			fGradient->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(PREVIEW_ENABLED_OPTION) != B_CONTROL_OFF)
-		fPreview->SetValue(B_CONTROL_ON);
-
-	fToleranceSlider->setValue(tool->GetCurrentValue(TOLERANCE_OPTION));
+		if (tool->GetCurrentValue(PREVIEW_ENABLED_OPTION) != B_CONTROL_OFF)
+			fPreview->SetValue(B_CONTROL_ON);
+	}
 }
 
 
@@ -1747,13 +1758,11 @@ FillToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	BMessenger messenger(this);
-	fFlod->SetTarget(messenger);
-	fGradient->SetTarget(messenger);
-	fPreview->SetTarget(messenger);
-	fGradientView->SetTarget(messenger);
-
-	fToleranceSlider->SetTarget(new BMessenger(this));
+	fFlodFill->SetTarget(this);
+	fGradient->SetTarget(this);
+	fPreview->SetTarget(this);
+	fGradientView->SetTarget(this);
+	fTolerance->SetTarget(this);
 }
 
 
@@ -1773,4 +1782,18 @@ FillToolConfigView::MessageReceived(BMessage *message)
 			DrawingToolConfigView::MessageReceived(message);
 		}	break;
 	}
+}
+
+
+BSeparatorView*
+FillToolConfigView::_SeparatorView() const
+{
+	BSeparatorView* view =
+		new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+		B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+		B_ALIGN_VERTICAL_CENTER));
+	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
+	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	return view;
 }
