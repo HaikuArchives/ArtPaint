@@ -16,35 +16,40 @@
 
 class BCheckBox;
 class BRadioButton;
+class BSeparatorView;
 class ImageView;
 class ToolScript;
 
 
 class EllipseTool : public DrawingTool {
 public:
-							EllipseTool();
-	virtual					~EllipseTool();
+								EllipseTool();
+	virtual						~EllipseTool();
 
-			int32			UseToolWithScript(ToolScript*, BBitmap*);
-			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
+			int32				UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
 
-			BView*			makeConfigView();
-			const void*		ToolCursor() const;
-			const char*		HelpString(bool isInUse) const;
+			BView*				makeConfigView();
+			const void*			ToolCursor() const;
+			const char*			HelpString(bool isInUse) const;
 };
 
 
 class EllipseToolConfigView : public DrawingToolConfigView {
 public:
-							EllipseToolConfigView(DrawingTool* newTool);
+								EllipseToolConfigView(DrawingTool* tool);
+	virtual						~EllipseToolConfigView() {}
 
-	virtual	void			AttachedToWindow();
+	virtual	void				AttachedToWindow();
 
 private:
-			BCheckBox*		fFillEllipse;
-			BRadioButton*	fCorner2Corner;
-			BRadioButton*	fCenter2Corner;
+			BSeparatorView*		_SeparatorView() const;
+
+private:
+			BCheckBox*			fFillEllipse;
+			BRadioButton*		fCorner2Corner;
+			BRadioButton*		fCenter2Corner;
 };
 
-#endif
+#endif	// ELLIPSE_TOOL_H

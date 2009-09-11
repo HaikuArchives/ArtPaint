@@ -22,11 +22,10 @@
 #include "UtilityClasses.h"
 
 
-#include <Box.h>
 #include <CheckBox.h>
-#include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
+#include <SeparatorView.h>
 #include <Window.h>
 
 
@@ -149,7 +148,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 int32
 EllipseTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -178,49 +177,58 @@ EllipseTool::HelpString(bool isInUse) const
 // #pragma mark -- EllipseToolConfigView
 
 
-EllipseToolConfigView::EllipseToolConfigView(DrawingTool* newTool)
-	: DrawingToolConfigView(newTool)
+EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
+	: DrawingToolConfigView(tool)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
+	if (BLayout* layout = GetLayout()) {
+		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option",FILL_ENABLED_OPTION);
+		message->AddInt32("value", 0x00000000);
+		fFillEllipse =
+			new BCheckBox(StringServer::ReturnString(FILL_ELLIPSE_STRING),
+				message);
 
-	BMessage* message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option",FILL_ENABLED_OPTION);
-	message->AddInt32("value", 0x00000000);
-	fFillEllipse = new BCheckBox(StringServer::ReturnString(FILL_ELLIPSE_STRING),
-		message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", HS_CORNER_TO_CORNER);
+		fCorner2Corner =
+			new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
+				message);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SHAPE_OPTION);
-	message->AddInt32("value", HS_CORNER_TO_CORNER);
-	fCorner2Corner =
-		new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
-			message);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", HS_CENTER_TO_CORNER);
+		fCenter2Corner =
+			new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
+				message);
 
-	message = new BMessage(OPTION_CHANGED);
-	message->AddInt32("option", SHAPE_OPTION);
-	message->AddInt32("value", HS_CENTER_TO_CORNER);
-	fCenter2Corner =
-		new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
-			message);
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
 				.Add(fFillEllipse)
-				.SetInsets(5.0, 5.0, 0.0, 5.0)))
-		.Add(new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL, 2.5)
+			.End()
+			.AddStrut(5.0)
+			.Add(_SeparatorView())
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
 				.Add(fCorner2Corner)
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.AddStrut(5.0)
 				.Add(fCenter2Corner)
-				.SetInsets(5.0, 5.0, 0.0, 5.0)))
-	);
+			.End()
+		);
 
-	if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
-		fFillEllipse->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
+			fFillEllipse->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
-		fCorner2Corner->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
+			fCorner2Corner->SetValue(B_CONTROL_ON);
 
-	if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
-		fCenter2Corner->SetValue(B_CONTROL_ON);
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
+			fCenter2Corner->SetValue(B_CONTROL_ON);
+	}
 }
 
 
@@ -229,7 +237,21 @@ EllipseToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fFillEllipse->SetTarget(BMessenger(this));
-	fCorner2Corner->SetTarget(BMessenger(this));
-	fCenter2Corner->SetTarget(BMessenger(this));
+	fFillEllipse->SetTarget(this);
+	fCorner2Corner->SetTarget(this);
+	fCenter2Corner->SetTarget(this);
+}
+
+
+BSeparatorView*
+EllipseToolConfigView::_SeparatorView() const
+{
+	BSeparatorView* view =
+		new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
+			B_ALIGN_VERTICAL_CENTER));
+	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
+	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	return view;
 }
