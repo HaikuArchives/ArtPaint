@@ -14,12 +14,15 @@
 #include "DrawingTool.h"
 
 
-#include <Window.h>
-
-
-class BStringView;
-class ControlSliderBox;
 class ImageView;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
 
 
 class ColorSelectorTool : public DrawingTool {
@@ -35,44 +38,15 @@ public:
 };
 
 
-class ColorSelectorView : public BView {
-public:
-								ColorSelectorView(BRect frame);
-
-	virtual	void				Draw(BRect updateRect);
-
-			void				ChangeValue(uint32);
-
-private:
-			uint32				selected_color;
-			BStringView*		red_view;
-			BStringView*		green_view;
-			BStringView*		blue_view;
-			BStringView*		alpha_view;
-};
-
-
-class ColorSelectorWindow : public BWindow {
-public:
-								ColorSelectorWindow(BPoint cursorLocation);
-
-			void				ChangeValue(uint32 color);
-			void				Move(BPoint cursorLocation);
-
-private:
-			BRect 				screen_bounds;
-			ColorSelectorView*	cs_view;
-};
-
-
 class ColorSelectorToolConfigView : public DrawingToolConfigView {
 public:
-								ColorSelectorToolConfigView(DrawingTool* newTool);
+								ColorSelectorToolConfigView(DrawingTool* tool);
+	virtual						~ColorSelectorToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
 
 private:
-			ControlSliderBox*	fSizeSlider;
+		NumberSliderControl*	fSizeSlider;
 };
 
-#endif
+#endif	// COLOR_SELECTOR_TOOL_H
