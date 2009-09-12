@@ -14,10 +14,10 @@
 #include "BrushStoreWindow.h"
 #include "Cursors.h"
 #include "ColorPalette.h"
-#include "Controls.h"
 #include "Flags.h"
 #include "LayerWindow.h"
 #include "ManipulatorWindow.h"
+#include "NumberControl.h"
 #include "SettingsServer.h"
 #include "StringServer.h"
 #include "ToolSelectionWindow.h"
@@ -35,6 +35,9 @@
 #include <SpaceLayoutItem.h>
 #include <StringView.h>
 #include <TabView.h>
+
+
+using ArtPaint::Interface::NumberControl;
 
 
 const uint32 kCloseAndApplySettings				= 'caas';

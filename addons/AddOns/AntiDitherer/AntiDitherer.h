@@ -10,7 +10,15 @@
 #define BRIGHTNESS_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberControl;
+	}
+}
+using ArtPaint::Interface::NumberControl;
+
 
 class	AntiDithererManipulatorSettings : public ManipulatorSettings {
 public:

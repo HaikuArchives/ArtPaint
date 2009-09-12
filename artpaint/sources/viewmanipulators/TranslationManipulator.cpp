@@ -20,6 +20,11 @@
 #include "Selection.h"
 #include "TranslationManipulator.h"
 #include "StringServer.h"
+#include "NumberControl.h"
+
+
+using ArtPaint::Interface::NumberControl;
+
 
 TranslationManipulator::TranslationManipulator(BBitmap *bm)
 	:	StatusBarGUIManipulator()
@@ -457,30 +462,35 @@ const char*	TranslationManipulator::ReturnHelpString()
 
 
 
-TranslationManipulatorView::TranslationManipulatorView(BRect rect, TranslationManipulator *manip)
+TranslationManipulatorView::TranslationManipulatorView(BRect rect, mTranslationManipulator *manip)
 	: BView(rect,"configuration_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
 {
 	manipulator = manip;
 	target = NULL;
 
-	x_control = new NumberControl(rect,"x_control","X:","9999˚",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5,TRUE);
+	x_control = new NumberControl("X:", "9999˚",
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
+	AddChild(x_control);
+	x_control->MoveTo(rect.LeftTop());
 	x_control->ResizeToPreferred();
 	float divider = x_control->Divider();
 	x_control->ResizeBy(x_control->TextView()->StringWidth("99999")-x_control->TextView()->Bounds().Width(),0);
 	x_control->TextView()->ResizeBy(x_control->TextView()->StringWidth("99999")-x_control->TextView()->Bounds().Width(),0);
 
 	x_control->SetDivider(divider);
-	AddChild(x_control);
+
 	BRect frame_rect = x_control->Frame();
 	frame_rect.OffsetBy(frame_rect.Width()+5,0);
 
-	y_control = new NumberControl(frame_rect,"x_control","Y:","9999˚",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),5,TRUE);
+	y_control = new NumberControl("Y:", "9999˚",
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
+	AddChild(y_control);
+	y_control->MoveTo(frame_rect.LeftTop());
 	y_control->ResizeToPreferred();
 	divider = y_control->Divider();
 	y_control->ResizeBy(y_control->TextView()->StringWidth("99999")-y_control->TextView()->Bounds().Width(),0);
 	y_control->TextView()->ResizeBy(y_control->TextView()->StringWidth("99999")-y_control->TextView()->Bounds().Width(),0);
 	y_control->SetDivider(divider);
-	AddChild(y_control);
 
 	ResizeTo(min_c(y_control->Frame().right,rect.Width()),min_c(y_control->Frame().Height(),rect.Height()));
 }

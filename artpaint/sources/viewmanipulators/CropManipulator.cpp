@@ -11,8 +11,8 @@
 
 #include "CropManipulator.h"
 
-#include "Controls.h"
 #include "MessageConstants.h"
+#include "NumberControl.h"
 #include "StringServer.h"
 
 
@@ -23,6 +23,9 @@
 
 
 #include <new>
+
+
+using ArtPaint::Interface::NumberControl;
 
 
 CropManipulator::CropManipulator(BBitmap *bm)

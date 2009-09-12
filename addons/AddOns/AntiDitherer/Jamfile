@@ -20,6 +20,7 @@ Addon AntiDitherer.so :
 
 	Controls.o
 	Manipulator.o
+	NumberControl.o
 	RandomNumberGenerator.o
 	WindowGUIManipulator.o
 	RangeSlider.cpp
@@ -30,6 +31,7 @@ Addon AntiDitherer.so :
 ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>Controls.o
 		<3rdparty!artpaint!artpaint!sources>Manipulator.o
+		<3rdparty!artpaint!artpaint!sources>NumberControl.o
 		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
 		<3rdparty!artpaint!artpaint!sources>WindowGUIManipulator.o
 ;

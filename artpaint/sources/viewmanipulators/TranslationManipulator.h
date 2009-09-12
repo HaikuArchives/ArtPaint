@@ -14,7 +14,15 @@
 
 class TranslationManipulatorView;
 class TranslationManipulatorSettings;
-class NumberControl;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberControl;
+	}
+}
+using ArtPaint::Interface::NumberControl;
+
 
 // This is a translation-cursor.
 const unsigned char HS_TRANSLATION_CURSOR[] =

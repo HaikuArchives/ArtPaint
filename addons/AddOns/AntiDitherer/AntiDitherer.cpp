@@ -14,6 +14,10 @@
 
 #include "AddOns.h"
 #include "AntiDitherer.h"
+#include "NumberControl.h"
+
+
+using ArtPaint::Interface::NumberControl;
 
 
 #ifdef __cplusplus
@@ -270,8 +274,10 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	block_size_control = new NumberControl(BRect(0,0,200,30),"block_size","Block Size","0",new BMessage(BLOCK_SIZE_ADJUSTED));
+	block_size_control = new NumberControl("Block Size", "0",
+		new BMessage(BLOCK_SIZE_ADJUSTED));
 	AddChild(block_size_control);
+	block_size_control->ResizeToPreferred();
 	block_size_control->MoveTo(BPoint(4,4));
 	BRect frame = block_size_control->Frame();
 

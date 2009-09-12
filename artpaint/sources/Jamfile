@@ -48,6 +48,7 @@ Application ArtPaint :
 	ColorPalette.cpp
 	ColorView.cpp
 	Controls.cpp
+	NumberControl.cpp
 	NumberSliderControl.cpp
 	HSPictureButton.cpp
 	HSVControl.cpp

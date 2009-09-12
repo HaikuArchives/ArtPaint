@@ -66,6 +66,7 @@ Addon Marble.so :
 	MatrixView.o
 	MessageFilters.o
 	Controls.o
+	NumberControl.o
 	NumberSliderControl.o
 	PaintApplication.o
 	PaintWindowMenuItem.o
@@ -129,6 +130,7 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
 		<3rdparty!artpaint!artpaint!sources>ColorView.o
 		<3rdparty!artpaint!artpaint!sources>Controls.o
+		<3rdparty!artpaint!artpaint!sources>NumberControl.o
 		<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateQueue.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateReader.o

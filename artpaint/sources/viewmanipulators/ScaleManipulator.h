@@ -12,7 +12,10 @@
 #define	SCALE_MANIPULATOR_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+#include <Messenger.h>
+
 
 #define	WIDTH_CHANGED		'Wich'
 #define	HEIGHT_CHANGED		'Hech'
@@ -27,6 +30,15 @@
 
 class BButton;
 class ScaleManipulatorView;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberControl;
+	}
+}
+using ArtPaint::Interface::NumberControl;
+
 
 class ScaleManipulatorSettings : public ManipulatorSettings {
 public:

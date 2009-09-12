@@ -11,89 +11,8 @@
 
 #include "Controls.h"
 
-#include "MessageConstants.h"
-#include "UtilityClasses.h"
 
-
-#include <GroupLayout.h>
-#include <GroupLayoutBuilder.h>
-#include <String.h>
 #include <Window.h>
-
-
-#include <stdio.h>
-#include <stdlib.h>
-
-
-NumberControl::NumberControl(const char* label, const char* text,
-		BMessage* message, int32 maxBytes, bool allowNegative, bool continuos)
-	: BTextControl(label, text, message)
-{
-	_InitControl(maxBytes, allowNegative, continuos);
-}
-
-
-NumberControl::NumberControl(BRect frame, const char* name, const char* label,
-		const char* text, BMessage* message, int32 maxBytes, bool allowNegative,
-		bool continuos)
-	: BTextControl(frame, name, label, text, message)
-{
-	_InitControl(maxBytes, allowNegative, continuos);
-}
-
-
-int32
-NumberControl::Value() const
-{
-	return atoi(Text());
-}
-
-
-void
-NumberControl::SetValue(int32 value)
-{
-	BTextControl::SetValue(value);
-
-	BString text;
-	text << value;
-
-	SetText(text.String());
-}
-
-
-void
-NumberControl::AttachedToWindow()
-{
-	BTextControl::AttachedToWindow();
-}
-
-
-void
-NumberControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuos)
-{
-	for (uint32 i = 0; i < 256; ++i)
-		TextView()->DisallowChar(i);
-
-	TextView()->AllowChar('0');
-	TextView()->AllowChar('1');
-	TextView()->AllowChar('2');
-	TextView()->AllowChar('3');
-	TextView()->AllowChar('4');
-	TextView()->AllowChar('5');
-	TextView()->AllowChar('6');
-	TextView()->AllowChar('7');
-	TextView()->AllowChar('8');
-	TextView()->AllowChar('9');
-
-	if (allowNegative)
-		TextView()->AllowChar('-');
-
-	TextView()->SetMaxBytes(maxBytes);
-	SetAlignment(B_ALIGN_LEFT, B_ALIGN_RIGHT);
-}
-
-
-// #pragma mark -- ControlSlider
 
 
 // This is for communication between control-slider and it's parent.

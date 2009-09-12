@@ -16,11 +16,12 @@
 
 class BLayoutItem;
 class BSlider;
-class NumberControl;
 
 
 namespace ArtPaint {
 	namespace Interface {
+
+class NumberControl;
 
 class NumberSliderControl : public BBox {
 public:

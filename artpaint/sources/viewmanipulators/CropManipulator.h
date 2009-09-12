@@ -17,9 +17,16 @@
 #include <Messenger.h>
 
 
-class NumberControl;
 class CropManipulatorView;
 class CropManipulatorSettings;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberControl;
+	}
+}
+using ArtPaint::Interface::NumberControl;
 
 
 class CropManipulator : public WindowGUIManipulator {

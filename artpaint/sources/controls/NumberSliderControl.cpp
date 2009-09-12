@@ -9,7 +9,7 @@
 
 #include "NumberSliderControl.h"
 
-#include "Controls.h"
+#include "NumberControl.h"
 
 
 #include <GroupLayoutBuilder.h>

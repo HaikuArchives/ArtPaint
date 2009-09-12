@@ -20,6 +20,7 @@ Addon PolarMapper.so :
 	RangeSlider.cpp
 
 	Controls.o
+	NumberControl.o
 	NumberSliderControl.o
 	HSPolygon.o
 	Manipulator.o
@@ -32,6 +33,7 @@ Addon PolarMapper.so :
 
 ObjectReferences
 	<3rdparty!artpaint!artpaint!sources>Controls.o
+	<3rdparty!artpaint!artpaint!sources>NumberControl.o
 	<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 	<3rdparty!artpaint!artpaint!sources>HSPolygon.o
 	<3rdparty!artpaint!artpaint!sources>Manipulator.o

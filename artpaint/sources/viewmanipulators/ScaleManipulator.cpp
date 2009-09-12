@@ -13,6 +13,7 @@
 
 #include "PixelOperations.h"
 #include "MessageConstants.h"
+#include "NumberControl.h"
 #include "StringServer.h"
 
 
@@ -29,6 +30,9 @@
 #include <new>
 #include <stdio.h>
 #include <string.h>
+
+
+using ArtPaint::Interface::NumberControl;
 
 
 ScaleManipulator::ScaleManipulator(BBitmap *bm)

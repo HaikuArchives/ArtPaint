@@ -28,8 +28,15 @@ class Image;
 class ImageView;
 class ImageSavePanel;
 class LayerWindow;
-class NumberControl;
 class StatusView;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberControl;
+	}
+}
+using ArtPaint::Interface::NumberControl;
 
 
 // views of a paint window

@@ -14,7 +14,6 @@
 #include "AboutWindow.h"
 #include "BackgroundView.h"
 #include "BrushStoreWindow.h"
-#include "Controls.h"
 #include "ColorPalette.h"
 #include "DatatypeSetupWindow.h"
 #include "FileIdentificationStrings.h"
@@ -29,6 +28,7 @@
 #include "ManipulatorServer.h"
 #include "MessageConstants.h"
 #include "MessageFilters.h"
+#include "NumberControl.h"
 #include "PaintApplication.h"
 #include "PaintWindowMenuItem.h"
 #include "ProjectFileFunctions.h"
@@ -62,6 +62,9 @@
 #include <new>
 #include <stdio.h>
 #include <stdlib.h>
+
+
+using ArtPaint::Interface::NumberControl;
 
 
 // initialize the static variable
@@ -190,16 +193,16 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		float divider = font.StringWidth(tmpLabel) + 5.0;
 
 		BRect rect(10.0, 10.0, 110.0, 10.0);
-		fWidthNumberControl = new NumberControl(rect, "width_number_control",
-			tmpLabel, "", NULL);
+		fWidthNumberControl = new NumberControl(tmpLabel, "", NULL);
+		fWidthNumberControl->MoveTo(rect.LeftTop());
 		fWidthNumberControl->ResizeToPreferred();
 		fWidthNumberControl->SetDivider(divider);
 		fWidthNumberControl->SetLabel(widthLabel);
 		fWidthNumberControl->TextView()->SetMaxBytes(4);
 
 		rect.OffsetBy(0.0, fWidthNumberControl->Bounds().Height() + 5.0);
-		fHeightNumberControl = new NumberControl(rect, "height_number_control",
-			tmpLabel, "", NULL);
+		fHeightNumberControl = new NumberControl(tmpLabel, "", NULL);
+		fHeightNumberControl->MoveTo(rect.LeftTop());
 		fHeightNumberControl->ResizeToPreferred();
 		fHeightNumberControl->SetDivider(divider);
 		fHeightNumberControl->SetLabel(heightLabel);
