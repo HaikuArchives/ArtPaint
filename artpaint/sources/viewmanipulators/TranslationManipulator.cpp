@@ -462,7 +462,7 @@ const char*	TranslationManipulator::ReturnHelpString()
 
 
 
-TranslationManipulatorView::TranslationManipulatorView(BRect rect, mTranslationManipulator *manip)
+TranslationManipulatorView::TranslationManipulatorView(BRect rect, TranslationManipulator *manip)
 	: BView(rect,"configuration_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
 {
 	manipulator = manip;
