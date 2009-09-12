@@ -24,6 +24,7 @@
 		5.	Makes a dithered image if necessary.
 */
 
+class BFile;
 class Layer;
 class UndoQueue;
 class UndoEvent;
