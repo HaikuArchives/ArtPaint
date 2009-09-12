@@ -10,7 +10,7 @@
 #define	FREE_TRANSFORM_MANIPULATOR_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
 
 enum {
 	RESIZING_MODE = 1,
@@ -116,9 +116,6 @@ class FreeTransformManipulatorView : public WindowGUIManipulatorView {
 	FreeTransformManipulator	*manipulator;
 
 	FreeTransformManipulatorSettings	settings;
-
-	NumberControl		*width_control;
-	NumberControl		*height_control;
 
 	BMessenger *target;
 
