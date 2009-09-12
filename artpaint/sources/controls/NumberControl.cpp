@@ -12,6 +12,9 @@
 #include "NumberControl.h"
 
 
+#include <String.h>
+
+
 #include <stdlib.h>
 
 

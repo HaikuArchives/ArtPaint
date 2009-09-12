@@ -24,7 +24,6 @@ public:
 							BMessage* message, int32 maxBytes = 5,
 							bool allowNegative = false, bool continuos = true);
 
-
 			int32		Value() const;
 	virtual	void		SetValue(int32 value);
 
