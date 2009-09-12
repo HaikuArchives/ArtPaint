@@ -10,7 +10,7 @@
 #define VISUAL_COLOR_CONTROL_H
 
 #include <Control.h>
-class NumberControl;
+
 
 // this is height that is reserved per color
 #define	COLOR_HEIGHT 20
@@ -23,11 +23,6 @@ class VisualColorControl : public BControl {
 
 	BPicture		*up_arrow;
 	BPicture		*down_arrow;
-
-	NumberControl	*control1;
-	NumberControl	*control2;
-	NumberControl	*control3;
-	NumberControl	*control4;
 
 	const char			*label1;
 	const char			*label2;
