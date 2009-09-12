@@ -573,74 +573,90 @@ void RotationManipulator::Reset(Selection *selection)
 }
 
 
-BView* RotationManipulator::MakeConfigurationView(float width,float height,BMessenger *target)
+BView*
+RotationManipulator::MakeConfigurationView(float width, float height,
+	const BMessenger& target)
 {
-	if (config_view != NULL)
+	if (config_view)
 		return config_view;
 
-	config_view = new RotationManipulatorConfigurationView(BRect(0,0,width-1,height-1),this);
+	config_view =
+		new RotationManipulatorConfigurationView(BRect(0, 0, width - 1, height - 1),
+			this, target);
 	config_view->SetAngle(settings->angle);
-	config_view->SetTarget(target);
 	return config_view;
 }
 
 
-void RotationManipulator::SetAngle(float angle)
+void
+RotationManipulator::SetAngle(float angle)
 {
 	previous_angle = settings->angle;
-
-
 	settings->angle = angle;
 }
 
 
-const char*	RotationManipulator::ReturnHelpString()
+const char*
+RotationManipulator::ReturnHelpString()
 {
 	return StringServer::ReturnString(DO_ROTATE_HELP_STRING);
 }
 
-const char*	RotationManipulator::ReturnName()
+
+const char*
+RotationManipulator::ReturnName()
 {
 	return StringServer::ReturnString(ROTATE_STRING);
 }
 
 
-RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(BRect rect,RotationManipulator *manip)
-	:	BView(rect,"configuration_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
+// #pragma mark -- RotationManipulatorConfigurationView
+
+
+RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
+		BRect rect, RotationManipulator* manipulator, const BMessenger& target)
+	: BView(rect, "configuration_view", B_FOLLOW_ALL, B_WILL_DRAW)
+	, fTarget(target)
+	, fManipulator(manipulator)
 {
-	manipulator = manip;
 	char label[256];
-	sprintf(label,"%s:",StringServer::ReturnString(ROTATING_STRING));
-	text_control = new BTextControl(rect,"text_control",label,"9999.9˚",new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
-	text_control->ResizeToPreferred();
-	target = NULL;
-	AddChild(text_control);
-	ResizeTo(min_c(text_control->Frame().Width(),rect.Width()),min_c(text_control->Frame().Height(),rect.Height()));
+	sprintf(label,"%s:", StringServer::ReturnString(ROTATING_STRING));
+	fTextControl = new BTextControl(rect, "", label, "9999.9˚",
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
+	AddChild(fTextControl);
+	fTextControl->ResizeToPreferred();
+
+	ResizeTo(min_c(fTextControl->Frame().Width(), rect.Width()),
+		min_c(fTextControl->Frame().Height(), rect.Height()));
 }
 
 
-
-void RotationManipulatorConfigurationView::AttachedToWindow()
+void
+RotationManipulatorConfigurationView::AttachedToWindow()
 {
-	text_control->SetTarget(this);
-	if (Parent() != NULL) {
-		SetLowColor(Parent()->LowColor());
-		SetViewColor(Parent()->ViewColor());
+	fTextControl->SetTarget(this);
+
+	if (BView* parent = Parent()) {
+		SetLowColor(parent->LowColor());
+		SetViewColor(parent->ViewColor());
 	}
-	text_control->MakeFocus(true);
+
+	fTextControl->MakeFocus(true);
 }
 
 
-void RotationManipulatorConfigurationView::MessageReceived(BMessage *message)
+void
+RotationManipulatorConfigurationView::MessageReceived(BMessage* message)
 {
-	BTextView *text_view = text_control->TextView();
-	char float_text[256];
-	const char *text = text_view->Text();
-	float angle = 0;
-	int	decimal_place = 0;
-	float sign = 1;
 	switch (message->what) {
-		case HS_MANIPULATOR_ADJUSTING_FINISHED:
+		case HS_MANIPULATOR_ADJUSTING_FINISHED: {
+			BTextView *text_view = fTextControl->TextView();
+			char float_text[256];
+			const char *text = text_view->Text();
+			float angle = 0;
+			int	decimal_place = 0;
+			float sign = 1;
+
 			for (uint32 i = 0; i < strlen(text); i++) {
 				if (isdigit(text[i]) != 0) {
 					float new_number = text[i] - '0';
@@ -672,27 +688,29 @@ void RotationManipulatorConfigurationView::MessageReceived(BMessage *message)
 
 			sprintf(float_text,"%.1f˚",angle);
 			text_view->SetText(float_text);
-			manipulator->SetAngle(angle);
-			if (target != NULL)
-				target->SendMessage(message);
-			break;
-		default:
+			fManipulator->SetAngle(angle);
+			if (fTarget.IsValid())
+				fTarget.SendMessage(message);
+		}	break;
+
+		default: {
 			BView::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
 
-void RotationManipulatorConfigurationView::SetAngle(float angle)
+void
+RotationManipulatorConfigurationView::SetAngle(float angle)
 {
-	char float_text[256];
-	sprintf(float_text,"%.1f˚",angle);
-	text_control->TextView()->SetText(float_text);
+	char text[256];
+	sprintf(text, "%.1f˚", angle);
+	fTextControl->TextView()->SetText(text);
 }
 
 
-
-void RotationManipulatorConfigurationView::SetTarget(const BMessenger *t)
+void
+RotationManipulatorConfigurationView::SetTarget(const BMessenger& target)
 {
-	target = new BMessenger(*t);
+	fTarget = target;
 }

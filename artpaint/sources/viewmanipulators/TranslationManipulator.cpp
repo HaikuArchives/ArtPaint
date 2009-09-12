@@ -28,14 +28,11 @@ using ArtPaint::Interface::NumberControl;
 
 TranslationManipulator::TranslationManipulator(BBitmap *bm)
 	:	StatusBarGUIManipulator()
+	, copy_of_the_preview_bitmap(NULL)
 {
 	preview_bitmap = bm;
-	if (preview_bitmap != NULL) {
+	if (preview_bitmap != NULL)
 		copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
-	}
-	else {
-		copy_of_the_preview_bitmap = NULL;
-	}
 
 	settings = new TranslationManipulatorSettings();
 	previous_x_translation = 0;
@@ -44,7 +41,6 @@ TranslationManipulator::TranslationManipulator(BBitmap *bm)
 	last_calculated_resolution = 0;
 	lowest_available_quality = 4;
 }
-
 
 
 TranslationManipulator::~TranslationManipulator()
@@ -434,112 +430,125 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 
 
 
-BView* TranslationManipulator::MakeConfigurationView(float width,float height,BMessenger *target)
+BView*
+TranslationManipulator::MakeConfigurationView(float width, float height,
+	const BMessenger& target)
 {
-	config_view = new TranslationManipulatorView(BRect(0,0,width-1,height-1),this);
-	config_view->SetTarget(target);
-	config_view->SetValues(settings->x_translation,settings->y_translation);
+	config_view = new TranslationManipulatorView(BRect(0, 0, width - 1, height - 1)
+		,this, target);
+	config_view->SetValues(settings->x_translation, settings->y_translation);
 	return config_view;
 }
 
 
-void TranslationManipulator::SetValues(float x, float y)
+void
+TranslationManipulator::SetValues(float x, float y)
 {
 	settings->x_translation = x;
 	settings->y_translation = y;
 }
 
 
-const char*	TranslationManipulator::ReturnName()
+const char*
+TranslationManipulator::ReturnName()
 {
 	return StringServer::ReturnString(TRANSLATE_STRING);
 }
 
-const char*	TranslationManipulator::ReturnHelpString()
+
+const char*
+TranslationManipulator::ReturnHelpString()
 {
 	return StringServer::ReturnString(DO_TRANSLATE_HELP_STRING);
 }
 
 
+// #pragma mark -- TranslationManipulatorView
 
-TranslationManipulatorView::TranslationManipulatorView(BRect rect, TranslationManipulator *manip)
-	: BView(rect,"configuration_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
+
+TranslationManipulatorView::TranslationManipulatorView(BRect rect,
+		TranslationManipulator* manipulator, const BMessenger& target)
+	: BView(rect, "configuration_view", B_FOLLOW_ALL, B_WILL_DRAW)
+	, fTarget(target)
+	, fManipulator(manipulator)
 {
-	manipulator = manip;
-	target = NULL;
-
-	x_control = new NumberControl("X:", "9999˚",
+	fXControl = new NumberControl("X:", "9999˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	AddChild(x_control);
-	x_control->MoveTo(rect.LeftTop());
-	x_control->ResizeToPreferred();
-	float divider = x_control->Divider();
-	x_control->ResizeBy(x_control->TextView()->StringWidth("99999")-x_control->TextView()->Bounds().Width(),0);
-	x_control->TextView()->ResizeBy(x_control->TextView()->StringWidth("99999")-x_control->TextView()->Bounds().Width(),0);
+	AddChild(fXControl);
+	fXControl->MoveTo(rect.LeftTop());
+	fXControl->ResizeToPreferred();
+	float divider = fXControl->Divider();
+	fXControl->ResizeBy(fXControl->TextView()->StringWidth("99999")
+		- fXControl->TextView()->Bounds().Width(), 0);
+	fXControl->TextView()->ResizeBy(fXControl->TextView()->StringWidth("99999")
+		- fXControl->TextView()->Bounds().Width(), 0);
 
-	x_control->SetDivider(divider);
+	fXControl->SetDivider(divider);
 
-	BRect frame_rect = x_control->Frame();
-	frame_rect.OffsetBy(frame_rect.Width()+5,0);
+	BRect frame_rect = fXControl->Frame();
+	frame_rect.OffsetBy(frame_rect.Width() + 10,0);
 
-	y_control = new NumberControl("Y:", "9999˚",
+	fYControl = new NumberControl("Y:", "9999˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	AddChild(y_control);
-	y_control->MoveTo(frame_rect.LeftTop());
-	y_control->ResizeToPreferred();
-	divider = y_control->Divider();
-	y_control->ResizeBy(y_control->TextView()->StringWidth("99999")-y_control->TextView()->Bounds().Width(),0);
-	y_control->TextView()->ResizeBy(y_control->TextView()->StringWidth("99999")-y_control->TextView()->Bounds().Width(),0);
-	y_control->SetDivider(divider);
+	AddChild(fYControl);
+	fYControl->MoveTo(frame_rect.LeftTop());
+	fYControl->ResizeToPreferred();
+	divider = fYControl->Divider();
+	fYControl->ResizeBy(fYControl->TextView()->StringWidth("99999")
+		- fYControl->TextView()->Bounds().Width(), 0);
+	fYControl->TextView()->ResizeBy(fYControl->TextView()->StringWidth("99999")
+		- fYControl->TextView()->Bounds().Width(), 0);
+	fYControl->SetDivider(divider);
 
-	ResizeTo(min_c(y_control->Frame().right,rect.Width()),min_c(y_control->Frame().Height(),rect.Height()));
+	ResizeTo(min_c(fYControl->Frame().right, rect.Width()),
+		min_c(fYControl->Frame().Height(), rect.Height()));
 }
 
 
-TranslationManipulatorView::~TranslationManipulatorView()
+void
+TranslationManipulatorView::AttachedToWindow()
 {
-	delete target;
-}
+	fXControl->SetTarget(this);
+	fYControl->SetTarget(this);
 
-
-void TranslationManipulatorView::AttachedToWindow()
-{
-	x_control->SetTarget(this);
-	y_control->SetTarget(this);
-	if (Parent() != NULL) {
-		SetLowColor(Parent()->LowColor());
-		SetViewColor(Parent()->ViewColor());
+	if (BView* parent = Parent()) {
+		SetLowColor(parent->LowColor());
+		SetViewColor(parent->ViewColor());
 	}
-	x_control->MakeFocus(true);
+
+	fXControl->MakeFocus(true);
 }
 
 
-void TranslationManipulatorView::MessageReceived(BMessage *message)
+void
+TranslationManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case HS_MANIPULATOR_ADJUSTING_FINISHED:
-			if (manipulator != NULL) {
-				manipulator->SetValues(x_control->Value(),y_control->Value());
-			}
-			if (target != NULL)
-				target->SendMessage(message);
-			break;
-		default:
+		case HS_MANIPULATOR_ADJUSTING_FINISHED: {
+			if (fManipulator)
+				fManipulator->SetValues(fXControl->Value(), fYControl->Value());
+
+			if (fTarget.IsValid())
+				fTarget.SendMessage(message);
+		}	break;
+
+		default: {
 			BView::MessageReceived(message);
-			break;
+		}	break;
 	}
 }
 
 
-void TranslationManipulatorView::SetValues(float x,float y)
+void
+TranslationManipulatorView::SetValues(float x, float y)
 {
-	x_control->SetValue(int32(x));
-	y_control->SetValue(int32(y));
+	fXControl->SetValue(int32(x));
+	fYControl->SetValue(int32(y));
 }
 
 
-
-void TranslationManipulatorView::SetTarget(const BMessenger *t)
+void
+TranslationManipulatorView::SetTarget(const BMessenger& target)
 {
-	target = new BMessenger(*t);
+	fTarget = target;
 }

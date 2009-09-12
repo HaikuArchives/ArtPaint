@@ -631,10 +631,9 @@ void ImageView::MessageReceived(BMessage *message)
 						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
 						StatusView *status_view = ((PaintWindow*)Window())->ReturnStatusView();
 						if (status_bar_gui_manipulator != NULL) {
-							BMessenger messenger(this);
 							BView *manipulator_gui =
 								status_bar_gui_manipulator->MakeConfigurationView(300,
-								status_view->Bounds().Height(), &messenger);
+								status_view->Bounds().Height(), this);
 							status_view->DisplayManipulatorView(manipulator_gui);
 						}
 						else if (window_gui_manipulator != NULL) {

@@ -19,22 +19,22 @@
 
 class WindowGUIManipulator : public GUIManipulator {
 public:
-								WindowGUIManipulator() {}
-	virtual						~WindowGUIManipulator() {}
+							WindowGUIManipulator() {}
+	virtual					~WindowGUIManipulator() {}
 
-	virtual	BView*				MakeConfigurationView(const BMessenger& target) = 0;
+	virtual	BView*			MakeConfigurationView(const BMessenger& target) = 0;
 };
 
 
 class WindowGUIManipulatorView : public BView {
 public:
-								WindowGUIManipulatorView();
-								WindowGUIManipulatorView(BRect rect);
-	virtual						~WindowGUIManipulatorView() {}
+							WindowGUIManipulatorView();
+							WindowGUIManipulatorView(BRect rect);
+	virtual					~WindowGUIManipulatorView() {}
 
 
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage* message);
+	virtual	void			AttachedToWindow();
+	virtual	void			MessageReceived(BMessage* message);
 };
 
 #endif	// WINDOW_GUI_MANIPULATOR_H
