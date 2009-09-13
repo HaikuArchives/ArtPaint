@@ -10,7 +10,10 @@
 #define BRIGHTNESS_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+class BSlider;
+
 
 class	SaturationManipulatorSettings : public ManipulatorSettings {
 public:
@@ -110,7 +113,7 @@ class SaturationManipulatorView : public WindowGUIManipulatorView {
 		SaturationManipulator			*manipulator;
 		SaturationManipulatorSettings	settings;
 
-		ControlSlider					*saturation_slider;
+		BSlider							*saturation_slider;
 
 
 		bool							started_adjusting;

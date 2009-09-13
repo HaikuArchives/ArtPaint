@@ -9,10 +9,7 @@
 #ifndef THRESHOLD_H
 #define THRESHOLD_H
 
-#include <Control.h>
-
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
 #include "ThresholdView.h"
 
 class	ThresholdManipulatorSettings : public ManipulatorSettings {

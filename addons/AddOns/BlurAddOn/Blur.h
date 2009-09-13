@@ -10,7 +10,7 @@
 #define COLOR_BALANCE_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
 //#include "UtilityClasses.h"
 
 #define	BLUR_AMOUNT_CHANGED			'Bamc'
@@ -132,7 +132,7 @@ status_t	WriteSettings(BNode*);
 class BlurManipulatorView : public WindowGUIManipulatorView {
 		BlurManipulator	*manipulator;
 		BMessenger		*target;
-		ControlSlider	*blur_amount_slider;
+		BSlider			*blur_amount_slider;
 //		BCheckBox		*transparency_checkbox;
 
 		BlurManipulatorSettings	settings;

@@ -12,7 +12,10 @@
 #include <stdio.h>
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+class BSlider;
+
 
 #define	WAVE_LENGTH_ADJUSTING_STARTED	'Wlas'
 #define	WAVE_AMOUNT_ADJUSTING_STARTED	'Waas'
@@ -107,8 +110,8 @@ void		ChangeSettings(ManipulatorSettings*);
 class WaveManipulatorView : public WindowGUIManipulatorView {
 		BMessenger				*target;
 		WaveManipulator			*manipulator;
-		ControlSlider			*wave_length_slider;
-		ControlSlider			*wave_amount_slider;
+		BSlider					*wave_length_slider;
+		BSlider					*wave_amount_slider;
 		WaveManipulatorSettings	settings;
 
 		bool					preview_started;

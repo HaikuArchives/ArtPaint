@@ -403,12 +403,22 @@ char* ThresholdManipulator::ReturnHelpString()
 
 status_t ThresholdManipulator::WriteSettings(BNode *node)
 {
-	node->WriteAttr("threshold",B_INT32_TYPE,0,&(settings.threshold),sizeof(int32));
+	ssize_t written = node->WriteAttr("threshold", B_INT32_TYPE, 0,
+		&(settings.threshold), sizeof(int32));
+
+	if (written == ssize_t(sizeof(int32)))
+		return B_OK;
+	return B_ERROR;
 }
 
 status_t ThresholdManipulator::ReadSettings(BNode *node)
 {
-	node->ReadAttr("threshold",B_INT32_TYPE,0,&(settings.threshold),sizeof(int32));
+	ssize_t read = node->ReadAttr("threshold", B_INT32_TYPE, 0,
+		&(settings.threshold), sizeof(int32));
+
+	if (read == ssize_t(sizeof(int32)))
+		return B_OK;
+	return B_ERROR;
 }
 
 

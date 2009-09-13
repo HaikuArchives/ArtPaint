@@ -10,9 +10,10 @@
 #define _INTERFERENCE_H
 
 #include <stdio.h>
+#include <Messenger.h>
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
 
 class InterferenceManipulatorSettings : public ManipulatorSettings {
 public:
@@ -94,8 +95,8 @@ void		ChangeSettings(ManipulatorSettings*);
 class InterferenceManipulatorView : public WindowGUIManipulatorView {
 		BMessenger				*target;
 		InterferenceManipulator			*manipulator;
-		ControlSlider			*waveLengthSliderA;
-		ControlSlider			*waveLengthSliderB;
+//		ControlSlider			*waveLengthSliderA;
+//		ControlSlider			*waveLengthSliderB;
 		InterferenceManipulatorSettings	settings;
 
 		bool					preview_started;

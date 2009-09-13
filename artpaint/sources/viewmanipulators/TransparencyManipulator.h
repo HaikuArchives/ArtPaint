@@ -13,6 +13,10 @@
 #include "UtilityClasses.h"
 #include "ImageAdapter.h"
 
+
+#include <Messenger.h>
+
+
 #define	TRANSPARENCY_CHANGED			'TrCh'
 #define	MOUSE_TRACKING_FINISHED			'Mstf'
 
@@ -21,10 +25,12 @@ enum transparency_modes {
 	ABSOLUTE_TRANSPARENCY
 };
 
+
+class BSlider;
+class Layer;
 class TransparencyManipulatorSettings;
 class TransparencyManipulatorView;
-class ControlSlider;
-class Layer;
+
 
 class TransparencyManipulator : public WindowGUIManipulator, public ImageAdapter {
 	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
@@ -108,7 +114,7 @@ private:
 			TransparencyManipulatorSettings	settings;
 
 			TransparencyManipulator*	fManipulator;
-			ControlSlider*				fTransparency;
+			BSlider*					fTransparency;
 };
 
 #endif

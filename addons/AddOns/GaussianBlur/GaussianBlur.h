@@ -10,9 +10,11 @@
 #define THRESHOLD_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
 
+
+class BSlider;
 class ImageProcessingLibrary;
+
 
 class	GaussianBlurManipulatorSettings : public ManipulatorSettings {
 public:
@@ -104,7 +106,7 @@ class GaussianBlurManipulatorView : public WindowGUIManipulatorView {
 		GaussianBlurManipulator			*manipulator;
 		GaussianBlurManipulatorSettings	settings;
 
-		ControlSlider					*blur_slider;
+		BSlider							*blur_slider;
 
 
 		bool							started_adjusting;

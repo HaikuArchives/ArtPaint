@@ -7,6 +7,7 @@
  *
  */
 #include <StatusBar.h>
+#include <Slider.h>
 #include <string.h>
 #include <Window.h>
 
@@ -420,7 +421,9 @@ SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *mani
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	saturation_slider = new ControlSlider(BRect(0,0,200,0),"saturation_slider","Saturation",new BMessage(SATURATION_ADJUSTING_FINISHED),0,255,B_TRIANGLE_THUMB);
+	saturation_slider = new BSlider(BRect(0,0,200,0), "saturation_slider",
+		"Saturation", new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	saturation_slider->SetModificationMessage(new BMessage(SATURATION_ADJUSTED));
 	saturation_slider->SetLimitLabels("Low","High");
 	saturation_slider->ResizeToPreferred();

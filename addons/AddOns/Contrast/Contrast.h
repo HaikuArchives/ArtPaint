@@ -10,7 +10,10 @@
 #define CONTRAST_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+class BSlider;
+
 
 class	ContrastManipulatorSettings : public ManipulatorSettings {
 public:
@@ -110,7 +113,7 @@ class ContrastManipulatorView : public WindowGUIManipulatorView {
 		ContrastManipulator			*manipulator;
 		ContrastManipulatorSettings	settings;
 
-		ControlSlider					*contrast_slider;
+		BSlider						*contrast_slider;
 
 
 		bool							started_adjusting;

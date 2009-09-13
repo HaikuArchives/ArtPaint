@@ -34,7 +34,6 @@ Addon Threshold.so :
 	ColorPalette.o
 	ColorSelectorTool.o
 	ColorView.o
-	Controls.o
 	NumberControl.o
 	NumberSliderControl.o
 	CoordinateQueue.o
@@ -129,7 +128,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>ColorPalette.o
 		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
 		<3rdparty!artpaint!artpaint!sources>ColorView.o
-		<3rdparty!artpaint!artpaint!sources>Controls.o
 		<3rdparty!artpaint!artpaint!sources>NumberControl.o
 		<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateQueue.o

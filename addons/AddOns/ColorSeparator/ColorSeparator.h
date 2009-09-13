@@ -10,7 +10,7 @@
 #define BRIGHTNESS_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
 
 enum {
 	SHOW_CYAN,

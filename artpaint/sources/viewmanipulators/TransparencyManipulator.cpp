@@ -6,8 +6,8 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include "AddOns.h"
-#include "Controls.h"
 #include "Image.h"
 #include "Layer.h"
 #include "MessageConstants.h"
@@ -18,6 +18,7 @@
 
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <Slider.h>
 #include <Window.h>
 
 
@@ -175,9 +176,10 @@ TransparencyManipulatorView::TransparencyManipulatorView(
 	, fManipulator(manipulator)
 {
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
-	fTransparency = new ControlSlider("transparency",
+	fTransparency = new BSlider("transparency",
 		StringServer::ReturnString(TRANSPARENCY_STRING),
-		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_TRIANGLE_THUMB);
+		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_HORIZONTAL,
+		B_TRIANGLE_THUMB);
 	fTransparency->SetValue(0);
 	fTransparency->SetLimitLabels(StringServer::ReturnString(TRANSPARENT_STRING),
 		StringServer::ReturnString(OPAQUE_STRING));

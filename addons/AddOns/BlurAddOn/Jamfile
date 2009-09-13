@@ -18,7 +18,6 @@ Addon Blur.so :
 	ColorDistanceMetric.cpp
 	ColorConverter.cpp
 
-	Controls.o
 	HSPolygon.o
 	RandomNumberGenerator.o
 	Selection.o
@@ -29,7 +28,6 @@ Addon Blur.so :
 ;
 
 ObjectReferences
-		<3rdparty!artpaint!artpaint!sources>Controls.o
 		<3rdparty!artpaint!artpaint!sources>HSPolygon.o
 		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
 		<3rdparty!artpaint!artpaint!sources>Selection.o

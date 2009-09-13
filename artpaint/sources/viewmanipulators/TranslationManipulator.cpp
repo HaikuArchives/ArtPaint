@@ -14,7 +14,7 @@
 #include <string.h>
 #include <Window.h>
 
-#include "Controls.h"
+
 #include "ImageView.h"
 #include "MessageConstants.h"
 #include "Selection.h"

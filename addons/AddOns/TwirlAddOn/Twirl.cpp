@@ -8,6 +8,7 @@
  */
 #include <math.h>
 #include <StatusBar.h>
+#include <Slider.h>
 #include <Window.h>
 
 #define PI M_PI
@@ -493,7 +494,9 @@ TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,
 	target = new BMessenger(t);
 	preview_started = FALSE;
 
-	twirl_radius_slider = new ControlSlider(BRect(0,0,150,0),"twirl_radius_slider","Twirl Size",new BMessage(TWIRL_RADIUS_CHANGED),10,1000,B_TRIANGLE_THUMB);
+	twirl_radius_slider = new BSlider(BRect(0,0,150,0), "twirl_radius_slider",
+		"Twirl Size", new BMessage(TWIRL_RADIUS_CHANGED), 10, 1000,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	twirl_radius_slider->SetLimitLabels("Small","Big");
 	twirl_radius_slider->SetModificationMessage(new BMessage(TWIRL_RADIUS_ADJUSTING_STARTED));
 	twirl_radius_slider->ResizeToPreferred();
@@ -502,7 +505,9 @@ TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,
 	BRect frame = twirl_radius_slider->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
-	twirl_amount_slider = new ControlSlider(frame,"twirl_amount_slider","Twirl Direction",new BMessage(TWIRL_AMOUNT_CHANGED),MIN_TWIRL_AMOUNT,MAX_TWIRL_AMOUNT,B_TRIANGLE_THUMB);
+	twirl_amount_slider = new BSlider(frame, "twirl_amount_slider",
+		"Twirl Direction", new BMessage(TWIRL_AMOUNT_CHANGED), MIN_TWIRL_AMOUNT,
+		MAX_TWIRL_AMOUNT, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	twirl_amount_slider->SetLimitLabels("Left","Right");
 	twirl_amount_slider->SetModificationMessage(new BMessage(TWIRL_AMOUNT_ADJUSTING_STARTED));
 	twirl_amount_slider->ResizeToPreferred();

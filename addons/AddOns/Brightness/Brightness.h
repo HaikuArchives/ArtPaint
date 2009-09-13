@@ -10,7 +10,10 @@
 #define THRESHOLD_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+class BSlider;
+
 
 class	BrightnessManipulatorSettings : public ManipulatorSettings {
 public:
@@ -106,7 +109,7 @@ class BrightnessManipulatorView : public WindowGUIManipulatorView {
 		BrightnessManipulator			*manipulator;
 		BrightnessManipulatorSettings	settings;
 
-		ControlSlider					*brightness_slider;
+		BSlider							*brightness_slider;
 
 
 		bool							started_adjusting;

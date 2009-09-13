@@ -9,6 +9,7 @@
 #include <StatusBar.h>
 #include <stdio.h>
 #include <StopWatch.h>
+#include <Slider.h>
 #include <Window.h>
 #include <string.h>
 
@@ -277,7 +278,9 @@ GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	blur_slider = new ControlSlider(BRect(0,0,200,0),"blur_slider","Blur Size",new BMessage(BLUR_ADJUSTING_FINISHED),0,2000,B_TRIANGLE_THUMB);
+	blur_slider = new BSlider(BRect(0,0,200,0), "blur_slider", "Blur Size",
+		new BMessage(BLUR_ADJUSTING_FINISHED), 0, 2000, B_HORIZONTAL,
+		B_TRIANGLE_THUMB);
 	blur_slider->SetLimitLabels("Small","Large");
 	blur_slider->ResizeToPreferred();
 	blur_slider->MoveTo(4,4);

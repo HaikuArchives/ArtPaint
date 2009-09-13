@@ -8,6 +8,7 @@
  */
 #include <StatusBar.h>
 #include <StopWatch.h>
+#include <Slider.h>
 #include <string.h>
 #include <Window.h>
 
@@ -411,7 +412,9 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	sharpness_slider = new ControlSlider(BRect(0,0,200,0),"sharpness_slider","Sharpness",new BMessage(SHARPNESS_ADJUSTING_FINISHED),0,255,B_TRIANGLE_THUMB);
+	sharpness_slider = new BSlider(BRect(0,0,200,0), "sharpness_slider",
+		"Sharpness", new BMessage(SHARPNESS_ADJUSTING_FINISHED), 0, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	sharpness_slider->SetModificationMessage(new BMessage(SHARPNESS_ADJUSTED));
 	sharpness_slider->SetLimitLabels("Blurred","Sharp");
 	sharpness_slider->ResizeToPreferred();
@@ -421,7 +424,9 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,
 	BRect slider_frame = sharpness_slider->Frame();
 	slider_frame.OffsetBy(0,slider_frame.Height()+4);
 
-	blur_size_slider = new ControlSlider(slider_frame,"blur_size_slider","Effect Strength",new BMessage(BLUR_ADJUSTING_FINISHED),1,50,B_TRIANGLE_THUMB);
+	blur_size_slider = new BSlider(slider_frame, "blur_size_slider",
+		"Effect Strength", new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	blur_size_slider->SetLimitLabels("Small","Big");
 	blur_size_slider->ResizeToPreferred();
 	AddChild(blur_size_slider);

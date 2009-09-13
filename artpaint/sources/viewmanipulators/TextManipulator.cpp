@@ -11,7 +11,6 @@
 
 #include "TextManipulator.h"
 
-#include "Controls.h"
 #include "NumberSliderControl.h"
 #include "HSPolygon.h"
 #include "MessageConstants.h"

@@ -10,7 +10,10 @@
 #define THRESHOLD_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+class BSlider;
+
 
 class	ThresholdManipulatorSettings : public ManipulatorSettings {
 public:
@@ -106,7 +109,7 @@ class ThresholdManipulatorView : public WindowGUIManipulatorView {
 		ThresholdManipulator			*manipulator;
 		ThresholdManipulatorSettings	settings;
 
-		ControlSlider					*threshold_slider;
+		BSlider							*threshold_slider;
 
 
 		bool							started_adjusting;

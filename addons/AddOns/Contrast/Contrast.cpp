@@ -8,6 +8,7 @@
  */
 #include <Node.h>
 #include <StatusBar.h>
+#include <Slider.h>
 #include <string.h>
 #include <Window.h>
 
@@ -407,7 +408,9 @@ ContrastManipulatorView::ContrastManipulatorView(ContrastManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	contrast_slider = new ControlSlider(BRect(0,0,200,0),"contrast_slider","Contrast",new BMessage(CONTRAST_ADJUSTING_FINISHED),0,255,B_TRIANGLE_THUMB);
+	contrast_slider = new BSlider(BRect(0,0,200,0), "contrast_slider", "Contrast",
+		new BMessage(CONTRAST_ADJUSTING_FINISHED), 0, 255, B_HORIZONTAL,
+		B_TRIANGLE_THUMB);
 	contrast_slider->SetModificationMessage(new BMessage(CONTRAST_ADJUSTED));
 	contrast_slider->SetLimitLabels("Low","High");
 	contrast_slider->ResizeToPreferred();

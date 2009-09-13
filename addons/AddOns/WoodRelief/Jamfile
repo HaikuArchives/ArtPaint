@@ -19,7 +19,6 @@ Addon Wood.so :
 	ColorConverter.cpp
 	RangeSlider.cpp
 
-	Controls.o
 	HSPolygon.o
 	Manipulator.o
 	RandomNumberGenerator.o
@@ -30,7 +29,6 @@ Addon Wood.so :
 ;
 
 ObjectReferences
-	<3rdparty!artpaint!artpaint!sources>Controls.o
 	<3rdparty!artpaint!artpaint!sources>HSPolygon.o
 	<3rdparty!artpaint!artpaint!sources>Manipulator.o
 	<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o

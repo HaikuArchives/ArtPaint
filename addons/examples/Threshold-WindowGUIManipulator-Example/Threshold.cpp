@@ -10,6 +10,9 @@
 #include "Threshold.h"
 
 
+#include <Slider.h>
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -359,7 +362,9 @@ ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	threshold_slider = new ControlSlider(BRect(0,0,200,0),"threshold_slider","Threshold",new BMessage(THRESHOLD_ADJUSTING_FINISHED),0,255,B_TRIANGLE_THUMB);
+	threshold_slider = new BSlider(BRect(0,0,200,0), "threshold_slider",
+		"Threshold", new BMessage(THRESHOLD_ADJUSTING_FINISHED), 0, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	threshold_slider->SetModificationMessage(new BMessage(THRESHOLD_ADJUSTED));
 	threshold_slider->ResizeToPreferred();
 	threshold_slider->MoveTo(4,4);

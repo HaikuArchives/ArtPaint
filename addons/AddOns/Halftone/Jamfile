@@ -29,7 +29,6 @@ Addon Halftone.so :
 	Brush.o
 	BrushStoreWindow.o
 	BrushTool.o
-	Controls.o
 	CMYControl.o
 	ColorPalette.o
 	ColorSelectorTool.o
@@ -128,7 +127,6 @@ ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>ColorPalette.o
 		<3rdparty!artpaint!artpaint!sources>ColorSelectorTool.o
 		<3rdparty!artpaint!artpaint!sources>ColorView.o
-		<3rdparty!artpaint!artpaint!sources>Controls.o
 		<3rdparty!artpaint!artpaint!sources>NumberControl.o
 		<3rdparty!artpaint!artpaint!sources>NumberSliderControl.o
 		<3rdparty!artpaint!artpaint!sources>CoordinateQueue.o

@@ -10,8 +10,9 @@
 #define COLOR_BALANCE_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
 
+
+class BSlider;
 
 
 class ColorBalanceManipulatorSettings : public ManipulatorSettings {
@@ -90,9 +91,9 @@ class ColorBalanceManipulatorView : public WindowGUIManipulatorView {
 		ColorBalanceManipulator	*manipulator;
 		BMessenger				*target;
 
-		ControlSlider			*red_slider;
-		ControlSlider			*blue_slider;
-		ControlSlider			*green_slider;
+		BSlider					*red_slider;
+		BSlider					*blue_slider;
+		BSlider					*green_slider;
 
 		ColorBalanceManipulatorSettings	settings;
 

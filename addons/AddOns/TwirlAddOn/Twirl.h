@@ -12,8 +12,8 @@
 #include <stdio.h>
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
 
+class BSlider;
 
 #define	TWIRL_AMOUNT_ADJUSTING_STARTED	'Taas'
 #define	TWIRL_RADIUS_ADJUSTING_STARTED	'Tras'
@@ -103,8 +103,8 @@ void		ChangeSettings(ManipulatorSettings *s);
 class TwirlManipulatorView : public WindowGUIManipulatorView {
 		BMessenger					*target;
 		TwirlManipulator			*manipulator;
-		ControlSlider				*twirl_radius_slider;
-		ControlSlider				*twirl_amount_slider;
+		BSlider						*twirl_radius_slider;
+		BSlider						*twirl_amount_slider;
 		TwirlManipulatorSettings	settings;
 
 		bool						preview_started;

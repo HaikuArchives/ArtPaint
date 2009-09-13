@@ -8,6 +8,7 @@
  */
 #include <Node.h>
 #include <StatusBar.h>
+#include <Slider.h>
 #include <string.h>
 #include <Window.h>
 
@@ -381,7 +382,9 @@ BrightnessManipulatorView::BrightnessManipulatorView(BrightnessManipulator *mani
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	brightness_slider = new ControlSlider(BRect(0,0,200,0),"brightness_slider","Brightness",new BMessage(BRIGHTNESS_ADJUSTING_FINISHED),0,255,B_TRIANGLE_THUMB);
+	brightness_slider = new BSlider(BRect(0,0,200,0), "brightness_slider",
+		"Brightness", new BMessage(BRIGHTNESS_ADJUSTING_FINISHED), 0, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	brightness_slider->SetModificationMessage(new BMessage(BRIGHTNESS_ADJUSTED));
 	brightness_slider->SetLimitLabels("Dim","Bright");
 	brightness_slider->ResizeToPreferred();

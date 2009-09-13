@@ -20,7 +20,6 @@ Addon Dispersion.so :
 	RangeSlider.cpp
 
 	BitmapDrawer.o
-	Controls.o
 	HSPolygon.o
 	Manipulator.o
 	RandomNumberGenerator.o
@@ -32,7 +31,6 @@ Addon Dispersion.so :
 
 ObjectReferences
 		<3rdparty!artpaint!artpaint!sources>BitmapDrawer.o
-		<3rdparty!artpaint!artpaint!sources>Controls.o
 		<3rdparty!artpaint!artpaint!sources>HSPolygon.o
 		<3rdparty!artpaint!artpaint!sources>Manipulator.o
 		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o

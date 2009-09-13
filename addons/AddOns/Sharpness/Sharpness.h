@@ -10,7 +10,9 @@
 #define SHARPNESS_H
 
 #include "WindowGUIManipulator.h"
-#include "Controls.h"
+
+
+class BSlider;
 
 
 #define	BLUR_AMOUNT	3.0
@@ -124,8 +126,8 @@ class SharpnessManipulatorView : public WindowGUIManipulatorView {
 		SharpnessManipulator			*manipulator;
 		SharpnessManipulatorSettings	settings;
 
-		ControlSlider					*sharpness_slider;
-		ControlSlider					*blur_size_slider;
+		BSlider							*sharpness_slider;
+		BSlider							*blur_size_slider;
 
 		bool							started_adjusting;
 public:

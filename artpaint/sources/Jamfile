@@ -47,7 +47,6 @@ Application ArtPaint :
 	CMYControl.cpp
 	ColorPalette.cpp
 	ColorView.cpp
-	Controls.cpp
 	NumberControl.cpp
 	NumberSliderControl.cpp
 	HSPictureButton.cpp

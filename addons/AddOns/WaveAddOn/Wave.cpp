@@ -9,6 +9,7 @@
 #include <math.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
+#include <Slider.h>
 #include <Window.h>
 
 #include "AddOns.h"
@@ -959,7 +960,9 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	target = new BMessenger(t);
 	preview_started = FALSE;
 
-	wave_length_slider = new ControlSlider(BRect(0,0,150,0),"wave_length_slider","Wave Length",new BMessage(WAVE_LENGTH_CHANGED),MIN_WAVE_LENGTH,MAX_WAVE_LENGTH,B_TRIANGLE_THUMB);
+	wave_length_slider = new BSlider(BRect(0,0,150,0), "wave_length_slider",
+		"Wave Length", new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
+		MAX_WAVE_LENGTH, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	wave_length_slider->SetLimitLabels("Short","Long");
 	wave_length_slider->SetModificationMessage(new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
 	wave_length_slider->ResizeToPreferred();
@@ -968,7 +971,9 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	BRect frame = wave_length_slider->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
-	wave_amount_slider = new ControlSlider(frame,"wave_amount_slider","Wave Strength",new BMessage(WAVE_AMOUNT_CHANGED),MIN_WAVE_AMOUNT,MAX_WAVE_AMOUNT,B_TRIANGLE_THUMB);
+	wave_amount_slider = new BSlider(frame, "wave_amount_slider", "Wave Strength",
+		new BMessage(WAVE_AMOUNT_CHANGED), MIN_WAVE_AMOUNT, MAX_WAVE_AMOUNT,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	wave_amount_slider->SetLimitLabels("Mild","Strong");
 	wave_amount_slider->SetModificationMessage(new BMessage(WAVE_AMOUNT_ADJUSTING_STARTED));
 	wave_amount_slider->ResizeToPreferred();

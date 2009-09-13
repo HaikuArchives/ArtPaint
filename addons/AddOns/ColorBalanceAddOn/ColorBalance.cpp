@@ -9,6 +9,8 @@
 #include "AddOns.h"
 #include "ColorBalance.h"
 
+#include <Slider.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -270,7 +272,9 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	preview_started = FALSE;
 	rgb_color color;
 
-	red_slider = new ControlSlider(BRect(0,0,150,0),"red_slider",NULL,new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),-255,255,B_TRIANGLE_THUMB);
+	red_slider = new BSlider(BRect(0,0,150,0), "red_slider", NULL,
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	red_slider->SetLimitLabels("Less Red","More Red");
 	red_slider->ResizeToPreferred();
 	red_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
@@ -284,7 +288,9 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	BRect frame = red_slider->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
-	green_slider = new ControlSlider(frame,"green_slider",NULL,new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),-255,255,B_TRIANGLE_THUMB);
+	green_slider = new BSlider(frame, "green_slider", NULL,
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	green_slider->SetLimitLabels("Less Green","More Green");
 	green_slider->ResizeToPreferred();
 	green_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
@@ -297,7 +303,9 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	frame = green_slider->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
-	blue_slider = new ControlSlider(frame,"blue_slider",NULL,new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),-255,255,B_TRIANGLE_THUMB);
+	blue_slider = new BSlider(frame, "blue_slider", NULL,
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	blue_slider->SetLimitLabels("Less Blue","More Blue");
 	blue_slider->ResizeToPreferred();
 	blue_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));

@@ -18,7 +18,6 @@ Addon AntiDitherer.so :
 	ColorDistanceMetric.cpp
 	ColorConverter.cpp
 
-	Controls.o
 	Manipulator.o
 	NumberControl.o
 	RandomNumberGenerator.o
@@ -29,7 +28,6 @@ Addon AntiDitherer.so :
 ;
 
 ObjectReferences
-		<3rdparty!artpaint!artpaint!sources>Controls.o
 		<3rdparty!artpaint!artpaint!sources>Manipulator.o
 		<3rdparty!artpaint!artpaint!sources>NumberControl.o
 		<3rdparty!artpaint!artpaint!sources>RandomNumberGenerator.o
