@@ -16,6 +16,7 @@
 #include <string.h>
 
 #include "AddOns.h"
+#include "ManipulatorInformer.h"
 #include "ManipulatorServer.h"
 #include "RotationManipulator.h"
 #include "FlipManipulator.h"

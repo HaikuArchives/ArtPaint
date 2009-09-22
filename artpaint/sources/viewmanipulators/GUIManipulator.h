@@ -9,10 +9,16 @@
 #ifndef	GUI_MANIPULATOR_H
 #define	GUI_MANIPULATOR_H
 
-#include <Region.h>
-#include <Node.h>
-
 #include "Manipulator.h"
+
+
+#include <Region.h>
+
+
+class BNode;
+class BPoint;
+class BView;
+
 
 #define	HS_MANIPULATOR_ADJUSTING_STARTED	'Mast'
 #define	HS_MANIPULATOR_ADJUSTING_FINISHED	'Mafi'

@@ -12,6 +12,7 @@
 #define	CROP_MANIPULATOR_H
 
 #include "WindowGUIManipulator.h"
+#include "ManipulatorSettings.h"
 
 
 #include <Messenger.h>

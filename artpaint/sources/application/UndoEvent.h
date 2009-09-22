@@ -10,9 +10,14 @@
 #define	UNDO_EVENT_H
 
 
+#include <String.h>
+
+
 #include "UndoAction.h"
 
 class UndoQueue;
+class SelectionData;
+
 
 class UndoEvent {
 friend 	class		UndoQueue;

@@ -17,6 +17,7 @@
 #include "StringServer.h"
 
 
+#include <Bitmap.h>
 #include <Button.h>
 #include <CheckBox.h>
 #include <GridLayout.h>

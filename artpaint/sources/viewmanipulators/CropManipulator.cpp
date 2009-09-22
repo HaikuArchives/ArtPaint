@@ -16,6 +16,7 @@
 #include "StringServer.h"
 
 
+#include <Bitmap.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <StatusBar.h>

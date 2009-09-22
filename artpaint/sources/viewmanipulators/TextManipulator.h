@@ -12,6 +12,7 @@
 #define TEXT_MANIPULATOR_H
 
 #include "ColorView.h"
+#include "ManipulatorSettings.h"
 #include "PaletteWindowClient.h"
 #include "WindowGUIManipulator.h"
 
@@ -24,6 +25,7 @@ class BCheckBox;
 class BMenu;
 class BMenuField;
 class BView;
+class Selection;
 class TextManipulatorView;
 
 

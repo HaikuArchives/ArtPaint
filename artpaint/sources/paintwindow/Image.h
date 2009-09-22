@@ -9,9 +9,14 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+
 #include <InterfaceDefs.h>
 #include <List.h>
 #include <Region.h>
+
+
+class BBitmap;
+class Selection;
 
 
 /*

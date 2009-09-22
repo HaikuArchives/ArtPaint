@@ -6,6 +6,8 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
+#include <Bitmap.h>
 #include <StatusBar.h>
 
 #include "MessageConstants.h"

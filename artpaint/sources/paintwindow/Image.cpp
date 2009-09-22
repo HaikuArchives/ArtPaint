@@ -7,6 +7,7 @@
  *
  */
 #include <Alert.h>
+#include <Bitmap.h>
 #include <ByteOrder.h>
 #include <File.h>
 #include <new>
@@ -23,6 +24,7 @@
 #include "UndoEvent.h"
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
+#include "Selection.h"
 #include "StringServer.h"
 
 color_entry* Image::color_candidates = NULL;

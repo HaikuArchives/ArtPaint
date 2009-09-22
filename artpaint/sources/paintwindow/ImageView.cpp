@@ -1720,7 +1720,8 @@ void ImageView::Undo()
 void ImageView::Redo()
 {
 	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
-		// If there is a GUI-manipulator, it should reset the bitmap before redo can be done.
+		// If there is a GUI-manipulator, it should reset the bitmap before redo
+		// can be done.
 		GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
 		if (gui_manipulator != NULL) {
 			gui_manipulator->Reset(selection);

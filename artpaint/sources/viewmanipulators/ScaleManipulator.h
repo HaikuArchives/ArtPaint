@@ -9,8 +9,9 @@
  *
  */
 #ifndef SCALE_MANIPULATOR_H
-#define	SCALE_MANIPULATOR_H
+#define SCALE_MANIPULATOR_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

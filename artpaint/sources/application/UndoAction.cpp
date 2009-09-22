@@ -6,12 +6,20 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
+#include "UndoAction.h"
+
+#include "ManipulatorSettings.h"
+#include "UndoQueue.h"
+
+
+#include <Bitmap.h>
+
+
 #include <new>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "UndoAction.h"
-#include "UndoQueue.h"
 
 UndoAction::UndoAction(int32 layer,action_type t,BRect rect)
 {

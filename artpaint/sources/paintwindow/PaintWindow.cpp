@@ -34,6 +34,7 @@
 #include "ProjectFileFunctions.h"
 #include "PopUpList.h"
 #include "ResourceServer.h"
+#include "Selection.h"
 #include "SettingsServer.h"
 #include "StatusView.h"
 #include "ToolSetupWindow.h"

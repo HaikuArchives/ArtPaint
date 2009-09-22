@@ -9,9 +9,10 @@
 #ifndef TRANSPARENCY_MANIPULATOR_H
 #define TRANSPARENCY_MANIPULATOR_H
 
-#include "WindowGUIManipulator.h"
-#include "UtilityClasses.h"
 #include "ImageAdapter.h"
+#include "ManipulatorSettings.h"
+#include "UtilityClasses.h"
+#include "WindowGUIManipulator.h"
 
 
 #include <Messenger.h>

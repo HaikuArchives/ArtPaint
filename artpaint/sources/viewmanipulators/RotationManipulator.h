@@ -10,7 +10,11 @@
 #define	ROTATION_MANIPULATOR_H
 
 #include "Cursors.h"
+#include "ManipulatorSettings.h"
 #include "StatusBarGUIManipulator.h"
+
+
+#include <View.h>
 
 
 class BTextControl;

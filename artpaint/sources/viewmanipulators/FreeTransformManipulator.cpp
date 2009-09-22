@@ -8,6 +8,7 @@
  */
 #include <CheckBox.h>
 #include <ClassInfo.h>
+#include <Bitmap.h>
 #include <Button.h>
 #include <math.h>
 #include <new>
@@ -159,33 +160,32 @@ void FreeTransformManipulator::Reset(Selection*)
 
 void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 {
-	if ((bitmap == NULL) || (preview_bitmap == NULL) || (bitmap->Bounds() != preview_bitmap->Bounds())) {
+	if ((bitmap == NULL) || (preview_bitmap == NULL)
+		|| (bitmap->Bounds() != preview_bitmap->Bounds())) {
 		try {
-			if (preview_bitmap != NULL) {
+			if (preview_bitmap)
 				delete copy_of_the_preview_bitmap;
-			}
-			if (bitmap != NULL) {
+
+			preview_bitmap = NULL;
+			copy_of_the_preview_bitmap = NULL;
+
+			if (bitmap) {
 				preview_bitmap = bitmap;
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
 			}
-			else {
-				preview_bitmap = NULL;
-				copy_of_the_preview_bitmap = NULL;
-			}
-		}
-		catch (std::bad_alloc e) {
+		} catch (std::bad_alloc e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap=NULL;
 			throw e;
 		}
-	}
-	else {
+	} else {
 		// Just update the copy_of_the_preview_bitmap
 		preview_bitmap = bitmap;
 		uint32 *source = (uint32*)preview_bitmap->Bits();
 		uint32 *target = (uint32*)copy_of_the_preview_bitmap->Bits();
-		int32 bitslength = min_c(preview_bitmap->BitsLength(),copy_of_the_preview_bitmap->BitsLength());
-		memcpy(target,source,bitslength);
+		int32 bitslength = min_c(preview_bitmap->BitsLength(),
+			copy_of_the_preview_bitmap->BitsLength());
+		memcpy(target, source, bitslength);
 	}
 }
 

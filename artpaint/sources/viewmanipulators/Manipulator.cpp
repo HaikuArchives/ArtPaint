@@ -10,6 +10,9 @@
 #include "Manipulator.h"
 
 
+#include <Bitmap.h>
+
+
 #include <new>
 #include <stdlib.h>
 
@@ -24,7 +27,8 @@ Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 	BRect targetBounds = sourceBounds;
 	targetBounds.InsetBy(inset, inset);
 
-	BBitmap* target = new (std::nothrow) BBitmap(targetBounds, B_RGB32, acceptViews);
+	BBitmap* target = new (std::nothrow) BBitmap(targetBounds, B_RGB32,
+		acceptViews);
 	if (!target || !target->IsValid()) {
 		delete target;
 		return NULL;

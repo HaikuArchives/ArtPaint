@@ -7,6 +7,7 @@
  *
  */
 #include <AppDefs.h>
+#include <Bitmap.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>

@@ -10,9 +10,11 @@
 #define TRANSLATION_MANIPULATOR_H
 
 #include "Cursors.h"
+#include "ManipulatorSettings.h"
 #include "StatusBarGUIManipulator.h"
 
 
+class Selection;
 class TranslationManipulatorView;
 class TranslationManipulatorSettings;
 

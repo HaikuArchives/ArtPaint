@@ -9,6 +9,9 @@
 #ifndef UNDO_ACTION_H
 #define	UNDO_ACTION_H
 
+
+#include <Rect.h>
+
 #include "ToolScript.h"
 #include "Manipulator.h"
 

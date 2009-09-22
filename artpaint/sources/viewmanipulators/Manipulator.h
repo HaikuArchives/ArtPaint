@@ -9,22 +9,27 @@
 #ifndef	MANIPULATOR_H
 #define	MANIPULATOR_H
 
-#include <Bitmap.h>
-#include <StatusBar.h>
 
-#include "ManipulatorInformer.h"
-#include "ManipulatorSettings.h"
-#include "Selection.h"
+#include <image.h>
 
 
-/*
+class BBitmap;
+class BStatusBar;
+class Selection;
+class ManipulatorSettings;
+
+
+enum {	  // increase on API changes
+	ADD_ON_API_VERSION	= 0x00000008
+};
+
+
+/* !
 	The following enumeration is used to identify between different manipulators.
 	The internal manipulators each need one constant to identify them. The
 	constants are used with a method that generates proper manipulator when
 	given a manipulator_type and an optional add_on_id.
 */
-
-
 enum manipulator_type {
 	ADD_ON_MANIPULATOR,
 	CROP_MANIPULATOR,
@@ -41,25 +46,24 @@ enum manipulator_type {
 };
 
 
-// This must be increased whenever one of the Manipulator classes changes.
-enum {
-	ADD_ON_API_VERSION	= 0x00000008
-};
-
 class Manipulator {
-	friend	class		ManipulatorServer;
-	image_id	add_on_id;
+	friend class ManipulatorServer;
+public:
+									Manipulator() { add_on_id = -1; }
+	virtual							~Manipulator() {}
+
+	virtual	BBitmap*				ManipulateBitmap(BBitmap*, Selection*,
+										BStatusBar*) = 0;
+	virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
+	virtual	const char*				ReturnName() = 0;
 
 protected:
-	BBitmap*		DuplicateBitmap(BBitmap*,int32 inset=0,bool accept_views=FALSE);
+			BBitmap*				DuplicateBitmap(BBitmap* source,
+										int32 inset = 0,
+										bool acceptViews = false);
 
-public:
-	Manipulator() { add_on_id = -1; }
-	virtual		~Manipulator() {}
-
-	virtual	BBitmap*				ManipulateBitmap(BBitmap*,Selection*,BStatusBar*) = 0;
-	virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
-	virtual	const	char*			ReturnName() = 0;
+private:
+			image_id				add_on_id;
 };
 
 #endif

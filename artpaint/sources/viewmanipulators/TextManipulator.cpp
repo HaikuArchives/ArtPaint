@@ -14,11 +14,13 @@
 #include "NumberSliderControl.h"
 #include "HSPolygon.h"
 #include "MessageConstants.h"
+#include "Selection.h"
 #include "StringServer.h"
 #include "UtilityClasses.h"
 #include "PaletteWindowClient.h"
 
 
+#include <Bitmap.h>
 #include <CheckBox.h>
 #include <File.h>
 #include <GridLayoutBuilder.h>
@@ -131,8 +133,8 @@ BRegion TextManipulator::Draw(BView *view,float)
 	}
 	printf("test3\n");
 
-//	delete[] rect_array;
-//	delete[] deltas;
+//	delete [] rect_array;
+//	delete [] deltas;
 	printf("test4\n");
 
 	BRegion region;
@@ -526,7 +528,7 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 //			rect.right = max_c(rect.right,max_c(width,width+edge[0].right*font.Size()));
 //		}
 //	}
-//	delete[] line;
+//	delete [] line;
 //	rect.bottom = line_count*line_height;
 //
 //	rect.OffsetBy(0,-fHeight.ascent);
@@ -620,8 +622,8 @@ TextManipulator::ReadSettings(BNode *node)
 			int32 length;
 			file->Read(&length,sizeof(int32));
 			settings.text_array_length = length;
-			delete[] settings.text;
-			delete[] settings.text_color_array;
+			delete [] settings.text;
+			delete [] settings.text_color_array;
 			settings.text = new char[settings.text_array_length];
 			settings.text_color_array = new rgb_color[settings.text_array_length];
 
@@ -827,8 +829,8 @@ TextManipulatorView::MessageReceived(BMessage* message)
 			const int32 textLength = fTextView->TextLength();
 			if (textLength > fSettings.text_array_length) {
 				fSettings.text_array_length = 2 * textLength;
-				delete[] fSettings.text;
-				delete[] fSettings.text_color_array;
+				delete [] fSettings.text;
+				delete [] fSettings.text_color_array;
 				fSettings.text = new char[fSettings.text_array_length];
 				fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
 			}
@@ -1104,8 +1106,8 @@ TextManipulatorSettings::TextManipulatorSettings(const TextManipulatorSettings& 
 
 TextManipulatorSettings::~TextManipulatorSettings()
 {
-	delete[] text;
-	delete[] text_color_array;
+	delete [] text;
+	delete [] text_color_array;
 }
 
 
@@ -1141,8 +1143,8 @@ TextManipulatorSettings::operator!=(const TextManipulatorSettings& settings)
 TextManipulatorSettings&
 TextManipulatorSettings::operator=(const TextManipulatorSettings& settings)
 {
-	delete[] text;
-	delete[] text_color_array;
+	delete [] text;
+	delete [] text_color_array;
 
 	text_array_length = settings.text_array_length;
 	text = new char[text_array_length];

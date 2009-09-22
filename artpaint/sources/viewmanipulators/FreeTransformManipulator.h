@@ -9,6 +9,7 @@
 #ifndef	FREE_TRANSFORM_MANIPULATOR_H
 #define	FREE_TRANSFORM_MANIPULATOR_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

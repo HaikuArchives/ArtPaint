@@ -6,9 +6,15 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <stdio.h>
 
 #include "UndoEvent.h"
+#include "Selection.h"
+
+
+#include <Bitmap.h>
+
+
+#include <stdio.h>
 
 
 UndoEvent::UndoEvent(const BString& name, const BBitmap*)
