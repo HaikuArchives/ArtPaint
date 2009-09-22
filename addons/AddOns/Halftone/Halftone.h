@@ -11,6 +11,9 @@
 
 #include "Manipulator.h"
 
+class ManipulatorInformer;
+
+
 #define	ROUND_DOT_SIZE		8
 #define	DIAGONAL_LINE_SIZE	5
 #define	ORDERED_MATRIX_SIZE	4

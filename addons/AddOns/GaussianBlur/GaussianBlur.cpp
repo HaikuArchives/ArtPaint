@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <StopWatch.h>
@@ -14,8 +15,10 @@
 #include <string.h>
 
 #include "AddOns.h"
+#include "ManipulatorInformer.h"
 #include "GaussianBlur.h"
 #include "ImageProcessingLibrary.h"
+#include "Selection.h"
 
 
 #ifdef __cplusplus

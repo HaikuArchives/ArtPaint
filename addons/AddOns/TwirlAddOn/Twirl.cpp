@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <math.h>
 #include <StatusBar.h>
 #include <Slider.h>
@@ -14,8 +15,10 @@
 #define PI M_PI
 
 #include "AddOns.h"
+#include "ManipulatorInformer.h"
 #include "Twirl.h"
 #include "PixelOperations.h"
+#include "Selection.h"
 
 
 #ifdef __cplusplus

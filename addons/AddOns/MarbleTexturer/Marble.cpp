@@ -6,16 +6,18 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
 #include <Window.h>
 
 #include "AddOns.h"
 #include "Marble.h"
+#include "ManipulatorInformer.h"
 #include "PixelOperations.h"
 #include "PerlinNoiseGenerator.h"
+#include "Selection.h"
 #include "SplineGenerator.h"
-
 
 #ifdef __cplusplus
 extern "C" {

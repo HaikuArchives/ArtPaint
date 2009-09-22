@@ -6,14 +6,17 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <math.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
 #include <Window.h>
 
 #include "AddOns.h"
+#include "ManipulatorInformer.h"
 #include "Interference.h"
 #include "PixelOperations.h"
+#include "Selection.h"
 
 #define PI M_PI
 

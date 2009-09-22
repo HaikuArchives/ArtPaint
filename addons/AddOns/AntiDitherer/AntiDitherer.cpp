@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <StatusBar.h>
@@ -15,7 +16,8 @@
 #include "AddOns.h"
 #include "AntiDitherer.h"
 #include "NumberControl.h"
-
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
 using ArtPaint::Interface::NumberControl;
 

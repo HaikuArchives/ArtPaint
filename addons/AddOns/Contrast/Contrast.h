@@ -9,6 +9,7 @@
 #ifndef CONTRAST_H
 #define CONTRAST_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

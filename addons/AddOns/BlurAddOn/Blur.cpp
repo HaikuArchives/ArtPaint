@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <Slider.h>
@@ -13,6 +14,8 @@
 
 #include "AddOns.h"
 #include "Blur.h"
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
 #include <new>
 

@@ -6,10 +6,12 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <Menu.h>
 #include <MenuItem.h>
 #include <stdio.h>
 
+#include "Selection.h"
 #include "ThresholdView.h"
 
 

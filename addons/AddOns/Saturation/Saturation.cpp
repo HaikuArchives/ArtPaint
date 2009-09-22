@@ -6,13 +6,16 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <StatusBar.h>
 #include <Slider.h>
 #include <string.h>
 #include <Window.h>
 
 #include "AddOns.h"
+#include "ManipulatorInformer.h"
 #include "Saturation.h"
+#include "Selection.h"
 
 #ifdef __cplusplus
 extern "C" {

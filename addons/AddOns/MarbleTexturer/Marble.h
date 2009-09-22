@@ -11,6 +11,8 @@
 
 #include "Manipulator.h"
 
+class ManipulatorInformer;
+
 class MarbleManipulator : public Manipulator {
 		BBitmap		*source_bitmap;
 		BBitmap		*target_bitmap;

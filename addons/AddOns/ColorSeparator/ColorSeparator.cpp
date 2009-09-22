@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <Menu.h>
@@ -18,7 +19,8 @@
 #include "AddOns.h"
 #include "ColorSeparator.h"
 #include "ColorConverter.h"
-
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
 #ifdef __cplusplus
 extern "C" {

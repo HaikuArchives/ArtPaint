@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <ClassInfo.h>
 #include <Menu.h>
 #include <MenuField.h>
@@ -20,7 +21,8 @@
 #include "Reducer.h"
 #include "color_mapper.h"
 #include "palette_generator.h"
-
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
 #ifdef __cplusplus
 extern "C" {

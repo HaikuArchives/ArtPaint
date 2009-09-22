@@ -9,6 +9,7 @@
 #ifndef THRESHOLD_H
 #define THRESHOLD_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

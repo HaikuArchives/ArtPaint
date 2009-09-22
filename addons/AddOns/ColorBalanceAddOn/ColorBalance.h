@@ -9,6 +9,7 @@
 #ifndef COLOR_BALANCE_H
 #define COLOR_BALANCE_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

@@ -6,12 +6,14 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <Window.h>
 
 #include "AddOns.h"
 #include "Halftone.h"
 #include "RandomNumberGenerator.h"
-
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
 #ifdef __cplusplus
 extern "C" {

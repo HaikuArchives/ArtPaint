@@ -13,13 +13,15 @@
 	This also shows how the ManipulatorInformer-class is used.
 */
 
-
+#include <Bitmap.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <Window.h>
 
 #include "AddOns.h"
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 #include "Threshold.h"
 #include "ThresholdView.h"
 

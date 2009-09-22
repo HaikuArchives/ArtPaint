@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+#include <Bitmap.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <stdlib.h>
@@ -14,7 +15,8 @@
 #include "AddOns.h"
 #include "OilAddOn.h"
 #include "BitmapDrawer.h"
-
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
 #ifdef __cplusplus
 extern "C" {

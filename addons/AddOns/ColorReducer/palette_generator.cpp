@@ -13,6 +13,7 @@
 #include "color_mapper.h"
 #include "ColorDistanceMetric.h"
 #include "RandomNumberGenerator.h"
+#include "Selection.h"
 
 rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 {

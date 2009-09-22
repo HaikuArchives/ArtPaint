@@ -9,7 +9,10 @@
 #include "AddOns.h"
 #include "AHEManipulator.h"
 #include "ImageProcessingLibrary.h"
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
+#include <Bitmap.h>
 
 #ifdef __cplusplus
 extern "C" {

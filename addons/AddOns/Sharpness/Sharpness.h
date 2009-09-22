@@ -9,6 +9,7 @@
 #ifndef SHARPNESS_H
 #define SHARPNESS_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

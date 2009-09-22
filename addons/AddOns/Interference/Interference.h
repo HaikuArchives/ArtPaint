@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <Messenger.h>
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

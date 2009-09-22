@@ -9,9 +9,9 @@
 #ifndef COLOR_BALANCE_H
 #define COLOR_BALANCE_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
-//#include "UtilityClasses.h"
 
 #define	BLUR_AMOUNT_CHANGED			'Bamc'
 #define	BLUR_AMOUNT_CHANGE_STARTED	'Bacs'

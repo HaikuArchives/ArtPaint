@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
 
 

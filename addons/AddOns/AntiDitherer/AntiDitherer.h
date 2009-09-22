@@ -9,7 +9,11 @@
 #ifndef BRIGHTNESS_H
 #define BRIGHTNESS_H
 
+#include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
+
+
+#include <Bitmap.h>
 
 
 namespace ArtPaint {

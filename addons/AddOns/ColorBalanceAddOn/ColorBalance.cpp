@@ -8,7 +8,10 @@
  */
 #include "AddOns.h"
 #include "ColorBalance.h"
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
+#include <Bitmap.h>
 #include <Slider.h>
 
 

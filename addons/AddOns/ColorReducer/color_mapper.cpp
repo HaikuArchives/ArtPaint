@@ -24,6 +24,7 @@
 #include "color_mapper.h"
 #include "ImageProcessingLibrary.h"
 #include "RandomNumberGenerator.h"
+#include "Selection.h"
 
 BBitmap* nearest_color_mapper(BBitmap * inSource, const rgb_color * inPalette, int inPaletteSize)
 {

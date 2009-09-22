@@ -8,7 +8,10 @@
  */
 #include "AddOns.h"
 #include "ContrastManipulator.h"
+#include "ManipulatorInformer.h"
+#include "Selection.h"
 
+#include <Bitmap.h>
 
 #ifdef __cplusplus
 extern "C" {
