@@ -37,7 +37,7 @@ extern "C" {
 Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	// Here create a view-manipulator. The class should inherit
-	// from the ViewManipulator base-class. It will be deleted
+	// from WindowGuiManipulator base-class. It will be deleted
 	// in the application program.
 	delete i;
 	return new WaveManipulator(bm);

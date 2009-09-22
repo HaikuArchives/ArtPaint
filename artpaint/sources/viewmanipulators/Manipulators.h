@@ -6,9 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include "ViewManipulator.h"
 #include "RotationManipulator.h"
-#include "BasicManipulator.h"
 #include "GUIManipulator.h"
 #include "TranslationManipulator.h"
 #include "TransparencyManipulator.h"
