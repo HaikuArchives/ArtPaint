@@ -6,8 +6,8 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#ifndef	MANIPULATOR_H
-#define	MANIPULATOR_H
+#ifndef MANIPULATOR_H
+#define MANIPULATOR_H
 
 
 #include <image.h>
@@ -48,6 +48,7 @@ enum manipulator_type {
 
 class Manipulator {
 	friend class ManipulatorServer;
+
 public:
 									Manipulator() { add_on_id = -1; }
 	virtual							~Manipulator() {}
@@ -66,4 +67,4 @@ private:
 			image_id				add_on_id;
 };
 
-#endif
+#endif	// MANIPULATOR_H
