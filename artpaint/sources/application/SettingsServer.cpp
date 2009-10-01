@@ -40,6 +40,13 @@ BLocker SettingsServer::fLocker;
 SettingsServer* SettingsServer::fSettingsServer = NULL;
 
 
+SettingsServer*
+SettingsServer::Instance()
+{
+	return Instantiate();
+}
+
+
 SettingsServer::SettingsServer()
 {
 	BMessage dummy;
@@ -77,18 +84,36 @@ SettingsServer::DestroyServer()
 }
 
 
-SettingsServer*
-SettingsServer::Instance()
+status_t
+SettingsServer::ReadSettings(const BString& name, BMessage* settings)
 {
-	return Instantiate();
+	if (!settings)
+		return B_ERROR;
+
+	BPath path;
+	settings->MakeEmpty();
+	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
+		path.Append("ArtPaint");
+
+		BDirectory dir(path.Path());
+		if (dir.InitCheck() == B_OK && dir.IsDirectory()) {
+			BEntry entry;
+			if (dir.FindEntry(name.String(), &entry) == B_OK) {
+				BFile file(&entry, B_READ_ONLY);
+				return settings->Unflatten(&file);
+			}
+		}
+	}
+	return B_ERROR;
 }
 
 
-void
-SettingsServer::Sync()
+status_t
+SettingsServer::WriteSettings(const BString& name, const BMessage& settings)
 {
 	BPath path;
 	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
+
 		BDirectory dir(path.Path());
 		status_t status = dir.CreateDirectory("./ArtPaint", &dir);
 		if (status == B_FILE_EXISTS)
@@ -96,38 +121,11 @@ SettingsServer::Sync()
 
 		if (status == B_OK) {
 			BFile file;
-			if (dir.CreateFile("app", &file, false) == B_OK) {
-				// Add the recent paths lists to the massage before written
-				// out, so we can restore them on the next application start
-				StringList::const_iterator it = fRecentImagePaths.begin();
-				for (it = it; it != fRecentImagePaths.end(); ++it)
-					fApplicationSettings.AddString(skRecentImagePath, *it);
-
-				it = fRecentProjectPaths.begin();
-				for (it = it; it != fRecentProjectPaths.end(); ++it)
-					fApplicationSettings.AddString(skRecentProjectPath, *it);
-
-				// Add the recent image sizes to the massage before written
-				// out, so we can restore them on the next application start
-				ImageSizeList::const_iterator si = fRecentImageSizeList.begin();
-				for (si = si; si != fRecentImageSizeList.end(); ++si) {
-					fApplicationSettings.AddData(skRecentImageSize, B_RAW_TYPE,
-						(const void*)&(*si), sizeof(BSize));
-				}
-
-				fApplicationSettings.Flatten(&file);
-
-				fApplicationSettings.RemoveName(skRecentImagePath);
-				fApplicationSettings.RemoveName(skRecentProjectPath);
-				fApplicationSettings.RemoveName(skRecentImageSize);
-			}
-
-			if (dir.CreateFile("window", &file, false) == B_OK) {
-				if (!fWindowSettings.IsEmpty())
-					fWindowSettings.Flatten(&file);
-			}
+			if (dir.CreateFile(name.String(), &file, false) == B_OK)
+				return settings.Flatten(&file);
 		}
 	}
+	return B_ERROR;
 }
 
 
@@ -139,9 +137,8 @@ SettingsServer::GetWindowSettings(BMessage* message)
 	if (!message)
 		return status;
 
-	message->MakeEmpty();
 	if (fWindowSettings.IsEmpty()) {
-		status = _ReadSettings("window", fWindowSettings);
+		status = ReadSettings("window", &fWindowSettings);
 		if (status == B_OK && !fWindowSettings.IsEmpty())
 			*message = fWindowSettings;
 		else
@@ -190,9 +187,8 @@ SettingsServer::GetApplicationSettings(BMessage* message)
 		return status;
 
 	int32 i = 0;
-	message->MakeEmpty();
 	if (fApplicationSettings.IsEmpty()) {
-		status = _ReadSettings("app", fApplicationSettings);
+		status = ReadSettings("application", &fApplicationSettings);
 		if (status == B_OK && !fApplicationSettings.IsEmpty()) {
 			BString path;	// Read the recent image paths
 			while (fApplicationSettings.FindString(skRecentImagePath, i++,
@@ -373,23 +369,35 @@ SettingsServer::AddRecentImageSize(const BSize& size)
 }
 
 
-status_t
-SettingsServer::_ReadSettings(const BString& name, BMessage& message)
+void
+SettingsServer::Sync()
 {
-	BPath path;
-	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) == B_OK) {
-		path.Append("ArtPaint");
+	// Add the recent paths lists to the massage before written out, so we can
+	// restore them on the next application start
+	StringList::const_iterator it = fRecentImagePaths.begin();
+	for (it = it; it != fRecentImagePaths.end(); ++it)
+		fApplicationSettings.AddString(skRecentImagePath, *it);
 
-		BDirectory dir(path.Path());
-		if (dir.InitCheck() == B_OK && dir.IsDirectory()) {
-			BEntry entry;
-			if (dir.FindEntry(name.String(), &entry) == B_OK) {
-				BFile file(&entry, B_READ_ONLY);
-				return message.Unflatten(&file);
-			}
-		}
+	it = fRecentProjectPaths.begin();
+	for (it = it; it != fRecentProjectPaths.end(); ++it)
+		fApplicationSettings.AddString(skRecentProjectPath, *it);
+
+	// Add the recent image sizes to the message before written out, so we can
+	// restore them on the next application start
+	ImageSizeList::const_iterator si = fRecentImageSizeList.begin();
+	for (si = si; si != fRecentImageSizeList.end(); ++si) {
+		fApplicationSettings.AddData(skRecentImageSize, B_RAW_TYPE,
+			(const void*)&(*si), sizeof(BSize));
 	}
-	return B_ERROR;
+
+	WriteSettings("application", fApplicationSettings);
+
+	fApplicationSettings.RemoveName(skRecentImagePath);
+	fApplicationSettings.RemoveName(skRecentProjectPath);
+	fApplicationSettings.RemoveName(skRecentImageSize);
+
+	if (!fWindowSettings.IsEmpty())
+		WriteSettings("window", fWindowSettings);
 }
 
 

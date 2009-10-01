@@ -85,7 +85,10 @@ public:
 
 	static	SettingsServer*			Instance();
 
-			void					Sync();
+	static	status_t				ReadSettings(const BString& fileName,
+										BMessage* settings);
+	static	status_t				WriteSettings(const BString& fileName,
+										const BMessage& settings);
 
 			status_t				GetWindowSettings(BMessage* message);
 			void					SetWindowSettings(const BMessage& message);
@@ -119,6 +122,8 @@ public:
 			const ImageSizeList&	RecentImageSizes() const;
 			void					AddRecentImageSize(const BSize& size);
 
+			void					Sync();
+
 private:
 									SettingsServer();
 									SettingsServer(const SettingsServer& server);
@@ -127,8 +132,11 @@ private:
 	static	SettingsServer*			Instantiate();
 	static	void					DestroyServer();
 
-			status_t				_ReadSettings(const BString& name,
-										BMessage& message);
+			status_t				_ReadSettingsFor(const BString& name,
+										BMessage* settings);
+			status_t				_WriteSettingsFor(const BString& name,
+										const BMessage& settings);
+
 			void					_InsertRecentPath(const BString& path,
 										StringList& list);
 			BMessage*				_SettingsForType(Setting type);
