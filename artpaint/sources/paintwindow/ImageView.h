@@ -121,7 +121,7 @@ private:
 
 		int32			current_display_mode;
 
-		Manipulator		*the_manipulator;
+		Manipulator		*fManipulator;
 		int32			manipulated_layers;
 		int32			add_on_id;
 		int32			manip_type;

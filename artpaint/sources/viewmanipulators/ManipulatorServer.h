@@ -1,54 +1,74 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2009, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef MANIPULATOR_SERVER_H
-#define	MANIPULATOR_SERVER_H
+#define MANIPULATOR_SERVER_H
 
 #include "Manipulator.h"
 
 
+#include <Locker.h>
+#include <String.h>
+
+
+#include <list>
+#include <set>
+
+
 class BNode;
+class BPath;
+
+
+typedef std::set<BString> StringSet;
+typedef std::list<image_id> ImageList;
 
 
 class ManipulatorServer {
-
-static	int32		number_of_addons;
-static	image_id	*addon_array;
-static	int32		max_number_of_addons;
-static	bool		addons_available;
-
-static	int32	add_on_reader(void*);
-static	BNode*	GetAddOnNode(image_id);
-public:
-static	Manipulator*	ReturnManipulator(manipulator_type type,int32 add_on_id=-1);
-static	void			StoreManipulatorSettings(Manipulator*);
-
-static	void			ReadAddOns();
-
-static	bool			AddOnsAvailable() { return addons_available; }
-static	int32			AddOnCount() { return number_of_addons; }
-static	image_id*		AddOnArray() { return addon_array; }
-};
-
-
-// ---------------------
-
-class StringSet {
-		char	**string_array;
-		int32	array_length;
-		int32	entry_count;
+	friend class PaintApplication;
 
 public:
-		StringSet();
-		~StringSet();
+	static	ManipulatorServer*		Instance();
 
-void	AddString(const char*);
-bool	ContainsString(const char*);
+			Manipulator*			ManipulatorFor(manipulator_type type,
+										int32 imageId = -1) const;
+			void					StoreManipulatorSettings(Manipulator*);
+
+			bool					AddOnsLoaded() const {
+										return fAddonsLoaded;
+									}
+			int32					AddOnCount() const {
+										return fAddOnImages.size();
+									}
+			ImageList				AddOnImageList() const {
+										return fAddOnImages;
+									}
+
+private:
+									ManipulatorServer();
+									ManipulatorServer(const ManipulatorServer& server);
+									~ManipulatorServer();
+
+	static	ManipulatorServer*		Instantiate();
+	static	void					DestroyServer();
+
+	static	status_t				_AddOnLoaderThread(void* data);
+			void					_LoadAddOns(const BPath& path);
+			status_t				_GetNodeFor(image_id imageId, BNode* node) const;
+
+private:
+			StringSet				fAddonNames;
+			ImageList				fAddOnImages;
+			bool					fAddonsLoaded;
+
+	static	BLocker					fLocker;
+	static	ManipulatorServer*		fManipulatorServer;
 };
-#endif
 
+#endif	// MANIPULATOR_SERVER_H

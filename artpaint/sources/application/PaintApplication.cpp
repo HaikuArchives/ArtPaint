@@ -61,6 +61,7 @@ PaintApplication::PaintApplication()
 {
 	SettingsServer::Instantiate();
 	ResourceServer::Instantiate();
+	ManipulatorServer::Instantiate();
 
 	// Some of the things in this function depend on the previously initialized
 	// things, so the order may be important. This should be fixed in future.
@@ -82,11 +83,6 @@ PaintApplication::PaintApplication()
 	int32 depth = 20;
 	settings.FindInt32(skUndoQueueDepth, &depth);
 	UndoQueue::SetQueueDepth(depth);
-
-	// Read the add-ons. They will be read in another thread by the manipulator
-	// server. This should be the last thing to read so that it does not
-	// interfere with other reading.
-	ManipulatorServer::ReadAddOns();
 }
 
 
@@ -105,6 +101,7 @@ PaintApplication::~PaintApplication()
 
 	ResourceServer::DestroyServer();
 	SettingsServer::DestroyServer();
+	ManipulatorServer::DestroyServer();
 }
 
 

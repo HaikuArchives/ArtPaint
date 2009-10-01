@@ -74,7 +74,7 @@ ImageView::ImageView(BRect frame, float width, float height)
 	// Set the correct color for view (i.e. B_TRANSPARENT_32_BIT)
 	SetViewColor(B_TRANSPARENT_32_BIT);
 
-	the_manipulator = NULL;
+	fManipulator = NULL;
 	manipulator_window = NULL;
 	manipulator_finishing_message = NULL;
 
@@ -129,7 +129,7 @@ ImageView::~ImageView()
 		manipulator_window->Lock();
 		manipulator_window->Close();
 	}
-	delete the_manipulator;
+	delete fManipulator;
 
 	// Delete the undo-queue
 	delete undo_queue;
@@ -223,7 +223,7 @@ void ImageView::UpdateImage(BRect bitmap_rect)
 
 void ImageView::DrawManipulatorGUI(bool blit_image)
 {
-	GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 	if (gui_manipulator != NULL) {
 		if (blit_image == TRUE) {
 			for (int32 i=0;i<region_drawn_by_manipulator.CountRects();i++) {
@@ -267,7 +267,7 @@ void ImageView::KeyDown(const char *bytes, int32 numBytes)
 		if (bounds.bottom + delta > bitmap_rect.bottom) delta = bitmap_rect.bottom - bounds.bottom;
 		ScrollBy(0, delta);
 	}
-	else if (the_manipulator == NULL) {
+	else if (fManipulator == NULL) {
 		tool_manager->KeyDown(this,bytes,numBytes);
 	}
 }
@@ -600,13 +600,18 @@ void ImageView::MessageReceived(BMessage *message)
 			if (message->FindInt32("manipulator_type", &manip_type) != B_OK)
 				break;
 
-			message->FindInt32("add_on_id", &add_on_id);
+			message->FindInt32("image_id", &add_on_id);
 			try {
-				the_manipulator = ManipulatorServer::ReturnManipulator((manipulator_type)manip_type,add_on_id);
+				ManipulatorServer* server = ManipulatorServer::Instance();
+				if (!server)
+					throw std::bad_alloc();
+
+				fManipulator = server->ManipulatorFor((manipulator_type)manip_type,
+					add_on_id);
 				status_t err = message->FindInt32("layers",&manipulated_layers);
-				if ((err == B_OK) && (the_manipulator != NULL)) {
-					GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
-					ImageAdapter *adapter = cast_as(the_manipulator,ImageAdapter);
+				if ((err == B_OK) && (fManipulator != NULL)) {
+					GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+					ImageAdapter *adapter = cast_as(fManipulator,ImageAdapter);
 					if (adapter != NULL)
 						adapter->SetImage(the_image);
 
@@ -674,8 +679,8 @@ void ImageView::MessageReceived(BMessage *message)
 			}
 			catch (std::bad_alloc) {
 				ShowAlert(CANNOT_START_MANIPULATOR_ALERT);
-				delete the_manipulator;
-				the_manipulator = NULL;
+				delete fManipulator;
+				fManipulator = NULL;
 			}
 		}	break;
 
@@ -684,7 +689,7 @@ void ImageView::MessageReceived(BMessage *message)
 			bool finish_status = false;
 			message->FindBool("status", &finish_status);
 			if (GUIManipulator* guiManipulator =
-				dynamic_cast<GUIManipulator*> (the_manipulator)) {
+				dynamic_cast<GUIManipulator*> (fManipulator)) {
 				if (WindowGUIManipulator* windowGuiManipulator =
 					dynamic_cast<WindowGUIManipulator*> (guiManipulator)) {
 					(void)windowGuiManipulator;	// suppress warning
@@ -703,8 +708,8 @@ void ImageView::MessageReceived(BMessage *message)
 					// whatever changes it has made and should be quit then.
 					guiManipulator->Reset(selection);
 					((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
-					delete the_manipulator;
-					the_manipulator = NULL;
+					delete fManipulator;
+					fManipulator = NULL;
 					the_image->Render();
 					manipulated_layers = HS_MANIPULATE_NO_LAYER;
 					Invalidate();
@@ -755,11 +760,11 @@ void ImageView::MouseDown(BPoint view_point)
 
 	// try to acquire the mouse_mutex
 	if (acquire_sem_etc(mouse_mutex,1,B_TIMEOUT,0) == B_NO_ERROR) {
-		GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 		if (gui_manipulator != NULL) {
 			start_thread(MANIPULATOR_MOUSE_THREAD);
 		}
-		else if (the_manipulator == NULL){
+		else if (fManipulator == NULL){
 			if (buttons & B_SECONDARY_MOUSE_BUTTON) {
 				BMenuItem *item = tool_manager->ToolPopUpMenu()->Go(ConvertToScreen(view_point));
 				if (item != NULL) {
@@ -789,7 +794,7 @@ void ImageView::MouseDown(BPoint view_point)
 		}
 	}
 	else {
-		if (the_manipulator == NULL) {
+		if (fManipulator == NULL) {
 			BPoint bitmap_point;
 			uint32 buttons;
 			getCoords(&bitmap_point,&buttons,&view_point);
@@ -808,7 +813,7 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 	// If we have a message being dragged over us, do not change the cursor
 	if (message == NULL) {
 		if ((transit == B_ENTERED_VIEW) || (transit == B_EXITED_VIEW)) {
-			if (the_manipulator == NULL) {
+			if (fManipulator == NULL) {
 				if (transit == B_ENTERED_VIEW)
 					tool_manager->NotifyViewEvent(this,CURSOR_ENTERED_VIEW);
 				else
@@ -909,7 +914,7 @@ status_t ImageView::Freeze()
 	// also acquire mouse_mutex and action_semaphore semaphores to protect
 	// the image from any further changes. These restorations must of course
 	// be done only after we have acquired the desired semaphores.
-	GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 	if (gui_manipulator != NULL) {
 		gui_manipulator->Reset(selection);
 		the_image->Render();
@@ -1053,7 +1058,7 @@ BRect ImageView::convertViewRectToBitmap(BRect rect)
 
 void ImageView::ActiveLayerChanged()
 {
-	GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 
 	if ((gui_manipulator != NULL) && (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER)) {
 		gui_manipulator->Reset(selection);
@@ -1204,13 +1209,15 @@ int32 ImageView::PaintToolThread()
 
 	if (tool_type != TEXT_TOOL) {
 		if (tool_type != NO_TOOL) {
-			// When this function returns the tool has finished. This function might not
-			// return even if the user releases the mouse-button (in which case for example
-			// a double-click might make it return).
-			ToolScript *the_script = tool_manager->StartTool(this,buttons,point,view_point,tool_type);
-			if ((the_script != NULL) && (tool_type != SELECTOR_TOOL)) {
-				const DrawingTool *used_tool = tool_manager->ReturnTool(tool_type);
-				UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->Name(),the_image->ReturnThumbnailImage());
+			// When this function returns the tool has finished. This function 
+			// might not return even if the user releases the mouse-button (in 
+			// which case for example a double-click might make it return).
+			ToolScript* script = tool_manager->StartTool(this, buttons, point,
+				view_point, tool_type);
+			if (script && tool_type != SELECTOR_TOOL) {
+				const DrawingTool* tool = tool_manager->ReturnTool(tool_type);
+				UndoEvent *new_event = undo_queue->AddUndoEvent(tool->Name(),
+					the_image->ReturnThumbnailImage());
 				BList *layer_list = the_image->LayerList();
 				if (new_event != NULL) {
 					for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -1219,7 +1226,7 @@ int32 ImageView::PaintToolThread()
 						if (layer->IsActive() == FALSE)
 							new_action = new UndoAction(layer->Id());
 						else
-							new_action = new UndoAction(layer->Id(),the_script,tool_manager->LastUpdatedRect(this));
+							new_action = new UndoAction(layer->Id(), script,tool_manager->LastUpdatedRect(this));
 
 						new_event->AddAction(new_action);
 						new_action->StoreUndo(layer->Bitmap());
@@ -1231,7 +1238,7 @@ int32 ImageView::PaintToolThread()
 					AddChange();
 				}
 				else {
-					delete the_script;
+					delete script;
 					tool_manager->LastUpdatedRect(this);
 				}
 			}
@@ -1251,45 +1258,50 @@ int32 ImageView::PaintToolThread()
 			}
 			return B_OK;
 		}
-		else
-			return B_ERROR;
-	}
-	else {
-		// Here we start the text manipulator. We also give the point to the manipulator.
-		if (the_manipulator == NULL) {
-			the_manipulator = ManipulatorServer::ReturnManipulator(TEXT_MANIPULATOR);
-			manipulated_layers = HS_MANIPULATE_CURRENT_LAYER;
-			if (the_manipulator != NULL) {
-				TextManipulator *text_manipulator = cast_as(the_manipulator,TextManipulator);
-				text_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
-				text_manipulator->SetStartingPoint(point);
-				if (LockLooper() == TRUE) {
-					((PaintWindow*)Window())->SetHelpString(text_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
-					UnlockLooper();
-				}
-				char window_name[256];
-				sprintf(window_name,"%s: %s",ReturnProjectName(),text_manipulator->ReturnName());
-				manipulator_window = new ManipulatorWindow(BRect(100,100,200,200),
-					text_manipulator->MakeConfigurationView(this), window_name,
-					Window(), this);
+	} else {
+		if (ManipulatorServer* server = ManipulatorServer::Instance()) {
+			if (!fManipulator) {
+				if (TextManipulator* manipulator = dynamic_cast<TextManipulator*>
+					(server->ManipulatorFor(TEXT_MANIPULATOR))) {
+					manipulator->SetStartingPoint(point);
+					manipulated_layers = HS_MANIPULATE_CURRENT_LAYER;
+					manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
 
-				BWindow *window = Window();
-				if (window != NULL) {
-					window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
-				}
+					PaintWindow* window = dynamic_cast<PaintWindow*> (Window());
+					if (window && LockLooper()) {
+						window->SetHelpString(manipulator->ReturnHelpString(),
+							HS_TOOL_HELP_MESSAGE);
+						UnlockLooper();
+					}
 
-				cursor_mode = MANIPULATOR_CURSOR_MODE;
-				SetCursor();
+					BString name = ReturnProjectName();
+					name << ": " << manipulator->ReturnName();
+
+					manipulator_window = new ManipulatorWindow(BRect(100, 100,
+						200.0, 200.0), manipulator->MakeConfigurationView(this),
+						name.String(), window, this);
+
+					if (window) {
+						window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,
+							this);
+					}
+
+					fManipulator = manipulator;
+					cursor_mode = MANIPULATOR_CURSOR_MODE;
+
+					SetCursor();
+					return B_OK;
+				}
 			}
 		}
-		return B_OK;
 	}
+	return B_ERROR;
 }
 
 
 int32 ImageView::ManipulatorMouseTrackerThread()
 {
-	GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 	if (gui_manipulator == NULL)
 		return B_ERROR;
 
@@ -1382,7 +1394,7 @@ int32 ImageView::ManipulatorMouseTrackerThread()
 
 int32 ImageView::GUIManipulatorUpdaterThread()
 {
-	GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 	if (gui_manipulator == NULL)
 		return B_ERROR;
 
@@ -1477,7 +1489,7 @@ int32 ImageView::GUIManipulatorUpdaterThread()
 
 int32 ImageView::ManipulatorFinisherThread()
 {
-	if (the_manipulator == NULL) {
+	if (fManipulator == NULL) {
 		if (manipulator_finishing_message != NULL) {
 			if (LockLooper() == TRUE) {
 				Window()->PostMessage(manipulator_finishing_message,this);
@@ -1500,7 +1512,7 @@ int32 ImageView::ManipulatorFinisherThread()
 			UnlockLooper();
 		}
 	}
-	GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 	UndoEvent *new_event = NULL;
 
 	try {
@@ -1513,14 +1525,14 @@ int32 ImageView::ManipulatorFinisherThread()
 				delete settings;
 			}
 			else {
-				new_buffer = the_manipulator->ManipulateBitmap(buffer,selection,status_bar);
+				new_buffer = fManipulator->ManipulateBitmap(buffer,selection,status_bar);
 			}
 
 			Layer *the_layer = the_image->ReturnActiveLayer();
 			if (new_buffer && new_buffer != buffer)
 				the_layer->ChangeBitmap(new_buffer);
 
-			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),
+			new_event = undo_queue->AddUndoEvent(fManipulator->ReturnName(),
 				the_image->ReturnThumbnailImage());
 			if (new_event != NULL) {
 				BList *layer_list = the_image->LayerList();
@@ -1533,7 +1545,7 @@ int32 ImageView::ManipulatorFinisherThread()
 					else {
 						BRegion affected_region(new_buffer->Bounds());
 						new_action = new UndoAction(layer->Id(),
-							the_manipulator->ReturnSettings(),
+							fManipulator->ReturnSettings(),
 							new_buffer->Bounds(),
 							(manipulator_type)manip_type, add_on_id);
 					}
@@ -1553,7 +1565,7 @@ int32 ImageView::ManipulatorFinisherThread()
 			if (status_bar != NULL)
 				status_bar->SetMaxValue(layerCount * 100);
 
-			new_event = undo_queue->AddUndoEvent(the_manipulator->ReturnName(),
+			new_event = undo_queue->AddUndoEvent(fManipulator->ReturnName(),
 				the_image->ReturnThumbnailImage());
 
 			for (int32 i = 0; i < layerCount; ++i) {
@@ -1574,7 +1586,7 @@ int32 ImageView::ManipulatorFinisherThread()
 					delete settings;
 				}
 				else {
-					new_buffer = the_manipulator->ManipulateBitmap(buffer,selection,status_bar);
+					new_buffer = fManipulator->ManipulateBitmap(buffer,selection,status_bar);
 				}
 
 				if (new_buffer && new_buffer != buffer)
@@ -1584,7 +1596,7 @@ int32 ImageView::ManipulatorFinisherThread()
 					if (new_buffer != NULL) {
 						BRegion affected_region(new_buffer->Bounds());
 						UndoAction *new_action;
-						new_action = new UndoAction(the_layer->Id(),the_manipulator->ReturnSettings(),new_buffer->Bounds(),(manipulator_type)manip_type,add_on_id);
+						new_action = new UndoAction(the_layer->Id(),fManipulator->ReturnSettings(),new_buffer->Bounds(),(manipulator_type)manip_type,add_on_id);
 
 						new_event->AddAction(new_action);
 						new_action->StoreUndo(the_layer->Bitmap());
@@ -1628,8 +1640,9 @@ int32 ImageView::ManipulatorFinisherThread()
 		undo_queue->SetSelectionData(selection->ReturnSelectionData());
 	}
 
-	// As its final action, the manipulator should be advised to store its settings.
-	ManipulatorServer::StoreManipulatorSettings(the_manipulator);
+	// Store the manipulator settings.
+	if (ManipulatorServer* server = ManipulatorServer::Instance())
+		server->StoreManipulatorSettings(fManipulator);
 
 
 	// Finally return the window to normal state and redisplay it.
@@ -1640,8 +1653,8 @@ int32 ImageView::ManipulatorFinisherThread()
 	}
 
 	// The manipulator has finished, now finish the manipulator
-	delete the_manipulator;
-	the_manipulator = NULL;
+	delete fManipulator;
+	fManipulator = NULL;
 
 	cursor_mode = NORMAL_CURSOR_MODE;
 	SetCursor();
@@ -1669,7 +1682,7 @@ void ImageView::Undo()
 		cursor_mode = BLOCKING_CURSOR_MODE;
 		SetCursor();
 
-		GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 		if (gui_manipulator != NULL) {
 			gui_manipulator->Reset(selection);
 		}
@@ -1722,7 +1735,7 @@ void ImageView::Redo()
 	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
 		// If there is a GUI-manipulator, it should reset the bitmap before redo
 		// can be done.
-		GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 		if (gui_manipulator != NULL) {
 			gui_manipulator->Reset(selection);
 		}
@@ -1924,7 +1937,7 @@ void ImageView::SetCursor()
 			be_app->SetCursor(tool_manager->ReturnCursor());
 		}
 		else if (cursor_mode == MANIPULATOR_CURSOR_MODE) {
-			GUIManipulator *gui_manipulator = cast_as(the_manipulator,GUIManipulator);
+			GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 			if (gui_manipulator != NULL) {
 				if (gui_manipulator->ManipulatorCursor() != NULL)
 					be_app->SetCursor(gui_manipulator->ManipulatorCursor());
@@ -2062,7 +2075,7 @@ void ImageView::ResetChangeStatistics(bool project, bool image)
 
 bool ImageView::PostponeMessageAndFinishManipulator()
 {
-	if (the_manipulator) {
+	if (fManipulator) {
 		BMessage message(HS_MANIPULATOR_FINISHED);
 		message.AddBool("status", true);
 		Window()->PostMessage(&message, this);

@@ -1273,62 +1273,61 @@ PaintWindow::openMenuBar()
 int32
 PaintWindow::_AddAddOnsToMenu(void* data)
 {
-	PaintWindow* paintWindow = static_cast<PaintWindow*>(data);
+	PaintWindow* paintWindow = static_cast<PaintWindow*> (data);
 	if (!paintWindow)
 		return B_ERROR;
 
-	while ((ManipulatorServer::AddOnsAvailable() == false)
-		|| (paintWindow->KeyMenuBar() == NULL)) {
+	ManipulatorServer* server = ManipulatorServer::Instance();
+	if (!server)
+		return B_ERROR;
+
+	while (!server->AddOnsLoaded() || !paintWindow->KeyMenuBar())
 		snooze(50000);
-	}
 
-	BMenu* addOnMenu = NULL;
-	if (paintWindow->KeyMenuBar() != NULL) {
-		BMenuBar* menuBar = paintWindow->KeyMenuBar();
+	if (BMenuBar* menuBar = paintWindow->KeyMenuBar()) {
 		BMenuItem* item = menuBar->FindItem(_StringForId(ADD_ONS_STRING));
-		addOnMenu = item->Submenu();
-	}
-
-	if (addOnMenu) {
-		if (paintWindow->Lock()) {
-			BMessenger target(paintWindow);
-			image_id* addon_array = ManipulatorServer::AddOnArray();
-			for (int32 i = 0; i < ManipulatorServer::AddOnCount(); ++i) {
-				image_id imageId = addon_array[i];
-
-				char* add_on_name;
-				status_t errors = get_image_symbol(imageId, "name",
+		if (BMenu* addOnMenu = item->Submenu()) {
+			if (paintWindow->Lock()) {
+				ImageList::const_iterator it;
+				const ImageList& imageList = server->AddOnImageList();
+				for (it = imageList.begin(); it != imageList.end(); ++it) {
+					char* add_on_name;
+					status_t status = get_image_symbol(*it, "name",
 						B_SYMBOL_TYPE_DATA, (void**)&add_on_name);
 
-				int32* add_on_version;
-				errors |= get_image_symbol(imageId, "add_on_api_version",
+					int32* add_on_version;
+					status |= get_image_symbol(*it, "add_on_api_version",
 						B_SYMBOL_TYPE_DATA, (void**)&add_on_version);
 
-				const char* add_on_help;
-				if (get_image_symbol(imageId, "menu_help_string",
+					const char* add_on_help;
+					if (get_image_symbol(*it, "menu_help_string",
 						B_SYMBOL_TYPE_DATA, (void**)&add_on_help) != B_OK) {
-					add_on_help = "Starts an add-on effect.";
-				}
+						add_on_help = "Starts an add-on effect.";
+					}
 
-				if (*add_on_version == ADD_ON_API_VERSION && errors == B_OK) {
-					BMessage* message = new BMessage(HS_START_MANIPULATOR);
-					message->AddInt32("add_on_id", imageId);
-					message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
-					message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
+					if (status != B_OK)
+						continue;
 
-					addOnMenu->AddItem(new PaintWindowMenuItem(add_on_name,
-						message, (char)NULL, 0, paintWindow, add_on_help));
+					if (*add_on_version == ADD_ON_API_VERSION) {
+						BMessage* message = new BMessage(HS_START_MANIPULATOR);
+						message->AddInt32("image_id", *it);
+						message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+						message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
+
+						addOnMenu->AddItem(new PaintWindowMenuItem(add_on_name,
+							message, (char)NULL, 0, paintWindow, add_on_help));
+					}
 				}
+				addOnMenu->SetTargetForItems(paintWindow);
+				paintWindow->Unlock();
 			}
-			addOnMenu->SetTargetForItems(target);
-			paintWindow->Unlock();
+
+			if (paintWindow->fImageView)
+				addOnMenu->SetTargetForItems(paintWindow->fImageView);
+			return B_OK;
 		}
 	}
-
-	if (paintWindow->fImageView != NULL)
-		addOnMenu->SetTargetForItems(paintWindow->fImageView);
-
-	return B_OK;
+	return B_ERROR;
 }
 
 
