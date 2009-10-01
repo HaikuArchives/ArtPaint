@@ -16,6 +16,7 @@
 
 
 class BNode;
+class BMessage;
 class BPoint;
 class BView;
 
@@ -56,6 +57,9 @@ public:
 
 	virtual	status_t	ReadSettings(BNode*) { return B_NO_ERROR; }
 	virtual	status_t	WriteSettings(BNode*) { return B_NO_ERROR; }
+
+	virtual status_t	Save(BMessage& settings) const { return B_OK; }
+	virtual status_t	Restore(const BMessage& settings) { return B_OK; }
 };
 
 #endif
