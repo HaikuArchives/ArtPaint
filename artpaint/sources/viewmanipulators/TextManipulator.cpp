@@ -76,7 +76,7 @@ void TextManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_cl
 {
 	if (buttons & B_PRIMARY_MOUSE_BUTTON) {
 		if (first_click == FALSE) {
-			settings.starting_point = settings.starting_point + point-origo;
+			fSettings.starting_point = fSettings.starting_point + point-origo;
 			origo = point;
 		}
 		else
@@ -84,11 +84,11 @@ void TextManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_cl
 	}
 	else {
 		if (first_click == FALSE) {
-			float dy = point.y - settings.starting_point.y;
-			float dx = point.x - settings.starting_point.x;
+			float dy = point.y - fSettings.starting_point.y;
+			float dx = point.x - fSettings.starting_point.x;
 			float new_angle = atan2(dy,dx);
 			new_angle = new_angle / M_PI *180;
-			settings.font.SetRotation(-new_angle);
+			fSettings.font.SetRotation(-new_angle);
 		}
 		else
 			origo = point;
@@ -96,7 +96,7 @@ void TextManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_cl
 
 
 	if (config_view != NULL) {
-		config_view->ChangeSettings(&settings);
+		config_view->ChangeSettings(&fSettings);
 	}
 }
 
@@ -113,20 +113,20 @@ BRegion TextManipulator::Draw(BView *view,float)
 //	return BRegion();
 /*	printf("test0\n");
 	BRect *rect_array;
-	int32 rect_count = strlen(settings.text);
+	int32 rect_count = strlen(fSettings.text);
 	printf("test0.5\n");
 	rect_array = new BRect[rect_count];
 	for (int32 i=0;i<rect_count;i++)
 		rect_array[i] = BRect(0,0,0,0);
 
 	escapement_delta *deltas = new escapement_delta[rect_count];
-	settings.font.GetBoundingBoxesAsString(settings.text,rect_count,B_SCREEN_METRIC,deltas,rect_array);
+	fSettings.font.GetBoundingBoxesAsString(fSettings.text,rect_count,B_SCREEN_METRIC,deltas,rect_array);
 	printf("test1\n");
 	BRect rect ;//= rect_array[0];
 	printf("test2, %d\n",rect_count);
 
 	for (int32 i=0;i<rect_count;i++) {
-		rect_array[i].OffsetBy(settings.starting_point);
+		rect_array[i].OffsetBy(fSettings.starting_point);
 		view->StrokeRect(rect_array[i],B_MIXED_COLORS);
 		rect = rect | rect_array[i];
 		rect_array[i].PrintToStream();
@@ -258,7 +258,7 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
 {
 	// First decide the resolution of the bitmap
-	if (previous_settings == settings) {
+	if (previous_settings == fSettings) {
 		if (last_used_quality <= 1) {
 			last_used_quality = 0;
 			return DRAW_ONLY_GUI;
@@ -276,7 +276,7 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 
 	// This is very dangerous. The manipulator-view might be changing the
 	// settings at this very moment. This might even lead to a crash.
-	TextManipulatorSettings current_settings = settings;
+	TextManipulatorSettings current_settings = fSettings;
 
 	// First reset the preview_bitmap for the part that previous settings did draw.
 	uint32 *preview_bits = (uint32*)preview_bitmap->Bits();
@@ -316,7 +316,7 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 		BRect character_bounds[4];
 		escapement_delta deltas[4];
 		BPoint pen_location;
-		view->SetFont(&(settings.font));
+		view->SetFont(&(fSettings.font));
 		view->SetDrawingMode(B_OP_OVER);
 		view->MovePenTo(current_settings.starting_point);
 		font_height fHeight;
@@ -331,12 +331,12 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 		int32 len = current_settings.text ? strlen(current_settings.text) : 0;
 		for (int32 i = 0; i < len; ++i) {
 			pen_location = view->PenLocation();
-			if (settings.text[i] == '\n') {
+			if (fSettings.text[i] == '\n') {
 				// Move to next line
 				line_number++;
 				view->MovePenTo(current_settings.starting_point+BPoint(height_vector.x*line_number,height_vector.y*line_number));
 			}
-			else if (settings.text[i] == '\t') {
+			else if (fSettings.text[i] == '\t') {
 				// Replace tabs with four spaces
 				view->DrawChar(' ');
 				view->DrawChar(' ');
@@ -558,9 +558,9 @@ void TextManipulator::SetPreviewBitmap(BBitmap *bm)
 			copy_of_the_preview_bitmap = DuplicateBitmap(bm,0,TRUE);
 			BView *a_view = new BView(copy_of_the_preview_bitmap->Bounds(),"a_view",B_FOLLOW_NONE,B_WILL_DRAW);
 			copy_of_the_preview_bitmap->AddChild(a_view);
-			if (preview_bitmap->Bounds().Contains(settings.starting_point) == FALSE) {
-				settings.starting_point.x = preview_bitmap->Bounds().left + 20;
-				settings.starting_point.y = preview_bitmap->Bounds().top + (preview_bitmap->Bounds().bottom - preview_bitmap->Bounds().top) / 2;;
+			if (preview_bitmap->Bounds().Contains(fSettings.starting_point) == FALSE) {
+				fSettings.starting_point.x = preview_bitmap->Bounds().left + 20;
+				fSettings.starting_point.y = preview_bitmap->Bounds().top + (preview_bitmap->Bounds().bottom - preview_bitmap->Bounds().top) / 2;;
 			}
 		}
 		else {
@@ -588,7 +588,7 @@ TextManipulator::Reset(Selection*)
 ManipulatorSettings*
 TextManipulator::ReturnSettings()
 {
-	return new (std::nothrow) TextManipulatorSettings(settings);
+	return new (std::nothrow) TextManipulatorSettings(fSettings);
 }
 
 
@@ -597,7 +597,7 @@ TextManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new (std::nothrow) TextManipulatorView(this, target);
 	if (config_view)
-		config_view->ChangeSettings(&settings);
+		config_view->ChangeSettings(&fSettings);
 	return config_view;
 }
 
@@ -608,7 +608,7 @@ TextManipulator::ChangeSettings(ManipulatorSettings *s)
 	TextManipulatorSettings* newSettings =
 		dynamic_cast<TextManipulatorSettings*> (s);
 	if (newSettings)
-		settings = *newSettings;
+		fSettings = *newSettings;
 }
 
 
@@ -621,17 +621,17 @@ TextManipulator::ReadSettings(BNode *node)
 		if (version == TEXT_SETTINGS_VERSION) {
 			int32 length;
 			file->Read(&length,sizeof(int32));
-			settings.text_array_length = length;
-			delete [] settings.text;
-			delete [] settings.text_color_array;
-			settings.text = new char[settings.text_array_length];
-			settings.text_color_array = new rgb_color[settings.text_array_length];
+			fSettings.text_array_length = length;
+			delete [] fSettings.text;
+			delete [] fSettings.text_color_array;
+			fSettings.text = new char[fSettings.text_array_length];
+			fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
 
-			file->Read(settings.text,settings.text_array_length);
-			file->Read(settings.text_color_array,
-				settings.text_array_length * sizeof(int32));
-			file->Read(&(settings.font), sizeof(BFont));
-			file->Read(&settings.starting_point, sizeof(BPoint));
+			file->Read(fSettings.text,fSettings.text_array_length);
+			file->Read(fSettings.text_color_array,
+				fSettings.text_array_length * sizeof(int32));
+			file->Read(&(fSettings.font), sizeof(BFont));
+			file->Read(&fSettings.starting_point, sizeof(BPoint));
 		}
 	}
 	return B_OK;
@@ -644,13 +644,27 @@ TextManipulator::WriteSettings(BNode *node)
 	if (BFile* file = dynamic_cast<BFile*> (node)) {
 		int32 version = TEXT_SETTINGS_VERSION;
 		file->Write(&version,sizeof(int32));
-		file->Write(&settings.text_array_length,sizeof(int32));
-		file->Write(settings.text,settings.text_array_length);
-		file->Write(settings.text_color_array,
-			settings.text_array_length * sizeof(int32));
-		file->Write(&settings.font, sizeof(BFont));
-		file->Write(&settings.starting_point, sizeof(BPoint));
+		file->Write(&fSettings.text_array_length,sizeof(int32));
+		file->Write(fSettings.text,fSettings.text_array_length);
+		file->Write(fSettings.text_color_array,
+			fSettings.text_array_length * sizeof(int32));
+		file->Write(&fSettings.font, sizeof(BFont));
+		file->Write(&fSettings.starting_point, sizeof(BPoint));
 	}
+	return B_OK;
+}
+
+
+status_t
+TextManipulator::Save(BMessage& settings) const
+{
+	return B_OK;
+}
+
+
+status_t
+TextManipulator::Restore(const BMessage& settings)
+{
 	return B_OK;
 }
 
