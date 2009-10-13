@@ -46,7 +46,7 @@ public:
 			int32					AddOnCount() const {
 										return fAddOnImages.size();
 									}
-			ImageList				AddOnImageList() const {
+			const ImageList&		AddOnImageList() const {
 										return fAddOnImages;
 									}
 
