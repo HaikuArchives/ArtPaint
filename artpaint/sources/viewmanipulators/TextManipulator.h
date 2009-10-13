@@ -94,10 +94,6 @@ public:
 	void		ChangeSettings(ManipulatorSettings*);
 	void		SetStartingPoint(BPoint point) { fSettings.starting_point = point; }
 
-
-	status_t	ReadSettings(BNode*);
-	status_t	WriteSettings(BNode*);
-
 	status_t	Save(BMessage& settings) const;
 	status_t	Restore(const BMessage& settings);
 };

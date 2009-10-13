@@ -603,69 +603,66 @@ TextManipulator::MakeConfigurationView(const BMessenger& target)
 
 
 void
-TextManipulator::ChangeSettings(ManipulatorSettings *s)
+TextManipulator::ChangeSettings(ManipulatorSettings* settings)
 {
 	TextManipulatorSettings* newSettings =
-		dynamic_cast<TextManipulatorSettings*> (s);
+		dynamic_cast<TextManipulatorSettings*> (settings);
 	if (newSettings)
 		fSettings = *newSettings;
 }
 
 
 status_t
-TextManipulator::ReadSettings(BNode *node)
-{
-	if (BFile* file = dynamic_cast<BFile*> (node)) {
-		int32 version;
-		file->Read(&version,sizeof(int32));
-		if (version == TEXT_SETTINGS_VERSION) {
-			int32 length;
-			file->Read(&length,sizeof(int32));
-			fSettings.text_array_length = length;
-			delete [] fSettings.text;
-			delete [] fSettings.text_color_array;
-			fSettings.text = new char[fSettings.text_array_length];
-			fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
-
-			file->Read(fSettings.text,fSettings.text_array_length);
-			file->Read(fSettings.text_color_array,
-				fSettings.text_array_length * sizeof(int32));
-			file->Read(&(fSettings.font), sizeof(BFont));
-			file->Read(&fSettings.starting_point, sizeof(BPoint));
-		}
-	}
-	return B_OK;
-}
-
-
-status_t
-TextManipulator::WriteSettings(BNode *node)
-{
-	if (BFile* file = dynamic_cast<BFile*> (node)) {
-		int32 version = TEXT_SETTINGS_VERSION;
-		file->Write(&version,sizeof(int32));
-		file->Write(&fSettings.text_array_length,sizeof(int32));
-		file->Write(fSettings.text,fSettings.text_array_length);
-		file->Write(fSettings.text_color_array,
-			fSettings.text_array_length * sizeof(int32));
-		file->Write(&fSettings.font, sizeof(BFont));
-		file->Write(&fSettings.starting_point, sizeof(BPoint));
-	}
-	return B_OK;
-}
-
-
-status_t
 TextManipulator::Save(BMessage& settings) const
 {
-	return B_OK;
+	settings.MakeEmpty();
+
+	status_t status = settings.AddString("text", fSettings.text);
+	status |= settings.AddPoint("starting_point", fSettings.starting_point);
+	status |= settings.AddInt32("text_array_length", fSettings.text_array_length);
+	status |= settings.AddData("font", B_RAW_TYPE, (const void*)&fSettings.font,
+		sizeof(BFont));
+
+	int32 length = fSettings.text ? strlen(fSettings.text) : 0;
+	for (int32 i = 0; i < length; ++i) {
+		status |= settings.AddData("text_color_array", B_RGB_COLOR_TYPE,
+			(const void*)&fSettings.text_color_array[i], sizeof(rgb_color));
+	}
+
+	return status;
 }
 
 
 status_t
 TextManipulator::Restore(const BMessage& settings)
 {
-	return B_OK;
+	delete [] fSettings.text;
+	delete [] fSettings.text_color_array;
+
+	const char* dummy;
+	status_t status = settings.FindString("text", &dummy);
+	status |= settings.FindPoint("starting_point", &fSettings.starting_point);
+	status |= settings.FindInt32("text_array_length", &fSettings.text_array_length);
+
+	fSettings.text = new char[fSettings.text_array_length];
+	strcpy(fSettings.text, dummy);
+
+	const void* data;
+	ssize_t dataSize;
+	status |= settings.FindData("font", B_RAW_TYPE, &data, &dataSize);
+	if (status == B_OK && dataSize == sizeof(BFont))
+		memcpy(&fSettings.font, data, sizeof(BFont));
+
+	int32 i = 0;
+	fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
+	while ((status |= settings.FindData("text_color_array", B_RGB_COLOR_TYPE, i,
+		&data, &dataSize)) == B_OK) {
+		if (dataSize == sizeof(rgb_color))
+			memcpy(&fSettings.text_color_array[i], data, sizeof(rgb_color));
+		i++;
+	}
+
+	return status;
 }
 
 
