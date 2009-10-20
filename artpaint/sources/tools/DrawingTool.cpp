@@ -17,11 +17,15 @@
 #include "StringServer.h"
 
 
+#include <Bitmap.h>
 #include <CheckBox.h>
 #include <File.h>
 #include <GroupLayout.h>
 #include <Handler.h>
 #include <StringView.h>
+
+
+#include <new>
 
 
 DrawingTool::DrawingTool(const BString& name, int32 type)
@@ -41,6 +45,7 @@ DrawingTool::DrawingTool(const BString& name, int32 type)
 
 DrawingTool::~DrawingTool()
 {
+	delete fIcon;
 }
 
 
@@ -184,6 +189,13 @@ DrawingTool::GetCurrentValue(int32 option)
 		}
 	}
 	return 0;
+}
+
+
+BBitmap*
+DrawingTool::Icon() const
+{
+	return new (std::nothrow) BBitmap(fIcon);
 }
 
 

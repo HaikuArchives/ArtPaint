@@ -42,7 +42,7 @@ public:
 
 	virtual	int32			GetCurrentValue(int32 option);
 
-			BBitmap*		Icon() const { return fIcon; }
+			BBitmap*		Icon() const;
 			BString			Name() const { return fName; }
 			int32			Type() const { return fType; }
 
