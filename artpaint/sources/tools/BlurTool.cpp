@@ -259,6 +259,7 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 				.AddStrut(5.0)
 				.Add(fContinuity)
 			.End()
+			.TopView()
 		);
 
 		if (tool->GetCurrentValue(CONTINUITY_OPTION) != B_CONTROL_OFF)

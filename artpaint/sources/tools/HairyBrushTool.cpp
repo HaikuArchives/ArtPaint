@@ -496,6 +496,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 			.AddStrut(10.0)
 			.Add(fColorAmount)
 			.Add(fColorVariance)
+			.TopView()
 		);
 	}
 }

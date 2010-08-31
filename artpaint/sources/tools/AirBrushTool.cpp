@@ -405,6 +405,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 				.AddStrut(5.0)
 				.Add(fAirBrush)
 			.End()
+			.TopView()
 		);
 
 		if (tool->GetCurrentValue(MODE_OPTION) == HS_SPRAY_MODE)

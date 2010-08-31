@@ -52,6 +52,7 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 		maxRange, B_HORIZONTAL, thumbStyle);
 
 	if (fNumberControl && fSlider && layout) {
+		SetLayout(new BGroupLayout(B_VERTICAL));
 		AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 			.Add(fNumberControl)
 			.Add(fSlider)

@@ -162,7 +162,8 @@ ToolSetupWindow::_UpdateConfigurationView(int32 tool)
 			// TODO: translation
 			BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
 				.Add(new BStringView("", "No configuration options available."))
-				.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0));
+				.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0)
+				.TopView());
 			box->SetLabel(tool_manager->ReturnTool(tool)->Name().String());
 			configView = box;
 		}

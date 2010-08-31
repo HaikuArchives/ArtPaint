@@ -381,7 +381,6 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 			.Add(fLineSize)
 			.Add(view)
-			.Add(view)
 			.AddGroup(B_HORIZONTAL)
 				.AddStrut(5.0)
 				.Add(fAdjustableWidth)
@@ -390,6 +389,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 				.AddStrut(5.0)
 				.Add(fAntiAliasing)
 			.End()
+			.TopView()
 		);
 	}
 }

@@ -371,6 +371,7 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 				.AddStrut(5.0)
 				.Add(fAntiAlias)
 			.End()
+			.TopView()
 		);
 
 		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)

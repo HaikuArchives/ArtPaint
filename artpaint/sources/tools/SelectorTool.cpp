@@ -663,6 +663,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 			.AddStrut(5.0)
 			.Add(_SeparatorView(StringServer::ReturnString(WAND_TOLERANCE_STRING)))
 			.Add(gridLayout->View())
+			.TopView()
 		);
 
 		if (tool->GetCurrentValue(MODE_OPTION) == B_OP_ADD)

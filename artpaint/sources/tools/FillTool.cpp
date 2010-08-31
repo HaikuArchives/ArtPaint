@@ -1740,6 +1740,7 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 					.Add(fGradientView)
 				.SetInsets(5.0, 0.0, 0.0, 0.0)
 			.End()
+			.TopView()
 		);
 
 		fFlodFill->SetValue(tool->GetCurrentValue(MODE_OPTION));

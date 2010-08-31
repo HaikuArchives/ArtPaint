@@ -291,6 +291,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 				.AddStrut(5.0)
 				.Add(fTransparent)
 			.End()
+			.TopView()
 		);
 
 		if (tool->GetCurrentValue(MODE_OPTION) == HS_ERASE_TO_BACKGROUND_MODE)

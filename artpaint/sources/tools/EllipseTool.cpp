@@ -218,6 +218,7 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 				.AddStrut(5.0)
 				.Add(fCenter2Corner)
 			.End()
+			.TopView()
 		);
 
 		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)

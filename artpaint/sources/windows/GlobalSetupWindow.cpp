@@ -152,6 +152,7 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 		.Add(fEffects, 1, 2)
 		.Add(BSpaceLayoutItem::CreateGlue(), 2, 0)
 		.SetInsets(20.0, 5.0, 10.0, 10.0)
+		.View()
 	);
 	box->SetLabel(StringServer::ReturnString(KEEP_IN_FRONT_STRING));
 
@@ -543,6 +544,7 @@ GlobalSetupWindow::GeneralControlView::GeneralControlView()
 			new BRadioButton(StringServer::ReturnString(CROSS_HAIR_CURSOR_STRING),
 			new BMessage(kToolCursorMode)))
 		.SetInsets(20.0, 5.0, 10.0, 0.0)
+		.TopView()
 	);
 	fToolCursor->SetValue(B_CONTROL_ON);
 	box->SetLabel(StringServer::ReturnString(CURSOR_STRING));
@@ -552,6 +554,7 @@ GlobalSetupWindow::GeneralControlView::GeneralControlView()
 				new BCheckBox(StringServer::ReturnString(CONFIRM_QUIT_STRING),
 				new BMessage(kConfirmShutdownChanged)))
 		.SetInsets(20.0, 5.0, 10.0, 0.0)
+		.TopView()
 	);
 	box2->SetLabel("Application");
 
@@ -561,6 +564,7 @@ GlobalSetupWindow::GeneralControlView::GeneralControlView()
 		.Add(box2)
 		.AddGlue()
 		.SetInsets(10.0, 10.0, 10.0, 10.0)
+		.TopView()
 	);
 
 	if (SettingsServer* server = SettingsServer::Instance()) {
@@ -664,6 +668,7 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 			new BMessage(kCloseAndApplySettings)))
 		.Add(new BButton(StringServer::ReturnString(DISCARD_CHANGES_STRING),
 			new BMessage(kCloseAndDiscardSettings)))
+		.TopView()
 	);
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
 	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
