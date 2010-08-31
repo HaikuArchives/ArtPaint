@@ -19,7 +19,6 @@
 #include "FileIdentificationStrings.h"
 #include "FilePanels.h"
 #include "GlobalSetupWindow.h"
-#include "HSStack.h"
 #include "Image.h"
 #include "ImageView.h"
 #include "Layer.h"
@@ -61,6 +60,7 @@
 
 
 #include <new>
+#include <stack>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -1397,26 +1397,27 @@ PaintWindow::AddImageView()
 	fMenubar->FindItem(HS_ZOOM_IMAGE_OUT)->SetTarget(fImageView);
 	fMenubar->FindItem(_StringForId(SET_ZOOM_LEVEL_STRING))->Submenu()->SetTargetForItems(fImageView);
 	fMenubar->FindItem(_StringForId(SET_GRID_STRING))->Submenu()->SetTargetForItems(fImageView);
-	HSStack<BMenu*> menu_stack(100);
 
-	for (int32 i=0;i<fMenubar->CountItems();i++) {
+	std::stack<BMenu*> menus;
+	for (int32 i = 0; i < fMenubar->CountItems(); ++i) {
 		if (fMenubar->ItemAt(i)->Submenu() != NULL)
-			menu_stack.push(fMenubar->ItemAt(i)->Submenu());
+			menus.push(fMenubar->ItemAt(i)->Submenu());
 	}
 
 	// Change the image as target for all menu-items that have HS_START_MANIPULATOR
 	// as their message's what constant.
-	menu = menu_stack.pop();
+	menu = menus.top();
+	menus.pop();
 	while (menu != NULL) {
-		for (int32 i=0;i<menu->CountItems();i++) {
-			if (menu->ItemAt(i)->Command() == HS_START_MANIPULATOR) {
+		for (int32 i = 0; i < menu->CountItems(); ++i) {
+			if (menu->ItemAt(i)->Command() == HS_START_MANIPULATOR)
 				menu->ItemAt(i)->SetTarget(fImageView);
-			}
-			if (menu->ItemAt(i)->Submenu() != NULL) {
-				menu_stack.push(menu->ItemAt(i)->Submenu());
-			}
+
+			if (menu->ItemAt(i)->Submenu() != NULL)
+				menus.push(menu->ItemAt(i)->Submenu());
 		}
-		menu = menu_stack.pop();
+		menu = menus.top();
+		menus.pop();
 	}
 
 	// This allows Alt-+ next to the backspace key to work (the menu item shortcut only works
