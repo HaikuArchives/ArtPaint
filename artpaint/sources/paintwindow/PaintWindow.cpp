@@ -1400,24 +1400,24 @@ PaintWindow::AddImageView()
 
 	std::stack<BMenu*> menus;
 	for (int32 i = 0; i < fMenubar->CountItems(); ++i) {
-		if (fMenubar->ItemAt(i)->Submenu() != NULL)
-			menus.push(fMenubar->ItemAt(i)->Submenu());
+		if (BMenu* subMenu = fMenubar->ItemAt(i)->Submenu())
+			menus.push(subMenu);
 	}
 
 	// Change the image as target for all menu-items that have HS_START_MANIPULATOR
 	// as their message's what constant.
-	menu = menus.top();
-	menus.pop();
-	while (menu != NULL) {
-		for (int32 i = 0; i < menu->CountItems(); ++i) {
-			if (menu->ItemAt(i)->Command() == HS_START_MANIPULATOR)
-				menu->ItemAt(i)->SetTarget(fImageView);
+	while (!menus.empty()) {
+		for (int32 i = 0; i < menus.top()->CountItems(); ++i) {
+			if (menus.top()->ItemAt(i)->Command() == HS_START_MANIPULATOR)
+				menus.top()->ItemAt(i)->SetTarget(fImageView);
 
-			if (menu->ItemAt(i)->Submenu() != NULL)
-				menus.push(menu->ItemAt(i)->Submenu());
+			if (BMenu* subMenu = menus.top()->ItemAt(i)->Submenu()) {
+				menus.pop();
+				menus.push(subMenu);
+			} else {
+				menus.pop();
+			}
 		}
-		menu = menus.top();
-		menus.pop();
 	}
 
 	// This allows Alt-+ next to the backspace key to work (the menu item shortcut only works
