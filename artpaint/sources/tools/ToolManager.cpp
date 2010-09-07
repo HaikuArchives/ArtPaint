@@ -278,7 +278,7 @@ ToolManager::NotifyViewEvent(ImageView *view, image_view_event_type type)
 
 
 BView*
-ToolManager::ReturnConfigurationView(int32 tool_type)
+ToolManager::ConfigView(int32 tool_type)
 {
 	if (DrawingTool* tool = ReturnTool(tool_type))
 		return tool->ConfigView();

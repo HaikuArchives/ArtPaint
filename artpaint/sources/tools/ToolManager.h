@@ -67,7 +67,7 @@ public:
 			const void*				ReturnCursor() const;
 			DrawingTool*			ReturnTool(int32) const;
 			int32					ReturnActiveToolType() const;
-			BView*					ReturnConfigurationView(int32);
+			BView*					ConfigView(int32);
 			status_t				SetCurrentBrush(brush_info*);
 
 			BPopUpMenu*				ToolPopUpMenu();

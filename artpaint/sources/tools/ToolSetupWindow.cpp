@@ -157,7 +157,7 @@ ToolSetupWindow::_UpdateConfigurationView(int32 tool)
 			delete oldConfigView;
 		}
 
-		BView* configView = tool_manager->ReturnConfigurationView(tool);
+		BView* configView = tool_manager->ConfigView(tool);
 		if (configView == NULL) {
 			// TODO: translation
 			BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
