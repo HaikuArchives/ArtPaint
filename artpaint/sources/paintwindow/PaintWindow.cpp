@@ -1399,6 +1399,7 @@ PaintWindow::AddImageView()
 	fMenubar->FindItem(_StringForId(SET_GRID_STRING))->Submenu()->SetTargetForItems(fImageView);
 
 	std::stack<BMenu*> menus;
+	menus.push(static_cast<BMenu*> (NULL));
 	for (int32 i = 0; i < fMenubar->CountItems(); ++i) {
 		if (BMenu* subMenu = fMenubar->ItemAt(i)->Submenu())
 			menus.push(subMenu);
@@ -1406,18 +1407,18 @@ PaintWindow::AddImageView()
 
 	// Change the image as target for all menu-items that have HS_START_MANIPULATOR
 	// as their message's what constant.
-	while (!menus.empty()) {
-		for (int32 i = 0; i < menus.top()->CountItems(); ++i) {
-			if (menus.top()->ItemAt(i)->Command() == HS_START_MANIPULATOR)
-				menus.top()->ItemAt(i)->SetTarget(fImageView);
+	menu = menus.top();
+	menus.pop();
+	while (menu != NULL) {
+		for (int32 i = 0; i < menu->CountItems(); ++i) {
+			if (menu->ItemAt(i)->Command() == HS_START_MANIPULATOR)
+				menu->ItemAt(i)->SetTarget(fImageView);
 
-			if (BMenu* subMenu = menus.top()->ItemAt(i)->Submenu()) {
-				menus.pop();
-				menus.push(subMenu);
-			} else {
-				menus.pop();
-			}
+			if (menu->ItemAt(i)->Submenu() != NULL)
+				menus.push(menu->ItemAt(i)->Submenu());
 		}
+		menu = menus.top();
+		menus.pop();
 	}
 
 	// This allows Alt-+ next to the backspace key to work (the menu item shortcut only works
