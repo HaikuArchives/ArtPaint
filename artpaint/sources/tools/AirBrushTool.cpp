@@ -41,8 +41,8 @@ AirBrushTool::AirBrushTool()
 	: DrawingTool(StringServer::ReturnString(AIR_BRUSH_TOOL_NAME_STRING),
 		AIR_BRUSH_TOOL)
 {
-	options = SIZE_OPTION | PRESSURE_OPTION | MODE_OPTION;
-	number_of_options = 3;
+	fOptions = SIZE_OPTION | PRESSURE_OPTION | MODE_OPTION;
+	fOptionsCount = 3;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(PRESSURE_OPTION, 1);
@@ -73,10 +73,10 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 	Selection *selection = view->GetSelection();
 
-	ToolScript *the_script = new ToolScript(Type(), settings,
+	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
-	if (settings.mode == HS_AIRBRUSH_MODE) {		// Do the airbrush
+	if (fToolSettings.mode == HS_AIRBRUSH_MODE) {		// Do the airbrush
 		BRect bounds = bitmap->Bounds();
 		BRect rc;
 
@@ -86,7 +86,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		while (buttons) {
 			the_script->AddPoint(point);
 
-			float half_size = settings.size/2;
+			float half_size = fToolSettings.size/2;
 			rgb_color c = ((PaintApplication*)be_app)->Color(true);
 			target_color = RGBColorToBGRA(c);
 			// we should only consider points that are inside this rectangle
@@ -107,7 +107,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 							float distance = sqrt_table[dx*dx + y_sqr];
 							if (distance <= half_size) {
 								float change = (half_size-distance)/half_size;
-								change = change*(((float)settings.pressure)/100.0);
+								change = change*(((float)fToolSettings.pressure)/100.0);
 
 
 								// This is experimental for doing a real transparency
@@ -140,7 +140,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 							if ((distance <= half_size)
 								&& (selection->ContainsPoint(left+x,top+y))) {
 								float change = (half_size-distance)/half_size;
-								change = change*(((float)settings.pressure)/100.0);
+								change = change*(((float)fToolSettings.pressure)/100.0);
 
 								// This is experimental for doing a real transparency
 								// Seems to work quite well
@@ -176,7 +176,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			window->Unlock();
 			snooze(20 * 1000);
 		}
-	} else if (settings.mode == HS_SPRAY_MODE) {	// Do the spray
+	} else if (fToolSettings.mode == HS_SPRAY_MODE) {	// Do the spray
 		CoordinateReader *coordinate_reader = new CoordinateReader(view,
 			NO_INTERPOLATION, false, true);
 		RandomNumberGenerator *generator = new RandomNumberGenerator(0,10000);
@@ -184,8 +184,8 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		prev_point = point;
 
 		while (coordinate_reader->GetPoint(point) == B_OK) {
-			int32 flow = settings.pressure + 1;
-			float width = settings.size;
+			int32 flow = fToolSettings.pressure + 1;
+			float width = fToolSettings.size;
 			float angle;
 			float opacity = 0.4;
 			rgb_color c = ((PaintApplication*)be_app)->Color(true);

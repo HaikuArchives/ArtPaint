@@ -36,8 +36,8 @@ DrawingTool::DrawingTool(const BString& name, int32 type)
 	, fLastUpdatedRect(BRect())
 {
 	// In derived classes set whatever options tool happens to use.
-	options = 0;
-	number_of_options = 0;
+	fOptions = 0;
+	fOptionsCount = 0;
 
 	ResourceServer::Instance()->GetBitmap(B_VECTOR_ICON_TYPE, type,
 		LARGE_TOOL_ICON_SIZE, LARGE_TOOL_ICON_SIZE, &fIcon);
@@ -88,72 +88,72 @@ DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 	// If handler is NULL, the boolean options should use value as the new value.
 	// Otherwise they should use value that can be gotten from the source.
 
-	if (option & options) {
+	if (option & fOptions) {
 		switch (option) {
 			case SIZE_OPTION: {
-				settings.size = value;
+				fToolSettings.size = value;
 			}	break;
 
 			case PRESSURE_OPTION: {
-				settings.pressure = value;
+				fToolSettings.pressure = value;
 			}	break;
 
 			case MODE_OPTION: {
-				settings.mode = value;
+				fToolSettings.mode = value;
 				if (BCheckBox* booleanBox = dynamic_cast<BCheckBox*> (source))
-					settings.mode = booleanBox->Value();
+					fToolSettings.mode = booleanBox->Value();
 			} break;
 
 			case SHAPE_OPTION: {
-				settings.shape = value;
+				fToolSettings.shape = value;
 			}	break;
 
 			case GRADIENT_ENABLED_OPTION: {
-				settings.gradient_enabled = value;
+				fToolSettings.gradient_enabled = value;
 				if (BControl* control = dynamic_cast<BCheckBox*> (source))
-					settings.gradient_enabled = control->Value();
+					fToolSettings.gradient_enabled = control->Value();
 			} break;
 
 			case GRADIENT_COLOR_OPTION: {
-				settings.gradient_color = value;
+				fToolSettings.gradient_color = value;
 			}	break;
 
 			case PREVIEW_ENABLED_OPTION: {
-				settings.preview_enabled = value;
+				fToolSettings.preview_enabled = value;
 				if (BControl* control = dynamic_cast<BCheckBox*> (source))
-					settings.preview_enabled = control->Value();
+					fToolSettings.preview_enabled = control->Value();
 			}	break;
 
 			case FILL_ENABLED_OPTION: {
-				settings.fill_enabled = value;
+				fToolSettings.fill_enabled = value;
 				if (BControl* control = dynamic_cast<BCheckBox*> (source))
-					settings.fill_enabled = control->Value();
+					fToolSettings.fill_enabled = control->Value();
 			}	break;
 
 			case ROTATION_ENABLED_OPTION: {
-				settings.rotation_enabled = value;
+				fToolSettings.rotation_enabled = value;
 				if (BControl* control = dynamic_cast<BCheckBox*> (source))
-					settings.rotation_enabled = control->Value();
+					fToolSettings.rotation_enabled = control->Value();
 			}	break;
 
 			case ANTI_ALIASING_LEVEL_OPTION: {
-				settings.anti_aliasing_level = value;
+				fToolSettings.anti_aliasing_level = value;
 				if (BControl* control = dynamic_cast<BCheckBox*> (source))
-					settings.anti_aliasing_level = control->Value();
+					fToolSettings.anti_aliasing_level = control->Value();
 			}	break;
 
 			case CONTINUITY_OPTION: {
-				settings.continuity = value;
+				fToolSettings.continuity = value;
 				if (BControl* control = dynamic_cast<BCheckBox*> (source))
-					settings.continuity = control->Value();
+					fToolSettings.continuity = control->Value();
 			}	break;
 
 			case TOLERANCE_OPTION: {
-				settings.tolerance = value;
+				fToolSettings.tolerance = value;
 			}	break;
 
 			case TRANSPARENCY_OPTION: {
-				settings.transparency = value;
+				fToolSettings.transparency = value;
 			}	break;
 
 			default:	break;
@@ -165,34 +165,34 @@ DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 int32
 DrawingTool::GetCurrentValue(int32 option)
 {
-	if (option & options) {
+	if (option & fOptions) {
 		switch (option) {
 			case SIZE_OPTION:
-				return settings.size;
+				return fToolSettings.size;
 			case PRESSURE_OPTION:
-				return settings.pressure;
+				return fToolSettings.pressure;
 			case MODE_OPTION:
-				return settings.mode;
+				return fToolSettings.mode;
 			case SHAPE_OPTION:
-				return settings.shape;
+				return fToolSettings.shape;
 			case GRADIENT_ENABLED_OPTION:
-				return settings.gradient_enabled;
+				return fToolSettings.gradient_enabled;
 			case GRADIENT_COLOR_OPTION:
-				return settings.gradient_color;
+				return fToolSettings.gradient_color;
 			case PREVIEW_ENABLED_OPTION:
-				return settings.preview_enabled;
+				return fToolSettings.preview_enabled;
 			case FILL_ENABLED_OPTION:
-				return settings.fill_enabled;
+				return fToolSettings.fill_enabled;
 			case ROTATION_ENABLED_OPTION:
-				return settings.rotation_enabled;
+				return fToolSettings.rotation_enabled;
 			case ANTI_ALIASING_LEVEL_OPTION:
-				return settings.anti_aliasing_level;
+				return fToolSettings.anti_aliasing_level;
 			case CONTINUITY_OPTION:
-				return settings.continuity;
+				return fToolSettings.continuity;
 			case TOLERANCE_OPTION:
-				return settings.tolerance;
+				return fToolSettings.tolerance;
 			case TRANSPARENCY_OPTION:
-				return settings.transparency;
+				return fToolSettings.transparency;
 			default:
 				return 0;
 		}
@@ -235,7 +235,7 @@ DrawingTool::readSettings(BFile &file, bool isLittleEndian)
 	} else {
 		// This should also be converted to right endianness
 		int32 settingsSize = sizeof(struct tool_settings);
-		if (file.Read(&settings, settingsSize) != settingsSize)
+		if (file.Read(&fToolSettings, settingsSize) != settingsSize)
 			return B_ERROR;
 	}
 
@@ -258,7 +258,7 @@ DrawingTool::writeSettings(BFile &file)
 		return B_ERROR;
 
 	settingsSize = sizeof(struct tool_settings);
-	if (file.Write(&settings, settingsSize) != settingsSize)
+	if (file.Write(&fToolSettings, settingsSize) != settingsSize)
 		return B_ERROR;
 
 	return B_OK;
@@ -299,7 +299,7 @@ DrawingTool::HelpString(bool isInUse) const
 
 DrawingToolConfigView::DrawingToolConfigView(DrawingTool* drawingTool)
 	: BBox(B_FANCY_BORDER, NULL)
-	, tool(drawingTool)
+	, fTool(drawingTool)
 {
 	SetLayout(BGroupLayoutBuilder(B_VERTICAL)
 		.SetInsets(10.0, InnerFrame().top, 10.0, 10.0)
@@ -331,8 +331,8 @@ DrawingToolConfigView::MessageReceived(BMessage* message)
 			// int32 "option" and int32 "value" data members
 			BHandler* handler;
 			message->FindPointer("source", (void**)&handler);
-			if (tool) {
-				tool->SetOption(message->FindInt32("option"),
+			if (fTool) {
+				fTool->SetOption(message->FindInt32("option"),
 					message->FindInt32("value"), handler);
 			}
 		}	break;

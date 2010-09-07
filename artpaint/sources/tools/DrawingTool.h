@@ -37,7 +37,7 @@ public:
 	virtual	BView*			makeConfigView();
 	virtual	void			UpdateConfigView(BView*) {}
 
-	inline	int32			Options() { return options; }
+	inline	int32			Options() { return fOptions; }
 	virtual	void			SetOption(int32 option, int32 value,
 								BHandler* source = NULL);
 
@@ -59,11 +59,11 @@ public:
 	virtual	const char*		HelpString(bool isInUse) const;
 
 protected:
-			int32			options;
-			int32			number_of_options;
+			int32			fOptions;
+			int32			fOptionsCount;
 
 			// this struct contains the tool's settings
-			tool_settings	settings;
+			tool_settings	fToolSettings;
 
 private:
 			BBitmap*		fIcon;
@@ -84,10 +84,10 @@ public:
 	virtual	void			AttachedToWindow();
 	virtual	void			MessageReceived(BMessage* message);
 
-			DrawingTool*	Tool() const { return tool; }
+			DrawingTool*	Tool() const { return fTool; }
 
 private:
-			DrawingTool*	tool;
+			DrawingTool*	fTool;
 };
 
 #endif	// DRAWING_TOOL_H

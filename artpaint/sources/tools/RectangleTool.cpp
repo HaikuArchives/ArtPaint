@@ -37,9 +37,9 @@ RectangleTool::RectangleTool()
 	: DrawingTool(StringServer::ReturnString(RECTANGLE_TOOL_NAME_STRING),
 		RECTANGLE_TOOL)
 {
-	options = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION
+	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION
 		| ROTATION_ENABLED_OPTION | ANTI_ALIASING_LEVEL_OPTION;
-	number_of_options = 5;
+	fOptionsCount = 5;
 
 	SetOption(FILL_ENABLED_OPTION, B_CONTROL_OFF);
 	SetOption(SIZE_OPTION, 1);
@@ -67,7 +67,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 //	BView *bitmap_view = view->getBufferView();
 
-	ToolScript *the_script = new ToolScript(Type(), settings,
+	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 	Selection *selection = view->GetSelection();
 

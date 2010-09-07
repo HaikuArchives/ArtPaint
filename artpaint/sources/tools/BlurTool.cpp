@@ -35,8 +35,8 @@ using ArtPaint::Interface::NumberSliderControl;
 BlurTool::BlurTool()
 	: DrawingTool(StringServer::ReturnString(BLUR_TOOL_NAME_STRING), BLUR_TOOL)
 {
-	options = SIZE_OPTION | CONTINUITY_OPTION;
-	number_of_options = 2;
+	fOptions = SIZE_OPTION | CONTINUITY_OPTION;
+	fOptionsCount = 2;
 
 	SetOption(SIZE_OPTION,1);
 	SetOption(CONTINUITY_OPTION,B_CONTROL_OFF);
@@ -70,7 +70,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer* drawer = new BitmapDrawer(bitmap);
 
-	ToolScript* the_script = new ToolScript(Type(), settings,
+	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	selection = view->GetSelection();
@@ -80,11 +80,11 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	int32 bpr = bitmap->BytesPerRow()/4;
 
 	// this is the bitmap where the blurred image will be first made
-	BBitmap* blurred = new BBitmap(BRect(0, 0, settings.size+1, settings.size+1),
+	BBitmap* blurred = new BBitmap(BRect(0, 0, fToolSettings.size+1, fToolSettings.size+1),
 		B_RGB_32_BIT);
 	int32* blurred_bits;
 	int32 blurred_bpr = blurred->BytesPerRow()/4;
-	int32 previous_size = settings.size;
+	int32 previous_size = fToolSettings.size;
 
 	float half_size;
 	BRect rc;
@@ -93,18 +93,18 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	for (int32 i=0;i<5500;i++)
 		sqrt_table[i] = (int32)sqrt(i);
 
-	half_size = settings.size/2;
+	half_size = fToolSettings.size/2;
 	prev_point = point - BPoint(1,1);
 	SetLastUpdatedRect(BRect(point, point));
 	while (buttons) {
-		if ((settings.continuity == B_CONTROL_ON)
-			|| (settings.size != previous_size) || (point != prev_point)) {
-			if (settings.size != previous_size) {
+		if ((fToolSettings.continuity == B_CONTROL_ON)
+			|| (fToolSettings.size != previous_size) || (point != prev_point)) {
+			if (fToolSettings.size != previous_size) {
 				delete blurred;
-				half_size = settings.size/2;
-				blurred = new BBitmap(BRect(0,0,settings.size+1,settings.size+1),
+				half_size = fToolSettings.size/2;
+				blurred = new BBitmap(BRect(0,0,fToolSettings.size+1,fToolSettings.size+1),
 					B_RGB_32_BIT);
-				previous_size = settings.size;
+				previous_size = fToolSettings.size;
 			}
 
 			blurred_bits = (int32*)blurred->Bits();

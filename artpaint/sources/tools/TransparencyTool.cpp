@@ -33,8 +33,8 @@ TransparencyTool::TransparencyTool()
 		TRANSPARENCY_TOOL)
 {
 	// The pressure option controls the speed of transparency change.
-	options = SIZE_OPTION | PRESSURE_OPTION;
-	number_of_options = 3;
+	fOptions = SIZE_OPTION | PRESSURE_OPTION;
+	fOptionsCount = 3;
 
 	SetOption(SIZE_OPTION,1);
 	SetOption(PRESSURE_OPTION,1);
@@ -56,7 +56,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	BWindow* window = view->Window();
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script = new ToolScript(Type(), settings,
+	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	BRect bounds = bitmap->Bounds();
@@ -68,7 +68,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	for (int32 i=0;i<5500;i++)
 		sqrt_table[i] = sqrt(i);
 
-	float half_size = settings.size/2;
+	float half_size = fToolSettings.size/2;
 	BRect rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 		ceil(point.x + half_size), ceil(point.y + half_size));
 	rc = rc & bounds;
@@ -117,7 +117,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			view->Sync();
 			view->getCoords(&point,&buttons);
 			window->Unlock();
-			half_size = settings.size/2;
+			half_size = fToolSettings.size/2;
 			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;
@@ -127,7 +127,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			window->Lock();
 			view->getCoords(&point,&buttons);
 			window->Unlock();
-			half_size = settings.size/2;
+			half_size = fToolSettings.size/2;
 			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;

@@ -35,8 +35,8 @@ EraserTool::EraserTool()
 	: DrawingTool(StringServer::ReturnString(ERASER_TOOL_NAME_STRING),
 		ERASER_TOOL)
 {
-	options = SIZE_OPTION | MODE_OPTION;
-	number_of_options = 2;
+	fOptions = SIZE_OPTION | MODE_OPTION;
+	fOptionsCount = 2;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(MODE_OPTION, HS_ERASE_TO_BACKGROUND_MODE);
@@ -65,7 +65,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
 
-	ToolScript *the_script = new ToolScript(Type(), settings,
+	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
@@ -81,7 +81,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	background.bytes[3] = 0x00;
 
 
-	if (settings.mode == HS_ERASE_TO_BACKGROUND_MODE) {
+	if (fToolSettings.mode == HS_ERASE_TO_BACKGROUND_MODE) {
 		rgb_color c = ((PaintApplication*)be_app)->Color(false);
 		background.bytes[0] = c.blue;
 		background.bytes[1] = c.green;
@@ -98,7 +98,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	prev_point = point;
 	BRect updated_rect;
 	status_t status_of_read;
-	int diameter = settings.size;
+	int diameter = fToolSettings.size;
 	if ((diameter%2) == 0)
 		diameter++;
 
@@ -134,7 +134,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 //			else {
 //				set_mouse_speed(original_mouse_speed);
 //			}
-			diameter = settings.size;
+			diameter = fToolSettings.size;
 			if ((diameter%2) == 0)
 				diameter++;
 

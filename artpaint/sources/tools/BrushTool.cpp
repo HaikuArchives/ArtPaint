@@ -36,8 +36,8 @@ BrushTool::BrushTool()
 	: DrawingTool(StringServer::ReturnString(BRUSH_TOOL_NAME_STRING), BRUSH_TOOL)
 {
 	// Options will also have some brush-data options.
-	options = 0;
-	number_of_options = 0;
+	fOptions = 0;
+	fOptionsCount = 0;
 
 	brush_info info;
 	info.shape = HS_ELLIPTICAL_BRUSH;
@@ -57,8 +57,11 @@ BrushTool::~BrushTool()
 
 
 ToolScript*
-BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
+BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
+	B_UNUSED(buttons)
+	B_UNUSED(viewPoint)
+
 	// Wait for the last_updated_region to become empty
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
@@ -66,7 +69,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	CoordinateReader* coordinate_reader = new CoordinateReader(view,
 		LINEAR_INTERPOLATION, false);
 
-	ToolScript* the_script = new ToolScript(Type(), settings,
+	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	selection = view->GetSelection();

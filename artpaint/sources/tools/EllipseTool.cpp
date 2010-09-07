@@ -33,8 +33,8 @@ EllipseTool::EllipseTool()
 	: DrawingTool(StringServer::ReturnString(ELLIPSE_TOOL_NAME_STRING),
 		ELLIPSE_TOOL)
 {
-	options = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION;
-	number_of_options = 3;
+	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION;
+	fOptionsCount = 3;
 
 	SetOption(FILL_ENABLED_OPTION,B_CONTROL_OFF);
 	SetOption(SIZE_OPTION,1);
@@ -58,7 +58,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	drawing_mode old_mode;
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script = new ToolScript(Type(), settings,
+	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 	Selection *selection = view->GetSelection();
 

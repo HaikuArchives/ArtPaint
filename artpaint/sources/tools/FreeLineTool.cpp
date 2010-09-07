@@ -34,8 +34,8 @@ FreeLineTool::FreeLineTool()
 	: DrawingTool(StringServer::ReturnString(FREE_LINE_TOOL_NAME_STRING),
 		FREE_LINE_TOOL)
 {
-	options = SIZE_OPTION;
-	number_of_options = 1;
+	fOptions = SIZE_OPTION;
+	fOptionsCount = 1;
 
 	SetOption(SIZE_OPTION, 1);
 }
@@ -59,7 +59,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		"read coordinates", B_NORMAL_PRIORITY, this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
-	ToolScript *the_script = new ToolScript(Type(), settings,
+	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
@@ -80,7 +80,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	prev_point = point;
 	BRect updated_rect;
 	status_t status_of_read;
-	int diameter = settings.size;
+	int diameter = fToolSettings.size;
 	if ((diameter%2) == 0)
 		diameter++;
 
@@ -121,7 +121,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			// first set the color
 			new_color = ((PaintApplication*)be_app)->Color(true);
 			new_color_bgra = RGBColorToBGRA(new_color);
-			diameter = settings.size;
+			diameter = fToolSettings.size;
 			if ((diameter%2) == 0)
 				diameter++;
 

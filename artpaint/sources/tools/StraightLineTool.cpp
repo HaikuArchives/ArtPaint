@@ -41,8 +41,8 @@ StraightLineTool::StraightLineTool()
 	: DrawingTool(StringServer::ReturnString(STRAIGHT_LINE_TOOL_NAME_STRING),
 		STRAIGHT_LINE_TOOL)
 {
-	options = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION;
-	number_of_options = 3;
+	fOptions = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION;
+	fOptionsCount = 3;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(MODE_OPTION, B_CONTROL_ON);
@@ -75,7 +75,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 	Selection *selection = view->GetSelection();
 
 	if (window != NULL) {
-		ToolScript* the_script = new ToolScript(Type(), settings,
+		ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 			((PaintApplication*)be_app)->Color(true));
 
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
@@ -103,7 +103,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		point_list[3] = new_rect.LeftBottom();
 
 		window->Lock();
-		if ((GetCurrentValue(SIZE_OPTION) > 2) && (settings.mode == B_CONTROL_OFF)) {
+		if ((GetCurrentValue(SIZE_OPTION) > 2) && (fToolSettings.mode == B_CONTROL_OFF)) {
 			view_polygon = new HSPolygon(point_list,4);
 			BPolygon *bpoly = view_polygon->GetBPolygon();
 			view->StrokePolygon(bpoly);
@@ -183,7 +183,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			if (old_rect != new_rect) {
-				if ((GetCurrentValue(SIZE_OPTION) > 2) && (settings.mode == B_CONTROL_OFF)) {
+				if ((GetCurrentValue(SIZE_OPTION) > 2) && (fToolSettings.mode == B_CONTROL_OFF)) {
 					BPolygon *bpoly = view_polygon->GetBPolygon();
 					view->StrokePolygon(bpoly);
 					delete view_polygon;
@@ -215,7 +215,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		int32 size = GetCurrentValue(SIZE_OPTION);
 		bool draw_line = true;
 		new_rect = old_rect;
-		if (settings.mode == B_CONTROL_ON) { // Adjust the width of the line.
+		if (fToolSettings.mode == B_CONTROL_ON) { // Adjust the width of the line.
 			bool continue_adjusting_width = true;
 			BPoint p1 = original_point;
 			BPoint width_point;

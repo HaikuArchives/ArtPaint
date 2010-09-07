@@ -44,9 +44,9 @@ HairyBrushTool::HairyBrushTool()
 	: DrawingTool(StringServer::ReturnString(HAIRY_BRUSH_TOOL_NAME_STRING),
 		HAIRY_BRUSH_TOOL)
 {
-	options = SIZE_OPTION | PRESSURE_OPTION | TOLERANCE_OPTION
+	fOptions = SIZE_OPTION | PRESSURE_OPTION | TOLERANCE_OPTION
 		| CONTINUITY_OPTION;
-	number_of_options = 3;
+	fOptionsCount = 3;
 
 	SetOption(SIZE_OPTION, 5);
 	SetOption(PRESSURE_OPTION, 2);
@@ -81,7 +81,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	if (!buffer)
 		return NULL;
 
-	ToolScript *the_script = new ToolScript(Type(), settings,
+	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	Selection *selection = view->GetSelection();

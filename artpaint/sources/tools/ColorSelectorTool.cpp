@@ -242,8 +242,8 @@ ColorSelectorTool::ColorSelectorTool()
 	: DrawingTool(StringServer::ReturnString(COLOR_SELECTOR_TOOL_NAME_STRING),
 		COLOR_SELECTOR_TOOL)
 {
-	options = SIZE_OPTION | MODE_OPTION;
-	number_of_options = 2;
+	fOptions = SIZE_OPTION | MODE_OPTION;
+	fOptionsCount = 2;
 
 	SetOption(SIZE_OPTION,1);
 	SetOption(MODE_OPTION,HS_ALL_BUTTONS);
@@ -281,7 +281,7 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		for (int32 i=0;i<500;i++)
 			sqrt_table[i] = sqrt(i);
 
-		float half_size = settings.size/2;
+		float half_size = fToolSettings.size/2;
 		BRect rc = BRect(point.x - half_size, point.y - half_size,
 			point.x + half_size, point.y + half_size);
 		BRect bounds = bitmap->Bounds();

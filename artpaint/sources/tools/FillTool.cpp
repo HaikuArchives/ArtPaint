@@ -45,9 +45,9 @@ FillTool::FillTool()
 {
 	// Set options here. The MODE_OPTION is used for determining if we do flood
 	// fill or some other type of fill.
-	options = GRADIENT_ENABLED_OPTION | PREVIEW_ENABLED_OPTION
+	fOptions = GRADIENT_ENABLED_OPTION | PREVIEW_ENABLED_OPTION
 		| TOLERANCE_OPTION | MODE_OPTION;
-	number_of_options = 4;
+	fOptionsCount = 4;
 	binary_fill_map = NULL;
 
 	// Initially disable the gradient.
@@ -70,14 +70,14 @@ FillTool::~FillTool()
 ToolScript*
 FillTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
-	ToolScript* toolScript = new ToolScript(Type(), settings,
+	ToolScript* toolScript = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 	toolScript->AddPoint(point);
 
 	Selection* selection = view->GetSelection();
 	selection = (selection->IsEmpty() ? NULL : selection);
 
-	if (settings.gradient_enabled == B_CONTROL_ON) {
+	if (fToolSettings.gradient_enabled == B_CONTROL_ON) {
 		// Do just a fill with gradient
 		toolScript->AddPoint(GradientFill(view, buttons, point, viewPoint,
 			selection));
@@ -112,7 +112,7 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 	if (window == NULL)
 		return B_ERROR;
 
-	uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
+	uint32 tolerance = (uint32)((float)fToolSettings.tolerance/100.0 * 255);
 
 	filled_bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer *drawer = new BitmapDrawer(filled_bitmap);
@@ -141,7 +141,7 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 	max_y = (int32)bitmap_bounds.bottom;
 
 	if (bitmap_bounds.Contains(start) == TRUE) {
-		if (settings.mode == B_CONTROL_ON) { 	// Do the flood fill
+		if (fToolSettings.mode == B_CONTROL_ON) { 	// Do the flood fill
 			// Here fill the area using drawer's SetPixel and GetPixel.
 			// The algorithm uses 4-connected version of flood-fill.
 			// The SetPixel and GetPixel functions are versions that
@@ -896,7 +896,7 @@ BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint
 
 		// Here calculate the binary bitmap for the purpose of doing the gradient.
 		BBitmap *binary_map;
-		if (settings.mode == B_CONTROL_OFF)	// Not flood-mode
+		if (fToolSettings.mode == B_CONTROL_OFF)	// Not flood-mode
 			binary_map = MakeBinaryMap(drawer,min_x,max_x,min_y,max_y,old_color,sel);
 		else	// Flood-mode
 			binary_map = MakeFloodBinaryMap(drawer,min_x,max_x,min_y,max_y,old_color,start,sel);
@@ -916,7 +916,7 @@ BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint
 		window->Lock();
 		view->StrokeEllipse(ellipse_rect);
 		window->Unlock();
-		if (settings.preview_enabled == B_CONTROL_OFF) {
+		if (fToolSettings.preview_enabled == B_CONTROL_OFF) {
 			// Do not do the preview. Just read the coordinates.
 			while (buttons) {
 				if (new_view_point != prev_view_point) {
@@ -984,7 +984,7 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 	int32 binary_bpr = binary_map->BytesPerRow();
 
 	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
-		if (settings.tolerance == 0) {
+		if (fToolSettings.tolerance == 0) {
 			// Always collect eight pixels from the bitmap and then move that data to the binary bitmap.
 			uchar next_value = 0x00;
 			for (int32 y=min_y;y<=max_y;y++) {
@@ -1008,7 +1008,7 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 		else {
 			// Always collect eight pixels from the bitmap and then move that data to the binary bitmap.
 			uchar next_value = 0x00;
-			uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
+			uint32 tolerance = (uint32)((float)fToolSettings.tolerance/100.0 * 255);
 			for (int32 y=min_y;y<=max_y;y++) {
 				int32 bytes_advanced = 0;
 				for (int32 x=min_x;x<=max_x;x++) {
@@ -1029,7 +1029,7 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 		}
 	}
 	else {
-		if (settings.tolerance == 0) {
+		if (fToolSettings.tolerance == 0) {
 			// Always collect eight pixels from the bitmap and then move that data to the binary bitmap.
 			uchar next_value = 0x00;
 			for (int32 y=min_y;y<=max_y;y++) {
@@ -1053,7 +1053,7 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 		else {
 			// Always collect eight pixels from the bitmap and then move that data to the binary bitmap.
 			uchar next_value = 0x00;
-			uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
+			uint32 tolerance = (uint32)((float)fToolSettings.tolerance/100.0 * 255);
 			for (int32 y=min_y;y<=max_y;y++) {
 				int32 bytes_advanced = 0;
 				for (int32 x=min_x;x<=max_x;x++) {
@@ -1106,7 +1106,7 @@ BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 	// bitmap's bounds.
 	uint32 color = 0xFFFFFFFF;	// This is the temporary color that will be used
 								// to fill the bitmap.
-	uint32 tolerance = (uint32)((float)settings.tolerance/100.0 * 255);
+	uint32 tolerance = (uint32)((float)fToolSettings.tolerance/100.0 * 255);
 
 	PointStack stack;
 	stack.Push(start);

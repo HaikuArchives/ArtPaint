@@ -43,7 +43,7 @@ SelectorTool::SelectorTool()
 	, ToolEventAdapter()
 {
 	// the value for mode will be either B_OP_ADD or B_OP_SUBTRACT
-	options = MODE_OPTION | SHAPE_OPTION | TOLERANCE_OPTION;
+	fOptions = MODE_OPTION | SHAPE_OPTION | TOLERANCE_OPTION;
 
 	SetOption(MODE_OPTION,B_OP_ADD);
 	SetOption(SHAPE_OPTION,HS_RECTANGLE);
@@ -70,7 +70,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 	if (window == NULL)
 		return NULL;
 
-	ToolScript* the_script = new ToolScript(Type(), settings,
+	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
 	window->Lock();
@@ -81,7 +81,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 	view->MovePenTo(view_point);
 	window->Unlock();
 
-	if (settings.shape == HS_INTELLIGENT_SCISSORS) {
+	if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
 		IntelligentPathFinder *path_finder =
 			new IntelligentPathFinder(view->ReturnImage()->ReturnActiveBitmap());
 		HSPolygon *the_polygon = new HSPolygon(&point,1);
@@ -195,9 +195,9 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			view->UnlockLooper();
 		}
 		delete path_finder;
-		selection->AddSelection(the_polygon,settings.mode == B_OP_ADD);
+		selection->AddSelection(the_polygon,fToolSettings.mode == B_OP_ADD);
 	}
-	else if (settings.shape == HS_FREE_LINE) {
+	else if (fToolSettings.shape == HS_FREE_LINE) {
 		int32 turn = 0;
 		int32 size = 100;
 		BPoint *point_list = new BPoint[size];
@@ -229,9 +229,9 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		}
 		HSPolygon *poly = new HSPolygon(point_list,next_index,HS_POLYGON_CLOCKWISE);
 		delete[] point_list;
-		selection->AddSelection(poly,settings.mode == B_OP_ADD);
+		selection->AddSelection(poly,fToolSettings.mode == B_OP_ADD);
 	}
-	else if (settings.shape == HS_RECTANGLE) {
+	else if (fToolSettings.shape == HS_RECTANGLE) {
 		BRect old_rect, new_rect;
 		old_rect = new_rect = BRect(point,point);
 		float left,top,right,bottom;
@@ -275,9 +275,9 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		point_list[2] = old_rect.RightBottom();
 		point_list[3] = old_rect.LeftBottom();
 		HSPolygon *poly = new HSPolygon(point_list,4,HS_POLYGON_CLOCKWISE);
-		selection->AddSelection(poly,settings.mode == B_OP_ADD);
+		selection->AddSelection(poly,fToolSettings.mode == B_OP_ADD);
 	}
-	else if (settings.shape == HS_MAGIC_WAND) {
+	else if (fToolSettings.shape == HS_MAGIC_WAND) {
 		BBitmap *original_bitmap = view->ReturnImage()->ReturnActiveBitmap();
 		BBitmap *selection_map;
 		// We use a fill-tool to select the area:
@@ -286,7 +286,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			int32(original_bitmap->Bounds().right), 0,
 			int32(original_bitmap->Bounds().bottom),
 			drawer->GetPixel(original_point), original_point);
-		selection->AddSelection(selection_map,settings.mode == B_OP_ADD);
+		selection->AddSelection(selection_map,fToolSettings.mode == B_OP_ADD);
 		delete drawer;
 		delete selection_map;
 	}
@@ -504,7 +504,7 @@ SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 	// The SetPixel and GetPixel functions are versions that
 	// do not check bounds so we have to be careful not to exceed
 	// bitmap's bounds.
-	uint32 tolerance = (uint32)((float)settings.tolerance / 100.0 * 255);
+	uint32 tolerance = (uint32)((float)fToolSettings.tolerance / 100.0 * 255);
 
 	PointStack stack;
 	stack.Push(start);
