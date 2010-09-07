@@ -485,16 +485,15 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 			.Add(fBrushSize->Slider(), 2, 0)
 			.Add(fBrushHairs->LabelLayoutItem(), 0, 1)
 			.Add(fBrushHairs->TextViewLayoutItem(), 1, 1)
-			.Add(fBrushHairs->Slider(), 2, 1);
+			.Add(fBrushHairs->Slider(), 2, 1)
+			.SetInsets(5.0, 0.0, 0.0, 0.0);
 		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
 		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(gridLayout->View())
-			.AddStrut(10.0)
+		layout->AddItem(BGroupLayoutBuilder(B_VERTICAL)
+			.Add(gridLayout)
 			.Add(fColorAmount)
 			.Add(fColorVariance)
-			.TopView()
 		);
 	}
 }
