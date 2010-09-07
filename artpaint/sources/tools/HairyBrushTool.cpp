@@ -381,9 +381,9 @@ HairyBrushTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-HairyBrushTool::makeConfigView()
+HairyBrushTool::ConfigView()
 {
-	return (new HairyBrushToolConfigView(this));
+	return new HairyBrushToolConfigView(this);
 }
 
 

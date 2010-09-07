@@ -281,7 +281,7 @@ BView*
 ToolManager::ReturnConfigurationView(int32 tool_type)
 {
 	if (DrawingTool* tool = ReturnTool(tool_type))
-		return tool->makeConfigView();
+		return tool->ConfigView();
 	return NULL;
 }
 

@@ -154,9 +154,9 @@ TransparencyTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-TransparencyTool::makeConfigView()
+TransparencyTool::ConfigView()
 {
-	return (new TransparencyToolConfigView(this));
+	return new TransparencyToolConfigView(this);
 }
 
 

@@ -36,7 +36,7 @@ public:
 								FillTool();
 	virtual						~FillTool();
 
-			BView*				makeConfigView();
+			BView*				ConfigView();
 			int32				UseToolWithScript(ToolScript*,BBitmap*);
 			ToolScript*			UseTool(ImageView*,uint32,BPoint,BPoint);
 

@@ -300,9 +300,9 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 
 
 BView*
-SelectorTool::makeConfigView()
+SelectorTool::ConfigView()
 {
-	return (new SelectorToolConfigView(this));
+	return new SelectorToolConfigView(this);
 }
 
 

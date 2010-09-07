@@ -30,7 +30,7 @@ public:
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
 
-			BView*				makeConfigView();
+			BView*				ConfigView();
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
 };

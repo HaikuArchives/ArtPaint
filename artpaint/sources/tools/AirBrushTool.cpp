@@ -320,9 +320,9 @@ AirBrushTool::UseToolWithScript(ToolScript*,BBitmap*)
 
 
 BView*
-AirBrushTool::makeConfigView()
+AirBrushTool::ConfigView()
 {
-	return (new AirBrushToolConfigView(this));
+	return new AirBrushToolConfigView(this);
 }
 
 

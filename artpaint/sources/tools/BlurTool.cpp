@@ -194,9 +194,9 @@ BlurTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-BlurTool::makeConfigView()
+BlurTool::ConfigView()
 {
-	return (new BlurToolConfigView(this));
+	return new BlurToolConfigView(this);
 }
 
 

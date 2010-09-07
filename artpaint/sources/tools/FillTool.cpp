@@ -98,9 +98,9 @@ FillTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-FillTool::makeConfigView()
+FillTool::ConfigView()
 {
-	return (new FillToolConfigView(this, gradient_color1, gradient_color2));
+	return new FillToolConfigView(this, gradient_color1, gradient_color2);
 }
 
 

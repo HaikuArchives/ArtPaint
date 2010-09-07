@@ -35,7 +35,7 @@ public:
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-			BView*				makeConfigView();
+			BView*				ConfigView();
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
 

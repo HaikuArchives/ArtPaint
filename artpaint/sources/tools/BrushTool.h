@@ -29,11 +29,9 @@ public:
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-			BView*				makeConfigView();
-
+			BView*				ConfigView();
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
-
 
 			status_t			readSettings(BFile& file, bool isLittleEndian);
 			status_t			writeSettings(BFile& file);

@@ -378,9 +378,9 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 
 
 BView*
-ColorSelectorTool::makeConfigView()
+ColorSelectorTool::ConfigView()
 {
-	return (new ColorSelectorToolConfigView(this));
+	return new ColorSelectorToolConfigView(this);
 }
 
 

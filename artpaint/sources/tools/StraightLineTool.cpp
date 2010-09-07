@@ -320,9 +320,9 @@ StraightLineTool::UseToolWithScript(ToolScript*,BBitmap*)
 
 
 BView*
-StraightLineTool::makeConfigView()
+StraightLineTool::ConfigView()
 {
-	return (new StraightLineToolConfigView(this));
+	return new StraightLineToolConfigView(this);
 }
 
 

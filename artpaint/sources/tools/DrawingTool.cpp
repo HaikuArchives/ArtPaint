@@ -75,7 +75,7 @@ DrawingTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-DrawingTool::makeConfigView()
+DrawingTool::ConfigView()
 {
 	return NULL;
 }

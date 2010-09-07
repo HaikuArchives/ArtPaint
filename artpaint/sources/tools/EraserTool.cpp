@@ -186,9 +186,9 @@ EraserTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-EraserTool::makeConfigView()
+EraserTool::ConfigView()
 {
-	return (new EraserToolConfigView(this));
+	return new EraserToolConfigView(this);
 }
 
 

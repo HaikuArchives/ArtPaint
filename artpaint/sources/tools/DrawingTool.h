@@ -34,7 +34,7 @@ public:
 	virtual	ToolScript*		UseTool(ImageView*, uint32 buttons, BPoint point,
 								BPoint viewPoint);
 
-	virtual	BView*			makeConfigView();
+	virtual	BView*			ConfigView();
 	virtual	void			UpdateConfigView(BView*) {}
 
 	inline	int32			Options() { return fOptions; }

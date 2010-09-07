@@ -167,9 +167,9 @@ FreeLineTool::UseToolWithScript(ToolScript*,BBitmap*)
 
 
 BView*
-FreeLineTool::makeConfigView()
+FreeLineTool::ConfigView()
 {
-	return (new FreeLineToolConfigView(this));
+	return new FreeLineToolConfigView(this);
 }
 
 

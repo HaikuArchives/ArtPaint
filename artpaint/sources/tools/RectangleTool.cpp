@@ -271,9 +271,9 @@ RectangleTool::UseToolWithScript(ToolScript*, BBitmap*)
 
 
 BView*
-RectangleTool::makeConfigView()
+RectangleTool::ConfigView()
 {
-	return (new RectangleToolConfigView(this));
+	return new RectangleToolConfigView(this);
 }
 
 

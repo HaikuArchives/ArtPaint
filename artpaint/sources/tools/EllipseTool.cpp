@@ -153,7 +153,7 @@ EllipseTool::UseToolWithScript(ToolScript*,BBitmap*)
 
 
 BView*
-EllipseTool::makeConfigView()
+EllipseTool::ConfigView()
 {
 	return new EllipseToolConfigView(this);
 }
