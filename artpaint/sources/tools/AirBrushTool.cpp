@@ -180,7 +180,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		CoordinateReader *coordinate_reader = new CoordinateReader(view,
 			NO_INTERPOLATION, false, true);
 		RandomNumberGenerator *generator = new RandomNumberGenerator(0,10000);
-		ImageUpdater *updater = new ImageUpdater(view,20000.0);
+		ImageUpdater* imageUpdater = new ImageUpdater(view, 20000);
 		prev_point = point;
 
 		while (coordinate_reader->GetPoint(point) == B_NO_ERROR) {
@@ -296,14 +296,14 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			}
 			prev_point = point;
 
-			updater->AddRect(rc);
+			imageUpdater->AddRect(rc);
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
 		}
-		updater->ForceUpdate();
+		imageUpdater->ForceUpdate();
 
 		delete coordinate_reader;
 		delete generator;
-		delete updater;
+		delete imageUpdater;
 	}
 
 	delete drawer;

@@ -114,8 +114,8 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	SetLastUpdatedRect(updated_rect);
 	prev_point = point;
 
-	ImageUpdater *image_updater = new ImageUpdater(view, 20000.0);
-	image_updater->AddRect(updated_rect);
+	ImageUpdater* imageUpdater = new ImageUpdater(view, 20000);
+	imageUpdater->AddRect(updated_rect);
 
 	if (selection->IsEmpty()) {
 		while (coordinate_reader->GetPoint(point) == B_OK) {
@@ -125,7 +125,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			updated_rect = BRect(point.x - brush_width_per_2,
 				point.y - brush_height_per_2, point.x + brush_width_per_2,
 				point.y + brush_height_per_2);
-			image_updater->AddRect(updated_rect);
+			imageUpdater->AddRect(updated_rect);
 			SetLastUpdatedRect(updated_rect | LastUpdatedRect());
 			prev_point = point;
 		}
@@ -137,14 +137,14 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			updated_rect = BRect(point.x - brush_width_per_2,
 				point.y - brush_height_per_2, point.x + brush_width_per_2,
 				point.y + brush_height_per_2);
-			image_updater->AddRect(updated_rect);
+			imageUpdater->AddRect(updated_rect);
 			SetLastUpdatedRect(updated_rect | LastUpdatedRect());
 			prev_point = point;
 		}
 	}
-	image_updater->ForceUpdate();
+	imageUpdater->ForceUpdate();
 
-	delete image_updater;
+	delete imageUpdater;
 	delete coordinate_reader;
 
 //	test_brush(point,new_color);

@@ -84,7 +84,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer *drawer = new BitmapDrawer(buffer);
 	CoordinateReader *reader = new CoordinateReader(image_view,NO_INTERPOLATION,false,true);
-	ImageUpdater *updater = new ImageUpdater(image_view,0.0);
+	ImageUpdater* imageUpdater = new ImageUpdater(image_view, 0);
 
 	RandomNumberGenerator *random_stream = new RandomNumberGenerator(107 + (int32)point.x,1024);
 
@@ -222,7 +222,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.right = ceil(updated_rect.right);
 			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1,-1);
-			updater->AddRect(updated_rect);
+			imageUpdater->AddRect(updated_rect);
 			SetLastUpdatedRect(updated_rect);
 		}
 		else {
@@ -232,7 +232,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	if (!initialized) {
 
 	}
-	updater->ForceUpdate();
+	imageUpdater->ForceUpdate();
 
 	float number_of_consecutive_growths = 0;
 //	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == true)) {
@@ -352,8 +352,8 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
-			updater->AddRect(updated_rect);
-			updater->ForceUpdate();
+			imageUpdater->AddRect(updated_rect);
+			imageUpdater->ForceUpdate();
 
 			prev_point = point;
 		}
@@ -361,7 +361,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 //			current_width = max_c(current_width-0.5,minimum_width);
 		}
 	}
-	updater->ForceUpdate();
+	imageUpdater->ForceUpdate();
 
 	delete[] index_array;
 	delete[] color_amount_array;
@@ -369,7 +369,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	delete[] start_point_array;
 	delete drawer;
 	delete reader;
-	delete updater;
+	delete imageUpdater;
 	delete random_stream;
 
 	return the_script;

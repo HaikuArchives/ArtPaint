@@ -1,9 +1,11 @@
 /*
  * Copyright 2003, Heikki Suhonen
+ * Copyright 2010, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ * 		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
 #ifndef IMAGE_UPDATER_H
@@ -12,32 +14,35 @@
 #include <OS.h>
 #include <Region.h>
 
+
 class ImageView;
 
+
 class ImageUpdater {
-		int32		benaphore_count;
-		sem_id		benaphore_mutex;
-
-
-		ImageView	*view;
-		double		interval;
-		BRect		updated_rect;
-		bool		continue_updating;
-		thread_id	updater_thread;
-
-		bool	EnterCS();
-		bool	ExitCS();
-
-static	int32	updater_entry(void*);
-		int32	updater_function();
-
 public:
-		ImageUpdater(ImageView*,double update_interval=50000.0);
-		~ImageUpdater();
+							ImageUpdater(ImageView* imageView,
+								bigtime_t updateInterval = 50000);
+							~ImageUpdater();
 
-void	AddRect(BRect);
-void	ForceUpdate();
+			void			ForceUpdate();
+			void			AddRect(const BRect& rect);
+
+private:
+			int32			_Update();
+	static	int32			_ThreadFunc(void* data);
+
+			bool			EnterCriticalSection();
+			void			LeaveCriticalSection();
+
+private:
+			ImageView*		fImageView;
+			BRect			fUpdatedRect;
+			bigtime_t		fUpdateInterval;
+			bool			fContinueUpdating;
+
+			int32			fBenaphoreCount;
+			sem_id			fBenaphoreMutex;
+			thread_id		fUpdaterThreadId;
 };
-
 
 #endif
