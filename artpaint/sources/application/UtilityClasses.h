@@ -16,6 +16,7 @@
 
 #include <stack>
 
+#define B_UNUSED(x) (void)x;
 
 class BitmapView : public BView {
 public:
