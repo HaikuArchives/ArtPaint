@@ -1,6 +1,6 @@
 /*
  * Copyright 2003, Heikki Suhonen
- * Copyright 2009, Karsten Heimrich
+ * Copyright 2009 - 2010, Karsten Heimrich
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -49,6 +49,8 @@ enum image_view_event_type {
 
 class ToolManager {
 public:
+	static	ToolManager&			Instance();
+
 	static	status_t				CreateToolManager();
 	static	status_t				DestroyToolManager();
 
@@ -91,8 +93,8 @@ private:
 			BPopUpMenu*				fToolPopUpMenu;
 			DrawingTool*			fActiveTool;
 			ToolManagerClient*		fClientListHead;
+
+	static	ToolManager*			fToolManager;
 };
 
-extern ToolManager	*tool_manager;
-
-#endif
+#endif	// TOOL_MANAGER_H

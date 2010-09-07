@@ -157,14 +157,14 @@ ToolSetupWindow::_UpdateConfigurationView(int32 tool)
 			delete oldConfigView;
 		}
 
-		BView* configView = tool_manager->ConfigView(tool);
+		BView* configView = ToolManager::Instance().ConfigView(tool);
 		if (configView == NULL) {
 			// TODO: translation
 			BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
 				.Add(new BStringView("", "No configuration options available."))
 				.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0)
 				.TopView());
-			box->SetLabel(tool_manager->ReturnTool(tool)->Name().String());
+			box->SetLabel(ToolManager::Instance().ReturnTool(tool)->Name().String());
 			configView = box;
 		}
 		AddChild(configView);

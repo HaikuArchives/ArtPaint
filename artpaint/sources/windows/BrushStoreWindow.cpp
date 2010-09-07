@@ -472,8 +472,8 @@ void BrushStoreView::MouseDown(BPoint point)
 ////				ToolSetupWindow::updateTool(BRUSH_TOOL);
 //
 //			}
-			tool_manager->SetCurrentBrush(((brush_info*)brush_data->ItemAt(index)));
-			tool_manager->ChangeTool(BRUSH_TOOL);
+			ToolManager::Instance().SetCurrentBrush(((brush_info*)brush_data->ItemAt(index)));
+			ToolManager::Instance().ChangeTool(BRUSH_TOOL);
 //		}
 		if (index != selected_brush_index) {
 			// If the selected brush changed, we must indicate it

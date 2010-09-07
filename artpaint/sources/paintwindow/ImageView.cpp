@@ -268,7 +268,7 @@ void ImageView::KeyDown(const char *bytes, int32 numBytes)
 		ScrollBy(0, delta);
 	}
 	else if (fManipulator == NULL) {
-		tool_manager->KeyDown(this,bytes,numBytes);
+		ToolManager::Instance().KeyDown(this,bytes,numBytes);
 	}
 }
 
@@ -718,7 +718,7 @@ void ImageView::MessageReceived(BMessage *message)
 			cursor_mode = NORMAL_CURSOR_MODE;
 			SetCursor();
 			// changes the help-string
-			tool_manager->NotifyViewEvent(this, TOOL_ACTIVATED);
+			ToolManager::Instance().NotifyViewEvent(this, TOOL_ACTIVATED);
 		}	break;
 
 		case HS_MANIPULATOR_ADJUSTING_STARTED: {
@@ -766,9 +766,9 @@ void ImageView::MouseDown(BPoint view_point)
 		}
 		else if (fManipulator == NULL){
 			if (buttons & B_SECONDARY_MOUSE_BUTTON) {
-				BMenuItem *item = tool_manager->ToolPopUpMenu()->Go(ConvertToScreen(view_point));
+				BMenuItem *item = ToolManager::Instance().ToolPopUpMenu()->Go(ConvertToScreen(view_point));
 				if (item != NULL) {
-					tool_manager->ChangeTool(item->Command());
+					ToolManager::Instance().ChangeTool(item->Command());
 					SetCursor();	// If the tool changes, the cursor should change too.
 				}
 				release_sem(mouse_mutex);
@@ -800,7 +800,7 @@ void ImageView::MouseDown(BPoint view_point)
 			getCoords(&bitmap_point,&buttons,&view_point);
 			int32 clicks;
 			if (Window()->CurrentMessage()->FindInt32("clicks",&clicks) == B_OK)
-				tool_manager->MouseDown(this,view_point,bitmap_point,buttons,clicks);
+				ToolManager::Instance().MouseDown(this,view_point,bitmap_point,buttons,clicks);
 		}
 	}
 }
@@ -815,9 +815,9 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 		if ((transit == B_ENTERED_VIEW) || (transit == B_EXITED_VIEW)) {
 			if (fManipulator == NULL) {
 				if (transit == B_ENTERED_VIEW)
-					tool_manager->NotifyViewEvent(this,CURSOR_ENTERED_VIEW);
+					ToolManager::Instance().NotifyViewEvent(this,CURSOR_ENTERED_VIEW);
 				else
-					tool_manager->NotifyViewEvent(this,CURSOR_EXITED_VIEW);
+					ToolManager::Instance().NotifyViewEvent(this,CURSOR_EXITED_VIEW);
 			}
 			SetCursor();
 		}
@@ -1201,7 +1201,7 @@ int32 ImageView::PaintToolThread()
 
 	SetReferencePoint(point,TRUE);
 
-	int32 tool_type = tool_manager->ReturnActiveToolType();
+	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
 
 	if (modifiers() & B_COMMAND_KEY) {
 		tool_type = COLOR_SELECTOR_TOOL;
@@ -1212,10 +1212,10 @@ int32 ImageView::PaintToolThread()
 			// When this function returns the tool has finished. This function 
 			// might not return even if the user releases the mouse-button (in 
 			// which case for example a double-click might make it return).
-			ToolScript* script = tool_manager->StartTool(this, buttons, point,
+			ToolScript* script = ToolManager::Instance().StartTool(this, buttons, point,
 				view_point, tool_type);
 			if (script && tool_type != SELECTOR_TOOL) {
-				const DrawingTool* tool = tool_manager->ReturnTool(tool_type);
+				const DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
 				UndoEvent *new_event = undo_queue->AddUndoEvent(tool->Name(),
 					the_image->ReturnThumbnailImage());
 				BList *layer_list = the_image->LayerList();
@@ -1226,7 +1226,7 @@ int32 ImageView::PaintToolThread()
 						if (layer->IsActive() == FALSE)
 							new_action = new UndoAction(layer->Id());
 						else
-							new_action = new UndoAction(layer->Id(), script,tool_manager->LastUpdatedRect(this));
+							new_action = new UndoAction(layer->Id(), script,ToolManager::Instance().LastUpdatedRect(this));
 
 						new_event->AddAction(new_action);
 						new_action->StoreUndo(layer->Bitmap());
@@ -1239,13 +1239,13 @@ int32 ImageView::PaintToolThread()
 				}
 				else {
 					delete script;
-					tool_manager->LastUpdatedRect(this);
+					ToolManager::Instance().LastUpdatedRect(this);
 				}
 			}
 			else if (tool_type == SELECTOR_TOOL) {
 				// Add selection-change to the undo-queue.
 				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-					const DrawingTool *used_tool = tool_manager->ReturnTool(tool_type);
+					const DrawingTool *used_tool = ToolManager::Instance().ReturnTool(tool_type);
 					UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->Name(),the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
@@ -1934,7 +1934,7 @@ void ImageView::SetCursor()
 
 	if (region.Contains(point)) {
 		if (cursor_mode == NORMAL_CURSOR_MODE) {
-			be_app->SetCursor(tool_manager->ReturnCursor());
+			be_app->SetCursor(ToolManager::Instance().ReturnCursor());
 		}
 		else if (cursor_mode == MANIPULATOR_CURSOR_MODE) {
 			GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
@@ -2103,72 +2103,72 @@ filter_result KeyFilterFunction(BMessage *message,BHandler **handler,BMessageFil
 				if (message->FindString("bytes",&bytes) == B_OK) {
 					switch (bytes[0]) {
 						case 'b':
-							tool_manager->ChangeTool(BRUSH_TOOL);
+							ToolManager::Instance().ChangeTool(BRUSH_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'a':
-							tool_manager->ChangeTool(AIR_BRUSH_TOOL);
+							ToolManager::Instance().ChangeTool(AIR_BRUSH_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'e':
-							tool_manager->ChangeTool(ERASER_TOOL);
+							ToolManager::Instance().ChangeTool(ERASER_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'f':
-							tool_manager->ChangeTool(FREE_LINE_TOOL);
+							ToolManager::Instance().ChangeTool(FREE_LINE_TOOL);
 							view->SetCursor();
 							break;
 
 						case 's':
-							tool_manager->ChangeTool(SELECTOR_TOOL);
+							ToolManager::Instance().ChangeTool(SELECTOR_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'r':
-							tool_manager->ChangeTool(RECTANGLE_TOOL);
+							ToolManager::Instance().ChangeTool(RECTANGLE_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'l':
-							tool_manager->ChangeTool(STRAIGHT_LINE_TOOL);
+							ToolManager::Instance().ChangeTool(STRAIGHT_LINE_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'h':
-							tool_manager->ChangeTool(HAIRY_BRUSH_TOOL);
+							ToolManager::Instance().ChangeTool(HAIRY_BRUSH_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'u':
-							tool_manager->ChangeTool(BLUR_TOOL);
+							ToolManager::Instance().ChangeTool(BLUR_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'i':
-							tool_manager->ChangeTool(FILL_TOOL);
+							ToolManager::Instance().ChangeTool(FILL_TOOL);
 							view->SetCursor();
 							break;
 
 						case 't':
-							tool_manager->ChangeTool(TEXT_TOOL);
+							ToolManager::Instance().ChangeTool(TEXT_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'n':
-							tool_manager->ChangeTool(TRANSPARENCY_TOOL);
+							ToolManager::Instance().ChangeTool(TRANSPARENCY_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'c':
-							tool_manager->ChangeTool(COLOR_SELECTOR_TOOL);
+							ToolManager::Instance().ChangeTool(COLOR_SELECTOR_TOOL);
 							view->SetCursor();
 							break;
 
 						case 'p':
-							tool_manager->ChangeTool(ELLIPSE_TOOL);
+							ToolManager::Instance().ChangeTool(ELLIPSE_TOOL);
 							view->SetCursor();
 							break;
 					}

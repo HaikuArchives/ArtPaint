@@ -78,7 +78,7 @@ PaintApplication::PaintApplication()
 
 	int32 tool = FREE_LINE_TOOL;
 	settings.FindInt32(skTool, &tool);
-	tool_manager->ChangeTool(tool);
+	ToolManager::Instance().ChangeTool(tool);
 
 	int32 depth = 20;
 	settings.FindInt32(skUndoQueueDepth, &depth);
@@ -482,7 +482,7 @@ PaintApplication::_ReadPreferences()
 			if (status == B_OK) {
 				BFile tools(&entry, B_READ_ONLY);
 				if (tools.InitCheck() == B_OK) {
-					if (tool_manager->ReadToolSettings(tools) == B_OK)
+					if (ToolManager::Instance().ReadToolSettings(tools) == B_OK)
 						createDefaultTools = false;
 				}
 			}
@@ -536,7 +536,7 @@ PaintApplication::_WritePreferences()
 
 			BFile tools;
 			if (settingsDir.CreateFile("tool_preferences", &tools, false) == B_OK)
-				tool_manager->WriteToolSettings(tools);
+				ToolManager::Instance().WriteToolSettings(tools);
 
 			BFile colors;
 			if (settingsDir.CreateFile("color_preferences", &colors, false) == B_OK)

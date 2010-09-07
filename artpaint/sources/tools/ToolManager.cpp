@@ -47,20 +47,25 @@ struct ToolManagerClient {
 // #pragma mark -- ToolManager
 
 
-ToolManager* tool_manager;
+ToolManager* ToolManager::fToolManager = NULL;
+std::map<int32, DrawingTool*> gManagerToolMap;
 
-typedef std::map<int32, DrawingTool*> ToolMap;
-ToolMap gManagerToolMap;
 
 #define	TOOL_SETTINGS_FILE_ID		0x12345678
 #define	TOOL_SETTINGS_FILE_VERSION	0x00000001
 
 
+ToolManager&
+ToolManager::Instance()
+{
+	return *fToolManager;
+}
+
 status_t
 ToolManager::CreateToolManager()
 {
-	if (tool_manager == NULL) {
-		tool_manager = new ToolManager();
+	if (fToolManager == NULL) {
+		fToolManager = new ToolManager();
 		return B_OK;
 	}
 	return B_ERROR;
@@ -70,9 +75,9 @@ ToolManager::CreateToolManager()
 status_t
 ToolManager::DestroyToolManager()
 {
-	if (tool_manager) {
-		delete tool_manager;
-		tool_manager = NULL;
+	if (fToolManager) {
+		delete fToolManager;
+		fToolManager = NULL;
 		return B_OK;
 	}
 	return B_ERROR;
@@ -87,7 +92,7 @@ ToolManager::StartTool(ImageView *view, uint32 buttons, BPoint bitmap_point,
 	DrawingTool* activeTool = NULL;
 
 	if (toolType != 0) {
-		ToolMap::const_iterator it = gManagerToolMap.find(toolType);
+		std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.find(toolType);
 		if (it != gManagerToolMap.end())
 			activeTool = it->second;
 	}
@@ -186,7 +191,7 @@ ToolManager::LastUpdatedRect(ImageView *view)
 status_t
 ToolManager::ChangeTool(int32 toolType)
 {
-	ToolMap::const_iterator it = gManagerToolMap.find(toolType);
+	std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.find(toolType);
 	if (it != gManagerToolMap.end()) {
 		fActiveTool = it->second;
 
@@ -204,7 +209,7 @@ ToolManager::ChangeTool(int32 toolType)
 DrawingTool*
 ToolManager::ReturnTool(int32 toolType) const
 {
-	ToolMap::const_iterator it = gManagerToolMap.find(toolType);
+	std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.find(toolType);
 	if (it != gManagerToolMap.end())
 		return it->second;
 	return NULL;
@@ -292,7 +297,7 @@ ToolManager::ToolPopUpMenu()
 	if (!fToolPopUpMenu) {
 		fToolPopUpMenu = new BPopUpMenu("");
 
-		ToolMap::const_iterator it = gManagerToolMap.begin();
+		std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.begin();
 		for (it = it; it != gManagerToolMap.end(); ++it) {
 			fToolPopUpMenu->AddItem(new BMenuItem(it->second->Name(),
 				new BMessage(it->second->Type())));
@@ -346,7 +351,7 @@ ToolManager::ReadToolSettings(BFile &file)
 		else
 			marker = B_BENDIAN_TO_HOST_INT32(marker);
 
-		ToolMap::const_iterator it = gManagerToolMap.find(marker);
+		std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.find(marker);
 		if (it != gManagerToolMap.end())
 			it->second->readSettings(file, is_little_endian);
 	}
@@ -374,7 +379,7 @@ ToolManager::WriteToolSettings(BFile &file)
 	if (file.Write(&version,sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	ToolMap::const_iterator it = gManagerToolMap.begin();
+	std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.begin();
 	for (it = it; it != gManagerToolMap.end(); ++it)
 		it->second->writeSettings(file);
 
@@ -416,7 +421,7 @@ ToolManager::~ToolManager()
 	}
 
 	// Delete the tools
-	ToolMap::const_iterator it = gManagerToolMap.begin();
+	std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.begin();
 	for (it = it; it != gManagerToolMap.end(); ++it)
 		delete it->second;
 

@@ -55,25 +55,25 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 
 	fMatrixView = new MatrixView(pictureSize, pictureSize, kExtraEdge);
 
-	_AddTool(tool_manager->ReturnTool(FREE_LINE_TOOL));
-	_AddTool(tool_manager->ReturnTool(STRAIGHT_LINE_TOOL));
-	_AddTool(tool_manager->ReturnTool(RECTANGLE_TOOL));
-	_AddTool(tool_manager->ReturnTool(ELLIPSE_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(FREE_LINE_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(STRAIGHT_LINE_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(RECTANGLE_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(ELLIPSE_TOOL));
 
 	// Here we could add a separator to the tool window.
 
-	_AddTool(tool_manager->ReturnTool(BRUSH_TOOL));
-	_AddTool(tool_manager->ReturnTool(HAIRY_BRUSH_TOOL));
-	_AddTool(tool_manager->ReturnTool(AIR_BRUSH_TOOL));
-	_AddTool(tool_manager->ReturnTool(BLUR_TOOL));
-	_AddTool(tool_manager->ReturnTool(FILL_TOOL));
-	_AddTool(tool_manager->ReturnTool(TEXT_TOOL));
-	_AddTool(tool_manager->ReturnTool(TRANSPARENCY_TOOL));
-	_AddTool(tool_manager->ReturnTool(ERASER_TOOL));
-	_AddTool(tool_manager->ReturnTool(SELECTOR_TOOL));
-	_AddTool(tool_manager->ReturnTool(COLOR_SELECTOR_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(BRUSH_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(HAIRY_BRUSH_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(AIR_BRUSH_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(BLUR_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(FILL_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(TEXT_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(TRANSPARENCY_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(ERASER_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(SELECTOR_TOOL));
+	_AddTool(ToolManager::Instance().ReturnTool(COLOR_SELECTOR_TOOL));
 
-	ToolMap::iterator it = gToolMap.find(tool_manager->ReturnActiveToolType());
+	ToolMap::iterator it = gToolMap.find(ToolManager::Instance().ReturnActiveToolType());
 	if (it != gToolMap.end())
 		it->second->SetValue(B_CONTROL_ON);
 
@@ -147,7 +147,7 @@ ToolSelectionWindow::MessageReceived(BMessage* message)
 		case HS_TOOL_CHANGED: {
 			int32 tool;
 			if (message->FindInt32(skTool, &tool) == B_OK) {
-				tool_manager->ChangeTool(tool);
+				ToolManager::Instance().ChangeTool(tool);
 
 				uint32 button;
 				if (message->FindUInt32("buttons", &button) == B_OK
