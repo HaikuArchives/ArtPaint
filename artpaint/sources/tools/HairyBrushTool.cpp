@@ -71,30 +71,28 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		snooze(50000);
 
 //	coordinate_queue = new CoordinateQueue();
-	image_view = view;
+//	image_view = view;
 //	thread_id coordinate_reader = spawn_thread(CoordinateReader,
 //		"read coordinates",B_NORMAL_PRIORITY,this);
 //	resume_thread(coordinate_reader);
 //	reading_coordinates = TRUE;
+
+	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	if (!buffer)
+		return NULL;
+
 	ToolScript *the_script = new ToolScript(Type(), settings,
 		((PaintApplication*)be_app)->Color(true));
 
 	Selection *selection = view->GetSelection();
-
-	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer *drawer = new BitmapDrawer(buffer);
-	CoordinateReader *reader = new CoordinateReader(image_view,NO_INTERPOLATION,false,true);
-	ImageUpdater* imageUpdater = new ImageUpdater(image_view, 0);
+	CoordinateReader *reader = new CoordinateReader(view, NO_INTERPOLATION,
+		false, true);
+	ImageUpdater* imageUpdater = new ImageUpdater(view, 0);
+	RandomNumberGenerator *random_stream =
+		new RandomNumberGenerator(107 + int32(point.x), 1024);
 
-	RandomNumberGenerator *random_stream = new RandomNumberGenerator(107 + (int32)point.x,1024);
-
-	if (buffer == NULL) {
-		delete the_script;
-		return NULL;
-	}
-
-	BPoint prev_point;
-	prev_point = point;
+	BPoint prev_point = point;
 	BRect updated_rect;
 
 	float initial_width = GetCurrentValue(PRESSURE_OPTION);
