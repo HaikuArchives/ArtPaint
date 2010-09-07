@@ -681,7 +681,7 @@ int32 Selection::thread_func()
 		continue_drawing = FALSE;
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 void Selection::ChangeMagnifyingScale(float mag_scale)

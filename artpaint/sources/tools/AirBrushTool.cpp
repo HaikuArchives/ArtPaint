@@ -183,7 +183,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		ImageUpdater* imageUpdater = new ImageUpdater(view, 20000);
 		prev_point = point;
 
-		while (coordinate_reader->GetPoint(point) == B_NO_ERROR) {
+		while (coordinate_reader->GetPoint(point) == B_OK) {
 			int32 flow = settings.pressure + 1;
 			float width = settings.size;
 			float angle;
@@ -315,7 +315,7 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 int32
 AirBrushTool::UseToolWithScript(ToolScript*,BBitmap*)
 {
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 

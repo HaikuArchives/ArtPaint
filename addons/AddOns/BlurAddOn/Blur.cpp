@@ -201,7 +201,7 @@ int32 BlurManipulator::thread_entry(void *data)
 		else {
 			this_pointer->HorizontalBlur(thread_number);
 		}
-		return B_NO_ERROR;
+		return B_OK;
 	}
 	return B_ERROR;
 }
@@ -560,7 +560,7 @@ status_t BlurManipulator::ReadSettings(BNode *node)
 		if (node->ReadAttr("blur_amount",B_INT32_TYPE,0,&new_amount,sizeof(int32)) == sizeof(int32)) {
 			settings.blur_amount = new_amount;
 			previous_settings.blur_amount = new_amount-1;
-			return B_NO_ERROR;
+			return B_OK;
 		}
 		else
 			return B_ERROR;
@@ -573,7 +573,7 @@ status_t BlurManipulator::WriteSettings(BNode *node)
 {
 	if (node != NULL) {
 		if (node->WriteAttr("blur_amount",B_INT32_TYPE,0,&settings.blur_amount,sizeof(int32)) == sizeof(int32))
-			return B_NO_ERROR;
+			return B_OK;
 		else
 			return B_ERROR;
 	}

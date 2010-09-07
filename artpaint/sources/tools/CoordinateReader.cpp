@@ -117,7 +117,7 @@ int32 CoordinateReader::reader_function()
 		}
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -137,7 +137,7 @@ status_t CoordinateReader::NextPointNoInterpolation(BPoint &point)
 		point_queue_length--;
 		ExitCS();
 
-		return B_NO_ERROR;
+		return B_OK;
 	}
 
 	return B_ERROR;
@@ -172,7 +172,7 @@ status_t CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 		point = p1;
 		prev_x = (int32)p1.x;
 		prev_y = (int32)p1.y;
-		return B_NO_ERROR;
+		return B_OK;
 	}
 
 	if (interpolation_parameter >= 1.0) {
@@ -223,7 +223,7 @@ status_t CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 	point.x = new_x;
 	point.y = new_y;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -278,7 +278,7 @@ status_t CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 		point = p1;
 		prev_x = (int32)point.x;
 		prev_y = (int32)point.y;
-		return B_NO_ERROR;
+		return B_OK;
 	}
 
 	int32 new_x = prev_x;
@@ -334,7 +334,7 @@ status_t CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 	point.x = new_x;
 	point.y = new_y;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -343,7 +343,7 @@ bool CoordinateReader::EnterCS()
 {
 	int32 previous = atomic_add(&benaphore_count, 1);
 	if (previous >= 1)
-		if (acquire_sem(benaphore_mutex) != B_NO_ERROR)
+		if (acquire_sem(benaphore_mutex) != B_OK)
 			return FALSE;
 
 	return TRUE;

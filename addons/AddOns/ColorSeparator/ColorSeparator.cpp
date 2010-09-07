@@ -271,7 +271,7 @@ void ColorSeparatorManipulatorView::MessageReceived(BMessage *message)
 	switch (message->what) {
 		case MENU_ENTRY_CHANGED:
 			int32 new_value;
-				if (message->FindInt32("value",&new_value) == B_NO_ERROR) {
+				if (message->FindInt32("value",&new_value) == B_OK) {
 				settings.mode = new_value;
 				manipulator->ChangeSettings(&settings);
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);

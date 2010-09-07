@@ -205,7 +205,7 @@ status_t UndoAction::StoreUndo(BBitmap *bitmap)
 		}
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 

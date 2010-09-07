@@ -29,7 +29,7 @@ status_t BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
 	for (int32 i=0;i<bits_length;i++) {
 		c.word = *bits++;
 		if (c.bytes[3] != 0) {
-			return B_NO_ERROR;
+			return B_OK;
 		}
 	}
 
@@ -41,7 +41,7 @@ status_t BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
 		bits++;
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 

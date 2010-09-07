@@ -253,7 +253,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 			PaintApplication::HomeDirectory(path);
 
 			// force normalization of the path to check validity
-			if (path.Append("Palette sets/",TRUE) != B_NO_ERROR) {
+			if (path.Append("Palette sets/",TRUE) != B_OK) {
 				PaintApplication::HomeDirectory(path);
 			}
 
@@ -281,7 +281,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 			PaintApplication::HomeDirectory(path);
 
 			// force normalization of the path to check validity
-			if (path.Append("Palette sets/",TRUE) != B_NO_ERROR) {
+			if (path.Append("Palette sets/",TRUE) != B_OK) {
 				PaintApplication::HomeDirectory(path);
 			}
 			// convert it to entry_ref

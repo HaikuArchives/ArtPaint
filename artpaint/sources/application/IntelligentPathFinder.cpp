@@ -376,13 +376,13 @@ int32 IntelligentPathFinder::dp_thread_function()
 
 int32 IntelligentPathFinder::lc_thread_entry(void *data)
 {
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
 int32 IntelligentPathFinder::lc_thread_function()
 {
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 

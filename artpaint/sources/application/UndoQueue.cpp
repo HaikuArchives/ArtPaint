@@ -165,7 +165,7 @@ status_t UndoQueue::RemoveEvent(UndoEvent *event)
 
 
 	UpdateMenuItems();
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 BBitmap* UndoQueue::ReturnLayerSpareBitmap(int32 layer_id,BBitmap *layer_bitmap)
@@ -228,7 +228,7 @@ status_t UndoQueue::ChangeLayerSpareBitmap(int32 layer_id, BBitmap *layer_bitmap
 	else {
 		layer_bitmaps[layer_id] = NULL;
 	}
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 

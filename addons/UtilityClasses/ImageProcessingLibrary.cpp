@@ -119,7 +119,7 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius)
 	delete[] fixed_kernel_array;
 	delete intermediate;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -228,7 +228,7 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius, int
 		wait_for_thread(blur_thread_array[i],&return_value);
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 int32 ImageProcessingLibrary::start_filter_1d_thread_clockwise(void *d)
@@ -240,7 +240,7 @@ int32 ImageProcessingLibrary::start_filter_1d_thread_clockwise(void *d)
 
 	delete data;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -253,7 +253,7 @@ int32 ImageProcessingLibrary::start_filter_1d_thread_counterclockwise(void *d)
 
 	delete data;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -554,7 +554,7 @@ status_t ImageProcessingLibrary::grayscale_ahe(BBitmap *bitmap, int32 regionSize
 	delete[] prev_histograms;
 	delete[] next_histograms;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -711,7 +711,7 @@ status_t ImageProcessingLibrary::grayscale_clahe(BBitmap *bitmap, int32 regionSi
 	delete[] prev_histograms;
 	delete[] next_histograms;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 

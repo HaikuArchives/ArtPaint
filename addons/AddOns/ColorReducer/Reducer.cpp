@@ -380,7 +380,7 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 		case DITHER_MODE_CHANGED:
 		{
 			int32 mode;
-			if (message->FindInt32("dither_mode",&mode) == B_NO_ERROR) {
+			if (message->FindInt32("dither_mode",&mode) == B_OK) {
 				settings.dither_mode = mode;
 				manipulator->ChangeSettings(&settings);
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
@@ -391,7 +391,7 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 		case PALETTE_SIZE_CHANGED:
 		{
 			int32 size;
-			if (message->FindInt32("palette_size",&size) == B_NO_ERROR) {
+			if (message->FindInt32("palette_size",&size) == B_OK) {
 				settings.palette_size = size;
 				manipulator->ChangeSettings(&settings);
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
@@ -402,7 +402,7 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 		case PALETTE_MODE_CHANGED:
 		{
 			int32 mode;
-			if (message->FindInt32("palette_mode",&mode) == B_NO_ERROR) {
+			if (message->FindInt32("palette_mode",&mode) == B_OK) {
 				settings.palette_mode = mode;
 				manipulator->ChangeSettings(&settings);
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);

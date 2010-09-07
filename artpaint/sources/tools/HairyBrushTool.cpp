@@ -144,7 +144,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	bool initialized = false;
 	initial_width = 1;
 	BPoint original_point = point;
-	while (!initialized && (reader->GetPoint(point) == B_NO_ERROR)) {
+	while (!initialized && (reader->GetPoint(point) == B_OK)) {
 		if (point != original_point) {
 			updated_rect = BRect(point,point);
 			initialized = true;
@@ -234,7 +234,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 	float number_of_consecutive_growths = 0;
 //	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates == true)) {
-	while (reader->GetPoint(point) == B_NO_ERROR) {
+	while (reader->GetPoint(point) == B_OK) {
 //		if ( (status_of_read == B_OK) && (prev_point != point) ) {
 		if (prev_point != point) {
 			the_script->AddPoint(point);

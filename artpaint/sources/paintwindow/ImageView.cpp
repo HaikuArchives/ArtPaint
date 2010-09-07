@@ -282,7 +282,7 @@ void ImageView::MessageReceived(BMessage *message)
 		// This comes from layer's view and tells us to change the active layer.
 		case HS_LAYER_ACTIVATED:
 			// Only change the layer if we can acquire the action_semaphore.
-			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
+			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 				int32 activated_layer_id;
 				Layer *activated_layer;
 				message->FindInt32("layer_id",&activated_layer_id);
@@ -548,7 +548,7 @@ void ImageView::MessageReceived(BMessage *message)
 		// this comes from menubar->"Canvas"->"Clear Canvas", we should then clear all the
 		// layers and recalculate the composite picture and redisplay
 		case HS_CLEAR_CANVAS:
-			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
+			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
 				if (the_image->ClearLayers(c) == TRUE) {
 					Invalidate();
@@ -561,7 +561,7 @@ void ImageView::MessageReceived(BMessage *message)
 		// This comes from menubar->"Layer"->"Clear Layer". We should clear the layer, recalculate
 		// the composite picture and redisplay the image.
 		case HS_CLEAR_LAYER:
-			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
+			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
 				if (the_image->ClearCurrentLayer(c) == TRUE) {
 					Invalidate();
@@ -759,7 +759,7 @@ void ImageView::MouseDown(BPoint view_point)
 		MakeFocus(true);
 
 	// try to acquire the mouse_mutex
-	if (acquire_sem_etc(mouse_mutex,1,B_TIMEOUT,0) == B_NO_ERROR) {
+	if (acquire_sem_etc(mouse_mutex,1,B_TIMEOUT,0) == B_OK) {
 		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
 		if (gui_manipulator != NULL) {
 			start_thread(MANIPULATOR_MOUSE_THREAD);
@@ -799,7 +799,7 @@ void ImageView::MouseDown(BPoint view_point)
 			uint32 buttons;
 			getCoords(&bitmap_point,&buttons,&view_point);
 			int32 clicks;
-			if (Window()->CurrentMessage()->FindInt32("clicks",&clicks) == B_NO_ERROR)
+			if (Window()->CurrentMessage()->FindInt32("clicks",&clicks) == B_OK)
 				tool_manager->MouseDown(this,view_point,bitmap_point,buttons,clicks);
 		}
 	}
@@ -930,7 +930,7 @@ status_t ImageView::UnFreeze()
 	release_sem(mouse_mutex);
 	release_sem(action_semaphore);
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -1151,7 +1151,7 @@ int32 ImageView::enter_thread(void *data)
 	if (thread_type == MANIPULATOR_FINISHER_THREAD) {
 		acquire_sem(this_pointer->action_semaphore);
 	}
-	else if (acquire_sem_etc(this_pointer->action_semaphore,1,B_TIMEOUT,0) != B_NO_ERROR) {
+	else if (acquire_sem_etc(this_pointer->action_semaphore,1,B_TIMEOUT,0) != B_OK) {
 		if ((thread_type == PAINTER_THREAD) || (thread_type == MANIPULATOR_MOUSE_THREAD))
 			release_sem(this_pointer->mouse_mutex);
 		return B_ERROR;
@@ -1388,7 +1388,7 @@ int32 ImageView::ManipulatorMouseTrackerThread()
 	SetCursor();
 
 	delete updated_region;
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -1484,7 +1484,7 @@ int32 ImageView::GUIManipulatorUpdaterThread()
 	SetCursor();
 
 	delete updated_region;
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 int32 ImageView::ManipulatorFinisherThread()
@@ -1677,7 +1677,7 @@ int32 ImageView::ManipulatorFinisherThread()
 
 void ImageView::Undo()
 {
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
+	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 		// If there is a GUI-manipulator, it should reset the bitmap before undo can be done.
 		cursor_mode = BLOCKING_CURSOR_MODE;
 		SetCursor();
@@ -1732,7 +1732,7 @@ void ImageView::Undo()
 
 void ImageView::Redo()
 {
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
+	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 		// If there is a GUI-manipulator, it should reset the bitmap before redo
 		// can be done.
 		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
@@ -1774,7 +1774,7 @@ void ImageView::Redo()
 
 status_t ImageView::DoCopyOrCut(int32 layers,bool cut)
 {
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_NO_ERROR) {
+	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 		BBitmap *buffer;
 		bool ok_to_archive = TRUE;
 		if (layers == HS_MANIPULATE_CURRENT_LAYER)
@@ -1916,7 +1916,7 @@ status_t ImageView::ShowAlert(int32 alert)
 	alert_box->Go();
 
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -2097,10 +2097,10 @@ filter_result KeyFilterFunction(BMessage *message,BHandler **handler,BMessageFil
 //	message->PrintToStream();
 	ImageView *view = dynamic_cast<ImageView*>(*handler);
 	if (view != NULL) {
-		if (acquire_sem_etc(view->mouse_mutex,1,B_RELATIVE_TIMEOUT,0) == B_NO_ERROR) {
+		if (acquire_sem_etc(view->mouse_mutex,1,B_RELATIVE_TIMEOUT,0) == B_OK) {
 			const char *bytes;
 			if ((!(modifiers() & B_COMMAND_KEY)) && (!(modifiers() & B_CONTROL_KEY))) {
-				if (message->FindString("bytes",&bytes) == B_NO_ERROR) {
+				if (message->FindString("bytes",&bytes) == B_OK) {
 					switch (bytes[0]) {
 						case 'b':
 							tool_manager->ChangeTool(BRUSH_TOOL);
