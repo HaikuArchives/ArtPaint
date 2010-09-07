@@ -130,7 +130,7 @@ void Image::Render(BRect area)
 		for (int32 i=0;i<number_of_threads;i++) {
 			int32 return_value;
 			wait_for_thread(threads[i],&return_value);
-			if (return_value != B_NO_ERROR)
+			if (return_value != B_OK)
 				is_ready = FALSE;
 		}
 		if (is_ready == TRUE)
@@ -1037,7 +1037,7 @@ int32 Image::calculate_thumbnail_image(void *data)
 	while (small_image != ((uint32*)to->Bits() + to->BitsLength()/4))
 		*small_image++ = color.word;
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
@@ -1149,7 +1149,7 @@ int32 Image::candidate_creator(void*)
 		delete[] rgb_color_map;
 	}
 
-	return B_NO_ERROR;
+	return B_OK;
 }
 
 
