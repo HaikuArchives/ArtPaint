@@ -15,12 +15,13 @@
 #include "ImageView.h"
 #include "ResourceServer.h"
 #include "StringServer.h"
+#include "UtilityClasses.h"
 
 
 #include <Bitmap.h>
 #include <CheckBox.h>
 #include <File.h>
-#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
 #include <Handler.h>
 #include <StringView.h>
 
@@ -49,11 +50,19 @@ DrawingTool::~DrawingTool()
 }
 
 
+/* !
+	This function will do the drawing in the derived classes. ImageView must
+	provide necessary data with a function that can be called from here.
+*/
 ToolScript*
-DrawingTool::UseTool(ImageView*, uint32, BPoint, BPoint)
+DrawingTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
+	BPoint viewPoint)
 {
-	// This function will do the drawing in the derived classes. ImageView must
-	// provide necessary data with a function that can be called from here.
+	B_UNUSED(view)
+	B_UNUSED(buttons)
+	B_UNUSED(point)
+	B_UNUSED(viewPoint)
+
 	return NULL;
 }
 
@@ -292,10 +301,10 @@ DrawingToolConfigView::DrawingToolConfigView(DrawingTool* drawingTool)
 	: BBox(B_FANCY_BORDER, NULL)
 	, tool(drawingTool)
 {
+	SetLayout(BGroupLayoutBuilder(B_VERTICAL)
+		.SetInsets(10.0, InnerFrame().top, 10.0, 10.0)
+		.TopLayout());
 	SetLabel(drawingTool->Name().String());
-	BGroupLayout* layout = new BGroupLayout(B_VERTICAL);
-	SetLayout(layout);
-	layout->SetInsets(10.0, InnerFrame().top + 10.0, 10.0, 10.0);
 }
 
 

@@ -31,7 +31,8 @@ public:
 	virtual					~DrawingTool();
 
 	virtual	int32			UseToolWithScript(ToolScript*, BBitmap*);
-	virtual	ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
+	virtual	ToolScript*		UseTool(ImageView*, uint32 buttons, BPoint point,
+								BPoint viewPoint);
 
 	virtual	BView*			makeConfigView();
 	virtual	void			UpdateConfigView(BView*) {}
@@ -48,7 +49,7 @@ public:
 
 
 	// these functions read and write tool's settings to a file
-	virtual status_t		readSettings(BFile &file,bool is_little_endian);
+	virtual	status_t		readSettings(BFile &file,bool is_little_endian);
 	virtual	status_t		writeSettings(BFile &file);
 
 			BRect			LastUpdatedRect() const;
