@@ -56,7 +56,7 @@
 #include <ScrollBar.h>
 #include <SupportDefs.h>
 #include <TranslatorRoster.h>
-#include <WindowInfo.h>
+#include <private/interface/WindowInfo.h>
 
 
 #include <new>
@@ -703,7 +703,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		case HS_SHOW_COLOR_WINDOW: {
 			// This comes from fMenubar->"Window"->"Show Color Window".
 			// We should open the color window.
-			ColorPaletteWindow::showPaletteWindow(false);
+			ColorPaletteWindow::showPaletteWindow(); // TODO: was (false)
 		}	break;
 
 		case HS_SHOW_TOOL_WINDOW: {

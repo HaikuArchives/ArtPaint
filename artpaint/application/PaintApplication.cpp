@@ -277,7 +277,7 @@ PaintApplication::ReadyToRun()
 	visible = true;
 	settings.FindBool(skPaletteWindowVisible, &visible);
 	if (visible)
-		ColorPaletteWindow::showPaletteWindow(false);
+		ColorPaletteWindow::showPaletteWindow(); // TODO: was (false)
 
 	visible = true;
 	settings.FindBool(skLayerWindowVisible, &visible);

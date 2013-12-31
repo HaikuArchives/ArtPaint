@@ -209,7 +209,7 @@ ManipulatorServer::_AddOnLoaderThread(void* data)
 		fManipulatorServer->_LoadAddOns(path);
 	}
 
-	if (find_directory(B_COMMON_ADDONS_DIRECTORY, &path) == B_OK) {
+	if (find_directory(B_SYSTEM_ADDONS_DIRECTORY, &path) == B_OK) {
 		path.Append("ArtPaint");
 		fManipulatorServer->_LoadAddOns(path);
 	}

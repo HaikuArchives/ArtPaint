@@ -53,7 +53,9 @@ tools/DrawingTool.cpp tools/EllipseTool.cpp tools/EraserTool.cpp tools/FillTool.
 tools/HairyBrushTool.cpp tools/RectangleTool.cpp tools/SelectorTool.cpp tools/StraightLineTool.cpp \
 tools/TextTool.cpp tools/ToolButton.cpp tools/ToolEventAdapter.cpp tools/ToolManager.cpp \
 tools/ToolScript.cpp tools/ToolSelectionWindow.cpp tools/ToolSetupWindow.cpp tools/TransparencyTool.cpp \
-viewmanipulators/CropManipulator.cpp viewmanipulators/FlipManipulator.cpp \ viewmanipulators/FreeTransformManipulator.cpp viewmanipulators/Manipulator.cpp \ viewmanipulators/ManipulatorInformer.cpp viewmanipulators/ManipulatorServer.cpp \
+viewmanipulators/CropManipulator.cpp viewmanipulators/FlipManipulator.cpp \
+viewmanipulators/FreeTransformManipulator.cpp viewmanipulators/Manipulator.cpp \
+viewmanipulators/ManipulatorInformer.cpp viewmanipulators/ManipulatorServer.cpp \
 viewmanipulators/Rotate90Manipulator.cpp viewmanipulators/RotationManipulator.cpp \
 viewmanipulators/ScaleManipulator.cpp viewmanipulators/TextManipulator.cpp \
 viewmanipulators/TranslationManipulator.cpp viewmanipulators/TransparencyManipulator.cpp \
