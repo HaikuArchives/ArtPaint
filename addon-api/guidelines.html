@@ -1,0 +1,74 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint Add-On Developer Kit: General Guidelines and Rules
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+
+<TR>
+<TD>
+</TD>
+<TD>
+<H3>General Guidelines and Rules</H3>
+This page contains some guidelines for making the add-ons. The purpose is to help you make add-ons of best possible quality. The guidelines are divided into two categories: guidelines and tips that you can follow if you like and rules that should always be followed if possible (and if applicible). The guidelines are marked with <IMG SRC="./images/guideline_bullet.gif">, and rules are marked with <IMG SRC="./images/rule_bullet.gif">.
+<P>
+<TABLE>
+<TR VALIGN=TOP>
+
+<TD><IMG SRC="./images/guideline_bullet.gif">
+<TD>All bitmaps that are passed to manipulators are in B_RGB32-bit mode. It is still advisable to check the color-space before proceeding with the manipulation.
+<P>
+
+<TR VALIGN=TOP>
+<TD><IMG SRC="./images/rule_bullet.gif">
+<TD>The alpha-channel of the bitmaps controls layer's transparency. Value 0 is fully transparent while 255 is fully opaque.
+<P>
+
+<TR VALIGN=TOP>
+<TD><IMG SRC="./images/guideline_bullet.gif">
+<TD>The functions of one instance of manipulator-class will be always called from within a single thread, but multiple instances of that manipulator may be working in different threads. This means that you can use member variables to store control information, but you should not use static member variables for that purpose.
+<P>
+
+<TR VALIGN=TOP>
+<TD><IMG SRC="./images/guideline_bullet.gif">
+<TD>The manipulator should use as many threads to calculate the effect as there are processors. Using multiple threads to calculate the preview is also a good idea.
+<P>
+
+<TR VALIGN=TOP>
+<TD><IMG SRC="./images/guideline_bullet.gif">
+<TD>If you find that doing preview is not fast enough, you might want to considering doing a preview for a part of the image only and displaying it in the manipulator's configuration view.
+<P>
+
+<TR VALIGN=TOP>
+<TD><IMG SRC="./images/rule_bullet.gif">
+<TD>The manipulators should not change the provided selections in any way.
+<P>
+
+<TR VALIGN=TOP>
+<TD><IMG SRC="./images/rule_bullet.gif">
+<TD>When the manipulator is deleted it should delete all the resources that it acquired. Because manipulators will be executed in ArtPaint's memory-space any malfunction or failure to release for example allocated memory will affect the whole program.
+<P>
+
+</TABLE>
+
+</TD>
+</TR>
+
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>
