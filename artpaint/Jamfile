@@ -1,4 +1,0 @@
-SubDir HAIKU_TOP 3rdparty artpaint artpaint ;
-
-SubInclude HAIKU_TOP 3rdparty artpaint artpaint sources ;
-SubInclude HAIKU_TOP 3rdparty artpaint artpaint Documentation ;
