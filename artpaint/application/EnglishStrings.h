@@ -183,7 +183,7 @@
 #define	ENGLISH_ROTATE_CCW_STRING				"Rotate -90°"
 #define	ENGLISH_ROTATION_STRING					"Rotation"
 #define	ENGLISH_ROTATING_STRING					"Rotating"
-#define	ENGLISH_SAVE_CHANGES_STRING				"You have made %d changes since the last time the project was saved. Do you want to save the changes?"
+#define	ENGLISH_SAVE_CHANGES_STRING				"%s: You have made %d changes since the last time the project was saved. Do you want to save the changes?"
 #define	ENGLISH_SAVE_COLOR_SET_AS_STRING		"Save Color Set As…"
 #define	ENGLISH_SAVE_COLOR_SET_STRING			"Save Color Set"
 #define	ENGLISH_SAVE_FORMAT_STRING				"Save Format"

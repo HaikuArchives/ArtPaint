@@ -331,7 +331,7 @@
 #define	GERMAN_RECENT_IMAGES_STRING						"Zuletzt geöffnete Bilder"
 #define	GERMAN_RECENT_PROJECTS_STRING					"Zuletzt geöffnete Projekte"
 #define	GERMAN_SAVE_STRING								"Speichern"
-#define	GERMAN_SAVE_CHANGES_STRING						"Sie haben %d Veränderungen seit dem letzten Speichern des Projektes vorgenommen Wollen Sie die Veränderungen speichern?"
+#define	GERMAN_SAVE_CHANGES_STRING						"%s: Sie haben %d Veränderungen seit dem letzten Speichern des Projektes vorgenommen Wollen Sie die Veränderungen speichern?"
 #define GERMAN_TOOL_CURSOR_STRING						"mit Werkzeugsymbol"
 
 #define GERMAN_MEMORY_ALERT_1_STRING					"Der freie Speicher reicht leider nicht zum Hinzufügen einer weiteren Ebene."\

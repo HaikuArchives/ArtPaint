@@ -871,7 +871,7 @@ ImageView::Quit()
 		if (project_changed > 0) {
 			char text[256];
 			sprintf(text, StringServer::ReturnString(SAVE_CHANGES_STRING),
-				project_changed);
+				project_name, project_changed);
 
 			BAlert* alert = new BAlert("Unsaved Changes!", text,
 				StringServer::ReturnString(CANCEL_STRING),
@@ -887,7 +887,10 @@ ImageView::Quit()
 				return true;
 
 			if (value == 2) {	// Save
-				Window()->PostMessage(HS_SAVE_PROJECT,Window());
+				BMessage* message = new BMessage(HS_SAVE_PROJECT);
+				message->SetInt32("TryAgain", 1);
+				message->SetInt32("quitAll", ((PaintApplication*)be_app)->ShuttingDown());
+				Window()->PostMessage(message, Window());
 				return false;
 			}
 

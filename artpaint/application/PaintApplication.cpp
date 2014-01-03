@@ -58,6 +58,7 @@ PaintApplication::PaintApplication()
 	: BApplication("application/x-vnd.artpaint")
 	, fImageOpenPanel(NULL)
 	, fProjectOpenPanel(NULL)
+	, fShuttingDown(false)
 {
 	SettingsServer::Instantiate();
 	ResourceServer::Instantiate();
@@ -217,8 +218,17 @@ PaintApplication::MessageReceived(BMessage* message)
 
 
 bool
+PaintApplication::ShuttingDown() const
+{
+	return fShuttingDown;
+}
+
+
+bool
 PaintApplication::QuitRequested()
 {
+	fShuttingDown = true;
+	
 	BMessage settings;
 	if (SettingsServer* server = SettingsServer::Instance())
 		server->GetApplicationSettings(&settings);
