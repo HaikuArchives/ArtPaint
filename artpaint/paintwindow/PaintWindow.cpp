@@ -686,9 +686,11 @@ PaintWindow::MessageReceived(BMessage *message)
 				get_ref_for_path(path.Path(), &ref);
 
 				BMessenger window(this);
-				BMessage message(HS_PROJECT_SAVE_REFS);
+				BMessage msg(HS_PROJECT_SAVE_REFS);
+				msg.AddInt32("TryAgain", message->GetInt32("TryAgain", false));
+				msg.AddInt32("quitAll", message->GetInt32("quitAll", false));
 				fProjectSavePanel = new BFilePanel(B_SAVE_PANEL, &window, &ref,
-					0, false, &message);
+					0, false, &msg);
 			}
 
 			fProjectSavePanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
@@ -743,6 +745,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_PROJECT_SAVE_REFS: {
+			printf("Saving refs\n");
 			if (fProjectSavePanel)
 				fProjectSavePanel->Hide();
 			if (fImageView) {
@@ -795,9 +798,14 @@ PaintWindow::MessageReceived(BMessage *message)
 				BMessage msg(HS_PROJECT_SAVE_REFS);
 				msg.AddString("name", name);
 				msg.AddRef("directory", &ref);
+				msg.AddInt32("TryAgain", message->GetInt32("TryAgain", false));
+				msg.AddInt32("quitAll", message->GetInt32("quitAll", false));
 				PostMessage(&msg, this);
 			} else {
-				PostMessage(HS_SHOW_PROJECT_SAVE_PANEL, this);
+				BMessage msg(HS_SHOW_PROJECT_SAVE_PANEL);
+				msg.AddInt32("TryAgain", message->GetInt32("TryAgain", false));
+				msg.AddInt32("quitAll", message->GetInt32("quitAll", false));
+				PostMessage(&msg, this);
 			}
 		}	break;
 
@@ -1527,12 +1535,22 @@ int32
 PaintWindow::save_image(void* data)
 {
 	int32 status = B_ERROR;
+		printf("Error: %s\n", strerror(status));
 	if (PaintWindow *window = static_cast<PaintWindow*>(data)) {
 		thread_id sender;
 		BMessage *message = NULL;
 		receive_data(&sender, (void*)&message, sizeof(BMessage*));
 
 		status = window->_SaveImage(message);
+
+		if (status == B_OK) {
+			if (message->GetInt32("TryAgain", false)) {
+				if (message->GetInt32("quitAll", false))
+					be_app_messenger.SendMessage(B_QUIT_REQUESTED);
+				else
+					BMessenger(window).SendMessage(B_QUIT_REQUESTED);
+			}
+		}
 		delete message;
 	}
 	return status;
@@ -1633,6 +1651,15 @@ PaintWindow::save_project(void* data)
 		receive_data(&sender, (void*)&message, sizeof(BMessage*));
 
 		status = window->_SaveProject(message);
+
+		if (status == B_OK) {
+			if (message->GetInt32("TryAgain", 0)) {
+				if (message->GetInt32("quitAll", 0))
+					be_app_messenger.SendMessage(B_QUIT_REQUESTED);
+				else
+					BMessenger(window).SendMessage(B_QUIT_REQUESTED);
+			}
+		}
 		delete message;
 	}
 	return status;

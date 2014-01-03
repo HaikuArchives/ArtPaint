@@ -36,6 +36,7 @@ public:
 			rgb_color			Color(bool foreground) const;
 			void				SetColor(rgb_color color, bool foreground);
 
+			bool				ShuttingDown() const;
 
 	static	void				HomeDirectory(BPath& path);
 
@@ -54,6 +55,7 @@ private:
 private:
 			BFilePanel*			fImageOpenPanel;
 			BFilePanel*			fProjectOpenPanel;
+			bool				fShuttingDown;
 };
 
 #endif

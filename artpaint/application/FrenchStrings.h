@@ -348,7 +348,7 @@
 
 #define	FRENCH_ROTATING_STRING					"Angle"
 
-#define	FRENCH_SAVE_CHANGES_STRING				"Vous avez effectué %d modifications depuis la dernière sauvegarde de votre projet. Désirez-vous sauver ces modifications?"
+#define	FRENCH_SAVE_CHANGES_STRING				"%s: Vous avez effectué %d modifications depuis la dernière sauvegarde de votre projet. Désirez-vous sauver ces modifications?"
 
 #define	FRENCH_SAVE_COLOR_SET_AS_STRING		"Sauver La Palette Sous…"
 
