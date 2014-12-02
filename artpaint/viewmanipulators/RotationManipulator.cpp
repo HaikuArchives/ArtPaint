@@ -107,7 +107,7 @@ void RotationManipulator::SetPreviewBitmap(BBitmap *bitmap)
 	if (preview_bitmap != NULL) {
 		system_info info;
 		get_system_info(&info);
-		double speed = info.cpu_count * info.cpu_clock_speed;
+		double speed = info.cpu_count * 2000; // TODO: used to be info.cpu_clock_speed but was removed
 		speed = speed / 15000;
 
 		BRect bounds = preview_bitmap->Bounds();
