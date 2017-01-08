@@ -1,1 +1,3 @@
-objects*/
+objects_addons/
+dist/
+addons/AddOns/Working/*/objects_addons

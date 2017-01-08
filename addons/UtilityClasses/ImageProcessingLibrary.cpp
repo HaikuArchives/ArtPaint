@@ -166,7 +166,7 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius, int
 	int32 d_bpr = intermediate->BytesPerRow()/4;
 
 	// Start the threads.
-	thread_id blur_thread_array[B_MAX_CPU_COUNT];
+	thread_id blur_thread_array[8];
 	for (int32 i=0;i<threadCount;i++) {
 		int32 height = bitmap_bounds.Height() / threadCount + 1;
 		filter_thread_data *data = new filter_thread_data();
