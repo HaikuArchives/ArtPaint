@@ -141,12 +141,12 @@ WARNINGS =
 #	specify whether image symbols will be created
 #	so that stack crawls in the debugger are meaningful
 #	if TRUE symbols will be created
-SYMBOLS = TRUE
+SYMBOLS =
 
 #	specify debug settings
 #	if TRUE will allow application to be run from a source-level
 #	debugger.  Note that this will disable all optimzation.
-DEBUGGER = TRUE
+DEBUGGER =
 
 #	specify additional compiler flags for all files
 COMPILER_FLAGS =
