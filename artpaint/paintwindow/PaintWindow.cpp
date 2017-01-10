@@ -94,7 +94,7 @@ struct menu_item {
 PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		const BMessage& settings)
 	: BWindow(frame, name, B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE)
+		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE, B_AUTO_UPDATE_SIZE_LIMITS)
 	, fSettings(settings)
 	, fImageView(NULL)
 	, fBackground(NULL)

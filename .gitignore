@@ -1,1 +1,3 @@
 objects*/
+dist/
+addons/AddOns/*/*/objects*
