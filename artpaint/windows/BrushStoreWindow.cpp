@@ -333,7 +333,7 @@ void BrushStoreView::MessageReceived(BMessage *message)
 {
 	brush_info *info;
 	Brush *a_brush;
-	int32 size;
+	ssize_t size;
 	switch (message->what) {
 		case HS_BRUSH_DRAGGED:
 			if ((message->ReturnAddress() == BMessenger(this)) == FALSE) {

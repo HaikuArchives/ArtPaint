@@ -64,7 +64,7 @@ void ColorView::Draw(BRect)
 void ColorView::MessageReceived(BMessage *message)
 {
 	rgb_color *new_color;
-	int32 color_size = sizeof(rgb_color);
+	ssize_t color_size = sizeof(rgb_color);
 	switch (message->what) {
 		case B_PASTE:
 			if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,(const void**)&new_color,&color_size) == B_OK) {
