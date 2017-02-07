@@ -452,7 +452,7 @@ SelectedColorsView::MessageReceived(BMessage *message)
 				// Here we see on to which button it was dropped and then
 				// try to extract a color from the message
 				rgb_color *color;
-				int32 color_size;
+				ssize_t color_size;
 				if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,
 						(const void**)&color, &color_size) == B_OK) {
 					BPoint drop_point = message->DropPoint();
