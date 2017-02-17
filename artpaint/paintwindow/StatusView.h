@@ -25,7 +25,7 @@ class MagnificationView;
 
 class StatusView : public BView {
 public:
-								StatusView(BRect frame);
+								StatusView();
 	virtual						~StatusView();
 
 			void				SetMagnifyingScale(float mag);
