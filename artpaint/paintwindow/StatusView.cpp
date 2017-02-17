@@ -29,9 +29,8 @@
 #include <stdio.h>
 
 
-StatusView::StatusView(BRect frame)
-	: BView(frame,"status view", B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT,
-		B_WILL_DRAW)
+StatusView::StatusView()
+	: BView("status view", B_WILL_DRAW)
 	, fOk(NULL)
 	, fCancel(NULL)
 {
@@ -40,7 +39,7 @@ StatusView::StatusView(BRect frame)
 
 	// First add the coordinate-view.
 	float width, height;
-	coordinate_view = new BStringView(frame,"coordinate_view","X: , Y:");
+	coordinate_view = new BStringView("coordinate_view","X: , Y:");
 	coordinate_view->GetPreferredSize(&width, &height);
 	width = coordinate_view->StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)");
 
@@ -410,7 +409,7 @@ SelectedColorsView::Draw(BRect area)
 	SetHighColor(255, 255, 255, 255);
 	StrokeRect(foreground_rect);
 	foreground_rect.InsetBy(1, 1);
-	foreground_rect = foreground_rect & area;
+//	foreground_rect = foreground_rect & area;
 
 	SetHighAndLowColors(((PaintApplication*)be_app)->Color(TRUE));
 	FillRect(foreground_rect, HS_2X2_BLOCKS);

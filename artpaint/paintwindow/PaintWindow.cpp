@@ -48,6 +48,7 @@
 #include <Button.h>
 #include <Clipboard.h>
 #include <Entry.h>
+#include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <NodeInfo.h>
 #include <Path.h>
@@ -130,57 +131,31 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		fAdditionalHeight += fMenubar->Bounds().Height() + 1.0;
 	}
 
-	BRect bounds = Bounds().InsetByCopy(-1.0, -1.0);
-	bounds.top = fMenubar ? fMenubar->Bounds().Height() : bounds.top;
-
-	fHorizontalScrollbar = new BScrollBar(BRect(bounds.left,
-		bounds.bottom - B_H_SCROLL_BAR_HEIGHT,
-		bounds.right - B_V_SCROLL_BAR_WIDTH, bounds.bottom),
-		"horizontal", NULL, 0, 0, B_HORIZONTAL);
-	AddChild(fHorizontalScrollbar);
+	fHorizontalScrollbar = new BScrollBar("horizontal", NULL, 0, 0, B_HORIZONTAL);
 	fHorizontalScrollbar->SetRange(0.0, 0.0);
 	fHorizontalScrollbar->SetSteps(8.0, 32.0);
 
-	fVerticalScrollbar = new BScrollBar(BRect(bounds.right - B_V_SCROLL_BAR_WIDTH,
-		bounds.top, bounds.right, bounds.bottom - B_H_SCROLL_BAR_HEIGHT),
-		"vertical", NULL, 0, 0, B_VERTICAL);
-	AddChild(fVerticalScrollbar);
+	fVerticalScrollbar = new BScrollBar("vertical", NULL, 0, 0, B_VERTICAL);
 	fVerticalScrollbar->SetRange(0.0, 0.0);
 	fVerticalScrollbar->SetSteps(8.0, 32.0);
 
 	fAdditionalWidth += B_V_SCROLL_BAR_WIDTH - 1.0;
 	fAdditionalHeight += B_H_SCROLL_BAR_HEIGHT - 1.0;
 
-	bounds.top += 1.0;
-	bounds.right -= B_V_SCROLL_BAR_WIDTH + 1.0;
-	bounds.bottom -= B_H_SCROLL_BAR_HEIGHT + 1.0;
-
 	// The status-view is not optional. It contains sometimes also buttons that
 	// can cause some actions to be taken.
 	if ((views & HS_STATUS_VIEW) != 0) {
 		// Create the status-view and make it display nothing
 		// Note: this sucks, since the status view resizes himself...
-		fStatusView = new StatusView(BRect(0.0, bounds.bottom, bounds.right,
-			bounds.bottom));
+		fStatusView = new StatusView();
 		fStatusView->DisplayNothing();
-
-		// place the statusbar along bottom of window on top of scrollbar
-		// and also record size that it occupies
-
-		// here add the statusview to window's hierarchy
-		AddChild(fStatusView);
-
-		// update the bottom value to be 1 pixel above status view
-		bounds.bottom -= fStatusView->Bounds().Height() + 1.0;
 
 		// update the fAdditionalHeight variable
 		fAdditionalHeight += fStatusView->Bounds().Height() + 1.0;
 	}
 
 	// make the background view (the backround for image)
-	fBackground = new BackgroundView(BRect(0.0, bounds.top, bounds.right,
-		bounds.bottom));
-	AddChild(fBackground);
+	fBackground = new BackgroundView(BRect(0, 0, 0, 0));
 
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
 		// we need to show the creata canvas area
@@ -316,14 +291,23 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		PostMessage(&msg, this);
 	}
 
+	BGroupLayout *inner = BLayoutBuilder::Group<>(B_VERTICAL, 0);
+	inner->AddView(fBackground);
+	if (fStatusView) inner->AddView(fStatusView, 0);
+
+	BGroupLayout* outer = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+	//	.Add(fMenubar)
+		.AddGroup(B_HORIZONTAL, 0)
+			.Add(inner)
+			.Add(fVerticalScrollbar)
+			.End()
+		.Add(fHorizontalScrollbar);
+	if (fMenubar) outer->AddView(0, fMenubar);
+
 	// finally inform the app that new window has been created
 	BMessage message(HS_PAINT_WINDOW_OPENED);
 	message.AddPointer("window", (void*)this);
 	be_app->PostMessage(&message, be_app);
-
-	// resize so that all things are properly updated
-	ResizeBy(1,0);
-	ResizeBy(-1,0);
 
 	// Add ourselves to the sgPaintWindowList
 	sgPaintWindowList.AddItem(this);
@@ -988,7 +972,7 @@ PaintWindow::SetHelpString(const char *string,int32 type)
 bool
 PaintWindow::openMenuBar()
 {
-	fMenubar = new BMenuBar(BRect(), "menu_bar");
+	fMenubar = new BMenuBar("menu_bar");
 
 	BMenu* menu = new BMenu(_StringForId(FILE_STRING));
 	fMenubar->AddItem(menu);
@@ -1271,8 +1255,6 @@ PaintWindow::openMenuBar()
 	menu->AddItem(item);
 
 	_ChangeMenuMode(NO_IMAGE_MENU);
-
-	AddChild(fMenubar);
 
 	return true;
 }
