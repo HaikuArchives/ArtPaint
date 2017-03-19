@@ -21,6 +21,7 @@
 #include "TranslationManipulator.h"
 #include "StringServer.h"
 #include "NumberControl.h"
+#include "SysInfoBeOS.h"
 
 
 using ArtPaint::Interface::NumberControl;
@@ -406,9 +407,10 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 
 	if (preview_bitmap != NULL) {
-		system_info info;
-		get_system_info(&info);
-		double speed = info.cpu_count * 2000; // TODO: used to be info.cpu_clock_speed but was removed
+		// Use a custom header to get the legacy system_info with cpu speed
+		BeOS_system_info info;
+		get_BeOS_system_info(&info);
+		double speed = info.cpu_count * info.cpu_clock_speed;
 		speed = speed / 1000;
 
 		BRect bounds = preview_bitmap->Bounds();
