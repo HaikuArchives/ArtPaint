@@ -264,13 +264,13 @@ bool Image::SetImageSize()
 	if (layer_list->CountItems() >= 1) {
 		if (rendered_image == NULL) {
 			// Here we create new composite picture.
-			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGB32);
+			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
 		}
 		else if ((rendered_image->Bounds().Width() != (image_width-1)) || (rendered_image->Bounds().Height() != (image_height-1))) {
 			// Here we change the bitmap for the composite picture. Also if the dithered picture
 			// is required we change that too.
 			delete rendered_image;
-			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGB32);
+			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
 			if (dithered_image != NULL) {
 				delete dithered_image;
 				dithered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_CMAP8);
@@ -350,7 +350,7 @@ Layer* Image::AddLayer(BBitmap *bitmap,Layer *next_layer,bool add_to_front,float
 
 		// if this is the first layer we should create the composite picture
 		if ((layer_list->CountItems() == 1) && (rendered_image == NULL) ) {
-			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGB32);
+			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
 			if (rendered_image->IsValid() == FALSE) {
 				// If the creation of composite picture fails we should remove the newly added
 				// layer and inform the user that we cannot add a layer. The method that called
@@ -853,7 +853,7 @@ status_t Image::ReadLayers(BFile &file)
 			layer->ActivateLayer(FALSE);	// We activate only the first read layer
 			// if this is the first layer we should create the composite picture
 			if ((layer_list->CountItems() == 1) && (rendered_image == NULL) ) {
-				rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGB32);
+				rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
 				if (rendered_image->IsValid() == FALSE) {
 					// If the creatioin of composite picture fails we should remove the newly added
 					// layer and inform the user that we cannot add a layer. The method that called
@@ -931,7 +931,7 @@ status_t Image::ReadLayersOldStyle(BFile &file,int32 count)
 			layer->ActivateLayer(FALSE);	// We activate only the first read layer
 			// if this is the first layer we should create the composite picture
 			if ((layer_list->CountItems() == 1) && (rendered_image == NULL) ) {
-				rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGB32);
+				rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
 				if (rendered_image->IsValid() == FALSE) {
 					// If the creatioin of composite picture fails we should remove the newly added
 					// layer and inform the user that we cannot add a layer. The method that called

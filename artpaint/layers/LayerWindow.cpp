@@ -94,6 +94,7 @@ LayerWindow::~LayerWindow()
 	acquire_sem(layer_window_semaphore);
 	while (layer_window->list_view->CountChildren() != 0)
 		layer_window->list_view->RemoveChild(layer_window->list_view->ChildAt(0));
+	layer_window = NULL;
 	release_sem(layer_window_semaphore);
 
 	if (SettingsServer* server = SettingsServer::Instance()) {
@@ -104,7 +105,6 @@ LayerWindow::~LayerWindow()
 	}
 
 	FloaterManager::RemoveFloater(this);
-	layer_window = NULL;
 }
 
 
