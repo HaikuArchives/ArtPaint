@@ -50,7 +50,7 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 
 		fLayerData = new BBitmap(BRect(frame.LeftTop(),
 			BPoint(max_c(frame.right, sourceRect.right),
-				max_c(frame.bottom, sourceRect.bottom))), B_RGB_32_BIT);
+				max_c(frame.bottom, sourceRect.bottom))), B_RGBA32);
 
 		if (!fLayerData->IsValid())
 			throw std::bad_alloc();

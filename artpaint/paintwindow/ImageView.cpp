@@ -1800,7 +1800,7 @@ status_t ImageView::DoCopyOrCut(int32 layers,bool cut)
 			BRect bounds = selection_bounds;
 
 			bounds.OffsetTo(0,0);
-			BBitmap *to_be_archived = new BBitmap(bounds,B_RGB32,0); //staragter
+			BBitmap *to_be_archived = new BBitmap(bounds,B_RGBA32,0); //stargater, Pete
 			uint32 *target_bits = (uint32*)to_be_archived->Bits();
 			int32 bits_length = to_be_archived->BitsLength()/4;
 			union {
