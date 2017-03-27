@@ -323,8 +323,8 @@
 
 
 // These strings are the contents of the About ArtPaint-window
-#define	ENGLISH_ABOUT_1_TEXT_STRING				"ArtPaint is a painting and  image-processing program for the Haiku."\
-												" It can be used for wide variety of purposes ranging from web-graphics"\
+#define	ENGLISH_ABOUT_1_TEXT_STRING				"ArtPaint is a painting and image-processing program for Haiku."\
+												" It can be used for a wide variety of purposes ranging from web-graphics"\
 												" to photo manipulation. See the tutorial in the manual to get started."
 
 #define	ENGLISH_ABOUT_3_TEXT_STRING				"For new versions of the program see:"

@@ -43,7 +43,7 @@ AboutWindow::AboutWindow(BRect frame)
 	BFont italic_font;
 	italic_font.SetFace(B_ITALIC_FACE);
 
-	scroller->AddLine("ArtPaint v. 2.0",yellow,title_font);
+	scroller->AddLine("ArtPaint v. 2.1.1",yellow,title_font);
 
 	char string[256];
 	sprintf(string, StringServer::ReturnString(RELEASE_DATE_STRING), __DATE__);
@@ -53,11 +53,13 @@ AboutWindow::AboutWindow(BRect frame)
 	scroller->AddLine(StringServer::ReturnString(ABOUT_1_TEXT_STRING),white,text_font);
 	scroller->AddEmptyLine();
 
+    /* These items have been commented out until they can be updated!
 	scroller->AddLine(StringServer::ReturnString(ABOUT_3_TEXT_STRING),white,text_font);
 	scroller->AddLine("http://dev.osdrawer.net/projects/list_files/artpaint",red,text_font);
 	scroller->AddEmptyLine();
 	scroller->AddLine(StringServer::ReturnString(ABOUT_4_TEXT_STRING),white,text_font);
 	scroller->AddLine("http://dev.osdrawer.net/projects/artpaint/boards",red,text_font);
+	*/
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();

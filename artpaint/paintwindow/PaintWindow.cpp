@@ -39,7 +39,6 @@
 #include "ToolSetupWindow.h"
 #include "ToolSelectionWindow.h"
 #include "UtilityClasses.h"
-#include "VersionConstants.h"
 #include "ViewSetupWindow.h"
 
 

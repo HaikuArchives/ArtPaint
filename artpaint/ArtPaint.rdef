@@ -9,7 +9,7 @@ resource app_flags B_SINGLE_LAUNCH;
 resource app_version {
 	major  = 2,
 	middle = 1,
-	minor  = 0,
+	minor  = 1,
 
 	/* 0 = development	1 = alpha			2 = beta
 	   3 = gamma		4 = golden master	5 = final */
@@ -19,7 +19,7 @@ resource app_version {
 	internal = 1,
 
 	short_info = "ArtPaint",
-	long_info = "ArtPaint, Copyright 2003 - 2009"
+	long_info = "ArtPaint, Copyright 2003 - 2017"
 };
 
 resource file_types message {
