@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint: Fill-tool
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+<TD>
+<H2>Fill-tool</H2>
+The fill tool is used to fill a region of the image with a single color or with a gradient of two colors. The fill with single color is done by clicking on the image inside the area that needs to be filled. Filling the gradient is done by clicking on the area to be filled, holding down the button and adjusting the gradient by moving the mouse. The gradient will be finished when the mouse-button is released.
+<H3>Settings</H3>
+Figure 1 shows the contents of the tool-setup-window when it is displaying the setup for the fill-tool.
+<DIV ALIGN=CENTER>
+<TABLE>
+<CAPTION ALIGN=BOTTOM>
+Figure 1: Setup view for the fill-tool.
+</CAPTION>
+<TR>
+<TD><IMG SRC="./images/fill_tool.gif">
+</TABLE>
+</DIV> 
+<P>
+<DL>
+<DT><STRONG>Flood Fill</STRONG>
+<DD>When this option is enabled the fill will be done to a bounded area of single color. If the option is not checked, the fill will be done to all pixels in the image that have the same color as the pixel that initiated the fill.
+<DT><STRONG>Enable Gradient</STRONG>
+<DD>When this option is checked the fill will be done as a gradient of the two gradient colors. Otherwise the fill will be done using the single foreground color.
+<DT><STRONG>Enable Preview</STRONG>
+<DD>When this option is checked the gradient will be previewed in realtime as it is adjusted. If the option is not checked the gradient will not be previewed.
+<DT><STRONG>Gradient color bar</STRONG>
+<DD>This color-bar shows what the gradient will look like. You can change the gradient by dragging colors from the <A HREF="./colors.html">color-window</A> to either end of the bar.
+<DT><STRONG>Tolerance</STRONG>
+<DD>This option controls how closely the colors must match in order to be considered as the same color by the fill-tool. If the value is 0, the colors must match exactly. If the value is 100, all colors are considered to be the same.
+</DL>
+</TABLE>
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>

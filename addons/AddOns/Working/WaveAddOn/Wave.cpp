@@ -18,6 +18,7 @@
 #include "Wave.h"
 #include "PixelOperations.h"
 #include "Selection.h"
+#include "SysInfoBeOS.h"
 
 #define PI M_PI
 
@@ -895,9 +896,9 @@ void WaveManipulator::SetPreviewBitmap(BBitmap *bm)
 		}
 	}
 	if (preview_bitmap != NULL) {
-		system_info info;
-		get_system_info(&info);
-		double speed = info.cpu_count * 2000; // TODO: used to be info.cpu_clock_speed but was removed
+		BeOS_system_info info;
+		get_BeOS_system_info(&info);
+		double speed = info.cpu_count * info.cpu_clock_speed;
 		speed = speed / 15000;
 
 		BRect bounds = preview_bitmap->Bounds();

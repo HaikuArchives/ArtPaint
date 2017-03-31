@@ -1,0 +1,236 @@
+<HTML>
+<HEAD>
+<TITLE>
+ArtPaint: Paint Window
+</TITLE>
+</HEAD>
+<BODY bgcolor="ffffff">
+<DIV ALIGN=CENTER>
+<IMG SRC="./images/top_bar.gif"><BR>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
+<TR>
+<TD>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
+</TD>
+<TD COLSPAN=2>
+<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
+</TD>
+</TR>
+<TR>
+<TD>
+<TD>
+<H2>Paint-Window</H2>
+The paint-window is the central part of the program where you create the images. It also contains a menu-bar for controlling operations such as saving the image and creating new windows. In figure 1  is a picture of a paint-window.
+<P>
+<DIV ALIGN=CENTER>
+<TABLE>
+<CAPTION ALIGN=BOTTOM>Figure 1: A paint-window.</CAPTION>
+<TR>
+<TD><IMG SRC="./images/paint_window.gif">
+</TABLE>
+</DIV>
+<P>
+The paint-window is divided into three distinct subsections: the canvas, the status-bar and the menu-bar. In figure 1 the canvas is the white area in the middle of the window. It is used for painting the image. The status-bar is at the bottom of the window. It contains information such as coordinates and selected colors and allows you to also zoom the view and select new colors. The menu-bar can be used to invoke many operations, such as opening new windows and saving the image.
+<P>
+<H2>The canvas</H2>
+The canvas is the area where you can paint your image. When a paint-window is first opened it does not have a canvas. You should select a suitable canvas size and then press the "Create Canvas"-button to create a canvas for the paint-window. Figure 2 shows the controls that are available for settings the size of the canvas.
+<P>
+<DIV ALIGN=CENTER>
+<TABLE>
+<CAPTION ALIGN=BOTTOM>Figure 2: Controls for settings the canvas size.</CAPTION>
+<TR><TD><IMG SRC="./images/resize.gif">
+</TABLE>
+</DIV>
+<P>
+The size can be selected by settings the numbers in the two fields or by selecting one of the recently used sizes from the pop-up-list on the right. If only an approximate size is needed, it can be quickly selected by dragging the window to the required size.
+<P>
+When the canvas has been created you can use any of the <A HREF="./painting_tools.html">painting tools</A> to paint on it. The painting tool can be used by pressing down the primary mouse-button. The secondary mouse-button brings up a pop-up-menu where you can change the active tool.
+<P>
+<H2>The status-bar</H2>
+The status-bar is at the bottom of the window and it displays status-information about the current state of the program. Status-bar also contains tools for zooming the image and for selecting <A HREF="./colors.html">colors</A>. Status-bar can be in several different states depending on the state of the program. The different states of the status-bar are listed here:
+<DL>
+<DT>Canvas not created -mode
+<DD><IMG SRC="./images/bar1.gif"><P>
+<DT>Normal-mode
+<DD><IMG SRC="./images/bar2.gif"><P>
+<DT>Transform-mode
+<DD><IMG SRC="./images/bar3.gif"><P>
+<DT>Add-on-mode
+<DD><IMG SRC="./images/bar4.gif"><P>
+<DT>Busy-mode
+<DD><IMG SRC="./images/bar5.gif"><P>
+</DL>
+<P>
+The canvas not created -mode comes up when the window has no canvas. At this point the status-bar does not offer any functionality. This shows a message at the bottom of the bar. In most modes this place is reserved for helpful messages.
+<P>
+Normal-mode is the most usual, and it comes up when the canvas has been created. It has the following components (from left to right):
+<DL>
+<DT>Coordinates-box
+<DD>Displays the coordinates that the mouse is over. If the mouse is outside of the image this displays the width and height of the image instead.
+<DT>Magnification-box
+<DD>Displays the magnification-level of the image. When you click your mouse over this it brings up a slider with which the zooming level can be adjusted freely.
+<DT>Magnification-buttons
+<DD>Allow you to zoom in and out from the image in predefined steps.
+<DT>Selected colors
+<DD>Shows the current foreground- and background-<A HREF="./colors.html">color</A>. Clicking on these with the primary mouse button opens up the color-window. Clicking with other mouse buttons exchanges the two colors with each other.
+<DT>Color-set
+<DD>Displays the current <A HREF="./colors.html">color-set</A>. The two arrows change between different sets. 
+</DL>
+<P>
+Transform-mode comes up when you start an image transformation such as rotation or translation. This mode may also come up with some add-ons. On the right side of the status-bar are two buttons for cancelling and applying the transformation. On their left side are control-views for controlling the transform.
+<P>
+Add-on mode is similar to normal-mode, but it does not display colors. The status-bar comes to this mode when you have started some add-on or for example when you are adjusting the transparency of the <A HREF="./layers.html">layer</A>.
+<P>
+Busy-mode comes up when you have selected some operation that is going to take a substantial amount of time. Usually this goes by quite quickly, but depending on the speed of the computer and the size of the image, some operations might take a while. When the status-bar is in this mode you cannot do anything to that image (but you can edit other images if you wish).
+<P>
+<H2>The menu-bar</H2>
+The menu-bar behaves like you would expect from a BeOS application. The following list summarizes the menu-items and describes their functionality.
+<P>
+<H3>File-menu</H3>
+<DL>
+<DT>Recent Images
+<DD>This has a list of recent images as a submenu. Look at the status-bar to see the path of the image your cursor is over.
+<DT>Open Image
+<DD>Brings up a file-panel for opening an image. The file-panel displays only directories and image-files.
+<DT>Save Image As
+<DD>Brings up a file-panel for saving the image. The file-panel contains a pop-up-menu for choosing the required save-format and also a button for bringing up a settings window for that format.
+<DT>Save Image
+<DD>Saves the image using the name and format that were used when it was last saved.
+<DT>New Project
+<DD>Opens a new, empty, paint-window.
+<DT>Recent Projects
+<DD>This has a list of recent projects as a submenu. Look at the status-bar to see the path of the project your cursor is over.
+<DT>Open Project
+<DD>Brings up a file-panel for opening a project from the disk.
+<DT>Save Project As
+<DD>Brings up a file-panel for saving the current project to the disk.
+<DT>Save Project
+<DD>Saves the project using the name (and path) it was last saved with.
+<DT>Close
+<DD>Closes the current window.
+<DT>Quit
+<DD>Closes all of the windows and quits the program.
+</DL>
+<H3>Edit-menu</H3>
+<DL>
+<DT>Undo...
+<DD>Undoes the previous action. The name of this item will change according to what the previous action was.
+<DT>Redo...
+<DD>Redoes the action that was last undone. The name of this item will change to reflect what operation is to be redone.
+<DT>Cut
+<DD>This item has a submenu that allows you to cut the active layer or all layers. Cutting means that the layer (or all layers) is stored on the clipboard and then cleared. If you have made a <A HREF="./selections.html">selection</A> only the selected area will be cut.
+<DT>Copy
+<DD>This is almost the same as cut, but this does not clear the layer (or the image).
+<DT>Paste As a New Layer
+<DD>Pastes the contents of the clipboard as a new layer.
+<DT>Paste As a New Project
+<DD>Pastes the contents of the clipboard as a new project. Opens a new window where the pasted image goes. Pasting does not empty the clipboard.
+<DT>Grow Selection
+<DD>Grows the size of the <A HREF="./selections.html">selection</A> by one pixel in each direction.
+<DT>Shrink Selection
+<DD>Shrinks the size of the selection by one pixel from each direction.
+<DT>Invert Selection
+<DD>Inverts the selection by turning selected areas into unselected and unselected areas into selected. 
+<DT>Clear Selection
+<DD>Clears the selection. This makes everything selected and it does not clear the actual image.
+</DL>
+<H3>Layer-menu</H3>
+<DL>
+<DT>Rotate
+<DD>Starts <A HREF="./image_processing.html">rotating</A> the currently active <A HREF="./layers.html">layer</A>.
+<DT>Translate
+<DD>Starts <A HREF="./image_processing.html">translating</A> the currently active <A HREF="./layers.html">layer</A>.
+<DT>Flip Horizontally
+<DD>Flips the active layer horizontally
+<DT>Flip Vertically
+<DD>Flips the active layer vertically.
+<DT>Change Transparency
+<DD>Brings up a window where you can adjust the overall transparency of the active layer.
+<DT>Clear Layer
+<DD>Clears the layer to the <A HREF="./colors.html">background-color</A>.
+<DT>Insert Text
+<DD>Brings up a window which allows you to insert text into the image.
+<DT>Show Layer Window
+<DD>Shows the <A HREF="./layers.html">layer-window</A>.
+<DT>Add Layer
+<DD>Adds a new layer to the top of the image.
+</DL>
+<P>
+<H3>Canvas-menu</H3>
+<DL>
+<DT>Rotate
+<DD>Starts <A HREF="./image_processing.html">rotating</A> the whole image.
+<DT>Translate
+<DD>Starts <A HREF="./image_processing.html">translating</A> the whole image.
+<DT>Flip Horizontally
+<DD>Flips the whole image horizontally
+<DT>Flip Vertically
+<DD>Flips the whole image vertically.
+<DT>Crop
+<DD>Starts cropping the image. Opens up a new window where the crop amount can be adjusted. Crop also allows the extension of the image.
+<DT>Scale
+<DD>Starts scaling the image. Opens up a new window for setting the scaling parameters.
+<DT>Clear Canvas
+<DD>Clears the image to the background-color. This is same as clearing all of the layers separately.
+</DL>
+<P>
+<H3>Window-menu</H3>
+<DL>
+<DT>Zoom In
+<DD>Zooms in on the image.
+<DT>Zoom out
+<DD>Zooms out from the image.
+<DT>Set Zoom Level
+<DD>This has a submenu that contains a set of predefined zoom-levels that can be used to set the zooming of the image. Default value is 100%.
+<DT>Set Grid
+<DD>Contains a submenu of items that set the grid size. The grid restricts the drawing operations to certain steps. For example 8x8 restricts the drawing operations to 8 by 8 pixel blocks. Grid is useful for drawing diagrams and such things. Default value is off.
+<DT>Resize To Fit
+<DD>Resizes the window so that as much of the image is visible as possible while the window still fits on the screen.
+<DT>Show Palette Window
+<DD>Brings up the color-palette window that can be used to adjust colors and color-sets.
+<DT>Show Layer Window
+<DD>Brings up the layer window.
+<DT>Show Tool Window
+<DD>Brings up the window that can be used to select painting tools.
+<DT>Show Tool Setup Window
+<DD>Brings up the window that can be used to set up the painting tools.
+<DT>Show Brush Window
+<DD>Brings up the window that holds previously defined brushes.
+<DT>Settings
+<DD>Brings up the window where settings of the program can be adjusted.
+</DL>
+<P>
+<H3>Add-Ons-menu</H3>
+The contents of this menu varies depending on what <A HREF="./add_ons.html">add-ons</A> have been installed.
+
+<P>
+<H3>Help-menu</H3>
+<DL>
+<DT>User Manual
+<DD>Opens the ArtPaint documentation in a web-browser.
+<DT>Shortcuts
+<DD>Opens a page describing ArtPaint's keyboard shortcuts in a web-browser.
+<DT>About ArtPaint
+<DD>Opens a window that contains scrolling text that tells you about ArtPaint.
+<DT>Registration Info
+<DD>Displays the documentation for the registration-process if the program has not yet been registered. Otherwise opens a new window that displays registration status.
+</DL>
+<H2>The title-bar</H2>
+Every paint-window has a title-bar like most other windows. The title-bar is shown in the following figure.
+<P>
+<DIV ALIGN=CENTER>
+<TABLE>
+<CAPTION ALIGN=BOTTOM>Figure 1: The title-bar.</CAPTION>
+<TR>
+<TD><IMG SRC="./images/title_bar.jpeg">
+</TABLE>
+</DIV>
+<P>
+The title-bar contains three pieces of information. The star on the left tells that the project has been changed since it was last saved. The 'Untitled - 2' is the name of the project, which in this case is still unnamed. When the project is saved to disk this will change to reflect that. The 'pic00007.jpg' is the name of the picture that this project was last saved to or loaded from.
+</TABLE>
+
+<IMG SRC="./images/bottom_bar.gif"><BR>
+</DIV>
+
+</BODY>
+</HTML>
