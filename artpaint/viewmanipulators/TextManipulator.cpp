@@ -741,21 +741,21 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 		fFontMenu);
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
-	message->AddBool("final", false);
+//	message->AddBool("final", false);	-- now by default in NumberSliderControl
 	fSizeControl =
 		new NumberSliderControl(StringServer::ReturnString(SIZE_STRING), "0",
 		message, 5, 500, false);
 	AddChild(fSizeControl);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
-	message->AddBool("final", false);
+//	message->AddBool("final", false);
 	fRotationControl =
 		new NumberSliderControl(StringServer::ReturnString(ROTATION_STRING),
 		"0", message, -180, 180, false);
 	AddChild(fRotationControl);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
-	message->AddBool("final", false);
+//	message->AddBool("final", false);
 	fShearControl =
 		new NumberSliderControl(StringServer::ReturnString(SHEAR_STRING),
 		"45", message, 45, 135, false);
@@ -868,10 +868,10 @@ TextManipulatorView::MessageReceived(BMessage* message)
 			}
 		}	break;
 
-		case FONT_SIZE_CHANGED: {
+		case FONT_SIZE_CHANGED:
 		case FONT_SHEAR_CHANGED:
 		case FONT_ROTATION_CHANGED:
-			bool final;
+		{	bool final;
 			int32 value;
 			if ((message->FindBool("final", &final) == B_OK)
 				&& (message->FindInt32("value", &value) == B_OK)) {

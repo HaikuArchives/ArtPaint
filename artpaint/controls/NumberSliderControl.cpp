@@ -4,7 +4,7 @@
  *
  * Authors:
  *		Karsten Heimrich <host.haiku@gmx.de>
- *
+ *		(fixes by Pete Goodeve 2017)
  */
 
 #include "NumberSliderControl.h"
@@ -187,11 +187,12 @@ NumberSliderControl::_InitMessage()
 		fMessage = new BMessage;
 
 	if (fMessage) {
-		if (fMessage->HasInt32("value"))
+		if (!fMessage->HasInt32("value"))	// may have been set by creator
 			fMessage->AddInt32("value", 0);
 
-		if (fMessage->HasBool("final"))
-			fMessage->AddBool("final", true);
+//		if (fMessage->HasBool("final"))
+	// Should always have this -- often ignored:
+		fMessage->AddBool("final", true);
 	}
 }
 
