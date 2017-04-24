@@ -183,6 +183,12 @@ NumberSliderControl::TextViewLayoutItem() const
 void
 NumberSliderControl::_InitMessage()
 {
+	// The message returned by the control will have at least
+	// the two items: 'value' and 'final'.
+	// 'value' is of course the current value of the control;
+	// It may have been given an initial value at construction.
+	// 'final' will be false while the slider is being moved,
+	// and set true at mouse-up.
 	if (!fMessage)
 		fMessage = new BMessage;
 
@@ -190,8 +196,6 @@ NumberSliderControl::_InitMessage()
 		if (!fMessage->HasInt32("value"))	// may have been set by creator
 			fMessage->AddInt32("value", 0);
 
-//		if (fMessage->HasBool("final"))
-	// Should always have this -- often ignored:
 		fMessage->AddBool("final", true);
 	}
 }
