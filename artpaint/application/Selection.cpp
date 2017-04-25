@@ -176,11 +176,14 @@ Selection::AddSelection(HSPolygon *poly, bool add_to_selection)
 			if (bound_poly) {
 				BPolygon* polygon = bound_poly->GetBPolygon();
 				selection_view->FillPolygon(polygon, B_SOLID_LOW);
+				selection_view->StrokePolygon(polygon, true, B_SOLID_LOW);	// Haiku bug
 				delete polygon;
 			}
 			selection_view->FillPolygon(p, B_SOLID_HIGH);
+			selection_view->StrokePolygon(p, true, B_SOLID_HIGH);
 		} else {
 			selection_view->FillPolygon(p, B_SOLID_LOW);
+			selection_view->StrokePolygon(p, true, B_SOLID_LOW);
 		}
 
 		selection_view->Sync();
@@ -220,12 +223,9 @@ Selection::AddSelection(BBitmap *bitmap, bool add_to_selection)
 
 		if (selection_map->Lock()) {
 			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
-			selection_map->Unlock();
-		}
 
-		if (!add_to_selection) {
-			selection_map->Lock();
-			selection_view->FillRect(selection_map->Bounds(), B_SOLID_LOW);
+			if (!add_to_selection)
+				selection_view->FillRect(selection_map->Bounds(), B_SOLID_LOW);
 			selection_view->Sync();
 			selection_map->Unlock();
 		}
@@ -524,9 +524,11 @@ Selection::Recalculate()
 					if (p->GetDirection() == HS_POLYGON_CLOCKWISE) {
 						// selection
 						selection_view->FillPolygon(bPoly, B_SOLID_LOW);
+						selection_view->StrokePolygon(bPoly, true, B_SOLID_LOW);	// Haiku bug
 					} else if (p->GetDirection() == HS_POLYGON_COUNTERCLOCKWISE) {
 						// a de-selection
 						selection_view->FillPolygon(bPoly, B_SOLID_HIGH);
+						selection_view->StrokePolygon(bPoly, true, B_SOLID_HIGH);
 					}
 					delete bPoly;
 				}
