@@ -43,7 +43,7 @@ AboutWindow::AboutWindow(BRect frame)
 	BFont italic_font;
 	italic_font.SetFace(B_ITALIC_FACE);
 
-	scroller->AddLine("ArtPaint v. 2.1.1",yellow,title_font);
+	scroller->AddLine("ArtPaint v. 2.1.2",yellow,title_font);
 
 	char string[256];
 	sprintf(string, StringServer::ReturnString(RELEASE_DATE_STRING), __DATE__);

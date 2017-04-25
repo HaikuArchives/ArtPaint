@@ -4,7 +4,7 @@
  *
  * Authors:
  *		Karsten Heimrich <host.haiku@gmx.de>
- *
+ *		(fixes by Pete Goodeve 2017)
  */
 
 #include "NumberSliderControl.h"
@@ -183,15 +183,20 @@ NumberSliderControl::TextViewLayoutItem() const
 void
 NumberSliderControl::_InitMessage()
 {
+	// The message returned by the control will have at least
+	// the two items: 'value' and 'final'.
+	// 'value' is of course the current value of the control;
+	// It may have been given an initial value at construction.
+	// 'final' will be false while the slider is being moved,
+	// and set true at mouse-up.
 	if (!fMessage)
 		fMessage = new BMessage;
 
 	if (fMessage) {
-		if (fMessage->HasInt32("value"))
+		if (!fMessage->HasInt32("value"))	// may have been set by creator
 			fMessage->AddInt32("value", 0);
 
-		if (fMessage->HasBool("final"))
-			fMessage->AddBool("final", true);
+		fMessage->AddBool("final", true);
 	}
 }
 

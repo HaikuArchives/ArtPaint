@@ -103,46 +103,6 @@ void TextManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_cl
 
 BRegion TextManipulator::Draw(BView *view,float)
 {
-//	BRect rect = CalculateBoundingBox(settings);
-//	view->StrokeRect(rect,B_MIXED_COLORS);
-//	BRegion region;
-//	region.Include(rect);
-//	rect.InsetBy(1,1);
-//	region.Exclude(rect);
-//	return region;
-//	return BRegion();
-/*	printf("test0\n");
-	BRect *rect_array;
-	int32 rect_count = strlen(fSettings.text);
-	printf("test0.5\n");
-	rect_array = new BRect[rect_count];
-	for (int32 i=0;i<rect_count;i++)
-		rect_array[i] = BRect(0,0,0,0);
-
-	escapement_delta *deltas = new escapement_delta[rect_count];
-	fSettings.font.GetBoundingBoxesAsString(fSettings.text,rect_count,B_SCREEN_METRIC,deltas,rect_array);
-	printf("test1\n");
-	BRect rect ;//= rect_array[0];
-	printf("test2, %d\n",rect_count);
-
-	for (int32 i=0;i<rect_count;i++) {
-		rect_array[i].OffsetBy(fSettings.starting_point);
-		view->StrokeRect(rect_array[i],B_MIXED_COLORS);
-		rect = rect | rect_array[i];
-		rect_array[i].PrintToStream();
-	}
-	printf("test3\n");
-
-//	delete [] rect_array;
-//	delete [] deltas;
-	printf("test4\n");
-
-	BRegion region;
-	printf("test5\n");
-	region.Set(rect);
-	printf("test6\n");
-	return region;
-*/
 	return BRegion();
 }
 
@@ -247,7 +207,6 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		}
 	}
 
-	// delete the new_bitmap
 	delete new_bitmap;
 
 	return original;
@@ -350,8 +309,6 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 				if ((current_settings.text[i] & 0x80) == 0x00)
 					view->DrawChar(current_settings.text[i]);
 				else {
-//					int32 length = (current_settings.text[i] >> 8) + ((current_settings.text[i]>>7) & 0x01) +
-//								((current_settings.text[i]>>6) & 0x01) + ((current_settings.text[i]>>7) & 0x01);
 					int32 length = 0;
 					int32 j=0;
 					while ((j<8) && (((current_settings.text[i] << j) & 0x80) != 0x00)) {
@@ -446,107 +403,6 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 
 	return last_used_quality;
 }
-
-//BRect TextManipulator::CalculateBoundingBox(const TextManipulatorSettings &s)
-//{
-////	BRect b_box;
-////	font_height fHeight;
-////	s.font.GetHeight(&fHeight);
-////
-////	// Calculate the new bounding rect
-////	b_box.left = s.starting_point.x-10;
-////	b_box.top = s.starting_point.y - ceil(fHeight.ascent+fHeight.leading);
-////	b_box.bottom = s.starting_point.y + ceil(fHeight.descent+fHeight.leading);
-////	b_box.right = s.starting_point.x + s.font.StringWidth(s.text)+10;
-////
-////	// Here take the shear into account.
-////	float shear = s.font.Shear();
-////	shear = shear-90;
-////	if (shear < 0)
-////		b_box.left += shear/45.0*fHeight.ascent;
-////	else
-////		b_box.right += shear/45.0*fHeight.ascent;
-////
-////	// Here take the rotation into account.
-////	HSPolygon *poly;
-////	BPoint point_list[4];
-////	point_list[0] = b_box.LeftTop();
-////	point_list[1] = b_box.RightTop();
-////	point_list[2] = b_box.RightBottom();
-////	point_list[3] = b_box.LeftBottom();
-////	poly = new HSPolygon(point_list,4);
-////	poly->Rotate(s.starting_point,-s.font.Rotation());
-////	b_box = poly->BoundingBox();
-////	delete poly;
-////
-////	b_box.left = floor(b_box.left);
-////	b_box.right = ceil(b_box.right);
-////	b_box.top = floor(b_box.top);
-////	b_box.bottom = ceil(b_box.bottom);
-////
-////	return b_box;
-//
-//
-//	BRect rect(0,0,0,0);
-//
-//	font_height fHeight;
-//	s.font.GetHeight(&fHeight);
-//	float line_height = ceil(fHeight.ascent + fHeight.descent + fHeight.leading);
-//	float line_length = 0;
-//	edge_info edge[1];
-//
-//	rect.bottom += line_height;
-//	BFont font = s.font;
-//	font.SetRotation(0);
-//	int32 line_count = 0;
-//	int32 char_number = 0;
-//	int32 i=0;
-//	int32 text_length = strlen(s.text);
-//	char *line = new char[text_length+1];
-//	while (i<text_length) {
-//		int32 j=0;
-//		int32 number_of_additional_spaces = 0;
-//		while ((i<text_length) && (s.text[i] != '\n')) {
-//			if (s.text[i] == '\t')
-//				number_of_additional_spaces += 3;
-//
-//			line[j++] = s.text[i++];
-//		}
-//		i++;
-//		line[j] = '\0';
-//		line_count++;
-//
-//		if (j>0) {
-//			float width = font.StringWidth(line);
-//			for (int32 space=0;space<number_of_additional_spaces;space++)
-//				width += font.StringWidth(" ");
-//
-//			font.GetEdges(line,1,edge);
-//			rect.left = min_c(rect.left,edge[0].left * font.Size());
-//
-//			font.GetEdges(line+j-1,1,edge);
-//			rect.right = max_c(rect.right,max_c(width,width+edge[0].right*font.Size()));
-//		}
-//	}
-//	delete [] line;
-//	rect.bottom = line_count*line_height;
-//
-//	rect.OffsetBy(0,-fHeight.ascent);
-//	rect.OffsetBy(s.starting_point);
-//
-//	HSPolygon *poly;
-//	BPoint point_list[4];
-//	point_list[0] = rect.LeftTop();
-//	point_list[1] = rect.RightTop();
-//	point_list[2] = rect.RightBottom();
-//	point_list[3] = rect.LeftBottom();
-//	poly = new HSPolygon(point_list,4);
-//	poly->Rotate(s.starting_point,-s.font.Rotation());
-//	rect = poly->BoundingBox();
-//	delete poly;
-//
-//	return rect;
-//}
 
 
 void TextManipulator::SetPreviewBitmap(BBitmap *bm)
@@ -741,21 +597,18 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 		fFontMenu);
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
-	message->AddBool("final", false);
 	fSizeControl =
 		new NumberSliderControl(StringServer::ReturnString(SIZE_STRING), "0",
 		message, 5, 500, false);
 	AddChild(fSizeControl);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
-	message->AddBool("final", false);
 	fRotationControl =
 		new NumberSliderControl(StringServer::ReturnString(ROTATION_STRING),
 		"0", message, -180, 180, false);
 	AddChild(fRotationControl);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
-	message->AddBool("final", false);
 	fShearControl =
 		new NumberSliderControl(StringServer::ReturnString(SHEAR_STRING),
 		"45", message, 45, 135, false);
@@ -868,10 +721,10 @@ TextManipulatorView::MessageReceived(BMessage* message)
 			}
 		}	break;
 
-		case FONT_SIZE_CHANGED: {
+		case FONT_SIZE_CHANGED:
 		case FONT_SHEAR_CHANGED:
 		case FONT_ROTATION_CHANGED:
-			bool final;
+		{	bool final;
 			int32 value;
 			if ((message->FindBool("final", &final) == B_OK)
 				&& (message->FindInt32("value", &value) == B_OK)) {

@@ -1,4 +1,10 @@
-For easiest way to build, open up Terminal to this directory and run "./build.sh"
-Afterwards ArtPaint and it's add-ons will appear built in the "dist" directory
+For easiest way to build, open up Terminal to this directory and
+run "./build.sh"  Afterwards ArtPaint and it's add-ons will appear
+built in the "dist" directory
 
-Note: Only the add-ons in the working folder are built even with running the makefile "manually"
+Note: Only the add-ons in the working folder are built even with
+running the makefile "manually"
+
+Before compiling a distribution, remember to set the version in
+ArtPaint.rdef ('major', 'middle', 'minor') and windows/AboutWindow.cpp
+(string).
