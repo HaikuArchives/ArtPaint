@@ -31,7 +31,8 @@ class	ReducerManipulatorSettings : public ManipulatorSettings {
 public:
 		ReducerManipulatorSettings()
 			: ManipulatorSettings() {
-			dither_mode = FLOYD_STEINBERG_EDD_DITHER;
+//			dither_mode = FLOYD_STEINBERG_EDD_DITHER;
+			dither_mode = NO_DITHER;
 			palette_size = 256;
 			palette_mode = BEOS_PALETTE;
 		}
@@ -107,6 +108,9 @@ void		ChangeSettings(ManipulatorSettings*);
 #define	PALETTE_SIZE_CHANGED	'Plsc'
 #define PALETTE_MODE_CHANGED	'Plmc'
 
+#define REDUCER_STARTED	'Rest'
+#define REDUCER_FINISHED	'Refn'
+
 class ReducerManipulatorView : public WindowGUIManipulatorView {
 		BMessenger						target;
 		ReducerManipulator			*manipulator;
@@ -115,6 +119,8 @@ class ReducerManipulatorView : public WindowGUIManipulatorView {
 		BMenuField		*dither_mode_menu_field;
 		BMenuField		*palette_size_menu_field;
 		BMenuField		*palette_mode_menu_field;
+		
+		BStringView		*busy;
 
 public:
 		ReducerManipulatorView(ReducerManipulator*,const BMessenger& target);

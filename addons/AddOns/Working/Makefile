@@ -1,5 +1,5 @@
 SUBDIRS := AdaptiveHistogramEqualization AntiDitherer BlurAddOn \
-ColorBalanceAddOn ColorSeparator Contrast ContrastManipulatorAddOn \
+ColorBalanceAddOn ColorReducer ColorSeparator Contrast ContrastManipulatorAddOn \
 DispersionAddOn EdgeDetector EmbossAddOn EnhanceEdges GaussianBlur \
 GrayscaleAddOn Halftone Interference MarbleTexturer NegativeAddOn \
 OilAddOn PolarMapper Saturation Sharpness Threshold TwirlAddOn \

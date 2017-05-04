@@ -283,8 +283,8 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	block_size_control->MoveTo(BPoint(4,4));
 	BRect frame = block_size_control->Frame();
 
-	frame.OffsetBy(0,frame.Height() + 4);
-	reduce_resolution_box = new BCheckBox(frame,"reduce_resolution","Reduce Resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
+	reduce_resolution_box = new BCheckBox(BRect(4, frame.Height()+4, StringWidth("Reduce Resolution")+40, frame.Height()+24),
+		"reduce_resolution","Reduce Resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
 	AddChild(reduce_resolution_box);
 
 	ResizeTo(reduce_resolution_box->Bounds().Width()+8,reduce_resolution_box->Frame().bottom+4);

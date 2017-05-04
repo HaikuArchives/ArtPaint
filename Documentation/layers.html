@@ -21,6 +21,13 @@ ArtPaint: Layers
 <H2>Layers</H2>
 Layers is a concept that allows for a lot of flexibility in image creation and manipulation. In short: layers allow the image to consist of multiple individual layers that can be painted and manipulated independently of each other. A layer can be thought of as a transparent slide that shows through what is underneath it except for the parts that are fully covered with paint. Only one layer can be active at a time. This means that painting operations affect only one layer. Some image-processing operations affect all layers no matter what layer is actually active.
 <P>
+A newly created layer is always completely transparent.
+If all (visible) layers are transparent in an area of the image,
+that area will also be transparent in a saved file, provided its
+format allows for transparency.  (In the Paint-window, transparent
+areas always appear white.  If in doubt, use the Color Selector Tool
+to check the alpha value.)
+<P>
 The layers in ArtPaint have the following features:
 <UL>
 <LI>Layers can be added or deleted

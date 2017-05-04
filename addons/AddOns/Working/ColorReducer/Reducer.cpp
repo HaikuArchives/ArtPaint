@@ -9,8 +9,10 @@
 #include <Bitmap.h>
 #include <ClassInfo.h>
 #include <Menu.h>
+#include <PopUpMenu.h>
 #include <MenuField.h>
 #include <MenuItem.h>
+#include <StringView.h>
 #include <Screen.h>
 #include <StatusBar.h>
 #include <stdio.h>
@@ -105,6 +107,7 @@ int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,B
 	if (settings == previous_settings ) {
 		return 0;
 	}
+	config_view->Window()->PostMessage(REDUCER_STARTED, config_view);
 
 	previous_settings = settings;
 
@@ -124,6 +127,7 @@ int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,B
 
 	do_dither(source_bitmap,target_bitmap,palette,previous_settings.palette_size,previous_settings.dither_mode);
 
+	config_view->Window()->PostMessage(REDUCER_FINISHED, config_view);
 	return 1;
 }
 
@@ -269,8 +273,9 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 {
 	target = t;
 	manipulator = manip;
+	int32 label_width = StringWidth("Palette Mode")+10;	// longest label
 
-	BMenu *dither_menu = new BMenu("dither_menu");
+	BMenu *dither_menu = new BPopUpMenu("SELECT");
 
 	BMessage *message;
 	message = new BMessage(DITHER_MODE_CHANGED);
@@ -289,12 +294,13 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	message->AddInt32("dither_mode",N_CANDIDATE_DITHER);
 	dither_menu->AddItem(new BMenuItem("N-Candidate",message));
 
-	dither_mode_menu_field = new BMenuField(BRect(4,4,204,24),"dither_mode_menu_field","Dither Mode",dither_menu);
+	dither_mode_menu_field = new BMenuField(BRect(4, 4, label_width+StringWidth("Floyd-Steinberg EDD")+60,24),
+		"dither_mode_menu_field", "Dither Mode", dither_menu);
+	dither_mode_menu_field->SetDivider(label_width);
 	AddChild(dither_mode_menu_field);
-	dither_mode_menu_field->ResizeToPreferred();
 
 
-	BMenu *size_menu = new BMenu("size_menu");
+	BMenu *size_menu = new BPopUpMenu("SELECT");	// TODO: Find how initialized...
 
 	message = new BMessage(PALETTE_SIZE_CHANGED);
 	message->AddInt32("palette_size",2);
@@ -331,12 +337,12 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	BRect frame = dither_mode_menu_field->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
-	palette_size_menu_field = new BMenuField(frame,"palette_size_menu_field","Palette Size",size_menu);
+	palette_size_menu_field = new BMenuField(frame, "palette_size_menu_field", "Palette Size", size_menu);
+	palette_size_menu_field->SetDivider(label_width);
 	AddChild(palette_size_menu_field);
-	palette_size_menu_field->ResizeToPreferred();
 
 
-	BMenu *mode_menu = new BMenu("mode_menu");
+	BMenu *mode_menu = new BPopUpMenu("SELECT");
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",BEOS_PALETTE);
@@ -348,11 +354,23 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 
 	frame.OffsetBy(0,frame.Height()+4);
 
-	palette_mode_menu_field = new BMenuField(frame,"palette_mode_menu_field","Palette Mode",mode_menu);
+	palette_mode_menu_field = new BMenuField(frame, "palette_mode_menu_field", "Palette Mode", mode_menu);
+	palette_mode_menu_field->SetDivider(label_width);
 	AddChild(palette_mode_menu_field);
-	palette_mode_menu_field->ResizeToPreferred();
 
-	ResizeTo(palette_mode_menu_field->Frame().Width() + 8, palette_mode_menu_field->Frame().bottom + 4);
+	dither_menu->ItemAt(settings.dither_mode)->SetMarked(true);
+	size_menu->ItemAt(size_menu->CountItems()-1)->SetMarked(true);	// slight hack...
+	mode_menu->ItemAt(settings.palette_mode)->SetMarked(true);
+	
+	frame.OffsetBy(10,frame.Height()+8);
+	busy = new BStringView(frame, "busy", "Reducing in progress");
+	busy->SetFontSize(16);
+	busy->SetHighColor(128, 0, 0);
+	busy->SetViewColor(ViewColor());
+	busy->Hide();
+	AddChild(busy);
+
+	ResizeTo(palette_mode_menu_field->Frame().Width(), frame.bottom + 4);
 }
 
 
@@ -407,6 +425,18 @@ void ReducerManipulatorView::MessageReceived(BMessage *message)
 				manipulator->ChangeSettings(&settings);
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			}
+			break;
+		}
+
+		case REDUCER_STARTED:
+		{
+			busy->Show();
+			break;
+		}
+
+		case REDUCER_FINISHED:
+		{
+			busy->Hide();
 			break;
 		}
 
