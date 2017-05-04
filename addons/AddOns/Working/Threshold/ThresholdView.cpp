@@ -8,6 +8,7 @@
  */
 #include <Bitmap.h>
 #include <Menu.h>
+#include <PopUpMenu.h>
 #include <MenuItem.h>
 #include <stdio.h>
 
@@ -29,15 +30,17 @@ ThresholdView::ThresholdView(BRect rect, BMessage *msg)
 	histogramRect = BRect(4,4,259,103);
 	histogramBitmap = new BBitmap(histogramRect,B_RGBA32);
 
-	BMenu *a_menu = new BMenu("Based on:");
+	BMenu *a_menu = new BPopUpMenu("Based on:");
 	a_menu->AddItem(new BMenuItem("Intensity",new BMessage(HISTOGRAM_MODE_INTENSITY)));
 	a_menu->AddItem(new BMenuItem("Red",new BMessage(HISTOGRAM_MODE_RED)));
 	a_menu->AddItem(new BMenuItem("Green",new BMessage(HISTOGRAM_MODE_GREEN)));
 	a_menu->AddItem(new BMenuItem("Blue",new BMessage(HISTOGRAM_MODE_BLUE)));
-	modeMenu = new BMenuField(BRect(0,0,0,0),"modeMenu","Mode",a_menu);
+	modeMenu = new BMenuField(BRect(0,0,StringWidth("Mode:")+StringWidth("Intensity")+60,0),
+		"modeMenu","Mode",a_menu);
+	modeMenu->SetDivider(StringWidth("Mode:")+20);
+	a_menu->ItemAt(0)->SetMarked(true);
 
 	AddChild(modeMenu);
-	modeMenu->ResizeToPreferred();
 	modeMenu->MoveTo(4,histogramRect.bottom+8);
 
 	ResizeTo(histogramRect.right+4,modeMenu->Frame().bottom+34);

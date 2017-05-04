@@ -17,7 +17,7 @@ Addon-Includes=${ArtPaint-Source}/application \
                ${ArtPaint-Source}/windows
 
 # The name of the binary.
-NAME = ColorSeperator.so
+NAME = ColorSeparator.so
 
 # The type of binary, must be one of:
 #	APP:	Application

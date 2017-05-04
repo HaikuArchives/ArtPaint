@@ -10,6 +10,7 @@
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <Menu.h>
+#include <PopUpMenu.h>
 #include <MenuField.h>
 #include <MenuItem.h>
 #include <StatusBar.h>
@@ -224,28 +225,30 @@ ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManip
 	target = t;
 	manipulator = manip;
 
-	BMenu *cmyk_menu = new BMenu("cmyk_menu");
+	BMenu *cmyk_menu = new BPopUpMenu("cmyk_menu");
 
 	BMessage *message;
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_CYAN);
-	cmyk_menu->AddItem(new BMenuItem("C",message));
+	cmyk_menu->AddItem(new BMenuItem("Cyan",message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_MAGENTA);
-	cmyk_menu->AddItem(new BMenuItem("M",message));
+	cmyk_menu->AddItem(new BMenuItem("Magenta",message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_YELLOW);
-	cmyk_menu->AddItem(new BMenuItem("Y",message));
+	cmyk_menu->AddItem(new BMenuItem("Yellow",message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_BLACK);
-	cmyk_menu->AddItem(new BMenuItem("K",message));
+	cmyk_menu->AddItem(new BMenuItem("blacK",message));
 
-	cmyk_menu_field = new BMenuField(BRect(4,4,204,24),"cmyk_menu_field","CMYK",cmyk_menu);
+	cmyk_menu_field = new BMenuField(BRect(4,4,StringWidth("Select C-M-Y-K:")+StringWidth("Magenta")+60,24),
+		"cmyk_menu_field","Select C-M-Y-K:",cmyk_menu);
 	AddChild(cmyk_menu_field);
-	cmyk_menu_field->ResizeToPreferred();
+	cmyk_menu_field->SetDivider(StringWidth("Select C-M-Y-K:")+20);
+	cmyk_menu->ItemAt(settings.mode)->SetMarked(true);
 
 	ResizeTo(cmyk_menu_field->Bounds().Width()+8,cmyk_menu_field->Frame().bottom+4);
 }

@@ -23,14 +23,7 @@ resource app_version {
 };
 
 resource file_types message {
-	"types" = "image/gif",
-	"types" = "image/x-iff",
-	"types" = "image/jpeg",
-	"types" = "image/png",
-	"types" = "image/x-targa",
-	"types" = "image/x-iff-ilbm",
 	"types" = "image",
-	"types" = "image/x-tiff",
 	"types" = "application/x-vnd.artpaint-project-file"
 };
 

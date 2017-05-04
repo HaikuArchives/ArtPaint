@@ -24,7 +24,7 @@ class	ColorSeparatorManipulatorSettings : public ManipulatorSettings {
 public:
 		ColorSeparatorManipulatorSettings()
 			: ManipulatorSettings() {
-			mode = SHOW_CYAN;
+			mode = SHOW_BLACK;
 		}
 
 		ColorSeparatorManipulatorSettings(const ColorSeparatorManipulatorSettings& s)

@@ -15,6 +15,8 @@
 #include "RandomNumberGenerator.h"
 #include "Selection.h"
 
+/* 'Generalized Lloyd's Algorithm' Palette Generation */
+
 rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 {
 	ColorDistanceMetric *color_metric = new ColorDistanceMetric();
