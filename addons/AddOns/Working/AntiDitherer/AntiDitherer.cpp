@@ -9,6 +9,7 @@
 #include <Bitmap.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
+#include <LayoutBuilder.h>
 #include <StatusBar.h>
 #include <string.h>
 #include <Window.h>
@@ -25,8 +26,8 @@ using ArtPaint::Interface::NumberControl;
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "AntiDitherer…";
-	char menu_help_string[255] = "Starts adjusting the image saturation.";
+	char name[255] = "Anti-Dither…";
+	char menu_help_string[255] = "Attempts to reverse the effects of dithering.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -256,12 +257,12 @@ void AntiDithererManipulator::ChangeSettings(ManipulatorSettings *s)
 
 char* AntiDithererManipulator::ReturnName()
 {
-	return "AntiDitherer";
+	return "Anti-Dither";
 }
 
 char* AntiDithererManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the image saturation.";
+	return "Attempts to reverse the effects of dithering.";
 }
 
 
@@ -276,18 +277,18 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	block_size_control = new NumberControl("Block size", "0",
+	block_size_control = new NumberControl("Block size:", "0",
 		new BMessage(BLOCK_SIZE_ADJUSTED));
-	AddChild(block_size_control);
-	block_size_control->ResizeToPreferred();
-	block_size_control->MoveTo(BPoint(4,4));
-	BRect frame = block_size_control->Frame();
 
-	reduce_resolution_box = new BCheckBox(BRect(4, frame.Height()+4, StringWidth("Reduce resolution")+40, frame.Height()+24),
+	reduce_resolution_box = new BCheckBox(
 		"reduce_resolution","Reduce resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
-	AddChild(reduce_resolution_box);
+	reduce_resolution_box->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, B_SIZE_UNSET));
 
-	ResizeTo(reduce_resolution_box->Bounds().Width()+8,reduce_resolution_box->Frame().bottom+4);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
+		.Add(block_size_control)
+		.Add(reduce_resolution_box)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 AntiDithererManipulatorView::~AntiDithererManipulatorView()

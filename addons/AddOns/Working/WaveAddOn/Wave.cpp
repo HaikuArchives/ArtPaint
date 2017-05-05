@@ -8,9 +8,10 @@
  */
 #include <Bitmap.h>
 #include <math.h>
+#include <LayoutBuilder.h>
+#include <Slider.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
-#include <Slider.h>
 #include <Window.h>
 
 #include "AddOns.h"
@@ -27,7 +28,7 @@
 extern "C" {
 #endif
 	char name[255] = "Wave…";
-	char menu_help_string[255] = "Starts waving the active layer.";
+	char menu_help_string[255] = "Adds a wave to the active layer.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = DISTORT_ADD_ON;
 #ifdef __cplusplus
@@ -964,28 +965,27 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	target = new BMessenger(t);
 	preview_started = FALSE;
 
-	wave_length_slider = new BSlider(BRect(0,0,150,0), "wave_length_slider",
-		"Wave length", new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
+	wave_length_slider = new BSlider("wave_length_slider",
+		"Wave length:", new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
 		MAX_WAVE_LENGTH, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	wave_length_slider->SetLimitLabels("Short","Long");
 	wave_length_slider->SetModificationMessage(new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
-	wave_length_slider->ResizeToPreferred();
-	wave_length_slider->MoveTo(4,4);
+	wave_length_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	wave_length_slider->SetHashMarkCount(11);
 
-	BRect frame = wave_length_slider->Frame();
-	frame.OffsetBy(0,frame.Height()+4);
-
-	wave_amount_slider = new BSlider(frame, "wave_amount_slider", "Wave strength",
+	wave_amount_slider = new BSlider("wave_amount_slider", "Wave strength:",
 		new BMessage(WAVE_AMOUNT_CHANGED), MIN_WAVE_AMOUNT, MAX_WAVE_AMOUNT,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	wave_amount_slider->SetLimitLabels("Mild","Strong");
 	wave_amount_slider->SetModificationMessage(new BMessage(WAVE_AMOUNT_ADJUSTING_STARTED));
-	wave_amount_slider->ResizeToPreferred();
+	wave_amount_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	wave_amount_slider->SetHashMarkCount(11);
 
-	AddChild(wave_length_slider);
-	AddChild(wave_amount_slider);
-
-	ResizeTo(wave_amount_slider->Frame().Width()+8,wave_amount_slider->Frame().bottom+4);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
+		.Add(wave_length_slider)
+		.Add(wave_amount_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 

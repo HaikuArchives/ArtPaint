@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 	char name[255] = "Emboss";
-	char menu_help_string[255] = "Creates an emboss effect on the active layer.";
+	char menu_help_string[255] = "Creates an emboss effect.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus

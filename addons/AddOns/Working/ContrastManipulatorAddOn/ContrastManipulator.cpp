@@ -16,8 +16,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Stretch Histogram";
-	char menu_help_string[255] = "Improves the contrast of the active layer by stretching its histogram.";
+	char name[255] = "Stretch histogram";
+	char menu_help_string[255] = "Improves the contrast by stretching its histogram.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus

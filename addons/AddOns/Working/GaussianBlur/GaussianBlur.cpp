@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <StatusBar.h>
 #include <stdio.h>
 #include <StopWatch.h>
@@ -25,8 +26,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Gaussian Blur…";
-	char menu_help_string[255] = "Starts making gaussian blur to the image.";
+	char name[255] = "Gaussian blur…";
+	char menu_help_string[255] = "Adds a gaussian blur to the image.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -262,7 +263,7 @@ void GaussianBlurManipulator::ChangeSettings(ManipulatorSettings *s)
 
 char* GaussianBlurManipulator::ReturnName()
 {
-	return "Gaussian Blur";
+	return "Gaussian blur";
 }
 
 char* GaussianBlurManipulator::ReturnHelpString()
@@ -282,15 +283,17 @@ GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	blur_slider = new BSlider(BRect(0,0,200,0), "blur_slider", "Blur size",
+	blur_slider = new BSlider("blur_slider", "Blur size:",
 		new BMessage(BLUR_ADJUSTING_FINISHED), 0, 2000, B_HORIZONTAL,
 		B_TRIANGLE_THUMB);
 	blur_slider->SetLimitLabels("Small","Large");
-	blur_slider->ResizeToPreferred();
-	blur_slider->MoveTo(4,4);
-	AddChild(blur_slider);
+	blur_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	blur_slider->SetHashMarkCount(11);
 
-	ResizeTo(blur_slider->Bounds().Width()+8,blur_slider->Bounds().Height()+8);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(blur_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 GaussianBlurManipulatorView::~GaussianBlurManipulatorView()

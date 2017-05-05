@@ -19,8 +19,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Detects Edges";
-	char menu_help_string[255] = "Detects the edges in the image.";
+	char name[255] = "Detect edges";
+	char menu_help_string[255] = "Detects edges in the image.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = SHARPEN_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -109,7 +109,7 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *s
 
 char* DetectEdgesManipulator::ReturnName()
 {
-	return "Detect Edges";
+	return "Detect edges";
 }
 
 

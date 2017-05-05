@@ -22,8 +22,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "LogPolar Mapper";
-	char menu_help_string[255] = "Maps image to it's polar coordinate representation.";
+	char name[255] = "Polar mapper";
+	char menu_help_string[255] = "Maps image to its polar coordinate representation.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus

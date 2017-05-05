@@ -9,10 +9,11 @@
 #include <Bitmap.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
+#include <LayoutBuilder.h>
 #include <Menu.h>
-#include <PopUpMenu.h>
 #include <MenuField.h>
 #include <MenuItem.h>
+#include <PopUpMenu.h>
 #include <StatusBar.h>
 #include <string.h>
 #include <Window.h>
@@ -26,8 +27,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "ColorSeparator…";
-	char menu_help_string[255] = "Starts adjusting the image saturation.";
+	char name[255] = "Color separator…";
+	char menu_help_string[255] = "Extracts the Cyan, Magenta, Yellow or Key/Black components for printing.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -206,7 +207,7 @@ void ColorSeparatorManipulator::ChangeSettings(ManipulatorSettings *s)
 
 char* ColorSeparatorManipulator::ReturnName()
 {
-	return "ColorSeparator";
+	return "Color separator";
 }
 
 char* ColorSeparatorManipulator::ReturnHelpString()
@@ -244,13 +245,14 @@ ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManip
 	message->AddInt32("value",SHOW_BLACK);
 	cmyk_menu->AddItem(new BMenuItem("blacK",message));
 
-	cmyk_menu_field = new BMenuField(BRect(4,4,StringWidth("Select C-M-Y-K:")+StringWidth("Magenta")+60,24),
+	cmyk_menu_field = new BMenuField(
 		"cmyk_menu_field","Select C-M-Y-K:",cmyk_menu);
-	AddChild(cmyk_menu_field);
-	cmyk_menu_field->SetDivider(StringWidth("Select C-M-Y-K:")+20);
 	cmyk_menu->ItemAt(settings.mode)->SetMarked(true);
 
-	ResizeTo(cmyk_menu_field->Bounds().Width()+8,cmyk_menu_field->Frame().bottom+4);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(cmyk_menu_field)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 

@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <Slider.h>
@@ -23,7 +24,7 @@
 extern "C" {
 #endif
 	char name[255] = "Brightness…";
-	char menu_help_string[255] = "Starts adjusting the image brightness.";
+	char menu_help_string[255] = "Adjusts the brightness.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -385,16 +386,18 @@ BrightnessManipulatorView::BrightnessManipulatorView(BrightnessManipulator *mani
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	brightness_slider = new BSlider(BRect(0,0,200,0), "brightness_slider",
-		"Brightness", new BMessage(BRIGHTNESS_ADJUSTING_FINISHED), 0, 255,
+	brightness_slider = new BSlider("brightness_slider",
+		"Brightness:", new BMessage(BRIGHTNESS_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	brightness_slider->SetModificationMessage(new BMessage(BRIGHTNESS_ADJUSTED));
-	brightness_slider->SetLimitLabels("Dim","Bright");
-	brightness_slider->ResizeToPreferred();
-	brightness_slider->MoveTo(4,4);
-	AddChild(brightness_slider);
+	brightness_slider->SetLimitLabels("Low","High");
+	brightness_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	brightness_slider->SetHashMarkCount(11);
 
-	ResizeTo(brightness_slider->Bounds().Width()+8,brightness_slider->Bounds().Height()+8);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(brightness_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 

@@ -7,8 +7,9 @@
  *
  */
 #include <Bitmap.h>
-#include <StatusBar.h>
+#include <LayoutBuilder.h>
 #include <Slider.h>
+#include <StatusBar.h>
 #include <string.h>
 #include <Window.h>
 
@@ -22,7 +23,7 @@
 extern "C" {
 #endif
 	char name[255] = "Saturation…";
-	char menu_help_string[255] = "Starts adjusting the image saturation.";
+	char menu_help_string[255] = "Adjust color saturation.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -425,16 +426,18 @@ SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *mani
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	saturation_slider = new BSlider(BRect(0,0,200,0), "saturation_slider",
-		"Saturation", new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255,
+	saturation_slider = new BSlider("saturation_slider",
+		"Saturation:", new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	saturation_slider->SetModificationMessage(new BMessage(SATURATION_ADJUSTED));
 	saturation_slider->SetLimitLabels("Low","High");
-	saturation_slider->ResizeToPreferred();
-	saturation_slider->MoveTo(4,4);
-	AddChild(saturation_slider);
+	saturation_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	saturation_slider->SetHashMarkCount(11);
 
-	ResizeTo(saturation_slider->Bounds().Width()+8,saturation_slider->Bounds().Height()+8);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(saturation_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 SaturationManipulatorView::~SaturationManipulatorView()

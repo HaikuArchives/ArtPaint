@@ -21,7 +21,7 @@ public:
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 
-char*		ReturnName() { return "LogPolar Mapper"; }
+char*		ReturnName() { return "Polar mapper"; }
 };
 
 #endif

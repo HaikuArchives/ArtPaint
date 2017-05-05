@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 	char name[255] = "Oil";
-	char menu_help_string[255] = "Makes an \"oil\" effect on the active layer.";
+	char menu_help_string[255] = "Creates an \"oil\" effect.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus

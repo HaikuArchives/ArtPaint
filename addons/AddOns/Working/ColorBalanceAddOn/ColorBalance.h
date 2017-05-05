@@ -79,7 +79,7 @@ BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 char*		ReturnHelpString() { return "Use the sliders to adjust the color balance."; }
-char*		ReturnName() { return "Color Balance"; }
+char*		ReturnName() { return "Color balance"; }
 
 ManipulatorSettings*	ReturnSettings();
 BView*	MakeConfigurationView(const BMessenger& target);

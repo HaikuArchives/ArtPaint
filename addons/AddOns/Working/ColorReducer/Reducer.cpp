@@ -8,13 +8,14 @@
  */
 #include <Bitmap.h>
 #include <ClassInfo.h>
+#include <LayoutBuilder.h>
 #include <Menu.h>
-#include <PopUpMenu.h>
 #include <MenuField.h>
 #include <MenuItem.h>
-#include <StringView.h>
+#include <PopUpMenu.h>
 #include <Screen.h>
 #include <StatusBar.h>
+#include <StringView.h>
 #include <stdio.h>
 #include <string.h>
 #include <Window.h>
@@ -30,7 +31,7 @@
 extern "C" {
 #endif
 	char name[255] = "Reducer…";
-	char menu_help_string[255] = "Starts adjusting the image brightness.";
+	char menu_help_string[255] = "Reduces the number of used colors to a specified maximum.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -273,7 +274,6 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 {
 	target = t;
 	manipulator = manip;
-	int32 label_width = StringWidth("Palette Mode")+10;	// longest label
 
 	BMenu *dither_menu = new BPopUpMenu("SELECT");
 
@@ -294,11 +294,8 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	message->AddInt32("dither_mode",N_CANDIDATE_DITHER);
 	dither_menu->AddItem(new BMenuItem("N-Candidate",message));
 
-	dither_mode_menu_field = new BMenuField(BRect(4, 4, label_width+StringWidth("Floyd-Steinberg EDD")+60,24),
-		"dither_mode_menu_field", "Dither mode", dither_menu);
-	dither_mode_menu_field->SetDivider(label_width);
-	AddChild(dither_mode_menu_field);
-
+	dither_mode_menu_field = new BMenuField(
+		"dither_mode_menu_field", "Dither mode:", dither_menu);
 
 	BMenu *size_menu = new BPopUpMenu("SELECT");	// TODO: Find how initialized...
 
@@ -334,13 +331,7 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	message->AddInt32("palette_size",256);
 	size_menu->AddItem(new BMenuItem("256",message));
 
-	BRect frame = dither_mode_menu_field->Frame();
-	frame.OffsetBy(0,frame.Height()+4);
-
-	palette_size_menu_field = new BMenuField(frame, "palette_size_menu_field", "Palette size", size_menu);
-	palette_size_menu_field->SetDivider(label_width);
-	AddChild(palette_size_menu_field);
-
+	palette_size_menu_field = new BMenuField("palette_size_menu_field", "Palette size:", size_menu);
 
 	BMenu *mode_menu = new BPopUpMenu("SELECT");
 
@@ -352,25 +343,28 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	message->AddInt32("palette_mode",GLA_PALETTE);
 	mode_menu->AddItem(new BMenuItem("GLA palette",message));
 
-	frame.OffsetBy(0,frame.Height()+4);
-
-	palette_mode_menu_field = new BMenuField(frame, "palette_mode_menu_field", "Palette mode", mode_menu);
-	palette_mode_menu_field->SetDivider(label_width);
-	AddChild(palette_mode_menu_field);
+	palette_mode_menu_field = new BMenuField("palette_mode_menu_field", "Palette mode:", mode_menu);
 
 	dither_menu->ItemAt(settings.dither_mode)->SetMarked(true);
 	size_menu->ItemAt(size_menu->CountItems()-1)->SetMarked(true);	// slight hack...
 	mode_menu->ItemAt(settings.palette_mode)->SetMarked(true);
 	
-	frame.OffsetBy(10,frame.Height()+8);
-	busy = new BStringView(frame, "busy", "Reducing in progress");
-	busy->SetFontSize(16);
+	busy = new BStringView("busy", "Reducing in progress");
 	busy->SetHighColor(128, 0, 0);
 	busy->SetViewColor(ViewColor());
 	busy->Hide();
-	AddChild(busy);
 
-	ResizeTo(palette_mode_menu_field->Frame().Width(), frame.bottom + 4);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(dither_mode_menu_field)
+		.Add(palette_size_menu_field)
+		.Add(palette_mode_menu_field)
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.Add(busy)
+			.AddGlue()
+			.End()
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 
