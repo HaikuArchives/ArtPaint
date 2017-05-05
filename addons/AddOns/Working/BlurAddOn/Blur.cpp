@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <Slider.h>
@@ -24,7 +25,7 @@ extern "C" {
 #endif
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	char name[255] = "Blur…";
-	char menu_help_string[255] = "Starts blurring the active layer.";
+	char menu_help_string[255] = "Adds a blur.";
 	add_on_types add_on_type = BLUR_FILTER_ADD_ON;
 #ifdef __cplusplus
 }
@@ -591,22 +592,22 @@ BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,
 	manipulator = manip;
 	target = new BMessenger(t);
 
-	blur_amount_slider = new BSlider(BRect(0,0,150,0), "blur_amount_slider",
-		"Blur amount", new BMessage(BLUR_AMOUNT_CHANGED), 1, MAX_BLUR_AMOUNT,
+	blur_amount_slider = new BSlider("blur_amount_slider",
+		"Blur amount:", new BMessage(BLUR_AMOUNT_CHANGED), 1, MAX_BLUR_AMOUNT,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blur_amount_slider->SetLimitLabels("Little","Much");
-	blur_amount_slider->ResizeToPreferred();
-	blur_amount_slider->MoveTo(4,4);
+	blur_amount_slider->SetLimitLabels("Low","High");
+	blur_amount_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	blur_amount_slider->SetHashMarkCount(11);
 //	blur_amount_slider->SetModificationMessage(new BMessage(BLUR_AMOUNT_CHANGE_STARTED));
 
 //	BRect frame_rect = blur_amount_slider->Frame();
 //	frame_rect.bottom = frame_rect.top;
 //	transparency_checkbox = new BCheckBox(frame_rect,"transparency_checkbox","Blur Transparency",new BMessage(BLUR_TRANSPARENCY_CHANGED));
 
-	ResizeTo(blur_amount_slider->Frame().Width()+8,blur_amount_slider->Frame().Height()+8);
-
-	AddChild(blur_amount_slider);
-
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(blur_amount_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 
 	preview_started = FALSE;
 }

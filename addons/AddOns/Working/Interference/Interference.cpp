@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 	char name[255] = "Interference…";
-	char menu_help_string[255] = "Makes an interference-pattern on the active layer.";
+	char menu_help_string[255] = "Creates an interference-pattern.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = DISTORT_ADD_ON;
 #ifdef __cplusplus

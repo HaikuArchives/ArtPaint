@@ -16,7 +16,7 @@
 
 class ThresholdView : public BControl {
 public:
-		ThresholdView(BRect,BMessage*);
+		ThresholdView(BMessage*);
 
 void	AttachedToWindow();
 

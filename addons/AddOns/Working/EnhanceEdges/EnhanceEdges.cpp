@@ -19,7 +19,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Enhance Edges";
+	char name[255] = "Enhance edges";
 	char menu_help_string[255] = "Enhances the edges in the image.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = SHARPEN_FILTER_ADD_ON;
@@ -115,7 +115,7 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 
 char* EnhanceEdgesManipulator::ReturnName()
 {
-	return "Enhance Edges";
+	return "Enhance edges";
 }
 
 

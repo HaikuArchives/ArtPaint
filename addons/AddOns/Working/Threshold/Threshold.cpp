@@ -14,6 +14,7 @@
 */
 
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <stdio.h>
@@ -31,7 +32,7 @@
 extern "C" {
 #endif
 	char name[255] = "Threshold…";
-	char menu_help_string[255] = "Starts thresholding the image.";
+	char menu_help_string[255] = "Show only pixels of a specified threshold.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -434,11 +435,12 @@ ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	threshold_control = new ThresholdView(BRect(0,0,0,0),new BMessage(THRESHOLD_ADJUSTING_FINISHED));
-	threshold_control->MoveTo(4,4);
-	AddChild(threshold_control);
+	threshold_control = new ThresholdView(new BMessage(THRESHOLD_ADJUSTING_FINISHED));
 
-	ResizeTo(threshold_control->Bounds().Width()+8,threshold_control->Bounds().Height()+8);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(threshold_control)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 

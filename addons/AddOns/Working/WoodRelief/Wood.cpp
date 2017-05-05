@@ -21,8 +21,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "PerlinWood";
-	char menu_help_string[255] = "Woods the image using perlin noise function.";
+	char name[255] = "Wood";
+	char menu_help_string[255] = "Puts a wood-like texture over the image.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -86,7 +86,7 @@ BBitmap* WoodManipulator::ManipulateBitmap(BBitmap *original,Selection *selectio
 
 char* WoodManipulator::ReturnName()
 {
-	return "PerlinWood";
+	return "Wood";
 }
 
 

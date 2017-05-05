@@ -7,9 +7,10 @@
  *
  */
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
+#include <Slider.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
-#include <Slider.h>
 #include <string.h>
 #include <Window.h>
 
@@ -24,7 +25,7 @@
 extern "C" {
 #endif
 	char name[255] = "Sharpness…";
-	char menu_help_string[255] = "Starts adjusting the image sharpness.";
+	char menu_help_string[255] = "Adjust the sharpness.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -416,26 +417,26 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	sharpness_slider = new BSlider(BRect(0,0,200,0), "sharpness_slider",
-		"Sharpness", new BMessage(SHARPNESS_ADJUSTING_FINISHED), 0, 255,
+	sharpness_slider = new BSlider("sharpness_slider",
+		"Sharpness:", new BMessage(SHARPNESS_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	sharpness_slider->SetModificationMessage(new BMessage(SHARPNESS_ADJUSTED));
 	sharpness_slider->SetLimitLabels("Blurred","Sharp");
-	sharpness_slider->ResizeToPreferred();
-	sharpness_slider->MoveTo(4,4);
-	AddChild(sharpness_slider);
+	sharpness_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	sharpness_slider->SetHashMarkCount(11);
 
-	BRect slider_frame = sharpness_slider->Frame();
-	slider_frame.OffsetBy(0,slider_frame.Height()+4);
-
-	blur_size_slider = new BSlider(slider_frame, "blur_size_slider",
-		"Effect strength", new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
+	blur_size_slider = new BSlider("blur_size_slider",
+		"Effect strength:", new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blur_size_slider->SetLimitLabels("Small","Big");
-	blur_size_slider->ResizeToPreferred();
-	AddChild(blur_size_slider);
+	blur_size_slider->SetLimitLabels("Low","High");
+	blur_size_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	blur_size_slider->SetHashMarkCount(11);
 
-	ResizeTo(sharpness_slider->Bounds().Width()+8,blur_size_slider->Frame().bottom+4);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
+		.Add(sharpness_slider)
+		.Add(blur_size_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 SharpnessManipulatorView::~SharpnessManipulatorView()

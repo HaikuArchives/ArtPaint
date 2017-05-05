@@ -12,14 +12,15 @@
 #include "Selection.h"
 
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <Slider.h>
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Color Balance…";
-	char menu_help_string[255] = "Starts adjusting the color balance of the active layer.";
+	char name[255] = "Color balance…";
+	char menu_help_string[255] = "Adjusts the color balance.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -275,51 +276,54 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	preview_started = FALSE;
 	rgb_color color;
 
-	red_slider = new BSlider(BRect(0,0,150,0), "red_slider", NULL,
+	red_slider = new BSlider("red_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	red_slider->SetLimitLabels("Less red","More red");
-	red_slider->ResizeToPreferred();
+	red_slider->SetLimitLabels("Less","More");
+	red_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	red_slider->SetHashMarkCount(11);
 	red_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
 	color.red = 255;
 	color.blue = 0;
 	color.green = 0;
 	color.alpha = 255;
 	red_slider->SetBarColor(color);
-	AddChild(red_slider);
-	red_slider->MoveTo(4,4);
-	BRect frame = red_slider->Frame();
-	frame.OffsetBy(0,frame.Height()+4);
+	red_slider->SetBarThickness(8);
 
-	green_slider = new BSlider(frame, "green_slider", NULL,
+	green_slider = new BSlider("green_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	green_slider->SetLimitLabels("Less green","More green");
-	green_slider->ResizeToPreferred();
+	green_slider->SetLimitLabels("Less","More");
+	green_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	green_slider->SetHashMarkCount(11);
 	green_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
 	color.red = 0;
 	color.blue = 0;
 	color.green = 255;
 	color.alpha = 255;
 	green_slider->SetBarColor(color);
-	AddChild(green_slider);
-	frame = green_slider->Frame();
-	frame.OffsetBy(0,frame.Height()+4);
+	green_slider->SetBarThickness(8);
 
-	blue_slider = new BSlider(frame, "blue_slider", NULL,
+	blue_slider = new BSlider("blue_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blue_slider->SetLimitLabels("Less blue","More blue");
-	blue_slider->ResizeToPreferred();
+	blue_slider->SetLimitLabels("Less","More");
+	blue_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	blue_slider->SetHashMarkCount(11);
 	blue_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
 	color.red = 0;
 	color.blue = 255;
 	color.green = 0;
 	color.alpha = 255;
 	blue_slider->SetBarColor(color);
-	AddChild(blue_slider);
+	blue_slider->SetBarThickness(8);
 
-	ResizeTo(blue_slider->Bounds().Width()+8,blue_slider->Frame().bottom + 4);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
+		.Add(red_slider)
+		.Add(green_slider)
+		.Add(blue_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 ColorBalanceManipulatorView::~ColorBalanceManipulatorView()

@@ -1,4 +1,4 @@
-SUBDIRS := AdaptiveHistogramEqualization AntiDitherer BlurAddOn \
+SUBDIRS := AdaptiveHistogramEqualization AntiDitherer BlurAddOn Brightness \
 ColorBalanceAddOn ColorReducer ColorSeparator Contrast ContrastManipulatorAddOn \
 DispersionAddOn EdgeDetector EmbossAddOn EnhanceEdges GaussianBlur \
 GrayscaleAddOn Halftone Interference MarbleTexturer NegativeAddOn \

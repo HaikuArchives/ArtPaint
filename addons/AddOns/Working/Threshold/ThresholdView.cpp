@@ -7,18 +7,18 @@
  *
  */
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <Menu.h>
-#include <PopUpMenu.h>
 #include <MenuItem.h>
+#include <PopUpMenu.h>
 #include <stdio.h>
 
 #include "Selection.h"
 #include "ThresholdView.h"
 
 
-ThresholdView::ThresholdView(BRect rect, BMessage *msg)
-	:	BControl(rect,"threshold_view","Threshold",msg,
-				B_FOLLOW_LEFT|B_FOLLOW_TOP,B_WILL_DRAW)
+ThresholdView::ThresholdView(BMessage *msg)
+	:	BControl("threshold_view","Threshold",msg,B_WILL_DRAW)
 {
 	histogramBitmap = NULL;
 	for (int32 i=0;i<256;i++) {
@@ -30,20 +30,22 @@ ThresholdView::ThresholdView(BRect rect, BMessage *msg)
 	histogramRect = BRect(4,4,259,103);
 	histogramBitmap = new BBitmap(histogramRect,B_RGBA32);
 
-	BMenu *a_menu = new BPopUpMenu("Based on:");
+	BMenu *a_menu = new BPopUpMenu("mode");
 	a_menu->AddItem(new BMenuItem("Intensity",new BMessage(HISTOGRAM_MODE_INTENSITY)));
 	a_menu->AddItem(new BMenuItem("Red",new BMessage(HISTOGRAM_MODE_RED)));
 	a_menu->AddItem(new BMenuItem("Green",new BMessage(HISTOGRAM_MODE_GREEN)));
 	a_menu->AddItem(new BMenuItem("Blue",new BMessage(HISTOGRAM_MODE_BLUE)));
-	modeMenu = new BMenuField(BRect(0,0,StringWidth("Mode:")+StringWidth("Intensity")+60,0),
-		"modeMenu","Mode",a_menu);
-	modeMenu->SetDivider(StringWidth("Mode:")+20);
+	modeMenu = new BMenuField("modeMenu","Based on:",a_menu);
 	a_menu->ItemAt(0)->SetMarked(true);
 
-	AddChild(modeMenu);
-	modeMenu->MoveTo(4,histogramRect.bottom+8);
+	modeMenu->SetExplicitMinSize(BSize(256, B_SIZE_UNSET));
 
-	ResizeTo(histogramRect.right+4,modeMenu->Frame().bottom+34);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
+		.AddStrut(100)
+		.Add(modeMenu)
+		.AddGlue()
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();
 }
 
 
@@ -60,7 +62,13 @@ void ThresholdView::AttachedToWindow()
 }
 
 void ThresholdView::Draw(BRect)
-{
+{	
+	SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	SetLowColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	BRect clearRect = BRect(BPoint(histogramRect.left,histogramRect.bottom-4.0),
+		BPoint(histogramRect.right,histogramRect.bottom));
+	FillRect(clearRect);
+
 	if (histogramBitmap != NULL) {
 		DrawBitmap(histogramBitmap,histogramBitmap->Bounds(),histogramRect);
 	}
@@ -69,11 +77,6 @@ void ThresholdView::Draw(BRect)
 
 	StrokeLine(BPoint(histogramRect.left+threshold,histogramRect.top),
 				BPoint(histogramRect.left+threshold,histogramRect.bottom));
-
-	SetHighColor(0,0,0,255);
-
-	StrokeLine(BPoint(Bounds().left,histogramRect.bottom+4),
-				BPoint(Bounds().right,histogramRect.bottom+4));
 }
 
 
@@ -158,7 +161,6 @@ void ThresholdView::CalculateHistogram()
 	if (analyzedBitmap != NULL) {
 		uint32 *bits = (uint32*)analyzedBitmap->Bits();
 		int32 bits_length = analyzedBitmap->BitsLength()/4;
-
 		union {
 			uint8 bytes[4];
 			uint32 word;
@@ -178,7 +180,6 @@ void ThresholdView::CalculateHistogram()
 			else if (mode == HISTOGRAM_MODE_BLUE) {
 				histogram[c.bytes[0]]++;
 			}
-
 		}
 	}
 

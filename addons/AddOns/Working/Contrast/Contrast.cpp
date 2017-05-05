@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <Slider.h>
@@ -23,7 +24,7 @@
 extern "C" {
 #endif
 	char name[255] = "Contrast…";
-	char menu_help_string[255] = "Starts adjusting the image contrast.";
+	char menu_help_string[255] = "Adjusts the contrast.";
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -411,16 +412,18 @@ ContrastManipulatorView::ContrastManipulatorView(ContrastManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	contrast_slider = new BSlider(BRect(0,0,200,0), "contrast_slider", "Contrast",
+	contrast_slider = new BSlider("contrast_slider", "Contrast:",
 		new BMessage(CONTRAST_ADJUSTING_FINISHED), 0, 255, B_HORIZONTAL,
 		B_TRIANGLE_THUMB);
 	contrast_slider->SetModificationMessage(new BMessage(CONTRAST_ADJUSTED));
 	contrast_slider->SetLimitLabels("Low","High");
-	contrast_slider->ResizeToPreferred();
-	contrast_slider->MoveTo(4,4);
-	AddChild(contrast_slider);
+	contrast_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	contrast_slider->SetHashMarkCount(11);
 
-	ResizeTo(contrast_slider->Bounds().Width()+8,contrast_slider->Bounds().Height()+8);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(contrast_slider)
+		.SetInsets(B_USE_SMALL_INSETS)
+		.End();	
 }
 
 ContrastManipulatorView::~ContrastManipulatorView()
