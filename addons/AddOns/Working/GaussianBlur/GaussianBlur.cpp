@@ -282,7 +282,7 @@ GaussianBlurManipulatorView::GaussianBlurManipulatorView(GaussianBlurManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	blur_slider = new BSlider(BRect(0,0,200,0), "blur_slider", "Blur Size",
+	blur_slider = new BSlider(BRect(0,0,200,0), "blur_slider", "Blur size",
 		new BMessage(BLUR_ADJUSTING_FINISHED), 0, 2000, B_HORIZONTAL,
 		B_TRIANGLE_THUMB);
 	blur_slider->SetLimitLabels("Small","Large");

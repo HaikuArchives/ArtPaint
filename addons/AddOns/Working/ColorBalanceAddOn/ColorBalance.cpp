@@ -278,7 +278,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	red_slider = new BSlider(BRect(0,0,150,0), "red_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	red_slider->SetLimitLabels("Less Red","More Red");
+	red_slider->SetLimitLabels("Less red","More red");
 	red_slider->ResizeToPreferred();
 	red_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
 	color.red = 255;
@@ -294,7 +294,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	green_slider = new BSlider(frame, "green_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	green_slider->SetLimitLabels("Less Green","More Green");
+	green_slider->SetLimitLabels("Less green","More green");
 	green_slider->ResizeToPreferred();
 	green_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
 	color.red = 0;
@@ -309,7 +309,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	blue_slider = new BSlider(frame, "blue_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blue_slider->SetLimitLabels("Less Blue","More Blue");
+	blue_slider->SetLimitLabels("Less blue","More blue");
 	blue_slider->ResizeToPreferred();
 	blue_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
 	color.red = 0;

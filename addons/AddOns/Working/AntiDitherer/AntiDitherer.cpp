@@ -276,15 +276,15 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	block_size_control = new NumberControl("Block Size", "0",
+	block_size_control = new NumberControl("Block size", "0",
 		new BMessage(BLOCK_SIZE_ADJUSTED));
 	AddChild(block_size_control);
 	block_size_control->ResizeToPreferred();
 	block_size_control->MoveTo(BPoint(4,4));
 	BRect frame = block_size_control->Frame();
 
-	reduce_resolution_box = new BCheckBox(BRect(4, frame.Height()+4, StringWidth("Reduce Resolution")+40, frame.Height()+24),
-		"reduce_resolution","Reduce Resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
+	reduce_resolution_box = new BCheckBox(BRect(4, frame.Height()+4, StringWidth("Reduce resolution")+40, frame.Height()+24),
+		"reduce_resolution","Reduce resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
 	AddChild(reduce_resolution_box);
 
 	ResizeTo(reduce_resolution_box->Bounds().Width()+8,reduce_resolution_box->Frame().bottom+4);

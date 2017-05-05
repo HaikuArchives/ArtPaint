@@ -429,7 +429,7 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,
 	slider_frame.OffsetBy(0,slider_frame.Height()+4);
 
 	blur_size_slider = new BSlider(slider_frame, "blur_size_slider",
-		"Effect Strength", new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
+		"Effect strength", new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	blur_size_slider->SetLimitLabels("Small","Big");
 	blur_size_slider->ResizeToPreferred();
