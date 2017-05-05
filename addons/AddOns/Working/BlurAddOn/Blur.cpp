@@ -592,7 +592,7 @@ BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,
 	target = new BMessenger(t);
 
 	blur_amount_slider = new BSlider(BRect(0,0,150,0), "blur_amount_slider",
-		"Blur Amount", new BMessage(BLUR_AMOUNT_CHANGED), 1, MAX_BLUR_AMOUNT,
+		"Blur amount", new BMessage(BLUR_AMOUNT_CHANGED), 1, MAX_BLUR_AMOUNT,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	blur_amount_slider->SetLimitLabels("Little","Much");
 	blur_amount_slider->ResizeToPreferred();

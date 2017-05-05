@@ -280,7 +280,7 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	BMessage *message;
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",NO_DITHER);
-	dither_menu->AddItem(new BMenuItem("No Dithering",message));
+	dither_menu->AddItem(new BMenuItem("No dithering",message));
 
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",FLOYD_STEINBERG_EDD_DITHER);
@@ -295,7 +295,7 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	dither_menu->AddItem(new BMenuItem("N-Candidate",message));
 
 	dither_mode_menu_field = new BMenuField(BRect(4, 4, label_width+StringWidth("Floyd-Steinberg EDD")+60,24),
-		"dither_mode_menu_field", "Dither Mode", dither_menu);
+		"dither_mode_menu_field", "Dither mode", dither_menu);
 	dither_mode_menu_field->SetDivider(label_width);
 	AddChild(dither_mode_menu_field);
 
@@ -337,7 +337,7 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	BRect frame = dither_mode_menu_field->Frame();
 	frame.OffsetBy(0,frame.Height()+4);
 
-	palette_size_menu_field = new BMenuField(frame, "palette_size_menu_field", "Palette Size", size_menu);
+	palette_size_menu_field = new BMenuField(frame, "palette_size_menu_field", "Palette size", size_menu);
 	palette_size_menu_field->SetDivider(label_width);
 	AddChild(palette_size_menu_field);
 
@@ -346,15 +346,15 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",BEOS_PALETTE);
-	mode_menu->AddItem(new BMenuItem("Beos Palette",message));
+	mode_menu->AddItem(new BMenuItem("BeOS palette",message));
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",GLA_PALETTE);
-	mode_menu->AddItem(new BMenuItem("GLA Palette",message));
+	mode_menu->AddItem(new BMenuItem("GLA palette",message));
 
 	frame.OffsetBy(0,frame.Height()+4);
 
-	palette_mode_menu_field = new BMenuField(frame, "palette_mode_menu_field", "Palette Mode", mode_menu);
+	palette_mode_menu_field = new BMenuField(frame, "palette_mode_menu_field", "Palette mode", mode_menu);
 	palette_mode_menu_field->SetDivider(label_width);
 	AddChild(palette_mode_menu_field);
 
