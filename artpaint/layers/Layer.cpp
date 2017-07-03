@@ -71,11 +71,29 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 		for (int32 i = 0; i < bits_length; ++i)
 			*target_bits++ = color.word;
 
+/********* ImportBits is buggy!! (right & bottom pixels not filled)
 		if (bitmap && bitmap->IsValid()) {
 			fLayerData->ImportBits(bitmap, BPoint(B_ORIGIN), BPoint(B_ORIGIN),
 				int32(min_c(frame.Width(), sourceRect.Width())),
 				int32(min_c(frame.Height(), sourceRect.Height())));
 		}
+*********************************/
+
+		if ((bitmap != NULL) && (bitmap->IsValid() == TRUE)) {
+			uint32 *target_bits = (uint32*)fLayerData->Bits();
+			uint32 *source_bits = (uint32*)bitmap->Bits();
+			int32 target_bpr = fLayerData->BytesPerRow()/4;
+			int32 source_bpr = bitmap->BytesPerRow()/4;
+			int32 width = (int32)min_c(fLayerData->Bounds().Width(),bitmap->Bounds().Width());
+			int32 height = (int32)min_c(fLayerData->Bounds().Height(),bitmap->Bounds().Height());
+			
+			for (int32 y=0;y<=height;y++) {
+				for (int32 x=0;x<=width;x++) {
+					*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
+				}
+			}			
+		}
+			
 
 		// create the miniature image for this layer and a semaphore for it
 		fLayerPreview = new BBitmap(BRect(0, 0, HS_MINIATURE_IMAGE_WIDTH - 1,
