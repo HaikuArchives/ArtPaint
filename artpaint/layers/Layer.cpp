@@ -50,7 +50,7 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 
 		fLayerData = new BBitmap(BRect(frame.LeftTop(),
 			BPoint(max_c(frame.right, sourceRect.right),
-				max_c(frame.bottom, sourceRect.bottom))), B_RGBA32);
+				max_c(frame.bottom, sourceRect.bottom))), B_RGB_32_BIT);
 
 		if (!fLayerData->IsValid())
 			throw std::bad_alloc();
@@ -72,9 +72,10 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 			*target_bits++ = color.word;
 
 		if (bitmap && bitmap->IsValid()) {
-			fLayerData->ImportBits(bitmap, BPoint(B_ORIGIN), BPoint(B_ORIGIN),
-				int32(min_c(frame.Width(), sourceRect.Width())),
-				int32(min_c(frame.Height(), sourceRect.Height())));
+			// "width" and "height" in ImportBits are pixel counts!:
+			fLayerData->ImportBits(bitmap, B_ORIGIN, B_ORIGIN,
+				int32(min_c(frame.Width(), sourceRect.Width()))+1,
+				int32(min_c(frame.Height(), sourceRect.Height()))+1);
 		}
 
 		// create the miniature image for this layer and a semaphore for it
