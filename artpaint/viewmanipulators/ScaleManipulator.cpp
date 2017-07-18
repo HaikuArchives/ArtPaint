@@ -96,9 +96,9 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		if (intermediate_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
 		uint32 *target_bits = (uint32*)intermediate_bitmap->Bits();
-		int32 target_bpr = intermediate_bitmap->BytesPerRow()/4;
+		int32 target_pxpr = intermediate_bitmap->BytesPerRow()/4;
 		uint32 *source_bits = (uint32*)original->Bits();
-		int32 source_bpr = original->BytesPerRow()/4;
+		int32 source_pxpr = original->BytesPerRow()/4;
 		int32 bottom = (int32)original->Bounds().bottom;
 		float diff = (starting_width)/(new_width);
 		float accumulation = 0;
@@ -108,15 +108,15 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			// Enlarge in x direction.
 			for (int32 y=0;y<=bottom;y++) {
 				accumulation = 0;
-				for (int32 x=0;x<target_bpr;x++) {
-					// This does not calculate correct values because mix_2_pixels does not
-					// take rounding errors into account.
-	//				*target_bits++ = mix_2_pixels(*(source_bits + (int32)floor(accumulation)),*(source_bits + (int32)ceil(accumulation)),ceil(accumulation)-accumulation);
-					*target_bits++ = mix_2_pixels_fixed(*(source_bits + (int32)floor(accumulation)),*(source_bits + (int32)ceil(accumulation)),(uint32)(32768*(ceil(accumulation)-accumulation)));
+				for (int32 x=0;x<target_pxpr;x++) {
+					// 'mix_2_pixels' doesn't work -- doesn't take rounding errors into account.
+					*target_bits++ = mix_2_pixels_fixed(*(source_bits + (int32)floor(accumulation)),
+														*(source_bits + (int32)ceil(accumulation)),
+														(uint32)(32768*(ceil(accumulation)-accumulation)));
 
-					accumulation += diff;
+					if (accumulation < source_pxpr-1) accumulation += diff;
 				}
-				source_bits += source_bpr;
+				source_bits += source_pxpr;
 				if ((y%10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
@@ -128,7 +128,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			diff = (starting_width-1)/new_width;	// Why this line???
 			for (int32 y=0;y<=bottom;y++) {
 				accumulation = 0;
-				for (int32 x=0;x<target_bpr;x++) {
+				for (int32 x=0;x<target_pxpr;x++) {
 					// Here we average the original pixels between accumulation and accumulation+diff.
 					// The pixels at end get a little lower coefficients than the other pixels.
 					// But for now we just settle for averaging the pixels between floor(accumulation)
@@ -137,16 +137,13 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 					float coeff_diff = 1.0/(floor(accumulation+diff)-floor(accumulation));
 					uint32 target_value = 0x00000000;
 					for (int32 i=(int32)floor(accumulation);i<floor(accumulation+diff);i++) {
-						// This does not calculate correct values because mix_2_pixels does not
-						// take rounding errors into account.
-	//					target_value = mix_2_pixels(*(source_bits + i),target_value,coeff);
 						target_value = mix_2_pixels_fixed(*(source_bits + i),target_value,(uint32)(32768*coeff));
 						coeff -= coeff_diff;
 					}
 					*target_bits++ = target_value;
 					accumulation += diff;
 				}
-				source_bits += source_bpr;
+				source_bits += source_pxpr;
 				if ((y%10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
@@ -155,7 +152,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		}
 		else {
 			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_bpr;x++) {
+				for (int32 x=0;x<target_pxpr;x++) {
 					// Just copy it straight
 					*target_bits++ = *source_bits++;
 				}
@@ -176,21 +173,20 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			throw std::bad_alloc();
 
 		uint32 *target_bits = (uint32*)new_bitmap->Bits();
-		int32 target_bpr = new_bitmap->BytesPerRow()/4;
+		int32 target_pxpr = new_bitmap->BytesPerRow()/4;
 		uint32 *source_bits = (uint32*)intermediate_bitmap->Bits();
-		int32 source_bpr = intermediate_bitmap->BytesPerRow()/4;
+		int32 source_pxpr = intermediate_bitmap->BytesPerRow()/4;
 		int32 bottom = (int32)new_bitmap->Bounds().bottom;
 		float diff = (starting_height-1)/(new_height);
 		float accumulation = 0;
 		if (diff<1) {
 			// Make larger in y direction.
 			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_bpr;x++) {
-//					*target_bits++ = mix_2_pixels(*(source_bits + (int32)floor(accumulation)*source_bpr),*(source_bits + (int32)ceil(accumulation)*source_bpr),ceil(accumulation)-accumulation);
-					*target_bits++ = mix_2_pixels_fixed(*(source_bits + (int32)floor(accumulation)*source_bpr),*(source_bits + (int32)ceil(accumulation)*source_bpr),(uint32)(32768*(ceil(accumulation)-accumulation)));
+				for (int32 x=0;x<target_pxpr;x++) {
+					*target_bits++ = mix_2_pixels_fixed(*(source_bits + (int32)floor(accumulation)*source_pxpr),*(source_bits + (int32)ceil(accumulation)*source_pxpr),(uint32)(32768*(ceil(accumulation)-accumulation)));
 					source_bits++;
 				}
-				source_bits -= source_bpr;
+				source_bits -= source_pxpr;
 				accumulation += diff;
 				if ((y%10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
@@ -203,7 +199,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			diff = (starting_height-1)/new_height;
 			accumulation = 0;
 			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_bpr;x++) {
+				for (int32 x=0;x<target_pxpr;x++) {
 					// Here we average the original pixels between accumulation and accumulation+diff.
 					// The pixels at end get a little lower coefficients than the other pixels.
 					// But for now we just settle for averaging the pixels between floor(accumulation)
@@ -212,14 +208,13 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 					float coeff = 1.0;
 					float coeff_diff = 1.0/(floor(accumulation+diff)-floor(accumulation));
 					for (int32 i=(int32)floor(accumulation);i<floor(accumulation+diff);i++) {
-//						target_value = mix_2_pixels(*(source_bits + i*source_bpr),target_value,coeff);
-						target_value = mix_2_pixels_fixed(*(source_bits + i*source_bpr),target_value,(uint32)(32768*coeff));
+						target_value = mix_2_pixels_fixed(*(source_bits + i*source_pxpr),target_value,(uint32)(32768*coeff));
 						coeff -= coeff_diff;
 					}
 					*target_bits++ = target_value;
 					source_bits++;
 				}
-				source_bits -= source_bpr;
+				source_bits -= source_pxpr;
 				accumulation += diff;
 				if ((y%10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
@@ -229,7 +224,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		}
 		else {
 			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_bpr;x++) {
+				for (int32 x=0;x<target_pxpr;x++) {
 					// Just copy it straight
 					*target_bits++ = *source_bits++;
 				}
@@ -472,7 +467,7 @@ ScaleManipulatorView::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case WIDTH_CHANGED: {
 		case HEIGHT_CHANGED:
-			message->PrintToStream();
+//			message->PrintToStream();
 			if (message->what == WIDTH_CHANGED) {
 				current_width = width_control->Value();
 				current_width = max_c(1.0, ceil(current_width));
@@ -502,7 +497,7 @@ ScaleManipulatorView::MessageReceived(BMessage* message)
 		case MULTIPLY_WIDTH: {
 		case MULTIPLY_HEIGHT:
 			float coefficient;
-			message->PrintToStream();
+//			message->PrintToStream();
 			if (message->FindFloat("coefficient", &coefficient) == B_OK) {
 				if (message->what == MULTIPLY_WIDTH) {
 					current_width = max_c(1.0, ceil(coefficient * current_width));
@@ -528,7 +523,7 @@ ScaleManipulatorView::MessageReceived(BMessage* message)
 
 		case RESTORE_HEIGHT: {
 		case RESTORE_WIDTH:
-			message->PrintToStream();
+//			message->PrintToStream();
 			if (message->what == RESTORE_WIDTH) {
 				width_control->SetValue(int32(original_width));
 				Window()->PostMessage(WIDTH_CHANGED,this);
