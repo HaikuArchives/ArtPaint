@@ -389,10 +389,12 @@ CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
 		.End()
 	);
 
-	fTopCrop->SetValue(0);
-	fLeftCrop->SetValue(0);
-	fRightCrop->SetValue(0);
-	fBottomCrop->SetValue(0);
+	CropManipulatorSettings* settings
+		= (CropManipulatorSettings*)manipulator->ReturnSettings();
+	fTopCrop->SetValue(settings->top);
+	fLeftCrop->SetValue(settings->left);
+	fRightCrop->SetValue(settings->right);
+	fBottomCrop->SetValue(settings->bottom);
 }
 
 
