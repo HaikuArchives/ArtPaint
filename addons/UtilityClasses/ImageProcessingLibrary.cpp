@@ -4,7 +4,6 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
- *	Array overflow fix 2017/7/18  Pete G.
  */
 #include <OS.h>
 #include <stdio.h>
