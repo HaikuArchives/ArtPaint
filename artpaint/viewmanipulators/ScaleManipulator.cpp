@@ -114,7 +114,8 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 														*(source_bits + (int32)ceil(accumulation)),
 														(uint32)(32768*(ceil(accumulation)-accumulation)));
 
-					if (accumulation < source_pxpr-1) accumulation += diff;
+					accumulation += diff;
+					if (accumulation > source_pxpr-1) accumulation = source_pxpr-1;
 				}
 				source_bits += source_pxpr;
 				if ((y%10 == 0) && (status_bar != NULL)) {
