@@ -4,7 +4,6 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
- *
  */
 #include <OS.h>
 #include <stdio.h>
@@ -281,7 +280,7 @@ void ImageProcessingLibrary::filter_1d_and_rotate_clockwise(int32 *s_bits,int32 
 
 		uint32 *target_array_position = target_array;
 		for (int32 x = left;x<=right;x++) {
-			*(d_bits + (d_bpr-y) + x*d_bpr) = *target_array_position++;
+			*(d_bits + (d_bpr-1-y) + x*d_bpr) = *target_array_position++;
 		}
 	}
 
@@ -297,7 +296,6 @@ void ImageProcessingLibrary::filter_1d_and_rotate_counterclockwise(int32 *s_bits
 	uint32 *target_array = new uint32[width];
 
 
-	s_bits++;	// TODO: Why this?
 	for (int32 y=top;y<=bottom;++y) {
 		uint32 *source_array_position = source_array;
 		for (int32 dx = 0;dx<kernel_radius;++dx) {
