@@ -113,7 +113,7 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 	, fAdditionalHeight(0.0)
 {
 	sgPaintWindowCount++;
-	SetSizeLimits(400, 10000, 300, 10000);
+	SetSizeLimits(500, 10000, 400, 10000);
 
 	// Fit the window to screen.
 	BRect new_frame = FitRectToScreen(frame);
