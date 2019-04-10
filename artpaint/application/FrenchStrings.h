@@ -1,6 +1,6 @@
 /*
 	Filename:	FrenchStrings.h
-	Contents:	Definitions of UI strings in frensh.
+	Contents:	Definitions of UI strings in french.
 	Author:		Jean-Rémi Taponier
 
 	French Localization (in french) = Localisation Française
@@ -16,27 +16,27 @@
 #define	FRENCH_STRINGS_H
 
 
-#define	FRENCH_ABOUT_ARTPAINT_STRING			"À Propos De ArtPaint"
+#define	FRENCH_ABOUT_ARTPAINT_STRING			"À propos de ArtPaint"
 
 #define	FRENCH_ABOUT_HELP_STRING				"Montre des informations sur le programme."
 
-#define	FRENCH_ACTIVE_LAYER_STRING				"Calque Actif"
+#define	FRENCH_ACTIVE_LAYER_STRING				"Calque actif"
 
-#define	FRENCH_ADD_AREA_STRING					"Ajouter La Zone"
+#define	FRENCH_ADD_AREA_STRING					"Ajouter la zone"
 
 #define	FRENCH_ADD_LAYER_HELP_STRING			"Ajoute un calque par-dessus les autres."
 
-#define	FRENCH_ADD_LAYER_STRING				"Ajouter Un Calque"
+#define	FRENCH_ADD_LAYER_STRING				"Ajouter un calque"
 
-#define	FRENCH_ADD_LAYER_BEHIND_STRING			"Ajouter Un Calque Derrière"
+#define	FRENCH_ADD_LAYER_BEHIND_STRING			"Ajouter un calque derrière"
 
-#define FRENCH_ADD_LAYER_IN_FRONT_STRING		"Ajouter Un Calque Devant"
+#define FRENCH_ADD_LAYER_IN_FRONT_STRING		"Ajouter un calque devant"
 
-#define	FRENCH_ADD_ONS_STRING					"Plug-Ins"
+#define	FRENCH_ADD_ONS_STRING					"Plug-ins"
 
 #define	FRENCH_ADJUSTABLE_STRING				"Ajustable"
 
-#define	FRENCH_ADJUSTABLE_WIDTH_STRING			"Largeur Ajustable"
+#define	FRENCH_ADJUSTABLE_WIDTH_STRING			"Largeur ajustable"
 
 #define	FRENCH_AIRBRUSH_STRING					"Aérographe"
 
@@ -44,11 +44,11 @@
 
 #define	FRENCH_ALL_LAYERS_CUT_HELP_STRING		"Copie tous les calques en mémoire et les efface."
 
-#define	FRENCH_ALL_LAYERS_STRING				"Tous Les Calques"
+#define	FRENCH_ALL_LAYERS_STRING				"Tous les calques"
 
 #define	FRENCH_ALPHA_STRING					"Alpha"
 
-#define	FRENCH_APPLY_CHANGES_STRING			"Appliquer Les Modifications"
+#define	FRENCH_APPLY_CHANGES_STRING			"Appliquer les modifications"
 
 #define	FRENCH_BACKGROUND_STRING				"Fond"
 
@@ -58,7 +58,7 @@
 
 #define	FRENCH_BRUSH_STRING					"Pinceau"
 
-#define	FRENCH_BRUSH_WINDOW_STRING				"Fenêtre Des Pinceaux"
+#define	FRENCH_BRUSH_WINDOW_STRING				"Fenêtre des pinceaux"
 
 #define	FRENCH_BRUSHES_STRING					"Pinceaux"
 
@@ -68,25 +68,25 @@
 
 #define	FRENCH_CANVAS_STRING					"Image"
 
-#define	FRENCH_CENTER_TO_CORNER_STRING			"Du Centre Au Coin"
+#define	FRENCH_CENTER_TO_CORNER_STRING			"Du centre au coin"
 
 #define	FRENCH_CHANGES_TAKE_EFFECT_STRING		"Les modifications prendront effet au prochain démarrage du programme."
 
 #define	FRENCH_CHANGE_TRANSPARENCY_HELP_STRING	"Change la transparence du calque actif."
 
-#define	FRENCH_CHANGE_TRANSPARENCY_STRING		"Changer La Transparence…"
+#define	FRENCH_CHANGE_TRANSPARENCY_STRING		"Changer la transparence…"
 
 #define	FRENCH_CLEAR_CANVAS_HELP_STRING		"Efface tous les calques."
 
-#define	FRENCH_CLEAR_CANVAS_STRING				"Effacer L'image"
+#define	FRENCH_CLEAR_CANVAS_STRING				"Effacer l'image"
 
 #define	FRENCH_CLEAR_LAYER_HELP_STRING			"Efface le calque actif."
 
-#define	FRENCH_CLEAR_LAYER_STRING				"Effacer Le Calque"
+#define	FRENCH_CLEAR_LAYER_STRING				"Effacer le calque"
 
 #define	FRENCH_CLEAR_SELECTION_HELP_STRING		"Efface toutes les sélections."
 
-#define	FRENCH_CLEAR_SELECTION_STRING			"Effacer La Sélection"
+#define	FRENCH_CLEAR_SELECTION_STRING			"Effacer la sélection"
 
 #define	FRENCH_CLICK_TO_SELECT_COLOR_STRING	"Cliquer pour sélectionner la couleur du pinceau."
 
@@ -94,21 +94,21 @@
 
 #define	FRENCH_CLOSE_STRING					"Fermer"
 
-#define	FRENCH_COLOR_AMOUNT_STRING				"Quantité De Couleur"
+#define	FRENCH_COLOR_AMOUNT_STRING				"Quantité de couleur"
 
 #define	FRENCH_COLOR_MODEL_STRING				"Mode"
 
-#define	FRENCH_COLOR_SET_STRING				"Palette De Couleurs"
+#define	FRENCH_COLOR_SET_STRING				"Palette de couleurs"
 
 #define	FRENCH_COLOR_STRING					"Couleur"
 
-#define	FRENCH_COLOR_VARIANCE_STRING			"Variation De Couleur"
+#define	FRENCH_COLOR_VARIANCE_STRING			"Variation de couleur"
 
-#define	FRENCH_COLOR_WINDOW_STRING				"Fenêtre Des Couleurs"
+#define	FRENCH_COLOR_WINDOW_STRING				"Fenêtre des couleurs"
 
 #define	FRENCH_COLORS_STRING					"Couleurs"
 
-#define	FRENCH_CONFIRM_QUIT_STRING				"Confirmer La Fermeture Du Programme"
+#define	FRENCH_CONFIRM_QUIT_STRING				"Confirmer la fermeture du programme"
 
 #define	FRENCH_CONTINUOUS_STRING				"Continu"
 
@@ -116,55 +116,55 @@
 
 #define	FRENCH_COPY_STRING						"Copier"
 
-#define	FRENCH_CORNER_TO_CORNER_STRING			"D'un Coin À Un Autre"
+#define	FRENCH_CORNER_TO_CORNER_STRING			"D'un coin à un autre"
 
-#define	FRENCH_CREATE_CANVAS_STRING			"Créer L'Image"
+#define	FRENCH_CREATE_CANVAS_STRING			"Créer l'image"
 
 #define	FRENCH_CROP_HELP_STRING				"Commence le recadrage de l'image."
 
 #define	FRENCH_CROP_STRING						"Recadrage…"
 
-#define	FRENCH_CROSS_HAIR_CURSOR_STRING		"Curseur Croix"
+#define	FRENCH_CROSS_HAIR_CURSOR_STRING		"Curseur croix"
 
 #define	FRENCH_CURSOR_STRING					"Curseur"
 
 #define	FRENCH_CUT_STRING						"Couper"
 
-#define	FRENCH_DELETE_CURRENT_SET_STRING		"Effacer La Palette Courante"
+#define	FRENCH_DELETE_CURRENT_SET_STRING		"Effacer la palette courante"
 
-#define	FRENCH_DELETE_LAYER_STRING				"Supprimer Ce Calque"
+#define	FRENCH_DELETE_LAYER_STRING				"Supprimer ce calque"
 
-#define	FRENCH_DELETE_SELECTED_BRUSH_STRING	"Supprimer Le Pinceau Sélectionné"
+#define	FRENCH_DELETE_SELECTED_BRUSH_STRING	"Supprimer le pinceau sélectionné"
 
 #define	FRENCH_DISCARD_CHANGES_STRING			"Annuler"
 
-#define	FRENCH_DO_NOT_SAVE_STRING				"Ne Pas Sauver"
+#define	FRENCH_DO_NOT_SAVE_STRING				"Ne pas sauver"
 
-#define	FRENCH_DUPLICATE_LAYER_STRING			"Dupliquer Ce Calque"
+#define	FRENCH_DUPLICATE_LAYER_STRING			"Dupliquer ce calque"
 
 #define FRENCH_EDIT_STRING						"Édition"
 
-#define	FRENCH_EFFECTS_WINDOW_STRING			"Fenêtres Des Effets"
+#define	FRENCH_EFFECTS_WINDOW_STRING			"Fenêtres des effets"
 
 #define	FRENCH_ELLIPSE_STRING					"Ellipse"
 
-#define	FRENCH_EMPTY_PAINT_WINDOW_STRING		"Fenêtre De Dessin Vide"
+#define	FRENCH_EMPTY_PAINT_WINDOW_STRING		"Fenêtre de dessin vide"
 
-#define	FRENCH_ENABLE_ANTI_ALIASING_STRING		"Activer L'Anti-Aliasing"
+#define	FRENCH_ENABLE_ANTI_ALIASING_STRING		"Activer l'anti-aliasing"
 
-#define	FRENCH_ENABLE_GRADIENT_STRING			"Activer Le Dégradé"
+#define	FRENCH_ENABLE_GRADIENT_STRING			"Activer le dégradé"
 
-#define	FRENCH_ENABLE_PREVIEW_STRING			"Activer La Preview"
+#define	FRENCH_ENABLE_PREVIEW_STRING			"Activer la preview"
 
-#define	FRENCH_ENABLE_ROTATION_STRING			"Activer La Rotation"
+#define	FRENCH_ENABLE_ROTATION_STRING			"Activer la rotation"
 
 #define	FRENCH_FADE_STRING						"Fondu"
 
 #define	FRENCH_FILE_STRING						"Fichier"
 
-#define	FRENCH_FILL_ELLIPSE_STRING				"Ellipse Remplie"
+#define	FRENCH_FILL_ELLIPSE_STRING				"Ellipse remplie"
 
-#define	FRENCH_FILL_RECTANGLE_STRING			"Rectangle Rempli"
+#define	FRENCH_FILL_RECTANGLE_STRING			"Rectangle rempli"
 
 #define	FRENCH_FINISHING_STRING				"En cours…"
 
@@ -172,23 +172,23 @@
 
 #define	FRENCH_FLIP_HORIZONTAL_ALL_LAYERS_HELP_STRING	"Inverse horizontallement tous les calques."
 
-#define	FRENCH_FLIP_HORIZONTAL_STRING			"Inversement Horizontal"
+#define	FRENCH_FLIP_HORIZONTAL_STRING			"Inversement horizontal"
 
 #define	FRENCH_FLIP_VERTICAL_LAYER_HELP_STRING			"Inverse verticallement le calque actif."
 
-#define	FRENCH_FLIP_VERTICAL_ALL_LAYERS_HELP_STRING	"Inverse verticallement tous les calques.."
+#define	FRENCH_FLIP_VERTICAL_ALL_LAYERS_HELP_STRING	"Inverse verticallement tous les calques."
 
-#define	FRENCH_FLIP_VERTICAL_STRING			"Inversement Vertical"
+#define	FRENCH_FLIP_VERTICAL_STRING			"Inversement vertical"
 
-#define	FRENCH_FLOOD_FILL_STRING				"Remplissage D'Une Forme"
+#define	FRENCH_FLOOD_FILL_STRING				"Remplissage d'une forme"
 
 #define	FRENCH_FLOW_STRING						"Débit"
 
 #define	FRENCH_FONT_STRING						"Police"
 
-#define	FRENCH_FREE_LINE_STRING				"Main Levée"
+#define	FRENCH_FREE_LINE_STRING				"Main levée"
 
-#define	FRENCH_GLOBAL_SETTINGS_STRING			"Préférences Générales"
+#define	FRENCH_GLOBAL_SETTINGS_STRING			"Préférences générales"
 
 #define	FRENCH_GREEN_STRING					"Vert"
 
@@ -202,7 +202,7 @@
 
 #define	FRENCH_GROW_SELECTION_HELP_STRING		"Agrandit la sélection dans toutes les directions."
 
-#define	FRENCH_GROW_SELECTION_STRING			"Agrandir La Sélection"
+#define	FRENCH_GROW_SELECTION_STRING			"Agrandir la sélection"
 
 #define	FRENCH_HAIRS_STRING					"Poils"
 
@@ -212,27 +212,27 @@
 
 #define	FRENCH_INSERT_TEXT_HELP_STRING			"Insert du texte dans le calque actif. Identique à l'outil texte."
 
-#define	FRENCH_INSERT_TEXT_STRING				"Insérer Du Texte…"
+#define	FRENCH_INSERT_TEXT_STRING				"Insérer du texte…"
 
-#define	FRENCH_INTELLIGENT_SCISSORS_STRING		"Lasso Magnétique"
+#define	FRENCH_INTELLIGENT_SCISSORS_STRING		"Lasso magnétique"
 
-#define	FRENCH_INVERT_SELECTION_HELP_STRING	"Inverse la sélection; donc ce qui était selectionné devient non-sélectionné et vice versa."
+#define	FRENCH_INVERT_SELECTION_HELP_STRING	"Inverse la sélection ; donc ce qui était selectionné devient non-sélectionné et vice versa."
 
-#define	FRENCH_INVERT_SELECTION_STRING			"Inverser La Sélection"
+#define	FRENCH_INVERT_SELECTION_STRING			"Inverser la sélection"
 
-//#define	FRENCH_KEEP_BRUSH_WINDOW_FRONT_STRING	"Garder La Fenêtre Des Pinceaux En Premier Plan"
+//#define	FRENCH_KEEP_BRUSH_WINDOW_FRONT_STRING	"Garder la fenêtre des pinceaux en premier plan"
 
-//#define	FRENCH_KEEP_COLOR_WINDOW_FRONT_STRING	"Garder La Fenêtre Des Couleurs En Premier Plan"
+//#define	FRENCH_KEEP_COLOR_WINDOW_FRONT_STRING	"Garder la fenêtre des couleurs en premier plan"
 
-//#define	FRENCH_KEEP_EFFECTS_WINDOW_FRONT_STRING	"Garder Les Fenêtres Des Filtres En Premier Plan"
+//#define	FRENCH_KEEP_EFFECTS_WINDOW_FRONT_STRING	"Garder les fenêtres des filtres en premier plan"
 
-//#define	FRENCH_KEEP_LAYER_WINDOW_FRONT_STRING	"Garder La Fenêtre Des Calques En Premier Plan"
+//#define	FRENCH_KEEP_LAYER_WINDOW_FRONT_STRING	"Garder la fenêtre des calques en premier plan"
 
-//#define	FRENCH_KEEP_TOOL_SELECTION_WINDOW_FRONT_STRING	"Garder La Boîte D'Outils En Premier Plan"
+//#define	FRENCH_KEEP_TOOL_SELECTION_WINDOW_FRONT_STRING	"Garder la boîte d'outils en premier plan"
 
-//#define	FRENCH_KEEP_TOOL_SETUP_WINDOW_FRONT_STRING	"Garder La Fenêtre de Configuration Des Outils En Premier Plan"
+//#define	FRENCH_KEEP_TOOL_SETUP_WINDOW_FRONT_STRING	"Garder la fenêtre de configuration des outils en premier plan"
 
-#define	FRENCH_KEEP_IN_FRONT_STRING			"Garder En Premier Plan"
+#define	FRENCH_KEEP_IN_FRONT_STRING			"Garder en premier plan"
 
 #define	FRENCH_LANGUAGE_STRING					"Langage"
 
@@ -242,7 +242,7 @@
 
 #define	FRENCH_LAYER_STRING					"Calque"
 
-#define	FRENCH_LAYER_WINDOW_STRING				"Fenêtre Des Calques"
+#define	FRENCH_LAYER_WINDOW_STRING				"Fenêtre des calques"
 
 #define	FRENCH_LAYERS_STRING					"Calques"
 
@@ -250,15 +250,15 @@
 
 #define	FRENCH_LITTLE_STRING					"Peu"
 
-#define	FRENCH_LOCK_PROPORTIONS_STRING			"Garder Les Proportions"
+#define	FRENCH_LOCK_PROPORTIONS_STRING			"Garder les proportions"
 
 #define	FRENCH_MAG_STRING						"Zoom"
 
-#define	FRENCH_MAGIC_WAND_STRING				"Baguette Magique"
+#define	FRENCH_MAGIC_WAND_STRING				"Baguette magique"
 
-#define	FRENCH_MERGE_WITH_BACK_LAYER_STRING	"Fusionner Avec Le Calque Inférieur"
+#define	FRENCH_MERGE_WITH_BACK_LAYER_STRING	"Fusionner avec le calque inférieur"
 
-#define	FRENCH_MERGE_WITH_FRONT_LAYER_STRING	"Fusionner Avec Le Calque Supérieur"
+#define	FRENCH_MERGE_WITH_FRONT_LAYER_STRING	"Fusionner avec le calque supérieur"
 
 #define	FRENCH_MISCELLANEOUS_STRING			"Divers"
 
@@ -266,15 +266,15 @@
 
 #define	FRENCH_MUCH_STRING						"Beaucoup"
 
-#define	FRENCH_NEW_COLOR_SET_STRING			"Nouvelle Palette"
+#define	FRENCH_NEW_COLOR_SET_STRING			"Nouvelle palette"
 
-//#define	FRENCH_NEW_PAINT_WINDOW_STRING			"Nouvelle Fenêtre De Dessin…"
+//#define	FRENCH_NEW_PAINT_WINDOW_STRING			"Nouvelle fenêtre de dessin…"
 
 #define	FRENCH_NEW_PROJECT_HELP_STRING			"Crée une nouvelle fenêtre de dessin vide."
 
-#define	FRENCH_NEW_PROJECT_STRING				"Nouveau Projet…"
+#define	FRENCH_NEW_PROJECT_STRING				"Nouveau projet…"
 
-#define	FRENCH_NO_OPTIONS_STRING				"Pas D'Options"
+#define	FRENCH_NO_OPTIONS_STRING				"Pas d'options"
 
 #define	FRENCH_NONE_STRING						"Aucune"
 
@@ -284,15 +284,15 @@
 
 #define	FRENCH_OPAQUE_STRING					"Opaque"
 
-#define	FRENCH_OPEN_COLOR_SET_STRING			"Ouvrir Une Palette…"
+#define	FRENCH_OPEN_COLOR_SET_STRING			"Ouvrir une palette…"
 
 #define	FRENCH_OPEN_IMAGE_HELP_STRING			"Ouvre une image du disque."
 
-#define	FRENCH_OPEN_IMAGE_STRING				"Ouvrir Une Image…"
+#define	FRENCH_OPEN_IMAGE_STRING				"Ouvrir une image…"
 
 #define	FRENCH_OPEN_PROJECT_HELP_STRING		"Ouvre un projet du disque."
 
-#define	FRENCH_OPEN_PROJECT_STRING				"Ouvrir Un Projet…"
+#define	FRENCH_OPEN_PROJECT_STRING				"Ouvrir un projet…"
 
 #define	FRENCH_OPEN_STRING						"Ouvrir"
 
@@ -300,21 +300,21 @@
 
 #define	FRENCH_PASTE_AS_NEW_LAYER_HELP_STRING	"Colle le calque précédemment copié en mémoire comme un nouveau calque."
 
-#define	FRENCH_PASTE_AS_NEW_LAYER_STRING		"Copier Comme Nouveau Calque"
+#define	FRENCH_PASTE_AS_NEW_LAYER_STRING		"Copier comme nouveau calque"
 
 #define	FRENCH_PASTE_AS_NEW_PROJECT_HELP_STRING	"Colle le calque en mémoire comme un nouveau projet."
 
-#define	FRENCH_PASTE_AS_NEW_PROJECT_STRING		"Copier Comme Nouveau Projet"
+#define	FRENCH_PASTE_AS_NEW_PROJECT_STRING		"Copier comme nouveau projet"
 
 #define	FRENCH_QUIT_HELP_STRING				"Quitte the programme."
 
 #define	FRENCH_QUIT_STRING						"Quitter"
 
-#define	FRENCH_RANDOM_STRING					"Au Hazard"
+#define	FRENCH_RANDOM_STRING					"Au hazard"
 
-#define	FRENCH_RECENT_IMAGES_STRING			"Images Récentes"
+#define	FRENCH_RECENT_IMAGES_STRING			"Images récentes"
 
-#define	FRENCH_RECENT_PROJECTS_STRING			"Projets Récents"
+#define	FRENCH_RECENT_PROJECTS_STRING			"Projets récents"
 
 #define	FRENCH_RECTANGLE_STRING				"Rectangle"
 
@@ -322,11 +322,11 @@
 
 #define	FRENCH_REDO_HELP_STRING				"Rétablir l'action qui a été précédemment annulée."
 
-#define	FRENCH_REDO_NOT_AVAILABLE_STRING		"Pas De Rétablissement"
+#define	FRENCH_REDO_NOT_AVAILABLE_STRING		"Pas de rétablissement"
 
 #define	FRENCH_REDO_STRING						"Rétablir"
 
-#define	FRENCH_RELEASE_DATE_STRING				"Réalisé le: %s"
+#define	FRENCH_RELEASE_DATE_STRING				"Réalisé le : %s"
 
 #define	FRENCH_RESIZE_TO_FIT_HELP_STRING		"Redimensionner la fenêtre à la taille de l'image."
 
@@ -348,29 +348,29 @@
 
 #define	FRENCH_ROTATING_STRING					"Angle"
 
-#define	FRENCH_SAVE_CHANGES_STRING				"%s: Vous avez effectué %d modifications depuis la dernière sauvegarde de votre projet. Désirez-vous sauver ces modifications?"
+#define	FRENCH_SAVE_CHANGES_STRING				"%s: Vous avez effectué %d modifications depuis la dernière sauvegarde de votre projet. Désirez-vous sauver ces modifications ?"
 
-#define	FRENCH_SAVE_COLOR_SET_AS_STRING		"Sauver La Palette Sous…"
+#define	FRENCH_SAVE_COLOR_SET_AS_STRING		"Sauver la palette sous…"
 
-#define	FRENCH_SAVE_COLOR_SET_STRING			"Sauver La Palette"
+#define	FRENCH_SAVE_COLOR_SET_STRING			"Sauver la palette"
 
 #define	FRENCH_SAVE_FORMAT_STRING				"Save Format"
 
 #define FRENCH_SAVE_IMAGE_AS_HELP_STRING		"Sauve l'image sur le disque."
 
-#define	FRENCH_SAVE_IMAGE_AS_STRING			"Sauver L'Image Sous…"
+#define	FRENCH_SAVE_IMAGE_AS_STRING			"Sauver l'image sous…"
 
 #define	FRENCH_SAVE_IMAGE_HELP_STRING			"Sauve l'image sur le disque sous le nom courant."
 
-#define	FRENCH_SAVE_IMAGE_STRING				"Sauver L'Image"
+#define	FRENCH_SAVE_IMAGE_STRING				"Sauver l'image"
 
 #define	FRENCH_SAVE_PROJECT_AS_HELP_STRING		"Sauve le projet sur le disque."
 
-#define	FRENCH_SAVE_PROJECT_AS_STRING			"Sauver Le Projet Sous…"
+#define	FRENCH_SAVE_PROJECT_AS_STRING			"Sauver le projet sous…"
 
 #define	FRENCH_SAVE_PROJECT_HELP_STRING			"Sauve le projet sur le disque sous le nom courant."
 
-#define	FRENCH_SAVE_PROJECT_STRING				"Sauver Le Projet"
+#define	FRENCH_SAVE_PROJECT_STRING				"Sauver le projet"
 
 #define	FRENCH_SAVE_STRING						"Sauver"
 
@@ -382,9 +382,9 @@
 
 #define	FRENCH_SELECTED_COLORS_VIEW_MESSAGE1_STRING	"Cliquez ici pour ouvrir le paneau de couleurs."
 
-#define	FRENCH_SET_GRID_STRING					"Régler La Grille"
+#define	FRENCH_SET_GRID_STRING					"Régler la grille"
 
-#define	FRENCH_SET_ZOOM_LEVEL_STRING			"Régler Le Zoom"
+#define	FRENCH_SET_ZOOM_LEVEL_STRING			"Régler le zoom"
 
 #define	FRENCH_SETTINGS_HELP_STRING			"Montre la fenêtre des préférences."
 
@@ -400,31 +400,31 @@
 
 #define	FRENCH_SHOW_BRUSH_WINDOW_HELP_STRING	"Affiche la fenêtre des pinceaux."
 
-#define	FRENCH_SHOW_BRUSH_WINDOW_STRING		"Afficher Les Pinceaux"
+#define	FRENCH_SHOW_BRUSH_WINDOW_STRING		"Afficher les pinceaux"
 
 #define	FRENCH_SHOW_LAYER_WINDOW_HELP_STRING	"Affiche la fenêtre des calques."
 
-#define	FRENCH_SHOW_LAYER_WINDOW_STRING		"Afficher Les Calques"
+#define	FRENCH_SHOW_LAYER_WINDOW_STRING		"Afficher les calques"
 
 #define	FRENCH_SHOW_PALETTE_WINDOW_HELP_STRING	"Affiche la fenêtre des palettes."
 
-#define	FRENCH_SHOW_PALETTE_WINDOW_STRING		"Afficher La Palette"
+#define	FRENCH_SHOW_PALETTE_WINDOW_STRING		"Afficher la palette"
 
 #define	FRENCH_SHOW_TOOL_SETUP_WINDOW_HELP_STRING	"Affiche la fenêtre de configuration des outils."
 
-#define	FRENCH_SHOW_TOOL_SETUP_WINDOW_STRING		"Afficher La Configuration Des Outils"
+#define	FRENCH_SHOW_TOOL_SETUP_WINDOW_STRING		"Afficher la configuration des outils"
 
 #define	FRENCH_SHOW_TOOL_WINDOW_HELP_STRING	"Affiche la boîte d'outils."
 
-#define	FRENCH_SHOW_TOOL_WINDOW_STRING			"Afficher La Boîte D'Outils"
+#define	FRENCH_SHOW_TOOL_WINDOW_STRING			"Afficher la boîte d'outils"
 
 #define	FRENCH_SHRINK_SELECTION_HELP_STRING	"Réduit la sélection dans toute les directions."
 
-#define	FRENCH_SHRINK_SELECTION_STRING			"Réduire La Sélection"
+#define	FRENCH_SHRINK_SELECTION_STRING			"Réduire la sélection"
 
 #define	FRENCH_SIZE_STRING						"Taille"
 
-#define	FRENCH_STANDARD_SIZES_STRING			"Tailles Standards"
+#define	FRENCH_STANDARD_SIZES_STRING			"Tailles standards"
 
 #define	FRENCH_STORE_BRUSH_STRING				"Sauver"
 
@@ -432,23 +432,23 @@
 
 #define	FRENCH_SPRAY_STRING					"Bombe"
 
-#define	FRENCH_SUBTRACT_AREA_STRING			"Ôter La Zone"
+#define	FRENCH_SUBTRACT_AREA_STRING			"Ôter la zone"
 
-#define	FRENCH_TEXT_COLOR_STRING				"Couleur Du Texte"
+#define	FRENCH_TEXT_COLOR_STRING				"Couleur du texte"
 
 #define	FRENCH_TEXT_STRING						"Texte"
 
 #define	FRENCH_TOLERANCE_STRING				"Tolérance"
 
-#define	FRENCH_TOOL_CURSOR_STRING				"Curseur Outil"
+#define	FRENCH_TOOL_CURSOR_STRING				"Curseur outil"
 
-#define	FRENCH_TOOL_SELECTION_WINDOW_STRING	"Boîte D'Outils"
+#define	FRENCH_TOOL_SELECTION_WINDOW_STRING	"Boîte d'outils"
 
 #define	FRENCH_TOOLS_STRING					"Outils"
 
-#define	FRENCH_TOOL_SETUP_STRING				"Configuration Des Outils"
+#define	FRENCH_TOOL_SETUP_STRING				"Configuration des outils"
 
-#define	FRENCH_TOOL_SETUP_WINDOW_STRING		"Fenêtre De Configuration"
+#define	FRENCH_TOOL_SETUP_WINDOW_STRING		"Fenêtre de configuration"
 
 #define	FRENCH_TOP_STRING						"Haut"
 
@@ -464,7 +464,7 @@
 
 #define	FRENCH_UNDO_HELP_STRING				"Annuler l'action précédente."
 
-#define	FRENCH_UNDO_NOT_AVAILABLE_STRING		"Pas D'Annulation"
+#define	FRENCH_UNDO_NOT_AVAILABLE_STRING		"Pas d'annulation"
 
 #define	FRENCH_UNDO_SETTINGS_STRING			"Annulation"
 
@@ -474,19 +474,19 @@
 
 #define FRENCH_UNSUPPORTED_FILE_TYPE_STRING	"Le type du fichier %s n'est pas supporté. Essayer d'installer un Translator si c'est possible."
 
-#define	FRENCH_UNTITLED_STRING					"Sans Titre"
+#define	FRENCH_UNTITLED_STRING					"Sans titre"
 
 #define	FRENCH_USE_THE_TOOL_STRING				"Utilisez l'outil en cliquant sur le bouton de la souris."
 
 #define	FRENCH_USER_MANUAL_HELP_STRING			"Ouvre la documentation de ArtPaint avec NetPositive."
 
-#define	FRENCH_USER_MANUAL_STRING				"Manuel De L'Utilisateur…"
+#define	FRENCH_USER_MANUAL_STRING				"Manuel de l'utilisateur…"
 
 #define	FRENCH_USING_THE_TOOL_STRING			"Outil en utilisation."
 
 #define	FRENCH_VISIBLE_STRING					"Visible"
 
-#define	FRENCH_WAND_TOLERANCE_STRING			"Tolérance De La Baguette"
+#define	FRENCH_WAND_TOLERANCE_STRING			"Tolérance de la baguette"
 
 #define	FRENCH_WIDTH_STRING					"Largeur"
 
@@ -496,11 +496,11 @@
 
 #define	FRENCH_ZOOM_IN_HELP_STRING				"Zoom dans l'image."
 
-#define	FRENCH_ZOOM_IN_STRING					"Zoom Avant"
+#define	FRENCH_ZOOM_IN_STRING					"Zoom avant"
 
 #define	FRENCH_ZOOM_OUT_HELP_STRING			"Zoom en arrière de l'image."
 
-#define	FRENCH_ZOOM_OUT_STRING					"Zoom Arrière"
+#define	FRENCH_ZOOM_OUT_STRING					"Zoom arrière"
 
 #define	FRENCH_ZOOM_LEVEL_25_HELP_STRING		"Règle le zoom à 25%."
 
@@ -534,7 +534,7 @@
 
 #define	FRENCH_FILL_TOOL_NAME_STRING			"Remplissage"
 
-#define	FRENCH_FREE_LINE_TOOL_NAME_STRING		"Main Levée"
+#define	FRENCH_FREE_LINE_TOOL_NAME_STRING		"Main levée"
 
 #define	FRENCH_HAIRY_BRUSH_TOOL_NAME_STRING	"Brosse"
 
@@ -542,7 +542,7 @@
 
 #define	FRENCH_SELECTOR_TOOL_NAME_STRING		"Sélection"
 
-#define	FRENCH_STRAIGHT_LINE_TOOL_NAME_STRING	"Ligne Droite"
+#define	FRENCH_STRAIGHT_LINE_TOOL_NAME_STRING	"Ligne droite"
 
 #define	FRENCH_TEXT_TOOL_NAME_STRING			"Texte"
 
@@ -552,7 +552,7 @@
 
 #define	FRENCH_AIR_BRUSH_TOOL_READY_STRING		"Pressez le bouton de la souris pour dessiner avec l'aérographe."
 
-#define	FRENCH_BLUR_TOOL_READY_STRING			"Pressez le bouton de la souris pouratténuer l'image."
+#define	FRENCH_BLUR_TOOL_READY_STRING			"Pressez le bouton de la souris pour atténuer l'image."
 
 #define	FRENCH_BRUSH_TOOL_READY_STRING			"Pressez le bouton de la souris pour peindre avec un pinceau."
 
@@ -634,25 +634,25 @@
 
 
 
-#define	FRENCH_ABOUT_3_TEXT_STRING				"Les nouvelles versions de ArtPaint peuvent être trouvées ici:"
+#define	FRENCH_ABOUT_3_TEXT_STRING				"Les nouvelles versions de ArtPaint peuvent être trouvées ici :"
 
 
 
-#define	FRENCH_ABOUT_4_TEXT_STRING				"Vous pouvez me faire parvenir vos commentaires et questions à:"
+#define	FRENCH_ABOUT_4_TEXT_STRING				"Vous pouvez me faire parvenir vos commentaires et questions à :"
 
 
 
-#define	FRENCH_ABOUT_5_TEXT_STRING				"Programmation & Conception"
+#define	FRENCH_ABOUT_5_TEXT_STRING				"Programmation & conception"
 
-#define	FRENCH_ABOUT_6_TEXT_STRING				"Documentation Anglaise"
+#define	FRENCH_ABOUT_6_TEXT_STRING				"Documentation anglaise"
 
-#define	FRENCH_ABOUT_7_TEXT_STRING				"Localisation Allemande"
+#define	FRENCH_ABOUT_7_TEXT_STRING				"Localisation allemande"
 
 #define	FRENCH_ABOUT_8_TEXT_STRING				"Remerciements à"
 
-#define FRENCH_ABOUT_9_TEXT_STRING				"Merci pour les Articles Encourageant"
+#define FRENCH_ABOUT_9_TEXT_STRING				"Merci pour les articles encourageant"
 
-#define	FRENCH_ABOUT_10_TEXT_STRING				"Localisation Française"
+#define	FRENCH_ABOUT_10_TEXT_STRING				"Localisation française"
 
 #define FRENCH_MEMORY_ALERT_1_STRING			"Mémoire insuffisante pour ajouter un nouveau calque."\
 												"Vous pouvez libérer de la mémoire en désactivant la fonction d'annulation et en fermant les autres images ouvertes. Vous devriez aussi "\
