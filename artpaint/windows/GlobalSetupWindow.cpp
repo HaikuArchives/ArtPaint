@@ -59,6 +59,7 @@ const uint32 kEnglishLanguageSet				= '_eng';
 const uint32 kFinishLanguageSet					= '_fin';
 const uint32 kGermanLanguageSet					= '_ger';
 const uint32 kFrenchLanguageSet					= '_fre';
+const uint32 kSpanishLanguageSet				= '_spa';
 
 const uint32 kToolCursorMode					= '_too';
 const uint32 kCrossHairCursorMode				= '_cro';
@@ -389,6 +390,8 @@ private:
 		BRadioButton*	fEnglish;
 		BRadioButton*	fGerman;
 		BRadioButton*	fFrench;
+		BRadioButton*	fSpanish;
+		BRadioButton*	fFinnish;
 		BStringView*	fMessageView;
 };
 
@@ -404,6 +407,8 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 	fEnglish->SetValue(B_CONTROL_ON);
 	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
 	fFrench = new BRadioButton("Française", new BMessage(kFrenchLanguageSet));
+	fSpanish = new BRadioButton("Español", new BMessage(kSpanishLanguageSet));
+	fFinnish = new BRadioButton("Suomi", new BMessage(kFinishLanguageSet));
 
 	BBitmap* english = new BBitmap(rect, B_CMAP8);
 	english->SetBits(gFlagBritishBits, english->BitsLength(), 0, gFlagColorSpace);
@@ -444,6 +449,12 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 
 	if (fLanguage == FRENCH_LANGUAGE)
 		fFrench->SetValue(B_CONTROL_ON);
+
+	if (fLanguage == SPANISH_LANGUAGE)
+		fSpanish->SetValue(B_CONTROL_ON);
+
+	if (fLanguage == FINNISH_LANGUAGE)
+		fFinish->SetValue(B_CONTROL_ON);
 }
 
 
@@ -456,6 +467,8 @@ GlobalSetupWindow::LanguageControlView::AttachedToWindow()
 	fEnglish->SetTarget(this);
 	fGerman->SetTarget(this);
 	fFrench->SetTarget(this);
+	fSpanish->SetTarget(this);
+	fFinish->SetTarget(this);
 	fMessageView->SetText("");
 }
 
@@ -480,6 +493,13 @@ GlobalSetupWindow::LanguageControlView::MessageReceived(BMessage* message)
 			_Update(FRENCH_LANGUAGE);
 		}	break;
 
+		case kSpanishLanguageSet: {
+			_Update(SPANISH_LANGUAGE);
+		}	break;
+
+		case kFinishLanguageSet: {
+			_Update(FINISH_LANGUAGE);
+		}	break;
 		default: {
 			BView::MessageReceived(message);
 		}	break;
