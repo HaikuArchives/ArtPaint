@@ -20,7 +20,7 @@ languages StringServer::current_language = ENGLISH_LANGUAGE;
 const char* StringServer::ReturnString(string_id id)
 {
 	if (current_language == FINNISH_LANGUAGE) {
-//		return return_finnish_string(id);
+		return return_finnish_string(id);
 	} else if (current_language == GERMAN_LANGUAGE) {
 		return return_german_string(id);
 	} else if (current_language == FRENCH_LANGUAGE) {
