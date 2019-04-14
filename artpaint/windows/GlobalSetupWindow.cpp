@@ -56,8 +56,8 @@ const uint32 kSetAdjustableUndo					= '_sau';
 const uint32 kUndoDepthAdjusted					= '_uda';
 
 const uint32 kEnglishLanguageSet				= '_eng';
-const uint32 kFinishLanguageSet					= '_fin';
 const uint32 kGermanLanguageSet					= '_ger';
+const uint32 kFinnishLanguageSet				= '_fin';
 const uint32 kFrenchLanguageSet					= '_fre';
 const uint32 kSpanishLanguageSet				= '_spa';
 
@@ -388,10 +388,10 @@ private:
 		int32			fOriginalLanguage;
 
 		BRadioButton*	fEnglish;
-		BRadioButton*	fGerman;
-		BRadioButton*	fFrench;
-		BRadioButton*	fSpanish;
 		BRadioButton*	fFinnish;
+		BRadioButton*	fFrench;
+		BRadioButton*	fGerman;
+		BRadioButton*	fSpanish;
 		BStringView*	fMessageView;
 };
 
@@ -405,19 +405,25 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 	BRect rect = BRect(0.0, 0.0, gFlagWidth - 1.0, gFlagHeight - 1.0);
 	fEnglish = new BRadioButton("English", new BMessage(kEnglishLanguageSet));
 	fEnglish->SetValue(B_CONTROL_ON);
-	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
+	fFinnish = new BRadioButton("Suomi", new BMessage(kFinnishLanguageSet));
 	fFrench = new BRadioButton("Française", new BMessage(kFrenchLanguageSet));
+	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
 	fSpanish = new BRadioButton("Español", new BMessage(kSpanishLanguageSet));
-	fFinnish = new BRadioButton("Suomi", new BMessage(kFinishLanguageSet));
 
 	BBitmap* english = new BBitmap(rect, B_CMAP8);
 	english->SetBits(gFlagBritishBits, english->BitsLength(), 0, gFlagColorSpace);
 
-	BBitmap* german = new BBitmap(rect, B_CMAP8);
-	german->SetBits(gFlagGermanBits, german->BitsLength(), 0, gFlagColorSpace);
+	BBitmap* finnish = new BBitmap(rect, B_CMAP8);
+	finnish->SetBits(gFlagFinnishBits, finnish->BitsLength(), 0, gFlagColorSpace);
 
 	BBitmap* french = new BBitmap(rect, B_CMAP8);
 	french->SetBits(gFlagFrenchBits, french->BitsLength(), 0, gFlagColorSpace);
+
+	BBitmap* german = new BBitmap(rect, B_CMAP8);
+	german->SetBits(gFlagGermanBits, german->BitsLength(), 0, gFlagColorSpace);
+
+	BBitmap* spanish = new BBitmap(rect, B_CMAP8);
+	spanish->SetBits(gFlagSpanishBits, spanish->BitsLength(), 0, gFlagColorSpace);
 
 	fMessageView = new BStringView("message view",
 		StringServer::ReturnString(CHANGES_TAKE_EFFECT_STRING));
@@ -430,9 +436,15 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 			.Add(fGerman, 0, 1)
 			.Add(new BitmapView(german, B_ORIGIN), 1, 1)
 			.Add(BSpaceLayoutItem::CreateGlue(), 2, 1)
-			.Add(fFrench, 0, 2)
-			.Add(new BitmapView(french, B_ORIGIN), 1, 2)
-			.Add(BSpaceLayoutItem::CreateGlue(), 2, 2))
+			.Add(fSpanish, 0, 2)
+			.Add(new BitmapView(spanish, B_ORIGIN), 1, 2)
+			.Add(BSpaceLayoutItem::CreateGlue(), 2, 2)
+			.Add(fFrench, 0, 3)
+			.Add(new BitmapView(french, B_ORIGIN), 1, 3)
+			.Add(BSpaceLayoutItem::CreateGlue(), 2, 3)
+			.Add(fFinnish, 0, 4)
+			.Add(new BitmapView(finnish, B_ORIGIN), 1, 4)
+			.Add(BSpaceLayoutItem::CreateGlue(), 2, 4))
 		.AddGlue()
 		.Add(fMessageView)
 		.SetInsets(20.0, 20.0, 10.0, 10.0)
@@ -444,17 +456,17 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 		settings.FindInt32(skLanguage, &fLanguage);
 	}
 
-	if (fLanguage == GERMAN_LANGUAGE)
-		fGerman->SetValue(B_CONTROL_ON);
+	if (fLanguage == FINNISH_LANGUAGE)
+		fFinnish->SetValue(B_CONTROL_ON);
 
 	if (fLanguage == FRENCH_LANGUAGE)
 		fFrench->SetValue(B_CONTROL_ON);
 
+	if (fLanguage == GERMAN_LANGUAGE)
+		fGerman->SetValue(B_CONTROL_ON);
+
 	if (fLanguage == SPANISH_LANGUAGE)
 		fSpanish->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == FINNISH_LANGUAGE)
-		fFinish->SetValue(B_CONTROL_ON);
 }
 
 
@@ -465,10 +477,10 @@ GlobalSetupWindow::LanguageControlView::AttachedToWindow()
 		SetViewColor(Parent()->ViewColor());
 
 	fEnglish->SetTarget(this);
-	fGerman->SetTarget(this);
+	fFinnish->SetTarget(this);
 	fFrench->SetTarget(this);
+	fGerman->SetTarget(this);
 	fSpanish->SetTarget(this);
-	fFinish->SetTarget(this);
 	fMessageView->SetText("");
 }
 
@@ -481,25 +493,22 @@ GlobalSetupWindow::LanguageControlView::MessageReceived(BMessage* message)
 			_Update(ENGLISH_LANGUAGE);
 		}	break;
 
-		case kFinishLanguageSet: {
+		case kFinnishLanguageSet: {
 			_Update(FINNISH_LANGUAGE);
-		}	break;
-
-		case kGermanLanguageSet: {
-			_Update(GERMAN_LANGUAGE);
 		}	break;
 
 		case kFrenchLanguageSet: {
 			_Update(FRENCH_LANGUAGE);
 		}	break;
 
+		case kGermanLanguageSet: {
+			_Update(GERMAN_LANGUAGE);
+		}	break;
+
 		case kSpanishLanguageSet: {
 			_Update(SPANISH_LANGUAGE);
 		}	break;
 
-		case kFinishLanguageSet: {
-			_Update(FINISH_LANGUAGE);
-		}	break;
 		default: {
 			BView::MessageReceived(message);
 		}	break;
