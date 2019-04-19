@@ -1295,7 +1295,7 @@ const char* StringServer::return_finnish_string(string_id id)
 	// The default case of the switch. Taken away from the switch
 	// to allow warnings on missing cases.
 	char *string = new char[256];
-	sprintf(string,"No such string in finnish: %d",id);
+	sprintf(string,"FIN: %s",return_english_string(id));
 	return string;
 }
 
