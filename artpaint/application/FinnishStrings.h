@@ -37,6 +37,7 @@
 #define	FINNISH_CENTER_TO_CORNER_STRING			"Keskustasta keskustaan"
 #define	FINNISH_CHANGE_TRANSPARENCY_HELP_STRING	"Aloittaa aktiivisen kerroksen läpinäkyvyyden säätämisen."
 #define	FINNISH_CHANGE_TRANSPARENCY_STRING		"Muuta läpinäkyvyyttä…"
+#define	FINNISH_CHANGES_TAKE_EFFECT_STRING		"Muutokset tulevat voimaan seuraavan kerran, kun ohjelma käynnistyy."
 #define	FINNISH_CLEAR_CANVAS_HELP_STRING		"Tyhjentää kuvan taustavärillä."
 #define	FINNISH_CLEAR_CANVAS_STRING				"Tyhjennä kuva"
 #define	FINNISH_CLEAR_LAYER_HELP_STRING			"Tyhjentää aktiivisen kerroksen."
@@ -295,6 +296,17 @@
 #define	FINNISH_STRAIGHT_LINE_TOOL_IN_USE_STRING	"Piirtää suoraa viivaa."
 #define	FINNISH_TEXT_TOOL_IN_USE_STRING			"Lisää tekstiä kuvaan."
 #define	FINNISH_TRANSPARENCY_TOOL_IN_USE_STRING	"Säätää kerroksen läpinäkyvyyttä."
+
+#define	FINNISH_DO_CROP_HELP_STRING		"Säädä uusia reunoja kahvoilla tai numerokentillä."
+#define	FINNISH_DO_ROTATE_HELP_STRING	"Kierrä hiiren vasemmalla painikkeella ja oikealla puolella kiertokeskusta."
+#define	FINNISH_DO_TRANSLATE_HELP_STRING	"Siirrä kuva haluamaasi kohtaan."
+#define	FINNISH_DO_SCALE_HELP_STRING	"Napsauta kuvaa, jos haluat asettaa uuden koon tai asettaa sen numerokentillä."
+
+#define	FINNISH_ABOUT_1_TEXT_STRING				"ArtPaint on piirustus- ja kuvankäsittelyohjelma Haikulle."\
+												" Sitä voidaan käyttää laaja valikoima teoksia verkkosivuston suunnittelusta"\
+												" valokuvien retusointiin. Voit aloittaa oppaassa olevan opetusohjelman."
+
+#define	FINNISH_ABOUT_8_TEXT_STRING				"Erityiskiitokset tukijoillemme"
 
 #define FINNISH_MEMORY_ALERT_1_STRING			"Ei ole tarpeeksi vapaata muistia kerroksen lisäämiseen."\
 												"Voit vapauttaa lisää muistia laittamalla perumisen pois päältä."\
