@@ -65,6 +65,7 @@
 #define FINNISH_DO_NOT_SAVE_STRING			"Ei tallenna"
 #define	FINNISH_DUPLICATE_LAYER_STRING			"Kopioi kerros"
 #define FINNISH_EDIT_STRING						"Muokkaa"
+#define FINNISH_EFFECTS_WINDOW_STRING				"Tehosteet ikkuna"
 #define	FINNISH_ELLIPSE_STRING					"Ellipsi"
 #define	FINNISH_ENABLE_ANTI_ALIASING_STRING		"Pehmennä reunat"
 #define	FINNISH_ENABLE_GRADIENT_STRING			"Tee gradientti"
