@@ -147,6 +147,8 @@
 #define	FINNISH_QUIT_HELP_STRING				"Lopettaa koko ohjelman."
 #define	FINNISH_QUIT_STRING						"Lopeta"
 #define	FINNISH_RANDOM_STRING					"Satunnainen"
+#define FINNISH_RECENT_IMAGES_STRING				"Viimeisimmät kuvat"
+#define FINNISH_RECENT_PROJECTS_STRING				"Viimeisimmät projektit"
 #define	FINNISH_RECTANGLE_STRING				"Suorakaide"
 #define	FINNISH_RED_STRING					"Punainen"
 #define	FINNISH_REDO_HELP_STRING				"Tekee uudellee edellisen perutun tapahtuman."
