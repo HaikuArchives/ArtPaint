@@ -158,6 +158,8 @@
 #define	FINNISH_RESIZE_TO_FIT_STRING			"Sovita ikkunan koko"
 #define	FINNISH_RIGHT_STRING					"Oikea"
 #define	FINNISH_ROTATE_ALL_LAYERS_HELP_STRING	"Aloittaa kuvan kiertämisen."
+#define FINNISH_ROTATE_CW_STRING			"Kierrä myötäpäivään"
+#define FINNISH_ROTATE_CCW_STRING			"Kierrä vastapäivään"
 #define	FINNISH_ROTATE_LAYER_HELP_STRING		"Aloittaa aktiivisen kerroksen kiertämisen."
 #define	FINNISH_ROTATE_STRING					"Kierrä…"
 #define	FINNISH_ROTATION_STRING					"Kierto"
