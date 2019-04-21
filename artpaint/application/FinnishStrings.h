@@ -10,6 +10,7 @@
 #define	FINNISH_STRINGS_H
 
 #define FINNISH_ABOUT_ARTPAINT_STRING			"Tietoa ArtPaint"
+#define FINNISH_ABOUT_HELP_STRING			"Näytä tiedot"
 #define	FINNISH_ACTIVE_LAYER_STRING				"Aktiivinen kerros"
 #define	FINNISH_ADD_AREA_STRING					"Lisää alue"
 #define	FINNISH_ADD_LAYER_HELP_STRING			"Lisää kerroksen nykyisen kerroksen päälle."
