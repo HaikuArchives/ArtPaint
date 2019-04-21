@@ -9,6 +9,7 @@
 #ifndef FINNISH_STRINGS_H
 #define	FINNISH_STRINGS_H
 
+#define FINNISH_ABOUT_ARTPAINT_STRING			"Tietoa ArtPaint"
 #define	FINNISH_ACTIVE_LAYER_STRING				"Aktiivinen kerros"
 #define	FINNISH_ADD_AREA_STRING					"Lisää alue"
 #define	FINNISH_ADD_LAYER_HELP_STRING			"Lisää kerroksen nykyisen kerroksen päälle."
@@ -25,6 +26,8 @@
 #define	FINNISH_APPLY_CHANGES_STRING			"Toteuta muutokset"
 #define	FINNISH_BACKGROUND_STRING				"Tausta"
 #define	FINNISH_BOTTOM_STRING					"Ala"
+#define FINNISH_BRUSH_STRING			"Sivellin"
+#define FINNISH_BRUSH_WINDOW_STRING			"Siveltimet ikkuna"
 #define	FINNISH_BRUSHES_STRING					"Siveltimet"
 #define FINNISH_CANCEL_STRING			"Peruuta"
 #define FINNISH_CANNOT_CREATE_IMAGE_STRING		"Liian vähän muistia kuvan luomiseen. Ole hyvä ja yritä uudelleen pienemmällä kuvakoolla"
@@ -57,6 +60,7 @@
 #define	FINNISH_DELETE_LAYER_STRING				"Tuhoa kerros"
 #define	FINNISH_DELETE_SELECTED_BRUSH_STRING	"Tuhoa valittu sivellin"
 #define	FINNISH_DISCARD_CHANGES_STRING			"Hylkää muutokset"
+#define FINNISH_DO_NOT_SAVE_STRING			"Ei tallenna"
 #define	FINNISH_DUPLICATE_LAYER_STRING			"Kopioi kerros"
 #define FINNISH_EDIT_STRING						"Muokkaa"
 #define	FINNISH_ELLIPSE_STRING					"Ellipsi"
@@ -97,6 +101,7 @@
 #define	FINNISH_KEEP_BRUSH_WINDOW_FRONT_STRING	"Pidä sivellin-ikkuna edessä"
 #define	FINNISH_KEEP_COLOR_WINDOW_FRONT_STRING	"Pidä väri-ikkuna edessä"
 #define	FINNISH_KEEP_EFFECTS_WINDOW_FRONT_STRING	"Pidä efekti-ikkuna edessä"
+#define	FINNISH_KEEP_IN_FRONT_STRING	"Pidä edessä"
 #define	FINNISH_KEEP_LAYER_WINDOW_FRONT_STRING	"Pidä kerros-ikkuna edessä"
 #define	FINNISH_KEEP_TOOL_SELECTION_WINDOW_FRONT_STRING	"Pidä työkalun valinta -ikkuna edessä"
 #define	FINNISH_KEEP_TOOL_SETUP_WINDOW_FRONT_STRING	"Pidä työkalun asetus -ikkuna edessä"
@@ -104,6 +109,7 @@
 #define	FINNISH_LAYER_COPY_HELP_STRING			"Kopioi aktiivisen kerroksen leikepöydälle."
 #define	FINNISH_LAYER_CUT_HELP_STRING			"Kopioi aktiivisen kerroksen leikepöydälle ja tyhjentää kerroksen."
 #define	FINNISH_LAYER_STRING					"Kerros"
+#define FINNISH_LAYER_WINDOW_STRING			"Kerros ikkuna"
 #define	FINNISH_LAYERS_STRING					"Kerrokset"
 #define	FINNISH_LEFT_STRING						"Vasen"
 #define	FINNISH_LITTLE_STRING					"Vähän"
