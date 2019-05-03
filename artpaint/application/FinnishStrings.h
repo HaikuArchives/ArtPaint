@@ -167,7 +167,7 @@
 #define	FINNISH_ROTATE_STRING					"Kierrä…"
 #define	FINNISH_ROTATION_STRING					"Kierto"
 #define	FINNISH_ROTATING_STRING					"Kiertää"
-#define FINNISH_SAVE_CHANGES_STRING			"Tallenna muutokset"
+#define FINNISH_SAVE_CHANGES_STRING			"%s: Et ole tehnyt %d muutoksia projektin viimeisen varmuuskopioinnin jälkeen. Haluatko tallentaa nämä muutokset?"
 #define FINNISH_SAVE_COLOR_SET_AS_STRING			"Tallenna paletti uudella uimellä…"
 #define	FINNISH_SAVE_COLOR_SET_STRING			"Tallenna paletti…"
 #define	FINNISH_SAVE_FORMAT_STRING				"Tallennusmuoto"
@@ -297,6 +297,7 @@
 #define	FINNISH_TEXT_TOOL_IN_USE_STRING			"Lisää tekstiä kuvaan."
 #define	FINNISH_TRANSPARENCY_TOOL_IN_USE_STRING	"Säätää kerroksen läpinäkyvyyttä."
 
+#define FINNISH_DO_CHANGE_TRANSPARENCY_HELP_STRING	"Muuta läpinäkyvyyttä liukusäätimellä."
 #define	FINNISH_DO_CROP_HELP_STRING		"Säädä uusia reunoja kahvoilla tai numerokentillä."
 #define	FINNISH_DO_ROTATE_HELP_STRING	"Kierrä hiiren vasemmalla painikkeella ja oikealla puolella kiertokeskusta."
 #define	FINNISH_DO_TRANSLATE_HELP_STRING	"Siirrä kuva haluamaasi kohtaan."
@@ -306,7 +307,13 @@
 												" Sitä voidaan käyttää laaja valikoima teoksia verkkosivuston suunnittelusta"\
 												" valokuvien retusointiin. Voit aloittaa oppaassa olevan opetusohjelman."
 
+#define	FINNISH_ABOUT_3_TEXT_STRING				"ArtPaintin uudet versiot löytyvät täältä:"
+
+#define	FINNISH_ABOUT_4_TEXT_STRING				"Voit lähettää minulle kommenttisi ja kysymyksiäsi:"
+
 #define	FINNISH_ABOUT_8_TEXT_STRING				"Erityiskiitokset tukijoillemme"
+
+#define	FINNISH_ABOUT_9_TEXT_STRING				"Kiitos rohkaisevista artikkeleista"
 
 #define FINNISH_MEMORY_ALERT_1_STRING			"Ei ole tarpeeksi vapaata muistia kerroksen lisäämiseen."\
 												"Voit vapauttaa lisää muistia laittamalla perumisen pois päältä."\
