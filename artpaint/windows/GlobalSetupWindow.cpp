@@ -14,7 +14,6 @@
 #include "BrushStoreWindow.h"
 #include "Cursors.h"
 #include "ColorPalette.h"
-#include "Flags.h"
 #include "LayerWindow.h"
 #include "ManipulatorWindow.h"
 #include "NumberControl.h"
@@ -402,7 +401,6 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
-	BRect rect = BRect(0.0, 0.0, gFlagWidth - 1.0, gFlagHeight - 1.0);
 	fEnglish = new BRadioButton("English", new BMessage(kEnglishLanguageSet));
 	fEnglish->SetValue(B_CONTROL_ON);
 	fFinnish = new BRadioButton("Suomi", new BMessage(kFinnishLanguageSet));
@@ -410,41 +408,16 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
 	fSpanish = new BRadioButton("Español", new BMessage(kSpanishLanguageSet));
 
-	BBitmap* english = new BBitmap(rect, B_CMAP8);
-	english->SetBits(gFlagBritishBits, english->BitsLength(), 0, gFlagColorSpace);
-
-	BBitmap* finnish = new BBitmap(rect, B_CMAP8);
-	finnish->SetBits(gFlagFinnishBits, finnish->BitsLength(), 0, gFlagColorSpace);
-
-	BBitmap* french = new BBitmap(rect, B_CMAP8);
-	french->SetBits(gFlagFrenchBits, french->BitsLength(), 0, gFlagColorSpace);
-
-	BBitmap* german = new BBitmap(rect, B_CMAP8);
-	german->SetBits(gFlagGermanBits, german->BitsLength(), 0, gFlagColorSpace);
-
-	BBitmap* spanish = new BBitmap(rect, B_CMAP8);
-	spanish->SetBits(gFlagSpanishBits, spanish->BitsLength(), 0, gFlagColorSpace);
-
 	fMessageView = new BStringView("message view",
 		StringServer::ReturnString(CHANGES_TAKE_EFFECT_STRING));
 
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
-		.Add(BGridLayoutBuilder(5.0, 5.0)
-			.Add(fEnglish, 0, 0)
-			.Add(new BitmapView(english, B_ORIGIN), 1, 0)
-			.Add(BSpaceLayoutItem::CreateGlue(), 2, 0)
-			.Add(fGerman, 0, 1)
-			.Add(new BitmapView(german, B_ORIGIN), 1, 1)
-			.Add(BSpaceLayoutItem::CreateGlue(), 2, 1)
-			.Add(fSpanish, 0, 2)
-			.Add(new BitmapView(spanish, B_ORIGIN), 1, 2)
-			.Add(BSpaceLayoutItem::CreateGlue(), 2, 2)
-			.Add(fFrench, 0, 3)
-			.Add(new BitmapView(french, B_ORIGIN), 1, 3)
-			.Add(BSpaceLayoutItem::CreateGlue(), 2, 3)
-			.Add(fFinnish, 0, 4)
-			.Add(new BitmapView(finnish, B_ORIGIN), 1, 4)
-			.Add(BSpaceLayoutItem::CreateGlue(), 2, 4))
+		.Add(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+			.Add(fEnglish)
+			.Add(fGerman)
+			.Add(fSpanish)
+			.Add(fFrench)
+			.Add(fFinnish))
 		.AddGlue()
 		.Add(fMessageView)
 		.SetInsets(20.0, 20.0, 10.0, 10.0)
