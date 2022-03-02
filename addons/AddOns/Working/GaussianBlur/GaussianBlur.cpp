@@ -20,7 +20,6 @@
 #include "GaussianBlur.h"
 #include "ImageProcessingLibrary.h"
 #include "Selection.h"
-#include "SysInfoBeOS.h"
 
 
 #ifdef __cplusplus
@@ -198,9 +197,13 @@ void GaussianBlurManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 
 	if (preview_bitmap != NULL) {
-		BeOS_system_info info;
-		get_BeOS_system_info(&info);
-		double speed = info.cpu_count * info.cpu_clock_speed;
+		system_info info;
+		get_system_info(&info);
+		cpu_info cpuInfos[info.cpu_count];
+		get_cpu_info(0, info.cpu_count, cpuInfos);
+		double speed;
+		for (int i=0; i<info.cpu_count; ++i)
+			speed += cpuInfos[i].current_frequency;
 
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
@@ -209,13 +212,13 @@ void GaussianBlurManipulator::SetPreviewBitmap(BBitmap *bm)
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
+
 		while ((num_pixels/lowest_available_quality/lowest_available_quality) > speed)
 			lowest_available_quality *= 2;
 
 		lowest_available_quality = min_c(lowest_available_quality,16);
 		highest_available_quality = max_c(lowest_available_quality/2,1);
-	}
-	else {
+	} else {
 		lowest_available_quality = 1;
 		highest_available_quality = 1;
 	}

@@ -72,10 +72,7 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 			*target_bits++ = color.word;
 
 		if (bitmap && bitmap->IsValid()) {
-			// "width" and "height" in ImportBits are pixel counts!:
-			fLayerData->ImportBits(bitmap, B_ORIGIN, B_ORIGIN,
-				int32(min_c(frame.Width(), sourceRect.Width()))+1,
-				int32(min_c(frame.Height(), sourceRect.Height()))+1);
+			fLayerData->ImportBits(bitmap);
 		}
 
 		// create the miniature image for this layer and a semaphore for it

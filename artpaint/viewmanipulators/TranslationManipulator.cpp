@@ -408,14 +408,19 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 
 	if (preview_bitmap != NULL) {
 		// Use a custom header to get the legacy system_info with cpu speed
-		BeOS_system_info info;
-		get_BeOS_system_info(&info);
-		double speed = info.cpu_count * info.cpu_clock_speed;
+		system_info info;
+		get_system_info(&info);
+		cpu_info cpuInfos[info.cpu_count];
+		get_cpu_info(0, info.cpu_count, cpuInfos);
+		double speed;
+		for (int i=0; i<info.cpu_count; ++i)
+			speed += cpuInfos[i].current_frequency;
 		speed = speed / 1000;
 
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
+
 		while ((2*num_pixels/lowest_available_quality/lowest_available_quality) > speed)
 			lowest_available_quality *= 2;
 
