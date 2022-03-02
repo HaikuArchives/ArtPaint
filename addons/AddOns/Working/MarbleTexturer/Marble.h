@@ -27,6 +27,7 @@ static	int32		thread_entry(void*);
 		int32		thread_function(int32);
 
 		float		marble_amount(float);
+		int			processor_count;
 
 public:
 			MarbleManipulator(ManipulatorInformer*);

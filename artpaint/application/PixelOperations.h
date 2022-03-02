@@ -18,14 +18,6 @@ union color_conversion_union {
 	uint32 word;
 };
 
-// This is just an utility-function for rounding the values.
-// It can be made faster by using inline assebler code. Especially
-// instructions frsp and fctlw could be useful on the PPC.
-inline float round(float c)
-{
-	return (((c - floor(c)) > 0.5) ? ceil(c) : floor(c));
-}
-
 
 // This function combines four pixels p1-p4 with weights c1-c4.
 // It accumulates the rounding error for each component and

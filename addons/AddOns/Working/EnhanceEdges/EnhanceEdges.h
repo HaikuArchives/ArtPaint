@@ -19,6 +19,7 @@ class EnhanceEdgesManipulator : public Manipulator {
 
 static	int32		thread_entry(void*);
 		int32		thread_function(int32);
+		int			processor_count;
 
 public:
 			EnhanceEdgesManipulator();

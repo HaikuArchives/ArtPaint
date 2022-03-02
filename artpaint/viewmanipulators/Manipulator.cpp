@@ -16,6 +16,19 @@
 #include <new>
 #include <stdlib.h>
 
+Manipulator::Manipulator()
+{
+	add_on_id = -1;
+	fSystemClockSpeed = 0;
+
+	system_info info;
+	get_system_info(&info);
+	fCpuCount = info.cpu_count;
+	cpu_info cpuInfos[fCpuCount];
+	get_cpu_info(0, fCpuCount, cpuInfos);
+	for (int i = 0; i < fCpuCount; ++i)
+		fSystemClockSpeed += cpuInfos[i].current_frequency;
+}
 
 BBitmap*
 Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)

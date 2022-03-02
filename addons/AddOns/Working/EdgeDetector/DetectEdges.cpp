@@ -39,6 +39,7 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 DetectEdgesManipulator::DetectEdgesManipulator()
 		: Manipulator()
 {
+	processor_count = GetSystemCpuCount();
 }
 
 
@@ -78,21 +79,18 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *s
 	the_selection = selection;
 	progress_bar = status_bar;
 
-	system_info info;
-	get_system_info(&info);
-
-	thread_id *threads = new thread_id[info.cpu_count];
+	thread_id *threads = new thread_id[processor_count];
 
 	// Start the threads. If the image is small enough
 	// one thread might be enough.
-	for (int32 i=0;i<info.cpu_count;i++) {
+	for (int32 i = 0;i < processor_count;i++) {
 		threads[i] = spawn_thread(thread_entry,"enhance_edges_thread",B_NORMAL_PRIORITY,this);
 		resume_thread(threads[i]);
 		send_data(threads[i],i,NULL,0);
 	}
 
 	// Wait for them threads to finish.
-	for (int32 i=0;i<info.cpu_count;i++) {
+	for (int32 i = 0;i < processor_count;i++) {
 		int32 return_value;
 		wait_for_thread(threads[i],&return_value);
 	}
@@ -149,15 +147,12 @@ int32 DetectEdgesManipulator::thread_function(int32 thread_number)
 		int32 top = target_bitmap->Bounds().top;
 		int32 bottom = target_bitmap->Bounds().bottom;
 
-		system_info info;
-		get_system_info(&info);
-
 		float height = bottom - top;
-		top = height/info.cpu_count*thread_number;
-		bottom = min_c(bottom,top + (height+1)/info.cpu_count);
+		top = height/processor_count*thread_number;
+		bottom = min_c(bottom,top + (height+1)/processor_count);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)info.cpu_count;
+		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
 		float missed_update = 0;
 
 		target += top*target_bpr;
@@ -252,15 +247,12 @@ int32 DetectEdgesManipulator::thread_function(int32 thread_number)
 		int32 top = rect.top;
 		int32 bottom = rect.bottom;
 
-		system_info info;
-		get_system_info(&info);
-
 		float height = bottom - top;
-		top += height/info.cpu_count*thread_number;
-		bottom = min_c(bottom,top + (height+1)/info.cpu_count);
+		top += height/processor_count*thread_number;
+		bottom = min_c(bottom,top + (height+1)/processor_count);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)info.cpu_count;
+		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
 
 		// Loop through all pixels in original.
 		for (int32 y=top;y<=bottom;++y) {

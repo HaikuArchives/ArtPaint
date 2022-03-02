@@ -50,7 +50,7 @@ class Manipulator {
 	friend class ManipulatorServer;
 
 public:
-									Manipulator() { add_on_id = -1; }
+									Manipulator();
 	virtual							~Manipulator() {}
 
 	virtual	BBitmap*				ManipulateBitmap(BBitmap*, Selection*,
@@ -58,6 +58,10 @@ public:
 	virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
 	virtual	const char*				ReturnName() = 0;
 
+	double							GetSystemClockSpeed()
+										{ return fSystemClockSpeed; }
+	int								GetSystemCpuCount()
+										{ return fCpuCount; }
 protected:
 			BBitmap*				DuplicateBitmap(BBitmap* source,
 										int32 inset = 0,
@@ -65,6 +69,8 @@ protected:
 
 private:
 			image_id				add_on_id;
+			double					fSystemClockSpeed;
+			int						fCpuCount;
 };
 
 #endif	// MANIPULATOR_H
