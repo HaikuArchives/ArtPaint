@@ -25,7 +25,6 @@
 #include "Selection.h"
 #include "Threshold.h"
 #include "ThresholdView.h"
-#include "SysInfoBeOS.h"
 
 
 #ifdef __cplusplus
@@ -141,9 +140,7 @@ int32 ThresholdManipulator::PreviewBitmap(Selection *selection,bool full_quality
 
 void ThresholdManipulator::start_threads()
 {
-	system_info info;
-	get_system_info(&info);
-	number_of_threads = info.cpu_count;
+	number_of_threads = GetSystemCpuCount();
 
 	thread_id *threads = new thread_id[number_of_threads];
 
@@ -328,14 +325,10 @@ void ThresholdManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 
 	if (preview_bitmap != NULL) {
-		BeOS_system_info info;
-		get_BeOS_system_info(&info);
-		double speed = info.cpu_count * info.cpu_clock_speed;
-
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
 		// about 50 CPU cycles.
-		speed = speed / (10*50);
+		double speed = GetSystemClockSpeed() / (10*50);
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;

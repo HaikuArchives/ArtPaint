@@ -41,6 +41,7 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 WoodManipulator::WoodManipulator()
 		: Manipulator()
 {
+	processor_count = GetSystemCpuCount();
 }
 
 
@@ -58,20 +59,17 @@ BBitmap* WoodManipulator::ManipulateBitmap(BBitmap *original,Selection *selectio
 	the_selection = selection;
 	progress_bar = status_bar;
 
-	system_info info;
-	get_system_info(&info);
-
-	thread_id *threads = new thread_id[info.cpu_count];
+	thread_id *threads = new thread_id[processor_count];
 
 	spare_copy_bitmap = DuplicateBitmap(original,-1);
 
-	for (int32 i=0;i<info.cpu_count;i++) {
+	for (int32 i = 0;i < processor_count;i++) {
 		threads[i] = spawn_thread(thread_entry,"perlin_fade_thread",B_NORMAL_PRIORITY,this);
 		resume_thread(threads[i]);
 		send_data(threads[i],i,NULL,0);
 	}
 
-	for (int32 i=0;i<info.cpu_count;i++) {
+	for (int32 i = 0;i < processor_count;i++) {
 		int32 return_value;
 		wait_for_thread(threads[i],&return_value);
 	}
@@ -129,16 +127,12 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 		float top = target_bitmap->Bounds().top;
 		float bottom = target_bitmap->Bounds().bottom;
 
-
-		system_info info;
-		get_system_info(&info);
-
-		int32 height = (bottom - top+1)/info.cpu_count;
+		int32 height = (bottom - top+1)/processor_count;
 		top = min_c(bottom,top+thread_number*height);
 		bottom = min_c(bottom,top + height-1);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)info.cpu_count;
+		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
 		float missed_update = 0;
 
 		spare_bits += (int32)left + 1 + ((int32)top+1)*spare_bpr;
@@ -185,7 +179,8 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 			}
 			spare_bits += 2;
 			// Update the status-bar
-			if ( (((int32)y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
+			if ( (((int32)y % update_interval) == 0) && (progress_bar_window != NULL)
+				&& (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
 				progress_bar->Update(update_amount+missed_update);
 				progress_bar_window->Unlock();
 				missed_update = 0;
@@ -205,15 +200,12 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 		int32 top = rect.top;
 		int32 bottom = rect.bottom;
 
-		system_info info;
-		get_system_info(&info);
-
-		int32 height = (bottom - top+1)/info.cpu_count;
+		int32 height = (bottom - top+1)/processor_count;
 		top = min_c(bottom,top+thread_number*height);
 		bottom = min_c(bottom,top + height-1);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)info.cpu_count;
+		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
 		float missed_update = 0;
 
 		spare_bits += (int32)left + 1 + ((int32)top+1)*spare_bpr;

@@ -42,6 +42,7 @@ MarbleManipulator::MarbleManipulator(ManipulatorInformer *i)
 		: Manipulator()
 {
 	informer = i;
+	processor_count = GetSystemCpuCount();
 }
 
 
@@ -60,20 +61,17 @@ BBitmap* MarbleManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	the_selection = selection;
 	progress_bar = status_bar;
 
-	system_info info;
-	get_system_info(&info);
-
-	thread_id *threads = new thread_id[info.cpu_count];
+	thread_id *threads = new thread_id[processor_count];
 
 	spare_copy_bitmap = DuplicateBitmap(original,-1);
 
-	for (int32 i=0;i<info.cpu_count;i++) {
+	for (int32 i = 0;i < processor_count;i++) {
 		threads[i] = spawn_thread(thread_entry,"perlin_fade_thread",B_NORMAL_PRIORITY,this);
 		resume_thread(threads[i]);
 		send_data(threads[i],i,NULL,0);
 	}
 
-	for (int32 i=0;i<info.cpu_count;i++) {
+	for (int32 i = 0;i < processor_count;i++) {
 		int32 return_value;
 		wait_for_thread(threads[i],&return_value);
 	}
@@ -128,16 +126,12 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 		float top = target_bitmap->Bounds().top;
 		float bottom = target_bitmap->Bounds().bottom;
 
-
-		system_info info;
-		get_system_info(&info);
-
-		int32 height = (bottom - top+1)/info.cpu_count;
+		int32 height = (bottom - top+1)/processor_count;
 		top = min_c(bottom,top+thread_number*height);
 		bottom = min_c(bottom,top + height-1);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)info.cpu_count;
+		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
@@ -172,7 +166,6 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 				missed_update += update_amount;
 			}
 		}
-
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
@@ -183,17 +176,13 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 		int32 top = rect.top;
 		int32 bottom = rect.bottom;
 
-		system_info info;
-		get_system_info(&info);
-
-		int32 height = (bottom - top+1)/info.cpu_count;
+		int32 height = (bottom - top+1)/processor_count;
 		top = min_c(bottom,top+thread_number*height);
 		bottom = min_c(bottom,top + height-1);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)info.cpu_count;
+		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
 		float missed_update = 0;
-
 
 		// Loop through all pixels in original.
 		float one_per_width = 1.0/8;

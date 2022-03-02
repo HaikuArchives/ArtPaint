@@ -136,9 +136,7 @@ int32 BlurManipulator::PreviewBitmap(Selection *sel, bool full_quality,BRegion *
 	if ((settings == previous_settings) == FALSE) {
 		// The blur will be done separably. First in the vertical direction and then in horizontal
 		// direction.
-		system_info info;
-		get_system_info(&info);
-		thread_count = info.cpu_count;
+		thread_count = GetSystemCpuCount();
 		tall_bits = (uint32*)tall_copy_of_the_preview_bitmap->Bits();
 		wide_bits = (uint32*)wide_copy_of_the_preview_bitmap->Bits();
 		final_bits = (uint32*)preview_bitmap->Bits();

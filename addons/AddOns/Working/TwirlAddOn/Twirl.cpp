@@ -20,7 +20,6 @@
 #include "Twirl.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-#include "SysInfoBeOS.h"
 
 
 #ifdef __cplusplus
@@ -431,10 +430,7 @@ void TwirlManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 
 	if (preview_bitmap != NULL) {
-		BeOS_system_info info;
-		get_BeOS_system_info(&info);
-		double speed = info.cpu_count * info.cpu_clock_speed;
-		speed = speed / 10000;
+		double speed = GetSystemClockSpeed() / 10000;
 
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
