@@ -303,7 +303,7 @@ SettingsServer::SetValue(Setting type, const BString& field, type_code typeCode,
 	if (BMessage* settings = _SettingsForType(type)) {
 		if (settings->RemoveName(field.String()) == B_OK) {
 			return settings->AddData(field.String(), typeCode, value,
-				sizeof(value));
+				sizeof(typeCode));
 		}
 	}
 	return B_ERROR;
