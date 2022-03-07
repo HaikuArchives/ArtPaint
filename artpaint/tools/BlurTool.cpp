@@ -236,7 +236,6 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		fBlurSize =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
 			"1", message, 1, 100, false);
-		layout->AddView(fBlurSize);
 
 		BSeparatorView* view =
 			new BSeparatorView(StringServer::ReturnString(MODE_STRING),

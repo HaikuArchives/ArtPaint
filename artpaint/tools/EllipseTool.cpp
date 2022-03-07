@@ -120,9 +120,10 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			snooze(20 * 1000);
 		}
+
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 		bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
-		bool use_anti_aliasing = false;
+		bool use_anti_aliasing = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
 		drawer->DrawEllipse(bitmap_rect,RGBColorToBGRA(c), use_fill,
 			use_anti_aliasing, selection);
 		delete drawer;
@@ -202,21 +203,28 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 			new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
 				message);
 
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
+		message->AddInt32("value", 0x00000000);
+
+		fAntiAlias =
+			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			message);
+
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(_SeparatorView())
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+			.Add(_SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
+			.AddGroup(B_VERTICAL)
 				.Add(fFillEllipse)
 			.End()
 			.AddStrut(5.0)
-			.Add(_SeparatorView())
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+			.Add(_SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL)
 				.Add(fCorner2Corner)
-			.End()
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
 				.Add(fCenter2Corner)
+			.End()
+			.Add(_SeparatorView(StringServer::ReturnString(MISCELLANEOUS_STRING)))
+			.AddGroup(B_VERTICAL)
+				.Add(fAntiAlias)
 			.End()
 			.TopView()
 		);
@@ -229,6 +237,9 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
 			fCenter2Corner->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
+			fAntiAlias->SetValue(B_CONTROL_ON);
 	}
 }
 
@@ -241,14 +252,15 @@ EllipseToolConfigView::AttachedToWindow()
 	fFillEllipse->SetTarget(this);
 	fCorner2Corner->SetTarget(this);
 	fCenter2Corner->SetTarget(this);
+	fAntiAlias->SetTarget(this);
 }
 
 
 BSeparatorView*
-EllipseToolConfigView::_SeparatorView() const
+EllipseToolConfigView::_SeparatorView(const char* label) const
 {
 	BSeparatorView* view =
-		new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+		new BSeparatorView(label,
 			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
 			B_ALIGN_VERTICAL_CENTER));
 	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));

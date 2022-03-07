@@ -355,7 +355,6 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		fBrushSize =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
 			"1", message, 1, 100, false);
-		layout->AddView(fBrushSize);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", PRESSURE_OPTION);
@@ -364,7 +363,6 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		fBrushFlow =
 			new NumberSliderControl(StringServer::ReturnString(FLOW_STRING),
 			"1", message, 1, 100, false);
-		layout->AddView(fBrushFlow);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", MODE_OPTION);

@@ -452,7 +452,6 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		fBrushSize =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
 			"0", message, 2, 50, false);
-		layout->AddView(fBrushSize);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SIZE_OPTION);
@@ -461,7 +460,6 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		fBrushHairs =
 			new NumberSliderControl(StringServer::ReturnString(HAIRS_STRING),
 			"0", message, 5, 100, false);
-		layout->AddView(fBrushHairs);
 
 		fColorAmount =
 			new BSlider("", StringServer::ReturnString(COLOR_AMOUNT_STRING),
