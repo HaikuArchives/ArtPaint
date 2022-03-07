@@ -44,7 +44,7 @@ public:
 	virtual	void				AttachedToWindow();
 
 private:
-			BSeparatorView*		_SeparatorView() const;
+			BSeparatorView*		_SeparatorView(const char* label) const;
 
 private:
 			BCheckBox*			fFillRectangle;

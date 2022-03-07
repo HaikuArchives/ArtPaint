@@ -302,7 +302,7 @@ DrawingToolConfigView::DrawingToolConfigView(DrawingTool* drawingTool)
 	, fTool(drawingTool)
 {
 	SetLayout(BGroupLayoutBuilder(B_VERTICAL)
-		.SetInsets(10.0, InnerFrame().top, 10.0, 10.0)
+		.SetInsets(10.0, be_bold_font->Size()+10.0, 10.0, 10.0)
 		.TopLayout());
 	SetLabel(drawingTool->Name().String());
 }

@@ -634,7 +634,6 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		fTolerance =
 			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
 				"10", message, 0, 100, false);
-		layout->AddView(fTolerance);
 
 		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
 			.Add(fTolerance->LabelLayoutItem(), 0, 0)
