@@ -17,11 +17,10 @@
 
 #include "ImageView.h"
 #include "MessageConstants.h"
-#include "Selection.h"
-#include "TranslationManipulator.h"
-#include "StringServer.h"
 #include "NumberControl.h"
-#include "SysInfoBeOS.h"
+#include "Selection.h"
+#include "StringServer.h"
+#include "TranslationManipulator.h"
 
 
 using ArtPaint::Interface::NumberControl;
@@ -407,15 +406,7 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 
 	if (preview_bitmap != NULL) {
-		// Use a custom header to get the legacy system_info with cpu speed
-		system_info info;
-		get_system_info(&info);
-		cpu_info cpuInfos[info.cpu_count];
-		get_cpu_info(0, info.cpu_count, cpuInfos);
-		double speed;
-		for (int i=0; i<info.cpu_count; ++i)
-			speed += cpuInfos[i].current_frequency;
-		speed = speed / 1000;
+		double speed = GetSystemClockSpeed() / 1000;
 
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);

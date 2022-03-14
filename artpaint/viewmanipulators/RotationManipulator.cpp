@@ -17,14 +17,14 @@
 #include <TextControl.h>
 #include <Window.h>
 
-#include "MessageConstants.h"
-#include "RotationManipulator.h"
-#include "ImageView.h"
-#include "PixelOperations.h"
-#include "Selection.h"
+
 #include "HSPolygon.h"
+#include "ImageView.h"
+#include "MessageConstants.h"
+#include "PixelOperations.h"
+#include "RotationManipulator.h"
+#include "Selection.h"
 #include "StringServer.h"
-#include "SysInfoBeOS.h"
 
 
 #define PI M_PI
@@ -106,15 +106,7 @@ void RotationManipulator::SetPreviewBitmap(BBitmap *bitmap)
 	}
 
 	if (preview_bitmap != NULL) {
-		// Use a custom header to get the legacy system_info with cpu speed
-		system_info info;
-		get_system_info(&info);
-		cpu_info cpuInfos[info.cpu_count];
-		get_cpu_info(0, info.cpu_count, cpuInfos);
-		double speed;
-		for (int i=0; i<info.cpu_count; ++i)
-			speed += cpuInfos[i].current_frequency;
-		speed = speed / 15000;
+		double speed = GetSystemClockSpeed() / 15000;
 
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
@@ -131,6 +123,7 @@ void RotationManipulator::SetPreviewBitmap(BBitmap *bitmap)
 	last_calculated_resolution = lowest_available_quality;
 }
 
+
 BRegion RotationManipulator::Draw(BView *view,float mag_scale)
 {
 	float x = settings->origo.x;
@@ -144,7 +137,6 @@ BRegion RotationManipulator::Draw(BView *view,float mag_scale)
 	updated_region.Set(BRect(mag_scale*x-10,mag_scale*y-10,mag_scale*x+10,mag_scale*y+10));
 	return updated_region;
 }
-
 
 
 void RotationManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
@@ -253,7 +245,6 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 	uint32 p1,p2,p3,p4;
 
-
 	union {
 		uint8	bytes[4];
 		uint32	word;
@@ -263,7 +254,6 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 	background.bytes[1] = 0xFF;
 	background.bytes[2] = 0xFF;
 	background.bytes[3] = 0x00;
-
 
 	if (selection->IsEmpty()) {
 		for (float y=0;y<=height;y++) {
@@ -438,6 +428,7 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 	return new_bitmap;
 }
+
 
 int32 RotationManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
 {

@@ -896,14 +896,7 @@ void WaveManipulator::SetPreviewBitmap(BBitmap *bm)
 		}
 	}
 	if (preview_bitmap != NULL) {
-		system_info info;
-		get_system_info(&info);
-		cpu_info cpuInfos[info.cpu_count];
-		get_cpu_info(0, info.cpu_count, cpuInfos);
-		double speed;
-		for (int i=0; i<info.cpu_count; ++i)
-			speed += cpuInfos[i].current_frequency;
-		speed = speed / 15000;
+		double speed = GetSystemClockSpeed() / 15000;
 
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);

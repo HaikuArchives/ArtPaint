@@ -50,9 +50,7 @@ SharpnessManipulator::SharpnessManipulator(BBitmap *bm)
 
 	previous_settings.sharpness = settings.sharpness + 1;
 
-	system_info info;
-	get_system_info(&info);
-	processor_count = info.cpu_count;
+	processor_count = GetSystemCpuCount();
 
 	ipLibrary = new ImageProcessingLibrary();
 
@@ -324,18 +322,10 @@ void SharpnessManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 
 	if (preview_bitmap != NULL) {
-		system_info info;
-		get_system_info(&info);
-		cpu_info cpuInfos[info.cpu_count];
-		get_cpu_info(0, info.cpu_count, cpuInfos);
-		double speed;
-		for (int i=0; i<info.cpu_count; ++i)
-			speed += cpuInfos[i].current_frequency;
-
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
 		// about 50 CPU cycles.
-		speed = speed / (10*50);
+		double speed = GetSystemClockSpeed() / (10*50);
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
