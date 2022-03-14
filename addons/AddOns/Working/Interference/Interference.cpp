@@ -17,7 +17,6 @@
 #include "Interference.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-#include "SysInfoBeOS.h"
 
 #define PI M_PI
 
@@ -186,10 +185,7 @@ void InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 		}
 	}
 	if (preview_bitmap != NULL) {
-		BeOS_system_info info;
-		get_BeOS_system_info(&info);
-		double speed = info.cpu_count * info.cpu_clock_speed;
-		speed = speed / 15000;
+		double speed = GetSystemClockSpeed() / 15000;
 
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);

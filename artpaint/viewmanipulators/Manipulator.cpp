@@ -17,6 +17,34 @@
 #include <stdlib.h>
 
 
+Manipulator::Manipulator()
+{
+	add_on_id = -1;
+	fSystemClockSpeed = 0;
+
+	system_info info;
+	get_system_info(&info);
+	fCpuCount = info.cpu_count;
+	fSystemClockSpeed = 0;
+	uint32 topoCount = 0;
+	get_cpu_topology_info(NULL, &topoCount);
+	if (topoCount > 0) {
+		cpu_topology_node_info topology[topoCount];
+		get_cpu_topology_info(topology, &topoCount);
+		for (int i = 0; i < topoCount; ++i) {
+			if (topology[i].type == B_TOPOLOGY_CORE)
+				fSystemClockSpeed += topology[i].data.core.default_frequency;
+		}
+	} else {
+		// fall back to cpu info; note that current_frequency
+		// is dynamic and could be less than the cpu speed
+		cpu_info cpuInfos[fCpuCount];
+		get_cpu_info(0, fCpuCount, cpuInfos);
+		for (int i = 0; i < fCpuCount; ++i)
+			fSystemClockSpeed += cpuInfos[i].current_frequency;
+	}
+}
+
 BBitmap*
 Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 {
