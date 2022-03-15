@@ -338,9 +338,9 @@ int32 TwirlManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRe
 		 		for (int32 x=0;x<source_bpr;x += last_calculated_resolution) {
 					real_x = x-cx;
 					real_y = y-cy;
-					#ifdef __POWERPC__
+					#if BYTE_ORDER == BIG_ENDIAN
 					distance = 1.0/reciprocal_of_square_root(real_x*real_x + real_y*real_y);
-					#elif __INTEL__
+					#else
 //					distance = fsqrt(real_x*real_x + real_y*real_y);
 					distance = sqrt(real_x*real_x + real_y*real_y);
 					#endif
@@ -373,9 +373,9 @@ int32 TwirlManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRe
 		 		for (int32 x=0;x<source_bpr;x += last_calculated_resolution) {
 					real_x = x-cx;
 					real_y = y-cy;
-					#ifdef __POWERPC__
+					#if BYTE_ORDER == BIG_ENDIAN
 					distance = 1.0/reciprocal_of_square_root(real_x*real_x + real_y*real_y);
-					#elif __INTEL__
+					#else
 //					distance = fsqrt(real_x*real_x + real_y*real_y);
 					distance = sqrt(real_x*real_x + real_y*real_y);
 					#endif

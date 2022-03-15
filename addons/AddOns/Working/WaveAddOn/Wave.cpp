@@ -416,10 +416,10 @@ int32 WaveManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 					if ((real_x != 0) && (real_y != 0)) {
 						// Let's try the inline assemler function for square root estimation.
 						// On intel this does not yet work and the corresponding function is very slow.
-						#if __POWERPC__
+						#if BYTE_ORDER == BIG_ENDIAN
 						one_per_sqrt_x_plus_y = reciprocal_of_square_root(real_x*real_x+real_y*real_y);
 						sqrt_x_plus_y = 1.0/one_per_sqrt_x_plus_y;
-						#elif __INTEL__
+						#else
 //						sqrt_x_plus_y = fsqrt(real_x*real_x+real_y*real_y);
 						sqrt_x_plus_y = sqrt(real_x*real_x+real_y*real_y);
 						one_per_sqrt_x_plus_y = 1.0 / sqrt_x_plus_y;
@@ -475,10 +475,10 @@ int32 WaveManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 					if (selection->ContainsPoint(x,y) == TRUE) {
 						if ((real_x != 0) && (real_y != 0)) {
 							// Let's try the inline assemler function for square root estimation
-							#ifdef __POWERPC__
+							#if BYTE_ORDER == BIG_ENDIAN
 							one_per_sqrt_x_plus_y = reciprocal_of_square_root(real_x*real_x+real_y*real_y);
 							sqrt_x_plus_y = 1.0/one_per_sqrt_x_plus_y;
-							#elif __INTEL__
+							#else
 //							sqrt_x_plus_y = fsqrt(real_x*real_x+real_y*real_y);
 							sqrt_x_plus_y = sqrt(real_x*real_x+real_y*real_y);
 							one_per_sqrt_x_plus_y = 1.0 / sqrt_x_plus_y;
