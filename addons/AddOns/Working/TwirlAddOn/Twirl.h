@@ -121,14 +121,14 @@ void	ChangeSettings(TwirlManipulatorSettings *s);
 };
 
 
-#if __POWERPC__
+#ifdef __POWERPC__
 inline 	asm	float reciprocal_of_square_root(register float number)
 {
 	machine		603
 	frsqrte		fp1,number;	// Estimates reciprocal of square-root
 	blr
 }
-#elif __INTEL__
+#else
 // This is very slow.
 inline float reciprocal_of_square_root(register float number)
 {

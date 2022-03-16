@@ -120,7 +120,7 @@ inline 	asm	float reciprocal_of_square_root(register float number)
 	frsqrte		fp1,number;	// Estimates reciprocal of square-root
 	blr
 }
-#elif __INTEL__
+#else
 float reciprocal_of_square_root(register float number)
 {
 	return 1.0 / sqrt(number);

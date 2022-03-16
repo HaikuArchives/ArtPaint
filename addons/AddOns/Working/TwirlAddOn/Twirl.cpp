@@ -340,7 +340,7 @@ int32 TwirlManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRe
 					real_y = y-cy;
 					#ifdef __POWERPC__
 					distance = 1.0/reciprocal_of_square_root(real_x*real_x + real_y*real_y);
-					#elif __INTEL__
+					#else
 //					distance = fsqrt(real_x*real_x + real_y*real_y);
 					distance = sqrt(real_x*real_x + real_y*real_y);
 					#endif
@@ -375,7 +375,7 @@ int32 TwirlManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRe
 					real_y = y-cy;
 					#ifdef __POWERPC__
 					distance = 1.0/reciprocal_of_square_root(real_x*real_x + real_y*real_y);
-					#elif __INTEL__
+					#else
 //					distance = fsqrt(real_x*real_x + real_y*real_y);
 					distance = sqrt(real_x*real_x + real_y*real_y);
 					#endif

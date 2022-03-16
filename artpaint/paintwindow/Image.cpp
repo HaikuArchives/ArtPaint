@@ -1251,10 +1251,10 @@ int32 Image::DoRender(BRect area)
 				for (register int32 x=0;x<width;++x) {
 					s = *s_bits;
 					d = *d_bits;
-					#if __POWERPC__
+					#if BYTE_ORDER == BIG_ENDIAN
 					As = FixedAlphaTable[s & 0x000000ff];
 					Ad = full_fixed_alpha - As;
-					#elif __INTEL__
+					#else
 					As = FixedAlphaTable[(s>>24) & 0x000000ff];
 					Ad = full_fixed_alpha - As;
 					#endif
@@ -1410,24 +1410,24 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 					uint32 layer = layer_bits[j][x + y*layer_bprs[j]];
 					register uint32 As;
 					register uint32 Ad;
-					#if __POWERPC__
+					#if BYTE_ORDER == BIG_ENDIAN
 					As = alpha_tables[j][layer & 0x000000ff];
 					Ad = full_fixed_alpha - As;
-					#elif __INTEL__
+					#else
 					As = alpha_tables[j][(layer>>24) & 0x000000ff];
 					Ad = full_fixed_alpha - As;
 					#endif
 
 					uint32 spare_target = 0x00000000;
 
-					#ifdef __POWERPC__
+					#if BYTE_ORDER == BIG_ENDIAN
 					spare_target =	( ( ( (layer >> 24) * As ) +
 								( (target >> 24) * Ad ) ) >> 15 ) << 24;
 					spare_target |=	( ( ( ((layer >> 16) & 0x000000ff) * As ) +
 								( ((target >> 16) & 0x000000ff) * Ad ) ) >> 15 ) << 16;
 					spare_target |=	( ( ( ((layer >> 8) & 0x000000ff) * As ) +
 								( ((target >> 8) & 0x000000ff) * Ad ) ) >> 15 ) << 8;
-					#elif __INTEL__
+					#else
 					spare_target =	( ( ( ((layer >> 16) & 0x000000ff) * As ) +
 								( ((target >> 16) & 0x000000ff) * Ad ) ) >> 15 ) << 16;
 					spare_target |=	( ( ( ((layer >> 8) & 0x000000ff) * As ) +
