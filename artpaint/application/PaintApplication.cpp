@@ -228,7 +228,7 @@ bool
 PaintApplication::QuitRequested()
 {
 	fShuttingDown = true;
-	
+
 	BMessage settings;
 	if (SettingsServer* server = SettingsServer::Instance())
 		server->GetApplicationSettings(&settings);
@@ -445,7 +445,7 @@ PaintApplication::SetColor(rgb_color color, bool foreground)
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BString field = foreground ? skPrimaryColor : skSecondaryColor;
 		server->SetValue(SettingsServer::Application, field, B_RGB_COLOR_TYPE,
-			&color);
+			&color, sizeof(rgb_color));
 	}
 }
 

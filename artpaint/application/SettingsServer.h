@@ -109,7 +109,8 @@ public:
 			status_t				SetValue(Setting type, const BString& field,
 										const BString& value);
 			status_t				SetValue(Setting type, const BString& field,
-										type_code typeCode, const void* value);
+										type_code typeCode, const void* value,
+										ssize_t size);
 
 			const StringList&		RecentImagePaths() const;
 			void					AddRecentImagePath(const BString& path);
