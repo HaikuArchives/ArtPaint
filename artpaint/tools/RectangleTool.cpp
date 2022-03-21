@@ -345,22 +345,24 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 			B_ALIGN_VERTICAL_CENTER));
 		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
-			.AddGroup(B_VERTICAL)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFillRectangle)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(MODE_STRING)))
-			.AddGroup(B_VERTICAL)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fCorner2Corner)
 				.Add(fCenter2Corner)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(MISCELLANEOUS_STRING)))
-			.AddGroup(B_VERTICAL)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fRotation)
 				.Add(fAntiAlias)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
@@ -393,18 +395,4 @@ RectangleToolConfigView::AttachedToWindow()
 	fCenter2Corner->SetTarget(this);
 	fRotation->SetTarget(this);
 	fAntiAlias->SetTarget(this);
-}
-
-
-BSeparatorView*
-RectangleToolConfigView::_SeparatorView(const char* label) const
-{
-	BSeparatorView* view =
-		new BSeparatorView(label,
-		B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-		B_ALIGN_VERTICAL_CENTER));
-	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
-	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	return view;
 }

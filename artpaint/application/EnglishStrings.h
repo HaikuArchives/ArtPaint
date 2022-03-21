@@ -157,6 +157,7 @@
 #define	ENGLISH_OPEN_PROJECT_HELP_STRING		"Opens a project from the disk."
 #define	ENGLISH_OPEN_PROJECT_STRING				"Open project…"
 #define	ENGLISH_OPEN_STRING						"Open"
+#define ENGLISH_OPTIONS_STRING					"Options"
 #define	ENGLISH_PALETTE_WINDOW_NAME_STRING		"Colors"
 #define	ENGLISH_PASTE_AS_NEW_LAYER_HELP_STRING	"Pastes previously copied layer from the clipboard as a new layer."
 #define	ENGLISH_PASTE_AS_NEW_LAYER_STRING		"Paste as a new layer"

@@ -1,7 +1,7 @@
 /*
 	Filename:	SpanishStrings.h
 	Contents:	Definitions of UI strings in Spanish.
-	
+
 	Spanish Localization
 */
 
@@ -288,6 +288,8 @@
 #define	SPANISH_OPEN_PROJECT_STRING				"Abre una proyecto..."
 
 #define	SPANISH_OPEN_STRING						"Abrir"
+
+#define SPANISH_OPTIONS_STRING					"Opciones"
 
 #define	SPANISH_PALETTE_WINDOW_NAME_STRING		"Colores"
 

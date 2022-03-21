@@ -25,8 +25,9 @@
 #include "UtilityClasses.h"
 
 
-#include <GridLayoutBuilder.h>
+#include <GridLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <SeparatorView.h>
 #include <Slider.h>
 
 
@@ -477,21 +478,21 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 			StringServer::ReturnString(RANDOM_STRING));
 		fColorVariance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
-		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
-			.Add(fBrushSize->LabelLayoutItem(), 0, 0)
-			.Add(fBrushSize->TextViewLayoutItem(), 1, 0)
-			.Add(fBrushSize->Slider(), 2, 0)
-			.Add(fBrushHairs->LabelLayoutItem(), 0, 1)
-			.Add(fBrushHairs->TextViewLayoutItem(), 1, 1)
-			.Add(fBrushHairs->Slider(), 2, 1)
-			.SetInsets(5.0, 0.0, 0.0, 0.0);
-		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+		BGridLayout* sizeLayout = LayoutSliderGrid(fBrushSize);
+		BGridLayout* hairsLayout = LayoutSliderGrid(fBrushHairs);
 
-		layout->AddItem(BGroupLayoutBuilder(B_VERTICAL)
-			.Add(gridLayout)
-			.Add(fColorAmount)
-			.Add(fColorVariance)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(sizeLayout)
+			.Add(hairsLayout)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
+				.Add(fColorAmount)
+				.AddStrut(kWidgetSpacing)
+				.Add(fColorVariance)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
+				.End()
+			.TopView()
 		);
 	}
 }

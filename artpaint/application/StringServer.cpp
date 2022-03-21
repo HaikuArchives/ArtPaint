@@ -311,6 +311,8 @@ const char* StringServer::return_english_string(string_id id)
 			return ENGLISH_OPEN_PROJECT_STRING;
 		case OPEN_STRING:
 			return ENGLISH_OPEN_STRING;
+		case OPTIONS_STRING:
+			return ENGLISH_OPTIONS_STRING;
 		case PALETTE_WINDOW_NAME_STRING:
 			return ENGLISH_PALETTE_WINDOW_NAME_STRING;
 		case PASTE_AS_NEW_LAYER_HELP_STRING:
@@ -940,6 +942,8 @@ const char* StringServer::return_finnish_string(string_id id)
 			return FINNISH_OPEN_PROJECT_STRING;
 		case OPEN_STRING:
 			return FINNISH_OPEN_STRING;
+		case OPTIONS_STRING:
+			return FINNISH_OPTIONS_STRING;
 		case PALETTE_WINDOW_NAME_STRING:
 			return FINNISH_PALETTE_WINDOW_NAME_STRING;
 		case PASTE_AS_NEW_LAYER_HELP_STRING:
@@ -1568,6 +1572,8 @@ const char* StringServer::return_german_string(string_id id)
 			return GERMAN_OPEN_PROJECT_STRING;
 		case OPEN_STRING:
 			return GERMAN_OPEN_STRING;
+		case OPTIONS_STRING:
+			return GERMAN_OPTIONS_STRING;
 		case PALETTE_WINDOW_NAME_STRING:
 			return GERMAN_PALETTE_WINDOW_NAME_STRING;
 		case PASTE_AS_NEW_LAYER_HELP_STRING:
@@ -2201,6 +2207,8 @@ const char* StringServer::return_french_string(string_id id)
 			return FRENCH_OPEN_PROJECT_STRING;
 		case OPEN_STRING:
 			return FRENCH_OPEN_STRING;
+		case OPTIONS_STRING:
+			return FRENCH_OPTIONS_STRING;
 		case PALETTE_WINDOW_NAME_STRING:
 			return FRENCH_PALETTE_WINDOW_NAME_STRING;
 		case PASTE_AS_NEW_LAYER_HELP_STRING:
@@ -2831,6 +2839,8 @@ const char* StringServer::return_spanish_string(string_id id)
 			return SPANISH_OPEN_PROJECT_STRING;
 		case OPEN_STRING:
 			return SPANISH_OPEN_STRING;
+		case OPTIONS_STRING:
+			return SPANISH_OPTIONS_STRING;
 		case PALETTE_WINDOW_NAME_STRING:
 			return SPANISH_PALETTE_WINDOW_NAME_STRING;
 		case PASTE_AS_NEW_LAYER_HELP_STRING:

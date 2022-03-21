@@ -635,33 +635,27 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
 				"10", message, 0, 100, false);
 
-		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
-			.Add(fTolerance->LabelLayoutItem(), 0, 0)
-			.Add(fTolerance->TextViewLayoutItem(), 1, 0)
-			.Add(fTolerance->Slider(), 2, 0);
-		gridLayout->SetInsets(5.0, 0.0, 0.0, 0.0);
-		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(MODE_STRING)))
-			.AddGroup(B_VERTICAL, 5.0)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 					.Add(fAddArea)
 					.Add(fSubstractArea)
-				.SetInsets(5.0, 0.0, 0.0, 0.0)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
-			.AddGroup(B_VERTICAL, 5.0)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFreeLine)
 				.Add(fRectangle)
 				.Add(fMagicWand)
 				.Add(fScissors)
-				.SetInsets(5.0, 0.0, 0.0, 0.0)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(WAND_TOLERANCE_STRING)))
-			.Add(gridLayout->View())
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(WAND_TOLERANCE_STRING)))
+			.Add(toleranceLayout)
 			.TopView()
 		);
 
@@ -700,15 +694,3 @@ SelectorToolConfigView::AttachedToWindow()
 	fTolerance->SetTarget(this);
 }
 
-
-BSeparatorView*
-SelectorToolConfigView::_SeparatorView(const char* label) const
-{
-	BSeparatorView* view =
-		new BSeparatorView(label, B_HORIZONTAL, B_FANCY_BORDER,
-			BAlignment(B_ALIGN_LEFT, B_ALIGN_VERTICAL_CENTER));
-	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
-	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	return view;
-}

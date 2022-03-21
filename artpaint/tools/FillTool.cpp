@@ -29,6 +29,7 @@
 #include <CheckBox.h>
 #include <Control.h>
 #include <File.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <SeparatorView.h>
 
@@ -1721,24 +1722,26 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 		message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
 		fTolerance =
 			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
-				"0", message, 0, 100, true);
+				"0", message, 0, 100, false);
 		fTolerance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(fTolerance)
-			.AddStrut(5.0)
-			.Add(_SeparatorView())
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
+
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(toleranceLayout)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFlodFill)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView())
-			.AddGroup(B_VERTICAL, 5.0)
-					.Add(fGradient)
-					.Add(fPreview)
-					.Add(fGradientView)
-				.SetInsets(5.0, 0.0, 0.0, 0.0)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
+				.Add(fGradient)
+				.Add(fPreview)
+				.Add(fGradientView)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
@@ -1785,16 +1788,3 @@ FillToolConfigView::MessageReceived(BMessage *message)
 	}
 }
 
-
-BSeparatorView*
-FillToolConfigView::_SeparatorView() const
-{
-	BSeparatorView* view =
-		new BSeparatorView(StringServer::ReturnString(MODE_STRING),
-		B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-		B_ALIGN_VERTICAL_CENTER));
-	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
-	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	return view;
-}

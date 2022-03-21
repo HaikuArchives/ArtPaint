@@ -101,9 +101,6 @@ public:
 	virtual	void					MessageReceived(BMessage* message);
 
 private:
-			BSeparatorView*			_SeparatorView() const;
-
-private:
 			BCheckBox*				fFlodFill;
 			BCheckBox*				fGradient;
 			BCheckBox*				fPreview;

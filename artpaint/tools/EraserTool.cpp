@@ -21,7 +21,7 @@
 #include "StringServer.h"
 #include "ToolScript.h"
 
-
+#include <GridLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
 #include <SeparatorView.h>
@@ -258,7 +258,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 
 		fSizeSlider =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
-			"1", message, 1, 100, true);
+			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", MODE_OPTION);
@@ -273,19 +273,16 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 			new BRadioButton(StringServer::ReturnString(TRANSPARENT_STRING),
 			message);
 
-		BSeparatorView* view =
-			new BSeparatorView(StringServer::ReturnString(COLOR_STRING),
-			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-			B_ALIGN_VERTICAL_CENTER));
-		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(fSizeSlider)
-			.AddStrut(5.0)
-			.Add(view)
-			.AddGroup(B_VERTICAL)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(sizeLayout)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(COLOR_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fBackground)
 				.Add(fTransparent)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
