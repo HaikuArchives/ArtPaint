@@ -211,20 +211,23 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
 			message);
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
-			.AddGroup(B_VERTICAL)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFillEllipse)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView(StringServer::ReturnString(MODE_STRING)))
-			.AddGroup(B_VERTICAL)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fCorner2Corner)
 				.Add(fCenter2Corner)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.Add(_SeparatorView(StringServer::ReturnString(MISCELLANEOUS_STRING)))
-			.AddGroup(B_VERTICAL)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fAntiAlias)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
@@ -253,18 +256,4 @@ EllipseToolConfigView::AttachedToWindow()
 	fCorner2Corner->SetTarget(this);
 	fCenter2Corner->SetTarget(this);
 	fAntiAlias->SetTarget(this);
-}
-
-
-BSeparatorView*
-EllipseToolConfigView::_SeparatorView(const char* label) const
-{
-	BSeparatorView* view =
-		new BSeparatorView(label,
-			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-			B_ALIGN_VERTICAL_CENTER));
-	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
-	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	return view;
 }

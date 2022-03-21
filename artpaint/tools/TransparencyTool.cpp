@@ -199,14 +199,19 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 			"1", message, 1, 100, false);
 
 		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+			.Add(fSizeSlider, 0, 0, 0, 0)
 			.Add(fSizeSlider->LabelLayoutItem(), 0, 0)
 			.Add(fSizeSlider->TextViewLayoutItem(), 1, 0)
 			.Add(fSizeSlider->Slider(), 2, 0)
+			.Add(fSpeedSlider, 0, 1, 0, 0)
 			.Add(fSpeedSlider->LabelLayoutItem(), 0, 1)
 			.Add(fSpeedSlider->TextViewLayoutItem(), 1, 1)
-			.Add(fSpeedSlider->Slider(), 2, 1);
-		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
+			.Add(fSpeedSlider->Slider(), 2, 1)
+			.SetInsets(kWidgetInset, 0.0, 0.0, 0.0);
+		gridLayout->SetMinColumnWidth(0, StringWidth("LABELSIZE"));
+		gridLayout->SetMaxColumnWidth(1, StringWidth("100"));
 		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+
 		layout->AddView(gridLayout->View());
 	}
 }

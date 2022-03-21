@@ -25,7 +25,7 @@
 
 
 #include <Bitmap.h>
-#include <GroupLayout.h>
+#include <GridLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <InterfaceDefs.h>
 #include <RadioButton.h>
@@ -412,8 +412,10 @@ ColorSelectorToolConfigView::ColorSelectorToolConfigView(DrawingTool* tool)
 
 		fSizeSlider =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
-			"1", message, 1, 10, true);
-		layout->AddView(fSizeSlider);
+			"1", message, 1, 10, false);
+
+		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);
+		layout->AddView(sizeLayout->View());
 	}
 }
 

@@ -23,6 +23,7 @@
 #include "UtilityClasses.h"
 
 
+#include <GridLayoutBuilder.h>
 #include <Layout.h>
 #include <Window.h>
 
@@ -239,8 +240,11 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 
 		fLineSize =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
-			"1", message, 1, 100, true);
-		layout->AddView(fLineSize);
+			"1", message, 1, 100, false);
+
+		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);
+
+		layout->AddView(lineSizeLayout->View());
 	}
 }
 

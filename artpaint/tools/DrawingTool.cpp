@@ -13,6 +13,7 @@
 
 #include "Cursors.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "ResourceServer.h"
 #include "StringServer.h"
 #include "UtilityClasses.h"
@@ -22,7 +23,9 @@
 #include <CheckBox.h>
 #include <File.h>
 #include <GroupLayoutBuilder.h>
+#include <GridLayoutBuilder.h>
 #include <Handler.h>
+#include <SeparatorView.h>
 #include <StringView.h>
 
 
@@ -342,3 +345,36 @@ DrawingToolConfigView::MessageReceived(BMessage* message)
 		}	break;
 	}
 }
+
+
+BSeparatorView*
+DrawingToolConfigView::SeparatorView(const char* label) const
+{
+	BSeparatorView* view =
+		new BSeparatorView(label, B_HORIZONTAL, B_FANCY_BORDER,
+			BAlignment(B_ALIGN_LEFT, B_ALIGN_VERTICAL_CENTER));
+	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
+	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	return view;
+}
+
+
+BGridLayout*
+DrawingToolConfigView::LayoutSliderGrid(
+	ArtPaint::Interface::NumberSliderControl* slider) const
+{
+	BGridLayout* gridLayout = BGridLayoutBuilder(
+		kWidgetSpacing, kWidgetSpacing)
+			.Add(slider, 0, 0, 0, 0)
+			.Add(slider->LabelLayoutItem(), 0, 0)
+			.Add(slider->TextViewLayoutItem(), 1, 0)
+			.Add(slider->Slider(), 2, 0)
+			.SetInsets(kWidgetInset, 0.0, 0.0, 0.0);
+		gridLayout->SetMinColumnWidth(0, StringWidth("LABELSIZE"));
+		gridLayout->SetMaxColumnWidth(1, StringWidth("100"));
+		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+
+	return gridLayout;
+}
+

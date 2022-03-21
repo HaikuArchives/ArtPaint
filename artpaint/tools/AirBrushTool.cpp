@@ -375,30 +375,18 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		fAirBrush = new BRadioButton(StringServer::ReturnString(AIRBRUSH_STRING),
 			new BMessage(*message));
 
-		BSeparatorView* separator =
-			new BSeparatorView(StringServer::ReturnString(MODE_STRING),
-			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-			B_ALIGN_VERTICAL_CENTER));
-		separator->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		BGridLayout* sizeLayout = LayoutSliderGrid(fBrushSize);
+		BGridLayout* flowLayout = LayoutSliderGrid(fBrushFlow);
 
-		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
-			.Add(fBrushSize->LabelLayoutItem(), 0, 0)
-			.Add(fBrushSize->TextViewLayoutItem(), 1, 0)
-			.Add(fBrushSize->Slider(), 2, 0)
-			.Add(fBrushFlow->LabelLayoutItem(), 0, 1)
-			.Add(fBrushFlow->TextViewLayoutItem(), 1, 1)
-			.Add(fBrushFlow->Slider(), 2, 1)
-			.SetInsets(5.0, 0.0, 0.0, 0.0);
-		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
-
-		layout->AddItem(BGroupLayoutBuilder(B_VERTICAL)
-			.Add(gridLayout)
-			.Add(separator)
-			.Add(BGroupLayoutBuilder(B_VERTICAL, 0.0)
+		layout->AddItem(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(sizeLayout)
+			.Add(flowLayout)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 				.Add(fSpray)
 				.Add(fAirBrush)
-				.SetInsets(5.0, 0.0, 0.0, 0.0))
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0))
 		);
 
 		if (tool->GetCurrentValue(MODE_OPTION) == HS_SPRAY_MODE)

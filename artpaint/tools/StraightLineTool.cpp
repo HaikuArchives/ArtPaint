@@ -25,6 +25,7 @@
 
 
 #include <CheckBox.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <SeparatorView.h>
 #include <Window.h>
@@ -353,7 +354,8 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fLineSize = new NumberSliderControl(
-			StringServer::ReturnString(SIZE_STRING), "1", message, 1, 100, true);
+			StringServer::ReturnString(SIZE_STRING),
+			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
@@ -375,19 +377,16 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF)
 			fAdjustableWidth->SetValue(B_CONTROL_ON);
 
-		BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
-		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(fLineSize)
-			.Add(view)
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(lineSizeLayout)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fAdjustableWidth)
-			.End()
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
 				.Add(fAntiAliasing)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);

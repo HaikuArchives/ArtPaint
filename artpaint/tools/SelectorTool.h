@@ -70,9 +70,6 @@ public:
 	virtual	void					AttachedToWindow();
 
 private:
-			BSeparatorView*			_SeparatorView(const char* label) const;
-
-private:
 			BRadioButton*			fAddArea;
 			BRadioButton*			fSubstractArea;
 			BRadioButton*			fFreeLine;
