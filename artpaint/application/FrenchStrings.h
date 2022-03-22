@@ -155,7 +155,7 @@
 #define	FRENCH_OPEN_PROJECT_HELP_STRING		"Ouvre un projet du disque."
 #define	FRENCH_OPEN_PROJECT_STRING				"Ouvrir un projet…"
 #define	FRENCH_OPEN_STRING						"Ouvrir"
-#define	FRENCH_OPTIONS_STRING					"Choix"
+#define	FRENCH_OPTIONS_STRING					"Préférences"
 #define	FRENCH_PALETTE_WINDOW_NAME_STRING		"Couleurs"
 #define	FRENCH_PASTE_AS_NEW_LAYER_HELP_STRING	"Colle le calque précédemment copié en mémoire comme un nouveau calque."
 #define	FRENCH_PASTE_AS_NEW_LAYER_STRING		"Copier comme nouveau calque"
