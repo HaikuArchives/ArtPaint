@@ -35,13 +35,6 @@ Manipulator::Manipulator()
 			if (topology[i].type == B_TOPOLOGY_CORE)
 				fSystemClockSpeed += topology[i].data.core.default_frequency;
 		}
-	} else {
-		// fall back to cpu info; note that current_frequency
-		// is dynamic and could be less than the cpu speed
-		cpu_info cpuInfos[fCpuCount];
-		get_cpu_info(0, fCpuCount, cpuInfos);
-		for (int i = 0; i < fCpuCount; ++i)
-			fSystemClockSpeed += cpuInfos[i].current_frequency;
 	}
 }
 
