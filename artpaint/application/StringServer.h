@@ -14,6 +14,7 @@
 enum languages {
 	ENGLISH_LANGUAGE,
 	FINNISH_LANGUAGE,
+	DUTCH_LANGUAGE,
 	GERMAN_LANGUAGE,
 	FRENCH_LANGUAGE,
 	SPANISH_LANGUAGE
@@ -347,6 +348,7 @@ static	languages	current_language;
 
 static	const	char*	return_english_string(string_id);
 static	const	char*	return_finnish_string(string_id);
+static	const	char*	return_dutch_string(string_id);
 static	const	char*	return_german_string(string_id);
 static	const	char*	return_french_string(string_id);
 static	const	char*	return_spanish_string(string_id);
