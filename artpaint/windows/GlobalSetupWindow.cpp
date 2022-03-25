@@ -59,6 +59,7 @@ const uint32 kGermanLanguageSet					= '_ger';
 const uint32 kFinnishLanguageSet				= '_fin';
 const uint32 kFrenchLanguageSet					= '_fre';
 const uint32 kSpanishLanguageSet				= '_spa';
+const uint32 kDutchLanguageSet					= '_dut';
 
 const uint32 kToolCursorMode					= '_too';
 const uint32 kCrossHairCursorMode				= '_cro';
@@ -387,6 +388,7 @@ private:
 		int32			fOriginalLanguage;
 
 		BRadioButton*	fEnglish;
+		BRadioButton*	fDutch;
 		BRadioButton*	fFinnish;
 		BRadioButton*	fFrench;
 		BRadioButton*	fGerman;
@@ -403,6 +405,7 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 
 	fEnglish = new BRadioButton("English", new BMessage(kEnglishLanguageSet));
 	fEnglish->SetValue(B_CONTROL_ON);
+	fDutch = new BRadioButton("Nederlands", new BMessage(kDutchLanguageSet));
 	fFinnish = new BRadioButton("Suomi", new BMessage(kFinnishLanguageSet));
 	fFrench = new BRadioButton("Française", new BMessage(kFrenchLanguageSet));
 	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
@@ -414,6 +417,7 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
 		.Add(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 			.Add(fEnglish)
+			.Add(fDutch)
 			.Add(fGerman)
 			.Add(fSpanish)
 			.Add(fFrench)
@@ -428,6 +432,10 @@ GlobalSetupWindow::LanguageControlView::LanguageControlView()
 		server->GetApplicationSettings(&settings);
 		settings.FindInt32(skLanguage, &fLanguage);
 	}
+
+	if (fLanguage == DUTCH_LANGUAGE)
+		fDutch->SetValue(B_CONTROL_ON);
+
 
 	if (fLanguage == FINNISH_LANGUAGE)
 		fFinnish->SetValue(B_CONTROL_ON);
@@ -450,6 +458,7 @@ GlobalSetupWindow::LanguageControlView::AttachedToWindow()
 		SetViewColor(Parent()->ViewColor());
 
 	fEnglish->SetTarget(this);
+	fDutch->SetTarget(this);
 	fFinnish->SetTarget(this);
 	fFrench->SetTarget(this);
 	fGerman->SetTarget(this);
@@ -465,6 +474,11 @@ GlobalSetupWindow::LanguageControlView::MessageReceived(BMessage* message)
 		case kEnglishLanguageSet: {
 			_Update(ENGLISH_LANGUAGE);
 		}	break;
+
+		case kDutchLanguageSet: {
+			_Update(DUTCH_LANGUAGE);
+		}	break;
+
 
 		case kFinnishLanguageSet: {
 			_Update(FINNISH_LANGUAGE);
