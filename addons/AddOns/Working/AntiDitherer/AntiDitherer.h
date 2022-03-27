@@ -105,7 +105,7 @@ class AntiDithererManipulatorView : public WindowGUIManipulatorView {
 		AntiDithererManipulator			*manipulator;
 		AntiDithererManipulatorSettings	settings;
 
-		NumberControl					*block_size_control;
+		BSpinner						*block_size_control;
 		BCheckBox						*reduce_resolution_box;
 
 		bool							started_adjusting;
