@@ -1,13 +1,9 @@
 name: "haiku-ci"
-on:
-  push:
-    branches:
-      - '*'
-  pull_request: {}
+on: [push, pull_request]
 
 jobs:
-  test-haiku:
-    name: 'Test on Haiku'
+  build-haiku:
+    name: 'Build on Haiku'
     runs-on: 'ubuntu-latest'
     container: 'docker.io/hectormolinero/qemu-haiku:latest'
     steps:
@@ -19,5 +15,6 @@ jobs:
         uses: 'actions/checkout@main'
       - name: 'Copy project to VM'
         run: 'vmshell mkdir ./src/; tar -cf - ./ | vmshell tar -xf - -C ./src/'
-      - name: 'Test project'
-        run: vmshell 'cd src; ./build.sh'
+      - name: build
+        run: |
+          vmshell 'cd src; ./build.sh'
