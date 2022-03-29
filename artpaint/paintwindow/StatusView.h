@@ -32,9 +32,7 @@ public:
 	virtual						~StatusView();
 
 			void				SetMagnifyingScale(float mag);
-			void				SetHelpMessage(const char* s) {
-									fHelpView->SetText(s);
-								}
+			void				SetHelpMessage(const char* s);
 			void				SetCoordinates(BPoint point, BPoint reference,
 									bool use_reference);
 
