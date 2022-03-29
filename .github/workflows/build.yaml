@@ -20,4 +20,4 @@ jobs:
       - name: 'Copy project to VM'
         run: 'vmshell mkdir ./src/; tar -cf - ./ | vmshell tar -xf - -C ./src/'
       - name: 'Test project'
-        run: 'vmshell bash -c "cd src; ./build.sh"'
+        run: vmshell 'cd src; ./build.sh'
