@@ -16,6 +16,8 @@
 #include <View.h>
 
 
+class BCardLayout;
+class BGridLayout;
 class BStatusBar;
 class ColorContainer;
 class SelectedColorsView;
@@ -40,6 +42,7 @@ public:
 			status_t			DisplayToolsAndColors();
 			status_t			RemoveToolsAndColors();
 			status_t			DisplayNothing();
+			void				RemoveManipulator();
 
 private:
 			BStringView*		coordinate_view;
@@ -64,6 +67,9 @@ private:
 			// and the current color-set.
 			ColorContainer*		color_container;
 			SelectedColorsView*	selected_colors;
+
+			BCardLayout*		fCardLayout;
+			BGridLayout*		fStatusView;
 };
 
 

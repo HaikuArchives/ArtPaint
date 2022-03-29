@@ -9,12 +9,12 @@
 #ifndef	BACKGROUND_VIEW_H
 #define	BACKGROUND_VIEW_H
 
-#include <View.h>
+#include <ScrollView.h>
 
 // this view will be used to draw border around ImageView
 // when necessary
 // also used to help in resizing ImageView
-class BackgroundView : public BView {
+class BackgroundView : public BScrollView {
 
 // this will be used to create another thread for rotation or
 // resizing
