@@ -21,12 +21,20 @@
 #include "StringServer.h"
 
 
+#include <Button.h>
+#include <LayoutBuilder.h>
 #include <Region.h>
 #include <StatusBar.h>
 #include <Window.h>
 
 
 #include <stdio.h>
+
+
+#define TOOLS_VIEW			0
+#define PROGRESS_VIEW 		1
+#define MANIPULATOR_VIEW	2
+#define START_VIEW			3
 
 
 StatusView::StatusView()
@@ -38,58 +46,26 @@ StatusView::StatusView()
 	manipulator_view = NULL;
 
 	// First add the coordinate-view.
-	float width, height;
 	coordinate_view = new BStringView("coordinate_view","X: , Y:");
-	coordinate_view->GetPreferredSize(&width, &height);
-	width = coordinate_view->StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)");
 
-	coordinate_view->ResizeTo(width, height + 4.0);
-	coordinate_view->MoveTo(4.0, 2.0);
-	BRect rect(coordinate_view->Bounds());
-	rect.InsetBy(-4,-2);
-	rect.OffsetTo(1,1);
-	coordinate_box = new BBox(rect);
-	AddChild(coordinate_box);
-	coordinate_box->AddChild(coordinate_view);
+	coordinate_box = new BBox("coordinate box");
+	BGroupLayout* boxLayout = BLayoutBuilder::Group<>(coordinate_box, B_HORIZONTAL)
+		.Add(coordinate_view)
+		.SetInsets(3.0, 5.0, 3.0, 5.0);
 
-	rect = coordinate_box->Frame();
-	rect.OffsetBy(rect.Width() + 5.0, 0.0);
-	mag_state_view = new MagnificationView(rect);
-	AddChild(mag_state_view);
+	mag_state_view = new MagnificationView();
 
 	// Then we create the message view for displaying help messages.
 	// It will be under the other views and left from the color container.
-	fHelpView = new BStringView(BRect(coordinate_box->Frame().LeftBottom()
-		+ BPoint(0,2), coordinate_box->Frame().LeftBottom() + BPoint(0,2)),
-		"message view", "");
-	fHelpView->ResizeTo(Bounds().Width() - 4.0, height);
-	AddChild(fHelpView);
-	fHelpView->SetResizingMode(B_FOLLOW_LEFT_RIGHT|B_FOLLOW_TOP);
+	fHelpView = new BStringView("message view", "");
 
-	// Here we resize and reposition the view
-	MoveBy(0,-(fHelpView->Frame().bottom+2));
-	ResizeBy(0,fHelpView->Frame().bottom+2);
-
-	// The color-container will be created last, because it needs to have
-	// the correct height in constructor.
-	rect.left = Bounds().right-52;
-	rect.top = 1;
-	rect.right = Bounds().right - 2;
-	rect.bottom = Bounds().bottom - 1;
-
+	BRect rect = BRect(0, 0, 50, 50);
 	int32 color_count = ColorSet::currentSet()->sizeOfSet();
-	color_container = new ColorContainer(rect, color_count, B_FOLLOW_TOP
-		| B_FOLLOW_RIGHT, true, true);
-	AddChild(color_container);
+	color_container = new ColorContainer(rect, color_count, 0, true, true);
 
-	rect = BRect(color_container->Frame().LeftTop()
-		- BPoint(color_container->Frame().Height() + 2, 0),
-		color_container->Frame().LeftBottom() - BPoint(2, 0));
 	selected_colors = new SelectedColorsView(rect);
-	AddChild(selected_colors);
-	selected_colors->SetResizingMode(B_FOLLOW_TOP | B_FOLLOW_RIGHT);
-	fHelpView->ResizeTo(selected_colors->Frame().left
-		- fHelpView->Frame().left - 2, fHelpView->Bounds().Height());
+	selected_colors->SetExplicitMinSize(BSize(52, 52));
+	selected_colors->SetExplicitMaxSize(BSize(52, 52));
 
 	// Here create the OK- and Cancel-buttons.
 	BMessage *ok_message = new BMessage(HS_MANIPULATOR_FINISHED);
@@ -106,22 +82,62 @@ StatusView::StatusView()
 		server->GetPicture(OK_BUTTON_PUSHED, &off_picture);
 
 		// Create the OK-button
-		fOk = new HSPictureButton(BRect(1, 0, 16, 15), &off_picture,
+		fOk = new HSPictureButton(BRect(0, 0, 15, 15), &off_picture,
 			&on_picture, ok_message, NULL, "Push here to confirm changes.");
-		fOk->ResizeToPreferred();
-		fOk->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
 
 		// Create the cancel-button.
 		server->GetPicture(CANCEL_BUTTON, &on_picture);
 		server->GetPicture(CANCEL_BUTTON_PUSHED, &off_picture);
 
-		fCancel = new HSPictureButton(BRect(20, 0, 35, 16), &off_picture,
+		fCancel = new HSPictureButton(BRect(0, 0, 15, 15), &off_picture,
 			&on_picture, cancel_message, NULL, "Push here to cancel changes.");
-		fCancel->ResizeToPreferred();
-		fCancel->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
+
 	}
 
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	status_bar = new BStatusBar("progress indicator");
+
+	manipulator_view = new BGroupLayout(B_VERTICAL);
+
+	fStartCard = BLayoutBuilder::Group<>(B_VERTICAL, 5.0);
+
+	BGridLayout* toolsAndColorsCard = BLayoutBuilder::Grid<>(5.0, 5.0)
+		.AddGlue(0, 0)
+		.Add(selected_colors, 1, 0, 1, 2)
+		.Add(color_container, 2, 0, 1, 2)
+		.SetInsets(0.0, 5.0, 0.0, 0.0);
+	toolsAndColorsCard->SetMaxColumnWidth(2, 52);
+
+	BGroupLayout* progressBarCard = BLayoutBuilder::Group<>(B_VERTICAL, 5.0)
+		.Add(status_bar)
+		.SetInsets(2.0, 0.0, 5.0, 0.0);
+
+	BGroupLayout* manipulatorCard = BLayoutBuilder::Group<>(B_HORIZONTAL, 0.0)
+		.AddGlue()
+		.AddGroup(B_VERTICAL, 5.0)
+			.Add(manipulator_view)
+			.AddGroup(B_HORIZONTAL, 5.0)
+				.Add(fOk)
+				.Add(fCancel)
+				.End()
+			.End()
+		.SetInsets(0.0, 2.0, 0.0, 0.0);
+
+	fCardLayout = BLayoutBuilder::Cards<>()
+		.Add(toolsAndColorsCard)
+		.Add(progressBarCard)
+		.Add(manipulatorCard)
+		.Add(fStartCard);
+
+	fStatusView = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
+		.Add(coordinate_box, 0, 0)
+		.Add(mag_state_view, 0, 1)
+		.Add(fHelpView, 0, 2, 3)
+		.Add(fCardLayout, 1, 0, 3, 2);
+	fStatusView->SetMinColumnWidth(0, StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)"));
+
+	fCardLayout->SetVisibleItem(START_VIEW);
 }
 
 
@@ -151,66 +167,31 @@ StatusView::~StatusView()
 
 
 status_t
+StatusView::DisplayStartCard(BBox *card)
+{
+	if (Window()->Lock()) {
+		fStartCard->AddView(card);
+		fCardLayout->SetVisibleItem(START_VIEW);
+		Window()->Unlock();
+	}
+
+	return B_OK;
+}
+
+
+status_t
 StatusView::DisplayManipulatorView(BView *manip_view)
 {
-	// Remove the status-bar if it is still here
-	if (status_bar) {
-		status_bar->RemoveSelf();
-		delete status_bar;
-		status_bar = NULL;
+	if (Window()->Lock()) {
+		manipulator_view->AddView(manip_view);
+
+		// Set the proper target for the button.
+		fOk->SetTarget(Window()->FindView("image_view"),Window());
+		fCancel->SetTarget(Window()->FindView("image_view"),Window());
+
+		fCardLayout->SetVisibleItem(MANIPULATOR_VIEW);
+		Window()->Unlock();
 	}
-
-	// Remove also the tool-view and colors-view and palette view
-	color_container->RemoveSelf();
-	selected_colors->RemoveSelf();
-
-	if (manipulator_view)
-		manipulator_view->RemoveSelf();
-
-	manipulator_view = manip_view;
-	if (manipulator_view)
-		manipulator_view->SetResizingMode(B_FOLLOW_TOP | B_FOLLOW_RIGHT);
-
-	fOk->MoveTo(Bounds().right - fOk->Frame().Width() - 2, 1);
-	fCancel->MoveTo(fOk->Frame().left
-		- fCancel->Frame().Width() - 2, 1);
-	if (manipulator_view) {
-		manipulator_view->MoveTo(fCancel->Frame().left
-			- manipulator_view->Frame().Width() - 5, 1);
-	}
-
-	// Center the buttons vertically
-	fCancel->MoveTo(fCancel->Frame().left,
-		(Bounds().Height() - fCancel->Frame().Height()) / 2);
-	fOk->MoveTo(fOk->Frame().left,
-		(Bounds().Height() - fOk->Frame().Height()) / 2);
-
-	if (manipulator_view) {
-		manipulator_view->MoveTo(manipulator_view->Frame().left,
-			(Bounds().Height() - manipulator_view->Frame().Height()) / 2);
-	}
-
-	AddChild(fCancel);
-	AddChild(fOk);
-	if (manipulator_view != NULL) {
-		// Make a nice box for the manipulator's view
-		BRect frame = manipulator_view->Frame();
-		frame.InsetBy(-3,-3);
-		manipulator_box = new BBox(frame);
-		manipulator_view->MoveTo(3,3);
-		AddChild(manipulator_box);
-		manipulator_box->AddChild(manipulator_view);
-		manipulator_box->SetResizingMode(B_FOLLOW_TOP|B_FOLLOW_RIGHT);
-	}
-	// Set the proper target for the button.
-	fOk->SetTarget(Window()->FindView("image_view"),Window());
-	fCancel->SetTarget(Window()->FindView("image_view"),Window());
-
-	// Resize the help-view
-	BView* view = manipulator_view;
-	if (!view)
-		view = fCancel;
-	fHelpView->ResizeBy((view->Frame().left - 2) - fHelpView->Frame().right,0);
 
 	return B_OK;
 }
@@ -219,38 +200,10 @@ StatusView::DisplayManipulatorView(BView *manip_view)
 BStatusBar*
 StatusView::DisplayProgressIndicator()
 {
-	LockLooper();
-	color_container->RemoveSelf();
-	selected_colors->RemoveSelf();
-	mag_state_view->RemoveSelf();
-	coordinate_box->RemoveSelf();
-	fOk->RemoveSelf();
-	fCancel->RemoveSelf();
-	fHelpView->RemoveSelf();
-
-	if (manipulator_view != NULL) {
-		manipulator_view->RemoveSelf();
-		// This will be deleted elsewhere. (in manipulators destructor)
-		manipulator_view = NULL;
-		if (manipulator_box != NULL) {
-			manipulator_box->RemoveSelf();
-			delete manipulator_box;
-			manipulator_box = NULL;
-		}
+	if (Window()->Lock()) {
+		fCardLayout->SetVisibleItem(PROGRESS_VIEW);
+		Window()->Unlock();
 	}
-
-	if (status_bar == NULL) {
-		BRect frame;
-		frame.left = 1;
-		frame.top = 1;
-		frame.right = frame.left + 150;
-		frame.bottom = Bounds().bottom-1;
-		status_bar = new BStatusBar(frame,"progress indicator");
-	}
-	if (status_bar->Parent() == NULL)
-		AddChild(status_bar);
-
-	Window()->Unlock();
 
 	return status_bar;
 }
@@ -262,60 +215,8 @@ StatusView::DisplayToolsAndColors()
 	if (BView* view = Window()->FindView("image_view"))
 		mag_state_view->SetTarget(view);
 
-	if (status_bar) {
-		status_bar->RemoveSelf();
-		delete status_bar;
-		status_bar = NULL;
-	}
+	fCardLayout->SetVisibleItem(TOOLS_VIEW);
 
-	fOk->RemoveSelf();
-	fCancel->RemoveSelf();
-
-	if (manipulator_view) {
-		manipulator_view->RemoveSelf();
-		// This will be deleted elsewhere. (in manipulators destructor)
-		manipulator_view = NULL;
-		if (manipulator_box != NULL) {
-			manipulator_box->RemoveSelf();
-			delete manipulator_box;
-			manipulator_box = NULL;
-		}
-	}
-
-	if (mag_state_view->Parent() == NULL)
-		AddChild(mag_state_view);
-
-	if (coordinate_box->Parent() == NULL)
-		AddChild(coordinate_box);
-
-	if (selected_colors->Parent() == NULL)
-		AddChild(selected_colors);
-
-	// The message-view should be resized and color-container repositioned.
-	if (fHelpView->Parent() == NULL)
-		AddChild(fHelpView);
-
-	if (color_container->Parent() == NULL)
-		AddChild(color_container);
-
-	color_container->MoveTo(Bounds().right-color_container->Frame().Width()-2,1);
-	selected_colors->MoveTo(color_container->Frame().left
-		- selected_colors->Frame().Width() - 2, selected_colors->Frame().top);
-	fHelpView->ResizeTo(selected_colors->Frame().left
-		- fHelpView->Frame().left - 2, fHelpView->Bounds().Height());
-
-	return B_OK;
-}
-
-
-status_t
-StatusView::RemoveToolsAndColors()
-{
-	if (Window()->Lock()) {
-		color_container->RemoveSelf();
-		selected_colors->RemoveSelf();
-		Window()->Unlock();
-	}
 	return B_OK;
 }
 
@@ -323,16 +224,9 @@ StatusView::RemoveToolsAndColors()
 status_t
 StatusView::DisplayNothing()
 {
-	// TODO: Why locked and unlocked?
-	if (LockLooper()) {
-		while (BView *view = ChildAt(0))
-			RemoveChild(view);
-		AddChild(fHelpView);
-		UnlockLooper();
-	} else {
-		while (BView *view = ChildAt(0))
-			RemoveChild(view);
-		AddChild(fHelpView);
+	if (Window()->Lock()) {
+		fCardLayout->SetVisibleItem(START_VIEW);
+		Window()->Unlock();
 	}
 	return B_OK;
 }
@@ -361,6 +255,17 @@ StatusView::SetMagnifyingScale(float mag)
 	mag_state_view->SetMagnificationLevel(mag);
 }
 
+
+void
+StatusView::RemoveManipulator()
+{
+	if (Window()->Lock()) {
+		while(manipulator_view->CountItems()) {
+			manipulator_view->RemoveItem(0);
+		}
+		Window()->Unlock();
+	}
+}
 
 // #pragma mark -- SelectedColorsView
 

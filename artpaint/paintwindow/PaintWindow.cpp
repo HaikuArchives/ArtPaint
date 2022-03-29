@@ -109,8 +109,6 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 	, fImageSavePanel(NULL)
 	, fProjectSavePanel(NULL)
 	, fCurrentHandler(0)
-	, fAdditionalWidth(0.0)
-	, fAdditionalHeight(0.0)
 {
 	sgPaintWindowCount++;
 	SetSizeLimits(500, 10000, 400, 10000);
@@ -125,39 +123,25 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 	if (views == 0)
 		fSettings.FindUInt32(skViews, &views);
 
-	if ((views & HS_MENU_BAR) != 0) {
+	if ((views & HS_MENU_BAR) != 0)
 		openMenuBar();	// the menubar should be opened
-		fAdditionalHeight += fMenubar->Bounds().Height() + 1.0;
-	}
-
-	fHorizontalScrollbar = new BScrollBar("horizontal", NULL, 0, 0, B_HORIZONTAL);
-	fHorizontalScrollbar->SetRange(0.0, 0.0);
-	fHorizontalScrollbar->SetSteps(8.0, 32.0);
-
-	fVerticalScrollbar = new BScrollBar("vertical", NULL, 0, 0, B_VERTICAL);
-	fVerticalScrollbar->SetRange(0.0, 0.0);
-	fVerticalScrollbar->SetSteps(8.0, 32.0);
-
-	fAdditionalWidth += B_V_SCROLL_BAR_WIDTH - 1.0;
-	fAdditionalHeight += B_H_SCROLL_BAR_HEIGHT - 1.0;
 
 	// The status-view is not optional. It contains sometimes also buttons that
 	// can cause some actions to be taken.
 	if ((views & HS_STATUS_VIEW) != 0) {
 		// Create the status-view and make it display nothing
-		// Note: this sucks, since the status view resizes himself...
 		fStatusView = new StatusView();
 		fStatusView->DisplayNothing();
-
-		// update the fAdditionalHeight variable
-		fAdditionalHeight += fStatusView->Bounds().Height() + 1.0;
 	}
 
 	// make the background view (the backround for image)
 	fBackground = new BackgroundView(BRect(0, 0, 0, 0));
 
+	fVerticalScrollbar = fBackground->ScrollBar(B_VERTICAL);
+	fHorizontalScrollbar = fBackground->ScrollBar(B_HORIZONTAL);
+
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
-		// we need to show the creata canvas area
+		// we need to show the create canvas area
 		const char* widthLabel = _StringForId(WIDTH_STRING);
 		const char* heightLabel = _StringForId(HEIGHT_STRING);
 
@@ -165,30 +149,20 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		const char* tmpLabel = widthLabel;
 		if (font.StringWidth(heightLabel) > font.StringWidth(widthLabel))
 			tmpLabel = heightLabel;
-		float divider = font.StringWidth(tmpLabel) + 5.0;
 
-		BRect rect(10.0, 10.0, 110.0, 10.0);
 		fWidthNumberControl = new NumberControl(tmpLabel, "", NULL);
-		fWidthNumberControl->MoveTo(rect.LeftTop());
-		fWidthNumberControl->ResizeToPreferred();
-		fWidthNumberControl->SetDivider(divider);
 		fWidthNumberControl->SetLabel(widthLabel);
 		fWidthNumberControl->TextView()->SetMaxBytes(4);
 
-		rect.OffsetBy(0.0, fWidthNumberControl->Bounds().Height() + 5.0);
 		fHeightNumberControl = new NumberControl(tmpLabel, "", NULL);
-		fHeightNumberControl->MoveTo(rect.LeftTop());
-		fHeightNumberControl->ResizeToPreferred();
-		fHeightNumberControl->SetDivider(divider);
 		fHeightNumberControl->SetLabel(heightLabel);
 		fHeightNumberControl->TextView()->SetMaxBytes(4);
 
-		rect.OffsetBy(0.0, fWidthNumberControl->Bounds().Height() + 10.0);
-		fSetSizeButton = new BButton(rect, "set_size_button",
+		fSetSizeButton = new BButton("set_size_button",
 			_StringForId(CREATE_CANVAS_STRING), new BMessage(HS_IMAGE_SIZE_SET));
+
 		fSetSizeButton->SetTarget(this);
 		fSetSizeButton->MakeDefault(true);
-		fSetSizeButton->ResizeToPreferred();
 
 		SettingsServer* settings = SettingsServer::Instance();
 		const ImageSizeList& list = settings->RecentImageSizes();
@@ -265,43 +239,41 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		popUpList->ReturnMenu()->AddItem(standardSize, 0);
 		popUpList->ReturnMenu()->AddItem(new BSeparatorItem(), 1);
 
-		float width = max_c(fSetSizeButton->Frame().right,
-			popUpList->Frame().right) + 10.0;
-		float height = fSetSizeButton->Frame().bottom + 10.0;
-
-		rect = fBackground->Bounds();
-		fContainerBox = new BBox(BRect(rect.right - width, rect.bottom - height,
-			rect.right, rect.bottom - 1.0), "container_for_controls",
-			B_FOLLOW_RIGHT | B_FOLLOW_BOTTOM);
-		fBackground->AddChild(fContainerBox);
+		fContainerBox = new BBox("container_for_controls");
 		fContainerBox->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-		fContainerBox->AddChild(fWidthNumberControl);
-		fContainerBox->AddChild(fHeightNumberControl);
-		fContainerBox->AddChild(fSetSizeButton);
-		fContainerBox->AddChild(popUpList);
-
-		rect = fContainerBox->Bounds();
-		BRect frame = fSetSizeButton->Frame();
-		fSetSizeButton->MoveTo((rect.right - frame.Width()) / 2.0, frame.top);
+		BGridLayout* containerLayout = BLayoutBuilder::Grid<>(
+			fContainerBox, 5.0, 0.0)
+			.Add(fWidthNumberControl, 0, 0)
+			.Add(fHeightNumberControl, 0, 1)
+			.Add(fSetSizeButton, 1, 0)
+			.Add(popUpList, 1, 1)
+			.SetInsets(10.0, 2.0, 5.0, 2.0);
 
 		BMessage msg(HS_TOOL_HELP_MESSAGE);
 		msg.AddString("message", _StringForId(SELECT_CANVAS_SIZE_STRING));
 		PostMessage(&msg, this);
 	}
 
-	BGroupLayout *inner = BLayoutBuilder::Group<>(B_VERTICAL, 0);
-	inner->AddView(fBackground);
-	if (fStatusView) inner->AddView(fStatusView, 0);
+	BGroupLayout *inner = BLayoutBuilder::Group<>(B_VERTICAL, 0)
+		.AddGroup(B_HORIZONTAL)
+			.Add(fBackground)
+			.End();
+
+	if (fStatusView) {
+		inner->AddView(fStatusView, 0);
+	}
 
 	BGroupLayout* outer = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-	//	.Add(fMenubar)
 		.AddGroup(B_HORIZONTAL, 0)
 			.Add(inner)
-			.Add(fVerticalScrollbar)
-			.End()
-		.Add(fHorizontalScrollbar);
-	if (fMenubar) outer->AddView(0, fMenubar);
+			.End();
+
+	if (fMenubar)
+		outer->AddView(0, fMenubar);
+
+	if (fStatusView)
+		fStatusView->DisplayStartCard(fContainerBox);
 
 	// finally inform the app that new window has been created
 	BMessage message(HS_PAINT_WINDOW_OPENED);
@@ -566,13 +538,7 @@ PaintWindow::MessageReceived(BMessage *message)
 				server->AddRecentImageSize(BSize(width, height));
 
 				// Remove the sizing buttons.
-				fContainerBox->RemoveSelf();
-				delete fContainerBox;
-
-				// NULL this because it will be used later to check if we
-				// are still resizing
-				fContainerBox = NULL;
-				fSetSizeButton = NULL;
+				//fStatusView->ClearStartCard();
 
 				// Add the view to view hierarchy.
 				AddImageView();
@@ -910,6 +876,7 @@ PaintWindow::Zoom(BPoint leftTop, float width, float height)
 		if (Image* image = fImageView->ReturnImage()) {
 			if (Frame() == _PreferredSize(image)) {
 				MoveTo(fUserFrame.LeftTop());
+				printf("here: %f x %f\n", fUserFrame.Width(), fUserFrame.Height());
 				ResizeTo(fUserFrame.Width(), fUserFrame.Height());
 			} else {
 				_ResizeToImage();
@@ -1342,8 +1309,9 @@ PaintWindow::AddImageView()
 	Lock();
 
 	// put the view as target for scrollbars
-	fHorizontalScrollbar->SetTarget(fImageView);
-	fVerticalScrollbar->SetTarget(fImageView);
+	fBackground->SetTarget(fImageView);
+	//fHorizontalScrollbar->SetTarget(fImageView);
+	//fVerticalScrollbar->SetTarget(fImageView);
 	// Change the regular help-view's message.
 //	BMessage *help_message = new BMessage(HS_REGULAR_HELP_MESSAGE);
 //	help_message->AddString("message",HS_DRAW_MODE_HELP_MESSAGE);
@@ -1354,7 +1322,7 @@ PaintWindow::AddImageView()
 	_ChangeMenuMode(FULL_MENU);
 
 	// Add the view to window's view hierarchy.
-	fBackground->AddChild(fImageView);
+	//fBackground->AddChild(fImageView);
 
 	// Adjust image's position and size.
 	fImageView->adjustSize();
@@ -1433,6 +1401,7 @@ PaintWindow::AddImageView()
 	}
 	fStatusView->DisplayToolsAndColors();
 	// Finally unlock the window.
+	_ResizeToImage();
 	Unlock();
 
 	// We can update ourselves to the layer-window.
@@ -1492,7 +1461,7 @@ PaintWindow::_PreferredSize(Image* image) const
 
 	BRect rect = Frame();
 	const float scale = fImageView->getMagScale();
-	const float width = (scale * image->Width()) + fAdditionalWidth;
+	const float width = (scale * image->Width());
 	if (screenFrame.Width() < width) {
 		rect.left = borderSize;
 		rect.right = rect.left + screenFrame.Width();
@@ -1500,7 +1469,7 @@ PaintWindow::_PreferredSize(Image* image) const
 		rect.right = rect.left + width;
 	}
 
-	const float height = (scale * image->Height()) + fAdditionalHeight;
+	const float height = (scale * image->Height());
 	if (screenFrame.Height() < height) {
 		rect.top = tabHeight + borderSize;
 		rect.bottom = rect.top + screenFrame.Height();

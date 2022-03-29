@@ -189,8 +189,6 @@ private:
 			// all the additional views take, used when resizing the window
 			// to fit image
 			BRect				fUserFrame;
-			float				fAdditionalWidth;
-			float				fAdditionalHeight;
 };
 
 

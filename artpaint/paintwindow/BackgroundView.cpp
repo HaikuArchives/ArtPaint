@@ -13,8 +13,11 @@
 #include "PaintWindow.h"
 #include "Patterns.h"
 
+#include <stdio.h>
+
 BackgroundView::BackgroundView(BRect frame)
-			: BView (frame,"background",B_FOLLOW_ALL_SIDES,B_WILL_DRAW|B_FRAME_EVENTS)
+			: BScrollView ("background", NULL, B_WILL_DRAW | B_FRAME_EVENTS |
+			B_INVALIDATE_AFTER_LAYOUT | B_FULL_UPDATE_ON_RESIZE, true, true)
 {
 	// some user control for appearance of background should be allowed
 	// this is the place to set it

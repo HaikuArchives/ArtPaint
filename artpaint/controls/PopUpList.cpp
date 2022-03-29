@@ -16,7 +16,7 @@
 
 PopUpList::PopUpList(BRect frame, BBitmap *down, BBitmap *up,
 		const BMessage& list, int32 messageCount, const BMessenger& target)
-	: BView(frame,"pop-up list",B_FOLLOW_LEFT|B_FOLLOW_TOP,B_WILL_DRAW)
+	: BView("pop-up list",B_WILL_DRAW)
 	, pushed(down)
 	, not_pushed(up)
 	, current_bitmap(up)
@@ -35,7 +35,7 @@ PopUpList::PopUpList(BRect frame, BBitmap *down, BBitmap *up,
 
 
 PopUpList::PopUpList(BRect frame,BBitmap *down,BBitmap *up,BPopUpMenu *menu,BMessenger *targ)
-	:	BView(frame,"pop-up list",B_FOLLOW_LEFT|B_FOLLOW_TOP,B_WILL_DRAW)
+	:	BView("pop-up list",B_WILL_DRAW)
 {
 	pushed = down;
 	current_bitmap = not_pushed = up;

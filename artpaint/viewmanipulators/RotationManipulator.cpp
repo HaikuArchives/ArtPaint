@@ -6,17 +6,6 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <ClassInfo.h>
-#include <ctype.h>
-#include <math.h>
-#include <new>
-#include <StatusBar.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <TextControl.h>
-#include <Window.h>
-
 
 #include "HSPolygon.h"
 #include "ImageView.h"
@@ -27,7 +16,23 @@
 #include "StringServer.h"
 
 
+#include <ClassInfo.h>
+#include <LayoutBuilder.h>
+#include <StatusBar.h>
+#include <TextControl.h>
+#include <Window.h>
+
+
+#include <ctype.h>
+#include <math.h>
+#include <new>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 #define PI M_PI
+
 
 RotationManipulator::RotationManipulator(BBitmap *bitmap)
 	:	StatusBarGUIManipulator()
@@ -612,19 +617,27 @@ RotationManipulator::ReturnName()
 
 RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 		BRect rect, RotationManipulator* manipulator, const BMessenger& target)
-	: BView(rect, "configuration_view", B_FOLLOW_ALL, B_WILL_DRAW)
+	: BView("configuration_view", B_WILL_DRAW)
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
 	char label[256];
 	sprintf(label,"%s:", StringServer::ReturnString(ROTATING_STRING));
-	fTextControl = new BTextControl(rect, "", label, "9999.9˚",
-		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
-	AddChild(fTextControl);
-	fTextControl->ResizeToPreferred();
 
-	ResizeTo(min_c(fTextControl->Frame().Width(), rect.Width()),
-		min_c(fTextControl->Frame().Height(), rect.Height()));
+	fTextControl = new BTextControl("rotation", label, "9999.9˚",
+		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
+	BRect bounds = fTextControl->TextView()->Bounds();
+	fTextControl->TextView()->SetExplicitMaxSize(BSize(StringWidth("-999.99'"), bounds.Height()));
+
+	//AddChild(fTextControl);
+	SetLayout(BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(fTextControl)
+	);
+
+	//fTextControl->ResizeToPreferred();
+
+	//ResizeTo(min_c(fTextControl->Frame().Width(), rect.Width()),
+	//	min_c(fTextControl->Frame().Height(), rect.Height()));
 }
 
 

@@ -658,11 +658,6 @@ void ImageView::MessageReceived(BMessage *message)
 							manipulator_window = new ManipulatorWindow(frame,
 								window_gui_manipulator->MakeConfigurationView(this),
 									window_name, Window(), this);
-							// This is commented out because there doesn't seem to be any problem
-							// with leaving the tools and colors when a manipulator has its own
-							// window. In fact, using the Insert Text menu command, you need to
-							// remove this line in order to change the text color.
-							//status_view->RemoveToolsAndColors();
 						}
 
 						cursor_mode = MANIPULATOR_CURSOR_MODE;
@@ -1079,7 +1074,15 @@ void ImageView::adjustSize()
 	if (LockLooper() == TRUE) {
 		// resize the view to proper size
 		BRect bg_bounds = Parent()->Bounds();
-		ResizeTo(min_c(bg_bounds.Width(),getMagScale()*the_image->Width() - 1),min_c(bg_bounds.Height(),getMagScale()*the_image->Height() - 1));
+		BRect vertBounds = ScrollBar(B_VERTICAL)->Bounds();
+		BRect horzBounds = ScrollBar(B_HORIZONTAL)->Bounds();
+		ResizeTo(
+			min_c(
+				bg_bounds.Width() - vertBounds.Width() - 2,
+				getMagScale() * the_image->Width() - 1),
+			min_c(
+				bg_bounds.Height() - horzBounds.Height() - 2,
+				getMagScale() * the_image->Height() - 1));
 		UnlockLooper();
 	}
 }
@@ -1212,8 +1215,8 @@ int32 ImageView::PaintToolThread()
 
 	if (tool_type != TEXT_TOOL) {
 		if (tool_type != NO_TOOL) {
-			// When this function returns the tool has finished. This function 
-			// might not return even if the user releases the mouse-button (in 
+			// When this function returns the tool has finished. This function
+			// might not return even if the user releases the mouse-button (in
 			// which case for example a double-click might make it return).
 			ToolScript* script = ToolManager::Instance().StartTool(this, buttons, point,
 				view_point, tool_type);
@@ -1650,7 +1653,9 @@ int32 ImageView::ManipulatorFinisherThread()
 
 	// Finally return the window to normal state and redisplay it.
 	if (LockLooper() == true) {
+		((PaintWindow*)Window())->ReturnStatusView()->RemoveManipulator();
 		((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
+
 		Invalidate();
 		UnlockLooper();
 	}

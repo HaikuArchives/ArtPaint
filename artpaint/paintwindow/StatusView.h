@@ -16,6 +16,9 @@
 #include <View.h>
 
 
+class BCardLayout;
+class BGridLayout;
+class BGroupLayout;
 class BStatusBar;
 class ColorContainer;
 class SelectedColorsView;
@@ -38,8 +41,9 @@ public:
 			status_t			DisplayManipulatorView(BView* view);
 			BStatusBar*			DisplayProgressIndicator();
 			status_t			DisplayToolsAndColors();
-			status_t			RemoveToolsAndColors();
 			status_t			DisplayNothing();
+			void				RemoveManipulator();
+			status_t			DisplayStartCard(BBox* card);
 
 private:
 			BStringView*		coordinate_view;
@@ -50,7 +54,7 @@ private:
 			BStatusBar*			status_bar;
 
 			// This is the view that has been created by the manipulator
-			BView*				manipulator_view;
+			BGroupLayout*		manipulator_view;
 
 			// These are the boxes that hold the string-views.
 			BBox*				coordinate_box;
@@ -64,6 +68,10 @@ private:
 			// and the current color-set.
 			ColorContainer*		color_container;
 			SelectedColorsView*	selected_colors;
+
+			BCardLayout*		fCardLayout;
+			BGridLayout*		fStatusView;
+			BGroupLayout*		fStartCard;
 };
 
 
