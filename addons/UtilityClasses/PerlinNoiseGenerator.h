@@ -49,13 +49,13 @@ inline	float	PerlinNoise3D(float x,float y,float z,float=1);
 };
 
 
-float PerlinNoiseGenerator::PerlinNoise2D(register float x,register float y,register float frequency)
+float PerlinNoiseGenerator::PerlinNoise2D(float x,float y,float frequency)
 {
 	float total = 0;
 	float p = persistence;
 	int32 n = number_of_frequencies-1;
 
-	register float amplitude = 1.0 / p;
+	float amplitude = 1.0 / p;
 	for (int32 i=0;i<=n;++i) {
 		frequency *= frequency_relation;
 		amplitude *= p;
@@ -68,13 +68,13 @@ float PerlinNoiseGenerator::PerlinNoise2D(register float x,register float y,regi
 	return total;
 }
 
-float PerlinNoiseGenerator::PerlinNoise3D(register float x,register float y,register float z,register float frequency)
+float PerlinNoiseGenerator::PerlinNoise3D(float x,float y,float z,float frequency)
 {
 	float total = 0;
 	float p = persistence;
 	int32 n = number_of_frequencies-1;
 
-	register float amplitude = 1.0 / p;
+	float amplitude = 1.0 / p;
 	for (int32 i=0;i<=n;++i) {
 		frequency *= 2.0;
 		amplitude *= p;
@@ -98,30 +98,30 @@ float PerlinNoiseGenerator::CosineInterpolation(float a, float b, float x)
 
 inline float PerlinNoiseGenerator::Noise(int32 x, int32 y)
 {
-	register int32 n = x + y*57;
+	int32 n = x + y*57;
 	n = n<<13 ^ n;
 	return(1.0-((n*(n*n*15731+789221)+1376312589)&0x7fffffff)/1073741824.0);
 }
 
 inline float PerlinNoiseGenerator::InterpolatedNoise2D(float x, float y)
 {
-	register int32 integer_x = (int32)x;
-	register int32 integer_y = (int32)y;
+	int32 integer_x = (int32)x;
+	int32 integer_y = (int32)y;
 
-	register float fractional_x = x - integer_x;
-	register float fractional_y = y - integer_y;
+	float fractional_x = x - integer_x;
+	float fractional_y = y - integer_y;
 
-//	register float v1 = Noise(integer_x,integer_y);
-//	register float v2 = Noise(integer_x+1,integer_y);
-//	register float v3 = Noise(integer_x,integer_y+1);
-//	register float v4 = Noise(integer_x+1,integer_y+1);
-	register float v1 = random_table[(integer_x + 57*integer_y)%1024];
-	register float v2 = random_table[(integer_x+1 + 57*integer_y)%1024];
-	register float v3 = random_table[(integer_x + 57*(integer_y+1))%1024];
-	register float v4 = random_table[(integer_x+1 + 57*(integer_y+1))%1024];
+//	float v1 = Noise(integer_x,integer_y);
+//	float v2 = Noise(integer_x+1,integer_y);
+//	float v3 = Noise(integer_x,integer_y+1);
+//	float v4 = Noise(integer_x+1,integer_y+1);
+	float v1 = random_table[(integer_x + 57*integer_y)%1024];
+	float v2 = random_table[(integer_x+1 + 57*integer_y)%1024];
+	float v3 = random_table[(integer_x + 57*(integer_y+1))%1024];
+	float v4 = random_table[(integer_x+1 + 57*(integer_y+1))%1024];
 
-	register float i1 = LinearInterpolation(v1,v2,fractional_x);
-	register float i2 = LinearInterpolation(v3,v4,fractional_x);
+	float i1 = LinearInterpolation(v1,v2,fractional_x);
+	float i2 = LinearInterpolation(v3,v4,fractional_x);
 
 	return LinearInterpolation(i1,i2,fractional_y);
 }
@@ -129,31 +129,31 @@ inline float PerlinNoiseGenerator::InterpolatedNoise2D(float x, float y)
 
 inline float PerlinNoiseGenerator::InterpolatedNoise3D(float x, float y, float z)
 {
-	register int32 integer_x = (int32)x;
-	register int32 integer_y = (int32)y;
-	register int32 integer_z = (int32)z;
+	int32 integer_x = (int32)x;
+	int32 integer_y = (int32)y;
+	int32 integer_z = (int32)z;
 
-	register float fractional_x = x - integer_x;
-	register float fractional_y = y - integer_y;
-	register float fractional_z = z - integer_z;
+	float fractional_x = x - integer_x;
+	float fractional_y = y - integer_y;
+	float fractional_z = z - integer_z;
 
-	register float v1 = random_table[(integer_x + 57*integer_y + integer_z*61)%1024];
-	register float v2 = random_table[(integer_x+1 + 57*integer_y + integer_z*61)%1024];
-	register float v3 = random_table[(integer_x + 57*(integer_y+1) + integer_z*61)%1024];
-	register float v4 = random_table[(integer_x+1 + 57*(integer_y+1) + integer_z*61)%1024];
+	float v1 = random_table[(integer_x + 57*integer_y + integer_z*61)%1024];
+	float v2 = random_table[(integer_x+1 + 57*integer_y + integer_z*61)%1024];
+	float v3 = random_table[(integer_x + 57*(integer_y+1) + integer_z*61)%1024];
+	float v4 = random_table[(integer_x+1 + 57*(integer_y+1) + integer_z*61)%1024];
 
-	register float v5 = random_table[(integer_x + 57*integer_y + (integer_z+1)*61)%1024];
-	register float v6 = random_table[(integer_x+1 + 57*integer_y + (integer_z+1)*61)%1024];
-	register float v7 = random_table[(integer_x + 57*(integer_y+1) + (integer_z+1)*61)%1024];
-	register float v8 = random_table[(integer_x+1 + 57*(integer_y+1) + (integer_z+1)*61)%1024];
+	float v5 = random_table[(integer_x + 57*integer_y + (integer_z+1)*61)%1024];
+	float v6 = random_table[(integer_x+1 + 57*integer_y + (integer_z+1)*61)%1024];
+	float v7 = random_table[(integer_x + 57*(integer_y+1) + (integer_z+1)*61)%1024];
+	float v8 = random_table[(integer_x+1 + 57*(integer_y+1) + (integer_z+1)*61)%1024];
 
-	register float i1 = LinearInterpolation(v1,v2,fractional_x);
-	register float i2 = LinearInterpolation(v3,v4,fractional_x);
-	register float p1 = LinearInterpolation(i1,i2,fractional_y);
+	float i1 = LinearInterpolation(v1,v2,fractional_x);
+	float i2 = LinearInterpolation(v3,v4,fractional_x);
+	float p1 = LinearInterpolation(i1,i2,fractional_y);
 
-	register float i3 = LinearInterpolation(v5,v6,fractional_x);
-	register float i4 = LinearInterpolation(v7,v8,fractional_x);
-	register float p2 = LinearInterpolation(i3,i4,fractional_y);
+	float i3 = LinearInterpolation(v5,v6,fractional_x);
+	float i4 = LinearInterpolation(v7,v8,fractional_x);
+	float p2 = LinearInterpolation(i3,i4,fractional_y);
 
 	return LinearInterpolation(p1,p2,fractional_z);
 }

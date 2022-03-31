@@ -106,10 +106,10 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 	if (progress_bar != NULL)
 		progress_bar_window = progress_bar->Window();
 
-	register uint32 *source = (uint32*)source_bitmap->Bits();
+	uint32 *source = (uint32*)source_bitmap->Bits();
 	int32 source_bpr = source_bitmap->BytesPerRow()/4;
 
-	register uint32 *spare_bits = (uint32*)spare_copy_bitmap->Bits();
+	uint32 *spare_bits = (uint32*)spare_copy_bitmap->Bits();
 	int32 spare_bpr = spare_copy_bitmap->BytesPerRow()/4;
 
 	PerlinNoiseGenerator generator(0.7,7);
