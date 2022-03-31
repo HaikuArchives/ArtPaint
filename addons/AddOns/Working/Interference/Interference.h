@@ -114,14 +114,14 @@ void	ChangeSettings(InterferenceManipulatorSettings *s);
 
 
 #ifdef __POWERPC__
-inline 	asm	float reciprocal_of_square_root(register float number)
+inline 	asm	float reciprocal_of_square_root(float number)
 {
 	machine		604
 	frsqrte		fp1,number;	// Estimates reciprocal of square-root
 	blr
 }
 #else
-float reciprocal_of_square_root(register float number)
+float reciprocal_of_square_root(float number)
 {
 	return 1.0 / sqrt(number);
 }

@@ -1180,12 +1180,12 @@ int32 Image::DoRender(BRect area)
 
 	// these variables are for row-length of the bitmaps in uint32
 	// e.g how many 32-bit groups there are in a row
-	register int32 srl;
-	register int32 drl = rendered_image->BytesPerRow()/4;
+	int32 srl;
+	int32 drl = rendered_image->BytesPerRow()/4;
 
 	// these variables are for width and height of area
-	register int32 width = area.IntegerWidth()+1;
-	register int32 height = area.IntegerHeight()+1;
+	int32 width = area.IntegerWidth()+1;
+	int32 height = area.IntegerHeight()+1;
 
 	// these variables are for source and destination bitmaps' start-coordinates
 	int32 s_start_x,s_start_y;
@@ -1194,8 +1194,8 @@ int32 Image::DoRender(BRect area)
 	d_start_y = (int32)area.top;
 
 	// these are the pointers to source and destination bitmaps.
-	register uint32 *s_bits;
-	register uint32 *d_bits;
+	uint32 *s_bits;
+	uint32 *d_bits;
 
 	int32 layer_count = layer_list->CountItems();
 	Layer *layer = (Layer*)layer_list->ItemAt(0);
@@ -1221,7 +1221,7 @@ int32 Image::DoRender(BRect area)
 	}
 
 	// Then mix each layer over the previous ones.
-	const register uint32 *FixedAlphaTable;
+	const uint32 *FixedAlphaTable;
 
 	while (layer_number < layer_count) {
 		layer = (Layer*)layer_list->ItemAt(layer_number);
@@ -1234,21 +1234,21 @@ int32 Image::DoRender(BRect area)
 			s_start_y = d_start_y;
 			s_bits = (uint32*)layer->Bitmap()->Bits();
 			d_bits = (uint32*)rendered_image->Bits();
-			register uint32 s;
-			register uint32 d;
-			register uint32 target;
+			uint32 s;
+			uint32 d;
+			uint32 target;
 
 			// adjust the pointers to correct starting-positions
 			s_bits += srl*s_start_y + s_start_x;
 			d_bits += drl*d_start_y + d_start_x;
 
-			register uint32 As;
-			register uint32 Ad;
+			uint32 As;
+			uint32 Ad;
 
 			// Alpha-value is presence of pixel, hence 0x00 is transparent and 0xff for alpha
 			// is fully visible.
-			for (register int32 y=0;y<height;++y) {
-				for (register int32 x=0;x<width;++x) {
+			for (int32 y=0;y<height;++y) {
+				for (int32 x=0;x<width;++x) {
 					s = *s_bits;
 					d = *d_bits;
 					#if BYTE_ORDER == BIG_ENDIAN
@@ -1408,8 +1408,8 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 				uint32 target = 0xFFFFFFFF;
 				for (int32 j=0;j<visible_layer_count;j++) {
 					uint32 layer = layer_bits[j][x + y*layer_bprs[j]];
-					register uint32 As;
-					register uint32 Ad;
+					uint32 As;
+					uint32 Ad;
 					#if BYTE_ORDER == BIG_ENDIAN
 					As = alpha_tables[j][layer & 0x000000ff];
 					Ad = full_fixed_alpha - As;

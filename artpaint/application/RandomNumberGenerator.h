@@ -39,7 +39,7 @@ inline	int32	IntegerUniformDistribution(int32 a,int32 b);
 
 inline float RandomNumberGenerator::FloatNoise(int32 s)
 {
-	register int32 n = (s+seed)*57;
+	int32 n = (s+seed)*57;
 	n = n<<13 ^ n;
 	return(1.0-((n*(n*n*15731+789221)+1376312589)&0x7fffffff)/1073741824.0);
 }
@@ -47,7 +47,7 @@ inline float RandomNumberGenerator::FloatNoise(int32 s)
 
 inline int32 RandomNumberGenerator::IntegerNoise(int32 s)
 {
-	register int32 n = (s+seed)*57;
+	int32 n = (s+seed)*57;
 	n = n<<13 ^ n;
 	return (n*(n*n*15731+789221)+1376312589)&0x7fffffff;
 }

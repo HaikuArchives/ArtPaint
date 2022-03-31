@@ -281,7 +281,7 @@ int32 ScaleManipulator::PreviewBitmap(Selection*,bool,BRegion *region)
 		int32 source_y = (int32)floor(y*height_coeff);
 		int32 y_times_bpr = y*bpr;
 		int32 source_y_times_bpr = source_y*bpr;
-		for (register int32 x=0;x<=width;x++) {
+		for (int32 x=0;x<=width;x++) {
 			int32 source_x = source_x_table[x];
 			if ((source_x > width) ||(source_y > height)) {
 				*(target_bits + x + y_times_bpr) = white.word;

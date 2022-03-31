@@ -216,8 +216,8 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 	BPoint center = new_settings->origo;
 
 	float the_angle = new_settings->angle;
-	register float sin_angle = sin(-the_angle/360*2*PI);
-	register float cos_angle = cos(-the_angle/360*2*PI);
+	float sin_angle = sin(-the_angle/360*2*PI);
+	float cos_angle = cos(-the_angle/360*2*PI);
 
 	int32 *target_bits = (int32*)new_bitmap->Bits();
 	int32 *source_bits = (int32*)original->Bits();
@@ -233,13 +233,13 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 	float bottom = original->Bounds().bottom;
 	float center_x = center.x;
 	float center_y = center.y;
-	register float source_x,source_y;
-	register float y_times_sin = (-center_y)*sin_angle;
-	register float y_times_cos = (-center_y)*cos_angle;
+	float source_x,source_y;
+	float y_times_sin = (-center_y)*sin_angle;
+	float y_times_cos = (-center_y)*cos_angle;
 
 	BWindow *status_bar_window = status_bar->Window();
 
-	register float red,green,blue,alpha;	// before optimization was int32
+	float red,green,blue,alpha;	// before optimization was int32
 
 	float floor_x,ceil_x,floor_y,ceil_y;	// was int32 before optimization
 
@@ -257,8 +257,8 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 	if (selection->IsEmpty()) {
 		for (float y=0;y<=height;y++) {
-			register float x_times_sin = (-center_x)*sin_angle;
-			register float x_times_cos = (-center_x)*cos_angle;
+			float x_times_sin = (-center_x)*sin_angle;
+			float x_times_cos = (-center_x)*cos_angle;
 			for (float x=0;x<=width;x++) {
 				// rotate here around the origin
 				source_x = x_times_cos - y_times_sin;
@@ -353,8 +353,8 @@ BBitmap* RotationManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 		y_times_sin = (sel_top-center_y)*sin_angle;
 		y_times_cos = (sel_top-center_y)*cos_angle;
 		for (float y=sel_top;y<=sel_bottom;y++) {
-			register float x_times_sin = (sel_left-center_x)*sin_angle;
-			register float x_times_cos = (sel_left-center_x)*cos_angle;
+			float x_times_sin = (sel_left-center_x)*sin_angle;
+			float x_times_cos = (sel_left-center_x)*cos_angle;
 			for (float x=sel_left;x<=sel_right;x++) {
 				if (selection->ContainsPoint(int32(x), int32(y))) {
 					// rotate here around the origin
@@ -467,8 +467,8 @@ int32 RotationManipulator::PreviewBitmap(Selection *selection,bool full_quality,
 	// Then calculate the preview
 	BPoint center = settings->origo;
 	float the_angle = settings->angle;
-	register float sin_angle = sin(-the_angle/360*2*PI);
-	register float cos_angle = cos(-the_angle/360*2*PI);
+	float sin_angle = sin(-the_angle/360*2*PI);
+	float cos_angle = cos(-the_angle/360*2*PI);
 
 	int32 *target_bits = (int32*)preview_bitmap->Bits();
 	int32 *source_bits = (int32*)copy_of_the_preview_bitmap->Bits();
@@ -484,13 +484,13 @@ int32 RotationManipulator::PreviewBitmap(Selection *selection,bool full_quality,
 	float bottom = copy_of_the_preview_bitmap->Bounds().bottom;
 	float center_x = center.x;
 	float center_y = center.y;
-	register float source_x,source_y;
-	register float y_times_sin = (-center_y)*sin_angle;
-	register float y_times_cos = (-center_y)*cos_angle;
+	float source_x,source_y;
+	float y_times_sin = (-center_y)*sin_angle;
+	float y_times_cos = (-center_y)*cos_angle;
 	if (selection->IsEmpty()) {
 		for (int32 y=0;y<=height;y += last_calculated_resolution) {
-			register float x_times_sin = (-center_x)*sin_angle;
-			register float x_times_cos = (-center_x)*cos_angle;
+			float x_times_sin = (-center_x)*sin_angle;
+			float x_times_cos = (-center_x)*cos_angle;
 			for (int32 x=0;x<=width;x += last_calculated_resolution) {
 				// rotete here around the origin
 				source_x = x_times_cos - y_times_sin;
@@ -517,8 +517,8 @@ int32 RotationManipulator::PreviewBitmap(Selection *selection,bool full_quality,
 		// Rotate the selection also
 		selection->RotateTo(center,the_angle);
 		for (int32 y=0;y<=height;y += last_calculated_resolution) {
-			register float x_times_sin = (-center_x)*sin_angle;
-			register float x_times_cos = (-center_x)*cos_angle;
+			float x_times_sin = (-center_x)*sin_angle;
+			float x_times_cos = (-center_x)*cos_angle;
 			for (int32 x=0;x<=width;x += last_calculated_resolution) {
 				// rotete here around the origin
 				source_x = x_times_cos - y_times_sin;

@@ -309,8 +309,8 @@ Layer::Merge(Layer* top_layer)
 	float* alphas = float_alpha_table;
 	float* betas = top_layer->float_alpha_table;
 
-	for (register int32 y=0;y<height;++y) {
-		for (register int32 x=0;x<width;++x) {
+	for (int32 y=0;y<height;++y) {
+		for (int32 x=0;x<width;++x) {
 			top.word = *(top_bits + x + y*top_bpr);
 			bottom.word = *(bottom_bits + x + y*bottom_bpr);
 			alpha = alphas[bottom.bytes[3]];

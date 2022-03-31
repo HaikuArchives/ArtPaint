@@ -1447,7 +1447,7 @@ FillTool::calcBinaryMapBounds(BBitmap *boolean_map)
 		for (int32 i=0;i<bpr;i++) {
 			selected_line |= *bits != 0x00;
 			if (*bits != 0x00) {
-				for (register int32 b=0;b<8;b++) {
+				for (int32 b=0;b<8;b++) {
 					rc.left = min_c(rc.left,i*8+(((*bits>>(7-b))& 0x00000001) ? b : 100000));
 					rc.right = max_c(rc.right,i*8+(((*bits>>(7-b))& 0x00000001) ? b : -100000));
 				}

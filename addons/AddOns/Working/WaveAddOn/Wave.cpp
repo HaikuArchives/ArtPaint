@@ -118,8 +118,8 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 	float A = new_settings->wave_amount;
 	float k = 0;
 	float dx,dy;
-	register float sqrt_x_plus_y;
-	register float one_per_sqrt_x_plus_y;
+	float sqrt_x_plus_y;
+	float one_per_sqrt_x_plus_y;
 	float cx,cy;
 	int32 top,bottom;
 	top = start_y;
@@ -131,8 +131,8 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 	float one_per_R = 1.0/R;
 
 	float real_x,real_y;
-	register float two_pi_per_s = 2*PI/s;
-	register float two_360_per_s = 720.0/s;
+	float two_pi_per_s = 2*PI/s;
+	float two_360_per_s = 720.0/s;
 
 	union {
 		uint8 bytes[4];
@@ -564,8 +564,8 @@ void WaveManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
 //	float A = amount_of_wave;
 //	float k = (float)(dampening_of_wave)/(float)MAX_WAVE_DAMPENING;
 //	float dx,dy;
-//	register float sqrt_x_plus_y;
-//	register float one_per_sqrt_x_plus_y;
+//	float sqrt_x_plus_y;
+//	float one_per_sqrt_x_plus_y;
 //	float cx,cy;
 //	float top,bottom;
 //	top = top_of_image;
@@ -577,8 +577,8 @@ void WaveManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
 //
 //
 //	float real_x,real_y;
-//	register float two_pi_per_s = 2*PI/s;
-//	register float two_360_per_s = 720.0/s;
+//	float two_pi_per_s = 2*PI/s;
+//	float two_360_per_s = 720.0/s;
 //
 //	if (preview_level == FULL_CALCULATION) {
 //		uint32 p1,p2,p3,p4;
