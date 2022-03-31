@@ -10,17 +10,15 @@
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <LayoutBuilder.h>
+#include <Spinner.h>
 #include <StatusBar.h>
 #include <string.h>
 #include <Window.h>
 
 #include "AddOns.h"
 #include "AntiDitherer.h"
-#include "NumberControl.h"
 #include "ManipulatorInformer.h"
 #include "Selection.h"
-
-using ArtPaint::Interface::NumberControl;
 
 
 #ifdef __cplusplus
@@ -277,15 +275,20 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	block_size_control = new NumberControl("Block size:", "0",
+	block_size_control = new BSpinner("blocksize", "Block size:",
 		new BMessage(BLOCK_SIZE_ADJUSTED));
+	block_size_control->SetMinValue(1);
+	block_size_control->SetValue(1);
 
 	reduce_resolution_box = new BCheckBox(
 		"reduce_resolution","Reduce resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
 	reduce_resolution_box->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, B_SIZE_UNSET));
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
-		.Add(block_size_control)
+		.AddGroup(B_HORIZONTAL)
+			.Add(block_size_control)
+			.AddGlue()
+			.End()
 		.Add(reduce_resolution_box)
 		.SetInsets(B_USE_SMALL_INSETS)
 		.End();
