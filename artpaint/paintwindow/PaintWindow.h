@@ -172,6 +172,8 @@ private:
 			ImageSavePanel*		fImageSavePanel;
 			BFilePanel*			fProjectSavePanel;
 
+			BWindow*			fImageSizeWindow;
+
 			// The BEntrys should be replace by something else as they
 			// consume a file-descriptor.
 			BEntry				fImageEntry;

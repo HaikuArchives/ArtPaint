@@ -32,17 +32,12 @@
 
 #define TOOLS_VIEW			0
 #define PROGRESS_VIEW 		1
-#define MANIPULATOR_VIEW	2
-#define START_VIEW			3
 
 
 StatusView::StatusView()
 	: BView("status view", B_WILL_DRAW)
-	, fOk(NULL)
-	, fCancel(NULL)
 {
 	status_bar = NULL;
-	manipulator_view = NULL;
 
 	// First add the coordinate-view.
 	coordinate_view = new BStringView("coordinate_view","X: , Y:");
@@ -66,76 +61,33 @@ StatusView::StatusView()
 	selected_colors->SetExplicitMinSize(BSize(52, 52));
 	selected_colors->SetExplicitMaxSize(BSize(52, 52));
 
-	// Here create the OK- and Cancel-buttons.
-	BMessage *ok_message = new BMessage(HS_MANIPULATOR_FINISHED);
-	ok_message->AddBool("status",TRUE);
-	BMessage *cancel_message = new BMessage(HS_MANIPULATOR_FINISHED);
-	cancel_message->AddBool("status",FALSE);
-
-	ResourceServer* server = ResourceServer::Instance();
-	if (server) {
-		BPicture on_picture;
-		BPicture off_picture;
-
-		server->GetPicture(OK_BUTTON, &on_picture);
-		server->GetPicture(OK_BUTTON_PUSHED, &off_picture);
-
-		// Create the OK-button
-		fOk = new HSPictureButton(BRect(0, 0, 15, 15), &off_picture,
-			&on_picture, ok_message, NULL, "Push here to confirm changes.");
-
-		// Create the cancel-button.
-		server->GetPicture(CANCEL_BUTTON, &on_picture);
-		server->GetPicture(CANCEL_BUTTON_PUSHED, &off_picture);
-
-		fCancel = new HSPictureButton(BRect(0, 0, 15, 15), &off_picture,
-			&on_picture, cancel_message, NULL, "Push here to cancel changes.");
-	}
-
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	status_bar = new BStatusBar("progress indicator");
 
-	manipulator_view = new BGroupLayout(B_VERTICAL);
-
-	fStartCard = BLayoutBuilder::Group<>(B_VERTICAL, 5.0);
-
-	BGridLayout* toolsAndColorsCard = BLayoutBuilder::Grid<>(5.0, 5.0)
+	BGridLayout* toolsAndColorsCard = BLayoutBuilder::Grid<>(5.0, 0.0)
 		.AddGlue(0, 0)
 		.Add(selected_colors, 1, 0, 1, 2)
 		.Add(color_container, 2, 0, 1, 2)
-		.SetInsets(0.0, 5.0, 0.0, 0.0);
+		.SetInsets(0.0, 0.0, 0.0, 0.0);
 	toolsAndColorsCard->SetMaxColumnWidth(2, 52);
 
 	BGroupLayout* progressBarCard = BLayoutBuilder::Group<>(B_VERTICAL, 5.0)
 		.Add(status_bar)
 		.SetInsets(2.0, 0.0, 5.0, 0.0);
 
-	BGroupLayout* manipulatorCard = BLayoutBuilder::Group<>(B_HORIZONTAL, 0.0)
-		.AddGlue()
-		.AddGroup(B_VERTICAL, 5.0)
-			.Add(manipulator_view)
-			.AddGroup(B_HORIZONTAL, 5.0)
-				.Add(fOk)
-				.Add(fCancel)
-				.End()
-			.End()
-		.SetInsets(0.0, 2.0, 0.0, 0.0);
-
 	fCardLayout = BLayoutBuilder::Cards<>()
 		.Add(toolsAndColorsCard)
-		.Add(progressBarCard)
-		.Add(manipulatorCard)
-		.Add(fStartCard);
+		.Add(progressBarCard);
 
-	fStatusView = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
+	fStatusView = BLayoutBuilder::Grid<>(this, 5.0, 0.0)
 		.Add(coordinate_box, 0, 0)
-		.Add(mag_state_view, 0, 1)
+		.Add(mag_state_view, 1, 0)
 		.Add(fHelpView, 0, 2, 3)
-		.Add(fCardLayout, 1, 0, 3, 2);
+		.Add(fCardLayout, 2, 0, 2, 2);
 	fStatusView->SetMinColumnWidth(0, StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)"));
 
-	fCardLayout->SetVisibleItem(START_VIEW);
+	fCardLayout->SetVisibleItem(TOOLS_VIEW);
 }
 
 
@@ -155,43 +107,6 @@ StatusView::~StatusView()
 
 	if (color_container->Parent() == NULL)
 		delete color_container;
-
-	if (fOk && fOk->Parent() == NULL)
-		delete fOk;
-
-	if (fCancel && fCancel->Parent() == NULL)
-		delete fCancel;
-}
-
-
-status_t
-StatusView::DisplayStartCard(BBox *card)
-{
-	if (Window()->Lock()) {
-		fStartCard->AddView(card);
-		fCardLayout->SetVisibleItem(START_VIEW);
-		Window()->Unlock();
-	}
-
-	return B_OK;
-}
-
-
-status_t
-StatusView::DisplayManipulatorView(BView *manip_view)
-{
-	if (Window()->Lock()) {
-		manipulator_view->AddView(manip_view);
-
-		// Set the proper target for the button.
-		fOk->SetTarget(Window()->FindView("image_view"),Window());
-		fCancel->SetTarget(Window()->FindView("image_view"),Window());
-
-		fCardLayout->SetVisibleItem(MANIPULATOR_VIEW);
-		Window()->Unlock();
-	}
-
-	return B_OK;
 }
 
 
@@ -219,17 +134,6 @@ StatusView::DisplayToolsAndColors()
 }
 
 
-status_t
-StatusView::DisplayNothing()
-{
-	if (Window()->Lock()) {
-		fCardLayout->SetVisibleItem(START_VIEW);
-		Window()->Unlock();
-	}
-	return B_OK;
-}
-
-
 void
 StatusView::SetCoordinates(BPoint point, BPoint reference, bool use_reference)
 {
@@ -253,17 +157,6 @@ StatusView::SetMagnifyingScale(float mag)
 	mag_state_view->SetMagnificationLevel(mag);
 }
 
-
-void
-StatusView::RemoveManipulator()
-{
-	if (Window()->Lock()) {
-		while(manipulator_view->CountItems()) {
-			manipulator_view->RemoveItem(0);
-		}
-		Window()->Unlock();
-	}
-}
 
 // #pragma mark -- SelectedColorsView
 

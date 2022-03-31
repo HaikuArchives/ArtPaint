@@ -30,7 +30,7 @@ using ArtPaint::Interface::NumberControl;
 
 
 TranslationManipulator::TranslationManipulator(BBitmap *bm)
-	:	StatusBarGUIManipulator()
+	:	WindowGUIManipulator()
 	, copy_of_the_preview_bitmap(NULL)
 {
 	preview_bitmap = bm;
@@ -432,11 +432,9 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 
 
 BView*
-TranslationManipulator::MakeConfigurationView(float width, float height,
-	const BMessenger& target)
+TranslationManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new TranslationManipulatorView(BRect(0, 0, width - 1, height - 1)
-		,this, target);
+	config_view = new TranslationManipulatorView(this, target);
 	config_view->SetValues(settings->x_translation, settings->y_translation);
 	return config_view;
 }
@@ -467,9 +465,9 @@ TranslationManipulator::ReturnHelpString()
 // #pragma mark -- TranslationManipulatorView
 
 
-TranslationManipulatorView::TranslationManipulatorView(BRect rect,
+TranslationManipulatorView::TranslationManipulatorView(
 		TranslationManipulator* manipulator, const BMessenger& target)
-	: BView("configuration_view", B_WILL_DRAW)
+	: WindowGUIManipulatorView()
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
@@ -483,6 +481,11 @@ TranslationManipulatorView::TranslationManipulatorView(BRect rect,
 		.Add(fXControl)
 		.Add(fYControl)
 	);
+
+	TranslationManipulatorSettings* settings
+		= (TranslationManipulatorSettings*)manipulator->ReturnSettings();
+	fXControl->SetValue(settings->x_translation);
+	fYControl->SetValue(settings->y_translation);
 }
 
 
@@ -498,6 +501,8 @@ TranslationManipulatorView::AttachedToWindow()
 	}
 
 	fXControl->MakeFocus(true);
+
+	WindowGUIManipulatorView::AttachedToWindow();
 }
 
 
@@ -514,7 +519,7 @@ TranslationManipulatorView::MessageReceived(BMessage* message)
 		}	break;
 
 		default: {
-			BView::MessageReceived(message);
+			WindowGUIManipulatorView::MessageReceived(message);
 		}	break;
 	}
 }
@@ -523,8 +528,13 @@ TranslationManipulatorView::MessageReceived(BMessage* message)
 void
 TranslationManipulatorView::SetValues(float x, float y)
 {
-	fXControl->SetValue(int32(x));
-	fYControl->SetValue(int32(y));
+	BWindow* window = Window();
+	if (window && window->Lock()) {
+		fXControl->SetValue(int32(x));
+		fYControl->SetValue(int32(y));
+
+		window->Unlock();
+	}
 }
 
 

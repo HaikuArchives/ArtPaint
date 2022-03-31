@@ -35,7 +35,7 @@
 
 
 RotationManipulator::RotationManipulator(BBitmap *bitmap)
-	:	StatusBarGUIManipulator()
+	:	WindowGUIManipulator()
 {
 	settings = new RotationManipulatorSettings();
 	config_view = NULL;
@@ -576,15 +576,13 @@ void RotationManipulator::Reset(Selection *selection)
 
 
 BView*
-RotationManipulator::MakeConfigurationView(float width, float height,
-	const BMessenger& target)
+RotationManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	if (config_view)
-		return config_view;
+	//if (config_view)
+	//	return config_view;
 
 	config_view =
-		new RotationManipulatorConfigurationView(BRect(0, 0, width - 1, height - 1),
-			this, target);
+		new RotationManipulatorConfigurationView(this, target);
 	config_view->SetAngle(settings->angle);
 	return config_view;
 }
@@ -616,8 +614,8 @@ RotationManipulator::ReturnName()
 
 
 RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
-		BRect rect, RotationManipulator* manipulator, const BMessenger& target)
-	: BView("configuration_view", B_WILL_DRAW)
+		RotationManipulator* manipulator, const BMessenger& target)
+	: WindowGUIManipulatorView()
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
@@ -632,6 +630,12 @@ RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 	SetLayout(BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fTextControl)
 	);
+
+	RotationManipulatorSettings* settings
+		= (RotationManipulatorSettings*)manipulator->ReturnSettings();
+	char text[256];
+	sprintf(text, "%.1f˚", settings->angle);
+	fTextControl->TextView()->SetText(text);
 }
 
 
@@ -646,6 +650,8 @@ RotationManipulatorConfigurationView::AttachedToWindow()
 	}
 
 	fTextControl->MakeFocus(true);
+
+	WindowGUIManipulatorView::AttachedToWindow();
 }
 
 
@@ -698,7 +704,7 @@ RotationManipulatorConfigurationView::MessageReceived(BMessage* message)
 		}	break;
 
 		default: {
-			BView::MessageReceived(message);
+			WindowGUIManipulatorView::MessageReceived(message);
 		}	break;
 	}
 }
@@ -707,9 +713,13 @@ RotationManipulatorConfigurationView::MessageReceived(BMessage* message)
 void
 RotationManipulatorConfigurationView::SetAngle(float angle)
 {
-	char text[256];
-	sprintf(text, "%.1f˚", angle);
-	fTextControl->TextView()->SetText(text);
+	BWindow* window = Window();
+	if (window && window->Lock()) {
+		char text[256];
+		sprintf(text, "%.1f˚", angle);
+		fTextControl->TextView()->SetText(text);
+		window->Unlock();
+	}
 }
 
 

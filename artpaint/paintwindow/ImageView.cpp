@@ -630,18 +630,11 @@ void ImageView::MessageReceived(BMessage *message)
 						else {
 							gui_manipulator->SetPreviewBitmap(the_image->ReturnRenderedImage());
 						}
-						StatusBarGUIManipulator *status_bar_gui_manipulator = cast_as(gui_manipulator,StatusBarGUIManipulator);
+						//StatusBarGUIManipulator *status_bar_gui_manipulator = cast_as(gui_manipulator,StatusBarGUIManipulator);
 						WindowGUIManipulator *window_gui_manipulator = cast_as(gui_manipulator,WindowGUIManipulator);
 
 						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
-						StatusView *status_view = ((PaintWindow*)Window())->ReturnStatusView();
-						if (status_bar_gui_manipulator != NULL) {
-							BView *manipulator_gui =
-								status_bar_gui_manipulator->MakeConfigurationView(300,
-								status_view->Bounds().Height(), this);
-							status_view->DisplayManipulatorView(manipulator_gui);
-						}
-						else if (window_gui_manipulator != NULL) {
+						if (window_gui_manipulator != NULL) {
 							char window_name[256];
 							sprintf(window_name, "%s: %s",
 								ReturnProjectName(),
@@ -1653,7 +1646,6 @@ int32 ImageView::ManipulatorFinisherThread()
 
 	// Finally return the window to normal state and redisplay it.
 	if (LockLooper() == true) {
-		((PaintWindow*)Window())->ReturnStatusView()->RemoveManipulator();
 		((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
 
 		Invalidate();

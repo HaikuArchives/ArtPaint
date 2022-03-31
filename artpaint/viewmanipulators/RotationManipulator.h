@@ -11,11 +11,9 @@
 
 #include "Cursors.h"
 #include "ManipulatorSettings.h"
-#include "StatusBarGUIManipulator.h"
+#include "WindowGUIManipulator.h"
 
-
-#include <View.h>
-
+#include <Messenger.h>
 
 class BTextControl;
 class HSPolygon;
@@ -40,9 +38,9 @@ public:
 	This manipulator handles angles. The supported angle value are between
 	-180˚ and +180. Negative angles are clockwise and positive counterclockwise.
 */
-class RotationManipulator: public StatusBarGUIManipulator {
+class RotationManipulator: public WindowGUIManipulator {
 	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-	{ return StatusBarGUIManipulator::ManipulateBitmap(b, s, stb); }
+	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
 
 	BBitmap	*copy_of_the_preview_bitmap;
 	BBitmap	*preview_bitmap;
@@ -80,8 +78,7 @@ public:
 	const char*	ReturnHelpString();
 	const char*	ReturnName();
 
-	BView*					MakeConfigurationView(float width, float height,
-								const BMessenger& target);
+	BView*					MakeConfigurationView(const BMessenger& target);
 
 	ManipulatorSettings*	ReturnSettings() { return new RotationManipulatorSettings(settings); }
 
@@ -92,9 +89,9 @@ public:
 };
 
 
-class RotationManipulatorConfigurationView : public BView {
+class RotationManipulatorConfigurationView : public WindowGUIManipulatorView {
 public:
-								RotationManipulatorConfigurationView(BRect rect,
+								RotationManipulatorConfigurationView(
 									RotationManipulator* manipulator,
 									const BMessenger& target);
 	virtual						~RotationManipulatorConfigurationView() {}

@@ -38,12 +38,8 @@ public:
 			void				SetCoordinates(BPoint point, BPoint reference,
 									bool use_reference);
 
-			status_t			DisplayManipulatorView(BView* view);
 			BStatusBar*			DisplayProgressIndicator();
 			status_t			DisplayToolsAndColors();
-			status_t			DisplayNothing();
-			void				RemoveManipulator();
-			status_t			DisplayStartCard(BBox* card);
 
 private:
 			BStringView*		coordinate_view;
@@ -53,16 +49,8 @@ private:
 			// This is the StatusBar that will be used in this status-view.
 			BStatusBar*			status_bar;
 
-			// This is the view that has been created by the manipulator
-			BGroupLayout*		manipulator_view;
-
 			// These are the boxes that hold the string-views.
 			BBox*				coordinate_box;
-			BBox*				manipulator_box;
-
-			// These are picture-buttons for Cancel- and OK-messages.
-			HSPictureButton*	fOk;
-			HSPictureButton*	fCancel;
 
 			// These are views for selected tools and colors
 			// and the current color-set.
@@ -71,7 +59,6 @@ private:
 
 			BCardLayout*		fCardLayout;
 			BGridLayout*		fStatusView;
-			BGroupLayout*		fStartCard;
 };
 
 

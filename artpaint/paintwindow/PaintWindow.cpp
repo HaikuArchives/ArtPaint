@@ -131,7 +131,6 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 	if ((views & HS_STATUS_VIEW) != 0) {
 		// Create the status-view and make it display nothing
 		fStatusView = new StatusView();
-		fStatusView->DisplayNothing();
 	}
 
 	// make the background view (the backround for image)
@@ -242,8 +241,14 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		fContainerBox = new BBox("container_for_controls");
 		fContainerBox->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
+		fImageSizeWindow = new BWindow(BRect(100, 100, 320, 200), "Canvas Size",
+			B_MODAL_WINDOW_LOOK, B_FLOATING_SUBSET_WINDOW_FEEL, B_NOT_MOVABLE |
+			B_NOT_RESIZABLE | B_NOT_ZOOMABLE);
+
+		fImageSizeWindow->AddToSubset(this);
+
 		BGridLayout* containerLayout = BLayoutBuilder::Grid<>(
-			fContainerBox, 5.0, 0.0)
+			 fImageSizeWindow, 5.0, 0.0)
 			.Add(fWidthNumberControl, 0, 0)
 			.Add(fHeightNumberControl, 0, 1)
 			.Add(fSetSizeButton, 1, 0)
@@ -253,27 +258,25 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		BMessage msg(HS_TOOL_HELP_MESSAGE);
 		msg.AddString("message", _StringForId(SELECT_CANVAS_SIZE_STRING));
 		PostMessage(&msg, this);
+
+		fImageSizeWindow->CenterIn(Frame());
+		fImageSizeWindow->Activate();
+		fImageSizeWindow->Show();
 	}
 
 	BGroupLayout *inner = BLayoutBuilder::Group<>(B_VERTICAL, 0)
-		.AddGroup(B_HORIZONTAL)
-			.Add(fBackground)
-			.End();
-
-	if (fStatusView) {
-		inner->AddView(fStatusView, 0);
-	}
+		.Add(fBackground)
+		.SetInsets(-1.0, -1.0, -1.0, -1.0);
 
 	BGroupLayout* outer = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-		.AddGroup(B_HORIZONTAL, 0)
-			.Add(inner)
-			.End();
+		.Add(inner);
 
 	if (fMenubar)
 		outer->AddView(0, fMenubar);
 
-	if (fStatusView)
-		fStatusView->DisplayStartCard(fContainerBox);
+	if (fStatusView) {
+		outer->AddView(fStatusView);
+	}
 
 	// finally inform the app that new window has been created
 	BMessage message(HS_PAINT_WINDOW_OPENED);
@@ -385,6 +388,8 @@ void
 PaintWindow::FrameResized(float newWidth, float newHeight)
 {
 	fSettings.ReplaceRect(skFrame, Frame());
+	if (!fImageSizeWindow->IsHidden())
+		fImageSizeWindow->CenterIn(Frame());
 }
 
 
@@ -392,6 +397,8 @@ void
 PaintWindow::FrameMoved(BPoint newPosition)
 {
 	fSettings.ReplaceRect(skFrame, Frame());
+	if (!fImageSizeWindow->IsHidden())
+		fImageSizeWindow->CenterIn(Frame());
 }
 
 
@@ -491,8 +498,11 @@ PaintWindow::MessageReceived(BMessage *message)
 
 		case HS_RECENT_IMAGE_SIZE: {
 			// This comes from the recent image-size pop-up-list.
-			fWidthNumberControl->SetValue(message->FindInt32("width"));
-			fHeightNumberControl->SetValue(message->FindInt32("height"));
+			if (fImageSizeWindow->Lock()) {
+				fWidthNumberControl->SetValue(message->FindInt32("width"));
+				fHeightNumberControl->SetValue(message->FindInt32("height"));
+				fImageSizeWindow->Unlock();
+			}
 		}	break;
 
 		case HS_IMAGE_SIZE_SET: {
@@ -539,6 +549,7 @@ PaintWindow::MessageReceived(BMessage *message)
 
 				// Add the view to view hierarchy.
 				AddImageView();
+				fImageSizeWindow->Hide();
 			}
 		}	break;
 
@@ -898,8 +909,11 @@ PaintWindow::DisplayCoordinates(BPoint point, BPoint reference, bool useReferenc
 
 	if (fSetSizeButton != NULL) {
 		// if the window is in resize mode display dimensions here too
-		fWidthNumberControl->SetValue(int32(point.x));
-		fHeightNumberControl->SetValue(int32(point.y));
+		if (fImageSizeWindow->Lock()) {
+			fWidthNumberControl->SetValue(int32(point.x));
+			fHeightNumberControl->SetValue(int32(point.y));
+			fImageSizeWindow->Unlock();
+		}
 	}
 }
 
