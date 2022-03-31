@@ -398,12 +398,12 @@ void SaturationManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* SaturationManipulator::ReturnName()
+const char* SaturationManipulator::ReturnName()
 {
 	return "Saturation";
 }
 
-char* SaturationManipulator::ReturnHelpString()
+const char* SaturationManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the image saturation.";
 }

@@ -21,7 +21,7 @@ public:
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 
-char*		ReturnName() { return "Polar mapper"; }
+const char*	ReturnName() { return "Polar mapper"; }
 };
 
 #endif

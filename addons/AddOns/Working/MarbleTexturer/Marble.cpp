@@ -84,7 +84,7 @@ BBitmap* MarbleManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	return original;
 }
 
-char* MarbleManipulator::ReturnName()
+const char* MarbleManipulator::ReturnName()
 {
 	return "Marble";
 }

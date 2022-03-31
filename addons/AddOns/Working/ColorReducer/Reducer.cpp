@@ -191,12 +191,12 @@ void ReducerManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* ReducerManipulator::ReturnName()
+const char* ReducerManipulator::ReturnName()
 {
 	return "Reducer";
 }
 
-char* ReducerManipulator::ReturnHelpString()
+const char* ReducerManipulator::ReturnHelpString()
 {
 	return "Change the parameters of color reduction.";
 }

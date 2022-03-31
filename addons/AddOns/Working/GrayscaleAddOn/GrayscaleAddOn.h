@@ -17,7 +17,7 @@ public:
 			~GrayscaleAddOnManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
-char*		ReturnName() { return "Grayscale"; }
+const char*	ReturnName() { return "Grayscale"; }
 };
 
 #endif

@@ -79,12 +79,12 @@ void $MANIPULATOR_NAME::ChangeSettings(ManipulatorSettings *s)
 {
 }
 
-char* $MANIPULATOR_NAME::ReturnName()
+const char* $MANIPULATOR_NAME::ReturnName()
 {
 	return "A WindowGUIManipulator Name";
 }
 
-char* $MANIPULATOR_NAME::ReturnHelpString()
+const char* $MANIPULATOR_NAME::ReturnHelpString()
 {
 	return "A string that is displayed in the status-bar while the manipulator"
 		" is active. Should not be this long though.";

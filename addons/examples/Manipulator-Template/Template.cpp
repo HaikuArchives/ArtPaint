@@ -52,7 +52,7 @@ BBitmap* $MANIPULATOR_NAME::ManipulateBitmap(BBitmap *original,Selection *select
 	}
 }
 
-char* $MANIPULATOR_NAME::ReturnName()
+const char* $MANIPULATOR_NAME::ReturnName()
 {
 	return "Template Add-On";
 }

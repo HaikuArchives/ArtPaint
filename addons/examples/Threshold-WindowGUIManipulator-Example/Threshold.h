@@ -89,8 +89,8 @@ int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
-char*		ReturnHelpString();
-char*		ReturnName();
+const char*	ReturnHelpString();
+const char*	ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 

@@ -18,7 +18,7 @@ public:
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 
-char*		ReturnName() { return "Emboss"; }
+const char*	ReturnName() { return "Emboss"; }
 };
 
 #endif

@@ -253,12 +253,12 @@ void AntiDithererManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* AntiDithererManipulator::ReturnName()
+const char* AntiDithererManipulator::ReturnName()
 {
 	return "Anti-Dither";
 }
 
-char* AntiDithererManipulator::ReturnHelpString()
+const char* AntiDithererManipulator::ReturnHelpString()
 {
 	return "Attempts to reverse the effects of dithering.";
 }

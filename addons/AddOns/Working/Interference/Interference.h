@@ -81,8 +81,8 @@ int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
-char*		ReturnHelpString() { return "Click on the image to move the wave centers and adjust wave-lengths. "; }
-char*		ReturnName() { return "Interference"; }
+const char*	ReturnHelpString() { return "Click on the image to move the wave centers and adjust wave-lengths. "; }
+const char*	ReturnName() { return "Interference"; }
 
 ManipulatorSettings*	ReturnSettings();
 
