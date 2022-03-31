@@ -510,6 +510,11 @@ void
 PaintWindow::MessageReceived(BMessage *message)
 {
 	switch ( message->what ) {
+		case B_SIMPLE_DATA:
+		case B_REFS_RECEIVED: {
+			be_app_messenger.SendMessage(message);
+		}	break;
+
 		case HS_RESIZE_WINDOW_TO_FIT: {
 			// this comes from fMenubar->"Window"->"Resize Window to Fit" and
 			// informs us that we should fit the window to display exactly the
