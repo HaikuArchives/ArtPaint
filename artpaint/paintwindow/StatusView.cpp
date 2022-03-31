@@ -21,7 +21,6 @@
 #include "StringServer.h"
 
 
-#include <Button.h>
 #include <LayoutBuilder.h>
 #include <Region.h>
 #include <StatusBar.h>
@@ -91,7 +90,6 @@ StatusView::StatusView()
 
 		fCancel = new HSPictureButton(BRect(0, 0, 15, 15), &off_picture,
 			&on_picture, cancel_message, NULL, "Push here to cancel changes.");
-
 	}
 
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));

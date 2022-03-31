@@ -94,7 +94,7 @@ struct menu_item {
 PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		const BMessage& settings)
 	: BWindow(frame, name, B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE | B_AUTO_UPDATE_SIZE_LIMITS)
+		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE)//| B_AUTO_UPDATE_SIZE_LIMITS)
 	, fSettings(settings)
 	, fImageView(NULL)
 	, fBackground(NULL)
@@ -133,6 +133,15 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		fStatusView = new StatusView();
 		fStatusView->DisplayNothing();
 	}
+
+	/*fHorizontalScrollbar = new BScrollBar("horizontal", NULL, 0, 0, B_HORIZONTAL);
+    fHorizontalScrollbar->SetRange(0.0, 0.0);
+    fHorizontalScrollbar->SetSteps(8.0, 32.0);
+
+    fVerticalScrollbar = new BScrollBar("vertical", NULL, 0, 0, B_VERTICAL);
+    fVerticalScrollbar->SetRange(0.0, 0.0);
+    fVerticalScrollbar->SetSteps(8.0, 32.0);
+	*/
 
 	// make the background view (the backround for image)
 	fBackground = new BackgroundView(BRect(0, 0, 0, 0));
@@ -536,9 +545,6 @@ PaintWindow::MessageReceived(BMessage *message)
 
 				// record the new size to the recent list
 				server->AddRecentImageSize(BSize(width, height));
-
-				// Remove the sizing buttons.
-				//fStatusView->ClearStartCard();
 
 				// Add the view to view hierarchy.
 				AddImageView();
