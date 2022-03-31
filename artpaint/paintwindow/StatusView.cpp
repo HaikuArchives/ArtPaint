@@ -83,8 +83,9 @@ StatusView::StatusView()
 	fStatusView = BLayoutBuilder::Grid<>(this, 5.0, 0.0)
 		.Add(coordinate_box, 0, 0)
 		.Add(mag_state_view, 1, 0)
-		.Add(fHelpView, 0, 2, 3)
-		.Add(fCardLayout, 2, 0, 2, 2);
+		.AddGlue(2, 0)
+		.Add(fHelpView, 0, 1, 3, 1)
+		.Add(fCardLayout, 3, 0, 2, 2);
 	fStatusView->SetMinColumnWidth(0, StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)"));
 
 	fCardLayout->SetVisibleItem(TOOLS_VIEW);
@@ -155,6 +156,13 @@ void
 StatusView::SetMagnifyingScale(float mag)
 {
 	mag_state_view->SetMagnificationLevel(mag);
+}
+
+
+void
+StatusView::SetHelpMessage(const char* s)
+{
+	fHelpView->SetText(s);
 }
 
 

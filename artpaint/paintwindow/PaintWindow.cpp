@@ -93,7 +93,7 @@ struct menu_item {
 
 PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		const BMessage& settings)
-	: BWindow(frame, name, B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+	: BWindow(frame, name, B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
 		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE | B_AUTO_UPDATE_SIZE_LIMITS)
 	, fSettings(settings)
 	, fImageView(NULL)
@@ -241,24 +241,30 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		fContainerBox = new BBox("container_for_controls");
 		fContainerBox->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-		fImageSizeWindow = new BWindow(BRect(100, 100, 320, 200), "Canvas Size",
+		fImageSizeWindow = new BWindow(BRect(0, 0, 175, 125), "Canvas Size",
 			B_MODAL_WINDOW_LOOK, B_FLOATING_SUBSET_WINDOW_FEEL, B_NOT_MOVABLE |
 			B_NOT_RESIZABLE | B_NOT_ZOOMABLE);
 
 		fImageSizeWindow->AddToSubset(this);
 
 		BGridLayout* containerLayout = BLayoutBuilder::Grid<>(
-			 fImageSizeWindow, 5.0, 0.0)
-			.Add(fWidthNumberControl, 0, 0)
-			.Add(fHeightNumberControl, 0, 1)
-			.Add(fSetSizeButton, 1, 0)
-			.Add(popUpList, 1, 1)
-			.SetInsets(10.0, 2.0, 5.0, 2.0);
+			 fImageSizeWindow, 5.0, 5.0)
+			.Add(fWidthNumberControl, 0, 0, 0, 0)
+			.Add(fWidthNumberControl->CreateLabelLayoutItem(), 0, 0)
+			.Add(fWidthNumberControl->CreateTextViewLayoutItem(), 1, 0)
+			.Add(fHeightNumberControl, 0, 1, 0, 0)
+			.Add(fHeightNumberControl->CreateLabelLayoutItem(), 0, 1)
+			.Add(fHeightNumberControl->CreateTextViewLayoutItem(), 1, 1)
+			.Add(fSetSizeButton, 1, 2)
+			.Add(popUpList, 2, 0)
+			.SetInsets(10.0, 2.0, 0.0, 2.0);
+		containerLayout->SetMinColumnWidth(2, 15.0);
 
 		BMessage msg(HS_TOOL_HELP_MESSAGE);
 		msg.AddString("message", _StringForId(SELECT_CANVAS_SIZE_STRING));
 		PostMessage(&msg, this);
 
+		fImageSizeWindow->ResizeToPreferred();
 		fImageSizeWindow->CenterIn(Frame());
 		fImageSizeWindow->Activate();
 		fImageSizeWindow->Show();
