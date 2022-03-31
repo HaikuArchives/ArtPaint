@@ -272,7 +272,7 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 
 	BGroupLayout *inner = BLayoutBuilder::Group<>(B_VERTICAL, 0)
 		.Add(fBackground)
-		.SetInsets(-1.0, -1.0, -1.0, -1.0);
+		.SetInsets(-1.0, -2.0, -2.0, -1.0);
 
 	BGroupLayout* outer = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(inner);
