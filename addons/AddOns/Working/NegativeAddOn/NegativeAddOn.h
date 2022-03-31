@@ -17,7 +17,7 @@ public:
 			~NegativeAddOnManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
-char*		ReturnName() { return "Negative"; }
+const char*	ReturnName() { return "Negative"; }
 };
 
 #endif

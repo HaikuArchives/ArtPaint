@@ -358,12 +358,12 @@ void BrightnessManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* BrightnessManipulator::ReturnName()
+const char* BrightnessManipulator::ReturnName()
 {
 	return "Brightness";
 }
 
-char* BrightnessManipulator::ReturnHelpString()
+const char* BrightnessManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the image brightness.";
 }

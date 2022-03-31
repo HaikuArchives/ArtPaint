@@ -19,7 +19,7 @@ public:
 			~AHEManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
-char*		ReturnName() { return "Adaptive Histogram Equalization"; }
+const char*	ReturnName() { return "Adaptive Histogram Equalization"; }
 };
 
 #endif	// _AHE_MANIPULATOR_H

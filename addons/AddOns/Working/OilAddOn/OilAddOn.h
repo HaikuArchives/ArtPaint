@@ -19,7 +19,7 @@ public:
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 
-char*		ReturnName() { return "Oil"; }
+const char*	ReturnName() { return "Oil"; }
 };
 
 #endif

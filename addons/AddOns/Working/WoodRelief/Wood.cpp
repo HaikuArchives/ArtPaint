@@ -82,7 +82,7 @@ BBitmap* WoodManipulator::ManipulateBitmap(BBitmap *original,Selection *selectio
 	return original;
 }
 
-char* WoodManipulator::ReturnName()
+const char* WoodManipulator::ReturnName()
 {
 	return "Wood";
 }
