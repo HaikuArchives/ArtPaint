@@ -20,7 +20,7 @@ class PaintWindow;
 class PaintWindowMenuItem : public BMenuItem {
 public:
 						PaintWindowMenuItem(const char* label, BMessage* message,
-							char shortcut = NULL, uint32 modifiers = 0,
+							char shortcut = 0, uint32 modifiers = 0,
 							PaintWindow* pw = NULL, const char* help = NULL);
 	virtual				~PaintWindowMenuItem();
 
