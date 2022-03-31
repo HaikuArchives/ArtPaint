@@ -137,7 +137,9 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 	fBackground = new BackgroundView(BRect(0, 0, 0, 0));
 
 	fVerticalScrollbar = fBackground->ScrollBar(B_VERTICAL);
+	fVerticalScrollbar->SetSteps(8.0, 32.0);
 	fHorizontalScrollbar = fBackground->ScrollBar(B_HORIZONTAL);
+	fHorizontalScrollbar->SetSteps(8.0, 32.0);
 
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
 		// we need to show the create canvas area
