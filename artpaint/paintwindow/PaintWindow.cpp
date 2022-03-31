@@ -94,7 +94,7 @@ struct menu_item {
 PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		const BMessage& settings)
 	: BWindow(frame, name, B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE)//| B_AUTO_UPDATE_SIZE_LIMITS)
+		B_WILL_ACCEPT_FIRST_CLICK | B_NOT_ANCHORED_ON_ACTIVATE | B_AUTO_UPDATE_SIZE_LIMITS)
 	, fSettings(settings)
 	, fImageView(NULL)
 	, fBackground(NULL)
@@ -133,15 +133,6 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		fStatusView = new StatusView();
 		fStatusView->DisplayNothing();
 	}
-
-	/*fHorizontalScrollbar = new BScrollBar("horizontal", NULL, 0, 0, B_HORIZONTAL);
-    fHorizontalScrollbar->SetRange(0.0, 0.0);
-    fHorizontalScrollbar->SetSteps(8.0, 32.0);
-
-    fVerticalScrollbar = new BScrollBar("vertical", NULL, 0, 0, B_VERTICAL);
-    fVerticalScrollbar->SetRange(0.0, 0.0);
-    fVerticalScrollbar->SetSteps(8.0, 32.0);
-	*/
 
 	// make the background view (the backround for image)
 	fBackground = new BackgroundView(BRect(0, 0, 0, 0));
@@ -1316,8 +1307,6 @@ PaintWindow::AddImageView()
 
 	// put the view as target for scrollbars
 	fBackground->SetTarget(fImageView);
-	//fHorizontalScrollbar->SetTarget(fImageView);
-	//fVerticalScrollbar->SetTarget(fImageView);
 	// Change the regular help-view's message.
 //	BMessage *help_message = new BMessage(HS_REGULAR_HELP_MESSAGE);
 //	help_message->AddString("message",HS_DRAW_MODE_HELP_MESSAGE);
@@ -1326,9 +1315,6 @@ PaintWindow::AddImageView()
 
 	// Change the menu-mode to enable all items.
 	_ChangeMenuMode(FULL_MENU);
-
-	// Add the view to window's view hierarchy.
-	//fBackground->AddChild(fImageView);
 
 	// Adjust image's position and size.
 	fImageView->adjustSize();

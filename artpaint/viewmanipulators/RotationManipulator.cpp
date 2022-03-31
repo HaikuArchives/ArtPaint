@@ -629,15 +629,9 @@ RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 	BRect bounds = fTextControl->TextView()->Bounds();
 	fTextControl->TextView()->SetExplicitMaxSize(BSize(StringWidth("-999.99'"), bounds.Height()));
 
-	//AddChild(fTextControl);
 	SetLayout(BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fTextControl)
 	);
-
-	//fTextControl->ResizeToPreferred();
-
-	//ResizeTo(min_c(fTextControl->Frame().Width(), rect.Width()),
-	//	min_c(fTextControl->Frame().Height(), rect.Height()));
 }
 
 

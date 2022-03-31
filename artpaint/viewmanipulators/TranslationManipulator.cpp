@@ -475,34 +475,10 @@ TranslationManipulatorView::TranslationManipulatorView(BRect rect,
 {
 	fXControl = new NumberControl("X:", "9999˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	//AddChild(fXControl);
-	//fXControl->MoveTo(rect.LeftTop());
-	//fXControl->ResizeToPreferred();
-	//float divider = fXControl->Divider();
-	//fXControl->ResizeBy(fXControl->TextView()->StringWidth("99999")
-	//	- fXControl->TextView()->Bounds().Width(), 0);
-	//fXControl->TextView()->ResizeBy(fXControl->TextView()->StringWidth("99999")
-	//	- fXControl->TextView()->Bounds().Width(), 0);
-
-	//fXControl->SetDivider(divider);
-
-	//BRect frame_rect = fXControl->Frame();
-	//frame_rect.OffsetBy(frame_rect.Width() + 10,0);
 
 	fYControl = new NumberControl("Y:", "9999˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	//AddChild(fYControl);
-	//fYControl->MoveTo(frame_rect.LeftTop());
-	//fYControl->ResizeToPreferred();
-	//divider = fYControl->Divider();
-	//fYControl->ResizeBy(fYControl->TextView()->StringWidth("99999")
-	//	- fYControl->TextView()->Bounds().Width(), 0);
-	//fYControl->TextView()->ResizeBy(fYControl->TextView()->StringWidth("99999")
-	//	- fYControl->TextView()->Bounds().Width(), 0);
-	//fYControl->SetDivider(divider);
 
-	//ResizeTo(min_c(fYControl->Frame().right, rect.Width()),
-	//	min_c(fYControl->Frame().Height(), rect.Height()));
 	SetLayout(BLayoutBuilder::Group<>(this, B_HORIZONTAL)
 		.Add(fXControl)
 		.Add(fYControl)

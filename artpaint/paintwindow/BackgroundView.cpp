@@ -13,7 +13,6 @@
 #include "PaintWindow.h"
 #include "Patterns.h"
 
-#include <stdio.h>
 
 BackgroundView::BackgroundView(BRect frame)
 			: BScrollView ("background", NULL, B_WILL_DRAW | B_FRAME_EVENTS |
