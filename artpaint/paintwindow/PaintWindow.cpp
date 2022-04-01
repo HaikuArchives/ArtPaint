@@ -396,8 +396,11 @@ void
 PaintWindow::FrameResized(float newWidth, float newHeight)
 {
 	fSettings.ReplaceRect(skFrame, Frame());
-	if (!fImageSizeWindow->IsHidden())
-		fImageSizeWindow->CenterIn(Frame());
+	if (fImageSizeWindow && fImageSizeWindow->Lock()) {
+		if (!fImageSizeWindow->IsHidden())
+			fImageSizeWindow->CenterIn(Frame());
+		fImageSizeWindow->Unlock();
+	}
 }
 
 
@@ -405,8 +408,11 @@ void
 PaintWindow::FrameMoved(BPoint newPosition)
 {
 	fSettings.ReplaceRect(skFrame, Frame());
-	if (!fImageSizeWindow->IsHidden())
-		fImageSizeWindow->CenterIn(Frame());
+	if (fImageSizeWindow && fImageSizeWindow->Lock()) {
+		if (!fImageSizeWindow->IsHidden())
+			fImageSizeWindow->CenterIn(Frame());
+		fImageSizeWindow->Unlock();
+	}
 }
 
 
@@ -506,7 +512,7 @@ PaintWindow::MessageReceived(BMessage *message)
 
 		case HS_RECENT_IMAGE_SIZE: {
 			// This comes from the recent image-size pop-up-list.
-			if (fImageSizeWindow->Lock()) {
+			if (fImageSizeWindow && fImageSizeWindow->Lock()) {
 				fWidthNumberControl->SetValue(message->FindInt32("width"));
 				fHeightNumberControl->SetValue(message->FindInt32("height"));
 				fImageSizeWindow->Unlock();
@@ -917,7 +923,7 @@ PaintWindow::DisplayCoordinates(BPoint point, BPoint reference, bool useReferenc
 
 	if (fSetSizeButton != NULL) {
 		// if the window is in resize mode display dimensions here too
-		if (fImageSizeWindow->Lock()) {
+		if (fImageSizeWindow && fImageSizeWindow->Lock()) {
 			fWidthNumberControl->SetValue(int32(point.x));
 			fHeightNumberControl->SetValue(int32(point.y));
 			fImageSizeWindow->Unlock();
