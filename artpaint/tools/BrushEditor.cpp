@@ -81,7 +81,6 @@ BrushEditor::BrushEditor(Brush* brush)
 	fBrushWidth =
 		new NumberSliderControl(StringServer::ReturnString(WIDTH_STRING), "0",
 		message, 0, 100, false);
-	AddChild(fBrushWidth);
 
 	message = new BMessage(kBrushHeightChanged);
 	message->AddInt32("value", int32(fBrushInfo.height));
@@ -89,7 +88,6 @@ BrushEditor::BrushEditor(Brush* brush)
 	fBrushHeight =
 		new NumberSliderControl(StringServer::ReturnString(HEIGHT_STRING), "0",
 		message, 0, 100, false);
-	AddChild(fBrushHeight);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.fade_length));
@@ -97,18 +95,20 @@ BrushEditor::BrushEditor(Brush* brush)
 	fBrushFade =
 		new NumberSliderControl(StringServer::ReturnString(FADE_STRING), "0",
 		message, 0, 100, false);
-	AddChild(fBrushFade);
 
 	BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
 	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
+		.Add(fBrushWidth, 0, 0, 0, 0)
 		.Add(fBrushWidth->LabelLayoutItem(), 0, 0)
 		.Add(fBrushWidth->TextViewLayoutItem(), 1, 0)
 		.Add(fBrushWidth->Slider(), 2, 0)
+		.Add(fBrushHeight, 0, 1, 0, 0)
 		.Add(fBrushHeight->LabelLayoutItem(), 0, 1)
 		.Add(fBrushHeight->TextViewLayoutItem(), 1, 1)
 		.Add(fBrushHeight->Slider(), 2, 1)
+		.Add(fBrushFade, 0, 2, 0, 0)
 		.Add(fBrushFade->LabelLayoutItem(), 0, 2)
 		.Add(fBrushFade->TextViewLayoutItem(), 1, 2)
 		.Add(fBrushFade->Slider(), 2, 2);
