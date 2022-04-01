@@ -63,7 +63,8 @@ LayerWindow::LayerWindow(BRect frame)
 
 	scroll_bar = new BScrollBar(BRect(0,0,B_V_SCROLL_BAR_WIDTH-1,100),"layer_window_scroll_bar",list_view,0,0,B_VERTICAL);
 	scroll_bar->MoveTo(list_view->Frame().RightTop()+BPoint(2,0));
-	scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,100);
+	scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,
+		frame.Height() - list_view->Frame().top);
 	AddChild(scroll_bar);
 
 	layer_count = 0;
