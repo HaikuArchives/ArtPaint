@@ -25,6 +25,6 @@ public:
 			~EnhanceEdgesManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
-char*		ReturnName();
+const char*	ReturnName();
 };
 #endif

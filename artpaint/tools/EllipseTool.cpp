@@ -120,9 +120,10 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			snooze(20 * 1000);
 		}
+
 		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 		bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
-		bool use_anti_aliasing = false;
+		bool use_anti_aliasing = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
 		drawer->DrawEllipse(bitmap_rect,RGBColorToBGRA(c), use_fill,
 			use_anti_aliasing, selection);
 		delete drawer;
@@ -202,21 +203,31 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 			new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
 				message);
 
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(_SeparatorView())
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
+		message->AddInt32("value", 0x00000000);
+
+		fAntiAlias =
+			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			message);
+
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFillEllipse)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(5.0)
-			.Add(_SeparatorView())
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fCorner2Corner)
-			.End()
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
 				.Add(fCenter2Corner)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
+			.End()
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
+				.Add(fAntiAlias)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
@@ -229,6 +240,9 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
 			fCenter2Corner->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
+			fAntiAlias->SetValue(B_CONTROL_ON);
 	}
 }
 
@@ -241,18 +255,5 @@ EllipseToolConfigView::AttachedToWindow()
 	fFillEllipse->SetTarget(this);
 	fCorner2Corner->SetTarget(this);
 	fCenter2Corner->SetTarget(this);
-}
-
-
-BSeparatorView*
-EllipseToolConfigView::_SeparatorView() const
-{
-	BSeparatorView* view =
-		new BSeparatorView(StringServer::ReturnString(MODE_STRING),
-			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-			B_ALIGN_VERTICAL_CENTER));
-	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
-	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	return view;
+	fAntiAlias->SetTarget(this);
 }

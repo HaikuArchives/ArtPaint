@@ -637,9 +637,9 @@ status_t BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool f
 	circle_bounds = circle_bounds & bitmap_bounds;
 	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
 		if (fill == TRUE) {
-			register int32 x = 0;
-			register int32 y = (int32)radius;
-			register int32 p = (int32)(1-radius);
+			int32 x = 0;
+			int32 y = (int32)radius;
+			int32 p = (int32)(1-radius);
 			for (int32 dx=-x;dx<=x;dx++) {
 				SetPixel(center + BPoint(dx,y),color);
 				SetPixel(center + BPoint(dx,-y),color);
@@ -662,13 +662,13 @@ status_t BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool f
 				else {
 					p = p + 2 * (x - y) + 1;
 				}
-				for (register int32 dx=-x;dx<=x;dx++)
+				for (int32 dx=-x;dx<=x;dx++)
 					SetPixel(center + BPoint(dx,-y),color);
-				for (register int32 dx=-y;dx<=y;dx++)
+				for (int32 dx=-y;dx<=y;dx++)
 					SetPixel(center + BPoint(dx,-x),color);
-				for (register int32 dx=-y;dx<=y;dx++)
+				for (int32 dx=-y;dx<=y;dx++)
 					SetPixel(center + BPoint(dx,x),color);
-				for (register int32 dx=-x;dx<=x;dx++)
+				for (int32 dx=-x;dx<=x;dx++)
 					SetPixel(center + BPoint(dx,y),color);
 			}
 		}
@@ -712,9 +712,9 @@ status_t BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool f
 	}
 	else {
 		if (fill == TRUE) {
-			register int32 x = 0;
-			register int32 y = (int32)radius;
-			register int32 p = (int32)(1-radius);
+			int32 x = 0;
+			int32 y = (int32)radius;
+			int32 p = (int32)(1-radius);
 			for (int32 dx=-x;dx<=x;dx++) {
 				SetPixel(center + BPoint(dx,y),color,sel);
 				SetPixel(center + BPoint(dx,-y),color,sel);
@@ -737,13 +737,13 @@ status_t BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool f
 				else {
 					p = p + 2 * (x - y) + 1;
 				}
-				for (register int32 dx=-x;dx<=x;dx++)
+				for (int32 dx=-x;dx<=x;dx++)
 					SetPixel(center + BPoint(dx,-y),color,sel);
-				for (register int32 dx=-y;dx<=y;dx++)
+				for (int32 dx=-y;dx<=y;dx++)
 					SetPixel(center + BPoint(dx,-x),color,sel);
-				for (register int32 dx=-y;dx<=y;dx++)
+				for (int32 dx=-y;dx<=y;dx++)
 					SetPixel(center + BPoint(dx,x),color,sel);
-				for (register int32 dx=-x;dx<=x;dx++)
+				for (int32 dx=-x;dx<=x;dx++)
 					SetPixel(center + BPoint(dx,y),color,sel);
 			}
 		}

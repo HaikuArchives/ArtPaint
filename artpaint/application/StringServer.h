@@ -14,6 +14,7 @@
 enum languages {
 	ENGLISH_LANGUAGE,
 	FINNISH_LANGUAGE,
+	DUTCH_LANGUAGE,
 	GERMAN_LANGUAGE,
 	FRENCH_LANGUAGE,
 	SPANISH_LANGUAGE
@@ -159,6 +160,7 @@ enum string_id {
 	OPEN_PROJECT_HELP_STRING,
 	OPEN_PROJECT_STRING,
 	OPEN_STRING,
+	OPTIONS_STRING,
 	PALETTE_WINDOW_NAME_STRING,
 	PASTE_AS_NEW_LAYER_HELP_STRING,
 	PASTE_AS_NEW_LAYER_STRING,
@@ -315,15 +317,12 @@ enum string_id {
 	TEXT_TOOL_IN_USE_STRING,
 	TRANSPARENCY_TOOL_IN_USE_STRING,
 
-
-
 	// Here begin the constants for manipulator help-strings
 	DO_CHANGE_TRANSPARENCY_HELP_STRING,
 	DO_CROP_HELP_STRING,
 	DO_ROTATE_HELP_STRING,
 	DO_TRANSLATE_HELP_STRING,
 	DO_SCALE_HELP_STRING,
-
 
 	// Here begin the constants for use in the about-window
 	ABOUT_1_TEXT_STRING,
@@ -349,6 +348,7 @@ static	languages	current_language;
 
 static	const	char*	return_english_string(string_id);
 static	const	char*	return_finnish_string(string_id);
+static	const	char*	return_dutch_string(string_id);
 static	const	char*	return_german_string(string_id);
 static	const	char*	return_french_string(string_id);
 static	const	char*	return_spanish_string(string_id);

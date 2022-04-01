@@ -44,12 +44,10 @@ public:
 	virtual	void				AttachedToWindow();
 
 private:
-			BSeparatorView*		_SeparatorView() const;
-
-private:
 			BCheckBox*			fFillEllipse;
 			BRadioButton*		fCorner2Corner;
 			BRadioButton*		fCenter2Corner;
+			BCheckBox*			fAntiAlias;
 };
 
 #endif	// ELLIPSE_TOOL_H

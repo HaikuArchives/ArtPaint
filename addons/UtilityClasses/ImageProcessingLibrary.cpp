@@ -361,7 +361,7 @@ void ImageProcessingLibrary::convolve_1d_fixed(uint32 *s, uint32 *t,int32 length
 		uint32 word;
 	} c;
 
-	for (register int32 x=0;x<length;++x) {
+	for (int32 x=0;x<length;++x) {
 		int32 red=0;
 		int32 green=0;
 		int32 blue=0;

@@ -91,8 +91,8 @@ int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
-char*		ReturnHelpString() { return "Click on the image to set the twirl center. Use sliders to adjust twirl."; }
-char*		ReturnName() { return "Twirl"; }
+const char*	ReturnHelpString() { return "Click on the image to set the twirl center. Use sliders to adjust twirl."; }
+const char*	ReturnName() { return "Twirl"; }
 
 ManipulatorSettings*	ReturnSettings();
 
@@ -122,7 +122,7 @@ void	ChangeSettings(TwirlManipulatorSettings *s);
 
 
 #ifdef __POWERPC__
-inline 	asm	float reciprocal_of_square_root(register float number)
+inline 	asm	float reciprocal_of_square_root(float number)
 {
 	machine		603
 	frsqrte		fp1,number;	// Estimates reciprocal of square-root
@@ -130,7 +130,7 @@ inline 	asm	float reciprocal_of_square_root(register float number)
 }
 #else
 // This is very slow.
-inline float reciprocal_of_square_root(register float number)
+inline float reciprocal_of_square_root(float number)
 {
 	return 1.0/sqrt(number);
 }

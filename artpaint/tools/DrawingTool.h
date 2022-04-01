@@ -17,12 +17,23 @@
 #include <Box.h>
 #include <String.h>
 
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
 
 class BBitmap;
 class BFile;
+class BGridLayout;
 class BHandler;
+class BSeparatorView;
 class ImageView;
 class ToolScript;
+
+
+const float kWidgetInset 	= 5.0;
+const float kWidgetSpacing 	= 5.0;
 
 
 class DrawingTool {
@@ -85,6 +96,10 @@ public:
 	virtual	void			MessageReceived(BMessage* message);
 
 			DrawingTool*	Tool() const { return fTool; }
+
+			BSeparatorView*	SeparatorView(const char* label) const;
+			BGridLayout*	LayoutSliderGrid(
+								ArtPaint::Interface::NumberSliderControl* slider) const;
 
 private:
 			DrawingTool*	fTool;

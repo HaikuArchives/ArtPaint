@@ -96,8 +96,8 @@ int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
-char*		ReturnHelpString() { return "Click on the image to set the wave center. Use the sliders to adjust wave."; }
-char*		ReturnName() { return "Wave"; }
+const char*	ReturnHelpString() { return "Click on the image to set the wave center. Use the sliders to adjust wave."; }
+const char*	ReturnName() { return "Wave"; }
 
 ManipulatorSettings*	ReturnSettings();
 
@@ -129,14 +129,14 @@ void	ChangeSettings(WaveManipulatorSettings *s);
 
 
 #ifdef __POWERPC__
-inline 	asm	float reciprocal_of_square_root(register float number)
+inline 	asm	float reciprocal_of_square_root(float number)
 {
 	machine		604
 	frsqrte		fp1,number;	// Estimates reciprocal of square-root
 	blr
 }
 #else
-float reciprocal_of_square_root(register float number)
+float reciprocal_of_square_root(float number)
 {
 	return 1.0 / sqrt(number);
 }

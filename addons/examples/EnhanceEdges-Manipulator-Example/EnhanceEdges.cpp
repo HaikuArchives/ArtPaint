@@ -107,7 +107,7 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 	return original;
 }
 
-char* EnhanceEdgesManipulator::ReturnName()
+const char* EnhanceEdgesManipulator::ReturnName()
 {
 	return "Enhance Edges";
 }

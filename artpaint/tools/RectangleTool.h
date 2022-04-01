@@ -44,9 +44,6 @@ public:
 	virtual	void				AttachedToWindow();
 
 private:
-			BSeparatorView*		_SeparatorView() const;
-
-private:
 			BCheckBox*			fFillRectangle;
 			BRadioButton*		fCorner2Corner;
 			BRadioButton*		fCenter2Corner;

@@ -213,11 +213,11 @@ int32 BlurManipulator::VerticalBlur(int32 thread_number)
 	int32 left = (final_width) / thread_count * thread_number;
 	int32 right = min_c(left + (final_width+1) / thread_count,final_width);
 	float status_bar_update_amount = 50.0 / thread_count / (right-left) * 40;
-	register int32 height = final_height;
-	register uint32 *source_bits = tall_bits;
-	register int32 source_bpr = tall_bpr;
-	register uint32 *target_bits = wide_bits;
-	register int32 target_bpr = wide_bpr;
+	int32 height = final_height;
+	uint32 *source_bits = tall_bits;
+	int32 source_bpr = tall_bpr;
+	uint32 *target_bits = wide_bits;
+	int32 target_bpr = wide_bpr;
 	bool blur_alpha = settings.blur_alpha;
 
 	source_bits += MAX_BLUR_AMOUNT*source_bpr;
@@ -225,11 +225,11 @@ int32 BlurManipulator::VerticalBlur(int32 thread_number)
 		uint8 bytes[4];
 		uint32 word;
 	} color;
-	register float red;
-	register float green;
-	register float blue;
-	register float alpha;
-	register float divider = 1.0/(2*blur_amount+1);
+	float red;
+	float green;
+	float blue;
+	float alpha;
+	float divider = 1.0/(2*blur_amount+1);
 	BWindow *status_bar_window = NULL;
 	if (status_bar != NULL)
 		status_bar_window = status_bar->Window();
@@ -294,21 +294,21 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 	int32 top = (final_height) / thread_count * thread_number;
 	int32 bottom = min_c(top + (final_height+1) / thread_count,final_height);
 	float status_bar_update_amount = 50.0 / thread_count / (bottom-top)*40.0;
-	register int32 width = final_width;
-	register uint32 *source_bits = wide_bits;
-	register int32 source_bpr = wide_bpr;
-	register uint32 *target_bits = final_bits;
-	register int32 target_bpr = final_bpr;
+	int32 width = final_width;
+	uint32 *source_bits = wide_bits;
+	int32 source_bpr = wide_bpr;
+	uint32 *target_bits = final_bits;
+	int32 target_bpr = final_bpr;
 	bool blur_alpha = settings.blur_alpha;
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color;
-	register float red;
-	register float green;
-	register float blue;
-	register float alpha;
-	register float divider = 1.0/(2*blur_amount+1);
+	float red;
+	float green;
+	float blue;
+	float alpha;
+	float divider = 1.0/(2*blur_amount+1);
 	// In this loop we can use the sums that we already have calculated to remove the innermost
 	// loop.
 

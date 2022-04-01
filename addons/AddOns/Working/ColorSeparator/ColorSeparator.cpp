@@ -205,12 +205,12 @@ void ColorSeparatorManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* ColorSeparatorManipulator::ReturnName()
+const char* ColorSeparatorManipulator::ReturnName()
 {
 	return "Color separator";
 }
 
-char* ColorSeparatorManipulator::ReturnHelpString()
+const char* ColorSeparatorManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the image saturation.";
 }

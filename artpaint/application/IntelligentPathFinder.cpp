@@ -46,7 +46,10 @@ IntelligentPathFinder::IntelligentPathFinder(BBitmap *bm)
 
 	expanded_bits = new uint8*[(right_border>>3)+1];
 	for (int32 i=0;i<(right_border>>3)+1;i++) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Walloc-size-larger-than="
 		expanded_bits[i] = new uint8[bottom_border];
+#pragma GCC diagnostic pop
 		for (int32 y=0;y<bottom_border;y++) {
 			expanded_bits[i][y] = 0x00;
 		}

@@ -384,12 +384,12 @@ void ContrastManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* ContrastManipulator::ReturnName()
+const char* ContrastManipulator::ReturnName()
 {
 	return "Contrast";
 }
 
-char* ContrastManipulator::ReturnHelpString()
+const char* ContrastManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the image contrast.";
 }

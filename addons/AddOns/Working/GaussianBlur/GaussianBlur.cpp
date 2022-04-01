@@ -254,12 +254,12 @@ void GaussianBlurManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* GaussianBlurManipulator::ReturnName()
+const char* GaussianBlurManipulator::ReturnName()
 {
 	return "Gaussian blur";
 }
 
-char* GaussianBlurManipulator::ReturnHelpString()
+const char* GaussianBlurManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the size of the blur.";
 }

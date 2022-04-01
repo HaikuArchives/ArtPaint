@@ -84,7 +84,7 @@ BBitmap* MarbleManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	return original;
 }
 
-char* MarbleManipulator::ReturnName()
+const char* MarbleManipulator::ReturnName()
 {
 	return "Marble";
 }
@@ -108,7 +108,7 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 	if (progress_bar != NULL)
 		progress_bar_window = progress_bar->Window();
 
-	register uint32 *source = (uint32*)source_bitmap->Bits();
+	uint32 *source = (uint32*)source_bitmap->Bits();
 	int32 source_bpr = source_bitmap->BytesPerRow()/4;
 
 	PerlinNoiseGenerator generator(0.5,7);

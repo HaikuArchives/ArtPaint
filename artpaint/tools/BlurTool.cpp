@@ -236,28 +236,16 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		fBlurSize =
 			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
 			"1", message, 1, 100, false);
-		layout->AddView(fBlurSize);
 
-		BSeparatorView* view =
-			new BSeparatorView(StringServer::ReturnString(MODE_STRING),
-			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
-			B_ALIGN_VERTICAL_CENTER));
-		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		BGridLayout* sizeLayout = LayoutSliderGrid(fBlurSize);
 
-		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
-			.Add(fBlurSize->LabelLayoutItem(), 0, 0)
-			.Add(fBlurSize->TextViewLayoutItem(), 1, 0)
-			.Add(fBlurSize->Slider(), 2, 0);
-		gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
-
-		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(gridLayout->View())
-			.AddStrut(5.0)
-			.Add(view)
-			.AddGroup(B_HORIZONTAL)
-				.AddStrut(5.0)
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(sizeLayout)
+			.AddStrut(kWidgetSpacing)
+			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fContinuity)
+				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);

@@ -182,7 +182,7 @@ BBitmap* Halftone::ManipulateBitmap(BBitmap *original,Selection *selection,BStat
 //	return ncandidate_dither_halftone(original,selection,status_bar);
 }
 
-char* Halftone::ReturnName()
+const char* Halftone::ReturnName()
 {
 	return "Halftone";
 }

@@ -387,12 +387,12 @@ void ThresholdManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* ThresholdManipulator::ReturnName()
+const char* ThresholdManipulator::ReturnName()
 {
 	return "Threshold";
 }
 
-char* ThresholdManipulator::ReturnHelpString()
+const char* ThresholdManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the thresholding value.";
 }

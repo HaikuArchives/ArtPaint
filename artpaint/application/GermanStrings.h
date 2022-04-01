@@ -157,6 +157,7 @@
 #define	GERMAN_OK_STRING								"OK"
 #define GERMAN_CANCEL_STRING							"Abbrechen"
 #define	GERMAN_OPEN_STRING								"Öffnen"
+#define GERMAN_OPTIONS_STRING							"Optionen"
 #define	GERMAN_OPAQUE_STRING							"Deckend"
 #define	GERMAN_OPEN_IMAGE_HELP_STRING					"Lädt ein Bild von der Festplatte."
 #define	GERMAN_OPEN_IMAGE_STRING						"Bild öffnen…"

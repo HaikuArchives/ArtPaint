@@ -389,12 +389,12 @@ void SharpnessManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-char* SharpnessManipulator::ReturnName()
+const char* SharpnessManipulator::ReturnName()
 {
 	return "Sharpness";
 }
 
-char* SharpnessManipulator::ReturnHelpString()
+const char* SharpnessManipulator::ReturnHelpString()
 {
 	return "Use the slider to set the image sharpness.";
 }

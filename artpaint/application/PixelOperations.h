@@ -186,7 +186,7 @@ inline uint32 bilinear_interpolation(uint32 p1,uint32 p2,uint32 p3,uint32 p4,flo
 // require accurate calculation.
 inline uint32 mix_2_pixels(uint32 p1,uint32 p2,float c)
 {
-	register float inv_c = 1.0-c;
+	float inv_c = 1.0-c;
 
 	return 	(((uint32)(((p1 >> 24) & 0xFF) * c)<<24) + ((uint32)(((p2 >> 24) & 0xFF) * inv_c)<<24)) |
 			(((uint32)(((p1 >> 16) & 0xFF) * c)<<16) + ((uint32)(((p2 >> 16) & 0xFF) * inv_c)<<16)) |
