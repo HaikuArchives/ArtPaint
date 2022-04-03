@@ -16,6 +16,9 @@
 #include <View.h>
 
 
+class BCardLayout;
+class BGridLayout;
+class BGroupLayout;
 class BStatusBar;
 class ColorContainer;
 class SelectedColorsView;
@@ -29,17 +32,12 @@ public:
 	virtual						~StatusView();
 
 			void				SetMagnifyingScale(float mag);
-			void				SetHelpMessage(const char* s) {
-									fHelpView->SetText(s);
-								}
+			void				SetHelpMessage(const char* s);
 			void				SetCoordinates(BPoint point, BPoint reference,
 									bool use_reference);
 
-			status_t			DisplayManipulatorView(BView* view);
 			BStatusBar*			DisplayProgressIndicator();
 			status_t			DisplayToolsAndColors();
-			status_t			RemoveToolsAndColors();
-			status_t			DisplayNothing();
 
 private:
 			BStringView*		coordinate_view;
@@ -49,21 +47,16 @@ private:
 			// This is the StatusBar that will be used in this status-view.
 			BStatusBar*			status_bar;
 
-			// This is the view that has been created by the manipulator
-			BView*				manipulator_view;
-
 			// These are the boxes that hold the string-views.
 			BBox*				coordinate_box;
-			BBox*				manipulator_box;
-
-			// These are picture-buttons for Cancel- and OK-messages.
-			HSPictureButton*	fOk;
-			HSPictureButton*	fCancel;
 
 			// These are views for selected tools and colors
 			// and the current color-set.
 			ColorContainer*		color_container;
 			SelectedColorsView*	selected_colors;
+
+			BCardLayout*		fCardLayout;
+			BGridLayout*		fStatusView;
 };
 
 

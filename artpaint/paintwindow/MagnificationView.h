@@ -21,7 +21,7 @@ class MagStringView;
 
 class MagnificationView : public BBox {
 public:
-								MagnificationView(BRect rect);
+								MagnificationView();
 
 	virtual	void				AttachedToWindow();
 	virtual	void				Draw(BRect updateRect);

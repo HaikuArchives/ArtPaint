@@ -6,13 +6,10 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <ClassInfo.h>
 #include <new>
-#include <StatusBar.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <Window.h>
 
 
 #include "ImageView.h"
@@ -23,11 +20,17 @@
 #include "TranslationManipulator.h"
 
 
+#include <ClassInfo.h>
+#include <LayoutBuilder.h>
+#include <StatusBar.h>
+#include <Window.h>
+
+
 using ArtPaint::Interface::NumberControl;
 
 
 TranslationManipulator::TranslationManipulator(BBitmap *bm)
-	:	StatusBarGUIManipulator()
+	:	WindowGUIManipulator()
 	, copy_of_the_preview_bitmap(NULL)
 {
 	preview_bitmap = bm;
@@ -429,11 +432,9 @@ void TranslationManipulator::SetPreviewBitmap(BBitmap *bm)
 
 
 BView*
-TranslationManipulator::MakeConfigurationView(float width, float height,
-	const BMessenger& target)
+TranslationManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view = new TranslationManipulatorView(BRect(0, 0, width - 1, height - 1)
-		,this, target);
+	config_view = new TranslationManipulatorView(this, target);
 	config_view->SetValues(settings->x_translation, settings->y_translation);
 	return config_view;
 }
@@ -464,42 +465,27 @@ TranslationManipulator::ReturnHelpString()
 // #pragma mark -- TranslationManipulatorView
 
 
-TranslationManipulatorView::TranslationManipulatorView(BRect rect,
+TranslationManipulatorView::TranslationManipulatorView(
 		TranslationManipulator* manipulator, const BMessenger& target)
-	: BView(rect, "configuration_view", B_FOLLOW_ALL, B_WILL_DRAW)
+	: WindowGUIManipulatorView()
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
 	fXControl = new NumberControl("X:", "9999˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	AddChild(fXControl);
-	fXControl->MoveTo(rect.LeftTop());
-	fXControl->ResizeToPreferred();
-	float divider = fXControl->Divider();
-	fXControl->ResizeBy(fXControl->TextView()->StringWidth("99999")
-		- fXControl->TextView()->Bounds().Width(), 0);
-	fXControl->TextView()->ResizeBy(fXControl->TextView()->StringWidth("99999")
-		- fXControl->TextView()->Bounds().Width(), 0);
-
-	fXControl->SetDivider(divider);
-
-	BRect frame_rect = fXControl->Frame();
-	frame_rect.OffsetBy(frame_rect.Width() + 10,0);
 
 	fYControl = new NumberControl("Y:", "9999˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	AddChild(fYControl);
-	fYControl->MoveTo(frame_rect.LeftTop());
-	fYControl->ResizeToPreferred();
-	divider = fYControl->Divider();
-	fYControl->ResizeBy(fYControl->TextView()->StringWidth("99999")
-		- fYControl->TextView()->Bounds().Width(), 0);
-	fYControl->TextView()->ResizeBy(fYControl->TextView()->StringWidth("99999")
-		- fYControl->TextView()->Bounds().Width(), 0);
-	fYControl->SetDivider(divider);
 
-	ResizeTo(min_c(fYControl->Frame().right, rect.Width()),
-		min_c(fYControl->Frame().Height(), rect.Height()));
+	SetLayout(BLayoutBuilder::Group<>(this, B_HORIZONTAL)
+		.Add(fXControl)
+		.Add(fYControl)
+	);
+
+	TranslationManipulatorSettings* settings
+		= (TranslationManipulatorSettings*)manipulator->ReturnSettings();
+	fXControl->SetValue(settings->x_translation);
+	fYControl->SetValue(settings->y_translation);
 }
 
 
@@ -515,6 +501,8 @@ TranslationManipulatorView::AttachedToWindow()
 	}
 
 	fXControl->MakeFocus(true);
+
+	WindowGUIManipulatorView::AttachedToWindow();
 }
 
 
@@ -531,7 +519,7 @@ TranslationManipulatorView::MessageReceived(BMessage* message)
 		}	break;
 
 		default: {
-			BView::MessageReceived(message);
+			WindowGUIManipulatorView::MessageReceived(message);
 		}	break;
 	}
 }
@@ -540,8 +528,13 @@ TranslationManipulatorView::MessageReceived(BMessage* message)
 void
 TranslationManipulatorView::SetValues(float x, float y)
 {
-	fXControl->SetValue(int32(x));
-	fYControl->SetValue(int32(y));
+	BWindow* window = Window();
+	if (window && window->Lock()) {
+		fXControl->SetValue(int32(x));
+		fYControl->SetValue(int32(y));
+
+		window->Unlock();
+	}
 }
 
 

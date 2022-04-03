@@ -172,6 +172,8 @@ private:
 			ImageSavePanel*		fImageSavePanel;
 			BFilePanel*			fProjectSavePanel;
 
+			BWindow*			fImageSizeWindow;
+
 			// The BEntrys should be replace by something else as they
 			// consume a file-descriptor.
 			BEntry				fImageEntry;
@@ -189,8 +191,6 @@ private:
 			// all the additional views take, used when resizing the window
 			// to fit image
 			BRect				fUserFrame;
-			float				fAdditionalWidth;
-			float				fAdditionalHeight;
 };
 
 

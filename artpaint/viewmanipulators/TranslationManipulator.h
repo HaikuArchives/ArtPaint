@@ -11,7 +11,7 @@
 
 #include "Cursors.h"
 #include "ManipulatorSettings.h"
-#include "StatusBarGUIManipulator.h"
+#include "WindowGUIManipulator.h"
 
 
 class Selection;
@@ -27,9 +27,9 @@ namespace ArtPaint {
 using ArtPaint::Interface::NumberControl;
 
 
-class TranslationManipulator: public StatusBarGUIManipulator {
+class TranslationManipulator : public WindowGUIManipulator {
 	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-	{ return StatusBarGUIManipulator::ManipulateBitmap(b, s, stb); }
+	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
 
 	BBitmap	*preview_bitmap;
 	BBitmap	*copy_of_the_preview_bitmap;
@@ -57,8 +57,7 @@ public:
 
 	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
 	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
-	BView*			MakeConfigurationView(float width, float height,
-						const BMessenger& target);
+	BView*		MakeConfigurationView(const BMessenger& target);
 	void			SetPreviewBitmap(BBitmap*);
 	void			Reset(Selection*);
 
@@ -92,9 +91,9 @@ public:
 };
 
 
-class TranslationManipulatorView : public BView {
+class TranslationManipulatorView : public WindowGUIManipulatorView {
 public:
-										TranslationManipulatorView(BRect rect,
+										TranslationManipulatorView(
 											TranslationManipulator* manipulator,
 											const BMessenger& target);
 	virtual								~TranslationManipulatorView() {}

@@ -21,6 +21,7 @@
 #include <Application.h>
 #include <Box.h>
 #include <Button.h>
+#include <LayoutBuilder.h>
 #include <MessageFilter.h>
 #include <Slider.h>
 #include <StringView.h>
@@ -39,7 +40,7 @@ filter_result MouseDownFilter(BMessage*, BHandler**, BMessageFilter*);
 
 class MagStringView : public BStringView {
 public:
-							MagStringView(BRect rect, const char* name,
+							MagStringView(const char* name,
 								const char* label);
 	virtual					~MagStringView();
 
@@ -48,9 +49,9 @@ public:
 };
 
 
-MagStringView::MagStringView(BRect rect, const char* name,
+MagStringView::MagStringView(const char* name,
 		const char* label)
-	: BStringView(rect, name, label)
+	: BStringView(name, label)
 {
 	AddFilter(new BMessageFilter(B_MOUSE_UP, MouseUpFilter));
 	AddFilter(new BMessageFilter(B_MOUSE_DOWN, MouseDownFilter));
@@ -77,35 +78,35 @@ MagStringView::MouseMoved(BPoint point, uint32 transit,
 // #pragma mark - MagnificationView
 
 
-MagnificationView::MagnificationView(BRect rect)
-	: BBox(rect, "magnificationView", B_FOLLOW_TOP | B_FOLLOW_LEFT,
-		B_WILL_DRAW | B_FRAME_EVENTS, B_PLAIN_BORDER)
+MagnificationView::MagnificationView()
+	: BBox("magnificationView", B_WILL_DRAW | B_FRAME_EVENTS | B_SUPPORTS_LAYOUT,
+	B_PLAIN_BORDER)
 {
 	char string[256];
 	sprintf(string,"%s: %.1f%%", StringServer::ReturnString(MAG_STRING), 1600.0);
 
-	float width, height;
-	rect.OffsetTo(4.0, 1.0);
-	fMagStringView = new MagStringView(rect, "magStringView", string);
-	fMagStringView->GetPreferredSize(&width, &height);
-	fMagStringView->ResizeTo(width, rect.Height() - 2.0);
-	AddChild(fMagStringView);
+	fMagStringView = new MagStringView("magStringView", string);
 
-	height = rect.Height() - 2.0;
-	fMinusButton = new BButton(rect, "minusButton", "-",
+	fMinusButton = new BButton("minusButton", "-",
 		new BMessage(HS_ZOOM_IMAGE_OUT));
-	AddChild(fMinusButton);
-	fMinusButton->ResizeTo(height, height);
 
-	fPlusButton = new BButton(rect, "plusButton", "+",
+	fPlusButton = new BButton("plusButton", "+",
 		new BMessage(HS_ZOOM_IMAGE_IN));
-	AddChild(fPlusButton);
-	fPlusButton->ResizeTo(height, height);
 
-	fMinusButton->MoveBy(width + 5.0, 0.0);
-	fPlusButton->MoveBy(width + 5.0 + height, 0.0);
+	fMinusButton->SetExplicitMaxSize(BSize(25, 25));
+	fMinusButton->SetExplicitMinSize(BSize(25, 25));
 
-	ResizeTo(fPlusButton->Frame().right + 1.0, Bounds().Height());
+	fPlusButton->SetExplicitMaxSize(BSize(25, 25));
+	fPlusButton->SetExplicitMinSize(BSize(25, 25));
+
+	BGridLayout* mainLayout = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
+		.Add(fMagStringView, 0, 0)
+		.Add(fMinusButton, 1, 0)
+		.Add(fPlusButton, 2, 0)
+		.SetInsets(3.0, 2.0, 3.0, 2.0);
+	mainLayout->SetMinColumnWidth(0, StringWidth(string));
+	mainLayout->SetMaxColumnWidth(1, 25);
+	mainLayout->SetMaxColumnWidth(2, 25);
 }
 
 
