@@ -299,7 +299,9 @@ bool Image::SetImageSize()
 }
 
 
-Layer* Image::AddLayer(BBitmap *bitmap,Layer *next_layer,bool add_to_front,float layer_transparency_coefficient)
+Layer*
+Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
+	float layer_transparency_coefficient, BRect* offset)
 {
 	bool create_layer = TRUE;
 	if (layer_list->CountItems() != 0) {
@@ -317,7 +319,8 @@ Layer* Image::AddLayer(BBitmap *bitmap,Layer *next_layer,bool add_to_front,float
 	// add a layer to correct position in the list
 	Layer *new_layer;
 	try {
-		new_layer = new Layer(BRect(0,0,image_width-1,image_height-1),layer_id,image_view,HS_NORMAL_LAYER,bitmap);
+		new_layer = new Layer(BRect(0,0,image_width-1,image_height-1),
+			layer_id,image_view, HS_NORMAL_LAYER, bitmap, offset);
 	}
 	catch (std::bad_alloc e) {
 		delete bitmap;

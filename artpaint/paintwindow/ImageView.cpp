@@ -1775,17 +1775,18 @@ void ImageView::Redo()
 	}
 }
 
-status_t ImageView::DoCopyOrCut(int32 layers,bool cut)
+status_t
+ImageView::DoCopyOrCut(int32 layers,bool cut)
 {
 	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
 		BBitmap *buffer;
+		BRect* offset;
 		bool ok_to_archive = TRUE;
 		if (layers == HS_MANIPULATE_CURRENT_LAYER)
 			buffer = the_image->ReturnActiveBitmap();
 		else
 			buffer = the_image->ReturnRenderedImage();
 		BMessage *bitmap_archive = new BMessage();
-
 		if (selection->IsEmpty() == TRUE) {
 			if (buffer->Archive(bitmap_archive) != B_OK)
 				ok_to_archive = FALSE;
@@ -1844,6 +1845,8 @@ status_t ImageView::DoCopyOrCut(int32 layers,bool cut)
 			be_clipboard->Clear();
 			BMessage *clipboard_message = be_clipboard->Data();
 			clipboard_message->AddMessage("image/bitmap",bitmap_archive);
+			if (selection->IsEmpty() == FALSE)
+				clipboard_message->AddRect("offset", selection->GetBoundingRect());
 			be_clipboard->Commit();
 			be_clipboard->Unlock();
 			delete bitmap_archive;
@@ -1863,7 +1866,8 @@ status_t ImageView::DoCopyOrCut(int32 layers,bool cut)
 }
 
 
-status_t ImageView::DoPaste()
+status_t
+ImageView::DoPaste()
 {
 	be_clipboard->Lock();
 	BMessage *bitmap_message = new BMessage();
@@ -1872,13 +1876,18 @@ status_t ImageView::DoPaste()
 		if (clipboard_message->FindMessage("image/bitmap",bitmap_message) == B_OK) {
 			if (bitmap_message != NULL) {
 				BBitmap *pasted_bitmap = new BBitmap(bitmap_message);
+				BRect offset;
+				clipboard_message->FindRect("offset", &offset);
 				delete bitmap_message;
 				if ((pasted_bitmap != NULL) && (pasted_bitmap->IsValid() == TRUE)) {
 					try {
-						if (the_image->AddLayer(pasted_bitmap,NULL,TRUE) != NULL) {
+						if (the_image->AddLayer(pasted_bitmap, NULL, TRUE,
+							1.0, &offset) != NULL) {
 						//	delete pasted_bitmap;
 							Invalidate();
-							LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+							LayerWindow::ActiveWindowChanged(Window(),
+								the_image->LayerList(),
+								the_image->ReturnThumbnailImage());
 							AddChange();
 						}
 					}

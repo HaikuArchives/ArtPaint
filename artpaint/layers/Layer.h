@@ -58,7 +58,8 @@ public:
 								Layer(BRect frame, int32 id,
 									ImageView* imageView,
 									layer_type type = HS_NORMAL_LAYER,
-									BBitmap* bitmap = NULL);
+									BBitmap* bitmap = NULL,
+									BRect* offset = NULL);
 								~Layer();
 
 			BBitmap*			Bitmap() const { return fLayerData; }
