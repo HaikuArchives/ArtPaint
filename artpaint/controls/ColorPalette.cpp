@@ -7,6 +7,28 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
+
+#include "ColorPalette.h"
+
+#include "CMYControl.h"
+#include "FileIdentificationStrings.h"
+#include "FilePanels.h"
+#include "FloaterManager.h"
+#include "HSVControl.h"
+#include "MessageConstants.h"
+#include "MessageFilters.h"
+#include "Patterns.h"
+#include "PaintApplication.h"
+#include "PaletteWindowClient.h"
+#include "ResourceServer.h"
+#include "RGBControl.h"
+#include "SettingsServer.h"
+#include "StatusView.h"
+#include "UtilityClasses.h"
+#include "YIQControl.h"
+#include "YUVControl.h"
+
+
 #include <Alert.h>
 #include <Bitmap.h>
 #include <Catalog.h>
@@ -18,30 +40,11 @@
 #include <PictureButton.h>
 #include <Resources.h>
 #include <Roster.h>
-#include <stdlib.h>
-#include <string.h>
 #include <TextControl.h>
 
 
-#include "FloaterManager.h"
-#include "ColorPalette.h"
-#include "MessageConstants.h"
-#include "SettingsServer.h"
-#include "FileIdentificationStrings.h"
-#include "StatusView.h"
-#include "RGBControl.h"
-#include "CMYControl.h"
-#include "HSVControl.h"
-#include "YIQControl.h"
-#include "YUVControl.h"
-#include "MessageFilters.h"
-#include "UtilityClasses.h"
-#include "StringServer.h"
-#include "ResourceServer.h"
-#include "Patterns.h"
-#include "PaintApplication.h"
-#include "PaletteWindowClient.h"
-#include "FilePanels.h"
+#include <stdlib.h>
+#include <string.h>
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -1092,7 +1095,6 @@ void ColorContainer::MouseDown(BPoint point)
 	}
 
 }
-
 
 
 void ColorContainer::MouseMoved(BPoint,uint32 transit,const BMessage*)

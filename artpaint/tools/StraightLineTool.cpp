@@ -20,7 +20,6 @@
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 

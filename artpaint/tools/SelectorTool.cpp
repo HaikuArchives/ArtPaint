@@ -23,7 +23,6 @@
 #include "Patterns.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 

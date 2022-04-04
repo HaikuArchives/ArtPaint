@@ -10,7 +10,6 @@
 #include "MessageConstants.h"
 #include "FlipManipulator.h"
 #include "ImageView.h"
-#include "StringServer.h"
 
 
 #include <AppDefs.h>

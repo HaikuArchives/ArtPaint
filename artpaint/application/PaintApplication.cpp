@@ -28,7 +28,6 @@
 #include "RefFilters.h"
 #include "ResourceServer.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 #include "ToolManager.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
@@ -75,10 +74,6 @@ PaintApplication::PaintApplication()
 	BMessage settings;
 	if (SettingsServer* server = SettingsServer::Instance())
 		server->GetApplicationSettings(&settings);
-
-	languages language = ENGLISH_LANGUAGE;
-	settings.FindInt32(skLanguage, (int32*)&language);
-	StringServer::SetLanguage(language);
 
 	// create the settings
 	_ReadPreferences();

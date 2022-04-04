@@ -21,7 +21,6 @@
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "StatusView.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 
 

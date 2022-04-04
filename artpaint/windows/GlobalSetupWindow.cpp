@@ -19,7 +19,6 @@
 #include "ManipulatorWindow.h"
 #include "NumberControl.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
 #include "UndoQueue.h"
@@ -59,13 +58,6 @@ const uint32 kSetUndoDisabled					= '_sud';
 const uint32 kSetUnlimitedUndo					= '_suu';
 const uint32 kSetAdjustableUndo					= '_sau';
 const uint32 kUndoDepthAdjusted					= '_uda';
-
-const uint32 kEnglishLanguageSet				= '_eng';
-const uint32 kGermanLanguageSet					= '_ger';
-const uint32 kFinnishLanguageSet				= '_fin';
-const uint32 kFrenchLanguageSet					= '_fre';
-const uint32 kSpanishLanguageSet				= '_spa';
-const uint32 kDutchLanguageSet					= '_dut';
 
 const uint32 kToolCursorMode					= '_too';
 const uint32 kCrossHairCursorMode				= '_cro';
@@ -373,161 +365,6 @@ GlobalSetupWindow::UndoControlView::_Update(int32 undoDepth, bool enableInput)
 }
 
 
-// #pragma mark -- LanguageControlView
-
-
-class GlobalSetupWindow::LanguageControlView : public BView {
-public:
-						LanguageControlView();
-	virtual				~LanguageControlView() {}
-
-	virtual	void		AttachedToWindow();
-	virtual	void		MessageReceived(BMessage* message);
-
-			void		ApplyChanges();
-
-private:
-			void		_Update(int language);
-
-private:
-		int32			fLanguage;
-		int32			fOriginalLanguage;
-
-		BRadioButton*	fEnglish;
-		BRadioButton*	fDutch;
-		BRadioButton*	fFinnish;
-		BRadioButton*	fFrench;
-		BRadioButton*	fGerman;
-		BRadioButton*	fSpanish;
-		BStringView*	fMessageView;
-};
-
-
-GlobalSetupWindow::LanguageControlView::LanguageControlView()
-	: BView("language control view", 0)
-	, fLanguage(ENGLISH_LANGUAGE)
-{
-	SetLayout(new BGroupLayout(B_VERTICAL));
-
-	fEnglish = new BRadioButton("English", new BMessage(kEnglishLanguageSet));
-	fEnglish->SetValue(B_CONTROL_ON);
-	fDutch = new BRadioButton("Nederlands", new BMessage(kDutchLanguageSet));
-	fFinnish = new BRadioButton("Suomi", new BMessage(kFinnishLanguageSet));
-	fFrench = new BRadioButton("Française", new BMessage(kFrenchLanguageSet));
-	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
-	fSpanish = new BRadioButton("Español", new BMessage(kSpanishLanguageSet));
-
-	fMessageView = new BStringView("message view",
-		B_TRANSLATE("Changes take effect after restarting the program."));
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL)
-		.Add(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(fEnglish)
-			.Add(fDutch)
-			.Add(fGerman)
-			.Add(fSpanish)
-			.Add(fFrench)
-			.Add(fFinnish))
-		.AddGlue()
-		.Add(fMessageView)
-		.SetInsets(20.0, 20.0, 10.0, 10.0)
-	);
-
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		BMessage settings;
-		server->GetApplicationSettings(&settings);
-		settings.FindInt32(skLanguage, &fLanguage);
-	}
-
-	if (fLanguage == DUTCH_LANGUAGE)
-		fDutch->SetValue(B_CONTROL_ON);
-
-
-	if (fLanguage == FINNISH_LANGUAGE)
-		fFinnish->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == FRENCH_LANGUAGE)
-		fFrench->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == GERMAN_LANGUAGE)
-		fGerman->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == SPANISH_LANGUAGE)
-		fSpanish->SetValue(B_CONTROL_ON);
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::AttachedToWindow()
-{
-	if (Parent())
-		SetViewColor(Parent()->ViewColor());
-
-	fEnglish->SetTarget(this);
-	fDutch->SetTarget(this);
-	fFinnish->SetTarget(this);
-	fFrench->SetTarget(this);
-	fGerman->SetTarget(this);
-	fSpanish->SetTarget(this);
-	fMessageView->SetText("");
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::MessageReceived(BMessage* message)
-{
-	switch (message->what) {
-		case kEnglishLanguageSet: {
-			_Update(ENGLISH_LANGUAGE);
-		}	break;
-
-		case kDutchLanguageSet: {
-			_Update(DUTCH_LANGUAGE);
-		}	break;
-
-
-		case kFinnishLanguageSet: {
-			_Update(FINNISH_LANGUAGE);
-		}	break;
-
-		case kFrenchLanguageSet: {
-			_Update(FRENCH_LANGUAGE);
-		}	break;
-
-		case kGermanLanguageSet: {
-			_Update(GERMAN_LANGUAGE);
-		}	break;
-
-		case kSpanishLanguageSet: {
-			_Update(SPANISH_LANGUAGE);
-		}	break;
-
-		default: {
-			BView::MessageReceived(message);
-		}	break;
-	}
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::ApplyChanges()
-{
-	if (SettingsServer* server = SettingsServer::Instance())
-		server->SetValue(SettingsServer::Application, skLanguage, fLanguage);
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::_Update(int language)
-{
-	fLanguage = language;
-	fMessageView->SetText("");
-
-	if (fLanguage != fOriginalLanguage)
-		fMessageView->SetText(B_TRANSLATE("Changes take effect after restarting the program."));
-}
-
-
 // #pragma mark -- GeneralControlView
 
 
@@ -674,11 +511,6 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	tab->SetLabel(B_TRANSLATE("Undo"));
 
 	tab = new BTab();
-	fLanguageControlView = new LanguageControlView;
-	fTabView->AddTab(fLanguageControlView, tab);
-	tab->SetLabel(B_TRANSLATE("Language"));
-
-	tab = new BTab();
 	fGeneralControlView = new GeneralControlView;
 	fTabView->AddTab(fGeneralControlView, tab);
 	tab->SetLabel(B_TRANSLATE("Miscellaneous"));
@@ -727,9 +559,6 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 
 			if (fUndoControlView)
 				fUndoControlView->ApplyChanges();
-
-			if (fLanguageControlView)
-				fLanguageControlView->ApplyChanges();
 
 			if (fGeneralControlView)
 				fGeneralControlView->ApplyChanges();

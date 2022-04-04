@@ -11,7 +11,6 @@
 #include "LayerView.h"
 
 #include "ImageView.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 
 

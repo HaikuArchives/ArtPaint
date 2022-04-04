@@ -15,7 +15,6 @@
 #include "PixelOperations.h"
 #include "MessageConstants.h"
 #include "NumberControl.h"
-#include "StringServer.h"
 
 
 #include <Bitmap.h>

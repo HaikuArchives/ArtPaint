@@ -16,7 +16,6 @@
 #include "FloaterManager.h"
 #include "MessageFilters.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 #include "ToolManager.h"
 #include "ToolSetupWindow.h"
 #include "UtilityClasses.h"

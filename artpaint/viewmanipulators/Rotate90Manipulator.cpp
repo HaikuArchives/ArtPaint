@@ -11,7 +11,6 @@
 #include "MessageConstants.h"
 #include "Rotate90Manipulator.h"
 #include "ImageView.h"
-#include "StringServer.h"
 
 
 #include <Bitmap.h>

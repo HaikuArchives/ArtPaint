@@ -15,7 +15,6 @@
 #include "BrushStoreWindow.h"
 #include "HSPolygon.h"
 #include "NumberSliderControl.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 
 

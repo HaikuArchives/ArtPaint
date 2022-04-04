@@ -13,7 +13,7 @@
 #include "FilePanels.h"
 
 #include "MessageConstants.h"
-#include "StringServer.h"
+
 
 #include <Button.h>
 #include <Catalog.h>

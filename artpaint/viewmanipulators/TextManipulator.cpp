@@ -16,7 +16,6 @@
 #include "HSPolygon.h"
 #include "MessageConstants.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 #include "PaletteWindowClient.h"
 

@@ -13,7 +13,6 @@
 #include "Image.h"
 #include "Selection.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 
 
 #include <Alert.h>

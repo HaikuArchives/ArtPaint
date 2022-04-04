@@ -19,7 +19,6 @@
 #include "Patterns.h"
 #include "MagnificationView.h"
 #include "ResourceServer.h"
-#include "StringServer.h"
 
 
 #include <Catalog.h>

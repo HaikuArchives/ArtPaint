@@ -16,7 +16,6 @@
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 
 
 #include <Button.h>

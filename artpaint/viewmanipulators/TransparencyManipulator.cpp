@@ -14,7 +14,6 @@
 #include "MessageConstants.h"
 #include "PixelOperations.h"
 #include "TransparencyManipulator.h"
-#include "StringServer.h"
 
 
 #include <Bitmap.h>

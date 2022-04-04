@@ -13,7 +13,6 @@
 #define PAINT_WINDOW_H
 
 #include "SettingsServer.h"
-#include "StringServer.h"
 
 
 #include <Entry.h>

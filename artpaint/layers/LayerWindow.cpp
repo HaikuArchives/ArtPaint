@@ -16,7 +16,6 @@
 #include "UtilityClasses.h"
 #include "LayerView.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 
 
 #include <Bitmap.h>

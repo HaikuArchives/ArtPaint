@@ -9,7 +9,6 @@
  */
 
 #include "AboutWindow.h"
-#include "StringServer.h"
 #include "MessageFilters.h"
 
 

@@ -13,7 +13,6 @@
 #include "DatatypeSetupWindow.h"
 
 #include "MessageFilters.h"
-#include "StringServer.h"
 
 
 #include <AppDefs.h>

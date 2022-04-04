@@ -16,7 +16,6 @@
 #include "ImageView.h"
 #include "MessageConstants.h"
 #include "PopUpSlider.h"
-#include "StringServer.h"
 
 
 #include <Application.h>

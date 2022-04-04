@@ -19,7 +19,6 @@
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 
 

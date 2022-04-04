@@ -7,18 +7,6 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include <Alert.h>
-#include <Catalog.h>
-#include <Bitmap.h>
-#include <ByteOrder.h>
-#include <File.h>
-#include <new>
-#include <Screen.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <StopWatch.h>
-#include <unistd.h>
-
 
 #include "Image.h"
 #include "ImageView.h"
@@ -28,7 +16,21 @@
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
 #include "Selection.h"
-#include "StringServer.h"
+
+
+#include <Alert.h>
+#include <Catalog.h>
+#include <Bitmap.h>
+#include <ByteOrder.h>
+#include <File.h>
+#include <Screen.h>
+#include <StopWatch.h>
+
+
+#include <new>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 
 #undef B_TRANSLATION_CONTEXT

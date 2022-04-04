@@ -11,7 +11,6 @@
 #include "TextTool.h"
 
 #include "Cursors.h"
-#include "StringServer.h"
 
 
 #include <Catalog.h>

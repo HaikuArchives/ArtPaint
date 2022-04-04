@@ -11,7 +11,6 @@
 #include "MessageConstants.h"
 #include "NumberControl.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "TranslationManipulator.h"
 
 

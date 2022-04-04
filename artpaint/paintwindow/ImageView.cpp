@@ -8,22 +8,6 @@
  *
  */
 
-#include <Alert.h>
-#include <Catalog.h>
-#include <ClassInfo.h>
-#include <Clipboard.h>
-#include <MenuBar.h>
-#include <MenuItem.h>
-#include <Message.h>
-#include <new>
-#include <PopUpMenu.h>
-#include <Screen.h>
-#include <ScrollBar.h>
-#include <Slider.h>
-#include <StatusBar.h>
-#include <Window.h>
-
-
 #include "Cursors.h"
 #include "DrawingTools.h"
 #include "Image.h"
@@ -49,7 +33,24 @@
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
 #include "WindowGUIManipulator.h"
-#include "StringServer.h"
+
+
+#include <Alert.h>
+#include <Catalog.h>
+#include <ClassInfo.h>
+#include <Clipboard.h>
+#include <MenuBar.h>
+#include <MenuItem.h>
+#include <Message.h>
+#include <PopUpMenu.h>
+#include <Screen.h>
+#include <ScrollBar.h>
+#include <Slider.h>
+#include <StatusBar.h>
+#include <Window.h>
+
+
+#include <new>
 
 
 #undef B_TRANSLATION_CONTEXT

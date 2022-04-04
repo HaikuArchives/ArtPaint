@@ -14,7 +14,6 @@
 #include "PixelOperations.h"
 #include "RotationManipulator.h"
 #include "Selection.h"
-#include "StringServer.h"
 
 
 #include <Catalog.h>

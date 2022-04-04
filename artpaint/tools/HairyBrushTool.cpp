@@ -21,7 +21,6 @@
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "RandomNumberGenerator.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
