@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -37,6 +38,7 @@
 #include <Alert.h>
 #include <Bitmap.h>
 #include <BitmapStream.h>
+#include <Catalog.h>
 #include <Clipboard.h>
 #include <Directory.h>
 #include <FilePanel.h>
@@ -52,6 +54,10 @@
 
 #include <stdio.h>
 #include <string.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT	"PaintApplication"
 
 
 PaintApplication::PaintApplication()
@@ -136,7 +142,7 @@ PaintApplication::MessageReceived(BMessage* message)
 
 			fImageOpenPanel->SetMessage(&filePanelMessage);
 			fImageOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
-				.Append(StringServer::ReturnString(OPEN_IMAGE_STRING)).String());
+				.Append(B_TRANSLATE("Open image…")).String());
 			fImageOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fImageOpenPanel);
@@ -161,7 +167,7 @@ PaintApplication::MessageReceived(BMessage* message)
 
 			fProjectOpenPanel->SetMessage(&filePanelMessage);
 			fProjectOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
-				.Append(StringServer::ReturnString(OPEN_PROJECT_STRING)).String());
+				.Append(B_TRANSLATE("Open project…")).String());
 			fProjectOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fProjectOpenPanel);
@@ -402,17 +408,13 @@ PaintApplication::RefsReceived(BMessage* message)
 					window->Show();
 				}
 			} else {
-				char text[255];
-				sprintf(text,
-					StringServer::ReturnString(UNSUPPORTED_FILE_TYPE_STRING),
-					ref.name);
+				BString text = B_TRANSLATE("The file %file% is of unsupported type. You could try installing a translator for it if possible.");
+				text.ReplaceAll("%file%", ref.name);
 				_ShowAlert(text);
 			}
 		} else {
-			char text[255];
-			sprintf(text,
-				StringServer::ReturnString(UNSUPPORTED_FILE_TYPE_STRING),
-				ref.name);
+			BString text = B_TRANSLATE("The file %file% is of unsupported type. You could try installing a translator for it if possible.");
+			text.ReplaceAll("%file%", ref.name);
 			_ShowAlert(text);
 		}
 	}
@@ -742,7 +744,7 @@ void
 PaintApplication::_ShowAlert(const BString& text)
 {
 	BAlert* alert = new BAlert("title", text.String(),
-		StringServer::ReturnString(OK_STRING), NULL, NULL, B_WIDTH_AS_USUAL,
+		B_TRANSLATE("OK"), NULL, NULL, B_WIDTH_AS_USUAL,
 		B_WARNING_ALERT);
 	alert->Go();
 }
