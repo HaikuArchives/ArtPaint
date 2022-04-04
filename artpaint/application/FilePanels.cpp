@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -15,6 +16,7 @@
 #include "StringServer.h"
 
 #include <Button.h>
+#include <Catalog.h>
 #include <MenuField.h>
 #include <MenuItem.h>
 #include <Message.h>
@@ -27,13 +29,17 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FilePanels"
+
+
 ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		BMessage& message, int32 saveFormat, BBitmap* savedBitmap)
 	: BFilePanel(B_SAVE_PANEL, &target, &startDir, 0, false, &message)
 {
 	if (Window()->Lock()) {
 		BString title = "ArtPaint: ";
-		title.Append(StringServer::ReturnString(SAVE_IMAGE_STRING));
+		title.Append(B_TRANSLATE("Save image"));
 		Window()->SetTitle(title.String());
 
 		BView* textView = Window()->FindView("text view");
@@ -61,7 +67,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 
 		if (cancelButton) {
 			BButton* settingsButton = new BButton(cancelButton->Frame(),
-				"settings button", StringServer::ReturnString(SETTINGS_STRING),
+				"settings button", B_TRANSLATE("Settings…"),
 				new BMessage(HS_SHOW_DATATYPE_SETTINGS), B_FOLLOW_RIGHT |
 				B_FOLLOW_BOTTOM);
 			root->AddChild(settingsButton);
@@ -105,7 +111,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		}
 		formatMenu->SetTargetForItems(target);
 
-		const char* string = StringServer::ReturnString(SAVE_FORMAT_STRING);
+		const char* string = B_TRANSLATE("Save format");
 		BMenuField* menuField = new BMenuField(BRect(textView->Frame().LeftTop() +
 			BPoint(0.0, -25.0), textView->Frame().RightTop() + BPoint(200, -5)),
 			"menu field", string, formatMenu, B_FOLLOW_LEFT | B_FOLLOW_BOTTOM);
@@ -138,16 +144,16 @@ set_filepanel_strings(BFilePanel *panel)
 
 		if (button) {
 			if (strcmp(button->Label(), "Save") == 0)
-				button->SetLabel(StringServer::ReturnString(SAVE_STRING));
+				button->SetLabel(B_TRANSLATE("Save"));
 
 			if (strcmp(button->Label(), "Open") == 0)
-				button->SetLabel(StringServer::ReturnString(OPEN_STRING));
+				button->SetLabel(B_TRANSLATE("Open"));
 		}
 
 		button = dynamic_cast<BButton*>(window->FindView("cancel button"));
 		if (button) {
 			if (strcmp(button->Label(), "Cancel") == 0)
-				button->SetLabel(StringServer::ReturnString(CANCEL_STRING));
+				button->SetLabel(B_TRANSLATE("Cancel"));
 		}
 		window->Unlock();
 	}

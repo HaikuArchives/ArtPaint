@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -16,12 +17,16 @@
 
 
 #include <Alert.h>
+#include <Catalog.h>
 #include <MenuItem.h>
 
 
 #include <new>
 #include <stdio.h>
 
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "UndoQueue"
 
 int32 UndoQueue::maximum_queue_depth = 10;
 BList* UndoQueue::queue_list = new BList();
@@ -354,12 +359,12 @@ void UndoQueue::UpdateMenuItems()
 	if (undo_menu_item != NULL) {
 		if (event_name != NULL) {
 			char menu_text[256];
-			sprintf(menu_text,"%s %s",StringServer::ReturnString(UNDO_STRING),event_name);
+			sprintf(menu_text,"%s %s",B_TRANSLATE("Undo"),event_name);
 			undo_menu_item->SetLabel(menu_text);
 			undo_menu_item->SetEnabled(TRUE);
 		}
 		else {
-			undo_menu_item->SetLabel(StringServer::ReturnString(UNDO_NOT_AVAILABLE_STRING));
+			undo_menu_item->SetLabel(B_TRANSLATE("Undo not available"));
 			undo_menu_item->SetEnabled(FALSE);
 		}
 	}
@@ -368,12 +373,12 @@ void UndoQueue::UpdateMenuItems()
 	if (redo_menu_item != NULL) {
 		if (event_name != NULL) {
 			char menu_text[256];
-			sprintf(menu_text,"%s %s",StringServer::ReturnString(REDO_STRING),event_name);
+			sprintf(menu_text,"%s %s",B_TRANSLATE("Redo"),event_name);
 			redo_menu_item->SetLabel(menu_text);
 			redo_menu_item->SetEnabled(TRUE);
 		}
 		else {
-			redo_menu_item->SetLabel(StringServer::ReturnString(REDO_NOT_AVAILABLE_STRING));
+			redo_menu_item->SetLabel(B_TRANSLATE("Redo not available"));
 			redo_menu_item->SetEnabled(FALSE);
 		}
 	}

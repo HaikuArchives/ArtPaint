@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -19,12 +20,17 @@
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <ScrollBar.h>
 #include <StringView.h>
 
 
 #include <new>
 #include <stdio.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "LayerWindow"
 
 
 // Initialize the static pointer to the layer window.
@@ -40,7 +46,7 @@ sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphor
 
 
 LayerWindow::LayerWindow(BRect frame)
-	: BWindow(frame, StringServer::ReturnString(LAYERS_STRING),
+	: BWindow(frame, B_TRANSLATE("Layers"),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
 		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE )
 {
