@@ -18,7 +18,7 @@ TYPE= APP
 
 # 	if you plan to use localization features 
 # 	specify the application MIME siganture
-APP_MIME_SIG= 
+APP_MIME_SIG= 'application/x-vnd.artpaint'
 
 #	add support for new Pe and Eddie features
 #	to fill in generic makefile
