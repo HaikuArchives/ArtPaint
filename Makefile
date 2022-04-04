@@ -52,7 +52,7 @@ artpaint/tools/BrushTool.cpp artpaint/tools/ColorSelectorTool.cpp artpaint/tools
 artpaint/tools/DrawingTool.cpp artpaint/tools/EllipseTool.cpp artpaint/tools/EraserTool.cpp artpaint/tools/FillTool.cpp artpaint/tools/FreeLineTool.cpp \
 artpaint/tools/HairyBrushTool.cpp artpaint/tools/RectangleTool.cpp artpaint/tools/SelectorTool.cpp artpaint/tools/StraightLineTool.cpp \
 artpaint/tools/TextTool.cpp artpaint/tools/ToolButton.cpp artpaint/tools/ToolEventAdapter.cpp artpaint/tools/ToolManager.cpp \
-artpaint/tools/ToolScript.cpp artpaint/tools/ToolSelectionWindow.cpp tools/ToolSetupWindow.cpp artpaint/tools/TransparencyTool.cpp \
+artpaint/tools/ToolScript.cpp artpaint/tools/ToolSelectionWindow.cpp artpaint/tools/ToolSetupWindow.cpp artpaint/tools/TransparencyTool.cpp \
 artpaint/viewmanipulators/CropManipulator.cpp artpaint/viewmanipulators/FlipManipulator.cpp \
 artpaint/viewmanipulators/FreeTransformManipulator.cpp artpaint/viewmanipulators/Manipulator.cpp \
 artpaint/viewmanipulators/ManipulatorInformer.cpp artpaint/viewmanipulators/ManipulatorServer.cpp \
