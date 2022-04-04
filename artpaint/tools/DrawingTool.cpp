@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -15,11 +16,11 @@
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "ResourceServer.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <File.h>
 #include <GroupLayoutBuilder.h>
@@ -30,6 +31,10 @@
 
 
 #include <new>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 DrawingTool::DrawingTool(const BString& name, int32 type)
@@ -292,8 +297,8 @@ DrawingTool::ToolCursor() const
 const char*
 DrawingTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? USING_THE_TOOL_STRING
-		: USE_THE_TOOL_STRING);
+	return B_TRANSLATE(isInUse ? "Using the tool."
+		: "Use the tool by pressing the mouse-button.");
 }
 
 

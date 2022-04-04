@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -13,10 +14,10 @@
 
 #include "MessageConstants.h"
 #include "NumberControl.h"
-#include "StringServer.h"
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <StatusBar.h>
@@ -24,6 +25,10 @@
 
 
 #include <new>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
 
 
 using ArtPaint::Interface::NumberControl;
@@ -337,14 +342,14 @@ CropManipulator::MakeConfigurationView(const BMessenger& target)
 const char*
 CropManipulator::ReturnName()
 {
-	return StringServer::ReturnString(CROP_STRING);
+	return B_TRANSLATE("Crop…");
 }
 
 
 const char*
 CropManipulator::ReturnHelpString()
 {
-	return StringServer::ReturnString(DO_CROP_HELP_STRING);
+	return B_TRANSLATE("Use the handles or number-fields to set the new borders.");
 }
 
 
@@ -357,13 +362,13 @@ CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
-	fTopCrop = new NumberControl(StringServer::ReturnString(TOP_STRING), "",
+	fTopCrop = new NumberControl(B_TRANSLATE("Top"), "",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	fLeftCrop = new NumberControl(StringServer::ReturnString(LEFT_STRING), "",
+	fLeftCrop = new NumberControl(B_TRANSLATE("Left"), "",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	fRightCrop = new NumberControl(StringServer::ReturnString(RIGHT_STRING),
+	fRightCrop = new NumberControl(B_TRANSLATE("Right"),
 		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5);
-	fBottomCrop = new NumberControl(StringServer::ReturnString(BOTTOM_STRING),
+	fBottomCrop = new NumberControl(B_TRANSLATE("Bottom"),
 		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL));

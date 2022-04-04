@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -18,9 +19,9 @@
 #include "Patterns.h"
 #include "MagnificationView.h"
 #include "ResourceServer.h"
-#include "StringServer.h"
 
 
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Region.h>
 #include <StatusBar.h>
@@ -28,6 +29,10 @@
 
 
 #include <stdio.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "StatusView"
 
 
 #define TOOLS_VIEW			0
@@ -309,7 +314,7 @@ SelectedColorsView::MouseMoved(BPoint, uint32 transit, const BMessage*)
 	if (transit == B_ENTERED_VIEW && Window()->IsActive()) {
 		BMessage message(HS_TEMPORARY_HELP_MESSAGE);
 		message.AddString("message",
-			StringServer::ReturnString(SELECTED_COLORS_VIEW_MESSAGE1_STRING));
+			B_TRANSLATE("Click here to open color panel."));
 		Window()->PostMessage(&message, Window());
 	}
 

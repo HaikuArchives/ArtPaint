@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -22,18 +23,22 @@
 #include "PaintApplication.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <File.h>
 #include <Layout.h>
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 BrushTool::BrushTool()
-	: DrawingTool(StringServer::ReturnString(BRUSH_TOOL_NAME_STRING), BRUSH_TOOL)
+	: DrawingTool(B_TRANSLATE("Brush tool"), BRUSH_TOOL)
 {
 	// Options will also have some brush-data options.
 	fOptions = 0;
@@ -184,8 +189,8 @@ BrushTool::ToolCursor() const
 const char*
 BrushTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? BRUSH_TOOL_IN_USE_STRING
-		: BRUSH_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Painting with a brush."
+		: "Press the mouse-button to paint with a brush.");
 }
 
 

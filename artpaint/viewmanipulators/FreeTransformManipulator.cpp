@@ -4,26 +4,32 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include <CheckBox.h>
-#include <ClassInfo.h>
-#include <Bitmap.h>
-#include <Button.h>
-#include <math.h>
-#include <new>
-#include <StatusBar.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <Window.h>
 
 #include "FreeTransformManipulator.h"
 #include "PixelOperations.h"
 #include "MessageConstants.h"
-#include "StringServer.h"
+
+
+#include <CheckBox.h>
+#include <ClassInfo.h>
+#include <Bitmap.h>
+#include <Button.h>
+#include <StatusBar.h>
+#include <Window.h>
+
+
+#include <math.h>
+#include <new>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 #define PI M_PI
+
 
 FreeTransformManipulator::FreeTransformManipulator(BBitmap *bm)
 	:	WindowGUIManipulator()

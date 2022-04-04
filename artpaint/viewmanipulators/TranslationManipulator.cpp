@@ -6,24 +6,29 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
+#include "ImageView.h"
+#include "MessageConstants.h"
+#include "NumberControl.h"
+#include "Selection.h"
+#include "TranslationManipulator.h"
+
+
+#include <Catalog.h>
+#include <ClassInfo.h>
+#include <LayoutBuilder.h>
+#include <StatusBar.h>
+#include <Window.h>
+
+
 #include <new>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 
-#include "ImageView.h"
-#include "MessageConstants.h"
-#include "NumberControl.h"
-#include "Selection.h"
-#include "StringServer.h"
-#include "TranslationManipulator.h"
-
-
-#include <ClassInfo.h>
-#include <LayoutBuilder.h>
-#include <StatusBar.h>
-#include <Window.h>
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
 
 
 using ArtPaint::Interface::NumberControl;
@@ -451,14 +456,14 @@ TranslationManipulator::SetValues(float x, float y)
 const char*
 TranslationManipulator::ReturnName()
 {
-	return StringServer::ReturnString(TRANSLATE_STRING);
+	return B_TRANSLATE("Translate…");
 }
 
 
 const char*
 TranslationManipulator::ReturnHelpString()
 {
-	return StringServer::ReturnString(DO_TRANSLATE_HELP_STRING);
+	return B_TRANSLATE("Drag the image to correct position.");
 }
 
 

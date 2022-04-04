@@ -4,24 +4,29 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
 #include "AboutWindow.h"
-#include "StringServer.h"
 #include "MessageFilters.h"
 
 
 #include <AppDefs.h>
+#include <Catalog.h>
 
 
 #include <stdio.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Windows"
+
+
 BWindow* AboutWindow::the_window = NULL;
 
 AboutWindow::AboutWindow(BRect frame)
-	: BWindow(frame, StringServer::ReturnString(ABOUT_ARTPAINT_STRING),
+	: BWindow(frame, B_TRANSLATE("About ArtPaint"),
 		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_RESIZABLE |
 		B_NOT_ZOOMABLE)
 {
@@ -43,21 +48,27 @@ AboutWindow::AboutWindow(BRect frame)
 	BFont italic_font;
 	italic_font.SetFace(B_ITALIC_FACE);
 
+	// TODO: get actual release version
 	scroller->AddLine("ArtPaint v. 2.1.2",yellow,title_font);
 
-	char string[256];
-	sprintf(string, StringServer::ReturnString(RELEASE_DATE_STRING), __DATE__);
-	scroller->AddLine(string, white, italic_font);
+	BString format(B_TRANSLATE("Release date: %s"));
+	BString release_str;
+	release_str.SetToFormat(format, __DATE__);
+	scroller->AddLine(release_str, white, italic_font);
 
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_1_TEXT_STRING),white,text_font);
+	scroller->AddLine(
+		B_TRANSLATE("ArtPaint is a painting and image-processing program for Haiku."\
+		" It can be used for a wide variety of purposes ranging from web-graphics"\
+		" to photo manipulation. See the tutorial in the manual to get started."),
+		white,text_font);
 	scroller->AddEmptyLine();
 
     /* These items have been commented out until they can be updated!
-	scroller->AddLine(StringServer::ReturnString(ABOUT_3_TEXT_STRING),white,text_font);
+	scroller->AddLine(B_TRANSLATE(ABOUT_3_TEXT_STRING),white,text_font);
 	scroller->AddLine("http://dev.osdrawer.net/projects/list_files/artpaint",red,text_font);
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_4_TEXT_STRING),white,text_font);
+	scroller->AddLine(B_TRANSLATE(ABOUT_4_TEXT_STRING),white,text_font);
 	scroller->AddLine("http://dev.osdrawer.net/projects/artpaint/boards",red,text_font);
 	*/
 	scroller->AddEmptyLine();
@@ -65,29 +76,30 @@ AboutWindow::AboutWindow(BRect frame)
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_5_TEXT_STRING),yellow,subtitle_font);
+	scroller->AddLine(B_TRANSLATE("Programming & Design"),yellow,subtitle_font);
 	scroller->AddLine("Heikki Suhonen",white,italic_font);
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_6_TEXT_STRING),yellow,subtitle_font);
+	scroller->AddLine(B_TRANSLATE("English documentation"),yellow,subtitle_font);
 	scroller->AddLine("Heikki Suhonen",white,italic_font);
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_7_TEXT_STRING),yellow,subtitle_font);
+	scroller->AddLine(B_TRANSLATE("German localization"),yellow,subtitle_font);
 	scroller->AddLine("Rainer Riedl",white,italic_font);
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_10_TEXT_STRING),yellow,subtitle_font);
+	scroller->AddLine(B_TRANSLATE("French localization"),yellow,subtitle_font);
 	scroller->AddLine("Jean-Rémi Taponier",white,italic_font);
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_8_TEXT_STRING),yellow,subtitle_font);
+	scroller->AddLine(B_TRANSLATE("Special thanks"),yellow,subtitle_font);
 	scroller->AddLine("Esa Kallioniemi",white,italic_font);
 	scroller->AddLine("Rainer Riedl",white,italic_font);
 	scroller->AddLine("Be Inc. and Be Europe",white,italic_font);
 	scroller->AddLine("All Registered Users",white,italic_font);
 	scroller->AddLine("BeDevTalk List",white,italic_font);
 	scroller->AddLine("Dominic Giampaolo",white,italic_font);
+	scroller->AddLine("Dale Cieslak", white, italic_font);
 	scroller->AddEmptyLine();
 	scroller->AddLine("...and You",white,italic_font);
 
@@ -95,7 +107,7 @@ AboutWindow::AboutWindow(BRect frame)
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
 	scroller->AddEmptyLine();
-	scroller->AddLine(StringServer::ReturnString(ABOUT_9_TEXT_STRING),yellow,subtitle_font);
+	scroller->AddLine(B_TRANSLATE("Thanks for inspiring articles"),yellow,subtitle_font);
 	scroller->AddLine("William Barret",white,italic_font);
 	scroller->AddLine("Paul Haeberli",white,italic_font);
 	scroller->AddLine("Aaron Herzmann",white,italic_font);

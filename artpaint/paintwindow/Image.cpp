@@ -4,18 +4,9 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include <Alert.h>
-#include <Bitmap.h>
-#include <ByteOrder.h>
-#include <File.h>
-#include <new>
-#include <Screen.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <StopWatch.h>
-#include <unistd.h>
 
 #include "Image.h"
 #include "ImageView.h"
@@ -25,11 +16,31 @@
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
 #include "Selection.h"
-#include "StringServer.h"
+
+
+#include <Alert.h>
+#include <Catalog.h>
+#include <Bitmap.h>
+#include <ByteOrder.h>
+#include <File.h>
+#include <Screen.h>
+#include <StopWatch.h>
+
+
+#include <new>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Image"
+
 
 color_entry* Image::color_candidates = NULL;
 int32 Image::color_candidate_users = 0;
 rgb_color* Image::color_list = new rgb_color[256];
+
 
 Image::Image(ImageView *view,float width, float height,UndoQueue *q)
 {
@@ -371,7 +382,7 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 
 		// Store the undo.
 		if (undo_queue != NULL) {
-			UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(ADD_LAYER_STRING),ReturnThumbnailImage());
+			UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Add layer"),ReturnThumbnailImage());
 			if (new_event != NULL) {
 				for (int32 i=0;i<layer_list->CountItems();i++) {
 					Layer *layer = (Layer*)layer_list->ItemAt(i);
@@ -433,7 +444,7 @@ bool Image::ClearCurrentLayer(rgb_color &c)
 	cleared_layer->Clear(c);
 
 	// Store the undo.
-	UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(CLEAR_LAYER_STRING),ReturnThumbnailImage());
+	UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear layer"),ReturnThumbnailImage());
 	if (new_event != NULL) {
 		for (int32 i=0;i<layer_list->CountItems();i++) {
 			Layer *layer = (Layer*)layer_list->ItemAt(i);
@@ -468,7 +479,7 @@ bool Image::ClearLayers(rgb_color &c)
 	}
 
 	// Store the undo.
-	UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(CLEAR_CANVAS_STRING),ReturnThumbnailImage());
+	UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear canvas"),ReturnThumbnailImage());
 	if (new_event != NULL) {
 		for (int32 i=0;i<layer_list->CountItems();i++) {
 			Layer *layer = (Layer*)layer_list->ItemAt(i);
@@ -525,9 +536,9 @@ bool Image::MergeLayers(Layer *merged_layer,int32, bool merge_with_upper)
 		// Store the undo.
 		UndoEvent *new_event;
 		if (merge_with_upper)
-			new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(MERGE_WITH_FRONT_LAYER_STRING),ReturnThumbnailImage());
+			new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Merge with front layer"),ReturnThumbnailImage());
 		else
-			new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(MERGE_WITH_BACK_LAYER_STRING),ReturnThumbnailImage());
+			new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Merge with back layer"),ReturnThumbnailImage());
 
 		if (new_event != NULL) {
 			for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -590,7 +601,7 @@ bool Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 	}
 	else {
 		// Store the undo.
-		UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(DELETE_LAYER_STRING),rendered_image);
+		UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Delete layer"),rendered_image);
 		if (new_event != NULL) {
 			for (int32 i=0;i<layer_list->CountItems();i++) {
 				Layer *layer = (Layer*)layer_list->ItemAt(i);

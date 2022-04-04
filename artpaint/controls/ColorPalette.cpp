@@ -4,10 +4,34 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
+
+#include "ColorPalette.h"
+
+#include "CMYControl.h"
+#include "FileIdentificationStrings.h"
+#include "FilePanels.h"
+#include "FloaterManager.h"
+#include "HSVControl.h"
+#include "MessageConstants.h"
+#include "MessageFilters.h"
+#include "Patterns.h"
+#include "PaintApplication.h"
+#include "PaletteWindowClient.h"
+#include "ResourceServer.h"
+#include "RGBControl.h"
+#include "SettingsServer.h"
+#include "StatusView.h"
+#include "UtilityClasses.h"
+#include "YIQControl.h"
+#include "YUVControl.h"
+
+
 #include <Alert.h>
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <FilePanel.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
@@ -16,29 +40,15 @@
 #include <PictureButton.h>
 #include <Resources.h>
 #include <Roster.h>
-#include <stdlib.h>
-#include <string.h>
 #include <TextControl.h>
 
-#include "FloaterManager.h"
-#include "ColorPalette.h"
-#include "MessageConstants.h"
-#include "SettingsServer.h"
-#include "FileIdentificationStrings.h"
-#include "StatusView.h"
-#include "RGBControl.h"
-#include "CMYControl.h"
-#include "HSVControl.h"
-#include "YIQControl.h"
-#include "YUVControl.h"
-#include "MessageFilters.h"
-#include "UtilityClasses.h"
-#include "StringServer.h"
-#include "ResourceServer.h"
-#include "Patterns.h"
-#include "PaintApplication.h"
-#include "PaletteWindowClient.h"
-#include "FilePanels.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "ColorPalette"
 
 
 // Initialize the static variable to NULL.
@@ -48,7 +58,7 @@ BList* ColorPaletteWindow::palette_window_clients = new BList();
 
 
 ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
-	: BWindow(frame, StringServer::ReturnString(PALETTE_WINDOW_NAME_STRING),
+	: BWindow(frame, B_TRANSLATE("Colors"),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_RESIZABLE |
 		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
 	, open_panel(NULL)
@@ -266,7 +276,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				B_FILE_NODE, true, &message);
 		}
 		char string[256];
-		sprintf(string,"ArtPaint: %s",StringServer::ReturnString(OPEN_COLOR_SET_STRING));
+		sprintf(string,"ArtPaint: %s",B_TRANSLATE("Open color set…"));
 		open_panel->Window()->SetTitle(string);
 		set_filepanel_strings(open_panel);
 		open_panel->Show();
@@ -294,7 +304,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				&message);
 		}
 		save_panel->SetSaveText(ColorSet::currentSet()->getName());
-		sprintf(string,"ArtPaint: %s",StringServer::ReturnString(SAVE_COLOR_SET_STRING));
+		sprintf(string,"ArtPaint: %s",B_TRANSLATE("Save color set"));
 		save_panel->Window()->SetTitle(string);
 		set_filepanel_strings(save_panel);
 		save_panel->Show();
@@ -502,10 +512,12 @@ bool ColorPaletteWindow::openControlViews(int32 mode)
 
 			color_slider->SetTarget(this);
 			box2->ResizeTo(color_slider->Frame().Width()+10,box2->Frame().Height());
-			ResizeTo(box2->Frame().right,max_c(box1->Frame().Height() + top-1,color_slider->Frame().Height() + top));
+			ResizeTo(box2->Frame().right,max_c(box1->Frame().Height() +
+				top-1,color_slider->Frame().Height() + top));
 
 			// here center the color control vertically
-			color_slider->MoveBy(0,(box2->Frame().Height() - color_slider->Frame().Height())/2);
+			color_slider->MoveBy(0,(box2->Frame().Height() -
+				color_slider->Frame().Height())/2);
 			invocation_message = new BMessage(HS_RGB_CONTROL_INVOKED);
 			invocation_message->AddInt32("buttons",0);
 			color_slider->SetMessage(invocation_message);
@@ -549,27 +561,29 @@ void ColorPaletteWindow::openMenuBar()
 	BMenuItem *menu_item;
 
 	menu_bar = new BMenuBar(BRect(0,0,0,0),"menu bar");
-	menu = new BMenu(StringServer::ReturnString(COLOR_SET_STRING));
+	menu = new BMenu(B_TRANSLATE("Color set"));
 	menu_bar->AddItem(menu);
 
-	sub_menu = new BMenu(StringServer::ReturnString(NEW_COLOR_SET_STRING));
+	sub_menu = new BMenu(B_TRANSLATE("New color set"));
 
 	// in this loop we add possible palette sizes to menu
 	BMessage *msg;
 	char item_title[20] = "";
 	for (int32 i = 3; i <= 6; i++) {
 		sprintf(item_title, "%ld %s",((int32)pow(2, i)),
-			StringServer::ReturnString(COLORS_STRING));
+			B_TRANSLATE("Colors"));
 		msg = new BMessage(HS_NEW_PALETTE_CREATED);
 		msg->AddInt32("colors", ((int32)pow(2, i)));
 		menu_item = new BMenuItem(item_title, msg);
 		sub_menu->AddItem(menu_item);
 	}
-	// the palette window will handle all things that concern making or loading new palette
+	// the palette window will handle all things that concern making
+	// or loading new palette
 	sub_menu->SetTargetForItems(this);
 	menu->AddItem(sub_menu);
 
-	menu_item = new BMenuItem(StringServer::ReturnString(DELETE_CURRENT_SET_STRING),new BMessage(HS_DELETE_PALETTE));
+	menu_item = new BMenuItem(B_TRANSLATE("Delete current set"),
+		new BMessage(HS_DELETE_PALETTE));
 	menu_item->SetTarget(this);
 	menu->AddItem(menu_item);
 	if (ColorSet::numberOfSets() <= 1) {
@@ -577,14 +591,16 @@ void ColorPaletteWindow::openMenuBar()
 	}
 
 	menu->AddItem(new BSeparatorItem());
-	menu_item  = new BMenuItem(StringServer::ReturnString(OPEN_COLOR_SET_STRING),new BMessage(HS_SHOW_PALETTE_OPEN_PANEL));
+	menu_item  = new BMenuItem(B_TRANSLATE("Open color set…"),
+		new BMessage(HS_SHOW_PALETTE_OPEN_PANEL));
 	menu_item->SetTarget(this);
 	menu->AddItem(menu_item);
-	menu_item  = new BMenuItem(StringServer::ReturnString(SAVE_COLOR_SET_STRING),new BMessage(HS_SHOW_PALETTE_SAVE_PANEL));
+	menu_item  = new BMenuItem(B_TRANSLATE("Save color set"),
+		new BMessage(HS_SHOW_PALETTE_SAVE_PANEL));
 	menu_item->SetTarget(this);
 	menu->AddItem(menu_item);
 
-	menu = new BMenu(StringServer::ReturnString(COLOR_MODEL_STRING));
+	menu = new BMenu(B_TRANSLATE("Color model"));
 	menu_bar->AddItem(menu);
 
 	char string[256];
@@ -1074,11 +1090,11 @@ void ColorContainer::MouseDown(BPoint point)
 	if (!highlight_selected) {
 		// clear the highlight from selected color
 		SetHighAndLowColors(ColorSet::currentSet()->currentColor());
-		FillRect(colorBounds(ColorSet::currentSet()->currentColorIndex()),HS_2X2_BLOCKS);
+		FillRect(colorBounds(ColorSet::currentSet()->currentColorIndex()),
+			HS_2X2_BLOCKS);
 	}
 
 }
-
 
 
 void ColorContainer::MouseMoved(BPoint,uint32 transit,const BMessage*)
@@ -1087,7 +1103,8 @@ void ColorContainer::MouseMoved(BPoint,uint32 transit,const BMessage*)
 	// a help view.
 	if ((transit == B_ENTERED_VIEW) && (Window()->IsActive())) {
 		BMessage *help_message = new BMessage(HS_TEMPORARY_HELP_MESSAGE);
-		help_message->AddString("message",StringServer::ReturnString(CLICK_TO_SELECT_COLOR_STRING));
+		help_message->AddString("message",
+			B_TRANSLATE("Click to select a painting color."));
 		Window()->PostMessage(help_message);
 		delete help_message;
 	}

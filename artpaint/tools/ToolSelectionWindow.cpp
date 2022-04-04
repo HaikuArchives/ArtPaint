@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -17,7 +18,6 @@
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 #include "Tools.h"
 #include "ToolButton.h"
 #include "ToolManager.h"
@@ -25,7 +25,14 @@
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
+
+
 #include <map>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 const int32 kExtraEdge	= 4;
@@ -37,7 +44,7 @@ ToolSelectionWindow* ToolSelectionWindow::fSelectionWindow = NULL;
 
 
 ToolSelectionWindow::ToolSelectionWindow(BRect frame)
-	: BWindow(frame, StringServer::ReturnString(TOOLS_STRING),
+	: BWindow(frame, B_TRANSLATE("Tools"),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_H_RESIZABLE |
 		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
 {

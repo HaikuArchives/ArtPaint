@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -22,11 +23,11 @@
 #include "Patterns.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
@@ -34,11 +35,15 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 using ArtPaint::Interface::NumberSliderControl;
 
 
 SelectorTool::SelectorTool()
-	: DrawingTool(StringServer::ReturnString(SELECTOR_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Selector tool"),
 		SELECTOR_TOOL)
 	, ToolEventAdapter()
 {
@@ -316,8 +321,8 @@ SelectorTool::ToolCursor() const
 const char*
 SelectorTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? SELECTOR_TOOL_IN_USE_STRING
-		: SELECTOR_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Making a selection."
+		: "Press the mouse-button to make a selection.");
 }
 
 
@@ -599,53 +604,53 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		BMessage* message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", MODE_OPTION);
 		message->AddInt32("value", B_OP_ADD);
-		fAddArea = new BRadioButton(StringServer::ReturnString(ADD_AREA_STRING),
+		fAddArea = new BRadioButton(B_TRANSLATE("Add area"),
 			new BMessage(*message));
 
 		message->ReplaceInt32("value", B_OP_SUBTRACT);
 		fSubstractArea =
-			new BRadioButton(StringServer::ReturnString(SUBTRACT_AREA_STRING),
+			new BRadioButton(B_TRANSLATE("Subtract area"),
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SHAPE_OPTION);
 		message->AddInt32("value", HS_FREE_LINE);
-		fFreeLine = new BRadioButton(StringServer::ReturnString(FREE_LINE_STRING),
+		fFreeLine = new BRadioButton(B_TRANSLATE("Freehand line"),
 			new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_RECTANGLE);
 		fRectangle =
-			new BRadioButton(StringServer::ReturnString(RECTANGLE_STRING),
+			new BRadioButton(B_TRANSLATE("Rectangle"),
 				new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_MAGIC_WAND);
 		fMagicWand =
-			new BRadioButton(StringServer::ReturnString(MAGIC_WAND_STRING),
+			new BRadioButton(B_TRANSLATE("Magic wand"),
 				new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
 		fScissors =  new
-			BRadioButton(StringServer::ReturnString(INTELLIGENT_SCISSORS_STRING),
+			BRadioButton(B_TRANSLATE("Intelligent scissors"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", TOLERANCE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(TOLERANCE_OPTION));
 		fTolerance =
-			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Tolerance"),
 				"10", message, 0, 100, false);
 
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 					.Add(fAddArea)
 					.Add(fSubstractArea)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(SHAPE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Shape")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFreeLine)
 				.Add(fRectangle)
@@ -654,7 +659,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(WAND_TOLERANCE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Wand tolerance")))
 			.Add(toleranceLayout)
 			.TopView()
 		);
