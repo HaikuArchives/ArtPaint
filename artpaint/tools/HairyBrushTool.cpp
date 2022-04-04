@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -25,6 +26,7 @@
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <GridLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <SeparatorView.h>
@@ -32,6 +34,10 @@
 
 
 #include <stdlib.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 #define COLOR_VARIANCE_CHANGED	'Cvar'
@@ -42,7 +48,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 HairyBrushTool::HairyBrushTool()
-	: DrawingTool(StringServer::ReturnString(HAIRY_BRUSH_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Hairy brush"),
 		HAIRY_BRUSH_TOOL)
 {
 	fOptions = SIZE_OPTION | PRESSURE_OPTION | TOLERANCE_OPTION
@@ -398,8 +404,8 @@ HairyBrushTool::ToolCursor() const
 const char*
 HairyBrushTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? HAIRY_BRUSH_TOOL_IN_USE_STRING
-		: HAIRY_BRUSH_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Painting with a hairy brush."
+		: "Press the mouse-button to paint with a hairy brush.");
 }
 
 
@@ -451,7 +457,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fBrushSize =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"0", message, 2, 50, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -459,23 +465,23 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBrushHairs =
-			new NumberSliderControl(StringServer::ReturnString(HAIRS_STRING),
+			new NumberSliderControl(B_TRANSLATE("Hairs"),
 			"0", message, 5, 100, false);
 
 		fColorAmount =
-			new BSlider("", StringServer::ReturnString(COLOR_AMOUNT_STRING),
+			new BSlider("", B_TRANSLATE("Color amount"),
 			new BMessage(COLOR_AMOUNT_CHANGED), 1, 500, B_HORIZONTAL,
 			B_TRIANGLE_THUMB);
-		fColorAmount->SetLimitLabels(StringServer::ReturnString(LITTLE_STRING),
-			StringServer::ReturnString(MUCH_STRING));
+		fColorAmount->SetLimitLabels(B_TRANSLATE("Little"),
+			B_TRANSLATE("Much"));
 		fColorAmount->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
 
 		fColorVariance =
-			new BSlider("", StringServer::ReturnString(COLOR_VARIANCE_STRING),
+			new BSlider("", B_TRANSLATE("Color variance"),
 			new BMessage(COLOR_VARIANCE_CHANGED), 0, 128, B_HORIZONTAL,
 			B_TRIANGLE_THUMB);
-		fColorVariance->SetLimitLabels(StringServer::ReturnString(NONE_STRING),
-			StringServer::ReturnString(RANDOM_STRING));
+		fColorVariance->SetLimitLabels(B_TRANSLATE("None"),
+			B_TRANSLATE("Random"));
 		fColorVariance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBrushSize);
@@ -485,7 +491,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 			.Add(sizeLayout)
 			.Add(hairsLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fColorAmount)
 				.AddStrut(kWidgetSpacing)

@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -21,15 +22,20 @@
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <GridLayoutBuilder.h>
 #include <Window.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 using ArtPaint::Interface::NumberSliderControl;
 
 
 TransparencyTool::TransparencyTool()
-	: DrawingTool(StringServer::ReturnString(TRANSPARENCY_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Transparency tool"),
 		TRANSPARENCY_TOOL)
 {
 	// The pressure option controls the speed of transparency change.
@@ -170,8 +176,8 @@ TransparencyTool::ToolCursor() const
 const char*
 TransparencyTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? TRANSPARENCY_TOOL_IN_USE_STRING
-		: TRANSPARENCY_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Adjusting the layer's transparency."
+		: "Press the mouse-button to adjust layer's transparency.");
 }
 
 
@@ -187,7 +193,7 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -195,7 +201,7 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fSpeedSlider =
-			new NumberSliderControl(StringServer::ReturnString(SPEED_STRING),
+			new NumberSliderControl(B_TRANSLATE("Speed"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)

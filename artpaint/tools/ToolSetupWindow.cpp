@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -20,16 +21,21 @@
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <StringView.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 ToolSetupWindow* ToolSetupWindow::sfToolSetupWindow = NULL;
 
 
 ToolSetupWindow::ToolSetupWindow(BRect frame)
-	: BWindow(frame, StringServer::ReturnString(TOOL_SETUP_STRING),
+	: BWindow(frame, B_TRANSLATE("Tool setup"),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
 		B_NOT_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT |
 		B_AUTO_UPDATE_SIZE_LIMITS)

@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -13,8 +14,15 @@
 #include "StringServer.h"
 
 
+#include <Catalog.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 TextTool::TextTool()
-	: DrawingTool(StringServer::ReturnString(TEXT_TOOL_NAME_STRING), TEXT_TOOL)
+	: DrawingTool(B_TRANSLATE("Text tool"), TEXT_TOOL)
 {
 }
 
@@ -48,6 +56,7 @@ TextTool::ToolCursor() const
 const char*
 TextTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? TEXT_TOOL_IN_USE_STRING
-		: TEXT_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse
+		? "Drag the text to correct position and set its appearance."
+		: "Press the mouse-button to insert text into the image.");
 }
