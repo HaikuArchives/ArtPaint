@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -22,6 +23,7 @@
 #include "ToolScript.h"
 
 
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
@@ -29,11 +31,15 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 using ArtPaint::Interface::NumberSliderControl;
 
 
 BlurTool::BlurTool()
-	: DrawingTool(StringServer::ReturnString(BLUR_TOOL_NAME_STRING), BLUR_TOOL)
+	: DrawingTool(B_TRANSLATE("Blur tool"), BLUR_TOOL)
 {
 	fOptions = SIZE_OPTION | CONTINUITY_OPTION;
 	fOptionsCount = 2;
@@ -210,8 +216,8 @@ BlurTool::ToolCursor() const
 const char*
 BlurTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString((isInUse ? BLUR_TOOL_IN_USE_STRING
-		: BLUR_TOOL_READY_STRING));
+	return B_TRANSLATE(isInUse ? "Blurring the image."
+		: "Press the mouse-button to blur the image.");
 }
 
 
@@ -226,7 +232,7 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 		message->AddInt32("option", CONTINUITY_OPTION);
 
-		fContinuity = new BCheckBox(StringServer::ReturnString(CONTINUOUS_STRING),
+		fContinuity = new BCheckBox(B_TRANSLATE("Continuous"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -234,7 +240,7 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBlurSize =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBlurSize);
@@ -242,7 +248,7 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(sizeLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fContinuity)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)

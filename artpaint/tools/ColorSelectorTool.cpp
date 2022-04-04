@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -25,6 +26,7 @@
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <GridLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <InterfaceDefs.h>
@@ -36,6 +38,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 using ArtPaint::Interface::NumberSliderControl;
@@ -64,25 +70,26 @@ private:
 ColorSelectorView::ColorSelectorView(BRect frame)
 	: BView(frame, "color selector-view", B_FOLLOW_NONE, B_WILL_DRAW)
 {
-	char string[256];
+	BString color_str;
 	float width = 0;
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	sprintf(string,"%s:",StringServer::ReturnString(RED_STRING));
-	BStringView *label_view = new BStringView(BRect(2,2,2,2),"label view",string);
+	color_str.SetToFormat("%s:", B_TRANSLATE("Red"));
+	BStringView *label_view = new BStringView(BRect(2,2,2,2),
+		"label view", color_str);
 	font_height fHeight;
 	label_view->GetFontHeight(&fHeight);
 
-	sprintf(string," %s:",StringServer::ReturnString(RED_STRING));
-	width = label_view->StringWidth(string);
+	color_str.SetToFormat(" %s:", B_TRANSLATE("Red"));
+	width = label_view->StringWidth(color_str);
 
-	sprintf(string," %s:",StringServer::ReturnString(GREEN_STRING));
-	width = max_c(width,label_view->StringWidth(string));
+	color_str.SetToFormat(" %s:", B_TRANSLATE("Green"));
+	width = max_c(width,label_view->StringWidth(color_str));
 
-	sprintf(string," %s:",StringServer::ReturnString(BLUE_STRING));
-	width = max_c(width,label_view->StringWidth(string));
+	color_str.SetToFormat(" %s:", B_TRANSLATE("Blue"));
+	width = max_c(width,label_view->StringWidth(color_str));
 
-	sprintf(string," %s:",StringServer::ReturnString(ALPHA_STRING));
-	width = max_c(width,label_view->StringWidth(string));
+	color_str.SetToFormat(" %s:", B_TRANSLATE("Alpha"));
+	width = max_c(width,label_view->StringWidth(color_str));
 
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
@@ -94,9 +101,9 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 	red_view = new BStringView(label_frame,"red view","");
 	AddChild(red_view);
 
-	sprintf(string,"%s:",StringServer::ReturnString(GREEN_STRING));
+	color_str.SetToFormat("%s:", B_TRANSLATE("Green"));
 	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,
-		label_view->Frame().bottom),"label view",string);
+		label_view->Frame().bottom),"label view",color_str);
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
 	AddChild(label_view);
@@ -105,9 +112,9 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 	green_view = new BStringView(label_frame,"green view","");
 	AddChild(green_view);
 
-	sprintf(string,"%s:",StringServer::ReturnString(BLUE_STRING));
+	color_str.SetToFormat("%s:", B_TRANSLATE("Blue"));
 	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,
-		label_view->Frame().bottom),"label view",string);
+		label_view->Frame().bottom),"label view",color_str);
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
 	AddChild(label_view);
@@ -116,9 +123,9 @@ ColorSelectorView::ColorSelectorView(BRect frame)
 	blue_view = new BStringView(label_frame,"blue view","");
 	AddChild(blue_view);
 
-	sprintf(string,"%s:",StringServer::ReturnString(ALPHA_STRING));
+	color_str.SetToFormat(" %s:", B_TRANSLATE("Alpha"));
 	label_view = new BStringView(BRect(2,label_view->Frame().bottom,2,
-		label_view->Frame().bottom),"label view",string);
+		label_view->Frame().bottom),"label view",color_str);
 	label_view->ResizeTo(width,fHeight.ascent+fHeight.descent);
 	label_view->SetAlignment(B_ALIGN_RIGHT);
 	AddChild(label_view);
@@ -239,7 +246,7 @@ ColorSelectorWindow::Move(BPoint cursor_location)
 
 
 ColorSelectorTool::ColorSelectorTool()
-	: DrawingTool(StringServer::ReturnString(COLOR_SELECTOR_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Color selector"),
 		COLOR_SELECTOR_TOOL)
 {
 	fOptions = SIZE_OPTION | MODE_OPTION;
@@ -394,8 +401,8 @@ ColorSelectorTool::ToolCursor() const
 const char*
 ColorSelectorTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? COLOR_SELECTOR_TOOL_IN_USE_STRING
-		: COLOR_SELECTOR_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Selecting a color."
+		: "Press the mouse-button to select a color.");
 }
 
 
@@ -411,7 +418,7 @@ ColorSelectorToolConfigView::ColorSelectorToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"1", message, 1, 10, false);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);

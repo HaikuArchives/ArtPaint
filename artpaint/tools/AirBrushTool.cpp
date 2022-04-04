@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -27,6 +28,7 @@
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
@@ -34,11 +36,15 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 using ArtPaint::Interface::NumberSliderControl;
 
 
 AirBrushTool::AirBrushTool()
-	: DrawingTool(StringServer::ReturnString(AIR_BRUSH_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Air brush"),
 		AIR_BRUSH_TOOL)
 {
 	fOptions = SIZE_OPTION | PRESSURE_OPTION | MODE_OPTION;
@@ -336,8 +342,8 @@ AirBrushTool::ToolCursor() const
 const char*
 AirBrushTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? AIR_BRUSH_TOOL_IN_USE_STRING
-		: AIR_BRUSH_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Using the air-brush."
+		: "Press the mouse-button to paint with air-brush.");
 }
 
 
@@ -353,7 +359,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBrushSize =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -361,18 +367,18 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fBrushFlow =
-			new NumberSliderControl(StringServer::ReturnString(FLOW_STRING),
+			new NumberSliderControl(B_TRANSLATE("Flow"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", MODE_OPTION);
 		message->AddInt32("value", HS_SPRAY_MODE);
 
-		fSpray = new BRadioButton(StringServer::ReturnString(SPRAY_STRING),
+		fSpray = new BRadioButton(B_TRANSLATE("Spray"),
 			message);
 
 		message->ReplaceInt32("value", HS_AIRBRUSH_MODE);
-		fAirBrush = new BRadioButton(StringServer::ReturnString(AIRBRUSH_STRING),
+		fAirBrush = new BRadioButton(B_TRANSLATE("Airbrush"),
 			new BMessage(*message));
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBrushSize);
@@ -382,7 +388,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 			.Add(sizeLayout)
 			.Add(flowLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.Add(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 				.Add(fSpray)
 				.Add(fAirBrush)

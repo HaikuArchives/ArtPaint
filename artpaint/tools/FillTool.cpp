@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -26,6 +27,7 @@
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <Control.h>
 #include <File.h>
@@ -38,11 +40,15 @@
 #include <string.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 using ArtPaint::Interface::NumberSliderControl;
 
 
 FillTool::FillTool()
-	: DrawingTool(StringServer::ReturnString(FILL_TOOL_NAME_STRING), FILL_TOOL)
+	: DrawingTool(B_TRANSLATE("Fill tool"), FILL_TOOL)
 {
 	// Set options here. The MODE_OPTION is used for determining if we do flood
 	// fill or some other type of fill.
@@ -1515,8 +1521,8 @@ FillTool::ToolCursor() const
 const char*
 FillTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? FILL_TOOL_IN_USE_STRING
-		: FILL_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Making a fill."
+		: "Press the mouse-button to make a fill.");
 }
 
 
@@ -1699,20 +1705,20 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 		BMessage* message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", MODE_OPTION);
 		message->AddInt32("value", 0x00000000);
-		fFlodFill = new BCheckBox(StringServer::ReturnString(FLOOD_FILL_STRING),
+		fFlodFill = new BCheckBox(B_TRANSLATE("Flood fill"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", GRADIENT_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
 		fGradient =
-			new BCheckBox(StringServer::ReturnString(ENABLE_GRADIENT_STRING),
+			new BCheckBox(B_TRANSLATE("Enable gradient"),
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", PREVIEW_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
-		fPreview = new BCheckBox(StringServer::ReturnString(ENABLE_PREVIEW_STRING),
+		fPreview = new BCheckBox(B_TRANSLATE("Enable preview"),
 			message);
 
 		fGradientView = new GradientView(c1, c2);
@@ -1721,7 +1727,7 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 		message->AddInt32("option",TOLERANCE_OPTION);
 		message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
 		fTolerance =
-			new NumberSliderControl(StringServer::ReturnString(TOLERANCE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Tolerance"),
 				"0", message, 0, 100, false);
 		fTolerance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 
@@ -1730,13 +1736,13 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(toleranceLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFlodFill)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fGradient)
 				.Add(fPreview)

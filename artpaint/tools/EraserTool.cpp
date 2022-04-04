@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -21,6 +22,8 @@
 #include "StringServer.h"
 #include "ToolScript.h"
 
+
+#include <Catalog.h>
 #include <GridLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
@@ -28,11 +31,15 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 using ArtPaint::Interface::NumberSliderControl;
 
 
 EraserTool::EraserTool()
-	: DrawingTool(StringServer::ReturnString(ERASER_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Eraser"),
 		ERASER_TOOL)
 {
 	fOptions = SIZE_OPTION | MODE_OPTION;
@@ -202,8 +209,8 @@ EraserTool::ToolCursor() const
 const char*
 EraserTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? ERASER_TOOL_IN_USE_STRING
-		: ERASER_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Erasing the image."
+		: "Press the mouse-button to use eraser.");
 }
 
 
@@ -257,7 +264,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -265,12 +272,12 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", HS_ERASE_TO_BACKGROUND_MODE);
 
 		fBackground =
-			new BRadioButton(StringServer::ReturnString(BACKGROUND_STRING),
+			new BRadioButton(B_TRANSLATE("Background"),
 			new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_ERASE_TO_TRANSPARENT_MODE);
 		fTransparent =
-			new BRadioButton(StringServer::ReturnString(TRANSPARENT_STRING),
+			new BRadioButton(B_TRANSLATE("Transparent"),
 			message);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);
@@ -278,7 +285,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(sizeLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(COLOR_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Color")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fBackground)
 				.Add(fTransparent)

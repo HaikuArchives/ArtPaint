@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -23,16 +24,21 @@
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <GridLayoutBuilder.h>
 #include <Layout.h>
 #include <Window.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 using ArtPaint::Interface::NumberSliderControl;
 
 
 FreeLineTool::FreeLineTool()
-	: DrawingTool(StringServer::ReturnString(FREE_LINE_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Freehand line"),
 		FREE_LINE_TOOL)
 {
 	fOptions = SIZE_OPTION;
@@ -184,8 +190,8 @@ FreeLineTool::ToolCursor() const
 const char*
 FreeLineTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? FREE_LINE_TOOL_IN_USE_STRING
-		: FREE_LINE_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Drawing a freehand line."
+		: "Press the mouse-button to draw a freehand line.");
 }
 
 
@@ -239,7 +245,7 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fLineSize =
-			new NumberSliderControl(StringServer::ReturnString(SIZE_STRING),
+			new NumberSliderControl(B_TRANSLATE("Size"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);

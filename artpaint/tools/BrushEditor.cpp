@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -19,6 +20,7 @@
 
 
 #include <Button.h>
+#include <Catalog.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
@@ -27,6 +29,10 @@
 
 
 #include <math.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
 
 
 enum {
@@ -59,16 +65,16 @@ BrushEditor::BrushEditor(Brush* brush)
 	BMessage* message = new BMessage(kBrushShapeChanged);
 	message->AddInt32("shape", HS_RECTANGULAR_BRUSH);
 
-	fRectangle = new BRadioButton(StringServer::ReturnString(RECTANGLE_STRING),
+	fRectangle = new BRadioButton(B_TRANSLATE("Rectangle"),
 		message);
 
 	message = new BMessage(kBrushShapeChanged);
 	message->AddInt32("shape", HS_ELLIPTICAL_BRUSH);
 
-	fEllipse = new BRadioButton(StringServer::ReturnString(ELLIPSE_STRING),
+	fEllipse = new BRadioButton(B_TRANSLATE("Ellipse"),
 		message);
 
-	fStoreBrush = new BButton(StringServer::ReturnString(STORE_BRUSH_STRING),
+	fStoreBrush = new BButton(B_TRANSLATE("Store brush"),
 		new BMessage(kBrushStoreRequest));
 
 	fResetBrush = new BButton("Reset Brush",new BMessage(kBrushResetRequest));
@@ -79,21 +85,21 @@ BrushEditor::BrushEditor(Brush* brush)
 	message->AddInt32("value", int32(fBrushInfo.width));
 
 	fBrushWidth =
-		new NumberSliderControl(StringServer::ReturnString(WIDTH_STRING), "0",
+		new NumberSliderControl(B_TRANSLATE("Width"), "0",
 		message, 0, 100, false);
 
 	message = new BMessage(kBrushHeightChanged);
 	message->AddInt32("value", int32(fBrushInfo.height));
 
 	fBrushHeight =
-		new NumberSliderControl(StringServer::ReturnString(HEIGHT_STRING), "0",
+		new NumberSliderControl(B_TRANSLATE("Height"), "0",
 		message, 0, 100, false);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.fade_length));
 
 	fBrushFade =
-		new NumberSliderControl(StringServer::ReturnString(FADE_STRING), "0",
+		new NumberSliderControl(B_TRANSLATE("Fade"), "0",
 		message, 0, 100, false);
 
 	BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
