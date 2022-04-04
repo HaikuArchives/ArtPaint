@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -22,11 +23,16 @@
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <File.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
 #include <ScrollBar.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Windows"
 
 
 #define	BRUSH_INSET	2
@@ -37,7 +43,7 @@ BList* BrushStoreWindow::brush_data = new BList();
 BrushStoreWindow* BrushStoreWindow::brush_window = NULL;
 
 BrushStoreWindow::BrushStoreWindow()
-	: BWindow(BRect(20,20,220,220), StringServer::ReturnString(BRUSHES_STRING),
+	: BWindow(BRect(20,20,220,220), B_TRANSLATE("Brushes"),
 		B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE
 		| B_WILL_ACCEPT_FIRST_CLICK)
 {
@@ -60,9 +66,10 @@ BrushStoreWindow::BrushStoreWindow()
 
 	BMenuBar *menu_bar;
 	menu_bar = new BMenuBar(BRect(0,0,0,0),"brush window menu-bar");
-	BMenu *a_menu = new BMenu(StringServer::ReturnString(BRUSH_STRING));
+	BMenu *a_menu = new BMenu(B_TRANSLATE("Brush"));
 	menu_bar->AddItem(a_menu);
-	a_menu->AddItem(new BMenuItem(StringServer::ReturnString(DELETE_SELECTED_BRUSH_STRING),new BMessage(HS_DELETE_SELECTED_BRUSH)));
+	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Delete selected brush"),
+		new BMessage(HS_DELETE_SELECTED_BRUSH)));
 	AddChild(menu_bar);
 
 	BRect scroll_bar_frame = BRect(Bounds().right-B_V_SCROLL_BAR_WIDTH+1,menu_bar->Frame().bottom,Bounds().right+1,Bounds().bottom+1-B_H_SCROLL_BAR_HEIGHT);
