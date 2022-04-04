@@ -596,7 +596,7 @@ BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,
 	blur_amount_slider->SetLimitLabels("Low","High");
 	blur_amount_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	blur_amount_slider->SetHashMarkCount(11);
-//	blur_amount_slider->SetModificationMessage(new BMessage(BLUR_AMOUNT_CHANGE_STARTED));
+	blur_amount_slider->SetModificationMessage(new BMessage(BLUR_AMOUNT_CHANGE_STARTED));
 
 //	BRect frame_rect = blur_amount_slider->Frame();
 //	frame_rect.bottom = frame_rect.top;
