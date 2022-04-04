@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -17,10 +18,15 @@
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <Slider.h>
 #include <Window.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
 
 
 TransparencyManipulator::TransparencyManipulator(BBitmap *bm)
@@ -154,7 +160,7 @@ TransparencyManipulator::ReturnSettings()
 const char*
 TransparencyManipulator::ReturnHelpString()
 {
-	return StringServer::ReturnString(DO_CHANGE_TRANSPARENCY_HELP_STRING);
+	return B_TRANSLATE("Change the transparency with the slider.");
 
 }
 
@@ -162,7 +168,7 @@ TransparencyManipulator::ReturnHelpString()
 const char*
 TransparencyManipulator::ReturnName()
 {
-	return StringServer::ReturnString(CHANGE_TRANSPARENCY_STRING);
+	return B_TRANSLATE("Change transparency…");
 }
 
 
@@ -178,12 +184,12 @@ TransparencyManipulatorView::TransparencyManipulatorView(
 {
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	fTransparency = new BSlider("transparency",
-		StringServer::ReturnString(TRANSPARENCY_STRING),
+		B_TRANSLATE("Transparency"),
 		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_HORIZONTAL,
 		B_TRIANGLE_THUMB);
 	fTransparency->SetValue(0);
-	fTransparency->SetLimitLabels(StringServer::ReturnString(TRANSPARENT_STRING),
-		StringServer::ReturnString(OPAQUE_STRING));
+	fTransparency->SetLimitLabels(B_TRANSLATE("Transparent"),
+		B_TRANSLATE("Opaque"));
 	fTransparency->SetModificationMessage(new BMessage(TRANSPARENCY_CHANGED));
 
 	AddChild(fTransparency);

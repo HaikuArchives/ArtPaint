@@ -4,16 +4,24 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com
  *
  */
-
-#include <Bitmap.h>
-#include <StatusBar.h>
 
 #include "MessageConstants.h"
 #include "Rotate90Manipulator.h"
 #include "ImageView.h"
 #include "StringServer.h"
+
+
+#include <Bitmap.h>
+#include <Catalog.h>
+#include <StatusBar.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
+
 
 Rotate90ClockwiseManipulator::Rotate90ClockwiseManipulator()
 	:	Manipulator()
@@ -47,7 +55,7 @@ BBitmap* Rotate90ClockwiseManipulator::ManipulateBitmap(BBitmap *original,Select
 
 const char* Rotate90ClockwiseManipulator::ReturnName()
 {
-	return StringServer::ReturnString(ROTATE_CW_STRING);
+	return B_TRANSLATE("Rotate +90°");
 }
 
 
@@ -85,5 +93,5 @@ BBitmap* Rotate90CounterclockwiseManipulator::ManipulateBitmap(BBitmap *original
 
 const char* Rotate90CounterclockwiseManipulator::ReturnName()
 {
-	return StringServer::ReturnString(ROTATE_CCW_STRING);
+	return B_TRANSLATE("Rotate -90°");
 }
