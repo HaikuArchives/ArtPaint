@@ -210,6 +210,11 @@ PaintApplication::MessageReceived(BMessage* message)
 			}
 		}	break;
 
+		case B_SIMPLE_DATA:
+		case B_REFS_RECEIVED: {
+			RefsReceived(message);
+		}	break;
+
 		default:
 			BApplication::MessageReceived(message);
 			break;
