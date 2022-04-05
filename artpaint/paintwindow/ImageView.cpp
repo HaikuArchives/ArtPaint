@@ -1084,13 +1084,16 @@ void ImageView::adjustPosition()
 {
 	if (LockLooper() == TRUE) {
 		BPoint top_left;
-		BRect pbounds = Parent()->Bounds();
-		top_left.x = (pbounds.Width() - getMagScale()*the_image->Width()) / 2;
-		top_left.y = (pbounds.Height() - getMagScale()*the_image->Height()) / 2;
+		BRect bg_bounds = Parent()->Bounds();
+		BRect vertBounds = ScrollBar(B_VERTICAL)->Bounds();
+		BRect horzBounds = ScrollBar(B_HORIZONTAL)->Bounds();
+		top_left.x = (bg_bounds.Width() - vertBounds.Width() -
+			getMagScale()*the_image->Width()) / 2;
+		top_left.y = (bg_bounds.Height() - horzBounds.Height() -
+			getMagScale()*the_image->Height()) / 2;
 
 		top_left.x = max_c(0,(int32)top_left.x);
 		top_left.y = max_c(0,(int32)top_left.y);
-
 
 		if (top_left != Frame().LeftTop())
 			MoveTo(top_left);
