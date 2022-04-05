@@ -24,7 +24,8 @@ CoordinateQueue::~CoordinateQueue()
 }
 
 
-status_t CoordinateQueue::Get(BPoint &point)
+status_t
+CoordinateQueue::Get(BPoint &point)
 {
 	acquire_sem(queue_semaphore);
 	if (queue_length == 0) {
@@ -41,7 +42,8 @@ status_t CoordinateQueue::Get(BPoint &point)
 }
 
 
-status_t CoordinateQueue::Put(BPoint &point)
+status_t
+CoordinateQueue::Put(BPoint &point)
 {
 	acquire_sem(queue_semaphore);
 	if (queue_length == MAX_QUEUE_LENGTH) {

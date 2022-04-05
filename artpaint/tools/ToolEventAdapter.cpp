@@ -36,7 +36,8 @@ ToolEventAdapter::~ToolEventAdapter()
 }
 
 
-void ToolEventAdapter::SetClickEvent(BPoint view_point,BPoint bitmap_point,uint32 buttons,int32 clicks)
+void
+ToolEventAdapter::SetClickEvent(BPoint view_point,BPoint bitmap_point,uint32 buttons,int32 clicks)
 {
 	last_click_bitmap_location = bitmap_point;
 	last_click_view_location = view_point;
@@ -46,7 +47,8 @@ void ToolEventAdapter::SetClickEvent(BPoint view_point,BPoint bitmap_point,uint3
 }
 
 
-void ToolEventAdapter::SetKeyEvent(const char *bytes, int32 num_bytes)
+void
+ToolEventAdapter::SetKeyEvent(const char *bytes, int32 num_bytes)
 {
 	delete last_key_event_bytes;
 
@@ -57,7 +59,8 @@ void ToolEventAdapter::SetKeyEvent(const char *bytes, int32 num_bytes)
 }
 
 
-bool ToolEventAdapter::SetActiveImageView(BView *view)
+bool
+ToolEventAdapter::SetActiveImageView(BView *view)
 {
 	if (active_image_view != view) {
 		active_image_view = view;
@@ -70,7 +73,8 @@ bool ToolEventAdapter::SetActiveImageView(BView *view)
 	}
 }
 
-bool ToolEventAdapter::SetIsMouseInsideActiveView(bool is_inside)
+bool
+ToolEventAdapter::SetIsMouseInsideActiveView(bool is_inside)
 {
 	if (is_mouse_inside_the_active_view != is_inside) {
 		is_mouse_inside_the_active_view = is_inside;

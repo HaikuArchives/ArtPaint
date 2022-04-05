@@ -78,7 +78,8 @@ Brush::~Brush()
 }
 
 
-void Brush::ModifyBrush(brush_info &info)
+void
+Brush::ModifyBrush(brush_info &info)
 {
 	delete_all_data();
 
@@ -115,7 +116,8 @@ void Brush::ModifyBrush(brush_info &info)
 }
 
 
-void Brush::CreateDiffBrushes()
+void
+Brush::CreateDiffBrushes()
 {
 	// Make the difference brushes here.
 	diff10 = make_diff_brush(brush,1,0);
@@ -140,7 +142,8 @@ void Brush::CreateDiffBrushes()
 }
 
 
-uint32** Brush::GetData(span **sp,int32 dx,int32 dy)
+uint32**
+Brush::GetData(span **sp,int32 dx,int32 dy)
 {
 	if (dx == 0) {
 		if (dy == -1) {
@@ -187,7 +190,8 @@ uint32** Brush::GetData(span **sp,int32 dx,int32 dy)
 	return NULL;
 }
 
-brush_info Brush::GetInfo()
+brush_info
+Brush::GetInfo()
 {
 	// Because the brush-generating operations alter width_ and height_, we should
 	// use some other variables to store the actual width and height parameters
@@ -201,7 +205,8 @@ brush_info Brush::GetInfo()
 
 	return info;
 }
-void Brush::make_rectangular_brush()
+void
+Brush::make_rectangular_brush()
 {
 	// We make a rectangular brush that has the fade length maximum of edge_fade_length.
 	// If fade_length is greater than width/2 or height/2, we will not fade to maximum
@@ -264,7 +269,8 @@ void Brush::make_rectangular_brush()
 }
 
 
-void Brush::make_elliptical_brush()
+void
+Brush::make_elliptical_brush()
 {
 	// We take two points from inside the ellipse and then all the boundary pixels
 	// have the same sum of distances to those two points.
@@ -340,7 +346,8 @@ void Brush::make_elliptical_brush()
 
 
 
-uint32** Brush::reserve_brush()
+uint32**
+Brush::reserve_brush()
 {
 	uint32 **b = NULL;
 	try {
@@ -355,7 +362,8 @@ uint32** Brush::reserve_brush()
 }
 
 
-uint32** Brush::make_diff_brush(uint32 **b,int32 dx, int32 dy)
+uint32**
+Brush::make_diff_brush(uint32 **b,int32 dx, int32 dy)
 {
 	// How does this function work? Does it even work correctly.
 
@@ -388,7 +396,8 @@ uint32** Brush::make_diff_brush(uint32 **b,int32 dx, int32 dy)
 }
 
 
-span* Brush::make_span_list(uint32 **b)
+span*
+Brush::make_span_list(uint32 **b)
 {
 	// Spans are not optimal solution, because the brush might have just one
 	// pixel at both ends. In that case checking the span would mean a lot of
@@ -427,7 +436,8 @@ span* Brush::make_span_list(uint32 **b)
 }
 
 
-void Brush::delete_all_data()
+void
+Brush::delete_all_data()
 {
 	span *c;
 	span *help;
@@ -541,7 +551,8 @@ void Brush::delete_all_data()
 	}
 }
 
-float Brush::PreviewBrush(BBitmap *preview_bitmap)
+float
+Brush::PreviewBrush(BBitmap *preview_bitmap)
 {
 	float preview_width = width_;
 	float preview_height = height_;
@@ -608,7 +619,8 @@ float Brush::PreviewBrush(BBitmap *preview_bitmap)
 	return preview_width/width_;
 }
 
-void Brush::print_brush(uint32 **b)
+void
+Brush::print_brush(uint32 **b)
 {
 	printf("Brush:\n");
 	for (int32 y=0;y<height_;y++) {

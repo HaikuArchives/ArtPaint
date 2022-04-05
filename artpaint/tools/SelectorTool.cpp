@@ -598,7 +598,8 @@ SelectorTool::CheckLowerSpans(BPoint span_start, BitmapDrawer* drawer,
 
 
 SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);

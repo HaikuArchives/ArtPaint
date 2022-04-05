@@ -6,13 +6,16 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <Screen.h>
-#include <stdio.h>
-
 #include "BitmapUtilities.h"
 
+#include <stdio.h>
 
-status_t BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
+#include <Screen.h>
+
+
+
+status_t
+BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
 {
 	uint32 *bits = (uint32*)bitmap->Bits();
 	int32 bits_length = bitmap->BitsLength()/4;
@@ -46,7 +49,8 @@ status_t BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
 
 
 
-BBitmap* BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
+BBitmap*
+BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
 {
 	if (inBitmap->ColorSpace() == wantSpace) {
 		return inBitmap;
