@@ -174,8 +174,7 @@ Open image…	PaintWindow		Bild öffnen…
 French localization	Windows		Französiche Übersetzung
 Rotates all layers 90° counter-clockwise.	PaintWindow		Drehen alle Ebenen 90° gegen den Uhrzeigersinn
 Invert selection	PaintWindow		Auswahl invertieren
-Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Der freie Speicher reicht leider nicht zum Hinzufügen einer weiteren Ebene. Speicher kann durch Ausschalten der Puffer-Option freigegeben werden oder indem andere offene Bilder geschlossen werden. Das Bild sollte nun auch gespeichert werden, da Speichermangel dazu führen kann, dass es später schwierig oder unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!"
-
+Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Der freie Speicher reicht leider nicht zum Hinzufügen einer weiteren Ebene. Speicher kann durch Ausschalten der Puffer-Option freigegeben werden oder indem andere offene Bilder geschlossen werden. Das Bild sollte nun auch gespeichert werden, da Speichermangel dazu führen kann, dass es später schwierig oder unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!
 Brush	Windows		Stift
 Blur tool	Tools		Unschärfe
 Adjustable	Windows		Einstellbar
@@ -308,8 +307,3 @@ Flow	Tools		Intensität
 Add area	Tools		Bereich hinzufügen
 Eraser	Tools		Radieren
 Recent images	PaintWindow		Zuletzt geöffnete Bilder
-r
-e Bilder
-der
-der
-
