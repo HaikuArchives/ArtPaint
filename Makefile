@@ -38,7 +38,7 @@ SRCS= artpaint/Utilities/BitmapUtilities.cpp artpaint/application/FilePanels.cpp
 artpaint/application/HSPolygon.cpp artpaint/application/IntelligentPathFinder.cpp artpaint/application/MatrixView.cpp \
 artpaint/application/MessageFilters.cpp artpaint/application/PaintApplication.cpp artpaint/application/ProjectFileFunctions.cpp \
 artpaint/application/RandomNumberGenerator.cpp artpaint/application/RefFilters.cpp artpaint/application/ResourceServer.cpp \
-artpaint/application/Selection.cpp artpaint/application/SettingsServer.cpp artpaint/application/StringServer.cpp \
+artpaint/application/Selection.cpp artpaint/application/SettingsServer.cpp \
 artpaint/application/UndoAction.cpp artpaint/application/UndoEvent.cpp artpaint/application/UndoQueue.cpp \
 artpaint/application/UndoWindow.cpp artpaint/application/UtilityClasses.cpp artpaint/controls/CMYControl.cpp artpaint/controls/ColorPalette.cpp \
 artpaint/controls/ColorView.cpp artpaint/controls/HSPictureButton.cpp artpaint/controls/HSVControl.cpp artpaint/controls/NumberControl.cpp \
