@@ -1,0 +1,309 @@
+1	English	application/x-vnd.artpaint	4115818462
+Inserts text into the active layer. Same as the text tool.	PaintWindow		Insertar texto en la capa activa. Igual que la herramienta de texto.
+Cancel	Windows		Anular
+Enable antialiasing	Manipulators		Habilitar anti-aliasing
+Speed	Tools		Velocidad
+Crop…	Manipulators		Recorte...
+Flips the active layer horizontally.	PaintWindow		Invertir horizontalmente la capa activa.
+Subtract area	Tools		Eliminar la zona
+Paste as a new project	PaintWindow		Copiar como nueva proyecto
+Global settings	Windows		Preferencias generales
+Sets the zoom level to 100%.	PaintWindow		Establecer la zoom para 100%.
+Resizes the window to proper size for the image and the screen.	PaintWindow		Cambia el tamaño de la ventana al tamaño de la imagen.
+Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para terminar de aplicar este efecto. Puedes cerrar imágenes y volver a intentarlo. Reducir el nivel de cancelación o cancelar la cancelación puede restaurar la memoria. Si tiene otras aplicaciones abiertas, al cerrarlas se liberará de la memoria. También debe guardar su trabajo ahora, porque si la memoria está completamente usada, no podrá guardar. Lo siento mucho por este problema.
+Cursor	Windows		Cursor
+Brush window	Windows		Ventana de pinceles
+Crop…	PaintWindow		Recorte...
+Fade	Tools		Fondu
+Cross-hair cursor	Windows		Cruz del cursor
+Merge with front layer	Image		Combinar con la capa superior
+Alpha	Tools		Alpha
+Language	Windows		Idioma
+Special thanks	Windows		Agradecimientos especiales
+Inverts the selction so that selected becomes non-selected and vice versa.	PaintWindow		Invertie la selección; por lo tanto lo que se seleccionó se vuelve no seleccionado y viceversa.
+Rectangle tool	Tools		Rectángulo
+Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para aplicar este efecto. Puedes cerrar imágenes y volver a intentarlo. Reducir el nivel de cancelación o cancelar la cancelación puede restaurar la memoria. Si tiene otras aplicaciones abiertas, al cerrarlas se liberará de la memoria. También debe guardar su trabajo ahora, porque si la memoria está completamente usada, no podrá guardar. Lo siento mucho por este problema.
+Clears the selection so that everything is selected.	PaintWindow		Borrar todas las selecciones.
+Clear selection	PaintWindow		Borrar la selección
+Add layer	PaintWindow		Añadir una capa
+Selector tool	Tools		Selección
+Rotation	Manipulators		Rotación
+Click to select a painting color.	ColorPalette		Haga clic para seleccionar el color del pincel.
+Paste as a new layer	PaintWindow		Copiar como nueva cap
+Show tool window	PaintWindow		Muestra la caja de herramientas
+OK	PaintApplication		Aceptar
+Redos the action that was last undone.	PaintWindow		Restaura la acción que fue cancelada previamente.
+Save color set	ColorPalette		Guarde la paleta
+Cancel	ImageView		Anular
+Untitled	PaintWindow		Sin titulo
+Discard changes	Windows		Anular
+Miscellaneous	Windows		Diverso
+Bottom	Manipulators		Inferior
+Settings…	FilePanels		Preferencias...
+Save	FilePanels		Guardar
+Thanks for inspiring articles	Windows		Gracias por los artículos alentadores
+Open	FilePanels		Abrir
+Undo	UndoQueue		Cancelar
+Tolerance	Tools		Tolerancia
+English documentation	Windows		Documentación inglés
+Width	Manipulators		Ancho
+Rotate -90°	PaintWindow		Rotación -90°
+Save project as…	PaintWindow		Guarde el proyecto como...
+File	PaintWindow		Archivo
+Air brush	Tools		Aerógrafo
+Redo not available	UndoQueue		Sin restauración
+Random	Tools		Aleatório
+Flip horizontally	Manipulators		Invertir horizontal
+Change transparency…	Manipulators		Cambiar la transparencia...
+New color set	ColorPalette		Nueva paleta
+Cut	PaintWindow		Cortar
+OK	Windows		Aceptar
+Flip vertically	PaintWindow		Invertir vertical
+Sets the zoom level to 25%.	PaintWindow		Establecer la zoom para 25%.
+Zoom out	PaintWindow		Zoom de nuevo
+Save image	PaintWindow		Guarde la imagen
+Brush tool	Tools		Pincel
+Redo	UndoQueue		Restaurar
+Shear	Manipulators		Inclinación
+Font	Manipulators		Fuente
+Shape	Tools		Forma
+Set grid	PaintWindow		Establecer la cuadrícula
+Delete selected brush	Windows		Eliminar pincel seleccionado
+Saves the image to disk.	PaintWindow		Guarde la imagen en el disco.
+Add-ons	PaintWindow		Plugins
+Rotate +90°	Manipulators		Rotación +90°
+Shows a window that has information about the program.	PaintWindow		Muestra información sobre el programa.
+Tool setup	Tools		Configuración de herramientas
+Resize to fit	PaintWindow		Redimensionar
+Fill rectangle	Tools		Rectángulo remplicado
+Text tool	Manipulators		Texto
+Color model	ColorPalette		Modelo
+Undo not available	PaintWindow		Sin cancelación
+Finishing	ImageView		En progreso...
+Confirm quitting	Windows		Confirmar el cierre del programa
+Scale…	Manipulators		Redimensionar...
+Merge with back layer	Image		Combinar con la capa inferior
+Save project	PaintWindow		Guardar proyecto
+Use the handles or number-fields to set the new borders.	Manipulators		Utilice los controles o los campos numéricos para ajustar los nuevos bordes.
+Spray	Tools		Bomba
+Color variance	Tools		Variación de color
+None	Tools		Ninguna
+Clears all layers.	PaintWindow		Borrar todas las capas.
+Zoom in	PaintWindow		Zoom
+Brings up the tool setup window.	PaintWindow		Muestra la ventana de configuración de herramientas.
+Rotate +90°	PaintWindow		Rotación +90°
+Saves the project to the disk.	PaintWindow		Guarde el proyecto en el disco.
+Scale…	PaintWindow		Redimensionar...
+Red	Tools		Rojo
+Opens the main documentation for ArtPaint.	PaintWindow		Abra la documentación de ArtPaint con WebPositive.
+Rotate…	Manipulators		Rotación…
+Starts changing the transparency of active layer.	PaintWindow		Cambiar la transparencia de la capa activa.
+Color set	ColorPalette		Paleta de colores
+Brings up the brush window.	PaintWindow		Muestra la ventana de pinceles.
+Fill ellipse	Tools		Ellipso remplicado
+Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Haga clic en la imagen para ajustar el nuevo tamaño o ajústelo con campos numéricos.
+Save format	FilePanels		Guardar formato
+Add layer behind	LayerView		Añadir una capa detrás
+Show brush window	PaintWindow		Muestra las pinceles
+Transparent	Manipulators		Transparento
+Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use el botón izquierdo del ratón para rotar, y el derecho para cambiar el centro de rotación.
+Ellipse	Tools		Ellipso
+Adjustable width	Tools		Ancho ajustable
+Pastes clipboard as a new project.	PaintWindow		Pegue la capa en la memoria como un nuevo proyecto.
+Show layer window	PaintWindow		Muestra las capas
+Redo not available	PaintWindow		Sin restauración
+Changes take effect after restarting the program.	Windows		Los cambios entrarán en vigor la próxima vez que se inicie el programa.
+Unlimited	Windows		Illimitado
+Opaque	Manipulators		Opaca
+Apply changes	Windows		Aplicar las cambios
+Windows	Windows		Ventanas
+Width	Tools		Ancho
+Close	PaintWindow		Cerrar
+Translate…	PaintWindow		Traducción...
+Insert text…	PaintWindow		Insertar texto...
+Text tool	Tools		Texto
+Starts scaling the image.	PaintWindow		Comienza a redimensionar la imagen.
+Open project…	PaintWindow		Abre una proyecto...
+Store brush	Tools		Guardar
+Green	Tools		Verde
+Edit	PaintWindow		Editar
+Color amount	Tools		Cuantidad de color
+Copies the image to the clipboard.	PaintWindow		Copia todas las capas en la memoria.
+Save image	FilePanels		Guarde la imagen
+Brings up the layer window.	PaintWindow		Muestra la ventana de capas.
+Shrink selection	ImageView		Reduce la selección
+Freehand line	Tools		Levantamiento de manos
+Fill tool	Tools		Remplicar
+Enable antialiasing	Tools		Habilitar anti-aliasing
+Turns the grid off.	PaintWindow		Retire la cuadrícula.
+Undo	Windows		Cancelar
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Memoria insuficiente para crear la imagen. Por favor intente con un tamaño de imagen más pequeño.
+Open project…	PaintApplication		Abre una proyecto...
+Airbrush	Tools		Aerógrafo
+Starts moving all layers.	PaintWindow		Comienza a mover todas las capas.
+Sets the grid to 2 by 2 pixels.	PaintWindow		Establecer la cuadrícula a 2 por 2 píxeles.
+Brings up the palette window.	PaintWindow		Muestra la ventana de paletas.
+Background	Tools		fondo
+Clear canvas	PaintWindow		Borrar la imagen
+Merge with back layer	LayerView		Combinar con la capa inferior
+Magic wand	Tools		Varita mágica
+Show palette window	PaintWindow		Muestra las paletas
+Little	Tools		Pequeño
+Flips all layers horizontally.	PaintWindow		Invertir horizontalmente todas las capas.
+Copy	PaintWindow		Copiar
+Enable preview	Tools		Habilitar vista previa
+Undos the previous action.	PaintWindow		Cancelar la acción anterior.
+Starts cropping the image.	PaintWindow		Comienza el recorte de la imagen.
+Rotate -90°	Manipulators		Rotación -90°
+Standard sizes	PaintWindow		Tamaños estandár
+Options	Tools		Opciones
+Clear canvas	Image		Borrar la imagen
+All layers	PaintWindow		Todas las capas
+Sets the zoom level to 800%.	PaintWindow		Establecer la zoom para 800%.
+Starts rotating the active layer.	PaintWindow		Inicia la rotación de la capa activa.
+Layer %ld / %ld	ImageView		Capa %ld / %ld
+Show tool setup window	PaintWindow		Muestra la configuración de herramientas
+Select the canvas size you want.	PaintWindow		Selecionne el tamaño de la imagen que desee.
+Active layer	PaintWindow		Capa activa
+Open image…	PaintApplication		Abre una imagen...
+Effects window	Windows		Ventana de efectos
+Zooms into the image.	PaintWindow		Zoom en la imagen.
+Blue	Tools		Azul
+Window	PaintWindow		Ventana
+Open image…	PaintWindow		Abre una imagen...
+French localization	Windows		Localización francés
+Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
+Invert selection	PaintWindow		Invertir la selección
+Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para agregar una nueva capa. Puede liberar memoria desactivando la función de deshacer y cerrando otras imágenes abiertas. También debe guardar la imagen ahora porque no podrá hacerlo más tarde si no tiene memoria. Lo siento mucho por este problema.
+Brush	Windows		Pincel
+Blur tool	Tools		Desenfoque
+Adjustable	Windows		Ajustable
+Center to corner	Tools		Desde el centro hasta la esquina
+About ArtPaint	PaintWindow		Sobre ArtPaint
+Opens a project from the disk.	PaintWindow		Abre una proyecto del disco.
+Don't save	ImageView		No guardar
+Tools	Tools		Herramientas
+Color	Tools		Color
+Shrinks the selection a little bit from every direction.	PaintWindow		Reduce la selección en todas las direcciones.
+Drag the text to correct position and set its appearance.	Manipulators		Coloque el texto en la posición correcta y ajuste su aspecto.
+Save image as…	PaintWindow		Guarde la imagen como...
+Brushes	Windows		Pinceles
+Copies the active layer to the clipboard.	PaintWindow		Copia la capa activa en la memoria.
+Shortcuts…	PaintWindow		Atajos...
+Layer window	Windows		Ventana de capas
+Translate…	Manipulators		Traducción...
+Delete current set	ColorPalette		Eliminar paleta actual
+Merge with front layer	LayerView		Combinar con la capa superior
+Closes the current window.	PaintWindow		Cerrar esta ventana.
+Duplicate layer	LayerView		Duplicar esta capa
+Shrink selection	PaintWindow		Reduce la selección
+%s: You have made %d changes since the last time the project was saved. Do you want to save the changes?	ImageView		%s: Has realizado %d cambios desde la última copia de seguridad de su proyecto. ¿Quieres guardar estos cambios?
+Zooms out from the image.	PaintWindow		Zoom de nuevo en la imagen.
+Clear selection	ImageView		Borrar la selección
+Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
+Sets the grid to 8 by 8 pixels.	PaintWindow		Establecer la cuadrícula a 8 por 8 píxeles.
+Saves the project to the disk with the current name.	PaintWindow		Guarde el proyecto en el disco con el nombre actual.
+Height	Manipulators		Alto
+Transparent	Tools		Transparento
+Click here to open color panel.	StatusView		Haga clic aquí para abrir el panel de color.
+Starts moving the active layer.	PaintWindow		Comienza a mover la capa activa.
+Recent projects	PaintWindow		Proyectos recentes
+Width	PaintWindow		Ancho
+Clear layer	PaintWindow		Borrar la capa
+The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		El tipo de archivo %file% no es compatible. Intenta instalar un traductor si es posible.
+Rectangle	Tools		Rectángulo
+Keep in front	Windows		Mantener en primer plano
+Opens an image from the disk.	PaintWindow		Abre una imagen del disco.
+Flip Vertically	Manipulators		Invertir vertical
+Off	PaintWindow		Desactivar
+Opens a page that describes ArtPaint's keyboard shortcuts.	PaintWindow		Abre WebPositive con una página que describe los atajos de teclado de ArtPaint.
+Ellipse tool	Tools		Elipse
+Add layer in front	LayerView		Añadir una capa frontal
+Create canvas	PaintWindow		Crear el imagen
+Delete layer	Image		Eliminar esta capa
+Hairy brush	Tools		Cepillo
+Color selector	Tools		Pipeta
+Off	Windows		Desactivar
+Release date: %s	Windows		Realizado el: %s
+Visible	LayerView		Visíbel
+Grow selection	ImageView		Expandir la selección
+Colors	ColorPalette		Colores
+Save	ImageView		Guardar
+Layer	PaintWindow		Capa
+Empty paint window	PaintWindow		Ventana de dibujo vacía
+No options	Windows		Ninguna opciones
+Tool cursor	Windows		Cursor herramientas
+Intelligent scissors	Tools		Lazo magnético
+Rotating	Manipulators		Angulo
+Grows the selection a little bit in every direction.	PaintWindow		Expandir la selección en todas las direcciones.
+Grow selection	PaintWindow		Expandir la selección
+Flood fill	Tools		Relleno de forma
+Adds a layer to the top of this image.	PaintWindow		Agrega una capa encima de las otras.
+Sets the zoom level to 400%.	PaintWindow		Establecer la zoom para 400%.
+OK	ImageView		Aceptar
+Flips all layers vertically.	PaintWindow		Invertir verticalmente todas las capas.
+Set zoom level	PaintWindow		Establecer la zoom
+Size	Manipulators		Tamaño
+Straight line	Tools		Línea recta
+Enable rotation	Tools		Habilitar rotación
+Saves the image to the disk with the current name.	PaintWindow		Guarde la imagen en el disco con el nombre actual.
+Continuous	Tools		Continuar
+Transparency	Manipulators		Transparencia
+Color window	Windows		Ventana de colores
+OK	PaintWindow		Aceptar
+Brings up the tool selection window.	PaintWindow		Muestra la caja de herramientas.
+Sets the grid to 4 by 4 pixels.	PaintWindow		Establecer la cuadrícula a 4 por 4 píxeles.
+User manual…	PaintWindow		Manuel del utilizador...
+Corner to corner	Tools		De una esquina a otra
+Add layer	Image		Añadir una capa
+Enable gradient	Tools		Habilitar degradado
+Quits the whole program.	PaintWindow		Salir el programa.
+Pastes previously copied layer from the clipboard as a new layer.	PaintWindow		Pegue la capa copiada anteriormente en la memoria como una nueva capa.
+German localization	Windows		Localización alemán
+Settings…	PaintWindow		Preferencias...
+Canvas	PaintWindow		Imagen
+Transparency tool	Tools		Transparencia
+Cancel	FilePanels		Anular
+Flip horizontally	PaintWindow		Invertir horizontal
+Mode	Tools		Modo
+Change transparency…	PaintWindow		Cambiar la transparencia...
+Tool setup window	Windows		Ventana de configuración
+Height	Tools		Alto
+Copies the image to the clipboard and clears all layers.	PaintWindow		Copia todas las capas en la memoria y borralas.
+Size	Tools		Tamaño
+Left	Manipulators		Izquierda
+Hairs	Tools		Cabello
+Clears the active layer.	PaintWindow		Borrar la capa activa.
+Brings up the settings window.	PaintWindow		Muestra la ventana de preferencias.
+Quit	PaintWindow		Salir
+Clear layer	Image		Borrar la capa
+Rotate…	PaintWindow		Rotación…
+No configuration options available.	Tools		No hay opciones de configuración disponibles
+Creates a new empty paint window.	PaintWindow		Crea una nueva ventana de dibujo en blanco.
+Open color set…	ColorPalette		Abre una paleta...
+Wand tolerance	Tools		Tolerancia de la varita
+Invert selection	ImageView		Invertir la selección
+Help	PaintWindow		Ayúda
+Much	Tools		Mucho
+Change the transparency with the slider.	Manipulators		Cambiar la transparencia con el deslizador.
+Top	Manipulators		Superior
+Programming & Design	Windows		Programación y concepción
+Tool selection window	Windows		Caja de herramientas
+About ArtPaint	Windows		Sobre ArtPaint
+Layers	LayerWindow		Capas
+Flips the active layer vertically.	PaintWindow		Invertir verticalmente la capa activa.
+Mag	MagnificationView		Zoom
+Sets the zoom level to 200%.	PaintWindow		Establecer la zoom para 200%.
+Undo not available	UndoQueue		Sin cancelación
+Starts rotating all layers.	PaintWindow		Inicia la rotación de todas las capas.
+ArtPaint is a painting and image-processing program for Haiku. It can be used for a wide variety of purposes ranging from web-graphics to photo manipulation. See the tutorial in the manual to get started.	Windows		ArtPaint es un software de edición de dibujos e imágenes para Haiku. Puede utilizarse para realizar una gran selección de trabajos desde el diseño de un sitio web hasta el retoque de fotografías. Para empezar, mira el tutorial en el manual.
+Delete layer	LayerView		Eliminar esta capa
+Sets the zoom level to 50%.	PaintWindow		Establecer la zoom para 50%.
+New project…	PaintWindow		Nueva proyecto...
+Height	PaintWindow		Alto
+Drag the image to correct position.	Manipulators		Mueva la imagen a la posición deseada.
+Right	Manipulators		De
+Flow	Tools		Flujo
+Add area	Tools		Añadir la zona
+Eraser	Tools		Borrador
+Recent images	PaintWindow		Imagenes recentes
