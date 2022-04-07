@@ -86,7 +86,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			window->Lock();
 			if (old_rect != new_rect) {
 				view->Draw(old_rect);
-				view->StrokeElxlipse(new_rect);
+				view->StrokeEllipse(new_rect);
 				old_rect = new_rect;
 			}
 			view->getCoords(&point,&buttons);
