@@ -296,8 +296,7 @@ Mag	MagnificationView		Suur
 Sets the zoom level to 200%.	PaintWindow		Asettaa suurennustasoksi 200%.
 Undo not available	UndoQueue		Ei voi perua
 Starts rotating all layers.	PaintWindow		Aloittaa kuvan kiertämisen.
-ArtPaint is a painting and image-processing program for Haiku. It can be used for a wide variety of purposes ranging from web-graphics to photo manipulation. See the tutorial in the manual to get started.	Windows		ArtPaint on piirustus- ja kuvankäsittelyohjelma Haikulle. Sitä voidaan käyttää laaja valikoima teoksia verkkosivuston suunnittelusta valokuvien retusointiin. Voit aloittaa oppaassa olevan opetusohjelman."
-
+ArtPaint is a painting and image-processing program for Haiku. It can be used for a wide variety of purposes ranging from web-graphics to photo manipulation. See the tutorial in the manual to get started.	Windows		ArtPaint on piirustus- ja kuvankäsittelyohjelma Haikulle. Sitä voidaan käyttää laaja valikoima teoksia verkkosivuston suunnittelusta valokuvien retusointiin. Voit aloittaa oppaassa olevan opetusohjelman.
 Delete layer	LayerView		Tuhoa kerros
 Sets the zoom level to 50%.	PaintWindow		Asettaa suurennustasoksi 50%.
 New project…	PaintWindow		Uusi projekti…
@@ -308,5 +307,4 @@ Flow	Tools		Virtaus
 Add area	Tools		Lisää alue
 Eraser	Tools		Pyyhekumi
 Recent images	PaintWindow		Viimeisimmät kuvat
-kuvat
-PaintWindow		Viimeisimmät kuvat
+
