@@ -27,7 +27,7 @@
 
 
 Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
-		BBitmap* bitmap)
+		BBitmap* bitmap, BRect* offset)
 	: fLayerData(NULL)
 	, fLayerPreview(NULL)
 	, fLayerId(id)
@@ -72,7 +72,16 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 			*target_bits++ = color.word;
 
 		if (bitmap && bitmap->IsValid()) {
-			fLayerData->ImportBits(bitmap);
+			uint32 bpr = fLayerData->BytesPerRow();
+			uint32 bmp_offset = 0;
+			if (offset != NULL)
+				bmp_offset = (offset->left * 4) +
+					(offset->top * bpr);
+
+			fLayerData->ImportBits(bitmap->Bits(),
+				bitmap->BitsLength(),
+				bitmap->BytesPerRow(),
+				bmp_offset, B_RGBA32);
 		}
 
 		// create the miniature image for this layer and a semaphore for it

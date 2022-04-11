@@ -109,7 +109,9 @@ void		MultiplyRenderedImagePixels(int32);
 
 bool		SetImageSize();
 
-Layer*		AddLayer(BBitmap*,Layer*,bool add_to_front,float layer_transparency_coefficient=1.0);
+Layer*		AddLayer(BBitmap*,Layer*, bool add_to_front,
+				float layer_transparency_coefficient = 1.0,
+				BRect* offset = NULL);
 bool		ChangeActiveLayer(Layer*,int32);
 bool		ChangeLayerPosition(Layer*,int32,int32);
 bool		ClearCurrentLayer(rgb_color&);
