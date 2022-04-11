@@ -10,6 +10,7 @@
 #include "FloaterManager.h"
 #include "LayerWindow.h"
 #include "MessageConstants.h"
+#include "MessageFilters.h"
 #include "Layer.h"
 #include "UtilityClasses.h"
 #include "LayerView.h"
@@ -41,7 +42,7 @@ sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphor
 LayerWindow::LayerWindow(BRect frame)
 	: BWindow(frame, StringServer::ReturnString(LAYERS_STRING),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK)
+		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE )
 {
 	BBox *top_part = new BBox(BRect(-1, 0, Bounds().Width() + 2,
 		HS_MINIATURE_IMAGE_HEIGHT + 3), NULL, B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
@@ -54,7 +55,6 @@ LayerWindow::LayerWindow(BRect frame)
 		"image title", "", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
 	top_part->AddChild(title_view);
 
-
 	list_view = new LayerListView();
 	list_view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	list_view->MoveTo(top_part->Frame().LeftBottom()+BPoint(0,1));
@@ -65,6 +65,7 @@ LayerWindow::LayerWindow(BRect frame)
 	scroll_bar->MoveTo(list_view->Frame().RightTop()+BPoint(2,0));
 	scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,
 		frame.Height() - list_view->Frame().top);
+	scroll_bar->SetSteps(8.0, 32.0);
 	AddChild(scroll_bar);
 
 	layer_count = 0;
@@ -83,6 +84,11 @@ LayerWindow::LayerWindow(BRect frame)
 	ResizeBy(1,0);
 	ResizeBy(-1,0);
 
+	Lock();
+	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,
+		B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
+	AddCommonFilter(activation_filter);
+	Unlock();
 	Show();
 
 	layer_window = this;
