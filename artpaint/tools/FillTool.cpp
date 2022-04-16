@@ -519,7 +519,8 @@ void FillTool::CheckUpperSpans(BPoint span_start,BitmapDrawer *drawer,PointStack
 	}
 }
 
-void FillTool::CheckBothSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
+void
+FillTool::CheckBothSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
 {
 	// First get the vital data.
 	int32 x,start_x;
@@ -755,7 +756,8 @@ void FillTool::CheckBothSpans(BPoint span_start,BitmapDrawer *drawer,PointStack 
 }
 
 
-void FillTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int32 max_x, uint32 new_color, uint32 old_color,int32 tolerance,Selection *sel)
+void
+FillTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int32 max_x, uint32 new_color, uint32 old_color,int32 tolerance,Selection *sel)
 {
 	// First get the vital data.
 	int32 x,start_x;
@@ -841,7 +843,8 @@ void FillTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int3
 }
 
 
-BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint orig_view_point,Selection *sel)
+BPoint
+FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint orig_view_point,Selection *sel)
 {
 	// First calculate points that are to be included in the fill to
 	// a separate binary mask. Then go through the filled areas bounds
@@ -976,7 +979,8 @@ BPoint FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint
 
 
 
-BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,int32 min_y,int32 max_y,uint32 old_color,Selection *sel)
+BBitmap*
+FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,int32 min_y,int32 max_y,uint32 old_color,Selection *sel)
 {
 	// This function makes a binary bitmap that has ones where the
 	// color of original bitmap is same as old_color, and zeroes elsewhere.
@@ -1077,7 +1081,8 @@ BBitmap* FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,in
 	return binary_map;
 }
 
-BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
+BBitmap*
+FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 	int32 max_x, int32 min_y, int32 max_y, uint32 old_color, BPoint start,
 	Selection *sel)
 {
@@ -1138,7 +1143,8 @@ BBitmap* FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 }
 
 
-void FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
+void
+FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
 	int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
 	uint32 new_color, uint32 gradient_color)
 {
@@ -1265,7 +1271,8 @@ void FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
 }
 
 
-void FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
+void
+FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
 	int32 dx, int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
 	uint32 new_color, uint32 gradient_color)
 {

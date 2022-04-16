@@ -13,8 +13,8 @@
 
 class BitmapUtilities {
 public:
-static	status_t	FixMissingAlpha(BBitmap *bitmap);
-static	BBitmap*	ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace);
+	static	status_t	FixMissingAlpha(BBitmap *bitmap);
+	static	BBitmap*	ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace);
 };
 
 
