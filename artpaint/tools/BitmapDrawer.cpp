@@ -24,7 +24,8 @@ BitmapDrawer::BitmapDrawer(BBitmap *bitmap)
 
 
 
-status_t BitmapDrawer::DrawHairLine(BPoint start,BPoint end,uint32 color,bool anti_alias,Selection *sel)
+status_t
+BitmapDrawer::DrawHairLine(BPoint start,BPoint end,uint32 color,bool anti_alias,Selection *sel)
 {
 	// This function only draws lines with width of 1.
 	// Always draw the lines from left to right or from top to bottom.
@@ -274,7 +275,8 @@ status_t BitmapDrawer::DrawHairLine(BPoint start,BPoint end,uint32 color,bool an
 	return B_OK;
 }
 
-status_t BitmapDrawer::DrawHairLine(BPoint start,BPoint end,uint32 color,float mix,bool anti_alias,Selection *sel)
+status_t
+BitmapDrawer::DrawHairLine(BPoint start,BPoint end,uint32 color,float mix,bool anti_alias,Selection *sel)
 {
 	// This function only draws lines with width of 1.
 	// Always draw the lines from left to right or from top to bottom.
@@ -565,7 +567,8 @@ status_t BitmapDrawer::DrawHairLine(BPoint start,BPoint end,uint32 color,float m
 }
 
 
-status_t BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width, bool anti_alias,Selection *sel)
+status_t
+BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width, bool anti_alias,Selection *sel)
 {
 	// The line width is split in to two parts
 	float distance1_from_center = ceil((width - 1.0) / 2.0);
@@ -628,7 +631,8 @@ status_t BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float wi
 }
 
 
-status_t BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool fill,bool anti_alias,Selection *sel)
+status_t
+BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool fill,bool anti_alias,Selection *sel)
 {
 	// For the moment we only do non-anti-aliased circles. So radius should be a whole number.
 	// At the moment the filled circle is too slow (slower than BView's corresponding function).
@@ -790,7 +794,8 @@ status_t BitmapDrawer::DrawCircle(BPoint center,float radius,uint32 color,bool f
 }
 
 
-status_t BitmapDrawer::DrawEllipse(BRect rect,uint32 color,bool fill,bool anti_alias,Selection *sel)
+status_t
+BitmapDrawer::DrawEllipse(BRect rect,uint32 color,bool fill,bool anti_alias,Selection *sel)
 {
 	// This function will have four cases, two for fill on and of and two for antialiasing.
 	// The first one is the simples one: no-fill no-anti-aliasing.
@@ -1011,7 +1016,8 @@ status_t BitmapDrawer::DrawEllipse(BRect rect,uint32 color,bool fill,bool anti_a
 
 // This function is quite useless unless we want draw a rectangular bitmap such that the data
 // reaches borders at every position and it is binary data.
-status_t BitmapDrawer::DrawBitmap(BBitmap *bitmap,BRect bounds,BRect exclude,bool)
+status_t
+BitmapDrawer::DrawBitmap(BBitmap *bitmap,BRect bounds,BRect exclude,bool)
 {
 	// The exclude rect should be the same size as bounds but with a different offset.
 	// This will copy a bitmap to the actual bitmap
@@ -1078,7 +1084,8 @@ status_t BitmapDrawer::DrawBitmap(BBitmap *bitmap,BRect bounds,BRect exclude,boo
 }
 
 
-status_t BitmapDrawer::DrawConvexPolygon(BPoint *point_list,int32 point_count, uint32 color, bool fill, bool anti_alias)
+status_t
+BitmapDrawer::DrawConvexPolygon(BPoint *point_list,int32 point_count, uint32 color, bool fill, bool anti_alias)
 {
 	if (fill == FALSE) {
 		// Just connect the corners with lines.
@@ -1153,7 +1160,8 @@ status_t BitmapDrawer::DrawConvexPolygon(BPoint *point_list,int32 point_count, u
 }
 
 
-float BitmapDrawer::MinimumCrossingPoint(BPoint &start, BPoint &end,int32 y)
+float
+BitmapDrawer::MinimumCrossingPoint(BPoint &start, BPoint &end,int32 y)
 {
 	// If the line is more vertical than horizontal there is only one point
 	// at coordinate y.
@@ -1177,7 +1185,8 @@ float BitmapDrawer::MinimumCrossingPoint(BPoint &start, BPoint &end,int32 y)
 	}
 }
 
-float BitmapDrawer::MaximumCrossingPoint(BPoint &start, BPoint &end,int32 y)
+float
+BitmapDrawer::MaximumCrossingPoint(BPoint &start, BPoint &end,int32 y)
 {
 	// If the line is more vertical than horizontal there is only one point
 	// at coordinate y.
@@ -1202,7 +1211,8 @@ float BitmapDrawer::MaximumCrossingPoint(BPoint &start, BPoint &end,int32 y)
 }
 
 
-status_t BitmapDrawer::DrawRectanglePolygon(BPoint *corners,uint32 color,bool fill, bool anti_alias,Selection *sel)
+status_t
+BitmapDrawer::DrawRectanglePolygon(BPoint *corners,uint32 color,bool fill, bool anti_alias,Selection *sel)
 {
 	// This is a special-case of the convex-polygon function that draws polygons that are rectangular.
 	// In addition to the convex polygon case we can use the following simplifications:
@@ -1247,7 +1257,8 @@ status_t BitmapDrawer::DrawRectanglePolygon(BPoint *corners,uint32 color,bool fi
 }
 
 
-status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Selection *sel)
+status_t
+BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Selection *sel)
 {
 	// If the rectangle is aligned with the coordinate axis we do not need to
 	// do much.
@@ -1679,7 +1690,8 @@ status_t BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners,uint32 color,Sel
 	return B_OK;
 }
 
-status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *sel)
+status_t
+BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *sel)
 {
 	// If the rectangle is aligned with the coordinate axis we do not need to
 	// do much.
@@ -1891,7 +1903,8 @@ status_t BitmapDrawer::FillRectangle(BPoint *corners, uint32 color,Selection *se
 	return B_OK;
 }
 
-status_t BitmapDrawer::SetPixel(BPoint location,uint32 color)
+status_t
+BitmapDrawer::SetPixel(BPoint location,uint32 color)
 {
 	if (bitmap_bounds.Contains(location)) {
 		*(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr) = color;
@@ -1901,7 +1914,8 @@ status_t BitmapDrawer::SetPixel(BPoint location,uint32 color)
 		return B_ERROR;
 }
 
-status_t BitmapDrawer::SetPixel(BPoint location,uint32 color,Selection *sel)
+status_t
+BitmapDrawer::SetPixel(BPoint location,uint32 color,Selection *sel)
 {
 	if (sel->ContainsPoint(location)) {
 		if (bitmap_bounds.Contains(location)) {
@@ -1915,14 +1929,16 @@ status_t BitmapDrawer::SetPixel(BPoint location,uint32 color,Selection *sel)
 		return B_ERROR;
 }
 
-void BitmapDrawer::SetPixel(int32 x, int32 y, uint32 color,Selection *sel)
+void
+BitmapDrawer::SetPixel(int32 x, int32 y, uint32 color,Selection *sel)
 {
 	if (sel->ContainsPoint(x,y))
 		*(bitmap_bits + x + y*bitmap_bpr) = color;
 }
 
 
-uint32 BitmapDrawer::GetPixel(BPoint location)
+uint32
+BitmapDrawer::GetPixel(BPoint location)
 {
 	if (bitmap_bounds.Contains(location)) {
 		return *(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr);

@@ -420,7 +420,8 @@ ColorSelectorToolConfigView::ColorSelectorToolConfigView(DrawingTool* tool)
 }
 
 
-void ColorSelectorToolConfigView::AttachedToWindow()
+void
+ColorSelectorToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 

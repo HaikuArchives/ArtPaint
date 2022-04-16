@@ -168,7 +168,8 @@ BrushTool::UseToolWithScript(ToolScript*, BBitmap*)
 }
 
 
-BView* BrushTool::ConfigView()
+BView*
+BrushTool::ConfigView()
 {
 	return new BrushToolConfigView(this);
 }

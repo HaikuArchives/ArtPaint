@@ -54,7 +54,8 @@ CoordinateReader::~CoordinateReader()
 }
 
 
-status_t CoordinateReader::GetPoint(BPoint &point)
+status_t
+CoordinateReader::GetPoint(BPoint &point)
 {
 	switch (style) {
 		case NO_INTERPOLATION:
@@ -68,7 +69,8 @@ status_t CoordinateReader::GetPoint(BPoint &point)
 	}
 }
 
-int32 CoordinateReader::thread_entry(void *data)
+int32
+CoordinateReader::thread_entry(void *data)
 {
 	CoordinateReader *this_pointer = (CoordinateReader*)data;
 
@@ -76,7 +78,8 @@ int32 CoordinateReader::thread_entry(void *data)
 }
 
 
-int32 CoordinateReader::reader_function()
+int32
+CoordinateReader::reader_function()
 {
 	BWindow *window = view->Window();
 	if (window == NULL)
@@ -121,7 +124,8 @@ int32 CoordinateReader::reader_function()
 }
 
 
-status_t CoordinateReader::NextPointNoInterpolation(BPoint &point)
+status_t
+CoordinateReader::NextPointNoInterpolation(BPoint &point)
 {
 	while ((point_queue_length == 0) && (continue_reading))
 		snooze(50 * 1000);
@@ -144,7 +148,8 @@ status_t CoordinateReader::NextPointNoInterpolation(BPoint &point)
 }
 
 
-status_t CoordinateReader::NextPointLinearInterpolation(BPoint &point)
+status_t
+CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 {
 	if (!interpolation_started) {
 		// Take the two first interpolation points.
@@ -227,7 +232,8 @@ status_t CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 }
 
 
-status_t CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
+status_t
+CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 {
 	if (!interpolation_started) {
 		// Take the four first interpolation points.
@@ -339,7 +345,8 @@ status_t CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 
 
 
-bool CoordinateReader::EnterCS()
+bool
+CoordinateReader::EnterCS()
 {
 	int32 previous = atomic_add(&benaphore_count, 1);
 	if (previous >= 1)
@@ -350,7 +357,8 @@ bool CoordinateReader::EnterCS()
 }
 
 
-bool CoordinateReader::ExitCS()
+bool
+CoordinateReader::ExitCS()
 {
 	int32 previous = atomic_add(&benaphore_count, -1);
 	if (previous > 1)  {
