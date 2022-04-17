@@ -350,7 +350,8 @@ AirBrushTool::HelpString(bool isInUse) const
 
 
 AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);

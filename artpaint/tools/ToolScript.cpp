@@ -28,7 +28,8 @@ ToolScript::~ToolScript()
 }
 
 
-void ToolScript::AddPoint(BPoint p)
+void
+ToolScript::AddPoint(BPoint p)
 {
 	if (point_count == max_points) {
 		max_points = 2*max_points;
@@ -44,25 +45,29 @@ void ToolScript::AddPoint(BPoint p)
 
 
 
-tool_settings* ToolScript::ReturnSettings()
+tool_settings*
+ToolScript::ReturnSettings()
 {
 	return &settings;
 }
 
 
-rgb_color ToolScript::ReturnColor()
+rgb_color
+ToolScript::ReturnColor()
 {
 	return color;
 }
 
 
-BPoint* ToolScript::ReturnPoints()
+BPoint*
+ToolScript::ReturnPoints()
 {
 	return points;
 }
 
 
-int32 ToolScript::PointCount()
+int32
+ToolScript::PointCount()
 {
 	return point_count;
 }
