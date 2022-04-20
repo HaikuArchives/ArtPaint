@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -18,7 +19,6 @@
 #include "ManipulatorWindow.h"
 #include "NumberControl.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
 #include "UndoQueue.h"
@@ -26,6 +26,7 @@
 
 
 #include <Button.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GroupLayout.h>
 #include <GridLayoutBuilder.h>
@@ -34,6 +35,10 @@
 #include <SpaceLayoutItem.h>
 #include <StringView.h>
 #include <TabView.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Windows"
 
 
 using ArtPaint::Interface::NumberControl;
@@ -53,13 +58,6 @@ const uint32 kSetUndoDisabled					= '_sud';
 const uint32 kSetUnlimitedUndo					= '_suu';
 const uint32 kSetAdjustableUndo					= '_sau';
 const uint32 kUndoDepthAdjusted					= '_uda';
-
-const uint32 kEnglishLanguageSet				= '_eng';
-const uint32 kGermanLanguageSet					= '_ger';
-const uint32 kFinnishLanguageSet				= '_fin';
-const uint32 kFrenchLanguageSet					= '_fre';
-const uint32 kSpanishLanguageSet				= '_spa';
-const uint32 kDutchLanguageSet					= '_dut';
 
 const uint32 kToolCursorMode					= '_too';
 const uint32 kCrossHairCursorMode				= '_cro';
@@ -116,28 +114,28 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 		settings.FindInt32(skAddOnWindowFeel, (int32*)&fAddOnWindowFeel);
 	}
 
-	fColor = new BCheckBox(StringServer::ReturnString(COLOR_WINDOW_STRING),
+	fColor = new BCheckBox(B_TRANSLATE("Color window"),
 		new BMessage(kColorWindowFeelChanged));
 	fColor->SetValue(fPaletteWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
 	fSelection =
-		new BCheckBox(StringServer::ReturnString(TOOL_SELECTION_WINDOW_STRING),
+		new BCheckBox(B_TRANSLATE("Tool selection window"),
 		new BMessage(kToolSelectionWindowFeelChanged));
 	fSelection->SetValue(fToolWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fSetup = new BCheckBox(StringServer::ReturnString(TOOL_SETUP_WINDOW_STRING),
+	fSetup = new BCheckBox(B_TRANSLATE("Tool setup window"),
 		new BMessage(kToolSetupWindowFeelChanged));
 	fSetup->SetValue(fToolSetupWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fLayer = new BCheckBox(StringServer::ReturnString(LAYER_WINDOW_STRING),
+	fLayer = new BCheckBox(B_TRANSLATE("Layer window"),
 		new BMessage(kLayerWindowFeelChanged));
 	fLayer->SetValue(fLayerWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fBrush = new BCheckBox(StringServer::ReturnString(BRUSH_WINDOW_STRING),
+	fBrush = new BCheckBox(B_TRANSLATE("Brush window"),
 		new BMessage(kBrushWindowFeelChanged));
 	fBrush->SetValue(fBrushWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fEffects = new BCheckBox(StringServer::ReturnString(EFFECTS_WINDOW_STRING),
+	fEffects = new BCheckBox(B_TRANSLATE("Effects window"),
 		new BMessage(kEffectsWindowFeelChanged));
 	fEffects->SetValue(fAddOnWindowFeel == B_FLOATING_SUBSET_WINDOW_FEEL);
 
@@ -155,7 +153,7 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 		.SetInsets(20.0, 5.0, 10.0, 10.0)
 		.View()
 	);
-	box->SetLabel(StringServer::ReturnString(KEEP_IN_FRONT_STRING));
+	box->SetLabel(B_TRANSLATE("Keep in front"));
 
 	layout->AddView(box);
 	layout->AddItem(BSpaceLayoutItem::CreateGlue());
@@ -276,13 +274,13 @@ GlobalSetupWindow::UndoControlView::UndoControlView()
 
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 		.Add(fDisabledUndo =
-				new BRadioButton(StringServer::ReturnString(OFF_STRING),
+				new BRadioButton(B_TRANSLATE("Off"),
 				new BMessage(kSetUndoDisabled)))
 		.Add(fUnlimitedUndo =
-				new BRadioButton(StringServer::ReturnString(UNLIMITED_STRING),
+				new BRadioButton(B_TRANSLATE("Unlimited"),
 				new BMessage(kSetUnlimitedUndo)))
 		.Add(fAdjustableUndo =
-				new BRadioButton(StringServer::ReturnString(ADJUSTABLE_STRING),
+				new BRadioButton(B_TRANSLATE("Adjustable"),
 				new BMessage(kSetAdjustableUndo)))
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
 			.AddStrut(15.0)						  // TODO: translation
@@ -367,161 +365,6 @@ GlobalSetupWindow::UndoControlView::_Update(int32 undoDepth, bool enableInput)
 }
 
 
-// #pragma mark -- LanguageControlView
-
-
-class GlobalSetupWindow::LanguageControlView : public BView {
-public:
-						LanguageControlView();
-	virtual				~LanguageControlView() {}
-
-	virtual	void		AttachedToWindow();
-	virtual	void		MessageReceived(BMessage* message);
-
-			void		ApplyChanges();
-
-private:
-			void		_Update(int language);
-
-private:
-		int32			fLanguage;
-		int32			fOriginalLanguage;
-
-		BRadioButton*	fEnglish;
-		BRadioButton*	fDutch;
-		BRadioButton*	fFinnish;
-		BRadioButton*	fFrench;
-		BRadioButton*	fGerman;
-		BRadioButton*	fSpanish;
-		BStringView*	fMessageView;
-};
-
-
-GlobalSetupWindow::LanguageControlView::LanguageControlView()
-	: BView("language control view", 0)
-	, fLanguage(ENGLISH_LANGUAGE)
-{
-	SetLayout(new BGroupLayout(B_VERTICAL));
-
-	fEnglish = new BRadioButton("English", new BMessage(kEnglishLanguageSet));
-	fEnglish->SetValue(B_CONTROL_ON);
-	fDutch = new BRadioButton("Nederlands", new BMessage(kDutchLanguageSet));
-	fFinnish = new BRadioButton("Suomi", new BMessage(kFinnishLanguageSet));
-	fFrench = new BRadioButton("Française", new BMessage(kFrenchLanguageSet));
-	fGerman = new BRadioButton("Deutsch", new BMessage(kGermanLanguageSet));
-	fSpanish = new BRadioButton("Español", new BMessage(kSpanishLanguageSet));
-
-	fMessageView = new BStringView("message view",
-		StringServer::ReturnString(CHANGES_TAKE_EFFECT_STRING));
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL)
-		.Add(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-			.Add(fEnglish)
-			.Add(fDutch)
-			.Add(fGerman)
-			.Add(fSpanish)
-			.Add(fFrench)
-			.Add(fFinnish))
-		.AddGlue()
-		.Add(fMessageView)
-		.SetInsets(20.0, 20.0, 10.0, 10.0)
-	);
-
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		BMessage settings;
-		server->GetApplicationSettings(&settings);
-		settings.FindInt32(skLanguage, &fLanguage);
-	}
-
-	if (fLanguage == DUTCH_LANGUAGE)
-		fDutch->SetValue(B_CONTROL_ON);
-
-
-	if (fLanguage == FINNISH_LANGUAGE)
-		fFinnish->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == FRENCH_LANGUAGE)
-		fFrench->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == GERMAN_LANGUAGE)
-		fGerman->SetValue(B_CONTROL_ON);
-
-	if (fLanguage == SPANISH_LANGUAGE)
-		fSpanish->SetValue(B_CONTROL_ON);
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::AttachedToWindow()
-{
-	if (Parent())
-		SetViewColor(Parent()->ViewColor());
-
-	fEnglish->SetTarget(this);
-	fDutch->SetTarget(this);
-	fFinnish->SetTarget(this);
-	fFrench->SetTarget(this);
-	fGerman->SetTarget(this);
-	fSpanish->SetTarget(this);
-	fMessageView->SetText("");
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::MessageReceived(BMessage* message)
-{
-	switch (message->what) {
-		case kEnglishLanguageSet: {
-			_Update(ENGLISH_LANGUAGE);
-		}	break;
-
-		case kDutchLanguageSet: {
-			_Update(DUTCH_LANGUAGE);
-		}	break;
-
-
-		case kFinnishLanguageSet: {
-			_Update(FINNISH_LANGUAGE);
-		}	break;
-
-		case kFrenchLanguageSet: {
-			_Update(FRENCH_LANGUAGE);
-		}	break;
-
-		case kGermanLanguageSet: {
-			_Update(GERMAN_LANGUAGE);
-		}	break;
-
-		case kSpanishLanguageSet: {
-			_Update(SPANISH_LANGUAGE);
-		}	break;
-
-		default: {
-			BView::MessageReceived(message);
-		}	break;
-	}
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::ApplyChanges()
-{
-	if (SettingsServer* server = SettingsServer::Instance())
-		server->SetValue(SettingsServer::Application, skLanguage, fLanguage);
-}
-
-
-void
-GlobalSetupWindow::LanguageControlView::_Update(int language)
-{
-	fLanguage = language;
-	fMessageView->SetText("");
-
-	if (fLanguage != fOriginalLanguage)
-		fMessageView->SetText(StringServer::ReturnString(CHANGES_TAKE_EFFECT_STRING));
-}
-
-
 // #pragma mark -- GeneralControlView
 
 
@@ -554,20 +397,20 @@ GlobalSetupWindow::GeneralControlView::GeneralControlView()
 
 	BBox* box = new BBox(B_NO_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
 		.Add(fToolCursor =
-			new BRadioButton(StringServer::ReturnString(TOOL_CURSOR_STRING),
+			new BRadioButton(B_TRANSLATE("Tool cursor"),
 			new BMessage(kCrossHairCursorMode)))
 		.Add(fCrossHairCursor =
-			new BRadioButton(StringServer::ReturnString(CROSS_HAIR_CURSOR_STRING),
+			new BRadioButton(B_TRANSLATE("Cross-hair cursor"),
 			new BMessage(kToolCursorMode)))
 		.SetInsets(20.0, 5.0, 10.0, 0.0)
 		.TopView()
 	);
 	fToolCursor->SetValue(B_CONTROL_ON);
-	box->SetLabel(StringServer::ReturnString(CURSOR_STRING));
+	box->SetLabel(B_TRANSLATE("Cursor"));
 
 	BBox* box2 = new BBox(B_NO_BORDER, BGroupLayoutBuilder(B_VERTICAL)
 		.Add(fConfirmShutdown =
-				new BCheckBox(StringServer::ReturnString(CONFIRM_QUIT_STRING),
+				new BCheckBox(B_TRANSLATE("Confirm quitting"),
 				new BMessage(kConfirmShutdownChanged)))
 		.SetInsets(20.0, 5.0, 10.0, 0.0)
 		.TopView()
@@ -648,7 +491,7 @@ GlobalSetupWindow::GeneralControlView::ApplyChanges()
 
 GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	: BWindow(BRect(leftTop, BSize(10.0, 10.0)),
-		StringServer::ReturnString(GLOBAL_SETTINGS_STRING),
+		B_TRANSLATE("Global settings"),
 		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
 		B_NOT_RESIZABLE | B_AUTO_UPDATE_SIZE_LIMITS | B_CLOSE_ON_ESCAPE)
 {
@@ -660,29 +503,24 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	BTab* tab = new BTab();
 	fWindowFeelView = new WindowFeelView;
 	fTabView->AddTab(fWindowFeelView, tab);
-	tab->SetLabel(StringServer::ReturnString(WINDOW_FLOATING_STRING));
+	tab->SetLabel(B_TRANSLATE("Windows"));
 
 	tab = new BTab();
 	fUndoControlView = new UndoControlView;
 	fTabView->AddTab(fUndoControlView, tab);
-	tab->SetLabel(StringServer::ReturnString(UNDO_SETTINGS_STRING));
-
-	tab = new BTab();
-	fLanguageControlView = new LanguageControlView;
-	fTabView->AddTab(fLanguageControlView, tab);
-	tab->SetLabel(StringServer::ReturnString(LANGUAGE_STRING));
+	tab->SetLabel(B_TRANSLATE("Undo"));
 
 	tab = new BTab();
 	fGeneralControlView = new GeneralControlView;
 	fTabView->AddTab(fGeneralControlView, tab);
-	tab->SetLabel(StringServer::ReturnString(MISCELLANEOUS_STRING));
+	tab->SetLabel(B_TRANSLATE("Miscellaneous"));
 
 	layout->AddView(fTabView);
 	layout->AddView(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 		.AddGlue()
-		.Add(new BButton(StringServer::ReturnString(APPLY_CHANGES_STRING),
+		.Add(new BButton(B_TRANSLATE("Apply changes"),
 			new BMessage(kCloseAndApplySettings)))
-		.Add(new BButton(StringServer::ReturnString(DISCARD_CHANGES_STRING),
+		.Add(new BButton(B_TRANSLATE("Discard changes"),
 			new BMessage(kCloseAndDiscardSettings)))
 		.TopView()
 	);
@@ -721,9 +559,6 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 
 			if (fUndoControlView)
 				fUndoControlView->ApplyChanges();
-
-			if (fLanguageControlView)
-				fLanguageControlView->ApplyChanges();
 
 			if (fGeneralControlView)
 				fGeneralControlView->ApplyChanges();

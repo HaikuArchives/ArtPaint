@@ -4,22 +4,9 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-
-#include <Alert.h>
-#include <ClassInfo.h>
-#include <Clipboard.h>
-#include <MenuBar.h>
-#include <MenuItem.h>
-#include <Message.h>
-#include <new>
-#include <PopUpMenu.h>
-#include <Screen.h>
-#include <ScrollBar.h>
-#include <Slider.h>
-#include <StatusBar.h>
-#include <Window.h>
 
 #include "Cursors.h"
 #include "DrawingTools.h"
@@ -46,7 +33,29 @@
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
 #include "WindowGUIManipulator.h"
-#include "StringServer.h"
+
+
+#include <Alert.h>
+#include <Catalog.h>
+#include <ClassInfo.h>
+#include <Clipboard.h>
+#include <MenuBar.h>
+#include <MenuItem.h>
+#include <Message.h>
+#include <PopUpMenu.h>
+#include <Screen.h>
+#include <ScrollBar.h>
+#include <Slider.h>
+#include <StatusBar.h>
+#include <Window.h>
+
+
+#include <new>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "ImageView"
+
 
 ImageView::ImageView(BRect frame, float width, float height)
 		: BView(frame,"image_view",B_FOLLOW_NONE,B_WILL_DRAW)
@@ -497,7 +506,7 @@ void ImageView::MessageReceived(BMessage *message)
 		case HS_INVERT_SELECTION:
 			selection->Invert();
 			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(INVERT_SELECTION_STRING),the_image->ReturnThumbnailImage());
+				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Invert selection"),the_image->ReturnThumbnailImage());
 				if (new_event != NULL) {
 					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 					undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -512,7 +521,7 @@ void ImageView::MessageReceived(BMessage *message)
 		case HS_CLEAR_SELECTION:
 			selection->Clear();
 			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(CLEAR_SELECTION_STRING),the_image->ReturnThumbnailImage());
+				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear selection"),the_image->ReturnThumbnailImage());
 				if (new_event != NULL) {
 					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 					undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -524,7 +533,7 @@ void ImageView::MessageReceived(BMessage *message)
 		case HS_GROW_SELECTION:
 			selection->Dilatate();
 			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(GROW_SELECTION_STRING),the_image->ReturnThumbnailImage());
+				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),the_image->ReturnThumbnailImage());
 				if (new_event != NULL) {
 					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 					undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -536,7 +545,7 @@ void ImageView::MessageReceived(BMessage *message)
 		case HS_SHRINK_SELECTION:
 			selection->Erode();
 			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(StringServer::ReturnString(SHRINK_SELECTION_STRING),the_image->ReturnThumbnailImage());
+				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Shrink selection"),the_image->ReturnThumbnailImage());
 				if (new_event != NULL) {
 					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 					undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -857,14 +866,14 @@ ImageView::Quit()
 
 	if (mode == B_CONTROL_ON) {
 		if (project_changed > 0) {
-			char text[256];
-			sprintf(text, StringServer::ReturnString(SAVE_CHANGES_STRING),
-				project_name, project_changed);
+			BString format(B_TRANSLATE("%s: You have made %d changes since the last time the project was saved. Do you want to save the changes?"));
+			BString text;
+			text.SetToFormat(format, project_name, project_changed);
 
 			BAlert* alert = new BAlert("Unsaved Changes!", text,
-				StringServer::ReturnString(CANCEL_STRING),
-				StringServer::ReturnString(DO_NOT_SAVE_STRING),
-				StringServer::ReturnString(SAVE_STRING), B_WIDTH_AS_USUAL,
+				B_TRANSLATE("Cancel"),
+				B_TRANSLATE("Don't save"),
+				B_TRANSLATE("Save"), B_WIDTH_AS_USUAL,
 				B_OFFSET_SPACING);
 
 			int32 value = alert->Go();
@@ -1510,7 +1519,7 @@ int32 ImageView::ManipulatorFinisherThread()
 	if (status_bar != NULL) {
 		if (LockLooper() == TRUE) {
 			status_bar->Reset();
-			status_bar->SetText(StringServer::ReturnString(FINISHING_STRING));
+			status_bar->SetText(B_TRANSLATE("Finishing"));
 			UnlockLooper();
 		}
 	}
@@ -1572,9 +1581,9 @@ int32 ImageView::ManipulatorFinisherThread()
 
 			for (int32 i = 0; i < layerCount; ++i) {
 				if (LockLooper()) {
-					char text[256];
-					sprintf(text,"%s %ld / %ld",
-						StringServer::ReturnString(LAYER_STRING), i + 1, layerCount);
+					BString format(B_TRANSLATE("Layer %ld / %ld"));
+					BString text;
+					text.SetToFormat(format, i + 1, layerCount);
 					status_bar->SetTrailingText(text);
 					UnlockLooper();
 				}
@@ -1909,14 +1918,25 @@ status_t ImageView::ShowAlert(int32 alert)
 	const char *text;
 	switch (alert) {
 		case CANNOT_ADD_LAYER_ALERT:
-			text = StringServer::ReturnString(MEMORY_ALERT_1_STRING);
+			text = B_TRANSLATE("Not enough free memory to add a layer ."\
+				"You can free more memory by disabling the undo and closing other images. It is also a good idea "\
+				"to save the image now because running out of memory later on might make saving difficult or "\
+				"impossible. I am very sorry about this inconvenience.");
 			break;
 		case CANNOT_START_MANIPULATOR_ALERT:
-			text = StringServer::ReturnString(MEMORY_ALERT_2_STRING);
+			text = B_TRANSLATE("Not enough free memory to start the effect you requested. You may close other images and try again. "\
+				"Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. "\
+				"If you have other applications running, closing them gives you more free memory. "\
+				"It is also a good idea to save your work at this point, because if the memory runs out completely "\
+				"saving might become impossible. I am very sorry about this inconvenience.");
 			break;
 
 		case CANNOT_FINISH_MANIPULATOR_ALERT:
-			text = StringServer::ReturnString(MEMORY_ALERT_3_STRING);
+			text = B_TRANSLATE("Not enough free memory to finish the effect you requested. You may close other images and try again. "\
+				"Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. "\
+				"If you have other applications running, closing them gives you more free memory. "\
+				"It is also a good idea to save your work at this point, because if the memory runs out completely "\
+				"saving might become impossible. I am very sorry about this inconvenience.");
 			break;
 
 		default:
@@ -1924,7 +1944,7 @@ status_t ImageView::ShowAlert(int32 alert)
 			break;
 	}
 
-	BAlert *alert_box = new BAlert("alert_box",text,StringServer::ReturnString(OK_STRING),NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
+	BAlert *alert_box = new BAlert("alert_box",text,B_TRANSLATE("OK"),NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
 	alert_box->Go();
 
 

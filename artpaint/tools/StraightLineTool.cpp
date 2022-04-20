@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -19,11 +20,11 @@
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
@@ -35,11 +36,15 @@
 #include <stdio.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 using ArtPaint::Interface::NumberSliderControl;
 
 
 StraightLineTool::StraightLineTool()
-	: DrawingTool(StringServer::ReturnString(STRAIGHT_LINE_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Straight line"),
 		STRAIGHT_LINE_TOOL)
 {
 	fOptions = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION;
@@ -337,8 +342,8 @@ StraightLineTool::ToolCursor() const
 const char*
 StraightLineTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? STRAIGHT_LINE_TOOL_IN_USE_STRING
-		: STRAIGHT_LINE_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Drawing a straight line."
+		: "Press the mouse-button to draw a straight line.");
 }
 
 
@@ -354,7 +359,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fLineSize = new NumberSliderControl(
-			StringServer::ReturnString(SIZE_STRING),
+			B_TRANSLATE("Size"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -362,7 +367,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 
 		fAntiAliasing =
-			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			new BCheckBox(B_TRANSLATE("Enable antialiasing"),
 			message);
 		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
 			fAntiAliasing->SetValue(B_CONTROL_ON);
@@ -372,7 +377,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 
 		fAdjustableWidth =
-			new BCheckBox(StringServer::ReturnString(ADJUSTABLE_WIDTH_STRING),
+			new BCheckBox(B_TRANSLATE("Adjustable width"),
 			message);
 		if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF)
 			fAdjustableWidth->SetValue(B_CONTROL_ON);
@@ -382,7 +387,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(lineSizeLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fAdjustableWidth)
 				.Add(fAntiAliasing)

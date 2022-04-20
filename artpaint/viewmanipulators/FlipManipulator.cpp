@@ -4,18 +4,25 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
+#include "MessageConstants.h"
+#include "FlipManipulator.h"
+#include "ImageView.h"
+
+
 #include <AppDefs.h>
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
 
-#include "MessageConstants.h"
-#include "FlipManipulator.h"
-#include "ImageView.h"
-#include "StringServer.h"
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
+
 
 HorizFlipManipulator::HorizFlipManipulator()
 	:	Manipulator()
@@ -51,7 +58,7 @@ BBitmap* HorizFlipManipulator::ManipulateBitmap(BBitmap *original,Selection*,BSt
 
 const char* HorizFlipManipulator::ReturnName()
 {
-	return StringServer::ReturnString(FLIP_HORIZONTAL_STRING);
+	return B_TRANSLATE("Flip horizontally");
 }
 
 VertFlipManipulator::VertFlipManipulator()
@@ -89,5 +96,5 @@ BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap *original,Selection*,BSta
 
 const char* VertFlipManipulator::ReturnName()
 {
-	return StringServer::ReturnString(FLIP_VERTICAL_STRING);
+	return B_TRANSLATE("Flip Vertically");
 }

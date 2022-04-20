@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -17,11 +18,11 @@
 #include "ImageView.h"
 #include "PaintApplication.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
@@ -29,8 +30,12 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 EllipseTool::EllipseTool()
-	: DrawingTool(StringServer::ReturnString(ELLIPSE_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Ellipse tool"),
 		ELLIPSE_TOOL)
 {
 	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION;
@@ -170,8 +175,8 @@ EllipseTool::ToolCursor() const
 const char*
 EllipseTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? ELLIPSE_TOOL_IN_USE_STRING
-		: ELLIPSE_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Drawing an ellipse."
+		: "Press the mouse-button to draw an ellipse.");
 }
 
 
@@ -186,21 +191,21 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 		message->AddInt32("option",FILL_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
 		fFillEllipse =
-			new BCheckBox(StringServer::ReturnString(FILL_ELLIPSE_STRING),
+			new BCheckBox(B_TRANSLATE("Fill ellipse"),
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SHAPE_OPTION);
 		message->AddInt32("value", HS_CORNER_TO_CORNER);
 		fCorner2Corner =
-			new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
+			new BRadioButton(B_TRANSLATE("Corner to corner"),
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SHAPE_OPTION);
 		message->AddInt32("value", HS_CENTER_TO_CORNER);
 		fCenter2Corner =
-			new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
+			new BRadioButton(B_TRANSLATE("Center to corner"),
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -208,7 +213,7 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 
 		fAntiAlias =
-			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			new BCheckBox(B_TRANSLATE("Enable antialiasing"),
 			message);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
@@ -217,14 +222,14 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fCorner2Corner)
 				.Add(fCenter2Corner)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fAntiAlias)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)

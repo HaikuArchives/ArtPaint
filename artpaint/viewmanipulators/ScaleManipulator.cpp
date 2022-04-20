@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -14,11 +15,11 @@
 #include "PixelOperations.h"
 #include "MessageConstants.h"
 #include "NumberControl.h"
-#include "StringServer.h"
 
 
 #include <Bitmap.h>
 #include <Button.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GridLayout.h>
 #include <GridLayoutBuilder.h>
@@ -31,6 +32,10 @@
 #include <new>
 #include <stdio.h>
 #include <string.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
 
 
 using ArtPaint::Interface::NumberControl;
@@ -403,14 +408,14 @@ ScaleManipulator::MakeConfigurationView(const BMessenger& target)
 const char*
 ScaleManipulator::ReturnHelpString()
 {
-	return StringServer::ReturnString(DO_SCALE_HELP_STRING);
+	return B_TRANSLATE("Click on the image to set the new scale or set it with the numeric fields.");
 }
 
 
 const char*
 ScaleManipulator::ReturnName()
 {
-	return StringServer::ReturnString(SCALE_STRING);
+	return B_TRANSLATE("Scale…");
 }
 
 
@@ -427,10 +432,10 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 	original_height = -1;
 	maintain_proportions = true;
 
-	width_control = new NumberControl(StringServer::ReturnString(WIDTH_STRING),
+	width_control = new NumberControl(B_TRANSLATE("Width"),
 		"", new BMessage(WIDTH_CHANGED), 5);
 
-	height_control = new NumberControl(StringServer::ReturnString(HEIGHT_STRING),
+	height_control = new NumberControl(B_TRANSLATE("Height"),
 		"", new BMessage(HEIGHT_CHANGED), 5);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL, 5.0));

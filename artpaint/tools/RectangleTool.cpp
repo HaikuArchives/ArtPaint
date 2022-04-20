@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -17,11 +18,11 @@
 #include "Image.h"
 #include "ImageView.h"
 #include "PaintApplication.h"
-#include "StringServer.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
@@ -33,8 +34,12 @@
 #include <stdio.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Tools"
+
+
 RectangleTool::RectangleTool()
-	: DrawingTool(StringServer::ReturnString(RECTANGLE_TOOL_NAME_STRING),
+	: DrawingTool(B_TRANSLATE("Rectangle tool"),
 		RECTANGLE_TOOL)
 {
 	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION
@@ -287,8 +292,8 @@ RectangleTool::ToolCursor() const
 const char*
 RectangleTool::HelpString(bool isInUse) const
 {
-	return StringServer::ReturnString(isInUse ? RECTANGLE_TOOL_IN_USE_STRING
-		: RECTANGLE_TOOL_READY_STRING);
+	return B_TRANSLATE(isInUse ? "Drawing a rectangle."
+		: "Press the mouse-button to draw a rectangle.");
 }
 
 
@@ -304,7 +309,7 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 
 		fFillRectangle =
-			new BCheckBox(StringServer::ReturnString(FILL_RECTANGLE_STRING),
+			new BCheckBox(B_TRANSLATE("Fill rectangle"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -312,7 +317,7 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", HS_CORNER_TO_CORNER);
 
 		fCorner2Corner =
-			new BRadioButton(StringServer::ReturnString(CORNER_TO_CORNER_STRING),
+			new BRadioButton(B_TRANSLATE("Corner to corner"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -320,7 +325,7 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", HS_CENTER_TO_CORNER);
 
 		fCenter2Corner =
-			new BRadioButton(StringServer::ReturnString(CENTER_TO_CORNER_STRING),
+			new BRadioButton(B_TRANSLATE("Center to corner"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -328,7 +333,7 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 
 		fRotation =
-			new BCheckBox(StringServer::ReturnString(ENABLE_ROTATION_STRING),
+			new BCheckBox(B_TRANSLATE("Enable rotation"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -336,11 +341,11 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 
 		fAntiAlias =
-			new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+			new BCheckBox(B_TRANSLATE("Enable antialiasing"),
 			message);
 
 		BSeparatorView* view =
-			new BSeparatorView(StringServer::ReturnString(MODE_STRING),
+			new BSeparatorView(B_TRANSLATE("Mode"),
 			B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT,
 			B_ALIGN_VERTICAL_CENTER));
 		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
@@ -351,14 +356,14 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(MODE_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fCorner2Corner)
 				.Add(fCenter2Corner)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(StringServer::ReturnString(OPTIONS_STRING)))
+			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fRotation)
 				.Add(fAntiAlias)

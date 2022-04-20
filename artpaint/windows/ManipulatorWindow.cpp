@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -15,13 +16,17 @@
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "SettingsServer.h"
-#include "StringServer.h"
 
 
 #include <Button.h>
+#include <Catalog.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <SeparatorView.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Windows"
 
 
 BList ManipulatorWindow::sfWindowList(10);
@@ -61,11 +66,11 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 	BMessage* cancelMessage = new BMessage(HS_MANIPULATOR_FINISHED);
 	cancelMessage->AddBool("status", false);
 	BButton* cancelButton =
-		new BButton(StringServer::ReturnString(CANCEL_STRING), cancelMessage);
+		new BButton(B_TRANSLATE("Cancel"), cancelMessage);
 
 	BMessage* okMessage = new BMessage(HS_MANIPULATOR_FINISHED);
 	okMessage->AddBool("status", true);
-	BButton* okButton = new BButton(StringServer::ReturnString(OK_STRING),
+	BButton* okButton = new BButton(B_TRANSLATE("OK"),
 		okMessage);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL));

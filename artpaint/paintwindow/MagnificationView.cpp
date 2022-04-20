@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <karsten.heimrich@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -15,12 +16,12 @@
 #include "ImageView.h"
 #include "MessageConstants.h"
 #include "PopUpSlider.h"
-#include "StringServer.h"
 
 
 #include <Application.h>
 #include <Box.h>
 #include <Button.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <MessageFilter.h>
 #include <Slider.h>
@@ -28,6 +29,10 @@
 
 
 #include <stdio.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "MagnificationView"
 
 
 PopUpSlider* gPopUpSlider = NULL;
@@ -83,7 +88,7 @@ MagnificationView::MagnificationView()
 	B_PLAIN_BORDER)
 {
 	char string[256];
-	sprintf(string,"%s: %.1f%%", StringServer::ReturnString(MAG_STRING), 1600.0);
+	sprintf(string,"%s: %.1f%%", B_TRANSLATE("Mag"), 1600.0);
 
 	fMagStringView = new MagStringView("magStringView", string);
 
@@ -131,7 +136,7 @@ void
 MagnificationView::SetMagnificationLevel(float magLevel)
 {
 	char string[256];
-	sprintf(string, "%s: %.1f%%", StringServer::ReturnString(MAG_STRING),
+	sprintf(string, "%s: %.1f%%", B_TRANSLATE("Mag"),
 		100.0 * magLevel);
 	fMagStringView->SetText(string);
 }
