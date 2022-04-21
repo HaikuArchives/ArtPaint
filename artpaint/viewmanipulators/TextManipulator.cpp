@@ -6,6 +6,7 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -15,12 +16,12 @@
 #include "HSPolygon.h"
 #include "MessageConstants.h"
 #include "Selection.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 #include "PaletteWindowClient.h"
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <File.h>
 #include <GridLayoutBuilder.h>
@@ -34,6 +35,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
 
 
 #define TEXT_SETTINGS_VERSION	0x03
@@ -525,14 +530,14 @@ TextManipulator::Restore(const BMessage& settings)
 const char*
 TextManipulator::ReturnName()
 {
-	return StringServer::ReturnString(TEXT_TOOL_NAME_STRING);
+	return B_TRANSLATE("Text tool");
 }
 
 
 const char*
 TextManipulator::ReturnHelpString()
 {
-	return StringServer::ReturnString(TEXT_TOOL_IN_USE_STRING);
+	return B_TRANSLATE("Drag the text to correct position and set its appearance.");
 }
 
 
@@ -593,29 +598,29 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 			}
 		}
 	}
-	fFontMenuField = new BMenuField(StringServer::ReturnString(FONT_STRING),
+	fFontMenuField = new BMenuField(B_TRANSLATE("Font"),
 		fFontMenu);
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
 	fSizeControl =
-		new NumberSliderControl(StringServer::ReturnString(SIZE_STRING), "0",
+		new NumberSliderControl(B_TRANSLATE("Size"), "0",
 		message, 5, 500, false);
 	AddChild(fSizeControl);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
 	fRotationControl =
-		new NumberSliderControl(StringServer::ReturnString(ROTATION_STRING),
+		new NumberSliderControl(B_TRANSLATE("Rotation"),
 		"0", message, -180, 180, false);
 	AddChild(fRotationControl);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
 	fShearControl =
-		new NumberSliderControl(StringServer::ReturnString(SHEAR_STRING),
+		new NumberSliderControl(B_TRANSLATE("Shear"),
 		"45", message, 45, 135, false);
 	AddChild(fShearControl);
 
 	fAntiAliasing =
-		new BCheckBox(StringServer::ReturnString(ENABLE_ANTI_ALIASING_STRING),
+		new BCheckBox(B_TRANSLATE("Enable antialiasing"),
 		new BMessage(FONT_ANTI_ALIAS_CHANGED));
 
 	BGridLayout* layout = BGridLayoutBuilder(5.0, 5.0)

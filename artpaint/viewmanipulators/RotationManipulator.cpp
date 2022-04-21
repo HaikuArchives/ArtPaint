@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
@@ -13,9 +14,9 @@
 #include "PixelOperations.h"
 #include "RotationManipulator.h"
 #include "Selection.h"
-#include "StringServer.h"
 
 
+#include <Catalog.h>
 #include <ClassInfo.h>
 #include <LayoutBuilder.h>
 #include <StatusBar.h>
@@ -29,6 +30,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Manipulators"
 
 
 #define PI M_PI
@@ -599,14 +604,14 @@ RotationManipulator::SetAngle(float angle)
 const char*
 RotationManipulator::ReturnHelpString()
 {
-	return StringServer::ReturnString(DO_ROTATE_HELP_STRING);
+	return B_TRANSLATE("Use the primary mouse-button to rotate, other buttons to set the rotation center.");
 }
 
 
 const char*
 RotationManipulator::ReturnName()
 {
-	return StringServer::ReturnString(ROTATE_STRING);
+	return B_TRANSLATE("Rotate…");
 }
 
 
@@ -620,7 +625,7 @@ RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 	, fManipulator(manipulator)
 {
 	char label[256];
-	sprintf(label,"%s:", StringServer::ReturnString(ROTATING_STRING));
+	sprintf(label,"%s:", B_TRANSLATE("Rotating"));
 
 	fTextControl = new BTextControl("rotation", label, "9999.9˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));

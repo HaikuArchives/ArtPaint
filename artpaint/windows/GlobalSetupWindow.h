@@ -36,9 +36,6 @@ private:
 	class	UndoControlView;
 			UndoControlView*		fUndoControlView;
 
-	class	LanguageControlView;
-			LanguageControlView*	fLanguageControlView;
-
 	class	GeneralControlView;
 			GeneralControlView*		fGeneralControlView;
 

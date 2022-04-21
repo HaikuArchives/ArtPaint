@@ -4,17 +4,18 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
 #include "LayerView.h"
 
 #include "ImageView.h"
-#include "StringServer.h"
 #include "UtilityClasses.h"
 
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <InterfaceDefs.h>
 #include <MenuItem.h>
@@ -23,8 +24,14 @@
 #include <Window.h>
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "LayerView"
+
+
 LayerView::LayerView(BBitmap *image,Layer *layer)
-	:	BBox(BRect(0,0,120,LAYER_VIEW_HEIGHT-1),"a layer view",B_FOLLOW_TOP|B_FOLLOW_LEFT,B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS, B_NO_BORDER)
+	:	BBox(BRect(0,0,120,LAYER_VIEW_HEIGHT-1),"a layer view",
+		B_FOLLOW_TOP|B_FOLLOW_LEFT,
+		B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS, B_NO_BORDER)
 {
 	the_image = image;
 	the_layer = layer;
@@ -33,7 +40,9 @@ LayerView::LayerView(BBitmap *image,Layer *layer)
 	a_message.AddInt32("layer_id",the_layer->Id());
 	a_message.AddPointer("layer_pointer",(void*)the_layer);
 	a_message.what = HS_LAYER_VISIBILITY_CHANGED;
-	visibility_box = new BCheckBox(BRect(80,5,140,30),"visibility check box",StringServer::ReturnString(VISIBLE_STRING),new BMessage(a_message));
+	visibility_box = new BCheckBox(BRect(80,5,140,30),
+		"visibility check box",
+		B_TRANSLATE("Visible"),new BMessage(a_message));
 
 	BRect rect = visibility_box->Frame();
 	rect.OffsetBy(0,rect.Height()+4);
@@ -47,28 +56,40 @@ LayerView::LayerView(BBitmap *image,Layer *layer)
 
 
 	a_message.what = HS_MERGE_WITH_UPPER_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(MERGE_WITH_FRONT_LAYER_STRING),new BMessage(a_message)));
+	layer_operation_pop_up_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Merge with front layer"),
+		new BMessage(a_message)));
 
 	a_message.what = HS_MERGE_WITH_LOWER_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(MERGE_WITH_BACK_LAYER_STRING),new BMessage(a_message)));
+	layer_operation_pop_up_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Merge with back layer"),
+		new BMessage(a_message)));
 
 	layer_operation_pop_up_menu->AddSeparatorItem();
 
 	a_message.what = HS_ADD_LAYER_FRONT;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(ADD_LAYER_IN_FRONT_STRING),new BMessage(a_message)));
+	layer_operation_pop_up_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Add layer in front"),
+		new BMessage(a_message)));
 
 	a_message.what = HS_ADD_LAYER_BEHIND;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(ADD_LAYER_BEHIND_STRING),new BMessage(a_message)));
+	layer_operation_pop_up_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Add layer behind"),
+		new BMessage(a_message)));
 
 	layer_operation_pop_up_menu->AddSeparatorItem();
 
 	a_message.what = HS_DUPLICATE_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(DUPLICATE_LAYER_STRING),new BMessage(a_message)));
+	layer_operation_pop_up_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Duplicate layer"),
+		new BMessage(a_message)));
 
 	layer_operation_pop_up_menu->AddSeparatorItem();
 
 	a_message.what = HS_DELETE_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(StringServer::ReturnString(DELETE_LAYER_STRING),new BMessage(a_message)));
+	layer_operation_pop_up_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Delete layer"),
+		new BMessage(a_message)));
 
 	layer_operation_pop_up_menu->SetRadioMode(false);
 

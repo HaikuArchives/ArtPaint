@@ -6,22 +6,26 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  * 		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 #ifndef PAINT_WINDOW_H
 #define PAINT_WINDOW_H
 
-#include "StringServer.h"
+#include "SettingsServer.h"
+
 
 #include <Entry.h>
 #include <Message.h>
 #include <TranslatorRoster.h>
 #include <Window.h>
 
+
 class BBox;
 class BFilePanel;
 class BMenu;
 class BNode;
+
 
 class BackgroundView;
 class Image;
@@ -140,13 +144,13 @@ private:
 			// this function will write the attributes to node
 			void				writeAttributes(BNode& node);
 
-			void				_AddMenuItems(BMenu* menu, string_id label,
+			void				_AddMenuItems(BMenu* menu, BString label,
 									uint32 what, char shortcut, uint32 modifiers,
-									BHandler* target, string_id help);
-			void				_AddRecentMenuItems(BMenu* menu, string_id id);
+									BHandler* target, BString help);
+			void				_AddRecentMenuItems(BMenu* menu,
+									const StringList* list);
 	static	int32				_AddAddOnsToMenu(void*);
 
-	static	const char*			_StringForId(string_id stringId);
 			void				_ChangeMenuMode(menu_modes newMode);
 			void				_EnableMenuItems(BMenu* menu);
 			void				_DisableMenuItem(const char* label);

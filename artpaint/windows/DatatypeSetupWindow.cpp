@@ -6,19 +6,24 @@
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 
 #include "DatatypeSetupWindow.h"
 
 #include "MessageFilters.h"
-#include "StringServer.h"
 
 
 #include <AppDefs.h>
+#include <Catalog.h>
 #include <GroupLayout.h>
 #include <String.h>
 #include <StringView.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "Windows"
 
 
 DatatypeSetupWindow* DatatypeSetupWindow::fDatatypeSetupWindow = NULL;
@@ -96,7 +101,7 @@ DatatypeSetupWindow::_ChangeHandler(translator_id translatorId)
 			view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	} else {
 		view = new BStringView("no options",
-			StringServer::ReturnString(NO_OPTIONS_STRING));
+			B_TRANSLATE("No options"));
 	}
 	fRootView->AddChild(view);
 

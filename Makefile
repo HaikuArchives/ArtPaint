@@ -18,7 +18,7 @@ TYPE= APP
 
 # 	if you plan to use localization features 
 # 	specify the application MIME siganture
-APP_MIME_SIG= 
+APP_MIME_SIG= 'application/x-vnd.artpaint'
 
 #	add support for new Pe and Eddie features
 #	to fill in generic makefile
@@ -38,7 +38,7 @@ SRCS= artpaint/Utilities/BitmapUtilities.cpp artpaint/application/FilePanels.cpp
 artpaint/application/HSPolygon.cpp artpaint/application/IntelligentPathFinder.cpp artpaint/application/MatrixView.cpp \
 artpaint/application/MessageFilters.cpp artpaint/application/PaintApplication.cpp artpaint/application/ProjectFileFunctions.cpp \
 artpaint/application/RandomNumberGenerator.cpp artpaint/application/RefFilters.cpp artpaint/application/ResourceServer.cpp \
-artpaint/application/Selection.cpp artpaint/application/SettingsServer.cpp artpaint/application/StringServer.cpp \
+artpaint/application/Selection.cpp artpaint/application/SettingsServer.cpp \
 artpaint/application/UndoAction.cpp artpaint/application/UndoEvent.cpp artpaint/application/UndoQueue.cpp \
 artpaint/application/UndoWindow.cpp artpaint/application/UtilityClasses.cpp artpaint/controls/CMYControl.cpp artpaint/controls/ColorPalette.cpp \
 artpaint/controls/ColorView.cpp artpaint/controls/HSPictureButton.cpp artpaint/controls/HSVControl.cpp artpaint/controls/NumberControl.cpp \
@@ -52,7 +52,7 @@ artpaint/tools/BrushTool.cpp artpaint/tools/ColorSelectorTool.cpp artpaint/tools
 artpaint/tools/DrawingTool.cpp artpaint/tools/EllipseTool.cpp artpaint/tools/EraserTool.cpp artpaint/tools/FillTool.cpp artpaint/tools/FreeLineTool.cpp \
 artpaint/tools/HairyBrushTool.cpp artpaint/tools/RectangleTool.cpp artpaint/tools/SelectorTool.cpp artpaint/tools/StraightLineTool.cpp \
 artpaint/tools/TextTool.cpp artpaint/tools/ToolButton.cpp artpaint/tools/ToolEventAdapter.cpp artpaint/tools/ToolManager.cpp \
-artpaint/tools/ToolScript.cpp artpaint/tools/ToolSelectionWindow.cpp tools/ToolSetupWindow.cpp artpaint/tools/TransparencyTool.cpp \
+artpaint/tools/ToolScript.cpp artpaint/tools/ToolSelectionWindow.cpp artpaint/tools/ToolSetupWindow.cpp artpaint/tools/TransparencyTool.cpp \
 artpaint/viewmanipulators/CropManipulator.cpp artpaint/viewmanipulators/FlipManipulator.cpp \
 artpaint/viewmanipulators/FreeTransformManipulator.cpp artpaint/viewmanipulators/Manipulator.cpp \
 artpaint/viewmanipulators/ManipulatorInformer.cpp artpaint/viewmanipulators/ManipulatorServer.cpp \
@@ -93,7 +93,7 @@ RSRCS=
 #		naming scheme you need to specify the path to the library
 #		and it's name
 #		library: my_lib.a entry: my_lib.a or path/my_lib.a
-LIBS= be tracker translation $(STDCPPLIBS)
+LIBS= be tracker translation localestub $(STDCPPLIBS)
 
 #	specify additional paths to directories following the standard
 #	libXXX.so or libXXX.a naming scheme.  You can specify full paths
@@ -123,7 +123,7 @@ OPTIMIZE=
 # 	locales/en.catkeys file. Use it as template for creating other
 # 	languages catkeys. All localization files must be placed
 # 	in "locales" sub-directory.
-LOCALES=
+LOCALES= en de es fi fr nl
 
 #	specify any preprocessor symbols to be defined.  The symbols will not
 #	have their values set automatically; you must supply the value (if any)
