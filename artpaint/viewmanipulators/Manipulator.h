@@ -57,6 +57,7 @@ public:
 										BStatusBar*) = 0;
 	virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
 	virtual	const char*				ReturnName() = 0;
+	virtual const char*				ReturnHelpString() { return NULL; }
 
 	double							GetSystemClockSpeed()
 										{ return fSystemClockSpeed; }

@@ -26,6 +26,7 @@
 #include "LayerWindow.h"
 #include "Manipulator.h"
 #include "ManipulatorServer.h"
+#include "ManipulatorInformer.h"
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "NumberControl.h"
@@ -1405,31 +1406,36 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 				ImageList::const_iterator it;
 				const ImageList& imageList = server->AddOnImageList();
 				for (it = imageList.begin(); it != imageList.end(); ++it) {
-					char* add_on_name;
-					status_t status = get_image_symbol(*it, "name",
-						B_SYMBOL_TYPE_DATA, (void**)&add_on_name);
-
 					int32* add_on_version;
-					status |= get_image_symbol(*it, "add_on_api_version",
+					status_t status = get_image_symbol(*it, "add_on_api_version",
 						B_SYMBOL_TYPE_DATA, (void**)&add_on_version);
-
-					const char* add_on_help;
-					if (get_image_symbol(*it, "menu_help_string",
-						B_SYMBOL_TYPE_DATA, (void**)&add_on_help) != B_OK) {
-						add_on_help = "Starts an add-on effect.";
-					}
 
 					if (status != B_OK)
 						continue;
 
 					if (*add_on_version == ADD_ON_API_VERSION) {
-						BMessage* message = new BMessage(HS_START_MANIPULATOR);
-						message->AddInt32("image_id", *it);
-						message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
-						message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
+						Manipulator* (*Instantiate)(BBitmap*, ManipulatorInformer*);
+						status_t status = get_image_symbol(*it, "instantiate_add_on",
+							B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
+						if (status == B_OK) {
+							Manipulator *manipulator = Instantiate(NULL, NULL);
 
-						addOnMenu->AddItem(new PaintWindowMenuItem(add_on_name,
-							message, 0, 0, paintWindow, add_on_help));
+							if (manipulator != NULL) {
+								BMessage* message = new BMessage(HS_START_MANIPULATOR);
+								message->AddInt32("image_id", *it);
+								message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+								message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
+
+								addOnMenu->AddItem(new PaintWindowMenuItem(
+									manipulator->ReturnName(),
+									message, 0, 0, paintWindow,
+									manipulator->ReturnHelpString()));
+
+								delete manipulator;
+								manipulator = NULL;
+							}
+						}
+
 					}
 				}
 				addOnMenu->SetTargetForItems(paintWindow);
