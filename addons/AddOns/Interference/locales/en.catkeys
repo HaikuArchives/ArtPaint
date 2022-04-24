@@ -1,5 +1,10 @@
-1	English	application/x-vnd.artpaint-addon	1666603979
+1	English	application/x-vnd.artpaint-addon	791482484
 Creates an interference-pattern.	AddOns_Interference		Creates an interference-pattern.
+Point B	AddOns_Interference		Point B
+Long	AddOns_Interference		Long
+Short	AddOns_Interference		Short
 Click on the image to move the wave centers and adjust wave-lengths.	AddOns_Interference		Click on the image to move the wave centers and adjust wave-lengths.
-Interference	AddOns_Interference		Interference
+Point A	AddOns_Interference		Point A
+Wavelength	AddOns_Interference		Wavelength
 Interference…	AddOns_Interference		Interference…
+Interference	AddOns_Interference		Interference

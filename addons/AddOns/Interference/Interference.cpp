@@ -7,11 +7,14 @@
  *
  */
 #include <Bitmap.h>
+#include <Box.h>
 #include <Catalog.h>
-#include <math.h>
+#include <GroupLayoutBuilder.h>
+#include <LayoutBuilder.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
 #include <Window.h>
+
 
 #include "AddOns.h"
 #include "ManipulatorInformer.h"
@@ -19,10 +22,23 @@
 #include "PixelOperations.h"
 #include "Selection.h"
 
+
+#include <math.h>
+
+
 #define PI M_PI
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "AddOns_Interference"
+
+
+#define WAVE_LENGTH_A_CHANGED			'WvAc'
+#define WAVE_LENGTH_B_CHANGED			'WvBc'
+#define WAVE_LENGTH_ADJUSTING_STARTED 	'WLAs'
+#define CENTER_A_X_CHANGED				'CaXc'
+#define CENTER_A_Y_CHANGED				'CaYc'
+#define CENTER_B_X_CHANGED				'CbXc'
+#define CENTER_B_Y_CHANGED				'CbYc'
 
 
 #ifdef __cplusplus
@@ -37,7 +53,8 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 {
 	// Here create a view-manipulator. The class should inherit
 	// from the WindowGuiManipulator base-class. It will be deleted
@@ -45,7 +62,6 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 	delete i;
 	return new InterferenceManipulator(bm);
 }
-
 
 
 InterferenceManipulator::InterferenceManipulator(BBitmap *bm)
@@ -77,7 +93,8 @@ InterferenceManipulator::~InterferenceManipulator()
 }
 
 
-BBitmap* InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap*
+InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
 {
 	InterferenceManipulatorSettings *new_settings = dynamic_cast<InterferenceManipulatorSettings*>(set);
 
@@ -92,10 +109,12 @@ BBitmap* InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 	return original;
 }
 
-int32 InterferenceManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+
+int32
+InterferenceManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
 {
-	previous_settings = settings;
-	if (full_quality || livePreview) {
+	if ((settings == previous_settings) == FALSE) {
+		previous_settings = settings;
 		MakeInterference(preview_bitmap,&previous_settings,selection);
 		updated_region->Set(selection->GetBoundingRect());
 		return 1;
@@ -105,7 +124,8 @@ int32 InterferenceManipulator::PreviewBitmap(Selection *selection,bool full_qual
 }
 
 
-void InterferenceManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
+void
+InterferenceManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
 {
 	if (first_click == TRUE)
 		previous_settings = settings;
@@ -115,14 +135,13 @@ void InterferenceManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool 
 	else
 		settings.centerB = point;
 
-
 	if (config_view != NULL)
 		config_view->ChangeSettings(&settings);
 }
 
 
-
-void InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceManipulatorSettings *set, Selection *sel)
+void
+InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceManipulatorSettings *set, Selection *sel)
 {
 	BStopWatch watch("Making an interference");
 	uint32 *target_bits = (uint32*)target->Bits();
@@ -176,7 +195,8 @@ void InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceMani
 }
 
 
-void InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
+void
+InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 {
 	if (preview_bitmap != bm) {
 		delete copy_of_the_preview_bitmap;
@@ -204,24 +224,26 @@ void InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 			settings.centerA.y = bounds.Height()/2-50;
 			settings.centerB.y = bounds.Height()/2+50;
 		}
-
 	}
 }
 
 
-const char*	InterferenceManipulator::ReturnHelpString()
+const char*
+InterferenceManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Click on the image to move the wave centers and adjust wave-lengths.");
 }
 
 
-const char*	InterferenceManipulator::ReturnName()
+const char*
+InterferenceManipulator::ReturnName()
 {
 	return B_TRANSLATE("Interference");
 }
 
 
-void InterferenceManipulator::Reset(Selection*)
+void
+InterferenceManipulator::Reset(Selection*)
 {
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
@@ -234,7 +256,9 @@ void InterferenceManipulator::Reset(Selection*)
 	}
 }
 
-BView* InterferenceManipulator::MakeConfigurationView(const BMessenger& target)
+
+BView*
+InterferenceManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new InterferenceManipulatorView(BRect(0,0,0,0),this,target);
 	config_view->ChangeSettings(&settings);
@@ -242,12 +266,15 @@ BView* InterferenceManipulator::MakeConfigurationView(const BMessenger& target)
 }
 
 
-ManipulatorSettings* InterferenceManipulator::ReturnSettings()
+ManipulatorSettings*
+InterferenceManipulator::ReturnSettings()
 {
 	return new InterferenceManipulatorSettings(settings);
 }
 
-void InterferenceManipulator::ChangeSettings(ManipulatorSettings *s)
+
+void
+InterferenceManipulator::ChangeSettings(ManipulatorSettings *s)
 {
 	InterferenceManipulatorSettings *new_settings = dynamic_cast<InterferenceManipulatorSettings*>(s);
 	if (new_settings != NULL) {
@@ -255,6 +282,7 @@ void InterferenceManipulator::ChangeSettings(ManipulatorSettings *s)
 		settings = *new_settings;
 	}
 }
+
 
 //-------------
 
@@ -264,84 +292,156 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,
 	: WindowGUIManipulatorView()
 	, target(NULL)
 {
-//	manipulator = manip;
-//	target = new BMessenger(t);
-//	preview_started = FALSE;
-//
-//	wave_length_slider = new ControlSlider(BRect(0,0,150,0),"wave_length_slider","Wave length",new BMessage(WAVE_LENGTH_CHANGED),MIN_WAVE_LENGTH,MAX_WAVE_LENGTH,B_TRIANGLE_THUMB);
-//	wave_length_slider->SetLimitLabels("Short","Long");
-//	wave_length_slider->SetModificationMessage(new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
-//	wave_length_slider->ResizeToPreferred();
-//	wave_length_slider->MoveTo(4,4);
-//
-//	BRect frame = wave_length_slider->Frame();
-//	frame.OffsetBy(0,frame.Height()+4);
-//
-//	wave_amount_slider = new ControlSlider(frame,"wave_amount_slider","Wave strength",new BMessage(WAVE_AMOUNT_CHANGED),MIN_WAVE_AMOUNT,MAX_WAVE_AMOUNT,B_TRIANGLE_THUMB);
-//	wave_amount_slider->SetLimitLabels("Mild","Strong");
-//	wave_amount_slider->SetModificationMessage(new BMessage(WAVE_AMOUNT_ADJUSTING_STARTED));
-//	wave_amount_slider->ResizeToPreferred();
-//
-//	AddChild(wave_length_slider);
-//	AddChild(wave_amount_slider);
-//
-//	ResizeTo(wave_amount_slider->Frame().Width()+8,wave_amount_slider->Frame().bottom+4);
+	manipulator = manip;
+	target = new BMessenger(t);
+	preview_started = FALSE;
+
+	centerAX = new BSpinner("centerAx", "X", new BMessage(CENTER_A_X_CHANGED));
+	centerAX->SetMaxValue(9999);
+	centerAX->SetMinValue(-9999);
+	centerAY = new BSpinner("centerAy", "Y", new BMessage(CENTER_A_Y_CHANGED));
+	centerAY->SetMaxValue(9999);
+	centerAY->SetMinValue(-9999);
+	centerBX = new BSpinner("centerBx", "X", new BMessage(CENTER_B_X_CHANGED));
+	centerBX->SetMaxValue(9999);
+	centerBX->SetMinValue(-9999);
+	centerBY = new BSpinner("centerBy", "Y", new BMessage(CENTER_B_Y_CHANGED));
+	centerBY->SetMaxValue(9999);
+	centerBY->SetMinValue(-9999);
+
+	waveLengthSliderA = new BSlider("waveLengthSliderA",
+		B_TRANSLATE("Wavelength"),
+		new BMessage(WAVE_LENGTH_A_CHANGED),
+		(int32)MIN_WAVE_LENGTH, (int32)MAX_WAVE_LENGTH,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
+	waveLengthSliderA->SetLimitLabels(B_TRANSLATE("Short"),
+		B_TRANSLATE("Long"));
+	waveLengthSliderA->SetModificationMessage(
+		new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
+
+	waveLengthSliderB = new BSlider("waveLengthSliderB",
+		B_TRANSLATE("Wavelength"),
+		new BMessage(WAVE_LENGTH_B_CHANGED),
+		(int32)MIN_WAVE_LENGTH, (int32)MAX_WAVE_LENGTH,
+		B_HORIZONTAL, B_TRIANGLE_THUMB);
+	waveLengthSliderB->SetLimitLabels(B_TRANSLATE("Short"),
+		B_TRANSLATE("Long"));
+	waveLengthSliderB->SetModificationMessage(
+		new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
+
+	BBox *frameA = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
+		.AddGroup(B_HORIZONTAL)
+			.Add(centerAX)
+			.Add(centerAY)
+			.End()
+		.Add(waveLengthSliderA)
+		.SetInsets(5.0, 5.0, 5.0, 5.0)
+		.TopView());
+
+	frameA->SetLabel(B_TRANSLATE("Point A"));
+
+	BBox *frameB = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
+		.AddGroup(B_HORIZONTAL)
+			.Add(centerBX)
+			.Add(centerBY)
+			.End()
+		.Add(waveLengthSliderB)
+		.SetInsets(5.0, 5.0, 5.0, 5.0)
+		.TopView());
+
+	frameB->SetLabel(B_TRANSLATE("Point B"));
+
+	SetLayout(BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(frameA)
+		.Add(frameB)
+	);
+
 }
 
 
-
-void InterferenceManipulatorView::AttachedToWindow()
+void
+InterferenceManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 
-//	wave_length_slider->SetTarget(BMessenger(this));
-//	wave_amount_slider->SetTarget(BMessenger(this));
+	waveLengthSliderA->SetTarget(BMessenger(this));
+	waveLengthSliderB->SetTarget(BMessenger(this));
+	centerAX->SetTarget(BMessenger(this));
+	centerAY->SetTarget(BMessenger(this));
+	centerBX->SetTarget(BMessenger(this));
+	centerBY->SetTarget(BMessenger(this));
 }
 
 
-void InterferenceManipulatorView::AllAttached()
+void
+InterferenceManipulatorView::AllAttached()
 {
-//	wave_length_slider->SetValue(settings.wave_length);
-//	wave_amount_slider->SetValue(settings.wave_amount);
+	waveLengthSliderA->SetValue(settings.waveLengthA);
+	waveLengthSliderB->SetValue(settings.waveLengthB);
 
+	centerAX->SetValue(settings.centerA.x);
+	centerAY->SetValue(settings.centerA.y);
+	centerBX->SetValue(settings.centerB.x);
+	centerBY->SetValue(settings.centerB.y);
 }
 
 
-void InterferenceManipulatorView::MessageReceived(BMessage *message)
+void
+InterferenceManipulatorView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-//		case WAVE_LENGTH_ADJUSTING_STARTED:
-//			if (preview_started == FALSE) {
-//				preview_started = TRUE;
-//				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
-//			}
-//			settings.wave_length = wave_length_slider->Value();
-//			manipulator->ChangeSettings(&settings);
-//			break;
-//
-//		case WAVE_LENGTH_CHANGED:
-//			preview_started = FALSE;
-//			settings.wave_length = wave_length_slider->Value();
-//			manipulator->ChangeSettings(&settings);
-//			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-//			break;
-//
-//		case WAVE_AMOUNT_ADJUSTING_STARTED:
-//			if (preview_started == FALSE) {
-//				preview_started = TRUE;
-//				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
-//			}
-//			settings.wave_amount = wave_amount_slider->Value();
-//			manipulator->ChangeSettings(&settings);
-//			break;
-//
-//		case WAVE_AMOUNT_CHANGED:
-//			preview_started = FALSE;
-//			settings.wave_amount = wave_amount_slider->Value();
-//			manipulator->ChangeSettings(&settings);
-//			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-//			break;
-//
+		case WAVE_LENGTH_ADJUSTING_STARTED:
+			if (preview_started == FALSE) {
+				preview_started = TRUE;
+				target->SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
+			}
+			settings.waveLengthA = waveLengthSliderA->Value();
+			settings.waveLengthB = waveLengthSliderB->Value();
+			manipulator->ChangeSettings(&settings);
+			break;
+
+		case WAVE_LENGTH_A_CHANGED:
+			preview_started = FALSE;
+			settings.waveLengthA = waveLengthSliderA->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
+		case WAVE_LENGTH_B_CHANGED:
+			preview_started = FALSE;
+			settings.waveLengthB = waveLengthSliderB->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
+		case CENTER_A_X_CHANGED:
+			preview_started = FALSE;
+			settings.centerA.x = centerAX->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
+		case CENTER_A_Y_CHANGED:
+			preview_started = FALSE;
+			settings.centerA.y = centerAY->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
+		case CENTER_B_X_CHANGED:
+			preview_started = FALSE;
+			settings.centerB.x = centerBX->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
+		case CENTER_B_Y_CHANGED:
+			preview_started = FALSE;
+			settings.centerB.y = centerBY->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
@@ -349,17 +449,22 @@ void InterferenceManipulatorView::MessageReceived(BMessage *message)
 }
 
 
-void InterferenceManipulatorView::ChangeSettings(InterferenceManipulatorSettings *s)
+void
+InterferenceManipulatorView::ChangeSettings(InterferenceManipulatorSettings *s)
 {
-//	settings = *s;
-//	BWindow *window = Window();
-//
-//	if (window != NULL) {
-//		window->Lock();
-//
-//		wave_length_slider->SetValue(settings.wave_length);
-//		wave_amount_slider->SetValue(settings.wave_amount);
-//
-//		window->Unlock();
-//	}
+	settings = *s;
+	BWindow *window = Window();
+
+	if (window != NULL) {
+		window->Lock();
+
+		waveLengthSliderA->SetValue(settings.waveLengthA);
+		waveLengthSliderB->SetValue(settings.waveLengthB);
+		centerAX->SetValue(settings.centerA.x);
+		centerAY->SetValue(settings.centerA.y);
+		centerBX->SetValue(settings.centerB.x);
+		centerBY->SetValue(settings.centerB.y);
+
+		window->Unlock();
+	}
 }
