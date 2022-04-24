@@ -93,7 +93,7 @@ StatusView::StatusView()
 		.Add(fCardLayout, 3, 0, 2, 2);
 	fStatusView->SetMinColumnWidth(0, StringWidth("X: 9999 (-9999) , Y: 9999 (-9999)"));
 
-	fCardLayout->SetVisibleItem(TOOLS_VIEW);
+	fCardLayout->SetVisibleItem((int32)TOOLS_VIEW);
 }
 
 
@@ -120,7 +120,7 @@ BStatusBar*
 StatusView::DisplayProgressIndicator()
 {
 	if (Window()->Lock()) {
-		fCardLayout->SetVisibleItem(PROGRESS_VIEW);
+		fCardLayout->SetVisibleItem((int32)PROGRESS_VIEW);
 		Window()->Unlock();
 	}
 
@@ -134,7 +134,7 @@ StatusView::DisplayToolsAndColors()
 	if (BView* view = Window()->FindView("image_view"))
 		mag_state_view->SetTarget(view);
 
-	fCardLayout->SetVisibleItem(TOOLS_VIEW);
+	fCardLayout->SetVisibleItem((int32)TOOLS_VIEW);
 
 	return B_OK;
 }
