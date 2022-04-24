@@ -398,7 +398,7 @@ void ImageView::MessageReceived(BMessage *message)
 				message->FindInt32("layer_id",&removed_layer_id);
 				message->FindPointer("layer_pointer",(void**)&removed_layer);
 				if (the_image->RemoveLayer(removed_layer,removed_layer_id) == TRUE) {
-//					ActiveLayerChanged();
+					ActiveLayerChanged();
 					AddChange();
 				}
 				LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
