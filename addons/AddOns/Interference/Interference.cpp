@@ -17,11 +17,11 @@
 
 
 #include "AddOns.h"
-#include "ManipulatorInformer.h"
 #include "Interference.h"
+#include "ManipulatorInformer.h"
 #include "PixelOperations.h"
 #include "Selection.h"
-
+#include "UtilityClasses.h"
 
 #include <math.h>
 
@@ -39,6 +39,7 @@
 #define CENTER_A_Y_CHANGED				'CaYc'
 #define CENTER_B_X_CHANGED				'CbXc'
 #define CENTER_B_Y_CHANGED				'CbYc'
+#define GRAYSCALE_CHANGED				'gScd'
 
 
 #ifdef __cplusplus
@@ -54,23 +55,22 @@ extern "C" {
 
 
 Manipulator*
-instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 {
 	// Here create a view-manipulator. The class should inherit
 	// from the WindowGuiManipulator base-class. It will be deleted
 	// in the application program.
-	delete i;
-	return new InterferenceManipulator(bm);
+	return new InterferenceManipulator(bm, i);
 }
 
 
-InterferenceManipulator::InterferenceManipulator(BBitmap *bm)
+InterferenceManipulator::InterferenceManipulator(BBitmap* bm, ManipulatorInformer* i)
 		: WindowGUIManipulator()
 {
-	livePreview = false;
 	copy_of_the_preview_bitmap = NULL;
 	preview_bitmap = NULL;
 	config_view = NULL;
+	informer = i;
 
 	SetPreviewBitmap(bm);
 
@@ -84,6 +84,7 @@ InterferenceManipulator::~InterferenceManipulator()
 {
 	delete[] sin_table;
 	delete copy_of_the_preview_bitmap;
+	delete informer;
 
 	if (config_view != NULL) {
 		config_view->RemoveSelf();
@@ -160,10 +161,25 @@ InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceManipulat
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} c;
+	} c, fg, bg;
+
 	c.bytes[3] = 255;
 
 	float max_dist = 500;
+
+	rgb_color fgColor;
+	rgb_color bgColor;
+
+	if (set->grayscale == B_CONTROL_ON) {
+		fgColor.set_to(255, 255, 255, 255);
+		bgColor.set_to(0, 0, 0, 255);
+	} else {
+		fgColor = informer->GetForegroundColor();
+		bgColor = informer->GetBackgroundColor();
+	}
+
+	fg.word = RGBColorToBGRA(fgColor);
+	bg.word = RGBColorToBGRA(bgColor);
 
 	for (int32 y=b.top;y<=b.bottom;y++) {
 		for (int32 x=b.left;x<=b.right;x++) {
@@ -176,9 +192,15 @@ InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceManipulat
 //				float contrib_A = sin_table[(int32)(((dist_A*wl_A)-floor(dist_A*wl_A))*720)];
 //				float contrib_B = sin_table[(int32)(((dist_B*wl_B)-floor(dist_B*wl_B))*720)];
 
-				float contrib = contrib_A + contrib_B;
-				uint8 value = 127 + contrib*.5*127;
-				c.bytes[0] = c.bytes[1] = c.bytes[2] = value;
+				float contrib = (contrib_A + contrib_B + 2) / 4;
+				float contrib_opposite = 1.0 - contrib;
+
+				c.bytes[0] = bg.bytes[0] * contrib_opposite + fg.bytes[0] * contrib;
+				c.bytes[1] = bg.bytes[1] * contrib_opposite + fg.bytes[1] * contrib;
+				c.bytes[2] = bg.bytes[2] * contrib_opposite + fg.bytes[2] * contrib;
+				c.bytes[3] = bg.bytes[3] * contrib_opposite + fg.bytes[3] * contrib;
+
+
 //				if (contrib_A*contrib_B > 0) {
 //					// partially constructive
 //					c.bytes[0] = c.bytes[1] = c.bytes[2] = 255;
@@ -215,9 +237,6 @@ InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 
-		if (num_pixels < 200000)
-			livePreview = true;
-
 		if ((settings.centerA == BPoint(0,0)) && (settings.centerB == BPoint(0,0))) {
 			settings.centerA.x = bounds.Width()/2;
 			settings.centerB.x = bounds.Width()/2;
@@ -231,7 +250,7 @@ InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 const char*
 InterferenceManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Click on the image to move the wave centers and adjust wave-lengths.");
+	return B_TRANSLATE("Left-click the image to move Center A, right-click to move Center B.");
 }
 
 
@@ -338,7 +357,7 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,
 		.SetInsets(5.0, 5.0, 5.0, 5.0)
 		.TopView());
 
-	frameA->SetLabel(B_TRANSLATE("Point A"));
+	frameA->SetLabel(B_TRANSLATE("Center A"));
 
 	BBox *frameB = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
 		.AddGroup(B_HORIZONTAL)
@@ -349,11 +368,14 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,
 		.SetInsets(5.0, 5.0, 5.0, 5.0)
 		.TopView());
 
-	frameB->SetLabel(B_TRANSLATE("Point B"));
+	frameB->SetLabel(B_TRANSLATE("Center B"));
+
+	grayScale = new BCheckBox(B_TRANSLATE("Grayscale"), new BMessage(GRAYSCALE_CHANGED));
 
 	SetLayout(BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(frameA)
 		.Add(frameB)
+		.Add(grayScale)
 	);
 
 }
@@ -370,6 +392,7 @@ InterferenceManipulatorView::AttachedToWindow()
 	centerAY->SetTarget(BMessenger(this));
 	centerBX->SetTarget(BMessenger(this));
 	centerBY->SetTarget(BMessenger(this));
+	grayScale->SetTarget(BMessenger(this));
 }
 
 
@@ -383,6 +406,7 @@ InterferenceManipulatorView::AllAttached()
 	centerAY->SetValue(settings.centerA.y);
 	centerBX->SetValue(settings.centerB.x);
 	centerBY->SetValue(settings.centerB.y);
+	grayScale->SetValue(settings.grayscale);
 }
 
 
@@ -442,6 +466,13 @@ InterferenceManipulatorView::MessageReceived(BMessage *message)
 			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			break;
 
+		case GRAYSCALE_CHANGED:
+			preview_started = FALSE;
+			settings.grayscale = grayScale->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
@@ -464,6 +495,7 @@ InterferenceManipulatorView::ChangeSettings(InterferenceManipulatorSettings *s)
 		centerAY->SetValue(settings.centerA.y);
 		centerBX->SetValue(settings.centerB.x);
 		centerBY->SetValue(settings.centerB.y);
+		grayScale->SetValue(settings.grayscale);
 
 		window->Unlock();
 	}

@@ -10,6 +10,7 @@
 #define _INTERFERENCE_H
 
 #include <stdio.h>
+#include <CheckBox.h>
 #include <Messenger.h>
 #include <Slider.h>
 #include <Spinner.h>
@@ -31,6 +32,7 @@ public:
 			waveLengthA = 30;
 			centerB = BPoint(0,0);
 			waveLengthB = 30;
+			grayscale = B_CONTROL_OFF;
 		}
 
 		InterferenceManipulatorSettings(const InterferenceManipulatorSettings& s)
@@ -39,6 +41,7 @@ public:
 			waveLengthA = s.waveLengthA;
 			centerB = s.centerB;
 			waveLengthB = s.waveLengthB;
+			grayscale = s.grayscale;
 		}
 
 		InterferenceManipulatorSettings& operator=(const InterferenceManipulatorSettings& s) {
@@ -46,19 +49,25 @@ public:
 			waveLengthA = s.waveLengthA;
 			centerB = s.centerB;
 			waveLengthB = s.waveLengthB;
+			grayscale = s.grayscale;
 			return *this;
 		}
 
 		bool operator==(InterferenceManipulatorSettings s) {
 			return ((centerA == s.centerA) && (waveLengthA == s.waveLengthA) &&
-					(centerB == s.centerB) && (waveLengthB == s.waveLengthB));
+					(centerB == s.centerB) && (waveLengthB == s.waveLengthB) &&
+					(grayscale == s.grayscale));
 		}
 
 		BPoint	centerA;
 		BPoint	centerB;
 		float	waveLengthA;
 		float	waveLengthB;
+		int32	grayscale;
 };
+
+
+class ManipulatorInformer;
 
 
 class InterferenceManipulatorView;
@@ -73,13 +82,14 @@ class InterferenceManipulator : public WindowGUIManipulator {
 
 	InterferenceManipulatorView*	config_view;
 	float*							sin_table;
-	bool							livePreview;
+
+	ManipulatorInformer				*informer;
 
 	void		MakeInterference(BBitmap*, InterferenceManipulatorSettings*,
 					Selection*);
 
 public:
-				InterferenceManipulator(BBitmap*);
+				InterferenceManipulator(BBitmap*, ManipulatorInformer*);
 				~InterferenceManipulator();
 
 	void		MouseDown(BPoint,uint32 buttons, BView*, bool);
@@ -110,6 +120,7 @@ class InterferenceManipulatorView : public WindowGUIManipulatorView {
 	BSpinner*					centerAY;
 	BSpinner*					centerBX;
 	BSpinner*					centerBY;
+	BCheckBox*					grayScale;
 
 	InterferenceManipulatorSettings	settings;
 
