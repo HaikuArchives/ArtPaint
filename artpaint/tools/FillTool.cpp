@@ -1548,6 +1548,7 @@ public:
 	virtual	void		MessageReceived(BMessage*);
 	virtual	void		MouseDown(BPoint);
 	virtual void		FrameResized(float newWidth, float newHeight);
+	virtual void		LayoutChanged();
 
 private:
 			void		_CalculateGradient();
@@ -1586,6 +1587,21 @@ void
 FillToolConfigView::GradientView::AttachedToWindow()
 {
 	BControl::AttachedToWindow();
+
+	delete fGradient;
+
+	BRect bounds = Bounds();
+	bounds.bottom = bounds.top;
+	fGradient = new BBitmap(bounds, B_RGB32);
+
+	_CalculateGradient();
+}
+
+
+void
+FillToolConfigView::GradientView::LayoutChanged()
+{
+	BControl::LayoutChanged();
 
 	delete fGradient;
 
