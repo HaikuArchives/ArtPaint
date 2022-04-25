@@ -85,7 +85,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		while (buttons) {
 			window->Lock();
 			if (old_rect != new_rect) {
-				view->StrokeEllipse(old_rect);
+				view->Draw(old_rect);
 				view->StrokeEllipse(new_rect);
 				old_rect = new_rect;
 			}

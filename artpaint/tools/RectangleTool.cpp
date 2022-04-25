@@ -134,7 +134,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 
 			if (view->LockLooper() == true) {
 				if (old_rect != new_rect) {
-					view->StrokeRect(old_rect);
+					view->Draw(old_rect);
 					view->StrokeRect(new_rect);
 					old_rect = new_rect;
 				}
@@ -190,14 +190,13 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 					// Here we should rotate the polygon
 					window->Lock();
 					if (new_angle != prev_angle) {
-						BPolygon *draw_poly = view_poly->GetBPolygon();
-						view->StrokePolygon(draw_poly);
-						delete draw_poly;
+						BRect bbox = view_poly->BoundingBox();
+						view->Draw(bbox);
 
 //						poly->RotateAboutCenter(new_angle - prev_angle);
 						view_poly->RotateAboutCenter(new_angle - prev_angle);
 
-						draw_poly = view_poly->GetBPolygon();
+						BPolygon* draw_poly = view_poly->GetBPolygon();
 						view->StrokePolygon(draw_poly);
 						delete draw_poly;
 						prev_angle = new_angle;

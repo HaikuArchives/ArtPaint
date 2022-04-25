@@ -190,10 +190,8 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			if (old_rect != new_rect) {
 				if ((GetCurrentValue(SIZE_OPTION) > 2) && (fToolSettings.mode == B_CONTROL_OFF)) {
-					BPolygon *bpoly = view_polygon->GetBPolygon();
-					view->StrokePolygon(bpoly);
-					delete view_polygon;
-					delete bpoly;
+					BRect bbox = view_polygon->BoundingBox();
+					view->Draw(bbox);
 					point_list[0] = new_rect.LeftTop();
 					point_list[1] = new_rect.RightTop();
 					point_list[2] = new_rect.RightBottom();
@@ -202,12 +200,17 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					angle = atan2((view_point.y-original_view_point.y),
 						(view_point.x - original_view_point.x)) * 180 / M_PI;
 					view_polygon->Rotate(original_view_point,angle);
-					bpoly = view_polygon->GetBPolygon();
+					BPolygon *bpoly = view_polygon->GetBPolygon();
 					view->StrokePolygon(bpoly);
 					delete bpoly;
 				}
 				else {
-					view->StrokeLine(original_view_point,prev_view_point);
+					float left = min_c(original_view_point.x, prev_view_point.x);
+					float top = min_c(original_view_point.y, prev_view_point.y);
+					float right = max_c(original_view_point.x, prev_view_point.x);
+					float bottom = max_c(original_view_point.y, prev_view_point.y);
+					BRect bbox(left, top, right, bottom);
+					view->Draw(bbox);
 					view->StrokeLine(original_view_point,view_point);
 					angle = atan2((view_point.y-original_view_point.y),
 						(view_point.x - original_view_point.x)) * 180 / M_PI;
@@ -251,17 +254,15 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 						new_rect = view->convertBitmapRectToView(new_rect);
 						if (new_rect != old_rect) {
 							if (size > 0) {
-								BPolygon *bpoly = view_polygon->GetBPolygon();
-								view->StrokePolygon(bpoly);
-								delete view_polygon;
-								delete bpoly;
+								BRect bbox = view_polygon->BoundingBox();
+								view->Draw(bbox);
 								point_list[0] = new_rect.LeftTop();
 								point_list[1] = new_rect.RightTop();
 								point_list[2] = new_rect.RightBottom();
 								point_list[3] = new_rect.LeftBottom();
 								view_polygon = new HSPolygon(point_list,4);
 								view_polygon->Rotate(original_view_point,angle);
-								bpoly = view_polygon->GetBPolygon();
+								BPolygon* bpoly = view_polygon->GetBPolygon();
 								view->StrokePolygon(bpoly);
 								delete bpoly;
 							}
