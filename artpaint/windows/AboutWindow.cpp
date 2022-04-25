@@ -49,7 +49,7 @@ AboutWindow::AboutWindow(BRect frame)
 	italic_font.SetFace(B_ITALIC_FACE);
 
 	// TODO: get actual release version
-	scroller->AddLine("ArtPaint v. 2.1.2",yellow,title_font);
+	scroller->AddLine("ArtPaint v. 2.2.0",yellow,title_font);
 
 	BString format(B_TRANSLATE("Release date: %s"));
 	BString release_str;
