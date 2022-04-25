@@ -1,0 +1,348 @@
+1	English (British)	application/x-vnd.artpaint	3223448953
+{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
+Cancel	ImageView		Cancel
+Clear selection	ImageView		Clear selection
+Don't save	ImageView		Don't save
+Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
+Finishing	ImageView		Finishing
+Grow selection	ImageView		Grow selection
+Invert selection	ImageView		Invert selection
+Layer %ld / %ld	ImageView		Layer %ld / %ld
+Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
+Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
+Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
+OK	ImageView		Alright
+Save	ImageView		Save
+Shrink selection	ImageView		Shrink selection
+Unsaved changes!	ImageView		Unsaved changes!
+About ArtPaint	PaintWindow		About ArtPaint
+Active layer	PaintWindow		Active layer
+Add layer	PaintWindow		Add layer
+Add-ons	PaintWindow		Add-ons
+Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of this image.
+All layers	PaintWindow		All layers
+Brushes…	PaintWindow		Brushes…
+Canvas	PaintWindow		Canvas
+Change the transparency of active layer.	PaintWindow		Change the transparency of active layer.
+Change transparency…	PaintWindow		Change transparency…
+Clear canvas	PaintWindow		Clear canvas
+Clear layer	PaintWindow		Clear layer
+Clear selection	PaintWindow		Clear selection
+Clears all layers.	PaintWindow		Clears all layers.
+Clears the active layer.	PaintWindow		Clears the active layer.
+Close	PaintWindow		Close
+Closes the current window.	PaintWindow		Closes the current window.
+Colors…	PaintWindow		Colours…
+Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
+Copies the selection.	PaintWindow		Copies the selection.
+Copy	PaintWindow		Copy
+Create canvas	PaintWindow		Create canvas
+Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
+Crop the image.	PaintWindow		Crop the image.
+Crop…	PaintWindow		Crop…
+Cut	PaintWindow		Cut
+Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
+Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
+Edit	PaintWindow		Edit
+Empty paint window	PaintWindow		Empty paint window
+File	PaintWindow		File
+Flip horizontally	PaintWindow		Flip horizontally
+Flip vertically	PaintWindow		Flip vertically
+Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
+Flips all layers vertically.	PaintWindow		Flips all layers vertically.
+Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
+Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
+Grow selection	PaintWindow		Grow selection
+Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
+Height:	PaintWindow		Height:
+Insert text…	PaintWindow		Insert text…
+Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
+Invert selection	PaintWindow		Invert selection
+Inverts the selection	PaintWindow		Inverts the selection
+Layer	PaintWindow		Layer
+Layers…	PaintWindow		Layers…
+Move all layers.	PaintWindow		Move all layers.
+Move the active layer.	PaintWindow		Move the active layer.
+New project	PaintWindow		New project
+New project…	PaintWindow		New project…
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
+Off	PaintWindow		Off
+OK	PaintWindow		Alright
+Open image…	PaintWindow		Open image…
+Open project…	PaintWindow		Open project…
+Opens a project from disk.	PaintWindow		Opens a project from disk.
+Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
+Opens an image from disk.	PaintWindow		Opens an image from disk.
+Opens the colors window.	PaintWindow		Opens the colours window.
+Opens the layers window.	PaintWindow		Opens the layers window.
+Opens the main documentation for ArtPaint.	PaintWindow		Opens the main documentation for ArtPaint.
+Opens the settings window.	PaintWindow		Opens the settings window.
+Opens the tool selection window.	PaintWindow		Opens the tool selection window.
+Opens the tool setup window.	PaintWindow		Opens the tool setup window.
+Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
+Paste as a new layer	PaintWindow		Paste as a new layer
+Paste as a new project	PaintWindow		Paste as a new project
+Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
+Pastes previously copied selection as a new project.	PaintWindow		Pastes previously copied selection as a new project.
+Quit	PaintWindow		Quit
+Quits ArtPaint.	PaintWindow		Quits ArtPaint.
+Recent images	PaintWindow		Recent images
+Recent projects	PaintWindow		Recent projects
+Redo not available	PaintWindow		Redo not available
+Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
+Resize to fit	PaintWindow		Resize to fit
+Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
+Rotate -90°	PaintWindow		Rotate -90°
+Rotate +90°	PaintWindow		Rotate +90°
+Rotate all layers.	PaintWindow		Rotate all layers.
+Rotate the active layer.	PaintWindow		Rotate the active layer.
+Rotate…	PaintWindow		Rotate…
+Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
+Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
+Save image	PaintWindow		Save image
+Save image as…	PaintWindow		Save image as…
+Save project	PaintWindow		Save project
+Save project as…	PaintWindow		Save project as…
+Saves the image to disk.	PaintWindow		Saves the image to disk.
+Saves the image under its current name.	PaintWindow		Saves the image under its current name.
+Saves the project to disk.	PaintWindow		Saves the project to disk.
+Saves the project under its current name.	PaintWindow		Saves the project under its current name.
+Scale the image.	PaintWindow		Scale the image.
+Scale…	PaintWindow		Scale…
+Select the canvas size you want.	PaintWindow		Select the canvas size you want.
+Set grid	PaintWindow		Set grid
+Set zoom level	PaintWindow		Set zoom level
+Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
+Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
+Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
+Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
+Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
+Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
+Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400%.
+Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
+Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
+Settings…	PaintWindow		Settings…
+Shrink selection	PaintWindow		Shrink selection
+Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
+Standard sizes	PaintWindow		Standard sizes
+Tool setup…	PaintWindow		Tool setup…
+Tools…	PaintWindow		Tools…
+Translate…	PaintWindow		Translate…
+Turns the grid off.	PaintWindow		Turns the grid off.
+Un-selects all	PaintWindow		Un-selects all
+Undo not available	PaintWindow		Undo not available
+Undos the previous action.	PaintWindow		Undos the previous action.
+Untitled	PaintWindow		Untitled
+User manual…	PaintWindow		User manual…
+Width:	PaintWindow		Width:
+Window	PaintWindow		Window
+Zoom in	PaintWindow		Zoom in
+Zoom out	PaintWindow		Zoom out
+Zooms into the image.	PaintWindow		Zooms into the image.
+Zooms out from the image.	PaintWindow		Zooms out from the image.
+Add area	Tools		Add area
+Adjustable width	Tools		Adjustable width
+Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
+Airbrush	Tools		Airbrush
+Alpha	Tools		Alpha
+Background	Tools		Background
+Blue	Tools		Blue
+Blur tool	Tools		Blur tool
+Blurring the image.	Tools		Blurring the image.
+Brush tool	Tools		Brush tool
+Center to corner	Tools		Center to corner
+Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
+Click to blur the image.	Tools		Click to blur the image.
+Click to draw a freehand line.	Tools		Click to draw a freehand line.
+Click to draw a rectangle.	Tools		Click to draw a rectangle.
+Click to draw a straight line.	Tools		Click to draw a straight line.
+Click to draw an ellipse.	Tools		Click to draw an ellipse.
+Click to make a fill.	Tools		Click to make a fill.
+Click to make a selection.	Tools		Click to make a selection.
+Click to paint with a brush.	Tools		Click to paint with a brush.
+Click to paint with a hairy brush.	Tools		Click to paint with a hairy brush.
+Click to paint with airbrush.	Tools		Click to paint with airbrush.
+Click to pick a color.	Tools		Click to pick a colour.
+Click to place the text.	Tools		Click to place the text.
+Click to use eraser.	Tools		Click to use the rubber.
+Click to use the tool.	Tools		Click to use the tool.
+Color	Tools		Colour
+Color amount:	Tools		Colour amount:
+Color selector	Tools		Colour selector
+Color variance:	Tools		Colour variance:
+Continuous	Tools		Continuous
+Corner to corner	Tools		Corner to corner
+Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
+Drawing a freehand line.	Tools		Drawing a freehand line.
+Drawing a rectangle.	Tools		Drawing a rectangle.
+Drawing a straight line.	Tools		Drawing a straight line.
+Drawing an ellipse.	Tools		Drawing an ellipse.
+Ellipse	Tools		Ellipse
+Ellipse tool	Tools		Ellipse tool
+Enable antialiasing	Tools		Enable antialiasing
+Enable gradient	Tools		Enable gradient
+Enable preview	Tools		Enable preview
+Enable rotation	Tools		Enable rotation
+Eraser	Tools		Rubber
+Erasing the image.	Tools		Erasing the image.
+Fade:	Tools		Fade:
+Fill ellipse	Tools		Fill ellipse
+Fill rectangle	Tools		Fill rectangle
+Fill tool	Tools		Fill tool
+Flood fill	Tools		Flood fill
+Flow:	Tools		Flow:
+Freehand line	Tools		Freehand line
+Green	Tools		Green
+Hairs:	Tools		Hairs:
+Hairy brush	Tools		Hairy brush
+Height:	Tools		Height:
+Intelligent scissors	Tools		Intelligent scissors
+Little	Tools		Little
+Magic wand	Tools		Magic wand
+Making a fill.	Tools		Making a fill.
+Making a selection.	Tools		Making a selection.
+Mode	Tools		Mode
+Much	Tools		Much
+No configuration options available.	Tools		No configuration options available.
+None	Tools		None
+Not implemented yet.	Tools		Not implemented yet.
+Options	Tools		Options
+Painting with a brush.	Tools		Painting with a brush.
+Painting with a hairy brush.	Tools		Painting with a hairy brush.
+Picking a color.	Tools		Picking a colour.
+Random	Tools		Random
+Rectangle	Tools		Rectangle
+Rectangle tool	Tools		Rectangle tool
+Red	Tools		Red
+Reset brush	Tools		Reset brush
+Selector tool	Tools		Selector tool
+Shape	Tools		Shape
+Size:	Tools		Size:
+Speed:	Tools		Speed:
+Spray	Tools		Spray
+Store brush	Tools		Store brush
+Straight line	Tools		Straight line
+Subtract area	Tools		Subtract area
+Text tool	Tools		Text tool
+Tolerance:	Tools		Tolerance:
+Tool setup	Tools		Tool setup
+Tools	Tools		Tools
+Transparency tool	Tools		Transparency tool
+Transparent	Tools		Transparent
+Using the airbrush.	Tools		Using the airbrush.
+Using the tool.	Tools		Using the tool.
+Wand tolerance	Tools		Wand tolerance
+Width:	Tools		Width:
+Add layer	Image		Add layer
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
+Clear canvas	Image		Clear canvas
+Clear layer	Image		Clear layer
+Delete layer	Image		Delete layer
+Merge with back layer	Image		Merge with back layer
+Merge with front layer	Image		Merge with front layer
+OK	Image		Alright
+Add layer behind	LayerView		Add layer behind
+Add layer in front	LayerView		Add layer in front
+Delete layer	LayerView		Delete layer
+Duplicate layer	LayerView		Duplicate layer
+Merge with back layer	LayerView		Merge with back layer
+Merge with front layer	LayerView		Merge with front layer
+Visible	LayerView		Visible
+Add-ons	Windows		Add-ons
+Adjustable	Windows		Adjustable
+Brush	Windows		Brush
+Brushes	Windows		Brushes
+Cancel	Windows		Cancel
+Colors	Windows		Colours
+Confirm quitting	Windows		Confirm quitting
+Cross-hair cursor	Windows		Cross-hair cursor
+Cursor	Windows		Cursor
+Datatype setup: %name%	Windows		Datatype setup: %name%
+Delete selected brush	Windows		Delete selected brush
+Global settings	Windows		Global settings
+Keep in front	Windows		Keep in front
+Layers	Windows		Layers
+Miscellaneous	Windows		Miscellaneous
+No data translator	Windows		No data translator
+No options	Windows		No options
+Off	Windows		Off
+OK	Windows		Alright
+Tool cursor	Windows		Tool cursor
+Tool setup	Windows		Tool setup
+Tools	Windows		Tools
+Undo	Windows		Undo
+Undo steps:	Windows		Undo steps:
+Unlimited	Windows		Unlimited
+Windows	Windows		Windows
+Angle:	Manipulators		Angle:
+Bottom:	Manipulators		Bottom:
+Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
+Change transparency…	Manipulators		Change transparency…
+Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Click on the image to set the new scale or set it with the numeric fields.
+Crop…	Manipulators		Crop…
+Drag the image to correct position.	Manipulators		Drag the image to correct position.
+Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
+Enable antialiasing	Manipulators		Enable antialiasing
+Flip horizontally	Manipulators		Flip horizontally
+Flip vertically	Manipulators		Flip vertically
+Font	Manipulators		Font
+Height:	Manipulators		Height:
+Left:	Manipulators		Left:
+Lock	Manipulators	Keep the aspect ratio	Lock
+Opaque	Manipulators		Opaque
+Restore	Manipulators		Restore
+Right:	Manipulators		Right:
+Rotate -90°	Manipulators		Rotate -90°
+Rotate +90°	Manipulators		Rotate +90°
+Rotate…	Manipulators		Rotate…
+Rotation:	Manipulators		Rotation:
+Scale…	Manipulators		Scale…
+Shear:	Manipulators		Shear:
+Size:	Manipulators		Size:
+Text tool	Manipulators		Text tool
+Top:	Manipulators		Top:
+Translate…	Manipulators		Translate…
+Transparency:	Manipulators		Transparency:
+Transparent	Manipulators		Transparent
+Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
+Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use the primary mouse-button to rotate, other buttons to set the rotation center.
+Width:	Manipulators		Width:
+ArtPaint	System name		ArtPaint
+ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.
+ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
+ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
+OK	PaintApplication		Alright
+The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Open colour set…
+Cannot delete the only color set.	ColorPalette		Cannot delete the only colour set.
+Cannot write to file	ColorPalette		Cannot write to file
+Click to select a painting color.	ColorPalette		Click to select a painting colour.
+Color model	ColorPalette		Colour model
+Color set	ColorPalette		Colour set
+Colors	ColorPalette		Colours
+Delete current set	ColorPalette		Delete current set
+Error reading file	ColorPalette		Error reading file
+File structure corrupted	ColorPalette		File structure corrupted
+New color set	ColorPalette		New colour set
+Not a color set file	ColorPalette		Not a colour set file
+OK	ColorPalette		Alright
+Open color set…	ColorPalette		Open colour set…
+Save color set	ColorPalette		Save colour set
+ArtPaint: Save image	FilePanels		ArtPaint: Save image
+Cancel	FilePanels		Cancel
+Choose format	FilePanels		Choose format
+Open	FilePanels		Open
+Save	FilePanels		Save
+Save format:	FilePanels		Save format:
+Settings…	FilePanels		Settings…
+Bummer	UndoQueue		Bummer
+Redo	UndoQueue		Redo
+Redo not available	UndoQueue		Redo not available
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
+Undo	UndoQueue		Undo
+Undo not available	UndoQueue		Undo not available
+Click here to open color panel.	StatusView		Click here to open colour panel.
+Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
+Free 2D transform	FreeTransformManipulator		Free 2D transform
+Layers	LayerWindow		Layers
+Zoom	MagnificationView		Zoom

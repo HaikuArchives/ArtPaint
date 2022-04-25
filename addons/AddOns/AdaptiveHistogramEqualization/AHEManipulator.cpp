@@ -74,5 +74,5 @@ const char* AHEManipulator::ReturnHelpString()
 
 const char* AHEManipulator::ReturnName()
 {
-	return B_TRANSLATE("Adaptive Histogram Equalization");
+	return B_TRANSLATE("Adaptive histogram equalization");
 }

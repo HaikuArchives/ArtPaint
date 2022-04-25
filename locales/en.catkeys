@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	45903161
+1	English	application/x-vnd.artpaint	3223448953
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -34,6 +34,7 @@ Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
+ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Add layer	PaintWindow		Add layer
 Selector tool	Tools		Selector tool
 Not a color set file	ColorPalette		Not a color set file
@@ -88,7 +89,6 @@ Saves the image to disk.	PaintWindow		Saves the image to disk.
 Add-ons	PaintWindow		Add-ons
 Rotate +90°	Manipulators		Rotate +90°
 Blurring the image.	Tools		Blurring the image.
-Pastes Pastes previously copied selection as a new project.	PaintWindow		Pastes Pastes previously copied selection as a new project.
 Add-ons	Windows		Add-ons
 Zoom	MagnificationView		Zoom
 Tool setup	Tools		Tool setup
@@ -175,6 +175,7 @@ Tool setup…	PaintWindow		Tool setup…
 Magic wand	Tools		Magic wand
 Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Little	Tools		Little
+Copies the selection.	PaintWindow		Copies the selection.
 Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Click to paint with a brush.	Tools		Click to paint with a brush.
 Tool setup	Windows		Tool setup
@@ -200,6 +201,7 @@ Rotate the active layer.	PaintWindow		Rotate the active layer.
 Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
+Click to use the tool.	Tools		Click to use the tool.
 Fade:	Tools		Fade:
 Window	PaintWindow		Window
 Open image…	PaintWindow		Open image…
@@ -219,6 +221,7 @@ Color	Tools		Color
 Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
+Pastes previously copied selection as a new project.	PaintWindow		Pastes previously copied selection as a new project.
 Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
@@ -231,7 +234,6 @@ Zooms out from the image.	PaintWindow		Zooms out from the image.
 Clear selection	ImageView		Clear selection
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
-Copies the selection of all layers to the clipboard.	PaintWindow		Copies the selection of all layers to the clipboard.
 Transparent	Tools		Transparent
 Click here to open color panel.	StatusView		Click here to open color panel.
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
@@ -268,7 +270,6 @@ Off	Windows		Off
 Tools	Windows		Tools
 Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
-Use the tool by pressing the mouse-button.	Tools		Use the tool by pressing the mouse-button.
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
 Colors	ColorPalette		Colors
 Save	ImageView		Save
@@ -316,7 +317,6 @@ Clears the active layer.	PaintWindow		Clears the active layer.
 Quit	PaintWindow		Quit
 Clear layer	Image		Clear layer
 Rotate…	PaintWindow		Rotate…
-Copies the selection to the clipboard.	PaintWindow		Copies the selection to the clipboard.
 No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
 Wand tolerance	Tools		Wand tolerance
@@ -328,9 +328,9 @@ Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Unsaved changes!	ImageView		Unsaved changes!
 Un-selects all	PaintWindow		Un-selects all
-ArtPaint :Save image	FilePanels		ArtPaint :Save image
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
+Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Undo not available	UndoQueue		Undo not available

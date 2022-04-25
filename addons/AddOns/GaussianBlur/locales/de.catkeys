@@ -1,0 +1,8 @@
+1	German	application/x-vnd.artpaint-addon	2595711034
+Adds a gaussian blur to the image.	AddOns_GaussianBlur		Fügt dem Bild Gaußsche Unschärfe zu.
+Blur size:	AddOns_GaussianBlur		Unschärfegrad:
+Gaussian blur	AddOns_GaussianBlur		Gaußsche Unschärfe
+Gaussian blur…	AddOns_GaussianBlur		Gaußsche Unschärfe…
+Large	AddOns_GaussianBlur		Groß
+Small	AddOns_GaussianBlur		Klein
+Use the slider to set the size of the blur.	AddOns_GaussianBlur		Der Regler steuert den Unschärfegrad.

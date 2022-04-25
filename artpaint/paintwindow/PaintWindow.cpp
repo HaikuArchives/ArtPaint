@@ -1104,19 +1104,19 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
 		a_message, 'C', 0, this,
-		B_TRANSLATE("Copies the selection to the clipboard.")));
+		B_TRANSLATE("Copies the selection.")));
 
 	a_message = new BMessage(B_COPY);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
 		a_message, 'C', B_SHIFT_KEY, this,
-		B_TRANSLATE("Copies the selection of all layers to the clipboard.")));
+		B_TRANSLATE("Copies the selection of all layers.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Paste as a new layer"),
 		new BMessage(B_PASTE), 'V', 0, this,
 		B_TRANSLATE("Pastes previously copied selection as a new layer.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Paste as a new project"),
 		new BMessage(B_PASTE), 'V', B_SHIFT_KEY, this,
-		B_TRANSLATE("Pastes Pastes previously copied selection as a new project.")));
+		B_TRANSLATE("Pastes previously copied selection as a new project.")));
 
 	menu->AddItem(new BSeparatorItem());
 

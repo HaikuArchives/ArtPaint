@@ -299,7 +299,7 @@ DrawingTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Using the tool.")
-		: B_TRANSLATE("Use the tool by pressing the mouse-button."));
+		: B_TRANSLATE("Click to use the tool."));
 }
 
 

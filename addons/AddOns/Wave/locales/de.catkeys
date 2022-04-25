@@ -1,0 +1,11 @@
+1	German	application/x-vnd.artpaint-addon	363087096
+Adds a wave to the active layer.	AddOns_Wave		Erzeugt eine Welle aus der aktuellen Ebene.
+Click on the image to set the wave center. Use the sliders to adjust wave.	AddOns_Wave		Ins Bild klicken, um das Wellenzentrum zu setzen. Die Regler steuern die Welle.
+Long	AddOns_Wave		Lang
+Mild	AddOns_Wave		Schwach
+Short	AddOns_Wave		Kurz
+Strength:	AddOns_Wave		Wellenhöhe:
+Strong	AddOns_Wave		Stark
+Wave	AddOns_Wave		Welle
+Wave…	AddOns_Wave		Welle…
+Wavelength:	AddOns_Wave		Wellenlänge:
