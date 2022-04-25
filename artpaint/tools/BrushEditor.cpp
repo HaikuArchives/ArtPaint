@@ -29,7 +29,7 @@
 
 
 #include <math.h>
-#include <stdio.h>
+
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "Tools"
@@ -99,7 +99,7 @@ BrushEditor::BrushEditor(Brush* brush)
 	message = new BMessage(kLockDimensionsChanged);
 
 	fLockDimensions =
-		new BCheckBox(B_TRANSLATE("Lock Dimensions"),
+		new BCheckBox(B_TRANSLATE("Lock dimensions"),
 		message);
 
 	message = new BMessage(kBrushAngleChanged);
@@ -194,6 +194,9 @@ BrushEditor::BrushModified()
 			locked = true;
 
 		fBrushEditor->fBrushView->BrushModified();
+
+		fBrushEditor->fLockDimensions->SetValue(B_CONTROL_OFF);
+
 		if (window)
 			window->PostMessage(kBrushAltered, fBrushEditor);
 
@@ -234,8 +237,10 @@ BrushEditor::MessageReceived(BMessage* message)
 			if (message->FindInt32("value", &value) == B_OK) {
 				fBrushInfo.width = value;
 
-				if (fLockDimensions->Value() == B_CONTROL_ON)
+				if (fLockDimensions->Value() == B_CONTROL_ON) {
 					fBrushInfo.height = value;
+					fBrushHeight->SetValue(value);
+				}
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -250,6 +255,12 @@ BrushEditor::MessageReceived(BMessage* message)
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
 				fBrushInfo.height = value;
+
+				if (fLockDimensions->Value() == B_CONTROL_ON) {
+					fBrushInfo.width = value;
+					fBrushWidth->SetValue(value);
+				}
+
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
 
@@ -297,7 +308,6 @@ BrushEditor::MessageReceived(BMessage* message)
 
 		case kLockDimensionsChanged: {
 			if (fLockDimensions->Value() == B_CONTROL_ON) {
-				fBrushHeight->SetEnabled(false);
 				fBrushInfo.height = fBrushInfo.width;
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -306,7 +316,6 @@ BrushEditor::MessageReceived(BMessage* message)
 				if (message->FindBool("final", &final) == B_OK && final)
 					fBrush->CreateDiffBrushes();
 			} else {
-				fBrushHeight->SetEnabled(true);
 				fBrushInfo.height = fBrushWidth->Value();
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -341,7 +350,6 @@ BrushEditor::MessageReceived(BMessage* message)
 
 		case kBrushResetRequest: {
 			fBrushWidth->SetValue(30);
-			fBrushHeight->SetEnabled(true);
 			fBrushHeight->SetValue(30);
 			fBrushAngle->SetValue(0);
 			fLockDimensions->SetValue(B_CONTROL_OFF);
