@@ -189,8 +189,9 @@ FreeLineTool::ToolCursor() const
 const char*
 FreeLineTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Drawing a freehand line."
-		: "Press the mouse-button to draw a freehand line.");
+	return (isInUse
+		? B_TRANSLATE("Drawing a freehand line.")
+		: B_TRANSLATE("Click to draw a freehand line."));
 }
 
 
@@ -244,7 +245,7 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fLineSize =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);

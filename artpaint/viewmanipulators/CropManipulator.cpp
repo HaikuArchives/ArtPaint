@@ -362,13 +362,13 @@ CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
-	fTopCrop = new NumberControl(B_TRANSLATE("Top"), "",
+	fTopCrop = new NumberControl(B_TRANSLATE("Top:"), "",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	fLeftCrop = new NumberControl(B_TRANSLATE("Left"), "",
+	fLeftCrop = new NumberControl(B_TRANSLATE("Left:"), "",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	fRightCrop = new NumberControl(B_TRANSLATE("Right"),
+	fRightCrop = new NumberControl(B_TRANSLATE("Right:"),
 		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5);
-	fBottomCrop = new NumberControl(B_TRANSLATE("Bottom"),
+	fBottomCrop = new NumberControl(B_TRANSLATE("Bottom:"),
 		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL));

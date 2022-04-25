@@ -400,8 +400,9 @@ ColorSelectorTool::ToolCursor() const
 const char*
 ColorSelectorTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Selecting a color."
-		: "Press the mouse-button to select a color.");
+	return (isInUse
+		? B_TRANSLATE("Picking a color.")
+		: B_TRANSLATE("Click to pick a color."));
 }
 
 
@@ -417,7 +418,7 @@ ColorSelectorToolConfigView::ColorSelectorToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 10, false);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);

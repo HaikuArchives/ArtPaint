@@ -603,19 +603,19 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
 	fSizeControl =
-		new NumberSliderControl(B_TRANSLATE("Size"), "0",
+		new NumberSliderControl(B_TRANSLATE("Size:"), "0",
 		message, 5, 500, false);
 	AddChild(fSizeControl);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
 	fRotationControl =
-		new NumberSliderControl(B_TRANSLATE("Rotation"),
+		new NumberSliderControl(B_TRANSLATE("Rotation:"),
 		"0", message, -180, 180, false);
 	AddChild(fRotationControl);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
 	fShearControl =
-		new NumberSliderControl(B_TRANSLATE("Shear"),
+		new NumberSliderControl(B_TRANSLATE("Shear:"),
 		"45", message, 45, 135, false);
 	AddChild(fShearControl);
 

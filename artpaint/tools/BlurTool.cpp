@@ -215,8 +215,9 @@ BlurTool::ToolCursor() const
 const char*
 BlurTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Blurring the image."
-		: "Press the mouse-button to blur the image.");
+	return (isInUse
+		? B_TRANSLATE("Blurring the image.")
+		: B_TRANSLATE("Click to blur the image."));
 }
 
 
@@ -239,7 +240,7 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBlurSize =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBlurSize);

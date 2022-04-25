@@ -12,7 +12,6 @@
 
 #include "PaintWindow.h"
 
-#include "AboutWindow.h"
 #include "BackgroundView.h"
 #include "BrushStoreWindow.h"
 #include "ColorPalette.h"
@@ -85,7 +84,6 @@ int32 PaintWindow::sgUntitledWindowNumber = 1;
 #define	HS_SHOW_VIEW_SETUP_WINDOW		'SvsW'
 #define HS_SHOW_GLOBAL_SETUP_WINDOW		'SgsW'
 #define	HS_RECENT_IMAGE_SIZE			'Rsis'
-#define	HS_SHOW_ABOUT_WINDOW			'Sabw'
 
 
 struct menu_item {
@@ -151,8 +149,8 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
 		// we need to show the create canvas area
-		const char* widthLabel = B_TRANSLATE("Width");
-		const char* heightLabel = B_TRANSLATE("Height");
+		const char* widthLabel = B_TRANSLATE("Width:");
+		const char* heightLabel = B_TRANSLATE("Height:");
 
 		BFont font;
 		const char* tmpLabel = widthLabel;
@@ -519,7 +517,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_RESIZE_WINDOW_TO_FIT: {
-			// this comes from fMenubar->"Window"->"Resize Window to Fit" and
+			// this comes from fMenubar->"Window"->"Resize to fit" and
 			// informs us that we should fit the window to display exactly the
 			// image use a private function to do resizing
 			_ResizeToImage();
@@ -592,7 +590,7 @@ PaintWindow::MessageReceived(BMessage *message)
 
 
 		case HS_SHOW_LAYER_WINDOW: {
-			// this comes from fMenubar->"Window"->"Show Layer Window" and tells
+			// this comes from fMenubar->"Window"->"Layers" and tells
 			// us to show the layer window
 			LayerWindow::showLayerWindow();
 			if (fImageView) {
@@ -612,7 +610,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_GLOBAL_SETUP_WINDOW: {
-			// this comes from fMenubar->"Window"->"Global Settings…"
+			// this comes from fMenubar->"Window"->"Settings…"
 			GlobalSetupWindow::ShowGlobalSetupWindow();
 		}	break;
 
@@ -689,13 +687,13 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_COLOR_WINDOW: {
-			// This comes from fMenubar->"Window"->"Show Color Window".
+			// This comes from fMenubar->"Window"->"Colors".
 			// We should open the color window.
 			ColorPaletteWindow::showPaletteWindow(); // TODO: was (false)
 		}	break;
 
 		case HS_SHOW_TOOL_WINDOW: {
-			// This comes from fMenubar->"Window"->"Show Tool Window". We should
+			// This comes from fMenubar->"Window"->"Tools". We should
 			// open the tool window.
 			ToolSelectionWindow::showWindow();
 		}	break;
@@ -838,10 +836,6 @@ PaintWindow::MessageReceived(BMessage *message)
 			SetHelpString(helpMessage.String(), message->what);
 		}	break;
 
-		case HS_SHOW_ABOUT_WINDOW: {
-			AboutWindow::showWindow();
-		}	break;
-
 		default: {
 			BWindow::MessageReceived(message);
 		}	break;
@@ -980,33 +974,80 @@ PaintWindow::openMenuBar()
 {
 	fMenubar = new BMenuBar("menu_bar");
 
-	BMenu* menu = new BMenu(B_TRANSLATE("File"));
+	// the ArtPaint menu
+	BMenu* menu = new BMenu(B_TRANSLATE_SYSTEM_NAME("ArtPaint"));
 	fMenubar->AddItem(menu);
 
+	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("New project"),
+		new BMessage(HS_NEW_PAINT_WINDOW), 'N', 0, this,
+		B_TRANSLATE("Creates a new empty canvas."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
+	item = new PaintWindowMenuItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
+		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), ',', 0, this,
+		B_TRANSLATE("Opens the settings window."));
+	menu->AddItem(item);
+
+	menu->AddSeparatorItem();
+
+	BMessage* message =  new BMessage(HS_SHOW_USER_DOCUMENTATION);
+	message->AddString("document", "index.html");
+	item = new PaintWindowMenuItem(B_TRANSLATE("User manual" B_UTF8_ELLIPSIS),
+		message, 0, 0, this,
+		B_TRANSLATE("Opens the main documentation for ArtPaint."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
+	message = new BMessage(B_ABOUT_REQUESTED);
+	item = new PaintWindowMenuItem(B_TRANSLATE("About ArtPaint"),
+		message, 0, 0, this,
+		B_TRANSLATE("Opens a window with information about ArtPaint."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
+	menu->AddSeparatorItem();
+
+	message = new BMessage(B_QUIT_REQUESTED);
+	item = new PaintWindowMenuItem(B_TRANSLATE("Close"),
+		message, 'W', 0, this,
+		B_TRANSLATE("Closes the current window."));
+	menu->AddItem(item);
+
+	message = new BMessage(B_QUIT_REQUESTED);
+	item = new PaintWindowMenuItem(B_TRANSLATE("Quit"),
+		message, 'Q', 0, this,
+		B_TRANSLATE("Quits ArtPaint."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
 	// the File menu
+	menu = new BMenu(B_TRANSLATE("File"));
+	fMenubar->AddItem(menu);
+
 	menu_item fileMenu[] = {
 		{ B_TRANSLATE("Open image" B_UTF8_ELLIPSIS), HS_SHOW_IMAGE_OPEN_PANEL,
 			'O', 0, be_app,
-			B_TRANSLATE("Opens an image from the disk.") },
+			B_TRANSLATE("Opens an image from disk.") },
 		{ B_TRANSLATE("Save image"), HS_SAVE_IMAGE,
 			'S', 0, this,
-			B_TRANSLATE("Saves the image to the disk with the current name.") },
+			B_TRANSLATE("Saves the image under its current name.") },
 		{ B_TRANSLATE("Save image as" B_UTF8_ELLIPSIS), HS_SHOW_IMAGE_SAVE_PANEL,
 		 	0, 0, this,
 		 	B_TRANSLATE("Saves the image to disk.") },
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" },	// separator
 		{ B_TRANSLATE("New project" B_UTF8_ELLIPSIS), HS_NEW_PAINT_WINDOW,
 			'N', 0, be_app,
-			B_TRANSLATE("Creates a new empty paint window.") },
+			B_TRANSLATE("Creates a new empty canvas.") },
 		{ B_TRANSLATE("Open project" B_UTF8_ELLIPSIS), HS_SHOW_PROJECT_OPEN_PANEL,
 		 	'O', B_SHIFT_KEY, be_app,
-		 	B_TRANSLATE("Opens a project from the disk.") },
+		 	B_TRANSLATE("Opens a project from disk.") },
 		{ B_TRANSLATE("Save project"), HS_SAVE_PROJECT,
 			'S', B_SHIFT_KEY, this,
-			B_TRANSLATE("Saves the project to the disk with the current name.") },
+			B_TRANSLATE("Saves the project under its current name.") },
 		{ B_TRANSLATE("Save project as" B_UTF8_ELLIPSIS), HS_SHOW_PROJECT_SAVE_PANEL,
 			0, 0, this,
-			B_TRANSLATE("Saves the project to the disk.") },
+			B_TRANSLATE("Saves the project to disk.") },
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" }	// separator
 	};
 
@@ -1021,22 +1062,6 @@ PaintWindow::openMenuBar()
 
 	fRecentProjects = new BMenu(B_TRANSLATE("Recent projects"));
 	menu->AddItem(fRecentProjects);
-
-	menu_item fileMenu2[] = {
-		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" },	// separator
-		{ B_TRANSLATE("Close"), B_QUIT_REQUESTED,
-			'W', 0, this,
-			B_TRANSLATE("Closes the current window.") },
-		{ B_TRANSLATE("Quit"), B_QUIT_REQUESTED,
-			'Q', 0, be_app,
-			B_TRANSLATE("Quits the whole program.") }
-	};
-
-	for (uint32 i = 0; i < (sizeof(fileMenu2) / sizeof(menu_item)); ++i) {
-		_AddMenuItems(menu, fileMenu2[i].label, fileMenu2[i].what,
-			fileMenu2[i].shortcut, fileMenu2[i].modifiers, fileMenu2[i].target,
-			fileMenu2[i].help);
-	}
 
 	// the Edit menu
 	menu = new BMenu(B_TRANSLATE("Edit"));
@@ -1065,13 +1090,13 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
 		a_message, 'X', 0, this,
-		B_TRANSLATE("Copies the image to the clipboard and clears all layers.")));
+		B_TRANSLATE("Cuts the selection to the clipboard.")));
 
 	a_message = new BMessage(B_CUT);
 	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
 		a_message, 'X', B_SHIFT_KEY, this,
-		B_TRANSLATE("Copies the image to the clipboard and clears all layers.")));
+		B_TRANSLATE("Cuts the selection from all layers to the clipboard.")));
 
 	subMenu = new BMenu(B_TRANSLATE("Copy"));
 	menu->AddItem(subMenu);
@@ -1079,34 +1104,34 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
 		a_message, 'C', 0, this,
-		B_TRANSLATE("Copies the active layer to the clipboard.")));
+		B_TRANSLATE("Copies the selection to the clipboard.")));
 
 	a_message = new BMessage(B_COPY);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
 		a_message, 'C', B_SHIFT_KEY, this,
-		B_TRANSLATE("Copies the image to the clipboard.")));
+		B_TRANSLATE("Copies the selection of all layers to the clipboard.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Paste as a new layer"),
 		new BMessage(B_PASTE), 'V', 0, this,
-		B_TRANSLATE("Pastes previously copied layer from the clipboard as a new layer.")));
+		B_TRANSLATE("Pastes previously copied selection as a new layer.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Paste as a new project"),
 		new BMessage(B_PASTE), 'V', B_SHIFT_KEY, this,
-		B_TRANSLATE("Pastes clipboard as a new project.")));
+		B_TRANSLATE("Pastes Pastes previously copied selection as a new project.")));
 
 	menu->AddItem(new BSeparatorItem());
 
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Grow selection"),
 		new BMessage(HS_GROW_SELECTION), 'G', 0, this,
-		B_TRANSLATE("Grows the selection a little bit in every direction.")));
+		B_TRANSLATE("Grows the selection in all directions.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Shrink selection"),
 		new BMessage(HS_SHRINK_SELECTION), 'H', 0, this,
-		B_TRANSLATE("Shrinks the selection a little bit from every direction.")));
+		B_TRANSLATE("Shrinks the selection in all directions.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Invert selection"),
 		new BMessage(HS_INVERT_SELECTION), 0, 0, this,
-		B_TRANSLATE("Inverts the selction so that selected becomes non-selected and vice versa.")));
+		B_TRANSLATE("Inverts the selection")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear selection"),
 		new BMessage(HS_CLEAR_SELECTION), 'D', 0, this,
-		B_TRANSLATE("Clears the selection so that everything is selected.")));
+		B_TRANSLATE("Un-selects all")));
 
 	// The Layer menu.
 	menu = new BMenu(B_TRANSLATE("Layer"));
@@ -1117,14 +1142,14 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
 		a_message, 'R', 0, this,
-		B_TRANSLATE("Starts rotating the active layer.")));
+		B_TRANSLATE("Rotate the active layer.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSLATION_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
 		a_message, 'T', 0, this,
-		B_TRANSLATE("Starts moving the active layer.")));
+		B_TRANSLATE("Move the active layer.")));
 
 //	a_message = new BMessage(HS_START_MANIPULATOR);
 //	a_message->AddInt32("manipulator_type",FREE_TRANSFORM_MANIPULATOR);
@@ -1152,7 +1177,7 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Change transparency" B_UTF8_ELLIPSIS),
 		a_message, 0, 0, this,
-		B_TRANSLATE("Starts changing the transparency of active layer.")));
+		B_TRANSLATE("Change the transparency of active layer.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear layer"),
 		new BMessage(HS_CLEAR_LAYER), 0, 0, this,
 		B_TRANSLATE("Clears the active layer.")));
@@ -1166,10 +1191,6 @@ PaintWindow::openMenuBar()
 		a_message, 'I', 0, this,
 		B_TRANSLATE("Inserts text into the active layer. Same as the text tool.")));
 	menu->AddSeparatorItem();
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show layer window"),
-		new BMessage(HS_SHOW_LAYER_WINDOW), 'L', 0, this,
-		B_TRANSLATE("Brings up the layer window.")));
-	menu->AddItem(new BSeparatorItem());
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Add layer"),
 		new BMessage(HS_ADD_LAYER_FRONT), '.', 0, this,
 		B_TRANSLATE("Adds a layer to the top of this image.")));
@@ -1183,7 +1204,7 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
 		a_message, 'R', B_SHIFT_KEY, this,
-		B_TRANSLATE("Starts rotating all layers.")));
+		B_TRANSLATE("Rotate all layers.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",ROTATE_CW_MANIPULATOR);
@@ -1204,7 +1225,7 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
 		a_message, 'T', B_SHIFT_KEY, this,
-		B_TRANSLATE("Starts moving all layers.")));
+		B_TRANSLATE("Move all layers.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",HORIZ_FLIP_MANIPULATOR);
@@ -1225,20 +1246,19 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS),
 		a_message, 'C', B_CONTROL_KEY, this,
-		B_TRANSLATE("Starts cropping the image.")));
+		B_TRANSLATE("Crop the image.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",SCALE_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
 		a_message, 'S', B_CONTROL_KEY, this,
-		B_TRANSLATE("Starts scaling the image.")));
+		B_TRANSLATE("Scale the image.")));
 
 	menu->AddItem(new BSeparatorItem());
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear canvas"),
 		new BMessage(HS_CLEAR_CANVAS), 0, 0, this,
 		B_TRANSLATE("Clears all layers.")));
-
 
 	// The Window menu,
 	menu = new BMenu(B_TRANSLATE("Window"));
@@ -1317,30 +1337,27 @@ PaintWindow::openMenuBar()
 	// use here the same shortcut as the tracker uses == Y
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Resize to fit"),
 		new BMessage(HS_RESIZE_WINDOW_TO_FIT), 'Y', 0, this,
-		B_TRANSLATE("Resizes the window to proper size for the image and the screen.")));
+		B_TRANSLATE("Resizes the window to fit image and screen.")));
 	menu->AddSeparatorItem();
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show palette window"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Colors" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_COLOR_WINDOW), 'P', 0, this,
-		B_TRANSLATE("Brings up the palette window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show layer window"),
+		B_TRANSLATE("Opens the colors window.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Layers" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_LAYER_WINDOW), 'L', 0, this,
-		B_TRANSLATE("Brings up the layer window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show tool window"),
+		B_TRANSLATE("Opens the layers window.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Tools" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_TOOL_WINDOW), 'K', 0, this,
-		B_TRANSLATE("Brings up the tool selection window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show tool setup window"),
+		B_TRANSLATE("Opens the tool selection window.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Tool setup" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_TOOL_SETUP_WINDOW), 'M', 0, this,
-		B_TRANSLATE("Brings up the tool setup window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show brush window"),
+		B_TRANSLATE("Opens the tool setup window.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Brushes" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_BRUSH_STORE_WINDOW), 'B', 0, this,
-		B_TRANSLATE("Brings up the brush window.")));
-	menu->AddSeparatorItem();
+		B_TRANSLATE("Opens the window of stored brushes.")));
+
 //	menu->AddItem(new PaintWindowMenuItem(_StringForId(NEW_PAINT_WINDOW_STRING),new BMessage(HS_NEW_PAINT_WINDOW),'N',0,this,_StringForId(NEW_PROJECT_HELP_STRING)));
 //	menu->AddSeparatorItem();
 //	menu->AddItem(new BMenuItem(B_TRANSLATE("Window settings" B_UTF8_ELLIPSIS), new BMessage(HS_SHOW_VIEW_SETUP_WINDOW)));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
-		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), 0, 0, this,
-		B_TRANSLATE("Brings up the settings window.")));
 
 	// This will be only temporary place for add-ons. Later they will be spread
 	// in the menu hierarchy according to their types.
@@ -1349,35 +1366,6 @@ PaintWindow::openMenuBar()
 		"add_on_adder_thread", B_NORMAL_PRIORITY, this);
 	resume_thread(add_on_adder_thread);
 	fMenubar->AddItem(menu);
-
-	// help
-	menu = new BMenu(B_TRANSLATE("Help"));
-	fMenubar->AddItem(menu);
-
-	BMessage* message =  new BMessage(HS_SHOW_USER_DOCUMENTATION);
-	message->AddString("document", "index.html");
-
-	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("User manual" B_UTF8_ELLIPSIS),
-		message, 0, 0, this,
-		B_TRANSLATE("Opens the main documentation for ArtPaint."));
-	item->SetTarget(be_app);
-	menu->AddItem(item);
-
-	message = new BMessage(HS_SHOW_USER_DOCUMENTATION);
-	message->AddString("document", "shortcuts.html");
-	item = new PaintWindowMenuItem(B_TRANSLATE("Shortcuts" B_UTF8_ELLIPSIS),
-		message, 0, 0, this,
-		B_TRANSLATE("Opens a page that describes ArtPaint's keyboard shortcuts."));
-	item->SetTarget(be_app);
-	menu->AddItem(item);
-
-	menu->AddSeparatorItem();
-
-	message = new BMessage(HS_SHOW_ABOUT_WINDOW);
-	item = new PaintWindowMenuItem(B_TRANSLATE("About ArtPaint"),
-		message, 0, 0, this,
-		B_TRANSLATE("Shows a window that has information about the program."));
-	menu->AddItem(item);
 
 	_ChangeMenuMode(NO_IMAGE_MENU);
 

@@ -197,7 +197,7 @@ const char* Halftone::ReturnHelpString()
 
 const char* Halftone::ReturnName()
 {
-	return B_TRANSLATE_MARK("Halftone");
+	return B_TRANSLATE("Halftone");
 }
 
 

@@ -55,7 +55,7 @@ TextTool::ToolCursor() const
 const char*
 TextTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse
-		? "Drag the text to correct position and set its appearance."
-		: "Press the mouse-button to insert text into the image.");
+	return (isInUse
+		? B_TRANSLATE("Drag the text to correct position and set its appearance.")
+		: B_TRANSLATE("Click to place the text."));
 }

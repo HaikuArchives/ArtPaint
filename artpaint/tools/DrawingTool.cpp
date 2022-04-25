@@ -297,8 +297,9 @@ DrawingTool::ToolCursor() const
 const char*
 DrawingTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Using the tool."
-		: "Use the tool by pressing the mouse-button.");
+	return (isInUse
+		? B_TRANSLATE("Using the tool.")
+		: B_TRANSLATE("Use the tool by pressing the mouse-button."));
 }
 
 

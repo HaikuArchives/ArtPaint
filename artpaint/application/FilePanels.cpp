@@ -38,8 +38,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 	: BFilePanel(B_SAVE_PANEL, &target, &startDir, 0, false, &message)
 {
 	if (Window()->Lock()) {
-		BString title = "ArtPaint: ";
-		title.Append(B_TRANSLATE("Save image"));
+		BString title = B_TRANSLATE("ArtPaint :Save image");
 		Window()->SetTitle(title.String());
 
 		BView* textView = Window()->FindView("text view");
@@ -109,7 +108,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		}
 		formatMenu->SetTargetForItems(target);
 
-		const char* string = B_TRANSLATE("Save format");
+		const char* string = B_TRANSLATE("Save format:");
 		BMenuField* menuField = new BMenuField(BRect(textView->Frame().LeftTop() +
 			BPoint(0.0, -25.0), textView->Frame().RightTop() + BPoint(200, -5)),
 			"menu field", string, formatMenu, B_FOLLOW_LEFT | B_FOLLOW_BOTTOM);

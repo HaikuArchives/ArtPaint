@@ -114,28 +114,28 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 		settings.FindInt32(skAddOnWindowFeel, (int32*)&fAddOnWindowFeel);
 	}
 
-	fColor = new BCheckBox(B_TRANSLATE("Color window"),
+	fColor = new BCheckBox(B_TRANSLATE("Colors"),
 		new BMessage(kColorWindowFeelChanged));
 	fColor->SetValue(fPaletteWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
 	fSelection =
-		new BCheckBox(B_TRANSLATE("Tool selection window"),
+		new BCheckBox(B_TRANSLATE("Tools"),
 		new BMessage(kToolSelectionWindowFeelChanged));
 	fSelection->SetValue(fToolWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fSetup = new BCheckBox(B_TRANSLATE("Tool setup window"),
+	fSetup = new BCheckBox(B_TRANSLATE("Tool setup"),
 		new BMessage(kToolSetupWindowFeelChanged));
 	fSetup->SetValue(fToolSetupWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fLayer = new BCheckBox(B_TRANSLATE("Layer window"),
+	fLayer = new BCheckBox(B_TRANSLATE("Layers"),
 		new BMessage(kLayerWindowFeelChanged));
 	fLayer->SetValue(fLayerWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fBrush = new BCheckBox(B_TRANSLATE("Brush window"),
+	fBrush = new BCheckBox(B_TRANSLATE("Brushes"),
 		new BMessage(kBrushWindowFeelChanged));
 	fBrush->SetValue(fBrushWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fEffects = new BCheckBox(B_TRANSLATE("Effects window"),
+	fEffects = new BCheckBox(B_TRANSLATE("Add-ons"),
 		new BMessage(kEffectsWindowFeelChanged));
 	fEffects->SetValue(fAddOnWindowFeel == B_FLOATING_SUBSET_WINDOW_FEEL);
 
@@ -518,10 +518,10 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	layout->AddView(fTabView);
 	layout->AddView(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 		.AddGlue()
-		.Add(new BButton(B_TRANSLATE("Apply changes"),
-			new BMessage(kCloseAndApplySettings)))
-		.Add(new BButton(B_TRANSLATE("Discard changes"),
+		.Add(new BButton(B_TRANSLATE("Cancel"),
 			new BMessage(kCloseAndDiscardSettings)))
+		.Add(new BButton(B_TRANSLATE("OK"),
+			new BMessage(kCloseAndApplySettings)))
 		.TopView()
 	);
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);

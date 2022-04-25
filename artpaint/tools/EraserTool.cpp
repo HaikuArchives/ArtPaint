@@ -208,8 +208,9 @@ EraserTool::ToolCursor() const
 const char*
 EraserTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Erasing the image."
-		: "Press the mouse-button to use eraser.");
+	return (isInUse
+		? B_TRANSLATE("Erasing the image.")
+		: B_TRANSLATE("Click to use eraser."));
 }
 
 
@@ -263,7 +264,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);

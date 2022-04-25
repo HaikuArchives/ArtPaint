@@ -175,8 +175,9 @@ TransparencyTool::ToolCursor() const
 const char*
 TransparencyTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Adjusting the layer's transparency."
-		: "Press the mouse-button to adjust layer's transparency.");
+	return (isInUse
+		? B_TRANSLATE("Adjusting the layer's transparency.")
+		: B_TRANSLATE("Click to adjust the layer's transparency."));
 }
 
 
@@ -192,7 +193,7 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -200,7 +201,7 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fSpeedSlider =
-			new NumberSliderControl(B_TRANSLATE("Speed"),
+			new NumberSliderControl(B_TRANSLATE("Speed:"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
