@@ -116,6 +116,17 @@ NumberSliderControl::MessageReceived(BMessage* message)
 
 
 void
+NumberSliderControl::SetEnabled(bool enabled)
+{
+	if (fSlider)
+		fSlider->SetEnabled(enabled);
+
+	if (fNumberControl)
+		fNumberControl->SetEnabled(enabled);
+}
+
+
+void
 NumberSliderControl::SetValue(int32 value)
 {
 	value = _FixValue(value);
@@ -128,6 +139,16 @@ NumberSliderControl::SetValue(int32 value)
 		value << fSlider->Value();
 		fNumberControl->SetText(value.String());
 	}
+}
+
+
+int32
+NumberSliderControl::Value() const
+{
+	if (fSlider)
+		return fSlider->Value();
+
+	return -1;
 }
 
 

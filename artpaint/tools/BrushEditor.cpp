@@ -20,6 +20,7 @@
 
 #include <Button.h>
 #include <Catalog.h>
+#include <CheckBox.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
@@ -28,7 +29,7 @@
 
 
 #include <math.h>
-
+#include <stdio.h>
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "Tools"
@@ -42,7 +43,9 @@ enum {
 	kBrushFadeChanged		= 'kbfc',
 	kBrushShapeChanged		= 'kbsc',
 	kBrushStoreRequest		= 'kbsr',
-	kBrushResetRequest		= 'kbrr'
+	kBrushResetRequest		= 'kbrr',
+	kBrushAngleChanged 		= 'kbac',
+	kLockDimensionsChanged	= 'kldm'
 };
 
 
@@ -76,9 +79,8 @@ BrushEditor::BrushEditor(Brush* brush)
 	fStoreBrush = new BButton(B_TRANSLATE("Store brush"),
 		new BMessage(kBrushStoreRequest));
 
-	fResetBrush = new BButton(B_TRANSLATE("Reset brush"),new BMessage(kBrushResetRequest));
-	fResetBrush->SetEnabled(false);
-	fResetBrush->SetToolTip(B_TRANSLATE("Not implemented yet."));
+	fResetBrush = new BButton(B_TRANSLATE("Reset brush"),
+		new BMessage(kBrushResetRequest));
 
 	message = new BMessage(kBrushWidthChanged);
 	message->AddInt32("value", int32(fBrushInfo.width));
@@ -93,6 +95,19 @@ BrushEditor::BrushEditor(Brush* brush)
 	fBrushHeight =
 		new NumberSliderControl(B_TRANSLATE("Height:"), "0",
 		message, 0, 100, false);
+
+	message = new BMessage(kLockDimensionsChanged);
+
+	fLockDimensions =
+		new BCheckBox(B_TRANSLATE("Lock Dimensions"),
+		message);
+
+	message = new BMessage(kBrushAngleChanged);
+	message->AddInt32("value", int32(fBrushInfo.angle));
+
+	fBrushAngle =
+		new NumberSliderControl(B_TRANSLATE("Angle:"), "0",
+		message, -179, 180, false);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.fade_length));
@@ -113,10 +128,15 @@ BrushEditor::BrushEditor(Brush* brush)
 		.Add(fBrushHeight->LabelLayoutItem(), 0, 1)
 		.Add(fBrushHeight->TextViewLayoutItem(), 1, 1)
 		.Add(fBrushHeight->Slider(), 2, 1)
-		.Add(fBrushFade, 0, 2, 0, 0)
-		.Add(fBrushFade->LabelLayoutItem(), 0, 2)
-		.Add(fBrushFade->TextViewLayoutItem(), 1, 2)
-		.Add(fBrushFade->Slider(), 2, 2);
+		.Add(fLockDimensions, 1, 2, 2)
+		.Add(fBrushAngle, 0, 3, 0, 0)
+		.Add(fBrushAngle->LabelLayoutItem(), 0, 3)
+		.Add(fBrushAngle->TextViewLayoutItem(), 1, 3)
+		.Add(fBrushAngle->Slider(), 2, 3)
+		.Add(fBrushFade, 0, 4, 0, 0)
+		.Add(fBrushFade->LabelLayoutItem(), 0, 4)
+		.Add(fBrushFade->TextViewLayoutItem(), 1, 4)
+		.Add(fBrushFade->Slider(), 2, 4);
 	gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
 	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
@@ -189,10 +209,13 @@ BrushEditor::AttachedToWindow()
 	fBrushFade->SetTarget(this);
 	fBrushWidth->SetTarget(this);
 	fBrushHeight->SetTarget(this);
+	fLockDimensions->SetTarget(this);
+	fBrushAngle->SetTarget(this);
 
 	fEllipse->SetTarget(this);
 	fRectangle->SetTarget(this);
 	fStoreBrush->SetTarget(this);
+	fResetBrush->SetTarget(this);
 
 	if (fBrushInfo.shape == HS_RECTANGULAR_BRUSH)
 		fRectangle->SetValue(B_CONTROL_ON);
@@ -210,6 +233,10 @@ BrushEditor::MessageReceived(BMessage* message)
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
 				fBrushInfo.width = value;
+
+				if (fLockDimensions->Value() == B_CONTROL_ON)
+					fBrushInfo.height = value;
+
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
 
@@ -223,6 +250,19 @@ BrushEditor::MessageReceived(BMessage* message)
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
 				fBrushInfo.height = value;
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrushView->BrushModified();
+
+				bool final;
+				if (message->FindBool("final", &final) == B_OK && final)
+					fBrush->CreateDiffBrushes();
+			}
+		}	break;
+
+		case kBrushAngleChanged: {
+			int32 value;
+			if (message->FindInt32("value", &value) == B_OK) {
+				fBrushInfo.angle = value;
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
 
@@ -255,12 +295,36 @@ BrushEditor::MessageReceived(BMessage* message)
 			}
 		}	break;
 
+		case kLockDimensionsChanged: {
+			if (fLockDimensions->Value() == B_CONTROL_ON) {
+				fBrushHeight->SetEnabled(false);
+				fBrushInfo.height = fBrushInfo.width;
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrushView->BrushModified();
+
+				bool final;
+				if (message->FindBool("final", &final) == B_OK && final)
+					fBrush->CreateDiffBrushes();
+			} else {
+				fBrushHeight->SetEnabled(true);
+				fBrushInfo.height = fBrushWidth->Value();
+				fBrush->ModifyBrush(fBrushInfo);
+				fBrushView->BrushModified();
+
+				bool final;
+				if (message->FindBool("final", &final) == B_OK && final)
+					fBrush->CreateDiffBrushes();
+
+			}
+		}
+
 		case kBrushAltered: {
 			// Here something has altered the brush and we should reflect it
 			// in our controls and such things.
 			fBrushInfo = fBrush->GetInfo();
 			fBrushWidth->SetValue(int32(fBrushInfo.width));
 			fBrushHeight->SetValue(int32(fBrushInfo.height));
+			fBrushAngle->SetValue(int32(fBrushInfo.angle));
 			fBrushFade->SetValue(int32(fBrushInfo.fade_length));
 			fBrushView->BrushModified();
 
@@ -276,7 +340,24 @@ BrushEditor::MessageReceived(BMessage* message)
 		}	break;
 
 		case kBrushResetRequest: {
-			// TODO: implement
+			fBrushWidth->SetValue(30);
+			fBrushHeight->SetEnabled(true);
+			fBrushHeight->SetValue(30);
+			fBrushAngle->SetValue(0);
+			fLockDimensions->SetValue(B_CONTROL_OFF);
+			fBrushFade->SetValue(2);
+			fRectangle->SetValue(B_CONTROL_OFF);
+			fEllipse->SetValue(B_CONTROL_ON);
+
+			fBrushInfo.shape = HS_ELLIPTICAL_BRUSH;
+			fBrushInfo.width = 30;
+			fBrushInfo.height = 30;
+			fBrushInfo.angle = 0;
+			fBrushInfo.fade_length = 2;
+			fBrush->ModifyBrush(fBrushInfo);
+			fBrush->CreateDiffBrushes();
+
+			fBrushView->BrushModified();
 		}	break;
 
 		default: {
@@ -418,7 +499,7 @@ BrushView::MouseDown(BPoint point)
 			else {
 				angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
 			}
-			info.angle += angle - prev_angle;
+			info.angle = angle;
 			snooze(20000);
 		}
 

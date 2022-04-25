@@ -35,8 +35,10 @@ public:
 
 	virtual	void				AllAttached();
 	virtual	void				MessageReceived(BMessage* message);
+	virtual void				SetEnabled(bool enabled);
 
 			void				SetValue(int32 value);
+			int32				Value() const;
 			void				SetTarget(const BMessenger& target);
 
 			void				SetMessage(BMessage* message);
