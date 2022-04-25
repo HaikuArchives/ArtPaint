@@ -284,7 +284,7 @@ GlobalSetupWindow::UndoControlView::UndoControlView()
 				new BMessage(kSetAdjustableUndo)))
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
 			.AddStrut(15.0)						  // TODO: translation
-			.Add(fAdjustableUndoInput = new NumberControl("Undo Steps:", "20",
+			.Add(fAdjustableUndoInput = new NumberControl("Undo steps:", "20",
 					new BMessage(kUndoDepthAdjusted)))
 			.AddGlue())
 		.AddGlue()

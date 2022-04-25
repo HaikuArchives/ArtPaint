@@ -108,7 +108,7 @@ DatatypeSetupWindow::_ChangeHandler(translator_id translatorId)
 	int32 version;
 	const char* name;
 	const char* info;
-	BString windowTitle("Datatype Setup: ");	// TODO: translation
+	BString windowTitle("Datatype setup: ");	// TODO: translation
 	if (roster->GetTranslatorInfo(translatorId, &name, &info,&version) == B_OK)
 		windowTitle.Append(name);
 	else

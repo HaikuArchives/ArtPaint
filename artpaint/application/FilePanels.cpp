@@ -84,7 +84,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		// and tells it if the user changed the format to save the target
 
 		// TODO: translation
-		BPopUpMenu* formatMenu = new BPopUpMenu("Choose Format");
+		BPopUpMenu* formatMenu = new BPopUpMenu("Choose format");
 		BMessage message(HS_SAVE_FORMAT_CHANGED);
 		BTranslationUtils::AddTranslationItems(formatMenu, B_TRANSLATOR_BITMAP,
 			&message, NULL, NULL, NULL);
