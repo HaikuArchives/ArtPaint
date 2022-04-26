@@ -51,7 +51,7 @@ enum brush_shapes {
 //};
 
 //struct brush_edge {
-//	float	fade_length;	// This determines how many pixels the fade takes
+//	float	hardness;	// This determines how many pixels the fade takes
 //	float	fade_type;		// This determines the type of fade (exponential,linear or somewhere in between).
 //};
 
@@ -61,7 +61,7 @@ struct brush_info {
 	float	width;
 	float 	height;
 	float	angle;
-	float	fade_length;
+	float	hardness;
 };
 
 // This next struct is used to form a linked list for brush's
@@ -81,7 +81,7 @@ class Brush {
 	float 			width_;
 	float			height_;
 	float			angle_;
-	float			fade_length_;
+	float			hardness_;
 
 	float			maximum_width;
 	float			maximum_height;

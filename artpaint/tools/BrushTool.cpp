@@ -49,7 +49,7 @@ BrushTool::BrushTool()
 	info.width = 30;
 	info.height = 30;
 	info.angle = 0;
-	info.fade_length = 2;
+	info.hardness = 2;
 
 	brush = new Brush(info);
 }

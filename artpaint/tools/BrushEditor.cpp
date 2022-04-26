@@ -104,10 +104,10 @@ BrushEditor::BrushEditor(Brush* brush)
 		message, -179, 180, false);
 
 	message = new BMessage(kBrushFadeChanged);
-	message->AddInt32("value", int32(fBrushInfo.fade_length));
+	message->AddInt32("value", int32(fBrushInfo.hardness));
 
 	fBrushFade =
-		new NumberSliderControl(B_TRANSLATE("Fade:"), "0",
+		new NumberSliderControl(B_TRANSLATE("Hardness:"), "0",
 		message, 0, 100, false);
 
 	BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);
@@ -225,8 +225,8 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushSizeChanged: {
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
-				fBrushInfo.width = (int32)(value * fBrushRatio->Value());
-				fBrushInfo.height = value;
+				fBrushInfo.width = value;
+				fBrushInfo.height = value / fBrushRatio->Value();
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -240,8 +240,7 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushRatioChanged: {
 			float value;
 			if (message->FindFloat("value", &value) == B_OK) {
-				fBrushInfo.width = (int32)(value * fBrushSize->Value());
-				fBrushInfo.height = fBrushSize->Value();
+				fBrushInfo.height = fBrushSize->Value() / value;
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -268,7 +267,7 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushFadeChanged: {
 			int32 value;
 			if (message->FindInt32("value",&value) == B_OK) {
-				fBrushInfo.fade_length = value;
+				fBrushInfo.hardness = value;
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
 
@@ -302,7 +301,7 @@ BrushEditor::MessageReceived(BMessage* message)
 			fBrushRatio->SetValue(float(ratio));
 
 			fBrushAngle->SetValue(int32(fBrushInfo.angle));
-			fBrushFade->SetValue(int32(fBrushInfo.fade_length));
+			fBrushFade->SetValue(int32(fBrushInfo.hardness));
 			fBrushView->BrushModified();
 
 			if (fBrushInfo.shape == HS_RECTANGULAR_BRUSH)
@@ -328,7 +327,7 @@ BrushEditor::MessageReceived(BMessage* message)
 			fBrushInfo.width = 30;
 			fBrushInfo.height = 30;
 			fBrushInfo.angle = 0;
-			fBrushInfo.fade_length = 2;
+			fBrushInfo.hardness = 2;
 			fBrush->ModifyBrush(fBrushInfo);
 			fBrush->CreateDiffBrushes();
 
