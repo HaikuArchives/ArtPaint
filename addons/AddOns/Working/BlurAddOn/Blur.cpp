@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
@@ -20,12 +21,16 @@
 
 #include <new>
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Blur"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 	int32 add_on_api_version = ADD_ON_API_VERSION;
-	char name[255] = "Blur…";
-	char menu_help_string[255] = "Adds a blur.";
+	char name[255] = B_TRANSLATE_MARK("Blur" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adds a blur.");
 	add_on_types add_on_type = BLUR_FILTER_ADD_ON;
 #ifdef __cplusplus
 }
@@ -533,6 +538,17 @@ ManipulatorSettings* BlurManipulator::ReturnSettings()
 	return new BlurManipulatorSettings(&settings);
 }
 
+const char*	BlurManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Use the slider to adjust blur amount.");
+}
+
+
+const char*	BlurManipulator::ReturnName()
+{
+	return B_TRANSLATE("Blur");
+}
+
 
 void BlurManipulator::ChangeSettings(ManipulatorSettings *set)
 {
@@ -591,9 +607,9 @@ BlurManipulatorView::BlurManipulatorView(BRect rect,BlurManipulator *manip,
 	target = new BMessenger(t);
 
 	blur_amount_slider = new BSlider("blur_amount_slider",
-		"Blur amount:", new BMessage(BLUR_AMOUNT_CHANGED), 1, MAX_BLUR_AMOUNT,
+		B_TRANSLATE("Blur amount:"), new BMessage(BLUR_AMOUNT_CHANGED), 1, MAX_BLUR_AMOUNT,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blur_amount_slider->SetLimitLabels("Low","High");
+	blur_amount_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	blur_amount_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	blur_amount_slider->SetHashMarkCount(11);
 	blur_amount_slider->SetModificationMessage(new BMessage(BLUR_AMOUNT_CHANGE_STARTED));

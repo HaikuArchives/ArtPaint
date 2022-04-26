@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <StatusBar.h>
 #include <new>
 #include <Window.h>
@@ -16,11 +17,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_DetectEdges"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Detect edges";
-	char menu_help_string[255] = "Detects edges in the image.";
+	char name[255] = B_TRANSLATE_MARK("Detect edges");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Detects edges in the image.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = SHARPEN_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -107,10 +112,8 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *s
 
 const char* DetectEdgesManipulator::ReturnName()
 {
-	return "Detect edges";
+	return B_TRANSLATE("Detect edges");
 }
-
-
 
 int32 DetectEdgesManipulator::thread_entry(void *data)
 {

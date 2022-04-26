@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <math.h>
 #include <LayoutBuilder.h>
 #include <Slider.h>
@@ -21,12 +22,15 @@
 #include "PixelOperations.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Twirl"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Twirl…";
-	char menu_help_string[255] = "Twirls the active layer.";
+	char name[255] = B_TRANSLATE_MARK("Twirl" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Twirls the active layer.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = DISTORT_ADD_ON;
 #ifdef __cplusplus
@@ -471,6 +475,16 @@ BView* TwirlManipulator::MakeConfigurationView(const BMessenger& target)
 	return config_view;
 }
 
+const char*	TwirlManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Click on the image to set the twirl center. Use sliders to adjust twirl.");
+}
+
+const char*	TwirlManipulator::ReturnName()
+{
+	return B_TRANSLATE("Twirl");
+}
+
 ManipulatorSettings* TwirlManipulator::ReturnSettings()
 {
 	return new TwirlManipulatorSettings(settings);
@@ -496,17 +510,17 @@ TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,
 	preview_started = FALSE;
 
 	twirl_radius_slider = new BSlider("twirl_radius_slider",
-		"Twirl size:", new BMessage(TWIRL_RADIUS_CHANGED), 10, 1000,
+		B_TRANSLATE("Twirl size:"), new BMessage(TWIRL_RADIUS_CHANGED), 10, 1000,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	twirl_radius_slider->SetLimitLabels("Small","Big");
+	twirl_radius_slider->SetLimitLabels(B_TRANSLATE("Small"),B_TRANSLATE("Big"));
 	twirl_radius_slider->SetModificationMessage(new BMessage(TWIRL_RADIUS_ADJUSTING_STARTED));
 	twirl_radius_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	twirl_radius_slider->SetHashMarkCount(11);
 
 	twirl_amount_slider = new BSlider("twirl_amount_slider",
-		"Twirl direction:", new BMessage(TWIRL_AMOUNT_CHANGED), MIN_TWIRL_AMOUNT,
+		B_TRANSLATE("Twirl direction:"), new BMessage(TWIRL_AMOUNT_CHANGED), MIN_TWIRL_AMOUNT,
 		MAX_TWIRL_AMOUNT, B_HORIZONTAL, B_TRIANGLE_THUMB);
-	twirl_amount_slider->SetLimitLabels("Left","Right");
+	twirl_amount_slider->SetLimitLabels(B_TRANSLATE("Left"), B_TRANSLATE("Right"));
 	twirl_amount_slider->SetModificationMessage(new BMessage(TWIRL_AMOUNT_ADJUSTING_STARTED));
 	twirl_amount_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	twirl_amount_slider->SetHashMarkCount(11);

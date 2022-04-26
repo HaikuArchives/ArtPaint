@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -16,11 +17,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Emboss"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Emboss";
-	char menu_help_string[255] = "Creates an emboss effect.";
+	char name[255] = B_TRANSLATE_MARK("Emboss");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Creates an emboss effect.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -178,4 +183,10 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 
 
 	return original;
+}
+
+
+const char*	EmbossManipulator::ReturnName()
+{
+	return B_TRANSLATE("Emboss");
 }

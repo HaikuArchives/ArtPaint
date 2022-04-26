@@ -96,8 +96,8 @@ int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
 BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
 void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
-const char*	ReturnHelpString() { return "Click on the image to set the wave center. Use the sliders to adjust wave."; }
-const char*	ReturnName() { return "Wave"; }
+const char*	ReturnHelpString();
+const char*	ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 

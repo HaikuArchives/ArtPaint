@@ -19,7 +19,7 @@ public:
 			~ContrastManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
-const char*	ReturnName() { return "Stretch Histogram"; }
+const char*	ReturnName();
 };
 
 #endif

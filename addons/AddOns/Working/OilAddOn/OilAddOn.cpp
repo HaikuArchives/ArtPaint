@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <stdlib.h>
@@ -18,11 +19,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Oil"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Oil";
-	char menu_help_string[255] = "Creates an \"oil\" effect.";
+	char name[255] = B_TRANSLATE_MARK("Oil");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Creates an \"oil\" effect.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -170,4 +175,10 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 	delete[] offsets;
 
 	return original;
+}
+
+
+const char*	OilManipulator::ReturnName()
+{
+	return B_TRANSLATE("Oil");
 }

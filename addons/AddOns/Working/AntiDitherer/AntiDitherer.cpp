@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <LayoutBuilder.h>
@@ -20,12 +21,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_AntiDither"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Anti-Dither…";
-	char menu_help_string[255] = "Attempts to reverse the effects of dithering.";
+	char name[255] = B_TRANSLATE_MARK("Anti-Dither" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Attempts to reverse the effects of dithering.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -255,12 +259,12 @@ void AntiDithererManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* AntiDithererManipulator::ReturnName()
 {
-	return "Anti-Dither";
+	return B_TRANSLATE("Anti-Dither");
 }
 
 const char* AntiDithererManipulator::ReturnHelpString()
 {
-	return "Attempts to reverse the effects of dithering.";
+	return B_TRANSLATE("Attempts to reverse the effects of dithering.");
 }
 
 
@@ -275,13 +279,14 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(AntiDithererManipulator
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	block_size_control = new BSpinner("blocksize", "Block size:",
+	block_size_control = new BSpinner("blocksize", B_TRANSLATE("Block size:"),
 		new BMessage(BLOCK_SIZE_ADJUSTED));
 	block_size_control->SetMinValue(1);
 	block_size_control->SetValue(1);
 
 	reduce_resolution_box = new BCheckBox(
-		"reduce_resolution","Reduce resolution",new BMessage(REDUCE_RESOLUTION_ADJUSTED));
+		"reduce_resolution", B_TRANSLATE("Reduce resolution"),
+		new BMessage(REDUCE_RESOLUTION_ADJUSTED));
 	reduce_resolution_box->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, B_SIZE_UNSET));
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)

@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
@@ -19,12 +20,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Brightness"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Brightness…";
-	char menu_help_string[255] = "Adjusts the brightness.";
+	char name[255] = B_TRANSLATE_MARK("Brightness" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjusts the brightness.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -360,12 +364,12 @@ void BrightnessManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* BrightnessManipulator::ReturnName()
 {
-	return "Brightness";
+	return B_TRANSLATE("Brightness");
 }
 
 const char* BrightnessManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the image brightness.";
+	return B_TRANSLATE("Use the slider to set the image brightness.");
 }
 
 
@@ -381,10 +385,10 @@ BrightnessManipulatorView::BrightnessManipulatorView(BrightnessManipulator *mani
 	started_adjusting = FALSE;
 
 	brightness_slider = new BSlider("brightness_slider",
-		"Brightness:", new BMessage(BRIGHTNESS_ADJUSTING_FINISHED), 0, 255,
+		B_TRANSLATE("Brightness:"), new BMessage(BRIGHTNESS_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	brightness_slider->SetModificationMessage(new BMessage(BRIGHTNESS_ADJUSTED));
-	brightness_slider->SetLimitLabels("Low","High");
+	brightness_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	brightness_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	brightness_slider->SetHashMarkCount(11);
 

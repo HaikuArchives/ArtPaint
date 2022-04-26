@@ -21,7 +21,7 @@ public:
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
 
-const char*	ReturnName() { return "Dispersion"; }
+const char*	ReturnName();
 };
 
 #endif

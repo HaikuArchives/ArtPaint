@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Node.h>
 #include <StatusBar.h>
@@ -19,12 +20,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Contrast"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Contrast…";
-	char menu_help_string[255] = "Adjusts the contrast.";
+	char name[255] = B_TRANSLATE_MARK("Contrast" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjusts the contrast.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -386,12 +390,12 @@ void ContrastManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* ContrastManipulator::ReturnName()
 {
-	return "Contrast";
+	return B_TRANSLATE("Contrast");
 }
 
 const char* ContrastManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the image contrast.";
+	return B_TRANSLATE("Use the slider to set the image contrast.");
 }
 
 
@@ -406,11 +410,11 @@ ContrastManipulatorView::ContrastManipulatorView(ContrastManipulator *manip,
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	contrast_slider = new BSlider("contrast_slider", "Contrast:",
+	contrast_slider = new BSlider("contrast_slider", B_TRANSLATE("Contrast:"),
 		new BMessage(CONTRAST_ADJUSTING_FINISHED), 0, 255, B_HORIZONTAL,
 		B_TRIANGLE_THUMB);
 	contrast_slider->SetModificationMessage(new BMessage(CONTRAST_ADJUSTED));
-	contrast_slider->SetLimitLabels("Low","High");
+	contrast_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	contrast_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	contrast_slider->SetHashMarkCount(11);
 

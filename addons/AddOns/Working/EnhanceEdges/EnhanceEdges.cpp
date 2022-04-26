@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <StatusBar.h>
 #include <new>
 #include <Window.h>
@@ -16,11 +17,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_EnhanceEdges"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Enhance edges";
-	char menu_help_string[255] = "Enhances the edges in the image.";
+	char name[255] = B_TRANSLATE_MARK("Enhance edges");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Enhances the edges in the image.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = SHARPEN_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -113,7 +118,7 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 
 const char* EnhanceEdgesManipulator::ReturnName()
 {
-	return "Enhance edges";
+	return B_TRANSLATE("Enhance edges");
 }
 
 

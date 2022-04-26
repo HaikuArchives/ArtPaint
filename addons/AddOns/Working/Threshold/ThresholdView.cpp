@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Menu.h>
 #include <MenuItem.h>
@@ -16,9 +17,12 @@
 #include "Selection.h"
 #include "ThresholdView.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Threshold"
+
 
 ThresholdView::ThresholdView(BMessage *msg)
-	:	BControl("threshold_view","Threshold",msg,B_WILL_DRAW)
+	:	BControl("threshold_view", B_TRANSLATE("Threshold"), msg,B_WILL_DRAW)
 {
 	histogramBitmap = NULL;
 	for (int32 i=0;i<256;i++) {
@@ -31,11 +35,11 @@ ThresholdView::ThresholdView(BMessage *msg)
 	histogramBitmap = new BBitmap(histogramRect,B_RGBA32);
 
 	BMenu *a_menu = new BPopUpMenu("mode");
-	a_menu->AddItem(new BMenuItem("Intensity",new BMessage(HISTOGRAM_MODE_INTENSITY)));
-	a_menu->AddItem(new BMenuItem("Red",new BMessage(HISTOGRAM_MODE_RED)));
-	a_menu->AddItem(new BMenuItem("Green",new BMessage(HISTOGRAM_MODE_GREEN)));
-	a_menu->AddItem(new BMenuItem("Blue",new BMessage(HISTOGRAM_MODE_BLUE)));
-	modeMenu = new BMenuField("modeMenu","Based on:",a_menu);
+	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Intensity"), new BMessage(HISTOGRAM_MODE_INTENSITY)));
+	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Red"), new BMessage(HISTOGRAM_MODE_RED)));
+	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Green"), new BMessage(HISTOGRAM_MODE_GREEN)));
+	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Blue"), new BMessage(HISTOGRAM_MODE_BLUE)));
+	modeMenu = new BMenuField("modeMenu", B_TRANSLATE("Based on:"), a_menu);
 	a_menu->ItemAt(0)->SetMarked(true);
 
 	modeMenu->SetExplicitMinSize(BSize(256, B_SIZE_UNSET));

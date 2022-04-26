@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <math.h>
 #include <LayoutBuilder.h>
 #include <Slider.h>
@@ -22,12 +23,15 @@
 
 #define PI M_PI
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Wave"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Wave…";
-	char menu_help_string[255] = "Adds a wave to the active layer.";
+	char name[255] = B_TRANSLATE_MARK("Wave" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adds a wave to the active layer.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = DISTORT_ADD_ON;
 #ifdef __cplusplus
@@ -882,6 +886,18 @@ void WaveManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
 //}
 
 
+const char*	WaveManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Click on the image to set the wave center. Use the sliders to adjust wave.");
+}
+
+
+const char*	WaveManipulator::ReturnName()
+{
+	return B_TRANSLATE("Wave");
+}
+
+
 void WaveManipulator::SetPreviewBitmap(BBitmap *bm)
 {
 	if (preview_bitmap != bm) {
@@ -962,17 +978,17 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	preview_started = FALSE;
 
 	wave_length_slider = new BSlider("wave_length_slider",
-		"Wave length:", new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
+		B_TRANSLATE("Wave length:"), new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
 		MAX_WAVE_LENGTH, B_HORIZONTAL, B_TRIANGLE_THUMB);
-	wave_length_slider->SetLimitLabels("Short","Long");
+	wave_length_slider->SetLimitLabels(B_TRANSLATE("Short"), B_TRANSLATE("Long"));
 	wave_length_slider->SetModificationMessage(new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
 	wave_length_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	wave_length_slider->SetHashMarkCount(11);
 
-	wave_amount_slider = new BSlider("wave_amount_slider", "Wave strength:",
+	wave_amount_slider = new BSlider("wave_amount_slider", B_TRANSLATE("Wave strength:"),
 		new BMessage(WAVE_AMOUNT_CHANGED), MIN_WAVE_AMOUNT, MAX_WAVE_AMOUNT,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	wave_amount_slider->SetLimitLabels("Mild","Strong");
+	wave_amount_slider->SetLimitLabels(B_TRANSLATE("Mild"), B_TRANSLATE("Strong"));
 	wave_amount_slider->SetModificationMessage(new BMessage(WAVE_AMOUNT_ADJUSTING_STARTED));
 	wave_amount_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	wave_amount_slider->SetHashMarkCount(11);
