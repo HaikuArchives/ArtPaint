@@ -45,15 +45,6 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
 	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	window_feel feel = B_NORMAL_WINDOW_FEEL;
-	SettingsServer* server = SettingsServer::Instance();
-	if (server) {
-		BMessage settings;
-		server->GetApplicationSettings(&settings);
-		settings.FindInt32(skToolSetupWindowFeel, (int32*)&feel);
-	}
-	SetWindowFeel(feel);
-
 	if (Lock()) {
 		AddCommonFilter(new BMessageFilter(B_ANY_DELIVERY, B_ANY_SOURCE,
 			B_MOUSE_DOWN, window_activation_filter));
@@ -65,6 +56,15 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 
 	sfToolSetupWindow = this;
 	FloaterManager::AddFloater(this);
+
+	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	SettingsServer* server = SettingsServer::Instance();
+	if (server) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skToolSetupWindowFeel, (int32*)&feel);
+	}
+	SetWindowFeel(feel);
 
 	if (server) {
 		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible,

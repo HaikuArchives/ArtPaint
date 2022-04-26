@@ -74,6 +74,7 @@ LayerWindow::LayerWindow(BRect frame)
 	AddChild(scroll_bar);
 
 	layer_count = 0;
+	layer_window = this;
 
 	window_feel feel = B_NORMAL_WINDOW_FEEL;
 	if (SettingsServer* server = SettingsServer::Instance()) {
@@ -96,7 +97,6 @@ LayerWindow::LayerWindow(BRect frame)
 	Unlock();
 	Show();
 
-	layer_window = this;
 	FloaterManager::AddFloater(this);
 }
 
