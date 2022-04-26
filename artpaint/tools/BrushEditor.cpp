@@ -94,14 +94,14 @@ BrushEditor::BrushEditor(Brush* brush)
 
 	fBrushRatio =
 		new FloatSliderControl(B_TRANSLATE("Ratio:"), "0",
-		message, 1.0, 20.0, false);
+		message, 1.0, 10.0, false);
 
 	message = new BMessage(kBrushAngleChanged);
 	message->AddInt32("value", int32(fBrushInfo.angle));
 
 	fBrushAngle =
 		new NumberSliderControl(B_TRANSLATE("Angle:"), "0",
-		message, -179, 180, false);
+		message, -89, 90, false);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.hardness));
@@ -473,6 +473,11 @@ BrushView::MouseDown(BPoint point)
 			else {
 				angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
 			}
+			if (angle > 90)
+				angle = -(90. - ((int32)angle % 90));
+			if (angle < -90)
+				angle = 90. - ((int32)-angle % 90);
+
 			info.angle = angle;
 			snooze(20000);
 		}
