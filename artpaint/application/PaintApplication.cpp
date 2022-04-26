@@ -137,7 +137,7 @@ PaintApplication::MessageReceived(BMessage* message)
 
 			fImageOpenPanel->SetMessage(&filePanelMessage);
 			fImageOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
-				.Append(B_TRANSLATE("Open image…")).String());
+				.Append(B_TRANSLATE("Open image" B_UTF8_ELLIPSIS)).String());
 			fImageOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fImageOpenPanel);
@@ -162,7 +162,7 @@ PaintApplication::MessageReceived(BMessage* message)
 
 			fProjectOpenPanel->SetMessage(&filePanelMessage);
 			fProjectOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
-				.Append(B_TRANSLATE("Open project…")).String());
+				.Append(B_TRANSLATE("Open project" B_UTF8_ELLIPSIS)).String());
 			fProjectOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fProjectOpenPanel);

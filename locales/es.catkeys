@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	4115818462
+1	English	application/x-vnd.artpaint	3922203743
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Insertar texto en la capa activa. Igual que la herramienta de texto.
 Cancel	Windows		Anular
 Enable antialiasing	Manipulators		Habilitar anti-aliasing
@@ -15,10 +15,10 @@ Cursor	Windows		Cursor
 Brush window	Windows		Ventana de pinceles
 Crop…	PaintWindow		Recorte...
 Fade	Tools		Fondu
+Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cruz del cursor
 Merge with front layer	Image		Combinar con la capa superior
 Alpha	Tools		Alpha
-Language	Windows		Idioma
 Special thanks	Windows		Agradecimientos especiales
 Inverts the selction so that selected becomes non-selected and vice versa.	PaintWindow		Invertie la selección; por lo tanto lo que se seleccionó se vuelve no seleccionado y viceversa.
 Rectangle tool	Tools		Rectángulo
@@ -28,13 +28,14 @@ Clear selection	PaintWindow		Borrar la selección
 Add layer	PaintWindow		Añadir una capa
 Selector tool	Tools		Selección
 Rotation	Manipulators		Rotación
+Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Haga clic para seleccionar el color del pincel.
 Paste as a new layer	PaintWindow		Copiar como nueva cap
 Show tool window	PaintWindow		Muestra la caja de herramientas
 OK	PaintApplication		Aceptar
 Redos the action that was last undone.	PaintWindow		Restaura la acción que fue cancelada previamente.
-Save color set	ColorPalette		Guarde la paleta
 Cancel	ImageView		Anular
+Save color set	ColorPalette		Guarde la paleta
 Untitled	PaintWindow		Sin titulo
 Discard changes	Windows		Anular
 Miscellaneous	Windows		Diverso
@@ -63,6 +64,7 @@ Sets the zoom level to 25%.	PaintWindow		Establecer la zoom para 25%.
 Zoom out	PaintWindow		Zoom de nuevo
 Save image	PaintWindow		Guarde la imagen
 Brush tool	Tools		Pincel
+Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Restaurar
 Shear	Manipulators		Inclinación
 Font	Manipulators		Fuente
@@ -78,10 +80,12 @@ Resize to fit	PaintWindow		Redimensionar
 Fill rectangle	Tools		Rectángulo remplicado
 Text tool	Manipulators		Texto
 Color model	ColorPalette		Modelo
+File structure corrupted	ColorPalette		File structure corrupted
 Undo not available	PaintWindow		Sin cancelación
 Finishing	ImageView		En progreso...
 Confirm quitting	Windows		Confirmar el cierre del programa
 Scale…	Manipulators		Redimensionar...
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Merge with back layer	Image		Combinar con la capa inferior
 Save project	PaintWindow		Guardar proyecto
 Use the handles or number-fields to set the new borders.	Manipulators		Utilice los controles o los campos numéricos para ajustar los nuevos bordes.
@@ -89,12 +93,13 @@ Spray	Tools		Bomba
 Color variance	Tools		Variación de color
 None	Tools		Ninguna
 Clears all layers.	PaintWindow		Borrar todas las capas.
+Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Zoom in	PaintWindow		Zoom
 Brings up the tool setup window.	PaintWindow		Muestra la ventana de configuración de herramientas.
 Rotate +90°	PaintWindow		Rotación +90°
 Saves the project to the disk.	PaintWindow		Guarde el proyecto en el disco.
-Scale…	PaintWindow		Redimensionar...
 Red	Tools		Rojo
+Scale…	PaintWindow		Redimensionar...
 Opens the main documentation for ArtPaint.	PaintWindow		Abra la documentación de ArtPaint con WebPositive.
 Rotate…	Manipulators		Rotación…
 Starts changing the transparency of active layer.	PaintWindow		Cambiar la transparencia de la capa activa.
@@ -112,7 +117,6 @@ Adjustable width	Tools		Ancho ajustable
 Pastes clipboard as a new project.	PaintWindow		Pegue la capa en la memoria como un nuevo proyecto.
 Show layer window	PaintWindow		Muestra las capas
 Redo not available	PaintWindow		Sin restauración
-Changes take effect after restarting the program.	Windows		Los cambios entrarán en vigor la próxima vez que se inicie el programa.
 Unlimited	Windows		Illimitado
 Opaque	Manipulators		Opaca
 Apply changes	Windows		Aplicar las cambios
@@ -122,14 +126,15 @@ Close	PaintWindow		Cerrar
 Translate…	PaintWindow		Traducción...
 Insert text…	PaintWindow		Insertar texto...
 Text tool	Tools		Texto
+Reset Brush	Tools		Reset Brush
 Starts scaling the image.	PaintWindow		Comienza a redimensionar la imagen.
 Open project…	PaintWindow		Abre una proyecto...
-Store brush	Tools		Guardar
 Green	Tools		Verde
+Store brush	Tools		Guardar
 Edit	PaintWindow		Editar
 Color amount	Tools		Cuantidad de color
-Copies the image to the clipboard.	PaintWindow		Copia todas las capas en la memoria.
 Save image	FilePanels		Guarde la imagen
+Copies the image to the clipboard.	PaintWindow		Copia todas las capas en la memoria.
 Brings up the layer window.	PaintWindow		Muestra la ventana de capas.
 Shrink selection	ImageView		Reduce la selección
 Freehand line	Tools		Levantamiento de manos
@@ -144,28 +149,33 @@ Starts moving all layers.	PaintWindow		Comienza a mover todas las capas.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Establecer la cuadrícula a 2 por 2 píxeles.
 Brings up the palette window.	PaintWindow		Muestra la ventana de paletas.
 Background	Tools		fondo
+Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Borrar la imagen
+OK	ColorPalette		Aceptar
 Merge with back layer	LayerView		Combinar con la capa inferior
 Magic wand	Tools		Varita mágica
 Show palette window	PaintWindow		Muestra las paletas
 Little	Tools		Pequeño
 Flips all layers horizontally.	PaintWindow		Invertir horizontalmente todas las capas.
+Free 2D transform	FreeTransformManipulator		Free 2D transform
 Copy	PaintWindow		Copiar
 Enable preview	Tools		Habilitar vista previa
 Undos the previous action.	PaintWindow		Cancelar la acción anterior.
 Starts cropping the image.	PaintWindow		Comienza el recorte de la imagen.
 Rotate -90°	Manipulators		Rotación -90°
 Standard sizes	PaintWindow		Tamaños estandár
+Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Opciones
 Clear canvas	Image		Borrar la imagen
 All layers	PaintWindow		Todas las capas
 Sets the zoom level to 800%.	PaintWindow		Establecer la zoom para 800%.
+No data translator	Windows		No data translator
 Starts rotating the active layer.	PaintWindow		Inicia la rotación de la capa activa.
 Layer %ld / %ld	ImageView		Capa %ld / %ld
 Show tool setup window	PaintWindow		Muestra la configuración de herramientas
 Select the canvas size you want.	PaintWindow		Selecionne el tamaño de la imagen que desee.
-Active layer	PaintWindow		Capa activa
 Open image…	PaintApplication		Abre una imagen...
+Active layer	PaintWindow		Capa activa
 Effects window	Windows		Ventana de efectos
 Zooms into the image.	PaintWindow		Zoom en la imagen.
 Blue	Tools		Azul
@@ -192,12 +202,13 @@ Copies the active layer to the clipboard.	PaintWindow		Copia la capa activa en l
 Shortcuts…	PaintWindow		Atajos...
 Layer window	Windows		Ventana de capas
 Translate…	Manipulators		Traducción...
+Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Eliminar paleta actual
 Merge with front layer	LayerView		Combinar con la capa superior
 Closes the current window.	PaintWindow		Cerrar esta ventana.
 Duplicate layer	LayerView		Duplicar esta capa
-Shrink selection	PaintWindow		Reduce la selección
 %s: You have made %d changes since the last time the project was saved. Do you want to save the changes?	ImageView		%s: Has realizado %d cambios desde la última copia de seguridad de su proyecto. ¿Quieres guardar estos cambios?
+Shrink selection	PaintWindow		Reduce la selección
 Zooms out from the image.	PaintWindow		Zoom de nuevo en la imagen.
 Clear selection	ImageView		Borrar la selección
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
@@ -207,14 +218,17 @@ Height	Manipulators		Alto
 Transparent	Tools		Transparento
 Click here to open color panel.	StatusView		Haga clic aquí para abrir el panel de color.
 Starts moving the active layer.	PaintWindow		Comienza a mover la capa activa.
+Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Proyectos recentes
+Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Width	PaintWindow		Ancho
 Clear layer	PaintWindow		Borrar la capa
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		El tipo de archivo %file% no es compatible. Intenta instalar un traductor si es posible.
 Rectangle	Tools		Rectángulo
+Restore	Manipulators		Restore
 Keep in front	Windows		Mantener en primer plano
+OK	Image		Aceptar
 Opens an image from the disk.	PaintWindow		Abre una imagen del disco.
-Flip Vertically	Manipulators		Invertir vertical
 Off	PaintWindow		Desactivar
 Opens a page that describes ArtPaint's keyboard shortcuts.	PaintWindow		Abre WebPositive con una página que describe los atajos de teclado de ArtPaint.
 Ellipse tool	Tools		Elipse
@@ -232,7 +246,9 @@ Save	ImageView		Guardar
 Layer	PaintWindow		Capa
 Empty paint window	PaintWindow		Ventana de dibujo vacía
 No options	Windows		Ninguna opciones
+Flip vertically	Manipulators		Invertir vertical
 Tool cursor	Windows		Cursor herramientas
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Intelligent scissors	Tools		Lazo magnético
 Rotating	Manipulators		Angulo
 Grows the selection a little bit in every direction.	PaintWindow		Expandir la selección en todas las direcciones.
@@ -263,6 +279,7 @@ German localization	Windows		Localización alemán
 Settings…	PaintWindow		Preferencias...
 Canvas	PaintWindow		Imagen
 Transparency tool	Tools		Transparencia
+Choose format	FilePanels		Choose format
 Cancel	FilePanels		Anular
 Flip horizontally	PaintWindow		Invertir horizontal
 Mode	Tools		Modo
@@ -285,8 +302,10 @@ Wand tolerance	Tools		Tolerancia de la varita
 Invert selection	ImageView		Invertir la selección
 Help	PaintWindow		Ayúda
 Much	Tools		Mucho
+Not implemented yet.	Tools		Not implemented yet.
 Change the transparency with the slider.	Manipulators		Cambiar la transparencia con el deslizador.
 Top	Manipulators		Superior
+Unsaved changes!	ImageView		Unsaved changes!
 Programming & Design	Windows		Programación y concepción
 Tool selection window	Windows		Caja de herramientas
 About ArtPaint	Windows		Sobre ArtPaint
@@ -302,6 +321,7 @@ Sets the zoom level to 50%.	PaintWindow		Establecer la zoom para 50%.
 New project…	PaintWindow		Nueva proyecto...
 Height	PaintWindow		Alto
 Drag the image to correct position.	Manipulators		Mueva la imagen a la posición deseada.
+Lock	Manipulators	Keep the aspect ratio	Lock
 Right	Manipulators		De
 Flow	Tools		Flujo
 Add area	Tools		Añadir la zona

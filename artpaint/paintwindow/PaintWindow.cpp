@@ -985,26 +985,26 @@ PaintWindow::openMenuBar()
 
 	// the File menu
 	menu_item fileMenu[] = {
-		{ B_TRANSLATE("Open image…"), HS_SHOW_IMAGE_OPEN_PANEL,
+		{ B_TRANSLATE("Open image" B_UTF8_ELLIPSIS), HS_SHOW_IMAGE_OPEN_PANEL,
 			'O', 0, be_app,
 			B_TRANSLATE("Opens an image from the disk.") },
 		{ B_TRANSLATE("Save image"), HS_SAVE_IMAGE,
 			'S', 0, this,
 			B_TRANSLATE("Saves the image to the disk with the current name.") },
-		{ B_TRANSLATE("Save image as…"), HS_SHOW_IMAGE_SAVE_PANEL,
+		{ B_TRANSLATE("Save image as" B_UTF8_ELLIPSIS), HS_SHOW_IMAGE_SAVE_PANEL,
 		 	0, 0, this,
 		 	B_TRANSLATE("Saves the image to disk.") },
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" },	// separator
-		{ B_TRANSLATE("New project…"), HS_NEW_PAINT_WINDOW,
+		{ B_TRANSLATE("New project" B_UTF8_ELLIPSIS), HS_NEW_PAINT_WINDOW,
 			'N', 0, be_app,
 			B_TRANSLATE("Creates a new empty paint window.") },
-		{ B_TRANSLATE("Open project…"), HS_SHOW_PROJECT_OPEN_PANEL,
+		{ B_TRANSLATE("Open project" B_UTF8_ELLIPSIS), HS_SHOW_PROJECT_OPEN_PANEL,
 		 	'O', B_SHIFT_KEY, be_app,
 		 	B_TRANSLATE("Opens a project from the disk.") },
 		{ B_TRANSLATE("Save project"), HS_SAVE_PROJECT,
 			'S', B_SHIFT_KEY, this,
 			B_TRANSLATE("Saves the project to the disk with the current name.") },
-		{ B_TRANSLATE("Save project as…"), HS_SHOW_PROJECT_SAVE_PANEL,
+		{ B_TRANSLATE("Save project as" B_UTF8_ELLIPSIS), HS_SHOW_PROJECT_SAVE_PANEL,
 			0, 0, this,
 			B_TRANSLATE("Saves the project to the disk.") },
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" }	// separator
@@ -1115,14 +1115,14 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",ROTATION_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
 		a_message, 'R', 0, this,
 		B_TRANSLATE("Starts rotating the active layer.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSLATION_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
 		a_message, 'T', 0, this,
 		B_TRANSLATE("Starts moving the active layer.")));
 
@@ -1150,7 +1150,7 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSPARENCY_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Change transparency…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Change transparency" B_UTF8_ELLIPSIS),
 		a_message, 0, 0, this,
 		B_TRANSLATE("Starts changing the transparency of active layer.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear layer"),
@@ -1162,7 +1162,7 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TEXT_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Insert text…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Insert text" B_UTF8_ELLIPSIS),
 		a_message, 'I', 0, this,
 		B_TRANSLATE("Inserts text into the active layer. Same as the text tool.")));
 	menu->AddSeparatorItem();
@@ -1181,7 +1181,7 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",ROTATION_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
 		a_message, 'R', B_SHIFT_KEY, this,
 		B_TRANSLATE("Starts rotating all layers.")));
 
@@ -1202,7 +1202,7 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSLATION_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
 		a_message, 'T', B_SHIFT_KEY, this,
 		B_TRANSLATE("Starts moving all layers.")));
 
@@ -1223,14 +1223,14 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",CROP_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Crop…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS),
 		a_message, 'C', B_CONTROL_KEY, this,
 		B_TRANSLATE("Starts cropping the image.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",SCALE_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale…"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
 		a_message, 'S', B_CONTROL_KEY, this,
 		B_TRANSLATE("Starts scaling the image.")));
 
@@ -1337,8 +1337,8 @@ PaintWindow::openMenuBar()
 	menu->AddSeparatorItem();
 //	menu->AddItem(new PaintWindowMenuItem(_StringForId(NEW_PAINT_WINDOW_STRING),new BMessage(HS_NEW_PAINT_WINDOW),'N',0,this,_StringForId(NEW_PROJECT_HELP_STRING)));
 //	menu->AddSeparatorItem();
-//	menu->AddItem(new BMenuItem("Window settings…", new BMessage(HS_SHOW_VIEW_SETUP_WINDOW)));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Settings…"),
+//	menu->AddItem(new BMenuItem(B_TRANSLATE("Window settings" B_UTF8_ELLIPSIS), new BMessage(HS_SHOW_VIEW_SETUP_WINDOW)));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), 0, 0, this,
 		B_TRANSLATE("Brings up the settings window.")));
 
@@ -1357,7 +1357,7 @@ PaintWindow::openMenuBar()
 	BMessage* message =  new BMessage(HS_SHOW_USER_DOCUMENTATION);
 	message->AddString("document", "index.html");
 
-	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("User manual…"),
+	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("User manual" B_UTF8_ELLIPSIS),
 		message, 0, 0, this,
 		B_TRANSLATE("Opens the main documentation for ArtPaint."));
 	item->SetTarget(be_app);
@@ -1365,7 +1365,7 @@ PaintWindow::openMenuBar()
 
 	message = new BMessage(HS_SHOW_USER_DOCUMENTATION);
 	message->AddString("document", "shortcuts.html");
-	item = new PaintWindowMenuItem(B_TRANSLATE("Shortcuts…"),
+	item = new PaintWindowMenuItem(B_TRANSLATE("Shortcuts" B_UTF8_ELLIPSIS),
 		message, 0, 0, this,
 		B_TRANSLATE("Opens a page that describes ArtPaint's keyboard shortcuts."));
 	item->SetTarget(be_app);
@@ -1506,7 +1506,7 @@ PaintWindow::AddImageView()
 
 	fMenubar->FindItem(B_TRANSLATE("Add-ons"))->Submenu()->SetTargetForItems(fImageView);
 	fMenubar->FindItem(HS_ADD_LAYER_FRONT)->SetTarget(fImageView);
-	fMenubar->FindItem(B_TRANSLATE("Crop…"))->SetTarget(fImageView);
+	fMenubar->FindItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS))->SetTarget(fImageView);
 	fMenubar->FindItem(HS_CLEAR_CANVAS)->SetTarget(fImageView);
 	fMenubar->FindItem(HS_CLEAR_LAYER)->SetTarget(fImageView);
 	fMenubar->FindItem(HS_ZOOM_IMAGE_IN)->SetTarget(fImageView);
@@ -2075,8 +2075,8 @@ PaintWindow::_ChangeMenuMode(menu_modes newMode)
 			// In this case most of the items should be disabled.
 			_DisableMenuItem(B_TRANSLATE("Canvas"));
 			_DisableMenuItem(B_TRANSLATE("Layer"));
-			_DisableMenuItem(B_TRANSLATE("Save image as…"));
-			_DisableMenuItem(B_TRANSLATE("Save project as…"));
+			_DisableMenuItem(B_TRANSLATE("Save image as" B_UTF8_ELLIPSIS));
+			_DisableMenuItem(B_TRANSLATE("Save project as" B_UTF8_ELLIPSIS));
 			_DisableMenuItem(B_TRANSLATE("Edit"));
 			_DisableMenuItem(B_TRANSLATE("Add-ons"));
 		}	// fall through

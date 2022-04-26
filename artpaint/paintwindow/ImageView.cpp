@@ -825,7 +825,8 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 
 			if (transit == B_ENTERED_VIEW) {
 				help_view_message.what = HS_TEMPORARY_HELP_MESSAGE;
-				help_view_message.AddString("message","Drop layer to copy it to this image.");
+				help_view_message.AddString("message",
+					B_TRANSLATE("Drop layer to copy it to this image."));
 				Window()->PostMessage(&help_view_message,Window());
 			}
 			else if (transit == B_EXITED_VIEW) {
@@ -870,7 +871,7 @@ ImageView::Quit()
 			BString text;
 			text.SetToFormat(format, project_name, project_changed);
 
-			BAlert* alert = new BAlert("Unsaved Changes!", text,
+			BAlert* alert = new BAlert(B_TRANSLATE("Unsaved changes!"), text,
 				B_TRANSLATE("Cancel"),
 				B_TRANSLATE("Don't save"),
 				B_TRANSLATE("Save"), B_WIDTH_AS_USUAL,

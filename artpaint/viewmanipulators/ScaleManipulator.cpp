@@ -415,7 +415,7 @@ ScaleManipulator::ReturnHelpString()
 const char*
 ScaleManipulator::ReturnName()
 {
-	return B_TRANSLATE("Scale…");
+	return B_TRANSLATE("Scale" B_UTF8_ELLIPSIS);
 }
 
 
@@ -443,14 +443,14 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 		.Add(width_control, 0, 0)
 		.Add(_MakeButton("x2", MULTIPLY_WIDTH, 2.0), 1, 0)
 		.Add(_MakeButton("/2", MULTIPLY_WIDTH, 0.5), 2, 0)
-		.Add(new BButton("Restore", new BMessage(RESTORE_WIDTH)), 3, 0)
+		.Add(new BButton(B_TRANSLATE("Restore"), new BMessage(RESTORE_WIDTH)), 3, 0)
 		.Add(height_control, 0, 2)
 		.Add(_MakeButton("x2", MULTIPLY_HEIGHT, 2.0), 1, 2)
 		.Add(_MakeButton("/2", MULTIPLY_HEIGHT, 0.5), 2, 2)
-		.Add(new BButton("Restore", new BMessage(RESTORE_HEIGHT)), 3, 2)
+		.Add(new BButton(B_TRANSLATE("Restore"), new BMessage(RESTORE_HEIGHT)), 3, 2)
 	);
 
-	BCheckBox* proportion_box = new BCheckBox("Lock",
+	BCheckBox* proportion_box = new BCheckBox(B_TRANSLATE_COMMENT("Lock", "Keep the aspect ratio"),
 		new BMessage(PROPORTION_CHANGED));
 	proportion_box->SetValue(B_CONTROL_ON);
 	AddChild(proportion_box);

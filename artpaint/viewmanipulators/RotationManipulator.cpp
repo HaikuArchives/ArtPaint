@@ -611,7 +611,7 @@ RotationManipulator::ReturnHelpString()
 const char*
 RotationManipulator::ReturnName()
 {
-	return B_TRANSLATE("Rotate…");
+	return B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS);
 }
 
 

@@ -13,6 +13,7 @@
 #include "MessageConstants.h"
 
 
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <Bitmap.h>
@@ -29,6 +30,9 @@
 
 
 #define PI M_PI
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FreeTransformManipulator"
 
 
 FreeTransformManipulator::FreeTransformManipulator(BBitmap *bm)
@@ -193,6 +197,18 @@ void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 			copy_of_the_preview_bitmap->BitsLength());
 		memcpy(target, source, bitslength);
 	}
+}
+
+
+const char* FreeTransformManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Click on the image to rotate, move or stretch it.");
+}
+
+
+const char* FreeTransformManipulator::ReturnName()
+{
+	return B_TRANSLATE("Free 2D transform");
 }
 
 

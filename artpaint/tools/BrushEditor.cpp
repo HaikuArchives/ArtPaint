@@ -76,9 +76,9 @@ BrushEditor::BrushEditor(Brush* brush)
 	fStoreBrush = new BButton(B_TRANSLATE("Store brush"),
 		new BMessage(kBrushStoreRequest));
 
-	fResetBrush = new BButton("Reset Brush",new BMessage(kBrushResetRequest));
+	fResetBrush = new BButton(B_TRANSLATE("Reset Brush"),new BMessage(kBrushResetRequest));
 	fResetBrush->SetEnabled(false);
-	fResetBrush->SetToolTip("Not implemented yet.");
+	fResetBrush->SetToolTip(B_TRANSLATE("Not implemented yet."));
 
 	message = new BMessage(kBrushWidthChanged);
 	message->AddInt32("value", int32(fBrushInfo.width));

@@ -96,5 +96,5 @@ BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap *original,Selection*,BSta
 
 const char* VertFlipManipulator::ReturnName()
 {
-	return B_TRANSLATE("Flip Vertically");
+	return B_TRANSLATE("Flip vertically");
 }
