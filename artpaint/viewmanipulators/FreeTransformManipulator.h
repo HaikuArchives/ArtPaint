@@ -104,8 +104,8 @@ BView*			MakeConfigurationView(const BMessenger& target);
 void			Reset(Selection*);
 void			SetPreviewBitmap(BBitmap*);
 
-const char*		ReturnHelpString() { return "Click on the image to rotate, move or stretch it."; }
-const char*		ReturnName() { return "Free 2D Transform"; }
+const char*		ReturnHelpString();
+const char*		ReturnName();
 
 
 ManipulatorSettings*	ReturnSettings();

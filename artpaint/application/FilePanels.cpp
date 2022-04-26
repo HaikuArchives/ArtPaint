@@ -67,7 +67,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 
 		if (cancelButton) {
 			BButton* settingsButton = new BButton(cancelButton->Frame(),
-				"settings button", B_TRANSLATE("Settings…"),
+				"settings button", B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
 				new BMessage(HS_SHOW_DATATYPE_SETTINGS), B_FOLLOW_RIGHT |
 				B_FOLLOW_BOTTOM);
 			root->AddChild(settingsButton);
@@ -82,9 +82,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 
 		// this menu sends a message to the window that requested saving
 		// and tells it if the user changed the format to save the target
-
-		// TODO: translation
-		BPopUpMenu* formatMenu = new BPopUpMenu("Choose format");
+		BPopUpMenu* formatMenu = new BPopUpMenu(B_TRANSLATE("Choose format"));
 		BMessage message(HS_SAVE_FORMAT_CHANGED);
 		BTranslationUtils::AddTranslationItems(formatMenu, B_TRANSLATOR_BITMAP,
 			&message, NULL, NULL, NULL);

@@ -108,10 +108,10 @@ DatatypeSetupWindow::_ChangeHandler(translator_id translatorId)
 	int32 version;
 	const char* name;
 	const char* info;
-	BString windowTitle("Datatype setup: ");	// TODO: translation
+	BString windowTitle(B_TRANSLATE("Datatype setup: %name%"));
 	if (roster->GetTranslatorInfo(translatorId, &name, &info,&version) == B_OK)
-		windowTitle.Append(name);
+		windowTitle.ReplaceFirst("%name%", name);
 	else
-		windowTitle.Append("No translator.");
+		windowTitle.ReplaceFirst("%name%", B_TRANSLATE("No data translator"));
 	fDatatypeSetupWindow->SetTitle(windowTitle.String());
 }

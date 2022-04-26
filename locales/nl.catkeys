@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	4115818462
+1	English	application/x-vnd.artpaint	3922203743
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Voegt tekst toe in de actieve laag. Gelijk aan de tekst werktuig.
 Cancel	Windows		Annuleren
 Enable antialiasing	Manipulators		Inschakelen anti-aliasing
@@ -15,10 +15,10 @@ Cursor	Windows		Cursor
 Brush window	Windows		Penseel venster
 Crop…	PaintWindow		Bijsnijden…
 Fade	Tools		Intensiteit
+Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Kruiscursor
 Merge with front layer	Image		Samenvoegeen met voorlaag
 Alpha	Tools		Alpha
-Language	Windows		Taal
 Special thanks	Windows		Speciale dank
 Inverts the selction so that selected becomes non-selected and vice versa.	PaintWindow		Keert de selectie om zodat geselecteerd niet-geselecteerd wordt en vice versa.
 Rectangle tool	Tools		Rechthoek werktuig
@@ -28,13 +28,14 @@ Clear selection	PaintWindow		Verwijder selectie
 Add layer	PaintWindow		Laag toevoegen
 Selector tool	Tools		Selectie werktuig
 Rotation	Manipulators		Draaiing
+Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Klik om een penseelkleur te selecteren.
 Paste as a new layer	PaintWindow		Plak als nieuwe laag
 Show tool window	PaintWindow		Toon selectievenster werktuigen
 OK	PaintApplication		OK
 Redos the action that was last undone.	PaintWindow		Voert de actie opnieuw uit die het laatst ongedaan is gemaakt.
-Save color set	ColorPalette		Kleurset opslaan
 Cancel	ImageView		Annuleren
+Save color set	ColorPalette		Kleurset opslaan
 Untitled	PaintWindow		Ongetiteld
 Discard changes	Windows		Veranderingen ongedaan maken
 Miscellaneous	Windows		Diversen
@@ -63,6 +64,7 @@ Sets the zoom level to 25%.	PaintWindow		Stelt het zoomniveau in op 25%.
 Zoom out	PaintWindow		Zoom uit
 Save image	PaintWindow		Afbeelding opslaan
 Brush tool	Tools		Penseel werktuig
+Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Opnieuw uitvoeren
 Shear	Manipulators		Neiging
 Font	Manipulators		Font
@@ -78,10 +80,12 @@ Resize to fit	PaintWindow		Optimale venstergrootte
 Fill rectangle	Tools		Vul rechthoek
 Text tool	Manipulators		Tekst werktuig
 Color model	ColorPalette		Kleur mode
+File structure corrupted	ColorPalette		File structure corrupted
 Undo not available	PaintWindow		Ongedaan maken niet beschikbaar
 Finishing	ImageView		Afronden
 Confirm quitting	Windows		Bevestig afsluiten
 Scale…	Manipulators		Schalen…
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Merge with back layer	Image		Samenvoegen met achterlaag
 Save project	PaintWindow		Project opslaan
 Use the handles or number-fields to set the new borders.	Manipulators		Gebruik de handvatten of nummervelden om de nieuwe randen in te stellen.
@@ -89,12 +93,13 @@ Spray	Tools		Verstuif
 Color variance	Tools		Kleurvariatie
 None	Tools		Geen
 Clears all layers.	PaintWindow		Alle lagen verwijderen.
+Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Zoom in	PaintWindow		Zoom in
 Brings up the tool setup window.	PaintWindow		Opent het instellingsvenster werktuigen.
 Rotate +90°	PaintWindow		Draai +90°
 Saves the project to the disk.	PaintWindow		Project opslaan naar de schijf.
-Scale…	PaintWindow		Schalen…
 Red	Tools		Rood
+Scale…	PaintWindow		Schalen…
 Opens the main documentation for ArtPaint.	PaintWindow		Opent de hoofddocumentatie voor ArtPaint.
 Rotate…	Manipulators		Draaien…
 Starts changing the transparency of active layer.	PaintWindow		Start transparantie aanpassingen van de actieve laag.
@@ -112,7 +117,6 @@ Adjustable width	Tools		Breedte instelbaar
 Pastes clipboard as a new project.	PaintWindow		Plak klembord als nieuw project.
 Show layer window	PaintWindow		Toon lagenvenster
 Redo not available	PaintWindow		Opnieuw uitvoeren niet mogelijk
-Changes take effect after restarting the program.	Windows		Aanpassingen gaan in na het herstarten van het programma.
 Unlimited	Windows		Onbegrensd
 Opaque	Manipulators		Ondoorzichtig
 Apply changes	Windows		Aanpassingen toepassen
@@ -122,14 +126,15 @@ Close	PaintWindow		Sluiten
 Translate…	PaintWindow		Vertaal…
 Insert text…	PaintWindow		Tekst invoegen…
 Text tool	Tools		Tekst werktuig
+Reset Brush	Tools		Reset Brush
 Starts scaling the image.	PaintWindow		Start het schalen van de afbeelding.
 Open project…	PaintWindow		Open project…
-Store brush	Tools		Penseel opslaan
 Green	Tools		Groen
+Store brush	Tools		Penseel opslaan
 Edit	PaintWindow		Bewerken
 Color amount	Tools		Aantal kleuren
-Copies the image to the clipboard.	PaintWindow		Kopiëert de afbeelding naar het klembord.
 Save image	FilePanels		Afbeelding opslaan
+Copies the image to the clipboard.	PaintWindow		Kopiëert de afbeelding naar het klembord.
 Brings up the layer window.	PaintWindow		Opent het venster lagen.
 Shrink selection	ImageView		Krimp selectie
 Freehand line	Tools		Vrije lijn
@@ -144,28 +149,33 @@ Starts moving all layers.	PaintWindow		Start verplaatsen alle lagen.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Instellen raster op 2 bij 2 pixels.
 Brings up the palette window.	PaintWindow		Opent het venster paletten.
 Background	Tools		Achtergrond
+Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Canvas verwijderen
+OK	ColorPalette		OK
 Merge with back layer	LayerView		Samenvoegen met achterlaag
 Magic wand	Tools		Toverstaf
 Show palette window	PaintWindow		Toon paletvenster
 Little	Tools		Weinig
 Flips all layers horizontally.	PaintWindow		Draait alle actieve lagen horizontaal.
+Free 2D transform	FreeTransformManipulator		Free 2D transform
 Copy	PaintWindow		Kopiëren
 Enable preview	Tools		Inschakelen voorbeeld
 Undos the previous action.	PaintWindow		Maakt vorig actie ongedaan.
 Starts cropping the image.	PaintWindow		Start bijsnijden van de afbeelding.
 Rotate -90°	Manipulators		Draai -90°
 Standard sizes	PaintWindow		Standaard groottes
+Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Opties
 Clear canvas	Image		Canvas verwijderen
 All layers	PaintWindow		Alle lagen
 Sets the zoom level to 800%.	PaintWindow		Stelt het zoomniveau in op 800%.
+No data translator	Windows		No data translator
 Starts rotating the active layer.	PaintWindow		Start het draaien van de actieve laag.
 Layer %ld / %ld	ImageView		Laag %ld / %ld
 Show tool setup window	PaintWindow		Toon instellingsvenster werktuigen
 Select the canvas size you want.	PaintWindow		Selecteer de canvas grootte die je wil.
-Active layer	PaintWindow		Actieve laag
 Open image…	PaintApplication		Open afbeelding…
+Active layer	PaintWindow		Actieve laag
 Effects window	Windows		Effecten venster
 Zooms into the image.	PaintWindow		Zoomt in op de afbeelding.
 Blue	Tools		Blauw
@@ -192,12 +202,13 @@ Copies the active layer to the clipboard.	PaintWindow		Kopiëert de actieve laag
 Shortcuts…	PaintWindow		Sneltoetsen…
 Layer window	Windows		Laag venster
 Translate…	Manipulators		Vertaal…
+Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Verwijder huidige set
 Merge with front layer	LayerView		Samenvoegeen met voorlaag
 Closes the current window.	PaintWindow		Sluit het huidige venster.
 Duplicate layer	LayerView		Laag dupliceren
-Shrink selection	PaintWindow		Krimp selectie
 %s: You have made %d changes since the last time the project was saved. Do you want to save the changes?	ImageView		%s: Je hebt %d aanpassingen gedaan sinds de laatste keer het project was opgeslagen. Wil je deze aanpassingen opslaan?
+Shrink selection	PaintWindow		Krimp selectie
 Zooms out from the image.	PaintWindow		Zoomt uit op de afbeelding.
 Clear selection	ImageView		Verwijder selectie
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
@@ -207,14 +218,17 @@ Height	Manipulators		Hoogte
 Transparent	Tools		Transparant
 Click here to open color panel.	StatusView		Klik hier om het kleurpaneel te openen.
 Starts moving the active layer.	PaintWindow		Start verplaatsen actieve laag.
+Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Recente projecten
+Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Width	PaintWindow		Breedte
 Clear layer	PaintWindow		Verwijder laag
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Het bestandstype %file% is niet ondersteund. Je kan een vertaler installeren indien mogelijk.
 Rectangle	Tools		Rechthoek
+Restore	Manipulators		Restore
 Keep in front	Windows		Op de voorgrond houden
+OK	Image		OK
 Opens an image from the disk.	PaintWindow		Opent een afbeelding van de schijf.
-Flip Vertically	Manipulators		Draai verticaal
 Off	PaintWindow		Uit
 Opens a page that describes ArtPaint's keyboard shortcuts.	PaintWindow		Opent een pagina die de toetsenbord sneltoetsen toont van ArtPaint.
 Ellipse tool	Tools		Ovaal werktuig
@@ -232,7 +246,9 @@ Save	ImageView		Opslaan
 Layer	PaintWindow		Laag
 Empty paint window	PaintWindow		Leeg verfvenster
 No options	Windows		Geen opties
+Flip vertically	Manipulators		Draai verticaal
 Tool cursor	Windows		Werktuig cursor
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Intelligent scissors	Tools		Intelligente scharen
 Rotating	Manipulators		Draaien
 Grows the selection a little bit in every direction.	PaintWindow		Groeit de selectie een beetje in elke richting.
@@ -263,6 +279,7 @@ German localization	Windows		Duitse vertaling
 Settings…	PaintWindow		Instellingen…
 Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparantie werktuig
+Choose format	FilePanels		Choose format
 Cancel	FilePanels		Annuleren
 Flip horizontally	PaintWindow		Draai horizontaal
 Mode	Tools		Modus
@@ -285,8 +302,10 @@ Wand tolerance	Tools		Staf tolerantie
 Invert selection	ImageView		Selectie omkeren
 Help	PaintWindow		Help
 Much	Tools		Veel
+Not implemented yet.	Tools		Not implemented yet.
 Change the transparency with the slider.	Manipulators		Verander de transparantie met de schuifregelaar.
 Top	Manipulators		Boven
+Unsaved changes!	ImageView		Unsaved changes!
 Programming & Design	Windows		Programmering & Ontwerp
 Tool selection window	Windows		Werktuig selectievenster
 About ArtPaint	Windows		Over ArtPaint
@@ -302,6 +321,7 @@ Sets the zoom level to 50%.	PaintWindow		Stelt het zoomniveau in op 50%.
 New project…	PaintWindow		Nieuw project…
 Height	PaintWindow		Hoogte
 Drag the image to correct position.	Manipulators		Sleep de afbeelding naar de juiste positie.
+Lock	Manipulators	Keep the aspect ratio	Lock
 Right	Manipulators		Rechts
 Flow	Tools		Vloeien
 Add area	Tools		Zone toevoegen

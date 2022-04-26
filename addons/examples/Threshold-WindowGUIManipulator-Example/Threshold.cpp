@@ -9,15 +9,18 @@
 #include "AddOnTypes.h"
 #include "Threshold.h"
 
-
+#include <Catalog.h>
 #include <Slider.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Threshold"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Threshold…";
-	char menu_help_string[255] = "Starts thresholding the image.";
+	char name[255] = B_TRANSLATE_MARK("Threshold" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Starts thresholding the image.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 
@@ -342,12 +345,12 @@ void ThresholdManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* ThresholdManipulator::ReturnName()
 {
-	return "Threshold";
+	return B_TRANSLATE("Threshold");
 }
 
 const char* ThresholdManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the thresholding value.";
+	return B_TRANSLATE("Use the slider to set the thresholding value.");
 }
 
 
@@ -363,7 +366,7 @@ ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator *manip,
 	started_adjusting = FALSE;
 
 	threshold_slider = new BSlider(BRect(0,0,200,0), "threshold_slider",
-		"Threshold", new BMessage(THRESHOLD_ADJUSTING_FINISHED), 0, 255,
+		B_TRANSLATE("Threshold"), new BMessage(THRESHOLD_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	threshold_slider->SetModificationMessage(new BMessage(THRESHOLD_ADJUSTED));
 	threshold_slider->ResizeToPreferred();

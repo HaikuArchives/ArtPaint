@@ -217,7 +217,8 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 			}
 		}
 		else {
-			(new BAlert("","Cannot delete the only set.","OK"))->Go();
+			(new BAlert("", B_TRANSLATE("Cannot delete the only color set."),
+			B_TRANSLATE("OK")))->Go();
 		}
 		break;
 
@@ -276,7 +277,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				B_FILE_NODE, true, &message);
 		}
 		char string[256];
-		sprintf(string,"ArtPaint: %s",B_TRANSLATE("Open color set…"));
+		sprintf(string,"ArtPaint: %s",B_TRANSLATE("Open color set" B_UTF8_ELLIPSIS));
 		open_panel->Window()->SetTitle(string);
 		set_filepanel_strings(open_panel);
 		open_panel->Show();
@@ -591,7 +592,7 @@ void ColorPaletteWindow::openMenuBar()
 	}
 
 	menu->AddItem(new BSeparatorItem());
-	menu_item  = new BMenuItem(B_TRANSLATE("Open color set…"),
+	menu_item  = new BMenuItem(B_TRANSLATE("Open color set" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_PALETTE_OPEN_PANEL));
 	menu_item->SetTarget(this);
 	menu->AddItem(menu_item);
@@ -663,21 +664,22 @@ void ColorPaletteWindow::handlePaletteLoad(BMessage *message)
 				// list of palettes
 				if ((bytes_read = file.Read(file_type,strlen(HS_PALETTE_ID_STRING))) < 0) {
 					// here some error reading file has happened
-					(new BAlert("","Error reading file","OK"))->Go();
+					(new BAlert("",B_TRANSLATE("Error reading file"),B_TRANSLATE("OK")))->Go();
 				}
 				else {
 					// the read was succesfull, terminate the id string and compare
 					file_type[bytes_read] = '\0';
 					if (strcmp(file_type,HS_PALETTE_ID_STRING) != 0) {
 						// this was not a palette file
-						(new BAlert("","Not a palette file","OK"))->Go();
+						(new BAlert("",B_TRANSLATE("Not a color set file"),B_TRANSLATE("OK")))->Go();
 					}
 					else {
 						// this was palette file, read the rest of it
 						int32 palette_size;
 						if ((bytes_read = file.Read(&palette_size,sizeof(int32))) != sizeof(int32)) {
 							// here some error reading file has happened
-							(new BAlert("","File structure corrupted","OK"))->Go();
+							(new BAlert("",B_TRANSLATE("File structure corrupted"),
+								B_TRANSLATE("OK")))->Go();
 						}
 						else {
 							// create the palette and read the palette colors
@@ -724,7 +726,8 @@ void ColorPaletteWindow::handlePaletteSave(BMessage *message)
 		if ( message->FindRef("directory", i, &ref) == B_OK ) {
 			BFile file;
 			BDirectory directory = BDirectory(&ref);
-			if ( file.SetTo(&directory,message->FindString("name",i), B_READ_WRITE | B_CREATE_FILE | B_ERASE_FILE) == B_OK ) {
+			if ( file.SetTo(&directory,message->FindString("name",i),
+				B_READ_WRITE | B_CREATE_FILE | B_ERASE_FILE) == B_OK ) {
 				// here we write the current color-set to file
 				// first set the file's type and other metadata
 				// get the applications signature
@@ -737,7 +740,7 @@ void ColorPaletteWindow::handlePaletteSave(BMessage *message)
 
 				if (file.Write(HS_PALETTE_ID_STRING,strlen(HS_PALETTE_ID_STRING)) < 0) {
 					// error happened
-					(new BAlert("","Cannot write to file","OK"))->Go();
+					(new BAlert("",B_TRANSLATE("Cannot write to file"),B_TRANSLATE("OK")))->Go();
 				}
 				else {
 					// write the rest of the file

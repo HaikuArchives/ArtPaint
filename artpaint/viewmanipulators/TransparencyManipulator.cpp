@@ -167,7 +167,7 @@ TransparencyManipulator::ReturnHelpString()
 const char*
 TransparencyManipulator::ReturnName()
 {
-	return B_TRANSLATE("Change transparency…");
+	return B_TRANSLATE("Change transparency" B_UTF8_ELLIPSIS);
 }
 
 

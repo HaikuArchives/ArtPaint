@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	4115818462
+1	English	application/x-vnd.artpaint	3922203743
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Lisää tekstiä aktiiviseen kerrokseen. Sama kuin tekstityökalu
 Cancel	Windows		Peruuta
 Enable antialiasing	Manipulators		Pehmennä reunat
@@ -15,10 +15,10 @@ Cursor	Windows		Kohdistin
 Brush window	Windows		Siveltimet ikkuna
 Crop…	PaintWindow		Rajaa…
 Fade	Tools		Häivytä
+Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Hiusristikko kohdistin
 Merge with front layer	Image		Yhdistä ylempään kerrokseen
 Alpha	Tools		Alfa
-Language	Windows		Kieli
 Special thanks	Windows		Erityiskiitokset tukijoillemme
 Inverts the selction so that selected becomes non-selected and vice versa.	PaintWindow		Invertoi valinnan siten, että valitusta tulee ei-valittua ja päinvastoin.
 Rectangle tool	Tools		Suorakaidetyökalu
@@ -28,13 +28,14 @@ Clear selection	PaintWindow		Poista valinta
 Add layer	PaintWindow		Lisää kerros
 Selector tool	Tools		Valintatyökalu
 Rotation	Manipulators		Kierto
+Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Valitse harjan väri napsauttamalla.
 Paste as a new layer	PaintWindow		Liimaa uutena kerroksena
 Show tool window	PaintWindow		Näytä työkalunvalintaikkuna
 OK	PaintApplication		OK
 Redos the action that was last undone.	PaintWindow		Tekee uudellee edellisen perutun tapahtuman.
-Save color set	ColorPalette		Tallenna paletti…
 Cancel	ImageView		Peruuta
+Save color set	ColorPalette		Tallenna paletti…
 Untitled	PaintWindow		Nimetön
 Discard changes	Windows		Hylkää muutokset
 Miscellaneous	Windows		Muut
@@ -63,6 +64,7 @@ Sets the zoom level to 25%.	PaintWindow		Asettaa suurennustasoksi 25%.
 Zoom out	PaintWindow		Zoomaa ulos
 Save image	PaintWindow		Tallenna kuva
 Brush tool	Tools		Sivellintyökalu
+Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Tee uudelleen
 Shear	Manipulators		Shear
 Font	Manipulators		Kirjasin
@@ -78,10 +80,12 @@ Resize to fit	PaintWindow		Sovita ikkunan koko
 Fill rectangle	Tools		Täytä suorakaide
 Text tool	Manipulators		Tekstityökalu
 Color model	ColorPalette		Color model
+File structure corrupted	ColorPalette		File structure corrupted
 Undo not available	PaintWindow		Ei voi perua
 Finishing	ImageView		Viimeistelee
 Confirm quitting	Windows		Vahvista ohjelman sulkeminen
 Scale…	Manipulators		Skaalaa…
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Merge with back layer	Image		Yhdistä alempaan kerrokseen
 Save project	PaintWindow		Tallenna projekti
 Use the handles or number-fields to set the new borders.	Manipulators		Säädä uusia reunoja kahvoilla tai numerokentillä.
@@ -89,12 +93,13 @@ Spray	Tools		Spray
 Color variance	Tools		Värin satunnaisuus
 None	Tools		Ei lainkaan
 Clears all layers.	PaintWindow		Tyhjentää kuvan taustavärillä.
+Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Zoom in	PaintWindow		Zoomaa sisään
 Brings up the tool setup window.	PaintWindow		Tuo esille työkalunasetusikkunan.
 Rotate +90°	PaintWindow		Kierrä myötäpäivään
 Saves the project to the disk.	PaintWindow		Tallentaa projektin levylle uudella nimellä.
-Scale…	PaintWindow		Skaalaa…
 Red	Tools		Punainen
+Scale…	PaintWindow		Skaalaa…
 Opens the main documentation for ArtPaint.	PaintWindow		Avaa WebPositivella ArtPaintin ohjeet.
 Rotate…	Manipulators		Kierrä…
 Starts changing the transparency of active layer.	PaintWindow		Aloittaa aktiivisen kerroksen läpinäkyvyyden säätämisen.
@@ -112,7 +117,6 @@ Adjustable width	Tools		Säädettävä leveys
 Pastes clipboard as a new project.	PaintWindow		Luo leikepöydän sisällöstä uuden projektin.
 Show layer window	PaintWindow		Näytä kerrosikkuna
 Redo not available	PaintWindow		Ei voi tehdä uudelleen
-Changes take effect after restarting the program.	Windows		Muutokset tulevat voimaan seuraavan kerran, kun ohjelma käynnistyy.
 Unlimited	Windows		Rajoittamaton
 Opaque	Manipulators		Läpinäkymätön
 Apply changes	Windows		Toteuta muutokset
@@ -122,14 +126,15 @@ Close	PaintWindow		Sulje
 Translate…	PaintWindow		Liikuta…
 Insert text…	PaintWindow		Lisää tekstiä…
 Text tool	Tools		Tekstityökalu
+Reset Brush	Tools		Reset Brush
 Starts scaling the image.	PaintWindow		Aloittaa kuvan skaalauksen.
 Open project…	PaintWindow		Avaa projekti…
-Store brush	Tools		Talleta sivellin
 Green	Tools		Vihreägr
+Store brush	Tools		Talleta sivellin
 Edit	PaintWindow		Muokkaa
 Color amount	Tools		Värin määrä
-Copies the image to the clipboard.	PaintWindow		Kopioi kuvan leikepöydälle.
 Save image	FilePanels		Tallenna kuva
+Copies the image to the clipboard.	PaintWindow		Kopioi kuvan leikepöydälle.
 Brings up the layer window.	PaintWindow		Tuo esille kerrosikkunan.
 Shrink selection	ImageView		Kutista valintaa
 Freehand line	Tools		Vapaa viiva
@@ -144,28 +149,33 @@ Starts moving all layers.	PaintWindow		Aloittaa kuvan liikuttamisen.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Asettaa ruudukon 2*2 pikselin kokoiseksi.
 Brings up the palette window.	PaintWindow		Tuo esille paletti-ikkunan.
 Background	Tools		Tausta
+Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Tyhjennä kuva
+OK	ColorPalette		OK
 Merge with back layer	LayerView		Yhdistä alempaan kerrokseen
 Magic wand	Tools		Taikasauva
 Show palette window	PaintWindow		Näytä paletti-ikkuna
 Little	Tools		Vähän
 Flips all layers horizontally.	PaintWindow		Peilaa kuvan vaakasuunnassa.
+Free 2D transform	FreeTransformManipulator		Free 2D transform
 Copy	PaintWindow		Kopioi
 Enable preview	Tools		Näytä preview
 Undos the previous action.	PaintWindow		Peruu edellisen toiminnon.
 Starts cropping the image.	PaintWindow		Aloitaa kuvan rajaamisen.
 Rotate -90°	Manipulators		Kierrä vastapäivään
 Standard sizes	PaintWindow		Vakiokoosta
+Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Valinnat
 Clear canvas	Image		Tyhjennä kuva
 All layers	PaintWindow		Kaikki kerrokset
 Sets the zoom level to 800%.	PaintWindow		Asettaa suurennustasoksi 800%.
+No data translator	Windows		No data translator
 Starts rotating the active layer.	PaintWindow		Aloittaa aktiivisen kerroksen kiertämisen.
 Layer %ld / %ld	ImageView		Kerros %ld / %ld
 Show tool setup window	PaintWindow		Näytä työkalunasetusikkuna
 Select the canvas size you want.	PaintWindow		Valitse haluamasi piirtoalustan koko.
-Active layer	PaintWindow		Aktiivinen kerros
 Open image…	PaintApplication		Avaa kuva…
+Active layer	PaintWindow		Aktiivinen kerros
 Effects window	Windows		Tehosteet ikkuna
 Zooms into the image.	PaintWindow		Zoomaa kuvaan.
 Blue	Tools		Sininen
@@ -192,12 +202,13 @@ Copies the active layer to the clipboard.	PaintWindow		Kopioi aktiivisen kerroks
 Shortcuts…	PaintWindow		Oikotiet…
 Layer window	Windows		Kerros ikkuna
 Translate…	Manipulators		Liikuta…
+Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Tuhoa nykyinen paletti
 Merge with front layer	LayerView		Yhdistä ylempään kerrokseen
 Closes the current window.	PaintWindow		Sulkee aktiivisen ikkunan.
 Duplicate layer	LayerView		Kopioi kerros
-Shrink selection	PaintWindow		Kutista valintaa
 %s: You have made %d changes since the last time the project was saved. Do you want to save the changes?	ImageView		%s: Et ole tehnyt %d muutoksia projektin viimeisen varmuuskopioinnin jälkeen. Haluatko tallentaa nämä muutokset?
+Shrink selection	PaintWindow		Kutista valintaa
 Zooms out from the image.	PaintWindow		Zoomaa ulos kuvasta.
 Clear selection	ImageView		Poista valinta
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
@@ -207,14 +218,17 @@ Height	Manipulators		Korkeus
 Transparent	Tools		Läpinäkyvä
 Click here to open color panel.	StatusView		Klikkaa tässä avataksesi väri-ikkunan.
 Starts moving the active layer.	PaintWindow		Aloittaa aktiivisen kerroksen liikuttamisen.
+Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Viimeisimmät projektit
+Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Width	PaintWindow		Leveys
 Clear layer	PaintWindow		Tyhjennä kerros
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		%file%-tiedoston tyyppiä ei tueta. Yritä asentaa kääntäjä, jos se on mahdollista.
 Rectangle	Tools		Suorakaide
+Restore	Manipulators		Restore
 Keep in front	Windows		Pidä edessä
+OK	Image		OK
 Opens an image from the disk.	PaintWindow		Avaa kuvan levyltä.
-Flip Vertically	Manipulators		Peilaa pystysuunnassa
 Off	PaintWindow		Pois päältä
 Opens a page that describes ArtPaint's keyboard shortcuts.	PaintWindow		Avaa WebPositivella sivun, jossa kuvataan ArtPaintin näppäimistöoikotiet.
 Ellipse tool	Tools		Ellipsityökalu
@@ -232,7 +246,9 @@ Save	ImageView		Tallenna
 Layer	PaintWindow		Kerros
 Empty paint window	PaintWindow		Tyhjä maali ikkuna
 No options	Windows		Ei optioita
+Flip vertically	Manipulators		Peilaa pystysuunnassa
 Tool cursor	Windows		Työkalut kohdistin
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Intelligent scissors	Tools		Älykkäät sakset
 Rotating	Manipulators		Kiertää
 Grows the selection a little bit in every direction.	PaintWindow		Kasvattaa valintaa hieman joka suuntaan.
@@ -263,6 +279,7 @@ German localization	Windows		Lokalisointi saksa
 Settings…	PaintWindow		Asetukset…
 Canvas	PaintWindow		Kuva
 Transparency tool	Tools		Läpinäkyvyystyökalu
+Choose format	FilePanels		Choose format
 Cancel	FilePanels		Peruuta
 Flip horizontally	PaintWindow		Peilaa vaakasuunnasa
 Mode	Tools		Moodi
@@ -285,8 +302,10 @@ Wand tolerance	Tools		Sauvan toleranssi
 Invert selection	ImageView		Invertoi valinta
 Help	PaintWindow		Apua
 Much	Tools		Paljon
+Not implemented yet.	Tools		Not implemented yet.
 Change the transparency with the slider.	Manipulators		Muuta läpinäkyvyyttä liukusäätimellä.
 Top	Manipulators		Ylä
+Unsaved changes!	ImageView		Unsaved changes!
 Programming & Design	Windows		Ohjelmointi ja rakenne
 Tool selection window	Windows		Työkalun valitsimen ikkuna
 About ArtPaint	Windows		Tietoa ArtPaint
@@ -302,9 +321,9 @@ Sets the zoom level to 50%.	PaintWindow		Asettaa suurennustasoksi 50%.
 New project…	PaintWindow		Uusi projekti…
 Height	PaintWindow		Kork
 Drag the image to correct position.	Manipulators		Siirrä kuva haluamaasi kohtaan.
+Lock	Manipulators	Keep the aspect ratio	Lock
 Right	Manipulators		Oikea
 Flow	Tools		Virtaus
 Add area	Tools		Lisää alue
 Eraser	Tools		Pyyhekumi
 Recent images	PaintWindow		Viimeisimmät kuvat
-

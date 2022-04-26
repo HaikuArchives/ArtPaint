@@ -392,14 +392,15 @@ void UndoQueue::SetMenuItems(BMenuItem *undo_item,BMenuItem *redo_item)
 }
 
 
-
 void UndoQueue::HandleLowMemorySituation()
 {
-	BAlert *memory_alert = new BAlert("memory_alert","The undo-mechanism has run out of memory. "
-	"The depth of undo will be limited so that the most recent events can be kept in memory. "
-	"It is advisable to save your work at this point to avoid any loss of data in case the "
-	"memory runs out completely. You may also want to adjust the undo-depth in the settings-window. "
-	"I am very sorry about this inconvenience." ,"Not OK",NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
+	BAlert *memory_alert = new BAlert("memory_alert", B_TRANSLATE(
+		"The undo-mechanism has run out of memory.\n"
+		"The depth of undo will be limited so that the most recent events can be kept in memory. "
+		"It is advisable to save your work at this point to avoid any loss of data in case the "
+		"memory runs out completely.\n"
+		"You may also want to adjust the undo-depth in the settings-window."),
+		B_TRANSLATE("Bummer"), NULL, NULL, B_WIDTH_AS_USUAL,B_WARNING_ALERT);
 	memory_alert->Go();
 
 	// We may have to delete either redo-events or undo-events. Currently this function is called
@@ -416,7 +417,6 @@ void UndoQueue::HandleLowMemorySituation()
 		current_queue_depth--;
 	}
 }
-
 
 
 void

@@ -342,7 +342,7 @@ CropManipulator::MakeConfigurationView(const BMessenger& target)
 const char*
 CropManipulator::ReturnName()
 {
-	return B_TRANSLATE("Crop…");
+	return B_TRANSLATE("Crop" B_UTF8_ELLIPSIS);
 }
 
 

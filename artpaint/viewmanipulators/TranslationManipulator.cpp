@@ -456,7 +456,7 @@ TranslationManipulator::SetValues(float x, float y)
 const char*
 TranslationManipulator::ReturnName()
 {
-	return B_TRANSLATE("Translate…");
+	return B_TRANSLATE("Translate" B_UTF8_ELLIPSIS);
 }
 
 

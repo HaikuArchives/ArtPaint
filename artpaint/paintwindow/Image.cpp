@@ -595,7 +595,9 @@ bool Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 		// The UI actually prevents this from ever happening.
 		// But lets keep this just in case there is something wrong with the UI.
 		BAlert *an_alert;
-		an_alert = new BAlert("","Cannot delete the only layer. Create another picture to get a fresh start.","OK");
+		an_alert = new BAlert("",B_TRANSLATE(
+			"Cannot delete the only layer. Create another picture to get a fresh start."),
+			B_TRANSLATE("OK"));
 		an_alert->Go();
 		return FALSE;
 	}
