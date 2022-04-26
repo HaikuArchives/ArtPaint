@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Window.h>
 
 #include "AddOns.h"
@@ -15,11 +16,16 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Halftone"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Halftone";
-	char menu_help_string[255] = "Makes a halftone-pattern of the image with foreground and background colors.";
+	char name[255] = B_TRANSLATE_MARK("Halftone");
+	char menu_help_string[255] =
+		B_TRANSLATE_MARK("Makes a halftone-pattern of the image with foreground and background colors.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = GENERIC_ADD_ON;
 #ifdef __cplusplus
@@ -184,7 +190,7 @@ BBitmap* Halftone::ManipulateBitmap(BBitmap *original,Selection *selection,BStat
 
 const char* Halftone::ReturnName()
 {
-	return "Halftone";
+	return B_TRANSLATE_MARK("Halftone");
 }
 
 

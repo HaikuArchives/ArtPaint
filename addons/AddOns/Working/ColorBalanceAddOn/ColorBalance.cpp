@@ -12,15 +12,19 @@
 #include "Selection.h"
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Slider.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_ColorBalance"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Color balance…";
-	char menu_help_string[255] = "Adjusts the color balance.";
+	char name[255] = B_TRANSLATE_MARK("Color balance" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjusts the color balance.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -226,6 +230,15 @@ void ColorBalanceManipulator::SetPreviewBitmap(BBitmap *bm)
 	}
 }
 
+const char*	ColorBalanceManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Use the sliders to adjust the color balance.");
+}
+
+const char*	ColorBalanceManipulator::ReturnName()
+{
+	return B_TRANSLATE("Color balance");
+}
 
 void ColorBalanceManipulator::Reset(Selection*)
 {
@@ -279,7 +292,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	red_slider = new BSlider("red_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	red_slider->SetLimitLabels("Less","More");
+	red_slider->SetLimitLabels(B_TRANSLATE("Less"), B_TRANSLATE("More"));
 	red_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	red_slider->SetHashMarkCount(11);
 	red_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
@@ -293,7 +306,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	green_slider = new BSlider("green_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	green_slider->SetLimitLabels("Less","More");
+	red_slider->SetLimitLabels(B_TRANSLATE("Less"), B_TRANSLATE("More"));
 	green_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	green_slider->SetHashMarkCount(11);
 	green_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
@@ -307,7 +320,7 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(BRect rect,
 	blue_slider = new BSlider("blue_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blue_slider->SetLimitLabels("Less","More");
+	red_slider->SetLimitLabels(B_TRANSLATE("Less"), B_TRANSLATE("More"));
 	blue_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	blue_slider->SetHashMarkCount(11);
 	blue_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));

@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Node.h>
 #include <StatusBar.h>
 #include <stdlib.h>
@@ -18,12 +19,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_PolarMapper"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Polar mapper";
-	char menu_help_string[255] = "Maps image to its polar coordinate representation.";
+	char name[255] = B_TRANSLATE_MARK("Polar mapper");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Maps image to its polar coordinate representation.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -129,4 +133,10 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 	delete spare_buffer;
 
 	return original;
+}
+
+
+const char*	PolarMapper::ReturnName()
+{
+	return B_TRANSLATE("Polar mapper");
 }

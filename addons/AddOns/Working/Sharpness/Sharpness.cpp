@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Slider.h>
 #include <StatusBar.h>
@@ -20,12 +21,15 @@
 #include "ImageProcessingLibrary.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Sharpness"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Sharpness…";
-	char menu_help_string[255] = "Adjust the sharpness.";
+	char name[255] = B_TRANSLATE_MARK("Sharpness" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjust the sharpness.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -391,12 +395,12 @@ void SharpnessManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* SharpnessManipulator::ReturnName()
 {
-	return "Sharpness";
+	return B_TRANSLATE("Sharpness");
 }
 
 const char* SharpnessManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the image sharpness.";
+	return B_TRANSLATE("Use the slider to set the image sharpness.");
 }
 
 
@@ -412,17 +416,17 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator *manip,
 	started_adjusting = FALSE;
 
 	sharpness_slider = new BSlider("sharpness_slider",
-		"Sharpness:", new BMessage(SHARPNESS_ADJUSTING_FINISHED), 0, 255,
+		B_TRANSLATE("Sharpness:"), new BMessage(SHARPNESS_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	sharpness_slider->SetModificationMessage(new BMessage(SHARPNESS_ADJUSTED));
-	sharpness_slider->SetLimitLabels("Blurred","Sharp");
+	sharpness_slider->SetLimitLabels(B_TRANSLATE("Blurred"), B_TRANSLATE("Sharp"));
 	sharpness_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	sharpness_slider->SetHashMarkCount(11);
 
 	blur_size_slider = new BSlider("blur_size_slider",
-		"Effect strength:", new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
+		B_TRANSLATE("Effect strength:"), new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
-	blur_size_slider->SetLimitLabels("Low","High");
+	blur_size_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	blur_size_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	blur_size_slider->SetHashMarkCount(11);
 

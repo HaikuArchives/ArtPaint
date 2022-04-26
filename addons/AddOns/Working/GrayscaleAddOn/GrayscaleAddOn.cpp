@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -16,11 +17,15 @@
 #include "GrayscaleAddOn.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Grayscale"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Grayscale";
-	char menu_help_string[255] = "Converts the active layer to grayscale.";
+	char name[255] = B_TRANSLATE_MARK("Grayscale");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Converts the active layer to grayscale.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -104,4 +109,10 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap *original,Selection
 		}
 	}
 	return original;
+}
+
+
+const char*	GrayscaleAddOnManipulator::ReturnName()
+{
+	return B_TRANSLATE("Grayscale");
 }

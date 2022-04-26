@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <Slider.h>
 #include <StatusBar.h>
@@ -18,12 +19,15 @@
 #include "Saturation.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Saturation"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Saturation…";
-	char menu_help_string[255] = "Adjust color saturation.";
+	char name[255] = B_TRANSLATE_MARK("Saturation" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjust color saturation.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -400,12 +404,12 @@ void SaturationManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* SaturationManipulator::ReturnName()
 {
-	return "Saturation";
+	return B_TRANSLATE("Saturation");
 }
 
 const char* SaturationManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the image saturation.";
+	return B_TRANSLATE("Use the slider to set the image saturation.");
 }
 
 
@@ -421,10 +425,10 @@ SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *mani
 	started_adjusting = FALSE;
 
 	saturation_slider = new BSlider("saturation_slider",
-		"Saturation:", new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255,
+		B_TRANSLATE("Saturation:"), new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	saturation_slider->SetModificationMessage(new BMessage(SATURATION_ADJUSTED));
-	saturation_slider->SetLimitLabels("Low","High");
+	saturation_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	saturation_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	saturation_slider->SetHashMarkCount(11);
 

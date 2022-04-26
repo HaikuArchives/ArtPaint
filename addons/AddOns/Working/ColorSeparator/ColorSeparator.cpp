@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
 #include <LayoutBuilder.h>
@@ -24,11 +25,16 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_ColorSeparator"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Color separator…";
-	char menu_help_string[255] = "Extracts the Cyan, Magenta, Yellow or Key/Black components for printing.";
+	char name[255] = B_TRANSLATE_MARK("Color separator" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] =
+		B_TRANSLATE_MARK("Extracts the Cyan, Magenta, Yellow or Key/Black components for printing.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -207,12 +213,12 @@ void ColorSeparatorManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* ColorSeparatorManipulator::ReturnName()
 {
-	return "Color separator";
+	return B_TRANSLATE("Color separator");
 }
 
 const char* ColorSeparatorManipulator::ReturnHelpString()
 {
-	return "Use the slider to set the image saturation.";
+	return B_TRANSLATE("Use the slider to set the image saturation.");
 }
 
 
@@ -231,22 +237,22 @@ ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(ColorSeparatorManip
 	BMessage *message;
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_CYAN);
-	cmyk_menu->AddItem(new BMenuItem("Cyan",message));
+	cmyk_menu->AddItem(new BMenuItem(B_TRANSLATE("Cyan"), message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_MAGENTA);
-	cmyk_menu->AddItem(new BMenuItem("Magenta",message));
+	cmyk_menu->AddItem(new BMenuItem(B_TRANSLATE("Magenta"), message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_YELLOW);
-	cmyk_menu->AddItem(new BMenuItem("Yellow",message));
+	cmyk_menu->AddItem(new BMenuItem(B_TRANSLATE("Yellow"), message));
 
 	message = new BMessage(MENU_ENTRY_CHANGED);
 	message->AddInt32("value",SHOW_BLACK);
-	cmyk_menu->AddItem(new BMenuItem("blacK",message));
+	cmyk_menu->AddItem(new BMenuItem(B_TRANSLATE("blacK"), message));
 
 	cmyk_menu_field = new BMenuField(
-		"cmyk_menu_field","Select C-M-Y-K:",cmyk_menu);
+		"cmyk_menu_field", B_TRANSLATE("Select C-M-Y-K:") ,cmyk_menu);
 	cmyk_menu->ItemAt(settings.mode)->SetMarked(true);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL)

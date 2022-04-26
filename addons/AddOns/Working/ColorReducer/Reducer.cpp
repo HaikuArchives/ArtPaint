@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <ClassInfo.h>
 #include <LayoutBuilder.h>
 #include <Menu.h>
@@ -27,11 +28,16 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_ColorReducer"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Reducer…";
-	char menu_help_string[255] = "Reduces the number of used colors to a specified maximum.";
+	char name[255] = B_TRANSLATE_MARK("Reducer" B_UTF8_ELLIPSIS);
+	char menu_help_string[255]
+		= B_TRANSLATE_MARK("Reduces the number of used colors to a specified maximum.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -193,12 +199,12 @@ void ReducerManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* ReducerManipulator::ReturnName()
 {
-	return "Reducer";
+	return B_TRANSLATE("Reducer");
 }
 
 const char* ReducerManipulator::ReturnHelpString()
 {
-	return "Change the parameters of color reduction.";
+	return B_TRANSLATE("Change the parameters of color reduction.");
 }
 
 
@@ -280,22 +286,22 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	BMessage *message;
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",NO_DITHER);
-	dither_menu->AddItem(new BMenuItem("No dithering",message));
+	dither_menu->AddItem(new BMenuItem(B_TRANSLATE("No dithering"), message));
 
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",FLOYD_STEINBERG_EDD_DITHER);
-	dither_menu->AddItem(new BMenuItem("Floyd-Steinberg EDD",message));
+	dither_menu->AddItem(new BMenuItem(B_TRANSLATE("Floyd-Steinberg EDD"), message));
 
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",PRESERVE_SOLIDS_DITHER);
-	dither_menu->AddItem(new BMenuItem("Preserve solids FS",message));
+	dither_menu->AddItem(new BMenuItem(B_TRANSLATE("Preserve solids FS"), message));
 
 	message = new BMessage(DITHER_MODE_CHANGED);
 	message->AddInt32("dither_mode",N_CANDIDATE_DITHER);
-	dither_menu->AddItem(new BMenuItem("N-Candidate",message));
+	dither_menu->AddItem(new BMenuItem(B_TRANSLATE("N-Candidate"), message));
 
 	dither_mode_menu_field = new BMenuField(
-		"dither_mode_menu_field", "Dither mode:", dither_menu);
+		"dither_mode_menu_field", B_TRANSLATE("Dither mode:"), dither_menu);
 
 	BMenu *size_menu = new BPopUpMenu("SELECT");	// TODO: Find how initialized...
 
@@ -331,25 +337,27 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	message->AddInt32("palette_size",256);
 	size_menu->AddItem(new BMenuItem("256",message));
 
-	palette_size_menu_field = new BMenuField("palette_size_menu_field", "Palette size:", size_menu);
+	palette_size_menu_field = new BMenuField("palette_size_menu_field",
+		B_TRANSLATE("Palette size:"), size_menu);
 
 	BMenu *mode_menu = new BPopUpMenu("SELECT");
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",BEOS_PALETTE);
-	mode_menu->AddItem(new BMenuItem("BeOS palette",message));
+	mode_menu->AddItem(new BMenuItem(B_TRANSLATE("BeOS palette") ,message));
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",GLA_PALETTE);
-	mode_menu->AddItem(new BMenuItem("GLA palette",message));
+	mode_menu->AddItem(new BMenuItem(B_TRANSLATE("GLA palette") ,message));
 
-	palette_mode_menu_field = new BMenuField("palette_mode_menu_field", "Palette mode:", mode_menu);
+	palette_mode_menu_field = new BMenuField("palette_mode_menu_field",
+		B_TRANSLATE("Palette mode:"), mode_menu);
 
 	dither_menu->ItemAt(settings.dither_mode)->SetMarked(true);
 	size_menu->ItemAt(size_menu->CountItems()-1)->SetMarked(true);	// slight hack...
 	mode_menu->ItemAt(settings.palette_mode)->SetMarked(true);
 	
-	busy = new BStringView("busy", "Reducing in progress");
+	busy = new BStringView("busy", B_TRANSLATE("Reducing in progress"));
 	busy->SetHighColor(128, 0, 0);
 	busy->SetViewColor(ViewColor());
 	busy->Hide();

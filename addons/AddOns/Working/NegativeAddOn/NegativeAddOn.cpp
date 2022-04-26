@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Message.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -16,11 +17,15 @@
 #include "ManipulatorInformer.h"
 #include "Selection.h"
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Negative"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Negative";
-	char menu_help_string[255] = "Makes a negative of the active layer.";
+	char name[255] = B_TRANSLATE_MARK("Negative");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Makes a negative of the active layer.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -93,4 +98,10 @@ BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap *original, Selection
 		}
 	}
 	return original;
+}
+
+
+const char*	NegativeAddOnManipulator::ReturnName()
+{
+	return B_TRANSLATE("Negative");
 }

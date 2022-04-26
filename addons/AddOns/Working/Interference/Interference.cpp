@@ -7,6 +7,7 @@
  *
  */
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <math.h>
 #include <StatusBar.h>
 #include <StopWatch.h>
@@ -20,12 +21,15 @@
 
 #define PI M_PI
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Interference"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = "Interference…";
-	char menu_help_string[255] = "Creates an interference-pattern.";
+	char name[255] = B_TRANSLATE_MARK("Interference" B_UTF8_ELLIPSIS);
+	char menu_help_string[255] = B_TRANSLATE_MARK("Creates an interference-pattern.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = DISTORT_ADD_ON;
 #ifdef __cplusplus
@@ -202,6 +206,18 @@ void InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 		}
 
 	}
+}
+
+
+const char*	InterferenceManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Click on the image to move the wave centers and adjust wave-lengths.");
+}
+
+
+const char*	InterferenceManipulator::ReturnName()
+{
+	return B_TRANSLATE("Interference");
 }
 
 

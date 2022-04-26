@@ -113,8 +113,8 @@ void		Reset(Selection*);
 void		SetPreviewBitmap(BBitmap*);
 
 
-const char*	ReturnHelpString() { return "Use the slider to adjust blur amount."; }
-const char*	ReturnName() { return "Blur"; }
+const char*	ReturnHelpString();
+const char*	ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
