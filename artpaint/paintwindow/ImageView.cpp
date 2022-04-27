@@ -392,7 +392,7 @@ void ImageView::MessageReceived(BMessage *message)
 
 		// This comes from layer's view and tells us to delete the layer.
 		case HS_DELETE_LAYER:
-			{
+			if (!PostponeMessageAndFinishManipulator()) {
 				Layer *removed_layer;
 				int32 removed_layer_id;
 				message->FindInt32("layer_id",&removed_layer_id);
@@ -403,8 +403,8 @@ void ImageView::MessageReceived(BMessage *message)
 				}
 				LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
 				Invalidate();
-				break;
 			}
+			break;
 
 		// This comes from layer's view and tells us to merge that layer with the one
 		// that is on top of it. If no layer is on top of it nothing should be done.

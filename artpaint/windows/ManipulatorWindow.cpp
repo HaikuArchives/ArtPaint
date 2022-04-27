@@ -35,12 +35,12 @@ sem_id ManipulatorWindow::sfWindowListMutex = create_sem(1, "list_mutex");
 
 ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 		BWindow* master, const BMessenger& target)
-	: BWindow(rect, name, B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+	: BWindow(rect, name, B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
 		B_NOT_ZOOMABLE | B_NOT_ANCHORED_ON_ACTIVATE | B_NOT_CLOSABLE
 		| B_AUTO_UPDATE_SIZE_LIMITS)
 	, fManipulatorView(view)
 {
-	window_feel feel = B_NORMAL_WINDOW_FEEL;
+	window_feel feel = B_FLOATING_APP_WINDOW_FEEL;
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
