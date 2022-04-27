@@ -50,6 +50,7 @@ InterferenceManipulator::InterferenceManipulator(BBitmap *bm)
 	livePreview = false;
 	copy_of_the_preview_bitmap = NULL;
 	preview_bitmap = NULL;
+	config_view = NULL;
 
 	SetPreviewBitmap(bm);
 
