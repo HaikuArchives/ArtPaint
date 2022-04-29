@@ -377,9 +377,11 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		fSpray = new BRadioButton(B_TRANSLATE("Spray"),
 			message);
 
-		message->ReplaceInt32("value", HS_AIRBRUSH_MODE);
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", MODE_OPTION);
+		message->AddInt32("value", HS_AIRBRUSH_MODE);
 		fAirBrush = new BRadioButton(B_TRANSLATE("Airbrush"),
-			new BMessage(*message));
+			message);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBrushSize);
 		BGridLayout* flowLayout = LayoutSliderGrid(fBrushFlow);
