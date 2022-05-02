@@ -186,6 +186,12 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 }
 
 
+const char* EmbossManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Creates an emboss effect.");
+}
+
+
 const char*	EmbossManipulator::ReturnName()
 {
 	return B_TRANSLATE("Emboss");

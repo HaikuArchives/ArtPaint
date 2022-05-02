@@ -188,6 +188,13 @@ BBitmap* Halftone::ManipulateBitmap(BBitmap *original,Selection *selection,BStat
 //	return ncandidate_dither_halftone(original,selection,status_bar);
 }
 
+
+const char* Halftone::ReturnHelpString()
+{
+	return B_TRANSLATE("Makes a halftone-pattern of the image with foreground and background colors.");
+}
+
+
 const char* Halftone::ReturnName()
 {
 	return B_TRANSLATE_MARK("Halftone");

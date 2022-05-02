@@ -149,7 +149,14 @@ BBitmap* ContrastManipulator::ManipulateBitmap(BBitmap *original, Selection *sel
 	return original;
 }
 
+
+const char* ContrastManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Improves the contrast by stretching its histogram.");
+}
+
+
 const char*	ContrastManipulator::ReturnName()
 {
-	return B_TRANSLATE("Stretch Histogram");
+	return B_TRANSLATE("Stretch histogram");
 }

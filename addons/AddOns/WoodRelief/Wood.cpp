@@ -87,11 +87,17 @@ BBitmap* WoodManipulator::ManipulateBitmap(BBitmap *original,Selection *selectio
 	return original;
 }
 
+
+const char* WoodManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Puts a wood-like texture over the image.");
+}
+
+
 const char* WoodManipulator::ReturnName()
 {
 	return B_TRANSLATE("Wood");
 }
-
 
 
 int32 WoodManipulator::thread_entry(void *data)

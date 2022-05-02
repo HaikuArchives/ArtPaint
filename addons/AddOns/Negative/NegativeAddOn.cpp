@@ -101,6 +101,12 @@ BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap *original, Selection
 }
 
 
+const char* NegativeAddOnManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Makes a negative of the active layer.");
+}
+
+
 const char*	NegativeAddOnManipulator::ReturnName()
 {
 	return B_TRANSLATE("Negative");

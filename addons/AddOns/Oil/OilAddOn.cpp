@@ -178,6 +178,12 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 }
 
 
+const char* OilManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Creates an \"oil\" effect.");
+}
+
+
 const char*	OilManipulator::ReturnName()
 {
 	return B_TRANSLATE("Oil");

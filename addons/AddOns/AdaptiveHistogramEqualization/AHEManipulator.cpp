@@ -66,6 +66,12 @@ BBitmap* AHEManipulator::ManipulateBitmap(BBitmap *original, Selection *selectio
 }
 
 
+const char* AHEManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Improves the contrast by equalizing its histogram locally.");
+}
+
+
 const char* AHEManipulator::ReturnName()
 {
 	return B_TRANSLATE("Adaptive Histogram Equalization");

@@ -89,11 +89,17 @@ BBitmap* MarbleManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	return original;
 }
 
+
+const char* MarbleManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Puts a marble-like texture over the image.");
+}
+
+
 const char* MarbleManipulator::ReturnName()
 {
 	return B_TRANSLATE("Marble");
 }
-
 
 
 int32 MarbleManipulator::thread_entry(void *data)
