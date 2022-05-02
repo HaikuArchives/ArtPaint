@@ -112,6 +112,12 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap *original,Selection
 }
 
 
+const char* GrayscaleAddOnManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Converts the active layer to grayscale.");
+}
+
+
 const char*	GrayscaleAddOnManipulator::ReturnName()
 {
 	return B_TRANSLATE("Grayscale");

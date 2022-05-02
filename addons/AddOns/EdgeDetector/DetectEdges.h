@@ -26,6 +26,7 @@ public:
 			~DetectEdgesManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+const char*	ReturnHelpString();
 const char*	ReturnName();
 };
 #endif

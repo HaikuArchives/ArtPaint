@@ -108,6 +108,11 @@ BBitmap* DispersionManipulator::ManipulateBitmap(BBitmap *original,Selection *se
 	return original;
 }
 
+const char* DispersionManipulator::ReturnHelpString()
+{
+	return B_TRANSLATE("Randomly moves pixels a bit.");
+}
+
 const char*	DispersionManipulator::ReturnName()
 {
 	return B_TRANSLATE("Dispersion");
