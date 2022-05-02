@@ -35,7 +35,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	char name[255] = B_TRANSLATE_MARK("Reducer" B_UTF8_ELLIPSIS);
+	char name[255] = B_TRANSLATE_MARK("Color reducer" B_UTF8_ELLIPSIS);
 	char menu_help_string[255]
 		= B_TRANSLATE_MARK("Reduces the number of used colors to a specified maximum.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
@@ -199,7 +199,7 @@ void ReducerManipulator::ChangeSettings(ManipulatorSettings *s)
 
 const char* ReducerManipulator::ReturnName()
 {
-	return B_TRANSLATE("Reducer");
+	return B_TRANSLATE("Color reducer");
 }
 
 const char* ReducerManipulator::ReturnHelpString()

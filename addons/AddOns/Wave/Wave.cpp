@@ -978,14 +978,14 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	preview_started = FALSE;
 
 	wave_length_slider = new BSlider("wave_length_slider",
-		B_TRANSLATE("Wave length:"), new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
+		B_TRANSLATE("Wavelength:"), new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
 		MAX_WAVE_LENGTH, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	wave_length_slider->SetLimitLabels(B_TRANSLATE("Short"), B_TRANSLATE("Long"));
 	wave_length_slider->SetModificationMessage(new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
 	wave_length_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	wave_length_slider->SetHashMarkCount(11);
 
-	wave_amount_slider = new BSlider("wave_amount_slider", B_TRANSLATE("Wave strength:"),
+	wave_amount_slider = new BSlider("wave_amount_slider", B_TRANSLATE("Strength:"),
 		new BMessage(WAVE_AMOUNT_CHANGED), MIN_WAVE_AMOUNT, MAX_WAVE_AMOUNT,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	wave_amount_slider->SetLimitLabels(B_TRANSLATE("Mild"), B_TRANSLATE("Strong"));
