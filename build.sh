@@ -13,7 +13,7 @@ done
 
 echo "Moving final executable, addons, and Documentation into dist folder"
 mkdir -p dist/add-ons
-cp -af objects_artpaint/ArtPaint dist
+mv -f objects_artpaint/ArtPaint dist
 cp -rf addons/AddOns/*/objects_addons/*.so dist/add-ons
 cp -arf Documentation dist/Documentation
 
