@@ -28,6 +28,7 @@ public:
 								PaintApplication();
 	virtual						~PaintApplication();
 
+			void				AboutRequested();
 	virtual	void				ReadyToRun();
 	virtual	bool				QuitRequested();
 	virtual	void				RefsReceived(BMessage* message);

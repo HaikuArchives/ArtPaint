@@ -12,7 +12,6 @@
 
 #include "PaintWindow.h"
 
-#include "AboutWindow.h"
 #include "BackgroundView.h"
 #include "BrushStoreWindow.h"
 #include "ColorPalette.h"
@@ -85,7 +84,6 @@ int32 PaintWindow::sgUntitledWindowNumber = 1;
 #define	HS_SHOW_VIEW_SETUP_WINDOW		'SvsW'
 #define HS_SHOW_GLOBAL_SETUP_WINDOW		'SgsW'
 #define	HS_RECENT_IMAGE_SIZE			'Rsis'
-#define	HS_SHOW_ABOUT_WINDOW			'Sabw'
 
 
 struct menu_item {
@@ -838,10 +836,6 @@ PaintWindow::MessageReceived(BMessage *message)
 			SetHelpString(helpMessage.String(), message->what);
 		}	break;
 
-		case HS_SHOW_ABOUT_WINDOW: {
-			AboutWindow::showWindow();
-		}	break;
-
 		default: {
 			BWindow::MessageReceived(message);
 		}	break;
@@ -1369,11 +1363,11 @@ PaintWindow::openMenuBar()
 
 	menu->AddSeparatorItem();
 
-	message = new BMessage(HS_SHOW_ABOUT_WINDOW);
 	item = new PaintWindowMenuItem(B_TRANSLATE("About ArtPaint"),
 		message, 0, 0, this,
 		B_TRANSLATE("Opens a window with information about ArtPaint."));
 	menu->AddItem(item);
+	item->SetTarget(be_app);
 
 	_ChangeMenuMode(NO_IMAGE_MENU);
 

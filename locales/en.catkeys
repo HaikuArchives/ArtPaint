@@ -19,6 +19,7 @@ Cursor	Windows		Cursor
 Crop…	PaintWindow		Crop…
 Fade	Tools		Fade
 Bummer	UndoQueue		Bummer
+ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.
 Cross-hair cursor	Windows		Cross-hair cursor
 Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
@@ -46,11 +47,9 @@ Bottom	Manipulators		Bottom
 Settings…	FilePanels		Settings…
 Press the mouse-button to draw an ellipse.	Tools		Press the mouse-button to draw an ellipse.
 Save	FilePanels		Save
-Thanks for inspiring articles	Windows		Thanks for inspiring articles
-Open	FilePanels		Open
 Undo	UndoQueue		Undo
+Open	FilePanels		Open
 Tolerance	Tools		Tolerance
-English documentation	Windows		English documentation
 Width	Manipulators		Width
 Rotate -90°	PaintWindow		Rotate -90°
 Save project as…	PaintWindow		Save project as…
@@ -264,7 +263,6 @@ Press the mouse-button to paint with a hairy brush.	Tools		Press the mouse-butto
 Color selector	Tools		Color selector
 Off	Windows		Off
 Tools	Windows		Tools
-Release date: %s	Windows		Release date: %s
 Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
 Use the tool by pressing the mouse-button.	Tools		Use the tool by pressing the mouse-button.
