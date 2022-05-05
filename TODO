@@ -1,9 +1,0 @@
-TODO by stargater 2008
-- fix some missing #include | finish
-- add the new build engine  | finish
-- add addons jamfiles		| fixed the BeOS and plain makefile!
-- fix sh scripts            | finish
-- add new tool icons
-- cleaning the painttools
-- fixed painttools (we have 3 tools he did the same = freeline,pencil, hardline)
-- ... 
