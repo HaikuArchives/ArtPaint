@@ -34,6 +34,7 @@
 #include "UndoQueue.h"
 
 
+#include <AboutWindow.h>
 #include <Alert.h>
 #include <Bitmap.h>
 #include <BitmapStream.h>
@@ -104,6 +105,32 @@ PaintApplication::~PaintApplication()
 	ResourceServer::DestroyServer();
 	SettingsServer::DestroyServer();
 	ManipulatorServer::DestroyServer();
+}
+
+
+void
+PaintApplication::AboutRequested()
+{
+	const char* authors[] = {
+		"Heikki Suhonen",
+		"Augustin Cavalier",
+		"CodeforEvolution",
+		"Dale Cieslak",
+		"Humdinger",
+		"Jérôme Duval",
+		"Pete Goodeve",
+		"Puck Meerburg",
+		"julun",
+		"stargater",
+		NULL
+	};
+	BAboutWindow* aboutW = new BAboutWindow("ArtPaint", "application/x-vnd.artpaint");
+	aboutW->AddDescription(B_TRANSLATE(
+		"ArtPaint is a painting and image-processing program for Haiku.\n"
+		"See the tutorial in the manual to get started.")),
+	aboutW->AddCopyright(2003, "Heikki Suhonen");
+	aboutW->AddAuthors(authors);
+	aboutW->Show();
 }
 
 

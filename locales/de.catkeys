@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3922203743
+1	English	application/x-vnd.artpaint	2056026566
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Fügt Text in die aktive Ebene ein. Hat dieselbe Funktion wie das Text-Werkzeug.
 Cancel	Windows		Abbrechen
 Enable antialiasing	Manipulators		Anti-Aliasing
@@ -16,10 +16,10 @@ Brush window	Windows		Stiftauswahl
 Crop…	PaintWindow		Zuschneiden…
 Fade	Tools		Intensität
 Bummer	UndoQueue		Mist
+ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für Haiku.\nIm Handbuch befindet sich eine kurze Einleitung.
 Cross-hair cursor	Windows		nur Fadenkreuz
 Merge with front layer	Image		Mit vorderer Ebene vereinigen
 Alpha	Tools		Alpha
-Special thanks	Windows		Besonderen Dank an
 Inverts the selction so that selected becomes non-selected and vice versa.	PaintWindow		Invertiert die Auswahl.
 Rectangle tool	Tools		Rechteck
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Für den gewünschten Effekt steht nicht genügen Speicher zur Verfügung. Andere Bilder sollten geschlossen werden, um es dann nochmals zu versuchen. Es kann auch helfen die Puffer-Tiefe zu reduzieren oder den Puffer ganz abzuschalten. Ebenso kann das Schliessen anderer eventuell laufender Applikationen den freien Speicher erhöhen.  Das Bild sollte nun auch gespeichert werden, da Speichermangel dazu führen kann, dass es später schwierig oder unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!
@@ -42,11 +42,9 @@ Miscellaneous	Windows		Verschiedenes
 Bottom	Manipulators		Unten
 Settings…	FilePanels		Einstellungen…
 Save	FilePanels		Speichern
-Thanks for inspiring articles	Windows		Danke auch den interessanten Artikeln von
-Open	FilePanels		Öffnen
 Undo	UndoQueue		Rückgängig
+Open	FilePanels		Öffnen
 Tolerance	Tools		Toleranz
-English documentation	Windows		Englische Dokumentation
 Width	Manipulators		Breite
 Rotate -90°	PaintWindow		Drehen -90°
 Save project as…	PaintWindow		Projekt speichern als…
@@ -181,7 +179,6 @@ Zooms into the image.	PaintWindow		Bilddarstellung vergrößern.
 Blue	Tools		Blau
 Window	PaintWindow		Fenster
 Open image…	PaintWindow		Bild öffnen…
-French localization	Windows		Französiche Übersetzung
 Rotates all layers 90° counter-clockwise.	PaintWindow		Drehen alle Ebenen 90° gegen den Uhrzeigersinn
 Invert selection	PaintWindow		Auswahl invertieren
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Der freie Speicher reicht leider nicht zum Hinzufügen einer weiteren Ebene. Speicher kann durch Ausschalten der Puffer-Option freigegeben werden oder indem andere offene Bilder geschlossen werden. Das Bild sollte nun auch gespeichert werden, da Speichermangel dazu führen kann, dass es später schwierig oder unmöglich wird, dies zu tun. Wir bitten diese Unannehmlichkeit zu entschuldigen!
@@ -223,8 +220,8 @@ Recent projects	PaintWindow		Zuletzt geöffnete Projekte
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Zum Rotieren, Bewegen oder Dehnen ins Bild klicken.
 Width	PaintWindow		Breite
 Clear layer	PaintWindow		Ebene löschen
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Die Datei %file% hat ein nicht unterstützes Format. Wenn möglich sollten ein Translator dafür installiert werden.
 Rectangle	Tools		Rechteck
+The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Die Datei %file% hat ein nicht unterstützes Format. Wenn möglich sollten ein Translator dafür installiert werden.
 Restore	Manipulators		Reset
 Keep in front	Windows		Fenster immer im Vordergrund
 OK	Image		OK
@@ -238,7 +235,6 @@ Delete layer	Image		Ebene entfernen
 Hairy brush	Tools		Pinsel
 Color selector	Tools		Farbselektion
 Off	Windows		Aus
-Release date: %s	Windows		Veröffentlicht am: %s
 Visible	LayerView		Sichtbar
 Grow selection	ImageView		Auswahl vergrößern
 Colors	ColorPalette		Farben
@@ -275,7 +271,6 @@ Add layer	Image		Ebene hinzufügen
 Enable gradient	Tools		Farbverlauf
 Quits the whole program.	PaintWindow		Beendet das Programm.
 Pastes previously copied layer from the clipboard as a new layer.	PaintWindow		Fügt eine kürzlich in die Zwischenablage kopierte Ebene als neue Ebene ein.
-German localization	Windows		Deutsche Übersetzung
 Settings…	PaintWindow		Einstellungen…
 Canvas	PaintWindow		Bild
 Transparency tool	Tools		Transparenz
@@ -306,16 +301,13 @@ Not implemented yet.	Tools		Noch nicht implementiert.
 Change the transparency with the slider.	Manipulators		Gewünschte Transparenz einstellen.
 Top	Manipulators		Oben
 Unsaved changes!	ImageView		Ungespeicherte Änderungen!
-Programming & Design	Windows		Programmierung & Design
 Tool selection window	Windows		Werkzeugauswahl
-About ArtPaint	Windows		Über ArtPaint…
 Layers	LayerWindow		Ebenen
 Flips the active layer vertically.	PaintWindow		Spiegelt die aktive Ebene vertikal.
 Mag	MagnificationView		Zoom
 Sets the zoom level to 200%.	PaintWindow		Setzt die Zoom-Stufe auf 200%.
 Undo not available	UndoQueue		Rückgängig nicht verfügbar
 Starts rotating all layers.	PaintWindow		Dreht alle Ebenen.
-ArtPaint is a painting and image-processing program for Haiku. It can be used for a wide variety of purposes ranging from web-graphics to photo manipulation. See the tutorial in the manual to get started.	Windows		ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für Haiku. Es eignet sich für einen weiten Bereich von Web-Grafiken bis hin zu Bildverarbeitung. Im Handbuch befindet sich eine kurze Einleitung."
 Delete layer	LayerView		Ebene entfernen
 Sets the zoom level to 50%.	PaintWindow		Setzt die Zoom-Stufe auf 50%.
 New project…	PaintWindow		Neues Projekt…
