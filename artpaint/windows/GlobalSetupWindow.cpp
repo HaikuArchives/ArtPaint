@@ -518,10 +518,10 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	layout->AddView(fTabView);
 	layout->AddView(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 		.AddGlue()
-		.Add(new BButton(B_TRANSLATE("Apply changes"),
-			new BMessage(kCloseAndApplySettings)))
-		.Add(new BButton(B_TRANSLATE("Discard changes"),
+		.Add(new BButton(B_TRANSLATE("Cancel"),
 			new BMessage(kCloseAndDiscardSettings)))
+		.Add(new BButton(B_TRANSLATE("OK"),
+			new BMessage(kCloseAndApplySettings)))
 		.TopView()
 	);
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
