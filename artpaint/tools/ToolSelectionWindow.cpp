@@ -112,9 +112,6 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 	//SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, picture_size + kExtraEdge,
 	//	kExtraEdge + 1, 0, 0, picture_size + kExtraEdge, kExtraEdge + 1);
 
-	// remove this if SetWindowAlignment is implemented
-	ResizeBy(0.0, maxDimension - pictureSize);
-
 	fSelectionWindow = this;
 	FloaterManager::AddFloater(this);
 }
