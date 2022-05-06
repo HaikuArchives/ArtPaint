@@ -1527,8 +1527,9 @@ FillTool::ToolCursor() const
 const char*
 FillTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Making a fill."
-		: "Press the mouse-button to make a fill.");
+	return (isInUse
+		? B_TRANSLATE("Making a fill.")
+		: B_TRANSLATE("Press the mouse-button to make a fill."));
 }
 
 

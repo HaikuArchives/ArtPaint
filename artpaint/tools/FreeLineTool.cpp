@@ -189,8 +189,9 @@ FreeLineTool::ToolCursor() const
 const char*
 FreeLineTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Drawing a freehand line."
-		: "Press the mouse-button to draw a freehand line.");
+	return (isInUse
+		? B_TRANSLATE("Drawing a freehand line.")
+		: B_TRANSLATE("Press the mouse-button to draw a freehand line."));
 }
 
 

@@ -400,8 +400,9 @@ ColorSelectorTool::ToolCursor() const
 const char*
 ColorSelectorTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Selecting a color."
-		: "Press the mouse-button to select a color.");
+	return (isInUse
+		? B_TRANSLATE("Selecting a color.")
+		: B_TRANSLATE("Press the mouse-button to select a color."));
 }
 
 

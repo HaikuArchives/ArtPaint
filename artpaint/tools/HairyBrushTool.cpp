@@ -403,8 +403,9 @@ HairyBrushTool::ToolCursor() const
 const char*
 HairyBrushTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Painting with a hairy brush."
-		: "Press the mouse-button to paint with a hairy brush.");
+	return (isInUse
+		? B_TRANSLATE("Painting with a hairy brush.")
+		: B_TRANSLATE("Press the mouse-button to paint with a hairy brush."));
 }
 
 

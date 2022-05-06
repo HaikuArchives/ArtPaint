@@ -215,8 +215,9 @@ BlurTool::ToolCursor() const
 const char*
 BlurTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Blurring the image."
-		: "Press the mouse-button to blur the image.");
+	return (isInUse
+		? B_TRANSLATE("Blurring the image.")
+		: B_TRANSLATE("Press the mouse-button to blur the image."));
 }
 
 

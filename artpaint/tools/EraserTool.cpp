@@ -208,8 +208,9 @@ EraserTool::ToolCursor() const
 const char*
 EraserTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Erasing the image."
-		: "Press the mouse-button to use eraser.");
+	return (isInUse
+		? B_TRANSLATE("Erasing the image.")
+		: B_TRANSLATE("Press the mouse-button to use eraser."));
 }
 
 

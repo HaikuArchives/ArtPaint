@@ -1,46 +1,50 @@
-1	English	application/x-vnd.artpaint	3922203743
+1	English	application/x-vnd.artpaint	3314877289
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
+Angle:	Manipulators		Angle:
+Press the mouse-button to make a fill.	Tools		Press the mouse-button to make a fill.
 Cancel	Windows		Cancel
 Enable antialiasing	Manipulators		Enable antialiasing
 Speed	Tools		Speed
 Crop…	Manipulators		Crop…
+Opens an image from disk.	PaintWindow		Opens an image from disk.
+Drawing a rectangle.	Tools		Drawing a rectangle.
 Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
 Subtract area	Tools		Subtract area
+Layers	Windows		Layers
 Paste as a new project	PaintWindow		Paste as a new project
 Global settings	Windows		Global settings
 Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
-Resizes the window to proper size for the image and the screen.	PaintWindow		Resizes the window to proper size for the image and the screen.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Cursor	Windows		Cursor
-Brush window	Windows		Brush window
 Crop…	PaintWindow		Crop…
 Fade	Tools		Fade
 Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
 Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
+Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 Special thanks	Windows		Special thanks
-Inverts the selction so that selected becomes non-selected and vice versa.	PaintWindow		Inverts the selction so that selected becomes non-selected and vice versa.
+Rotate all layers.	PaintWindow		Rotate all layers.
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
-Clears the selection so that everything is selected.	PaintWindow		Clears the selection so that everything is selected.
 Clear selection	PaintWindow		Clear selection
 Add layer	PaintWindow		Add layer
+Colors	PaintWindow		Colors
 Selector tool	Tools		Selector tool
 Rotation	Manipulators		Rotation
 Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Click to select a painting color.
+Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
-Show tool window	PaintWindow		Show tool window
 OK	PaintApplication		OK
 Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
 Cancel	ImageView		Cancel
 Save color set	ColorPalette		Save color set
 Untitled	PaintWindow		Untitled
-Discard changes	Windows		Discard changes
 Miscellaneous	Windows		Miscellaneous
 Bottom	Manipulators		Bottom
 Settings…	FilePanels		Settings…
+Press the mouse-button to draw an ellipse.	Tools		Press the mouse-button to draw an ellipse.
 Save	FilePanels		Save
 Thanks for inspiring articles	Windows		Thanks for inspiring articles
 Open	FilePanels		Open
@@ -50,11 +54,22 @@ English documentation	Windows		English documentation
 Width	Manipulators		Width
 Rotate -90°	PaintWindow		Rotate -90°
 Save project as…	PaintWindow		Save project as…
+Scale the image.	PaintWindow		Scale the image.
+Erasing the image.	Tools		Erasing the image.
 File	PaintWindow		File
-Air brush	Tools		Air brush
+Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
+Tools	PaintWindow		Tools
+Saves the project under its current name.	PaintWindow		Saves the project under its current name.
 Redo not available	UndoQueue		Redo not available
+Drawing a freehand line.	Tools		Drawing a freehand line.
+Opens the layer window.	PaintWindow		Opens the layer window.
 Random	Tools		Random
+Tool setup	PaintWindow		Tool setup
 Flip horizontally	Manipulators		Flip horizontally
+Press the mouse-button to make a selection.	Tools		Press the mouse-button to make a selection.
+Opens the tool setup window.	PaintWindow		Opens the tool setup window.
+Making a selection.	Tools		Making a selection.
+Opens a project from disk.	PaintWindow		Opens a project from disk.
 Change transparency…	Manipulators		Change transparency…
 New color set	ColorPalette		New color set
 Cut	PaintWindow		Cut
@@ -62,7 +77,9 @@ OK	Windows		OK
 Flip vertically	PaintWindow		Flip vertically
 Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
 Zoom out	PaintWindow		Zoom out
+Drawing a straight line.	Tools		Drawing a straight line.
 Save image	PaintWindow		Save image
+Move all layers.	PaintWindow		Move all layers.
 Brush tool	Tools		Brush tool
 Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Redo
@@ -74,9 +91,12 @@ Delete selected brush	Windows		Delete selected brush
 Saves the image to disk.	PaintWindow		Saves the image to disk.
 Add-ons	PaintWindow		Add-ons
 Rotate +90°	Manipulators		Rotate +90°
-Shows a window that has information about the program.	PaintWindow		Shows a window that has information about the program.
+Blurring the image.	Tools		Blurring the image.
+Pastes Pastes previously copied selection as a new project.	PaintWindow		Pastes Pastes previously copied selection as a new project.
+Add-ons	Windows		Add-ons
 Tool setup	Tools		Tool setup
 Resize to fit	PaintWindow		Resize to fit
+Opens the tool selection window.	PaintWindow		Opens the tool selection window.
 Fill rectangle	Tools		Fill rectangle
 Text tool	Manipulators		Text tool
 Color model	ColorPalette		Color model
@@ -91,77 +111,78 @@ Save project	PaintWindow		Save project
 Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
 Spray	Tools		Spray
 Color variance	Tools		Color variance
+Press the mouse-button to adjust layer's transparency.	Tools		Press the mouse-button to adjust layer's transparency.
 None	Tools		None
 Clears all layers.	PaintWindow		Clears all layers.
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Zoom in	PaintWindow		Zoom in
-Brings up the tool setup window.	PaintWindow		Brings up the tool setup window.
 Rotate +90°	PaintWindow		Rotate +90°
-Saves the project to the disk.	PaintWindow		Saves the project to the disk.
+Press the mouse-button to insert text into the image.	Tools		Press the mouse-button to insert text into the image.
+Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
 Red	Tools		Red
 Scale…	PaintWindow		Scale…
 Opens the main documentation for ArtPaint.	PaintWindow		Opens the main documentation for ArtPaint.
 Rotate…	Manipulators		Rotate…
-Starts changing the transparency of active layer.	PaintWindow		Starts changing the transparency of active layer.
+{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
 Color set	ColorPalette		Color set
-Brings up the brush window.	PaintWindow		Brings up the brush window.
 Fill ellipse	Tools		Fill ellipse
 Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Click on the image to set the new scale or set it with the numeric fields.
 Save format	FilePanels		Save format
 Add layer behind	LayerView		Add layer behind
-Show brush window	PaintWindow		Show brush window
 Transparent	Manipulators		Transparent
 Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use the primary mouse-button to rotate, other buttons to set the rotation center.
 Ellipse	Tools		Ellipse
 Adjustable width	Tools		Adjustable width
-Pastes clipboard as a new project.	PaintWindow		Pastes clipboard as a new project.
 Show layer window	PaintWindow		Show layer window
 Redo not available	PaintWindow		Redo not available
+Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Opaque	Manipulators		Opaque
-Apply changes	Windows		Apply changes
 Windows	Windows		Windows
+Making a fill.	Tools		Making a fill.
 Width	Tools		Width
 Close	PaintWindow		Close
+Press the mouse-button to blur the image.	Tools		Press the mouse-button to blur the image.
 Translate…	PaintWindow		Translate…
 Insert text…	PaintWindow		Insert text…
+Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
 Text tool	Tools		Text tool
 Reset Brush	Tools		Reset Brush
-Starts scaling the image.	PaintWindow		Starts scaling the image.
 Open project…	PaintWindow		Open project…
 Green	Tools		Green
 Store brush	Tools		Store brush
+Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Edit	PaintWindow		Edit
+Drawing an ellipse.	Tools		Drawing an ellipse.
+Press the mouse-button to use eraser.	Tools		Press the mouse-button to use eraser.
 Color amount	Tools		Color amount
 Save image	FilePanels		Save image
-Copies the image to the clipboard.	PaintWindow		Copies the image to the clipboard.
-Brings up the layer window.	PaintWindow		Brings up the layer window.
 Shrink selection	ImageView		Shrink selection
 Freehand line	Tools		Freehand line
 Fill tool	Tools		Fill tool
+Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
 Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Open project…	PaintApplication		Open project…
 Airbrush	Tools		Airbrush
-Starts moving all layers.	PaintWindow		Starts moving all layers.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
-Brings up the palette window.	PaintWindow		Brings up the palette window.
 Background	Tools		Background
 Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Clear canvas
 OK	ColorPalette		OK
 Merge with back layer	LayerView		Merge with back layer
+Using the airbrush.	Tools		Using the airbrush.
 Magic wand	Tools		Magic wand
-Show palette window	PaintWindow		Show palette window
+Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Little	Tools		Little
 Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
+Tool setup	Windows		Tool setup
 Free 2D transform	FreeTransformManipulator		Free 2D transform
 Copy	PaintWindow		Copy
 Enable preview	Tools		Enable preview
 Undos the previous action.	PaintWindow		Undos the previous action.
-Starts cropping the image.	PaintWindow		Starts cropping the image.
 Rotate -90°	Manipulators		Rotate -90°
 Standard sizes	PaintWindow		Standard sizes
 Datatype setup: %name%	Windows		Datatype setup: %name%
@@ -170,78 +191,87 @@ Clear canvas	Image		Clear canvas
 All layers	PaintWindow		All layers
 Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
 No data translator	Windows		No data translator
-Starts rotating the active layer.	PaintWindow		Starts rotating the active layer.
+Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Layer %ld / %ld	ImageView		Layer %ld / %ld
-Show tool setup window	PaintWindow		Show tool setup window
 Select the canvas size you want.	PaintWindow		Select the canvas size you want.
+Brushes	PaintWindow		Brushes
 Open image…	PaintApplication		Open image…
 Active layer	PaintWindow		Active layer
-Effects window	Windows		Effects window
+Rotate the active layer.	PaintWindow		Rotate the active layer.
 Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Window	PaintWindow		Window
 Open image…	PaintWindow		Open image…
 French localization	Windows		French localization
+Saves the project to disk.	PaintWindow		Saves the project to disk.
 Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
 Invert selection	PaintWindow		Invert selection
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
+Change the transparency of active layer.	PaintWindow		Change the transparency of active layer.
 Brush	Windows		Brush
 Blur tool	Tools		Blur tool
 Adjustable	Windows		Adjustable
 Center to corner	Tools		Center to corner
 About ArtPaint	PaintWindow		About ArtPaint
-Opens a project from the disk.	PaintWindow		Opens a project from the disk.
 Don't save	ImageView		Don't save
 Tools	Tools		Tools
 Color	Tools		Color
-Shrinks the selection a little bit from every direction.	PaintWindow		Shrinks the selection a little bit from every direction.
 Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
-Copies the active layer to the clipboard.	PaintWindow		Copies the active layer to the clipboard.
 Shortcuts…	PaintWindow		Shortcuts…
-Layer window	Windows		Layer window
 Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
+Press the mouse-button to draw a freehand line.	Tools		Press the mouse-button to draw a freehand line.
 Merge with front layer	LayerView		Merge with front layer
 Closes the current window.	PaintWindow		Closes the current window.
 Duplicate layer	LayerView		Duplicate layer
-%s: You have made %d changes since the last time the project was saved. Do you want to save the changes?	ImageView		%s: You have made %d changes since the last time the project was saved. Do you want to save the changes?
 Shrink selection	PaintWindow		Shrink selection
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Clear selection	ImageView		Clear selection
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
-Saves the project to the disk with the current name.	PaintWindow		Saves the project to the disk with the current name.
 Height	Manipulators		Height
+Copies the selection of all layers to the clipboard.	PaintWindow		Copies the selection of all layers to the clipboard.
+Press the mouse-button to draw a straight line.	Tools		Press the mouse-button to draw a straight line.
 Transparent	Tools		Transparent
 Click here to open color panel.	StatusView		Click here to open color panel.
-Starts moving the active layer.	PaintWindow		Starts moving the active layer.
 Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Recent projects
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Width	PaintWindow		Width
+Press the mouse-button to paint with a brush.	Tools		Press the mouse-button to paint with a brush.
 Clear layer	PaintWindow		Clear layer
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
+Painting with a brush.	Tools		Painting with a brush.
 Rectangle	Tools		Rectangle
+The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
 Restore	Manipulators		Restore
 Keep in front	Windows		Keep in front
+Selecting a color.	Tools		Selecting a color.
 OK	Image		OK
-Opens an image from the disk.	PaintWindow		Opens an image from the disk.
+Press the mouse-button to select a color.	Tools		Press the mouse-button to select a color.
+Colors	Windows		Colors
+Move the active layer.	PaintWindow		Move the active layer.
 Off	PaintWindow		Off
 Opens a page that describes ArtPaint's keyboard shortcuts.	PaintWindow		Opens a page that describes ArtPaint's keyboard shortcuts.
+Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
 Ellipse tool	Tools		Ellipse tool
 Add layer in front	LayerView		Add layer in front
 Create canvas	PaintWindow		Create canvas
 Delete layer	Image		Delete layer
+Press the mouse-button to draw a rectangle.	Tools		Press the mouse-button to draw a rectangle.
 Hairy brush	Tools		Hairy brush
+Press the mouse-button to paint with a hairy brush.	Tools		Press the mouse-button to paint with a hairy brush.
 Color selector	Tools		Color selector
 Off	Windows		Off
+Tools	Windows		Tools
 Release date: %s	Windows		Release date: %s
 Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
+Use the tool by pressing the mouse-button.	Tools		Use the tool by pressing the mouse-button.
 Colors	ColorPalette		Colors
+Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
 Save	ImageView		Save
 Layer	PaintWindow		Layer
 Empty paint window	PaintWindow		Empty paint window
@@ -250,8 +280,6 @@ Flip vertically	Manipulators		Flip vertically
 Tool cursor	Windows		Tool cursor
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Intelligent scissors	Tools		Intelligent scissors
-Rotating	Manipulators		Rotating
-Grows the selection a little bit in every direction.	PaintWindow		Grows the selection a little bit in every direction.
 Grow selection	PaintWindow		Grow selection
 Flood fill	Tools		Flood fill
 Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of this image.
@@ -262,41 +290,40 @@ Set zoom level	PaintWindow		Set zoom level
 Size	Manipulators		Size
 Straight line	Tools		Straight line
 Enable rotation	Tools		Enable rotation
-Saves the image to the disk with the current name.	PaintWindow		Saves the image to the disk with the current name.
 Continuous	Tools		Continuous
 Transparency	Manipulators		Transparency
-Color window	Windows		Color window
 OK	PaintWindow		OK
-Brings up the tool selection window.	PaintWindow		Brings up the tool selection window.
+Press the mouse-button to paint with airbrush.	Tools		Press the mouse-button to paint with airbrush.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
 User manual…	PaintWindow		User manual…
 Corner to corner	Tools		Corner to corner
+Opens the layers window.	PaintWindow		Opens the layers window.
 Add layer	Image		Add layer
 Enable gradient	Tools		Enable gradient
-Quits the whole program.	PaintWindow		Quits the whole program.
-Pastes previously copied layer from the clipboard as a new layer.	PaintWindow		Pastes previously copied layer from the clipboard as a new layer.
+Opens the colors window.	PaintWindow		Opens the colors window.
+Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
+Quits ArtPaint.	PaintWindow		Quits ArtPaint.
 German localization	Windows		German localization
+Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
 Settings…	PaintWindow		Settings…
 Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
-Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
+Flip horizontally	PaintWindow		Flip horizontally
 Change transparency…	PaintWindow		Change transparency…
-Tool setup window	Windows		Tool setup window
 Height	Tools		Height
-Copies the image to the clipboard and clears all layers.	PaintWindow		Copies the image to the clipboard and clears all layers.
 Size	Tools		Size
 Left	Manipulators		Left
+Crop the image.	PaintWindow		Crop the image.
 Hairs	Tools		Hairs
 Clears the active layer.	PaintWindow		Clears the active layer.
-Brings up the settings window.	PaintWindow		Brings up the settings window.
 Quit	PaintWindow		Quit
 Clear layer	Image		Clear layer
 Rotate…	PaintWindow		Rotate…
+Copies the selection to the clipboard.	PaintWindow		Copies the selection to the clipboard.
 No configuration options available.	Tools		No configuration options available.
-Creates a new empty paint window.	PaintWindow		Creates a new empty paint window.
 Open color set…	ColorPalette		Open color set…
 Wand tolerance	Tools		Wand tolerance
 Invert selection	ImageView		Invert selection
@@ -304,22 +331,24 @@ Help	PaintWindow		Help
 Much	Tools		Much
 Not implemented yet.	Tools		Not implemented yet.
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
+Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Top	Manipulators		Top
 Unsaved changes!	ImageView		Unsaved changes!
+Un-selects all	PaintWindow		Un-selects all
 Programming & Design	Windows		Programming & Design
-Tool selection window	Windows		Tool selection window
 About ArtPaint	Windows		About ArtPaint
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
+Layers	PaintWindow		Layers
 Mag	MagnificationView		Mag
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Undo not available	UndoQueue		Undo not available
-Starts rotating all layers.	PaintWindow		Starts rotating all layers.
 ArtPaint is a painting and image-processing program for Haiku. It can be used for a wide variety of purposes ranging from web-graphics to photo manipulation. See the tutorial in the manual to get started.	Windows		ArtPaint is a painting and image-processing program for Haiku. It can be used for a wide variety of purposes ranging from web-graphics to photo manipulation. See the tutorial in the manual to get started.
 Delete layer	LayerView		Delete layer
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
 Height	PaintWindow		Height
+Using the tool.	Tools		Using the tool.
 Drag the image to correct position.	Manipulators		Drag the image to correct position.
 Lock	Manipulators	Keep the aspect ratio	Lock
 Right	Manipulators		Right

@@ -291,8 +291,9 @@ RectangleTool::ToolCursor() const
 const char*
 RectangleTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Drawing a rectangle."
-		: "Press the mouse-button to draw a rectangle.");
+	return (isInUse
+		? B_TRANSLATE("Drawing a rectangle.")
+		: B_TRANSLATE("Press the mouse-button to draw a rectangle."));
 }
 
 
