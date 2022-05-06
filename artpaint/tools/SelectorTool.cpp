@@ -321,8 +321,9 @@ SelectorTool::ToolCursor() const
 const char*
 SelectorTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Making a selection."
-		: "Press the mouse-button to make a selection.");
+	return (isInUse
+		? B_TRANSLATE("Making a selection.")
+		: B_TRANSLATE("Press the mouse-button to make a selection."));
 }
 
 

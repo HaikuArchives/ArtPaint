@@ -175,8 +175,9 @@ TransparencyTool::ToolCursor() const
 const char*
 TransparencyTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Adjusting the layer's transparency."
-		: "Press the mouse-button to adjust layer's transparency.");
+	return (isInUse
+		? B_TRANSLATE("Adjusting the layer's transparency.")
+		: B_TRANSLATE("Press the mouse-button to adjust layer's transparency."));
 }
 
 

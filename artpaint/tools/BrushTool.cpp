@@ -190,8 +190,9 @@ BrushTool::ToolCursor() const
 const char*
 BrushTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Painting with a brush."
-		: "Press the mouse-button to paint with a brush.");
+	return (isInUse
+		? B_TRANSLATE("Painting with a brush.")
+		: B_TRANSLATE("Press the mouse-button to paint with a brush."));
 }
 
 

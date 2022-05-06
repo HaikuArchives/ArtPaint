@@ -343,8 +343,9 @@ StraightLineTool::ToolCursor() const
 const char*
 StraightLineTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Drawing a straight line."
-		: "Press the mouse-button to draw a straight line.");
+	return (isInUse
+		? B_TRANSLATE("Drawing a straight line.")
+		: B_TRANSLATE("Press the mouse-button to draw a straight line."));
 }
 
 

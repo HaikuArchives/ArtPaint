@@ -624,10 +624,7 @@ RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
-	char label[256];
-	sprintf(label,"%s:", B_TRANSLATE("Rotating"));
-
-	fTextControl = new BTextControl("rotation", label, "9999.9˚",
+	fTextControl = new BTextControl("rotation", B_TRANSLATE("Angle:"), "9999.9˚",
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
 	BRect bounds = fTextControl->TextView()->Bounds();
 	fTextControl->TextView()->SetExplicitMaxSize(BSize(StringWidth("-999.99'"), bounds.Height()));

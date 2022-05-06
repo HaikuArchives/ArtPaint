@@ -175,8 +175,9 @@ EllipseTool::ToolCursor() const
 const char*
 EllipseTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Drawing an ellipse."
-		: "Press the mouse-button to draw an ellipse.");
+	return (isInUse
+		? B_TRANSLATE("Drawing an ellipse.")
+		: B_TRANSLATE("Press the mouse-button to draw an ellipse."));
 }
 
 
