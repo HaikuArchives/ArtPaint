@@ -1,65 +1,53 @@
-<HTML>
-<HEAD>
-<TITLE>
-ArtPaint: Settings
-</TITLE>
-</HEAD>
-<BODY bgcolor="ffffff">
-<DIV ALIGN=CENTER>
-<IMG SRC="./images/top_bar.gif"><BR>
-<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=500>
-<TR>
-<TD>
-<IMG SRC="./images/transparent_dot.gif" WIDTH=100 HEIGHT=50>
-</TD>
-<TD COLSPAN=2>
-<IMG SRC="./images/transparent_dot.gif" WIDTH=400 HEIGHT=50>
-</TD>
-</TR>
-<TR>
-<TD>
-</TD>
-<TD>
-<H2>Settings</H2>
-Most of the settings, like settings for tools, window positions, colors, etc. are saved automatically whenever the program is quit. There are also some settings that can be set through a settings window. These settings are also saved when the program is exited. The settings window allows for changing general options that affect how the program looks and behaves.
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<!--
+ * Copyright 2022
+ * Distributed under the terms of the MIT License.
+ *
+ * Authors:
+ *		Humdinger <humdingerb@gmail.com>
+-->
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta name="robots" content="all" />
+	<link rel="stylesheet" type="text/css" href="./_doc.css" />
+	<title>ArtPaint: The settings</title>
 
-<H2>The settings window</H2>
-The settings window has three tabs that each control different types of settings. The first tab is labelled 'Windows' and is picture in figure 1.
-<DIV ALIGN=CENTER>
-<TABLE BORDER=0>
-<CAPTION ALIGN=BOTTOM>Figure 1: 'Windows' tab</CAPTION>
-<TR><TD><IMG SRC="./images/windows_tab.jpeg">
-</TABLE>
-</DIV> 
-<P>
-The checkboxes allow for changing between different window-modes. If a checkox is checked then the corresponding window will float above other windows of the app. Otherwise that window will behave just like a regular window.
-<P>
-The second tab is for controlling the depth of undo mechanism and is labelled 'Undo'. The depth means how many operations can be backtracked in the best situation. This means that information for those operations is kept in memory. If it seems that there is too little memory for the program to operate with some image, it is advisable to lower the depth of the undo. Setting undo off frees quite a lot of memory, so it can be used in the emergency case when operating on some very big images. The 'Undo' tab is displayed in figure 2.
+</head>
+<body>
 
-<DIV ALIGN=CENTER>
-<TABLE BORDER=0>
-<CAPTION ALIGN=BOTTOM>Figure 2: 'Undo' tab</CAPTION>
-<TR><TD><IMG SRC="./images/undo_tab.jpeg">
-</TABLE>
-</DIV> 
-<P>
-The third tab is labelled 'Miscellanous' and it is used to control some other options. It is displayed in figure 3.
-<DIV ALIGN=CENTER>
-<TABLE BORDER=0>
-<CAPTION ALIGN=BOTTOM>Figure 2: 'Miscellanous' tab</CAPTION>
-<TR><TD><IMG SRC="./images/miscellaneous_tab.jpeg">
-</TABLE>
-</DIV> 
-<P>
-The cursor part controls how the mouse cursor appears when drawing on the image. If the 'Cross Hair Cursor' is selected, the cursor will look like a cross hair. If the 'Tool Cursor' is selected, the cursor will change depending on what painting-tool is in use. The checkbox 'Confirm Quitting' enables the boxes that ask you if you want to save the project when closing a window and the project has been changed since the last save. 
-</TD>
-</TR>
+<div id="navbar">
+<a href="index.html">The index</a> <a href="main_window.html">The main window</a> <a href="menus.html">The menus</a> <a class="active" href="settings.html">The settings</a> <a href="other_windows.html">The other windows</a> <a href="tools.html">The tools</a> <a href="add-ons.html">The add-ons</a>
+</div>
 
+<div id="content">
+<h2>The settings</h2>
 
-</TABLE>
-<P>
-<IMG SRC="./images/bottom_bar.gif"><BR>
-</DIV>
+<p>The settings panel provides a few options, separated into three tabs:</p>
 
-</BODY>
-</HTML>
+<table>
+<tr><td style="vertical-align: top"><img src="./images/settings_windows.png" style="border:none;padding:15px;float:right" alt="Settings: Windows" /></td><td style="vertical-align: top">
+<h3>Windows</h3>
+<p>With these checkboxes, you decide which windows to always <span class="menu">Keep in front</span> of, i.e. float above, the canvas.</p></td></tr>
+
+<tr><td style="vertical-align: top"><img src="./images/settings_undo.png" style="border:none;padding:15px;float:right" alt="Settings: Undo" /></td><td style="vertical-align: top">
+<h3>Undo</h3>
+<p>Depending on the amount of memory available and size and number of projects and layers you work with, you can set the number of revertable actions to <span class="menu">Off</span>, <span class="menu">Unlimited</span>, or choose <span class="menu">Adjustable</span> and set the number of <span class="menu">Undo steps</span> explicitely.</p></td></tr>
+
+<tr><td style="vertical-align: top"><img src="./images/settings_misc.png" style="border:none;padding:15px;float:right" alt="Settings: Miscellaneous" /></td><td style="vertical-align: top">
+<h3>Miscellaneous</h3>
+<p>You can set the mouse pointer to <span class="menu">Tool cursor</span> and have a small icon of the active tool beside it, or, to avoid obscuring even a few pixels, set to <span class="menu">Cross-hair cursor</span>.</p>
+
+<p>Under <span class="menu">Application</span> you can disable <span class="menu">Confirm quitting</span> and you won't be warned if you have unsaved changes.</p>
+
+</td></tr>
+</table>
+<hr />
+<a href="menus.html" style="border:none;float:left" alt="index">Back: The menus</a>
+<a href="other_windows.html" style="border:none;float:right" alt="index">Next: The other windows</a>
+</div>
+</body>
+</html>
