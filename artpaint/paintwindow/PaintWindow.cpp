@@ -519,7 +519,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_RESIZE_WINDOW_TO_FIT: {
-			// this comes from fMenubar->"Window"->"Resize Window to Fit" and
+			// this comes from fMenubar->"Window"->"Resize to fit" and
 			// informs us that we should fit the window to display exactly the
 			// image use a private function to do resizing
 			_ResizeToImage();
@@ -592,7 +592,7 @@ PaintWindow::MessageReceived(BMessage *message)
 
 
 		case HS_SHOW_LAYER_WINDOW: {
-			// this comes from fMenubar->"Window"->"Show Layer Window" and tells
+			// this comes from fMenubar->"Window"->"Layers" and tells
 			// us to show the layer window
 			LayerWindow::showLayerWindow();
 			if (fImageView) {
@@ -612,7 +612,7 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_GLOBAL_SETUP_WINDOW: {
-			// this comes from fMenubar->"Window"->"Global Settings…"
+			// this comes from fMenubar->"Window"->"Settings…"
 			GlobalSetupWindow::ShowGlobalSetupWindow();
 		}	break;
 
@@ -689,13 +689,13 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_COLOR_WINDOW: {
-			// This comes from fMenubar->"Window"->"Show Color Window".
+			// This comes from fMenubar->"Window"->"Colors".
 			// We should open the color window.
 			ColorPaletteWindow::showPaletteWindow(); // TODO: was (false)
 		}	break;
 
 		case HS_SHOW_TOOL_WINDOW: {
-			// This comes from fMenubar->"Window"->"Show Tool Window". We should
+			// This comes from fMenubar->"Window"->"Tools". We should
 			// open the tool window.
 			ToolSelectionWindow::showWindow();
 		}	break;
@@ -1166,10 +1166,6 @@ PaintWindow::openMenuBar()
 		a_message, 'I', 0, this,
 		B_TRANSLATE("Inserts text into the active layer. Same as the text tool.")));
 	menu->AddSeparatorItem();
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Show layer window"),
-		new BMessage(HS_SHOW_LAYER_WINDOW), 'L', 0, this,
-		B_TRANSLATE("Opens the layer window.")));
-	menu->AddItem(new BSeparatorItem());
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Add layer"),
 		new BMessage(HS_ADD_LAYER_FRONT), '.', 0, this,
 		B_TRANSLATE("Adds a layer to the top of this image.")));
@@ -1339,7 +1335,7 @@ PaintWindow::openMenuBar()
 //	menu->AddSeparatorItem();
 //	menu->AddItem(new BMenuItem(B_TRANSLATE("Window settings" B_UTF8_ELLIPSIS), new BMessage(HS_SHOW_VIEW_SETUP_WINDOW)));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
-		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), 0, 0, this,
+		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), ',', 0, this,
 		B_TRANSLATE("Opens the settings window.")));
 
 	// This will be only temporary place for add-ons. Later they will be spread
