@@ -974,10 +974,57 @@ PaintWindow::openMenuBar()
 {
 	fMenubar = new BMenuBar("menu_bar");
 
-	BMenu* menu = new BMenu(B_TRANSLATE("File"));
+	// the ArtPaint menu
+	BMenu* menu = new BMenu(B_TRANSLATE_SYSTEM_NAME("ArtPaint"));
 	fMenubar->AddItem(menu);
 
+	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("New project"),
+		new BMessage(HS_NEW_PAINT_WINDOW), 'N', 0, this,
+		B_TRANSLATE("Creates a new empty canvas."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
+	item = new PaintWindowMenuItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
+		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), ',', 0, this,
+		B_TRANSLATE("Opens the settings window."));
+	menu->AddItem(item);
+
+	menu->AddSeparatorItem();
+
+	BMessage* message =  new BMessage(HS_SHOW_USER_DOCUMENTATION);
+	message->AddString("document", "index.html");
+	item = new PaintWindowMenuItem(B_TRANSLATE("User manual" B_UTF8_ELLIPSIS),
+		message, 0, 0, this,
+		B_TRANSLATE("Opens the main documentation for ArtPaint."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
+	message = new BMessage(B_ABOUT_REQUESTED);
+	item = new PaintWindowMenuItem(B_TRANSLATE("About ArtPaint"),
+		message, 0, 0, this,
+		B_TRANSLATE("Opens a window with information about ArtPaint."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
+	menu->AddSeparatorItem();
+
+	message = new BMessage(B_QUIT_REQUESTED);
+	item = new PaintWindowMenuItem(B_TRANSLATE("Close"),
+		message, 'W', 0, this,
+		B_TRANSLATE("Closes the current window."));
+	menu->AddItem(item);
+
+	message = new BMessage(B_QUIT_REQUESTED);
+	item = new PaintWindowMenuItem(B_TRANSLATE("Quit"),
+		message, 'Q', 0, this,
+		B_TRANSLATE("Quits ArtPaint."));
+	item->SetTarget(be_app);
+	menu->AddItem(item);
+
 	// the File menu
+	menu = new BMenu(B_TRANSLATE("File"));
+	fMenubar->AddItem(menu);
+
 	menu_item fileMenu[] = {
 		{ B_TRANSLATE("Open image" B_UTF8_ELLIPSIS), HS_SHOW_IMAGE_OPEN_PANEL,
 			'O', 0, be_app,
@@ -1015,22 +1062,6 @@ PaintWindow::openMenuBar()
 
 	fRecentProjects = new BMenu(B_TRANSLATE("Recent projects"));
 	menu->AddItem(fRecentProjects);
-
-	menu_item fileMenu2[] = {
-		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" },	// separator
-		{ B_TRANSLATE("Close"), B_QUIT_REQUESTED,
-			'W', 0, this,
-			B_TRANSLATE("Closes the current window.") },
-		{ B_TRANSLATE("Quit"), B_QUIT_REQUESTED,
-			'Q', 0, be_app,
-			B_TRANSLATE("Quits ArtPaint.") }
-	};
-
-	for (uint32 i = 0; i < (sizeof(fileMenu2) / sizeof(menu_item)); ++i) {
-		_AddMenuItems(menu, fileMenu2[i].label, fileMenu2[i].what,
-			fileMenu2[i].shortcut, fileMenu2[i].modifiers, fileMenu2[i].target,
-			fileMenu2[i].help);
-	}
 
 	// the Edit menu
 	menu = new BMenu(B_TRANSLATE("Edit"));
@@ -1229,7 +1260,6 @@ PaintWindow::openMenuBar()
 		new BMessage(HS_CLEAR_CANVAS), 0, 0, this,
 		B_TRANSLATE("Clears all layers.")));
 
-
 	// The Window menu,
 	menu = new BMenu(B_TRANSLATE("Window"));
 	fMenubar->AddItem(menu);
@@ -1309,28 +1339,25 @@ PaintWindow::openMenuBar()
 		new BMessage(HS_RESIZE_WINDOW_TO_FIT), 'Y', 0, this,
 		B_TRANSLATE("Resizes the window to fit image and screen.")));
 	menu->AddSeparatorItem();
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Colors"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Colors" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_COLOR_WINDOW), 'P', 0, this,
 		B_TRANSLATE("Opens the colors window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Layers"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Layers" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_LAYER_WINDOW), 'L', 0, this,
 		B_TRANSLATE("Opens the layers window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Tools"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Tools" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_TOOL_WINDOW), 'K', 0, this,
 		B_TRANSLATE("Opens the tool selection window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Tool setup"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Tool setup" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_TOOL_SETUP_WINDOW), 'M', 0, this,
 		B_TRANSLATE("Opens the tool setup window.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Brushes"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Brushes" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_BRUSH_STORE_WINDOW), 'B', 0, this,
 		B_TRANSLATE("Opens the window of stored brushes.")));
-	menu->AddSeparatorItem();
+
 //	menu->AddItem(new PaintWindowMenuItem(_StringForId(NEW_PAINT_WINDOW_STRING),new BMessage(HS_NEW_PAINT_WINDOW),'N',0,this,_StringForId(NEW_PROJECT_HELP_STRING)));
 //	menu->AddSeparatorItem();
 //	menu->AddItem(new BMenuItem(B_TRANSLATE("Window settings" B_UTF8_ELLIPSIS), new BMessage(HS_SHOW_VIEW_SETUP_WINDOW)));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
-		new BMessage(HS_SHOW_GLOBAL_SETUP_WINDOW), ',', 0, this,
-		B_TRANSLATE("Opens the settings window.")));
 
 	// This will be only temporary place for add-ons. Later they will be spread
 	// in the menu hierarchy according to their types.
@@ -1339,35 +1366,6 @@ PaintWindow::openMenuBar()
 		"add_on_adder_thread", B_NORMAL_PRIORITY, this);
 	resume_thread(add_on_adder_thread);
 	fMenubar->AddItem(menu);
-
-	// help
-	menu = new BMenu(B_TRANSLATE("Help"));
-	fMenubar->AddItem(menu);
-
-	BMessage* message =  new BMessage(HS_SHOW_USER_DOCUMENTATION);
-	message->AddString("document", "index.html");
-
-	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("User manual" B_UTF8_ELLIPSIS),
-		message, 0, 0, this,
-		B_TRANSLATE("Opens the main documentation for ArtPaint."));
-	item->SetTarget(be_app);
-	menu->AddItem(item);
-
-	message = new BMessage(HS_SHOW_USER_DOCUMENTATION);
-	message->AddString("document", "shortcuts.html");
-	item = new PaintWindowMenuItem(B_TRANSLATE("Shortcuts" B_UTF8_ELLIPSIS),
-		message, 0, 0, this,
-		B_TRANSLATE("Opens a page that describes ArtPaint's keyboard shortcuts."));
-	item->SetTarget(be_app);
-	menu->AddItem(item);
-
-	menu->AddSeparatorItem();
-
-	item = new PaintWindowMenuItem(B_TRANSLATE("About ArtPaint"),
-		message, 0, 0, this,
-		B_TRANSLATE("Opens a window with information about ArtPaint."));
-	menu->AddItem(item);
-	item->SetTarget(be_app);
 
 	_ChangeMenuMode(NO_IMAGE_MENU);
 

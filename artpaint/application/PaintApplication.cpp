@@ -163,8 +163,7 @@ PaintApplication::MessageReceived(BMessage* message)
 			}
 
 			fImageOpenPanel->SetMessage(&filePanelMessage);
-			fImageOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
-				.Append(B_TRANSLATE("Open image" B_UTF8_ELLIPSIS)).String());
+			fImageOpenPanel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open image" B_UTF8_ELLIPSIS));
 			fImageOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fImageOpenPanel);
@@ -188,8 +187,7 @@ PaintApplication::MessageReceived(BMessage* message)
 			}
 
 			fProjectOpenPanel->SetMessage(&filePanelMessage);
-			fProjectOpenPanel->Window()->SetTitle(BString("ArtPaint: ")
-				.Append(B_TRANSLATE("Open project" B_UTF8_ELLIPSIS)).String());
+			fImageOpenPanel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open project" B_UTF8_ELLIPSIS));
 			fProjectOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fProjectOpenPanel);
@@ -197,7 +195,7 @@ PaintApplication::MessageReceived(BMessage* message)
 		}	break;
 
 		case HS_SHOW_USER_DOCUMENTATION: {
-			// issued from paint-window's menubar->"Help"->"User Documentation"
+			// issued from paint-window's menubar->"ArtPaint"->"User documentation"
 			BRoster roster;
 			entry_ref mimeHandler;
 			if (roster.FindApp("text/html", &mimeHandler) == B_OK) {

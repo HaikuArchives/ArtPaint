@@ -276,9 +276,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 			open_panel = new BFilePanel(B_OPEN_PANEL, &target, &ref,
 				B_FILE_NODE, true, &message);
 		}
-		char string[256];
-		sprintf(string,"ArtPaint: %s",B_TRANSLATE("Open color set" B_UTF8_ELLIPSIS));
-		open_panel->Window()->SetTitle(string);
+		open_panel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open color set" B_UTF8_ELLIPSIS));
 		set_filepanel_strings(open_panel);
 		open_panel->Show();
 		break;
@@ -305,8 +303,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				&message);
 		}
 		save_panel->SetSaveText(ColorSet::currentSet()->getName());
-		sprintf(string,"ArtPaint: %s",B_TRANSLATE("Save color set"));
-		save_panel->Window()->SetTitle(string);
+		save_panel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open color set" B_UTF8_ELLIPSIS));
 		set_filepanel_strings(save_panel);
 		save_panel->Show();
 		break;
