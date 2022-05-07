@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2034823255
+1	English	application/x-vnd.artpaint	45903161
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -17,6 +17,7 @@ Click to use eraser.	Tools		Click to use eraser.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Click to draw a freehand line.	Tools		Click to draw a freehand line.
 Cursor	Windows		Cursor
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Crop…	PaintWindow		Crop…
 Click to make a selection.	Tools		Click to make a selection.
 Bummer	UndoQueue		Bummer
@@ -26,6 +27,7 @@ Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
 Width:	Tools		Width:
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
+ArtPaint	System name		ArtPaint
 Click to blur the image.	Tools		Click to blur the image.
 Rotate all layers.	PaintWindow		Rotate all layers.
 Rectangle tool	Tools		Rectangle tool
@@ -33,7 +35,6 @@ Not enough free memory to start the effect you requested. You may close other im
 Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
 Add layer	PaintWindow		Add layer
-Colors	PaintWindow		Colors
 Selector tool	Tools		Selector tool
 Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Click to select a painting color.
@@ -56,12 +57,10 @@ Erasing the image.	Tools		Erasing the image.
 File	PaintWindow		File
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
 Right:	Manipulators		Right:
-Tools	PaintWindow		Tools
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
 Redo not available	UndoQueue		Redo not available
 Drawing a freehand line.	Tools		Drawing a freehand line.
 Random	Tools		Random
-Tool setup	PaintWindow		Tool setup
 Flip horizontally	Manipulators		Flip horizontally
 Opens the tool setup window.	PaintWindow		Opens the tool setup window.
 Flow:	Tools		Flow:
@@ -137,6 +136,7 @@ Redo not available	PaintWindow		Redo not available
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Opaque	Manipulators		Opaque
+Layers…	PaintWindow		Layers…
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
 Speed:	Tools		Speed:
@@ -152,7 +152,6 @@ Store brush	Tools		Store brush
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Edit	PaintWindow		Edit
 Drawing an ellipse.	Tools		Drawing an ellipse.
-Save image	FilePanels		Save image
 Shrink selection	ImageView		Shrink selection
 Freehand line	Tools		Freehand line
 Fill tool	Tools		Fill tool
@@ -161,7 +160,6 @@ Enable antialiasing	Tools		Enable antialiasing
 Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
-Open project…	PaintApplication		Open project…
 Airbrush	Tools		Airbrush
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
@@ -173,6 +171,7 @@ Clear canvas	PaintWindow		Clear canvas
 OK	ColorPalette		OK
 Merge with back layer	LayerView		Merge with back layer
 Using the airbrush.	Tools		Using the airbrush.
+Tool setup…	PaintWindow		Tool setup…
 Magic wand	Tools		Magic wand
 Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Little	Tools		Little
@@ -180,6 +179,7 @@ Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Click to paint with a brush.	Tools		Click to paint with a brush.
 Tool setup	Windows		Tool setup
 Free 2D transform	FreeTransformManipulator		Free 2D transform
+Colors…	PaintWindow		Colors…
 Copy	PaintWindow		Copy
 Enable preview	Tools		Enable preview
 Undos the previous action.	PaintWindow		Undos the previous action.
@@ -188,14 +188,13 @@ Standard sizes	PaintWindow		Standard sizes
 Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Options
 Clear canvas	Image		Clear canvas
+New project	PaintWindow		New project
 All layers	PaintWindow		All layers
 Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
 No data translator	Windows		No data translator
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Layer %ld / %ld	ImageView		Layer %ld / %ld
 Select the canvas size you want.	PaintWindow		Select the canvas size you want.
-Brushes	PaintWindow		Brushes
-Open image…	PaintApplication		Open image…
 Active layer	PaintWindow		Active layer
 Rotate the active layer.	PaintWindow		Rotate the active layer.
 Zooms into the image.	PaintWindow		Zooms into the image.
@@ -220,7 +219,6 @@ Color	Tools		Color
 Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
-Shortcuts…	PaintWindow		Shortcuts…
 Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
@@ -236,8 +234,10 @@ Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 Copies the selection of all layers to the clipboard.	PaintWindow		Copies the selection of all layers to the clipboard.
 Transparent	Tools		Transparent
 Click here to open color panel.	StatusView		Click here to open color panel.
+ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Recent projects
+Brushes…	PaintWindow		Brushes…
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Color variance:	Tools		Color variance:
 Clear layer	PaintWindow		Clear layer
@@ -252,7 +252,6 @@ Click to paint with airbrush.	Tools		Click to paint with airbrush.
 Colors	Windows		Colors
 Move the active layer.	PaintWindow		Move the active layer.
 Off	PaintWindow		Off
-Opens a page that describes ArtPaint's keyboard shortcuts.	PaintWindow		Opens a page that describes ArtPaint's keyboard shortcuts.
 Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
 Rotation:	Manipulators		Rotation:
 Ellipse tool	Tools		Ellipse tool
@@ -270,13 +269,14 @@ Tools	Windows		Tools
 Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
 Use the tool by pressing the mouse-button.	Tools		Use the tool by pressing the mouse-button.
-Colors	ColorPalette		Colors
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
+Colors	ColorPalette		Colors
 Save	ImageView		Save
 Layer	PaintWindow		Layer
 Empty paint window	PaintWindow		Empty paint window
 No options	Windows		No options
 Flip vertically	Manipulators		Flip vertically
+ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 Tool cursor	Windows		Tool cursor
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Intelligent scissors	Tools		Intelligent scissors
@@ -321,7 +321,6 @@ No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
 Wand tolerance	Tools		Wand tolerance
 Invert selection	ImageView		Invert selection
-Help	PaintWindow		Help
 Much	Tools		Much
 Not implemented yet.	Tools		Not implemented yet.
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
@@ -329,9 +328,9 @@ Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Unsaved changes!	ImageView		Unsaved changes!
 Un-selects all	PaintWindow		Un-selects all
+ArtPaint :Save image	FilePanels		ArtPaint :Save image
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
-Layers	PaintWindow		Layers
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Undo not available	UndoQueue		Undo not available
@@ -343,6 +342,7 @@ Tolerance:	Tools		Tolerance:
 Using the tool.	Tools		Using the tool.
 Drag the image to correct position.	Manipulators		Drag the image to correct position.
 Lock	Manipulators	Keep the aspect ratio	Lock
+Tools…	PaintWindow		Tools…
 Add area	Tools		Add area
 Eraser	Tools		Eraser
 Recent images	PaintWindow		Recent images
