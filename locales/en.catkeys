@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3314877289
+1	English	application/x-vnd.artpaint	3924547692
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Press the mouse-button to make a fill.	Tools		Press the mouse-button to make a fill.
@@ -62,7 +62,6 @@ Tools	PaintWindow		Tools
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
 Redo not available	UndoQueue		Redo not available
 Drawing a freehand line.	Tools		Drawing a freehand line.
-Opens the layer window.	PaintWindow		Opens the layer window.
 Random	Tools		Random
 Tool setup	PaintWindow		Tool setup
 Flip horizontally	Manipulators		Flip horizontally
@@ -133,7 +132,6 @@ Transparent	Manipulators		Transparent
 Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use the primary mouse-button to rotate, other buttons to set the rotation center.
 Ellipse	Tools		Ellipse
 Adjustable width	Tools		Adjustable width
-Show layer window	PaintWindow		Show layer window
 Redo not available	PaintWindow		Redo not available
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
@@ -310,8 +308,8 @@ Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
-Mode	Tools		Mode
 Flip horizontally	PaintWindow		Flip horizontally
+Mode	Tools		Mode
 Change transparency…	PaintWindow		Change transparency…
 Height	Tools		Height
 Size	Tools		Size
