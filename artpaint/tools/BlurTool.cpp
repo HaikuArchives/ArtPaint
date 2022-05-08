@@ -240,7 +240,7 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBlurSize =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBlurSize);

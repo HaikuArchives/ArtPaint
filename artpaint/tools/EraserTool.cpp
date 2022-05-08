@@ -264,7 +264,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fSizeSlider =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);

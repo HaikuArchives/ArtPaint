@@ -76,7 +76,7 @@ BrushEditor::BrushEditor(Brush* brush)
 	fStoreBrush = new BButton(B_TRANSLATE("Store brush"),
 		new BMessage(kBrushStoreRequest));
 
-	fResetBrush = new BButton(B_TRANSLATE("Reset Brush"),new BMessage(kBrushResetRequest));
+	fResetBrush = new BButton(B_TRANSLATE("Reset brush"),new BMessage(kBrushResetRequest));
 	fResetBrush->SetEnabled(false);
 	fResetBrush->SetToolTip(B_TRANSLATE("Not implemented yet."));
 
@@ -84,21 +84,21 @@ BrushEditor::BrushEditor(Brush* brush)
 	message->AddInt32("value", int32(fBrushInfo.width));
 
 	fBrushWidth =
-		new NumberSliderControl(B_TRANSLATE("Width"), "0",
+		new NumberSliderControl(B_TRANSLATE("Width:"), "0",
 		message, 0, 100, false);
 
 	message = new BMessage(kBrushHeightChanged);
 	message->AddInt32("value", int32(fBrushInfo.height));
 
 	fBrushHeight =
-		new NumberSliderControl(B_TRANSLATE("Height"), "0",
+		new NumberSliderControl(B_TRANSLATE("Height:"), "0",
 		message, 0, 100, false);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.fade_length));
 
 	fBrushFade =
-		new NumberSliderControl(B_TRANSLATE("Fade"), "0",
+		new NumberSliderControl(B_TRANSLATE("Fade:"), "0",
 		message, 0, 100, false);
 
 	BSeparatorView* view = new BSeparatorView(B_HORIZONTAL, B_FANCY_BORDER);

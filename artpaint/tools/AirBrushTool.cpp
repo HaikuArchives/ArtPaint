@@ -360,7 +360,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBrushSize =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -368,7 +368,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fBrushFlow =
-			new NumberSliderControl(B_TRANSLATE("Flow"),
+			new NumberSliderControl(B_TRANSLATE("Flow:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);

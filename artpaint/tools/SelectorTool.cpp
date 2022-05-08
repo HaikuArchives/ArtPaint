@@ -639,7 +639,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		message->AddInt32("option", TOLERANCE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(TOLERANCE_OPTION));
 		fTolerance =
-			new NumberSliderControl(B_TRANSLATE("Tolerance"),
+			new NumberSliderControl(B_TRANSLATE("Tolerance:"),
 				"10", message, 0, 100, false);
 
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);

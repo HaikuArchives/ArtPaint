@@ -183,7 +183,7 @@ TransparencyManipulatorView::TransparencyManipulatorView(
 {
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	fTransparency = new BSlider("transparency",
-		B_TRANSLATE("Transparency"),
+		B_TRANSLATE("Transparency:"),
 		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_HORIZONTAL,
 		B_TRIANGLE_THUMB);
 	fTransparency->SetValue(0);

@@ -149,8 +149,8 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 
 	if ((views & HS_SIZING_VIEW) != 0x0000)  {
 		// we need to show the create canvas area
-		const char* widthLabel = B_TRANSLATE("Width");
-		const char* heightLabel = B_TRANSLATE("Height");
+		const char* widthLabel = B_TRANSLATE("Width:");
+		const char* heightLabel = B_TRANSLATE("Height:");
 
 		BFont font;
 		const char* tmpLabel = widthLabel;
