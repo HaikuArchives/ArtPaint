@@ -1,0 +1,15 @@
+1	German	application/x-vnd.artpaint-addon	3848230707
+BeOS palette	AddOns_ColorReducer		BeOS Palette
+Change the parameters of color reduction.	AddOns_ColorReducer		Parameter der Farbreduktion.
+Color reducer	AddOns_ColorReducer		Farbreduzierer
+Color reducer…	AddOns_ColorReducer		Farbreduzierer…
+Dither mode:	AddOns_ColorReducer		Dither-Modus:
+Floyd-Steinberg EDD	AddOns_ColorReducer		Floyd-Steinberg EDD
+GLA palette	AddOns_ColorReducer		GLA Palette
+N-Candidate	AddOns_ColorReducer		N-Kandidat
+No dithering	AddOns_ColorReducer		Kein Dithering
+Palette mode:	AddOns_ColorReducer		Palettenmodus:
+Palette size:	AddOns_ColorReducer		Palettengröße:
+Preserve solids FS	AddOns_ColorReducer		Vollfarben erhalten FS
+Reduces the number of used colors to a specified maximum.	AddOns_ColorReducer		Reduziert die verwendeten Farben auf die angegebene Anzahl.
+Reducing in progress	AddOns_ColorReducer		Reduktion läuft
