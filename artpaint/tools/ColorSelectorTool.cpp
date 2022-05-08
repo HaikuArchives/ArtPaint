@@ -402,7 +402,7 @@ ColorSelectorTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Picking a color.")
-		: B_TRANSLATE("Press the mouse-button to pick a color."));
+		: B_TRANSLATE("Click to pick a color."));
 }
 
 

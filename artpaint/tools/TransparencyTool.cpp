@@ -177,7 +177,7 @@ TransparencyTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Adjusting the layer's transparency.")
-		: B_TRANSLATE("Press the mouse-button to adjust layer's transparency."));
+		: B_TRANSLATE("Click to adjust the layer's transparency."));
 }
 
 

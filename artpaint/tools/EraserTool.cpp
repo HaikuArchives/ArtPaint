@@ -210,7 +210,7 @@ EraserTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Erasing the image.")
-		: B_TRANSLATE("Press the mouse-button to use eraser."));
+		: B_TRANSLATE("Click to use eraser."));
 }
 
 

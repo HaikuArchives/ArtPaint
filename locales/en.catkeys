@@ -1,7 +1,6 @@
-1	English	application/x-vnd.artpaint	3787354711
+1	English	application/x-vnd.artpaint	2034823255
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
-Press the mouse-button to make a fill.	Tools		Press the mouse-button to make a fill.
 Cancel	Windows		Cancel
 Enable antialiasing	Manipulators		Enable antialiasing
 Crop…	Manipulators		Crop…
@@ -14,9 +13,12 @@ Paste as a new project	PaintWindow		Paste as a new project
 Global settings	Windows		Global settings
 Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
 Width:	PaintWindow		Width:
+Click to use eraser.	Tools		Click to use eraser.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
+Click to draw a freehand line.	Tools		Click to draw a freehand line.
 Cursor	Windows		Cursor
 Crop…	PaintWindow		Crop…
+Click to make a selection.	Tools		Click to make a selection.
 Bummer	UndoQueue		Bummer
 ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.
 Cross-hair cursor	Windows		Cross-hair cursor
@@ -24,9 +26,11 @@ Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
 Width:	Tools		Width:
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
+Click to blur the image.	Tools		Click to blur the image.
 Rotate all layers.	PaintWindow		Rotate all layers.
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
+Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
 Add layer	PaintWindow		Add layer
 Colors	PaintWindow		Colors
@@ -42,7 +46,6 @@ Save color set	ColorPalette		Save color set
 Untitled	PaintWindow		Untitled
 Miscellaneous	Windows		Miscellaneous
 Settings…	FilePanels		Settings…
-Press the mouse-button to draw an ellipse.	Tools		Press the mouse-button to draw an ellipse.
 Save	FilePanels		Save
 Undo	UndoQueue		Undo
 Open	FilePanels		Open
@@ -60,7 +63,6 @@ Drawing a freehand line.	Tools		Drawing a freehand line.
 Random	Tools		Random
 Tool setup	PaintWindow		Tool setup
 Flip horizontally	Manipulators		Flip horizontally
-Press the mouse-button to make a selection.	Tools		Press the mouse-button to make a selection.
 Opens the tool setup window.	PaintWindow		Opens the tool setup window.
 Flow:	Tools		Flow:
 Picking a color.	Tools		Picking a color.
@@ -104,17 +106,16 @@ Confirm quitting	Windows		Confirm quitting
 Scale…	Manipulators		Scale…
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Merge with back layer	Image		Merge with back layer
+Click to make a fill.	Tools		Click to make a fill.
 Save project	PaintWindow		Save project
 Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
 Spray	Tools		Spray
-Press the mouse-button to adjust layer's transparency.	Tools		Press the mouse-button to adjust layer's transparency.
 None	Tools		None
 Save format:	FilePanels		Save format:
 Clears all layers.	PaintWindow		Clears all layers.
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Zoom in	PaintWindow		Zoom in
 Rotate +90°	PaintWindow		Rotate +90°
-Press the mouse-button to insert text into the image.	Tools		Press the mouse-button to insert text into the image.
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
 Red	Tools		Red
 Scale…	PaintWindow		Scale…
@@ -140,7 +141,7 @@ Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
 Speed:	Tools		Speed:
 Close	PaintWindow		Close
-Press the mouse-button to blur the image.	Tools		Press the mouse-button to blur the image.
+Click to place the text.	Tools		Click to place the text.
 Translate…	PaintWindow		Translate…
 Insert text…	PaintWindow		Insert text…
 Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
@@ -151,7 +152,6 @@ Store brush	Tools		Store brush
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Edit	PaintWindow		Edit
 Drawing an ellipse.	Tools		Drawing an ellipse.
-Press the mouse-button to use eraser.	Tools		Press the mouse-button to use eraser.
 Save image	FilePanels		Save image
 Shrink selection	ImageView		Shrink selection
 Freehand line	Tools		Freehand line
@@ -166,6 +166,7 @@ Airbrush	Tools		Airbrush
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Reset brush	Tools		Reset brush
+Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
 Background	Tools		Background
 Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Clear canvas
@@ -176,6 +177,7 @@ Magic wand	Tools		Magic wand
 Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Little	Tools		Little
 Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
+Click to paint with a brush.	Tools		Click to paint with a brush.
 Tool setup	Windows		Tool setup
 Free 2D transform	FreeTransformManipulator		Free 2D transform
 Copy	PaintWindow		Copy
@@ -222,9 +224,9 @@ Shortcuts…	PaintWindow		Shortcuts…
 Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
-Press the mouse-button to draw a freehand line.	Tools		Press the mouse-button to draw a freehand line.
 Merge with front layer	LayerView		Merge with front layer
 Closes the current window.	PaintWindow		Closes the current window.
+Click to draw a rectangle.	Tools		Click to draw a rectangle.
 Duplicate layer	LayerView		Duplicate layer
 Shrink selection	PaintWindow		Shrink selection
 Zooms out from the image.	PaintWindow		Zooms out from the image.
@@ -232,15 +234,12 @@ Clear selection	ImageView		Clear selection
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 Copies the selection of all layers to the clipboard.	PaintWindow		Copies the selection of all layers to the clipboard.
-Press the mouse-button to draw a straight line.	Tools		Press the mouse-button to draw a straight line.
 Transparent	Tools		Transparent
 Click here to open color panel.	StatusView		Click here to open color panel.
 Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Recent projects
-Press the mouse-button to pick a color.	Tools		Press the mouse-button to pick a color.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Color variance:	Tools		Color variance:
-Press the mouse-button to paint with a brush.	Tools		Press the mouse-button to paint with a brush.
 Clear layer	PaintWindow		Clear layer
 Painting with a brush.	Tools		Painting with a brush.
 Rectangle	Tools		Rectangle
@@ -248,6 +247,8 @@ The file %file% is of unsupported type. You could try installing a translator fo
 Restore	Manipulators		Restore
 Keep in front	Windows		Keep in front
 OK	Image		OK
+Click to draw an ellipse.	Tools		Click to draw an ellipse.
+Click to paint with airbrush.	Tools		Click to paint with airbrush.
 Colors	Windows		Colors
 Move the active layer.	PaintWindow		Move the active layer.
 Off	PaintWindow		Off
@@ -260,10 +261,9 @@ Height:	Tools		Height:
 Create canvas	PaintWindow		Create canvas
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
-Press the mouse-button to draw a rectangle.	Tools		Press the mouse-button to draw a rectangle.
 Hairy brush	Tools		Hairy brush
+Click to paint with a hairy brush.	Tools		Click to paint with a hairy brush.
 Size:	Tools		Size:
-Press the mouse-button to paint with a hairy brush.	Tools		Press the mouse-button to paint with a hairy brush.
 Color selector	Tools		Color selector
 Off	Windows		Off
 Tools	Windows		Tools
@@ -292,7 +292,6 @@ Straight line	Tools		Straight line
 Enable rotation	Tools		Enable rotation
 Continuous	Tools		Continuous
 OK	PaintWindow		OK
-Press the mouse-button to paint with airbrush.	Tools		Press the mouse-button to paint with airbrush.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
 User manual…	PaintWindow		User manual…
 Corner to corner	Tools		Corner to corner
@@ -339,6 +338,7 @@ Undo not available	UndoQueue		Undo not available
 Delete layer	LayerView		Delete layer
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
+Click to pick a color.	Tools		Click to pick a color.
 Tolerance:	Tools		Tolerance:
 Using the tool.	Tools		Using the tool.
 Drag the image to correct position.	Manipulators		Drag the image to correct position.

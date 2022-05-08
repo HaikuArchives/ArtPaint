@@ -192,7 +192,7 @@ BrushTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Painting with a brush.")
-		: B_TRANSLATE("Press the mouse-button to paint with a brush."));
+		: B_TRANSLATE("Click to paint with a brush."));
 }
 
 

@@ -57,5 +57,5 @@ TextTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drag the text to correct position and set its appearance.")
-		: B_TRANSLATE("Press the mouse-button to insert text into the image."));
+		: B_TRANSLATE("Click to place the text."));
 }

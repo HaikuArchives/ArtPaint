@@ -293,7 +293,7 @@ RectangleTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drawing a rectangle.")
-		: B_TRANSLATE("Press the mouse-button to draw a rectangle."));
+		: B_TRANSLATE("Click to draw a rectangle."));
 }
 
 

@@ -217,7 +217,7 @@ BlurTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Blurring the image.")
-		: B_TRANSLATE("Press the mouse-button to blur the image."));
+		: B_TRANSLATE("Click to blur the image."));
 }
 
 
