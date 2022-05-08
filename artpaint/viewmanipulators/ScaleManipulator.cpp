@@ -432,10 +432,10 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 	original_height = -1;
 	maintain_proportions = true;
 
-	width_control = new NumberControl(B_TRANSLATE("Width"),
+	width_control = new NumberControl(B_TRANSLATE("Width:"),
 		"", new BMessage(WIDTH_CHANGED), 5);
 
-	height_control = new NumberControl(B_TRANSLATE("Height"),
+	height_control = new NumberControl(B_TRANSLATE("Height:"),
 		"", new BMessage(HEIGHT_CHANGED), 5);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL, 5.0));

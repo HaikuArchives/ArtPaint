@@ -47,6 +47,7 @@
 #include <ScrollBar.h>
 #include <Slider.h>
 #include <StatusBar.h>
+#include <StringFormat.h>
 #include <Window.h>
 
 
@@ -867,9 +868,14 @@ ImageView::Quit()
 
 	if (mode == B_CONTROL_ON) {
 		if (project_changed > 0) {
-			BString format(B_TRANSLATE("%s: You have made %d changes since the last time the project was saved. Do you want to save the changes?"));
 			BString text;
-			text.SetToFormat(format, project_name, project_changed);
+			static BStringFormat format(B_TRANSLATE("{0, plural,"
+				"one{%project_name%: You have made a change since the last time "
+					"the project was saved.\nDo you want to save the change?}"
+				"other{%project_name%: You have made # changes since the last time "
+					"the project was saved.\nDo you want to save the changes?}}"));
+			format.Format(text, project_changed);
+			text.ReplaceFirst("%project_name%", project_name);
 
 			BAlert* alert = new BAlert(B_TRANSLATE("Unsaved changes!"), text,
 				B_TRANSLATE("Cancel"),

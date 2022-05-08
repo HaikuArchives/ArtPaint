@@ -403,8 +403,9 @@ HairyBrushTool::ToolCursor() const
 const char*
 HairyBrushTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Painting with a hairy brush."
-		: "Press the mouse-button to paint with a hairy brush.");
+	return (isInUse
+		? B_TRANSLATE("Painting with a hairy brush.")
+		: B_TRANSLATE("Click to paint with a hairy brush."));
 }
 
 
@@ -456,7 +457,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fBrushSize =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"0", message, 2, 50, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -464,11 +465,11 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBrushHairs =
-			new NumberSliderControl(B_TRANSLATE("Hairs"),
+			new NumberSliderControl(B_TRANSLATE("Hairs:"),
 			"0", message, 5, 100, false);
 
 		fColorAmount =
-			new BSlider("", B_TRANSLATE("Color amount"),
+			new BSlider("", B_TRANSLATE("Color amount:"),
 			new BMessage(COLOR_AMOUNT_CHANGED), 1, 500, B_HORIZONTAL,
 			B_TRIANGLE_THUMB);
 		fColorAmount->SetLimitLabels(B_TRANSLATE("Little"),
@@ -476,7 +477,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 		fColorAmount->SetValue(tool->GetCurrentValue(CONTINUITY_OPTION));
 
 		fColorVariance =
-			new BSlider("", B_TRANSLATE("Color variance"),
+			new BSlider("", B_TRANSLATE("Color variance:"),
 			new BMessage(COLOR_VARIANCE_CHANGED), 0, 128, B_HORIZONTAL,
 			B_TRIANGLE_THUMB);
 		fColorVariance->SetLimitLabels(B_TRANSLATE("None"),

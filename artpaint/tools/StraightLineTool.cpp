@@ -343,8 +343,9 @@ StraightLineTool::ToolCursor() const
 const char*
 StraightLineTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Drawing a straight line."
-		: "Press the mouse-button to draw a straight line.");
+	return (isInUse
+		? B_TRANSLATE("Drawing a straight line.")
+		: B_TRANSLATE("Click to draw a straight line."));
 }
 
 
@@ -360,7 +361,7 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fLineSize = new NumberSliderControl(
-			B_TRANSLATE("Size"),
+			B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);

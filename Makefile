@@ -59,14 +59,14 @@ artpaint/viewmanipulators/ManipulatorInformer.cpp artpaint/viewmanipulators/Mani
 artpaint/viewmanipulators/Rotate90Manipulator.cpp artpaint/viewmanipulators/RotationManipulator.cpp \
 artpaint/viewmanipulators/ScaleManipulator.cpp artpaint/viewmanipulators/TextManipulator.cpp \
 artpaint/viewmanipulators/TranslationManipulator.cpp artpaint/viewmanipulators/TransparencyManipulator.cpp \
-artpaint/viewmanipulators/WindowGUIManipulator.cpp artpaint/windows/AboutWindow.cpp \
+artpaint/viewmanipulators/WindowGUIManipulator.cpp \
 artpaint/windows/BrushStoreWindow.cpp artpaint/windows/DatatypeSetupWindow.cpp artpaint/windows/GlobalSetupWindow.cpp \
 artpaint/windows/ManipulatorWindow.cpp artpaint/windows/ViewSetupWindow.cpp
 
 #	specify the resource definition files to use
 #	full path or a relative path to the resource file can be used.
 RDEFS= artpaint/ArtPaint.rdef
-	
+
 #	specify the resource files to use. 
 #	full path or a relative path to the resource file can be used.
 #	both RDEFS and RSRCS can be defined in the same makefile.
@@ -106,7 +106,7 @@ LIBPATHS=
 #	additional paths to look for system headers
 #	thes use the form: #include <header>
 #	source file directories are NOT auto-included here
-SYSTEM_INCLUDE_PATHS = 
+SYSTEM_INCLUDE_PATHS = $(shell findpaths -e B_FIND_PATH_HEADERS_DIRECTORY private/interface)
 
 #	additional paths to look for local headers
 #	thes use the form: #include "header"

@@ -43,7 +43,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 AirBrushTool::AirBrushTool()
-	: DrawingTool(B_TRANSLATE("Air brush"),
+	: DrawingTool(B_TRANSLATE("Airbrush"),
 		AIR_BRUSH_TOOL)
 {
 	fOptions = SIZE_OPTION | PRESSURE_OPTION | MODE_OPTION;
@@ -341,8 +341,9 @@ AirBrushTool::ToolCursor() const
 const char*
 AirBrushTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Using the air-brush."
-		: "Press the mouse-button to paint with air-brush.");
+	return (isInUse
+		? B_TRANSLATE("Using the airbrush.")
+		: B_TRANSLATE("Click to paint with airbrush."));
 }
 
 
@@ -359,7 +360,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
 		fBrushSize =
-			new NumberSliderControl(B_TRANSLATE("Size"),
+			new NumberSliderControl(B_TRANSLATE("Size:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -367,7 +368,7 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fBrushFlow =
-			new NumberSliderControl(B_TRANSLATE("Flow"),
+			new NumberSliderControl(B_TRANSLATE("Flow:"),
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);

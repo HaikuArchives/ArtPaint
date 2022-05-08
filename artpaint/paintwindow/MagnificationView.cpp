@@ -88,7 +88,7 @@ MagnificationView::MagnificationView()
 	B_PLAIN_BORDER)
 {
 	char string[256];
-	sprintf(string,"%s: %.1f%%", B_TRANSLATE("Mag"), 1600.0);
+	sprintf(string,"%s: %.1f%%", B_TRANSLATE("Zoom"), 1600.0);
 
 	fMagStringView = new MagStringView("magStringView", string);
 
@@ -136,7 +136,7 @@ void
 MagnificationView::SetMagnificationLevel(float magLevel)
 {
 	char string[256];
-	sprintf(string, "%s: %.1f%%", B_TRANSLATE("Mag"),
+	sprintf(string, "%s: %.1f%%", B_TRANSLATE("Zoom"),
 		100.0 * magLevel);
 	fMagStringView->SetText(string);
 }

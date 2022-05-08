@@ -1527,8 +1527,9 @@ FillTool::ToolCursor() const
 const char*
 FillTool::HelpString(bool isInUse) const
 {
-	return B_TRANSLATE(isInUse ? "Making a fill."
-		: "Press the mouse-button to make a fill.");
+	return (isInUse
+		? B_TRANSLATE("Making a fill.")
+		: B_TRANSLATE("Click to make a fill."));
 }
 
 
@@ -1749,7 +1750,7 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 		message->AddInt32("option",TOLERANCE_OPTION);
 		message->AddInt32("value",tool->GetCurrentValue(TOLERANCE_OPTION));
 		fTolerance =
-			new NumberSliderControl(B_TRANSLATE("Tolerance"),
+			new NumberSliderControl(B_TRANSLATE("Tolerance:"),
 				"0", message, 0, 100, false);
 		fTolerance->SetValue(tool->GetCurrentValue(TOLERANCE_OPTION));
 

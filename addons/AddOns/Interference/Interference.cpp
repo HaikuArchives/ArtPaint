@@ -315,21 +315,21 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,
 	target = new BMessenger(t);
 	preview_started = FALSE;
 
-	centerAX = new BSpinner("centerAx", "X", new BMessage(CENTER_A_X_CHANGED));
+	centerAX = new BSpinner("centerAx", "X:", new BMessage(CENTER_A_X_CHANGED));
 	centerAX->SetMaxValue(9999);
 	centerAX->SetMinValue(-9999);
-	centerAY = new BSpinner("centerAy", "Y", new BMessage(CENTER_A_Y_CHANGED));
+	centerAY = new BSpinner("centerAy", "Y:", new BMessage(CENTER_A_Y_CHANGED));
 	centerAY->SetMaxValue(9999);
 	centerAY->SetMinValue(-9999);
-	centerBX = new BSpinner("centerBx", "X", new BMessage(CENTER_B_X_CHANGED));
+	centerBX = new BSpinner("centerBx", "X:", new BMessage(CENTER_B_X_CHANGED));
 	centerBX->SetMaxValue(9999);
 	centerBX->SetMinValue(-9999);
-	centerBY = new BSpinner("centerBy", "Y", new BMessage(CENTER_B_Y_CHANGED));
+	centerBY = new BSpinner("centerBy", "Y:", new BMessage(CENTER_B_Y_CHANGED));
 	centerBY->SetMaxValue(9999);
 	centerBY->SetMinValue(-9999);
 
 	waveLengthSliderA = new BSlider("waveLengthSliderA",
-		B_TRANSLATE("Wavelength"),
+		B_TRANSLATE("Wavelength:"),
 		new BMessage(WAVE_LENGTH_A_CHANGED),
 		(int32)MIN_WAVE_LENGTH, (int32)MAX_WAVE_LENGTH,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
@@ -339,7 +339,7 @@ InterferenceManipulatorView::InterferenceManipulatorView(BRect rect,
 		new BMessage(WAVE_LENGTH_ADJUSTING_STARTED));
 
 	waveLengthSliderB = new BSlider("waveLengthSliderB",
-		B_TRANSLATE("Wavelength"),
+		B_TRANSLATE("Wavelength:"),
 		new BMessage(WAVE_LENGTH_B_CHANGED),
 		(int32)MIN_WAVE_LENGTH, (int32)MAX_WAVE_LENGTH,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
