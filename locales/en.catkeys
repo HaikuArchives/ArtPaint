@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1494549809
+1	English	application/x-vnd.artpaint	3223448953
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -34,6 +34,7 @@ Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
+ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Add layer	PaintWindow		Add layer
 Selector tool	Tools		Selector tool
 Not a color set file	ColorPalette		Not a color set file
@@ -327,7 +328,6 @@ Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Unsaved changes!	ImageView		Unsaved changes!
 Un-selects all	PaintWindow		Un-selects all
-ArtPaint :Save image	FilePanels		ArtPaint :Save image
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
