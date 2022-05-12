@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Gaussian blur" B_UTF8_ELLIPSIS);
-	char menu_help_string[255] = B_TRANSLATE_MARK("Adds a gaussian blur to the image.");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adds a gaussian blur.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus

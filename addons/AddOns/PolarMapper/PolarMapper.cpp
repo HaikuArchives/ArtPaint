@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Polar mapper");
-	char menu_help_string[255] = B_TRANSLATE_MARK("Maps image to its polar coordinate representation.");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Maps the image to its polar coordinate representation.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
 #ifdef __cplusplus

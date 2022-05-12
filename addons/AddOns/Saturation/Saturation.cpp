@@ -409,7 +409,7 @@ const char* SaturationManipulator::ReturnName()
 
 const char* SaturationManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Adjust color saturation.");
+	return B_TRANSLATE("Adjusts color saturation.");
 }
 
 
