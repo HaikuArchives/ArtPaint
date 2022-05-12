@@ -1,14 +1,14 @@
 #!/bin/sh -e
 echo "Building ArtPaint"
 make -f Makefile OBJ_DIR="objects_artpaint" $*
-make -f Makefile OBJ_DIR="objects_artpaint" catkeys
+# make -f Makefile OBJ_DIR="objects_artpaint" catkeys
 make -f Makefile OBJ_DIR="objects_artpaint" bindcatalogs
 
 echo "Building ArtPaint addons"
 for addonDir in $(find ./addons/AddOns/* -maxdepth 0 -type d) ; do
 	pushd "$addonDir"
 	make OBJ_DIR="objects_addons" $*
-	make OBJ_DIR="objects_addons" catkeys
+#	make OBJ_DIR="objects_addons" catkeys
 	make OBJ_DIR="objects_addons" bindcatalogs
 	popd
 done
