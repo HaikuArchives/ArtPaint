@@ -99,7 +99,7 @@ BrushEditor::BrushEditor(Brush* brush)
 	message = new BMessage(kLockDimensionsChanged);
 
 	fLockDimensions =
-		new BCheckBox(B_TRANSLATE("Lock dimensions"),
+		new BCheckBox(B_TRANSLATE("Equal-sided"),
 		message);
 
 	message = new BMessage(kBrushAngleChanged);

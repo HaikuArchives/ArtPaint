@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2230471342
+1	English	application/x-vnd.artpaint	1442601790
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -27,7 +27,6 @@ Alpha	Tools		Alpha
 Width:	Tools		Width:
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
-Lock dimensions	Tools		Lock dimensions
 Click to blur the image.	Tools		Click to blur the image.
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
@@ -139,6 +138,7 @@ Layers…	PaintWindow		Layers…
 Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
+Equal-sided	Tools		Equal-sided
 Speed:	Tools		Speed:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
