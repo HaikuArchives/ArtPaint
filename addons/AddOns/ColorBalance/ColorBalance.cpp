@@ -232,7 +232,7 @@ void ColorBalanceManipulator::SetPreviewBitmap(BBitmap *bm)
 
 const char*	ColorBalanceManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the sliders to adjust the color balance.");
+	return B_TRANSLATE("Adjusts the color balance.");
 }
 
 const char*	ColorBalanceManipulator::ReturnName()

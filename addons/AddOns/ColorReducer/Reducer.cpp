@@ -37,7 +37,7 @@ extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Color reducer" B_UTF8_ELLIPSIS);
 	char menu_help_string[255]
-		= B_TRANSLATE_MARK("Reduces the number of used colors to a specified maximum.");
+		= B_TRANSLATE_MARK("Reduces the number of used colors.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -197,6 +197,7 @@ void ReducerManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
+
 const char* ReducerManipulator::ReturnName()
 {
 	return B_TRANSLATE("Color reducer");
@@ -204,11 +205,8 @@ const char* ReducerManipulator::ReturnName()
 
 const char* ReducerManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Change the parameters of color reduction.");
+	return B_TRANSLATE("Reduces the number of used colors.");
 }
-
-
-
 
 
 void ReducerManipulator::do_dither(BBitmap *source,BBitmap *target,const rgb_color *palette,int palette_size,int32 dither_mode)

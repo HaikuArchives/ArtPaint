@@ -218,7 +218,7 @@ const char* ColorSeparatorManipulator::ReturnName()
 
 const char* ColorSeparatorManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the image saturation.");
+	return B_TRANSLATE("Extracts the color components for printing.");
 }
 
 

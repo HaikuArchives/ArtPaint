@@ -250,7 +250,7 @@ InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 const char*
 InterferenceManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Left-click the image to move Center A, right-click to move Center B.");
+	return B_TRANSLATE("Left-click to move Center A, right-click to move Center B.");
 }
 
 

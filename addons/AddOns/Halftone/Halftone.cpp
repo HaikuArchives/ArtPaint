@@ -191,7 +191,7 @@ BBitmap* Halftone::ManipulateBitmap(BBitmap *original,Selection *selection,BStat
 
 const char* Halftone::ReturnHelpString()
 {
-	return B_TRANSLATE("Makes a halftone-pattern of the image with foreground and background colors.");
+	return B_TRANSLATE("Makes a halftone-pattern with fore- and background colors.");
 }
 
 

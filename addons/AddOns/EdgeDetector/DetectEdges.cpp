@@ -112,7 +112,7 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *s
 
 const char* DetectEdgesManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Detects edges in the image.");
+	return B_TRANSLATE("Detects edges.");
 }
 
 const char* DetectEdgesManipulator::ReturnName()

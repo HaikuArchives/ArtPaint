@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint-addon	363087096
+1	English	application/x-vnd.artpaint-addon	1495551387
 Adds a wave to the active layer.	AddOns_Wave		Adds a wave to the active layer.
 Wavelength:	AddOns_Wave		Wavelength:
 Strong	AddOns_Wave		Strong
@@ -7,5 +7,5 @@ Mild	AddOns_Wave		Mild
 Wave…	AddOns_Wave		Wave…
 Wave	AddOns_Wave		Wave
 Long	AddOns_Wave		Long
-Click on the image to set the wave center. Use the sliders to adjust wave.	AddOns_Wave		Click on the image to set the wave center. Use the sliders to adjust wave.
 Short	AddOns_Wave		Short
+Click to set the wave center. Use the sliders to adjust wave.	AddOns_Wave		Click to set the wave center. Use the sliders to adjust wave.

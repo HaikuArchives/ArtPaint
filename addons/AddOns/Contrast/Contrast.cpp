@@ -395,7 +395,7 @@ const char* ContrastManipulator::ReturnName()
 
 const char* ContrastManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the image contrast.");
+	return B_TRANSLATE("Adjusts the contrast.");
 }
 
 

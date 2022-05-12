@@ -265,7 +265,7 @@ const char* GaussianBlurManipulator::ReturnName()
 
 const char* GaussianBlurManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the size of the blur.");
+	return B_TRANSLATE("Adds a gaussian blur.");
 }
 
 

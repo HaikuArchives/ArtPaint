@@ -119,7 +119,7 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 
 const char* EnhanceEdgesManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Enhances the edges in the image.");
+	return B_TRANSLATE("Enhances the edges.");
 }
 
 

@@ -889,7 +889,7 @@ void WaveManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
 
 const char*	WaveManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Click on the image to set the wave center. Use the sliders to adjust wave.");
+	return B_TRANSLATE("Click to set the wave center. Use the sliders to adjust wave.");
 }
 
 

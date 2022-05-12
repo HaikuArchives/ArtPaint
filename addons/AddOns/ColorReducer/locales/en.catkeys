@@ -1,7 +1,6 @@
-1	English	application/x-vnd.artpaint-addon	3848230707
+1	English	application/x-vnd.artpaint-addon	4028313967
 BeOS palette	AddOns_ColorReducer		BeOS palette
 Preserve solids FS	AddOns_ColorReducer		Preserve solids FS
-Reduces the number of used colors to a specified maximum.	AddOns_ColorReducer		Reduces the number of used colors to a specified maximum.
 Palette size:	AddOns_ColorReducer		Palette size:
 Color reducer	AddOns_ColorReducer		Color reducer
 Floyd-Steinberg EDD	AddOns_ColorReducer		Floyd-Steinberg EDD
@@ -12,4 +11,4 @@ No dithering	AddOns_ColorReducer		No dithering
 Palette mode:	AddOns_ColorReducer		Palette mode:
 N-Candidate	AddOns_ColorReducer		N-Candidate
 Reducing in progress	AddOns_ColorReducer		Reducing in progress
-Change the parameters of color reduction.	AddOns_ColorReducer		Change the parameters of color reduction.
+Reduces the number of used colors.	AddOns_ColorReducer		Reduces the number of used colors.

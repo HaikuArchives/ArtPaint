@@ -138,7 +138,7 @@ BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BS
 
 const char* PolarMapper::ReturnHelpString()
 {
-	return B_TRANSLATE("Maps image to its polar coordinate representation.");
+	return B_TRANSLATE("Maps the image to its polar coordinate representation.");
 }
 
 

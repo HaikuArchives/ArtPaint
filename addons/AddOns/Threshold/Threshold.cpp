@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Threshold" B_UTF8_ELLIPSIS);
-	char menu_help_string[255] = B_TRANSLATE_MARK("Show only pixels of a specified threshold.");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Shows only pixels of a specified threshold.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -398,7 +398,7 @@ const char* ThresholdManipulator::ReturnName()
 
 const char* ThresholdManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the thresholding value.");
+	return B_TRANSLATE("Shows only pixels of a specified threshold.");
 }
 
 
