@@ -350,7 +350,7 @@ const char* ThresholdManipulator::ReturnName()
 
 const char* ThresholdManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the thresholding value.");
+	return B_TRANSLATE("Shows only pixels of a specified threshold.");
 }
 
 

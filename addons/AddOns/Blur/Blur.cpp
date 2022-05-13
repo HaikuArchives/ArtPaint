@@ -540,7 +540,7 @@ ManipulatorSettings* BlurManipulator::ReturnSettings()
 
 const char*	BlurManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to adjust blur amount.");
+	return B_TRANSLATE("Adds a blur.");
 }
 
 

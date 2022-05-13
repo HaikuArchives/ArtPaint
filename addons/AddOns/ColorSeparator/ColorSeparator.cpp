@@ -34,7 +34,7 @@ extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Color separator" B_UTF8_ELLIPSIS);
 	char menu_help_string[255] =
-		B_TRANSLATE_MARK("Extracts the Cyan, Magenta, Yellow or Key/Black components for printing.");
+		B_TRANSLATE_MARK("Extracts the color components for printing.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -218,7 +218,7 @@ const char* ColorSeparatorManipulator::ReturnName()
 
 const char* ColorSeparatorManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the image saturation.");
+	return B_TRANSLATE("Extracts the color components for printing.");
 }
 
 

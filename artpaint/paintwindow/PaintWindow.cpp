@@ -269,7 +269,7 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 		containerLayout->SetMinColumnWidth(2, 15.0);
 
 		BMessage msg(HS_TOOL_HELP_MESSAGE);
-		msg.AddString("message", B_TRANSLATE("Select the canvas size you want."));
+		msg.AddString("message", B_TRANSLATE("Set/Select the canvas size."));
 		PostMessage(&msg, this);
 
 		fImageSizeWindow->ResizeToPreferred();
@@ -978,7 +978,7 @@ PaintWindow::openMenuBar()
 	BMenu* menu = new BMenu(B_TRANSLATE_SYSTEM_NAME("ArtPaint"));
 	fMenubar->AddItem(menu);
 
-	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("New project"),
+	BMenuItem* item = new PaintWindowMenuItem(B_TRANSLATE("New project" B_UTF8_ELLIPSIS),
 		new BMessage(HS_NEW_PAINT_WINDOW), 'N', 0, this,
 		B_TRANSLATE("Creates a new empty canvas."));
 	item->SetTarget(be_app);
@@ -1142,14 +1142,14 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
 		a_message, 'R', 0, this,
-		B_TRANSLATE("Rotate the active layer.")));
+		B_TRANSLATE("Rotates the active layer.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSLATION_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
 		a_message, 'T', 0, this,
-		B_TRANSLATE("Move the active layer.")));
+		B_TRANSLATE("Moves the active layer.")));
 
 //	a_message = new BMessage(HS_START_MANIPULATOR);
 //	a_message->AddInt32("manipulator_type",FREE_TRANSFORM_MANIPULATOR);
@@ -1177,7 +1177,7 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Change transparency" B_UTF8_ELLIPSIS),
 		a_message, 0, 0, this,
-		B_TRANSLATE("Change the transparency of active layer.")));
+		B_TRANSLATE("Changes the transparency of active layer.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear layer"),
 		new BMessage(HS_CLEAR_LAYER), 0, 0, this,
 		B_TRANSLATE("Clears the active layer.")));
@@ -1204,7 +1204,7 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
 		a_message, 'R', B_SHIFT_KEY, this,
-		B_TRANSLATE("Rotate all layers.")));
+		B_TRANSLATE("Rotates all layers.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",ROTATE_CW_MANIPULATOR);
@@ -1225,7 +1225,7 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
 		a_message, 'T', B_SHIFT_KEY, this,
-		B_TRANSLATE("Move all layers.")));
+		B_TRANSLATE("Moves all layers.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",HORIZ_FLIP_MANIPULATOR);
@@ -1246,14 +1246,14 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS),
 		a_message, 'C', B_CONTROL_KEY, this,
-		B_TRANSLATE("Crop the image.")));
+		B_TRANSLATE("Crops the image.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",SCALE_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
 		a_message, 'S', B_CONTROL_KEY, this,
-		B_TRANSLATE("Scale the image.")));
+		B_TRANSLATE("Scales the image.")));
 
 	menu->AddItem(new BSeparatorItem());
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear canvas"),

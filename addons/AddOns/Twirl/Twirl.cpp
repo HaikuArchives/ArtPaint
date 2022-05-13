@@ -477,7 +477,7 @@ BView* TwirlManipulator::MakeConfigurationView(const BMessenger& target)
 
 const char*	TwirlManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Click on the image to set the twirl center. Use sliders to adjust twirl.");
+	return B_TRANSLATE("Click to set the twirl center. Use sliders to adjust twirl.");
 }
 
 const char*	TwirlManipulator::ReturnName()

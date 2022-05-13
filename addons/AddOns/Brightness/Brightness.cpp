@@ -369,7 +369,7 @@ const char* BrightnessManipulator::ReturnName()
 
 const char* BrightnessManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the image brightness.");
+	return B_TRANSLATE("Adjusts the brightness.");
 }
 
 

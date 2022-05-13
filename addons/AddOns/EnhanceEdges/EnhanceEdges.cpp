@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Enhance edges");
-	char menu_help_string[255] = B_TRANSLATE_MARK("Enhances the edges in the image.");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Enhances the edges.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = SHARPEN_FILTER_ADD_ON;
 #ifdef __cplusplus
@@ -119,7 +119,7 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 
 const char* EnhanceEdgesManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Enhances the edges in the image.");
+	return B_TRANSLATE("Enhances the edges.");
 }
 
 

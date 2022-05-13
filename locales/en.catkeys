@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3223448953
+1	English	application/x-vnd.artpaint	1442601790
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -21,7 +21,6 @@ ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Crop…	PaintWindow		Crop…
 Click to make a selection.	Tools		Click to make a selection.
 Bummer	UndoQueue		Bummer
-ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.
 Cross-hair cursor	Windows		Cross-hair cursor
 Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
@@ -29,7 +28,6 @@ Width:	Tools		Width:
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
 Click to blur the image.	Tools		Click to blur the image.
-Rotate all layers.	PaintWindow		Rotate all layers.
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Click to draw a straight line.	Tools		Click to draw a straight line.
@@ -48,12 +46,12 @@ Save color set	ColorPalette		Save color set
 Untitled	PaintWindow		Untitled
 Miscellaneous	Windows		Miscellaneous
 Settings…	FilePanels		Settings…
+Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Save	FilePanels		Save
 Undo	UndoQueue		Undo
 Open	FilePanels		Open
 Rotate -90°	PaintWindow		Rotate -90°
 Save project as…	PaintWindow		Save project as…
-Scale the image.	PaintWindow		Scale the image.
 Erasing the image.	Tools		Erasing the image.
 File	PaintWindow		File
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
@@ -77,7 +75,6 @@ Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
 Zoom out	PaintWindow		Zoom out
 Drawing a straight line.	Tools		Drawing a straight line.
 Save image	PaintWindow		Save image
-Move all layers.	PaintWindow		Move all layers.
 Brush tool	Tools		Brush tool
 Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Redo
@@ -89,6 +86,7 @@ Saves the image to disk.	PaintWindow		Saves the image to disk.
 Add-ons	PaintWindow		Add-ons
 Rotate +90°	Manipulators		Rotate +90°
 Blurring the image.	Tools		Blurring the image.
+Changes the transparency of active layer.	PaintWindow		Changes the transparency of active layer.
 Add-ons	Windows		Add-ons
 Zoom	MagnificationView		Zoom
 Tool setup	Tools		Tool setup
@@ -137,8 +135,10 @@ Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Opaque	Manipulators		Opaque
 Layers…	PaintWindow		Layers…
+Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
+Equal-sided	Tools		Equal-sided
 Speed:	Tools		Speed:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
@@ -183,21 +183,20 @@ Free 2D transform	FreeTransformManipulator		Free 2D transform
 Colors…	PaintWindow		Colors…
 Copy	PaintWindow		Copy
 Enable preview	Tools		Enable preview
+Moves the active layer.	PaintWindow		Moves the active layer.
 Undos the previous action.	PaintWindow		Undos the previous action.
 Rotate -90°	Manipulators		Rotate -90°
 Standard sizes	PaintWindow		Standard sizes
 Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Options
 Clear canvas	Image		Clear canvas
-New project	PaintWindow		New project
+Rotates the active layer.	PaintWindow		Rotates the active layer.
 All layers	PaintWindow		All layers
 Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
 No data translator	Windows		No data translator
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Layer %ld / %ld	ImageView		Layer %ld / %ld
-Select the canvas size you want.	PaintWindow		Select the canvas size you want.
 Active layer	PaintWindow		Active layer
-Rotate the active layer.	PaintWindow		Rotate the active layer.
 Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
@@ -209,7 +208,6 @@ Saves the project to disk.	PaintWindow		Saves the project to disk.
 Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
 Invert selection	PaintWindow		Invert selection
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
-Change the transparency of active layer.	PaintWindow		Change the transparency of active layer.
 Brush	Windows		Brush
 Blur tool	Tools		Blur tool
 Adjustable	Windows		Adjustable
@@ -243,6 +241,7 @@ Brushes…	PaintWindow		Brushes…
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Color variance:	Tools		Color variance:
 Clear layer	PaintWindow		Clear layer
+Rotates all layers.	PaintWindow		Rotates all layers.
 Painting with a brush.	Tools		Painting with a brush.
 Rectangle	Tools		Rectangle
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
@@ -252,7 +251,6 @@ OK	Image		OK
 Click to draw an ellipse.	Tools		Click to draw an ellipse.
 Click to paint with airbrush.	Tools		Click to paint with airbrush.
 Colors	Windows		Colors
-Move the active layer.	PaintWindow		Move the active layer.
 Off	PaintWindow		Off
 Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
 Rotation:	Manipulators		Rotation:
@@ -262,12 +260,14 @@ Height:	Tools		Height:
 Create canvas	PaintWindow		Create canvas
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
+Crops the image.	PaintWindow		Crops the image.
 Hairy brush	Tools		Hairy brush
 Click to paint with a hairy brush.	Tools		Click to paint with a hairy brush.
 Size:	Tools		Size:
 Color selector	Tools		Color selector
 Off	Windows		Off
 Tools	Windows		Tools
+Angle:	Tools		Angle:
 Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
@@ -284,6 +284,7 @@ Intelligent scissors	Tools		Intelligent scissors
 Hairs:	Tools		Hairs:
 Grow selection	PaintWindow		Grow selection
 Flood fill	Tools		Flood fill
+ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
 Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of this image.
 Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400%.
 OK	ImageView		OK
@@ -312,7 +313,6 @@ Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
 Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
-Crop the image.	PaintWindow		Crop the image.
 Clears the active layer.	PaintWindow		Clears the active layer.
 Quit	PaintWindow		Quit
 Clear layer	Image		Clear layer
@@ -322,7 +322,6 @@ Open color set…	ColorPalette		Open color set…
 Wand tolerance	Tools		Wand tolerance
 Invert selection	ImageView		Invert selection
 Much	Tools		Much
-Not implemented yet.	Tools		Not implemented yet.
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
 Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
@@ -345,4 +344,5 @@ Lock	Manipulators	Keep the aspect ratio	Lock
 Tools…	PaintWindow		Tools…
 Add area	Tools		Add area
 Eraser	Tools		Eraser
+Scales the image.	PaintWindow		Scales the image.
 Recent images	PaintWindow		Recent images

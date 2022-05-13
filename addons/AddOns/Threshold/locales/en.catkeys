@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint-addon	2162580835
+1	English	application/x-vnd.artpaint-addon	2206202763
 Green	AddOns_Threshold		Green
 Intensity	AddOns_Threshold		Intensity
 Red	AddOns_Threshold		Red
@@ -6,5 +6,4 @@ Blue	AddOns_Threshold		Blue
 Threshold	AddOns_Threshold		Threshold
 Based on:	AddOns_Threshold		Based on:
 Threshold…	AddOns_Threshold		Threshold…
-Show only pixels of a specified threshold.	AddOns_Threshold		Show only pixels of a specified threshold.
-Use the slider to set the thresholding value.	AddOns_Threshold		Use the slider to set the thresholding value.
+Shows only pixels of a specified threshold.	AddOns_Threshold		Shows only pixels of a specified threshold.

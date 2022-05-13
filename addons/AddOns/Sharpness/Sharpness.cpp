@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Sharpness" B_UTF8_ELLIPSIS);
-	char menu_help_string[255] = B_TRANSLATE_MARK("Adjust the sharpness.");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjusts the sharpness.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -400,7 +400,7 @@ const char* SharpnessManipulator::ReturnName()
 
 const char* SharpnessManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the image sharpness.");
+	return B_TRANSLATE("Adjusts the sharpness.");
 }
 
 

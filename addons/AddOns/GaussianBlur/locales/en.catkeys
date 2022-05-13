@@ -1,8 +1,7 @@
-1	English	application/x-vnd.artpaint-addon	2595711034
+1	English	application/x-vnd.artpaint-addon	1867832883
 Large	AddOns_GaussianBlur		Large
-Blur size:	AddOns_GaussianBlur		Blur size:
-Gaussian blur…	AddOns_GaussianBlur		Gaussian blur…
-Use the slider to set the size of the blur.	AddOns_GaussianBlur		Use the slider to set the size of the blur.
-Adds a gaussian blur to the image.	AddOns_GaussianBlur		Adds a gaussian blur to the image.
+Adds a gaussian blur.	AddOns_GaussianBlur		Adds a gaussian blur.
 Small	AddOns_GaussianBlur		Small
+Blur size:	AddOns_GaussianBlur		Blur size:
 Gaussian blur	AddOns_GaussianBlur		Gaussian blur
+Gaussian blur…	AddOns_GaussianBlur		Gaussian blur…

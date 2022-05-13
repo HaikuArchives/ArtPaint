@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Saturation" B_UTF8_ELLIPSIS);
-	char menu_help_string[255] = B_TRANSLATE_MARK("Adjust color saturation.");
+	char menu_help_string[255] = B_TRANSLATE_MARK("Adjusts color saturation.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = COLOR_ADD_ON;
 #ifdef __cplusplus
@@ -409,7 +409,7 @@ const char* SaturationManipulator::ReturnName()
 
 const char* SaturationManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the slider to set the image saturation.");
+	return B_TRANSLATE("Adjusts color saturation.");
 }
 
 

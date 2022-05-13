@@ -30,6 +30,7 @@
 
 
 class BButton;
+class BCheckBox;
 class BRadioButton;
 class BrushView;
 
@@ -61,7 +62,9 @@ private:
 
 			NumberSliderControl*	fBrushWidth;
 			NumberSliderControl*	fBrushHeight;
+			NumberSliderControl*	fBrushAngle;
 			NumberSliderControl*	fBrushFade;
+			BCheckBox*				fLockDimensions;
 			BRadioButton*			fRectangle;
 			BRadioButton*			fEllipse;
 			BButton*				fStoreBrush;
