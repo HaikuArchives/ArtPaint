@@ -57,8 +57,6 @@ BrushStoreWindow::BrushStoreWindow()
 		server->SetValue(SettingsServer::Application, skBrushWindowVisible,
 			true);
 	}
-	setFeel(feel);
-
 	frame = FitRectToScreen(frame);
 	MoveTo(frame.LeftTop());
 	ResizeTo(frame.Width(),frame.Height());
@@ -90,6 +88,8 @@ BrushStoreWindow::BrushStoreWindow()
 	resume_thread(adder_thread);
 
 	brush_window = this;
+
+	setFeel(feel);
 
 	SetSizeLimits(scroll_bar->Frame().Width()+BRUSH_VAULT_WIDTH,10000,menu_bar->Frame().Height() + 1 + BRUSH_VAULT_HEIGHT,10000);
 
