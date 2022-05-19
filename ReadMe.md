@@ -5,4 +5,4 @@ It now runs on Haiku:
 
 ![ArtPaintScreenShot](/artwork/ArtPaintScreenShot.png)
 
-The the [documentation](http://htmlpreview.github.io/?https://github.com/HakuArchives/ArtPaint/master/Documentation/index.html) for more information.
+See the [documentation](http://htmlpreview.github.io/?https://github.com/HakuArchives/ArtPaint/master/Documentation/index.html) for more information.
