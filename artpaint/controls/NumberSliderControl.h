@@ -28,9 +28,10 @@ public:
 								NumberSliderControl(const char* label,
 									const char* text, BMessage* message,
 									int32 minRange, int32 maxRange,
-									bool layout, bool continuos = true,
+									bool layout, bool continuous = true,
 									border_style borderStyle = B_NO_BORDER,
-									thumb_style thumbStyle = B_TRIANGLE_THUMB);
+									thumb_style thumbStyle = B_TRIANGLE_THUMB,
+									bool proportional = false);
 	virtual						~NumberSliderControl();
 
 	virtual	void				AllAttached();
@@ -53,13 +54,17 @@ private:
 			void				_InitMessage();
 			int32				_FixValue(int32 value);
 			void				_SendMessage(int32 value, bool final = true);
+			float				_PositionForValue(int32 value);
+			int32				_ValueForPosition(float position);
 
 private:
 			BMessenger			fTarget;
 
 			int32				fMinRange;
 			int32				fMaxRange;
-			bool				fContinuos;
+			bool				fContinuous;
+			bool				fProportional;
+			int8				fExp;
 
 			BSlider*			fSlider;
 			BMessage*			fMessage;

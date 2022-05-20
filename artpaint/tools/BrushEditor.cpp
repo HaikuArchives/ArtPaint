@@ -87,7 +87,7 @@ BrushEditor::BrushEditor(Brush* brush)
 
 	fBrushSize =
 		new NumberSliderControl(B_TRANSLATE("Size:"), "0",
-		message, 1, 500, false);
+		message, 1, 500, false, true, B_NO_BORDER, B_TRIANGLE_THUMB, true);
 
 	message = new BMessage(kBrushRatioChanged);
 	message->AddFloat("value", float(fBrushInfo.width/fBrushInfo.height));
@@ -131,7 +131,7 @@ BrushEditor::BrushEditor(Brush* brush)
 		.Add(fBrushFade->TextViewLayoutItem(), 1, 3)
 		.Add(fBrushFade->Slider(), 2, 3);
 	gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDERSLIDER"));
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)

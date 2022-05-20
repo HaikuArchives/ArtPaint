@@ -5,6 +5,7 @@
  * Authors:
  *		Karsten Heimrich <host.haiku@gmx.de>
  *		(fixes by Pete Goodeve 2017)
+ *      Dale Cieslak <dcieslak@yahoo.com>
  */
 
 #include "NumberSliderControl.h"
@@ -34,22 +35,25 @@ enum {
 
 NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 		BMessage* message, int32 minRange, int32 maxRange, bool layout,
-		bool continuos, border_style borderStyle, thumb_style thumbStyle)
+		bool continuous, border_style borderStyle, thumb_style thumbStyle,
+		bool proportional)
 	: BBox(borderStyle, NULL)
 	, fMinRange(minRange)
 	, fMaxRange(maxRange)
-	, fContinuos(continuos)
+	, fContinuous(continuous)
 	, fSlider(NULL)
 	, fMessage(message)
 	, fNumberControl(NULL)
+	, fProportional(proportional)
+	, fExp(4)
 {
 	_InitMessage();
 
 	fNumberControl = new (std::nothrow) NumberControl(label, text,
 		new BMessage(kNumberControlFinished), 3, minRange < 0);
 	fSlider = new (std::nothrow) BSlider(NULL, NULL,
-		new BMessage(kSliderModificationFinished), minRange,
-		maxRange, B_HORIZONTAL, thumbStyle);
+		new BMessage(kSliderModificationFinished), 1,
+		1000, B_HORIZONTAL, thumbStyle);
 
 	if (fNumberControl && fSlider && layout) {
 		SetLayout(new BGroupLayout(B_VERTICAL));
@@ -89,23 +93,27 @@ NumberSliderControl::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case kNumberControlFinished: {
-			fSlider->SetValue(_FixValue(atoi(fNumberControl->Text())));
-			_SendMessage(atoi(fNumberControl->Text()));
+			fSlider->SetPosition(
+				_PositionForValue(_FixValue(atoi(fNumberControl->Text())))
+			);
+			_SendMessage(_FixValue(atoi(fNumberControl->Text())));
 		}	break;
 
 		case kSliderValueModified: {
+			int32 numValue = _ValueForPosition(fSlider->Position());
 			BString value;
-			value << fSlider->Value();
+			value << numValue;
 			fNumberControl->SetText(value.String());
-			if (fContinuos)
-				_SendMessage(fSlider->Value(), false);
+			if (fContinuous)
+				_SendMessage(numValue, false);
 		}	break;
 
 		case kSliderModificationFinished: {
+			int32 numValue = _ValueForPosition(fSlider->Position());
 			BString value;
-			value << fSlider->Value();
+			value << numValue;
 			fNumberControl->SetText(value.String());
-			_SendMessage(fSlider->Value(), true);
+			_SendMessage(numValue, true);
 		}	break;
 
 		default: {
@@ -132,12 +140,12 @@ NumberSliderControl::SetValue(int32 value)
 	value = _FixValue(value);
 
 	if (fSlider)
-		fSlider->SetValue(value);
+		fSlider->SetPosition(_PositionForValue(value));
 
 	if (fNumberControl) {
-		BString value;
-		value << fSlider->Value();
-		fNumberControl->SetText(value.String());
+		BString strValue;
+		strValue << value;
+		fNumberControl->SetText(strValue.String());
 	}
 }
 
@@ -250,6 +258,34 @@ NumberSliderControl::_SendMessage(int32 value, bool final)
 		}
 	}
 }
+
+
+float
+NumberSliderControl::_PositionForValue(int32 value)
+{
+	int32 range = fMaxRange - fMinRange;
+	if (!fProportional)
+		return (float)(value - fMinRange) / (float)range;
+
+	float norm = (float)(value - fMinRange) / (float)range;
+
+	return log(norm * (fExp - 1.) + 1.) / log(fExp);
+}
+
+
+int32
+NumberSliderControl::_ValueForPosition(float position)
+{
+	int32 range = fMaxRange - fMinRange;
+	if (!fProportional)
+		return (position * range) + fMinRange;
+
+	float norm = (pow(fExp, position) - 1.) / (fExp - 1.);
+
+	return (norm * range) + fMinRange;
+
+}
+
 
 	}	// namespace Interface
 }	// namespace ArtPaint
