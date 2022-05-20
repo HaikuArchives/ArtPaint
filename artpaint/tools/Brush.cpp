@@ -294,7 +294,7 @@ Brush::make_elliptical_brush()
 	width_ = 2 * dimension + 1;
 	height_ = 2 * dimension + 1;
 
-	float new_angle = angle_ * PI / 180.;
+	float new_angle = -angle_ * PI / 180.;
 
 	// Then we reserve the space for brush and calculate the entries.
 	brush = reserve_brush();

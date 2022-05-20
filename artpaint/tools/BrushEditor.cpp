@@ -101,7 +101,7 @@ BrushEditor::BrushEditor(Brush* brush)
 
 	fBrushAngle =
 		new NumberSliderControl(B_TRANSLATE("Angle:"), "0",
-		message, -89, 90, false);
+		message, -90, 90, false);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.hardness));
@@ -477,6 +477,19 @@ BrushView::MouseDown(BPoint point)
 				angle = -(90. - ((int32)angle % 90));
 			if (angle < -90)
 				angle = 90. - ((int32)-angle % 90);
+
+			if (modifiers() & B_LEFT_SHIFT_KEY) {
+				if (angle < 15 && angle > -15)
+					angle = 0;
+				else if (angle > 30 && angle < 60)
+					angle = 45;
+				else if (angle < -30 && angle > -60)
+					angle = -45;
+				else if (angle > 75)
+					angle = 90;
+				else if (angle < -75)
+					angle = -90;
+			}
 
 			info.angle = angle;
 			snooze(20000);
