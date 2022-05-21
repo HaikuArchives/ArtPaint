@@ -482,11 +482,11 @@ BrushView::MouseDown(BPoint point)
 				angle = 90. - ((int32)-angle % 90);
 
 			if (modifiers() & B_LEFT_SHIFT_KEY) {
-				if (angle < 15 && angle > -15)
+				if (angle < 22 && angle > -22)
 					angle = 0;
-				else if (angle > 30 && angle < 60)
+				else if (angle > 22 && angle < 75)
 					angle = 45;
-				else if (angle < -30 && angle > -60)
+				else if (angle < -22 && angle > -75)
 					angle = -45;
 				else if (angle > 75)
 					angle = 90;

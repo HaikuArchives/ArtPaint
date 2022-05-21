@@ -66,8 +66,11 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 			MinSize().Height()));
 	}
 
-	if (fSlider)
+	if (fSlider) {
+		int32 inc = 1000. / (fMaxRange - fMinRange);
 		fSlider->SetModificationMessage(new BMessage(kSliderValueModified));
+		fSlider->SetKeyIncrementValue(inc);
+	}
 }
 
 
