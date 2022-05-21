@@ -101,7 +101,7 @@ NumberSliderControl::MessageReceived(BMessage* message)
 			fSlider->SetPosition(
 				_PositionForValue(_FixValue(atoi(fNumberControl->Text())))
 			);
-			_SendMessage(_FixValue(atoi(fNumberControl->Text())));
+			_SendMessage(_FixValue(atoi(fNumberControl->Text())), true);
 		}	break;
 
 		case kSliderValueModified: {
@@ -110,7 +110,7 @@ NumberSliderControl::MessageReceived(BMessage* message)
 			value << numValue;
 			fNumberControl->SetText(value.String());
 			if (fContinuous)
-				_SendMessage(numValue, false);
+				_SendMessage(numValue, true);
 		}	break;
 
 		case kSliderModificationFinished: {
