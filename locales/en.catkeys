@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3443691116
+1	English	application/x-vnd.artpaint	697611315
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -310,6 +310,7 @@ Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
 Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
+Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
 Clears the active layer.	PaintWindow		Clears the active layer.
 Quit	PaintWindow		Quit
 Clear layer	Image		Clear layer
