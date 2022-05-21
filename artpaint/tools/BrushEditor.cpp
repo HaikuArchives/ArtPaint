@@ -225,8 +225,8 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushSizeChanged: {
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
-				fBrushInfo.width = value;
-				fBrushInfo.height = value / fBrushRatio->Value();
+				fBrushInfo.width = max_c(value, 1);
+				fBrushInfo.height = max_c(value / fBrushRatio->Value(), 1);
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -240,8 +240,8 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushRatioChanged: {
 			float value;
 			if (message->FindFloat("value", &value) == B_OK) {
-				fBrushInfo.width = fBrushSize->Value();
-				fBrushInfo.height = fBrushSize->Value() / value;
+				fBrushInfo.width = max_c(fBrushSize->Value(), 1);
+				fBrushInfo.height = max_c(fBrushSize->Value() / value, 1);
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();

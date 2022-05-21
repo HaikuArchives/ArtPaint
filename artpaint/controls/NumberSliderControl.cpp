@@ -51,9 +51,12 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 
 	fNumberControl = new (std::nothrow) NumberControl(label, text,
 		new BMessage(kNumberControlFinished), 3, minRange < 0);
+	int32 range = fMaxRange - fMinRange;
+	int32 inc = 1000. / range;
+
 	fSlider = new (std::nothrow) BSlider(NULL, NULL,
-		new BMessage(kSliderModificationFinished), 1,
-		1000, B_HORIZONTAL, thumbStyle);
+		new BMessage(kSliderModificationFinished), 0,
+		(inc * range), B_HORIZONTAL, thumbStyle);
 
 	if (fNumberControl && fSlider && layout) {
 		SetLayout(new BGroupLayout(B_VERTICAL));
@@ -67,7 +70,6 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 	}
 
 	if (fSlider) {
-		int32 inc = 1000. / (fMaxRange - fMinRange);
 		fSlider->SetModificationMessage(new BMessage(kSliderValueModified));
 		fSlider->SetKeyIncrementValue(inc);
 	}

@@ -278,6 +278,7 @@ Brush::make_elliptical_brush()
 {
 	float dimension = max_c(width_, height_) / 2.;
 	float ratio;
+	dimension = max_c(dimension, 1.0);
 
 	if (height_ == width_) {
 		ratio = 1.0;
