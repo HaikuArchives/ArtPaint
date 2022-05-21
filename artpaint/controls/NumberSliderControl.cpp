@@ -158,10 +158,16 @@ NumberSliderControl::SetValue(int32 value)
 int32
 NumberSliderControl::Value() const
 {
-	if (fSlider)
-		return fSlider->Value();
+	if (!fSlider)
+		return -1;
 
-	return -1;
+	int32 range = fMaxRange - fMinRange;
+	if (!fProportional)
+		return (fSlider->Position() * range) + fMinRange;
+
+	float norm = (pow(fExp, fSlider->Position()) - 1.) / (fExp - 1.);
+
+	return (norm * range) + fMinRange;
 }
 
 

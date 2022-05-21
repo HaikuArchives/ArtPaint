@@ -63,7 +63,7 @@ private:
 			brush_info				fBrushInfo;
 
 			NumberSliderControl*	fBrushSize;
-			FloatSliderControl*		fBrushRatio;
+			NumberSliderControl*	fBrushRatio;
 			NumberSliderControl*	fBrushAngle;
 			NumberSliderControl*	fBrushFade;
 			BCheckBox*				fLockDimensions;

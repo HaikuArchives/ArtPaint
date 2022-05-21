@@ -90,11 +90,11 @@ BrushEditor::BrushEditor(Brush* brush)
 		message, 1, 500, false, true, B_NO_BORDER, B_TRIANGLE_THUMB, true);
 
 	message = new BMessage(kBrushRatioChanged);
-	message->AddFloat("value", float(fBrushInfo.width/fBrushInfo.height));
+	message->AddInt32("value", 0);
 
 	fBrushRatio =
-		new FloatSliderControl(B_TRANSLATE("Ratio:"), "0",
-		message, 1.0, 10.0, false);
+		new NumberSliderControl(B_TRANSLATE("Ratio:"), "0",
+		message, -10, 10, false);
 
 	message = new BMessage(kBrushAngleChanged);
 	message->AddInt32("value", int32(fBrushInfo.angle));
@@ -225,8 +225,19 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushSizeChanged: {
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
-				fBrushInfo.width = max_c(value, 1);
-				fBrushInfo.height = max_c(value / fBrushRatio->Value(), 1);
+				int32 ratio = fBrushRatio->Value();
+
+				if (ratio == 0)
+					ratio = 1;
+				float realRatio = 1.0 / (float)fabs(ratio);
+
+				if (value < 0) {
+					fBrushInfo.width = max_c(value, 1);
+					fBrushInfo.height = max_c(value / realRatio, 1);
+				} else {
+					fBrushInfo.width = max_c(value / realRatio, 1);
+					fBrushInfo.height = max_c(value, 1);
+				}
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -238,10 +249,19 @@ BrushEditor::MessageReceived(BMessage* message)
 		}	break;
 
 		case kBrushRatioChanged: {
-			float value;
-			if (message->FindFloat("value", &value) == B_OK) {
-				fBrushInfo.width = max_c(fBrushSize->Value(), 1);
-				fBrushInfo.height = max_c(fBrushSize->Value() / value, 1);
+			int32 value;
+			if (message->FindInt32("value", &value) == B_OK) {
+				if (value == 0)
+					value = 1;
+				float realRatio = 1.0 / (float)fabs(value);
+
+				if (value < 0) {
+					fBrushInfo.width = max_c(fBrushSize->Value(), 1);
+					fBrushInfo.height = max_c(fBrushSize->Value() / realRatio, 1);
+				} else {
+					fBrushInfo.width = max_c(fBrushSize->Value() / realRatio, 1);
+					fBrushInfo.height = max_c(fBrushSize->Value(), 1);
+				}
 
 				fBrush->ModifyBrush(fBrushInfo);
 				fBrushView->BrushModified();
@@ -293,13 +313,17 @@ BrushEditor::MessageReceived(BMessage* message)
 			// in our controls and such things.
 			fBrushInfo = fBrush->GetInfo();
 			float ratio = (float)(fBrushInfo.width / fBrushInfo.height);
-			fBrushSize->SetValue(int32(fBrushInfo.width));
-			if (ratio < 1.0) {
-				ratio = 1.0 / ratio;
-				fBrushSize->SetValue(int32(fBrushInfo.height));
-			}
 
-			fBrushRatio->SetValue(float(ratio));
+			if (ratio < 1.0) {
+				ratio = -1.0 / ratio;
+				fBrushSize->SetValue((int32)fBrushInfo.height);
+			} else
+				fBrushSize->SetValue((int32)fBrushInfo.width);
+
+			if (ratio == 1.0)
+				ratio = 0;
+
+			fBrushRatio->SetValue((int32)ratio);
 
 			fBrushAngle->SetValue(int32(fBrushInfo.angle));
 			fBrushFade->SetValue(int32(fBrushInfo.hardness));
@@ -318,7 +342,7 @@ BrushEditor::MessageReceived(BMessage* message)
 
 		case kBrushResetRequest: {
 			fBrushSize->SetValue(30);
-			fBrushRatio->SetValue(1.0);
+			fBrushRatio->SetValue(0);
 			fBrushAngle->SetValue(0);
 			fBrushFade->SetValue(2);
 			fRectangle->SetValue(B_CONTROL_OFF);
