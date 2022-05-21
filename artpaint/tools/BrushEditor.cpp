@@ -90,11 +90,14 @@ BrushEditor::BrushEditor(Brush* brush)
 		message, 1, 500, false, true, B_NO_BORDER, B_TRIANGLE_THUMB, true);
 
 	message = new BMessage(kBrushRatioChanged);
-	message->AddInt32("value", 0);
+	message->AddFloat("value", 0);
 
 	fBrushRatio =
-		new NumberSliderControl(B_TRANSLATE("Ratio:"), "0",
-		message, -10, 10, false);
+		new FloatSliderControl(B_TRANSLATE("Ratio:"), "0",
+		message, -10., 10., false);
+
+	fBrushRatio->Slider()->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	fBrushRatio->Slider()->SetHashMarkCount(5);
 
 	message = new BMessage(kBrushAngleChanged);
 	message->AddInt32("value", int32(fBrushInfo.angle));
@@ -102,6 +105,9 @@ BrushEditor::BrushEditor(Brush* brush)
 	fBrushAngle =
 		new NumberSliderControl(B_TRANSLATE("Angle:"), "0",
 		message, -90, 90, false);
+
+	fBrushAngle->Slider()->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	fBrushAngle->Slider()->SetHashMarkCount(5);
 
 	message = new BMessage(kBrushFadeChanged);
 	message->AddInt32("value", int32(fBrushInfo.hardness));
@@ -225,11 +231,9 @@ BrushEditor::MessageReceived(BMessage* message)
 		case kBrushSizeChanged: {
 			int32 value;
 			if (message->FindInt32("value", &value) == B_OK) {
-				int32 ratio = fBrushRatio->Value();
+				float ratio = fBrushRatio->Value();
 
-				if (ratio == 0)
-					ratio = 1;
-				float realRatio = 1.0 / (float)fabs(ratio);
+				float realRatio = 1.0 / (0.9 * fabs(ratio) + 1.);
 
 				if (value < 0) {
 					fBrushInfo.width = max_c(value, 1);
@@ -249,11 +253,9 @@ BrushEditor::MessageReceived(BMessage* message)
 		}	break;
 
 		case kBrushRatioChanged: {
-			int32 value;
-			if (message->FindInt32("value", &value) == B_OK) {
-				if (value == 0)
-					value = 1;
-				float realRatio = 1.0 / (float)fabs(value);
+			float value;
+			if (message->FindFloat("value", &value) == B_OK) {
+				float realRatio = 1.0 / (0.9 * fabs(value) + 1.);
 
 				if (value < 0) {
 					fBrushInfo.width = max_c(fBrushSize->Value(), 1);
