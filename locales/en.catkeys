@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	697611315
+1	English	application/x-vnd.artpaint	1143824986
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -106,7 +106,6 @@ Click to make a fill.	Tools		Click to make a fill.
 Save project	PaintWindow		Save project
 Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
 Spray	Tools		Spray
-Ratio:	Tools		Ratio:
 None	Tools		None
 Save format:	FilePanels		Save format:
 Clears all layers.	PaintWindow		Clears all layers.
@@ -139,6 +138,7 @@ Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
 Speed:	Tools		Speed:
+Rectangularity:	Tools		Rectangularity:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
 Translate…	PaintWindow		Translate…

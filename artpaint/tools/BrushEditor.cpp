@@ -93,7 +93,7 @@ BrushEditor::BrushEditor(Brush* brush)
 	message->AddFloat("value", 0);
 
 	fBrushRatio =
-		new FloatSliderControl(B_TRANSLATE("Ratio:"), "0",
+		new FloatSliderControl(B_TRANSLATE("Rectangularity:"), "0",
 		message, -10., 10., false);
 
 	fBrushRatio->Slider()->SetHashMarks(B_HASH_MARKS_BOTTOM);
