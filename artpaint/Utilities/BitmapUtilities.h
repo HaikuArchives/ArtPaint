@@ -24,6 +24,9 @@ public:
 							BRect updated_rect);
 	static  void		ClearBitmap(BBitmap* bitmap, uint32 color,
 							BRect* area = NULL);
+	static	void		CheckerBitmap(BBitmap* bitmap,
+							uint32 color1, uint32 color2,
+							BRect* area = NULL);
 };
 
 
