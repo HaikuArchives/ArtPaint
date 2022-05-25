@@ -869,8 +869,15 @@ PaintWindow::QuitRequested()
 	// here we should ask the user if changes to picture should be saved we also
 	// tell the application that the number of paint windows has decreased by one
 	if (fImageView) {
-		if (fImageView->Quit() == false)
+		if (fImageView->Quit() == false) {
+			if (Lock()) {
+				fImageView->ReturnImage()->Render();
+				fImageView->Invalidate();
+				Unlock();
+			}
+
 			return false;
+		}
 
 		if (fImageSavePanel)
 			delete fImageSavePanel;
@@ -1729,7 +1736,11 @@ PaintWindow::_SaveImage(BMessage *message)
 		BNode node(&directory, message->FindString("name"));
 		writeAttributes(node);
 
-		fImageView->ReturnImage()->Render(false);
+		if (Lock()) {
+			// re-render with white alpha bg for saving
+			fImageView->ReturnImage()->Render(false);
+			Unlock();
+		}
 		// here translate the data using a BitmapStream-object
 		BBitmap* bitmap = fImageView->ReturnImage()->ReturnRenderedImage();
 		printf("Bitmap at 0,0: 0x%8lx\n",*((uint32*)(bitmap->Bits())));
@@ -1774,7 +1785,11 @@ PaintWindow::_SaveImage(BMessage *message)
 		}
 	}
 
-	fImageView->ReturnImage()->Render();
+	if (Lock()) {
+		fImageView->ReturnImage()->Render();
+		fImageView->Invalidate();
+		Unlock();
+	}
 
 	return status;
 }

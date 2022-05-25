@@ -185,6 +185,7 @@ int32 Layer::calc_mini_image()
 	rgb_color rgb1, rgb2;
 	rgb1.red = rgb1.green = rgb1.blue = 0xBB;
 	rgb2.red = rgb2.green = rgb2.blue = 0x99;
+	rgb1.alpha = rgb2.alpha = 0xFF;
 	color1 = RGBColorToBGRA(rgb1);
 	color2 = RGBColorToBGRA(rgb2);
 

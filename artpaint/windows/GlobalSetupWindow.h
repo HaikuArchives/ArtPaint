@@ -73,6 +73,7 @@ public:
 
 	virtual void 	Draw(BRect updateRect);
 	virtual void	MessageReceived(BMessage* message);
+	virtual void	MouseDown(BPoint point);
 
 	BBitmap*	swatchBitmap() { return fSwatchBitmap; }
 
