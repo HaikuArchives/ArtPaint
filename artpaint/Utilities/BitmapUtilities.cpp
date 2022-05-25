@@ -166,3 +166,44 @@ BitmapUtilities::ClearBitmap(BBitmap* bitmap, uint32 color, BRect* area)
 		bits += bpr - width;
 	}
 }
+
+
+void
+BitmapUtilities::CheckerBitmap(BBitmap* bitmap,
+	uint32 color1, uint32 color2, uint32 grid_size,
+	BRect* area)
+{
+	uint32 width = bitmap->Bounds().IntegerWidth()+1;
+	uint32 height = bitmap->Bounds().IntegerHeight()+1;
+	uint32 bpr = bitmap->BytesPerRow() / 4;
+
+	int32 start_x = 0;
+	int32 start_y = 0;
+
+	if (area) {
+		width = area->IntegerWidth()+1;
+		height = area->IntegerHeight()+1;
+		start_x = (int32)area->left;
+		start_y = (int32)area->top;
+	}
+
+	uint32 grid_color[2] = { color1, color2 };
+	uint32 cur_color = grid_color[0];
+
+	uint32* bits = (uint32*)bitmap->Bits();
+	bits += start_x + bpr * start_y;
+
+	for (int y = 0;y < height;++y) {
+		for (int x = 0;x < width;++x) {
+			int row = (x+start_x) / grid_size;
+			int col = (y+start_y) / grid_size;
+			if (row % 2 == col % 2)
+				cur_color = grid_color[1];
+			else
+				cur_color = grid_color[0];
+
+			*bits++ = cur_color;
+		}
+		bits += bpr - width;
+	}
+}

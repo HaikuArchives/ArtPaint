@@ -93,6 +93,7 @@ public:
 			// this is the function used by layer-window to inform paint-windows
 			// that it has been closed if no target window is specified ATM.
 	//static	void			LayerWindowClosed();
+	static  void				Redraw();
 
 			// This returns the number of paint-windows
 	static	int32				CountPaintWindows() { return sgPaintWindowCount; }
