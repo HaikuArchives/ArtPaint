@@ -43,6 +43,7 @@ artpaint/application/UndoAction.cpp artpaint/application/UndoEvent.cpp artpaint/
 artpaint/application/UndoWindow.cpp artpaint/application/UtilityClasses.cpp artpaint/controls/CMYControl.cpp artpaint/controls/ColorPalette.cpp \
 artpaint/controls/ColorView.cpp artpaint/controls/HSPictureButton.cpp artpaint/controls/HSVControl.cpp artpaint/controls/NumberControl.cpp \
 artpaint/controls/NumberSliderControl.cpp artpaint/controls/PopUpList.cpp artpaint/controls/PopUpSlider.cpp artpaint/controls/RGBControl.cpp \
+artpaint/controls/FloatControl.cpp artpaint/controls/FloatSliderControl.cpp \
 artpaint/controls/VisualColorControl.cpp artpaint/controls/YIQControl.cpp artpaint/controls/YUVControl.cpp artpaint/layers/Layer.cpp \
 artpaint/layers/LayerView.cpp artpaint/layers/LayerWindow.cpp artpaint/paintwindow/BackgroundView.cpp artpaint/paintwindow/Image.cpp \
 artpaint/paintwindow/ImageUpdater.cpp artpaint/paintwindow/ImageView.cpp artpaint/paintwindow/MagnificationView.cpp \

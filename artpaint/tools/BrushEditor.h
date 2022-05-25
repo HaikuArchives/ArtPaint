@@ -37,9 +37,11 @@ class BrushView;
 
 namespace ArtPaint {
 	namespace Interface {
+		class FloatSliderControl;
 		class NumberSliderControl;
 	}
 }
+using ArtPaint::Interface::FloatSliderControl;
 using ArtPaint::Interface::NumberSliderControl;
 
 
@@ -60,8 +62,8 @@ private:
 			BrushView*				fBrushView;
 			brush_info				fBrushInfo;
 
-			NumberSliderControl*	fBrushWidth;
-			NumberSliderControl*	fBrushHeight;
+			NumberSliderControl*	fBrushSize;
+			FloatSliderControl*		fBrushRatio;
 			NumberSliderControl*	fBrushAngle;
 			NumberSliderControl*	fBrushFade;
 			BCheckBox*				fLockDimensions;

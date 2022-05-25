@@ -6,8 +6,8 @@
  *		Karsten Heimrich <host.haiku@gmx.de>
  *
  */
-#ifndef CONTROL_SLIDER_BOX_H
-#define CONTROL_SLIDER_BOX_H
+#ifndef FLOAT_CONTROL_SLIDER_BOX_H
+#define FLOAT_CONTROL_SLIDER_BOX_H
 
 #include <Box.h>
 #include <Messenger.h>
@@ -21,54 +21,51 @@ class BSlider;
 namespace ArtPaint {
 	namespace Interface {
 
-class NumberControl;
+class FloatControl;
 
-class NumberSliderControl : public BBox {
+class FloatSliderControl : public BBox {
 public:
-								NumberSliderControl(const char* label,
+								FloatSliderControl(const char* label,
 									const char* text, BMessage* message,
-									int32 minRange, int32 maxRange,
+									float minRange, float maxRange,
 									bool layout, bool continuous = true,
 									border_style borderStyle = B_NO_BORDER,
 									thumb_style thumbStyle = B_TRIANGLE_THUMB,
-									bool proportional = false);
-	virtual						~NumberSliderControl();
+									uint8 resolution = 1);
+	virtual						~FloatSliderControl();
 
 	virtual	void				AllAttached();
 	virtual	void				MessageReceived(BMessage* message);
 	virtual void				SetEnabled(bool enabled);
 
-			void				SetValue(int32 value);
-			int32				Value() const;
+			void				SetValue(float value);
+			float				Value() const;
 			void				SetTarget(const BMessenger& target);
 
 			void				SetMessage(BMessage* message);
 
 			BSlider*			Slider() const;
-			NumberControl*		TextControl() const;
+			FloatControl*		TextControl() const;
 
 			BLayoutItem*		LabelLayoutItem() const;
 			BLayoutItem*		TextViewLayoutItem() const;
 
 private:
 			void				_InitMessage();
-			int32				_FixValue(int32 value);
-			void				_SendMessage(int32 value, bool final = true);
-			float				_PositionForValue(int32 value);
-			int32				_ValueForPosition(float position);
+			float				_FixValue(float value);
+			void				_SendMessage(float value, bool final = true);
 
 private:
 			BMessenger			fTarget;
 
-			int32				fMinRange;
-			int32				fMaxRange;
+			float				fMinRange;
+			float				fMaxRange;
 			bool				fContinuous;
-			bool				fProportional;
-			int8				fExp;
 
 			BSlider*			fSlider;
 			BMessage*			fMessage;
-			NumberControl*		fNumberControl;
+			FloatControl*		fFloatControl;
+			float				fMult;
 };
 
 	}	// namespace Interface

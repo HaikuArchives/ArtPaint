@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1442601790
+1	English	application/x-vnd.artpaint	1143824986
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -24,7 +24,6 @@ Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
 Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
-Width:	Tools		Width:
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
 Click to blur the image.	Tools		Click to blur the image.
@@ -138,8 +137,8 @@ Layers…	PaintWindow		Layers…
 Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
-Equal-sided	Tools		Equal-sided
 Speed:	Tools		Speed:
+Rectangularity:	Tools		Rectangularity:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
 Translate…	PaintWindow		Translate…
@@ -201,7 +200,6 @@ Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
 Click to use the tool.	Tools		Click to use the tool.
-Fade:	Tools		Fade:
 Window	PaintWindow		Window
 Open image…	PaintWindow		Open image…
 Saves the project to disk.	PaintWindow		Saves the project to disk.
@@ -256,7 +254,6 @@ Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clip
 Rotation:	Manipulators		Rotation:
 Ellipse tool	Tools		Ellipse tool
 Add layer in front	LayerView		Add layer in front
-Height:	Tools		Height:
 Create canvas	PaintWindow		Create canvas
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
@@ -313,6 +310,7 @@ Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
 Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
+Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
 Clears the active layer.	PaintWindow		Clears the active layer.
 Quit	PaintWindow		Quit
 Clear layer	Image		Clear layer
@@ -344,5 +342,6 @@ Lock	Manipulators	Keep the aspect ratio	Lock
 Tools…	PaintWindow		Tools…
 Add area	Tools		Add area
 Eraser	Tools		Eraser
+Hardness:	Tools		Hardness:
 Scales the image.	PaintWindow		Scales the image.
 Recent images	PaintWindow		Recent images
