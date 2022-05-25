@@ -61,6 +61,7 @@
 #include <private/interface/WindowInfo.h>
 
 
+#include <map>
 #include <new>
 #include <stack>
 #include <stdio.h>
@@ -1393,6 +1394,8 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 			if (paintWindow->Lock()) {
 				ImageList::const_iterator it;
 				const ImageList& imageList = server->AddOnImageList();
+				std::map<BString, int32> manip_map;
+
 				for (it = imageList.begin(); it != imageList.end(); ++it) {
 					int32* add_on_version;
 					status_t status = get_image_symbol(*it, "add_on_api_version",
@@ -1409,23 +1412,40 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 							Manipulator *manipulator = Instantiate(NULL, NULL);
 
 							if (manipulator != NULL) {
-								BMessage* message = new BMessage(HS_START_MANIPULATOR);
-								message->AddInt32("image_id", *it);
-								message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
-								message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
-
-								addOnMenu->AddItem(new PaintWindowMenuItem(
-									manipulator->ReturnName(),
-									message, 0, 0, paintWindow,
-									manipulator->ReturnHelpString()));
-
+								manip_map.insert(std::pair(BString(manipulator->ReturnName()), *it));
 								delete manipulator;
 								manipulator = NULL;
 							}
 						}
-
 					}
 				}
+
+				for (auto it = manip_map.begin(); it != manip_map.end(); ++it)
+				{
+					int32 id = it->second;
+					Manipulator* (*Instantiate)(BBitmap*, ManipulatorInformer*);
+					status_t status = get_image_symbol(id, "instantiate_add_on",
+						B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
+					if (status == B_OK) {
+						Manipulator *manipulator = Instantiate(NULL, NULL);
+
+						if (manipulator != NULL) {
+							BMessage* message = new BMessage(HS_START_MANIPULATOR);
+							message->AddInt32("image_id", id);
+							message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+							message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
+
+							addOnMenu->AddItem(new PaintWindowMenuItem(
+								manipulator->ReturnName(),
+								message, 0, 0, paintWindow,
+								manipulator->ReturnHelpString()));
+
+							delete manipulator;
+							manipulator = NULL;
+						}
+					}
+				}
+
 				addOnMenu->SetTargetForItems(paintWindow);
 				paintWindow->Unlock();
 			}
