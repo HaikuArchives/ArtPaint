@@ -90,7 +90,8 @@ static	int32		candidate_creator(void*);
 
 
 static	int32		enter_render(void*);
-		int32		DoRender(BRect);
+static  int32  		enter_render_nobg(void*);
+		int32		DoRender(BRect, bool bg = true);
 
 
 static	int32		enter_render_preview(void*);
@@ -101,8 +102,8 @@ public:
 			Image(ImageView*,float,float,UndoQueue*);
 			~Image();
 
-void		Render();
-void		Render(BRect);
+void		Render(bool bg = true);
+void		Render(BRect, bool bg = true);
 void		RenderPreview(BRect,int32);
 void		RenderPreview(BRegion&,int32);
 void		MultiplyRenderedImagePixels(int32);

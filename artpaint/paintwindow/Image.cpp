@@ -9,13 +9,18 @@
  */
 
 #include "Image.h"
+
+
+#include "BitmapUtilities.h"
 #include "ImageView.h"
 #include "Layer.h"
+#include "PixelOperations.h"
 #include "ProjectFileFunctions.h"
 #include "UndoEvent.h"
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
 #include "Selection.h"
+#include "SettingsServer.h"
 
 
 #include <Alert.h>
@@ -89,14 +94,14 @@ Image::~Image()
 }
 
 
-void Image::Render()
+void Image::Render(bool bg)
 {
-	Render(rendered_image->Bounds());
+	Render(rendered_image->Bounds(), bg);
 }
 
 #define	ALPHA	(*s_bits & 0xff)
 
-void Image::Render(BRect area)
+void Image::Render(BRect area, bool bg)
 {
 	dithered_up_to_date = FALSE;
 	area = area & rendered_image->Bounds();
@@ -112,7 +117,11 @@ void Image::Render(BRect area)
 
 	int32 height = area.IntegerHeight() / number_of_threads + 1;
 	for (int32 i=0;i<number_of_threads;i++) {
-		threads[i] = spawn_thread(enter_render,"render_thread",B_NORMAL_PRIORITY,this);
+		if (bg)
+			threads[i] = spawn_thread(enter_render,"render_thread",B_NORMAL_PRIORITY,this);
+		else
+			threads[i] = spawn_thread(enter_render_nobg,"render_thread",B_NORMAL_PRIORITY,this);
+
 		resume_thread(threads[i]);
 
 		BRect rect = area;
@@ -1169,7 +1178,6 @@ int32 Image::candidate_creator(void*)
 }
 
 
-
 int32 Image::enter_render(void *data)
 {
 	Image *this_pointer = (Image*)data;
@@ -1183,9 +1191,20 @@ int32 Image::enter_render(void *data)
 }
 
 
+int32 Image::enter_render_nobg(void *data)
+{
+	Image *this_pointer = (Image*)data;
+
+	BRect rect;
+
+	thread_id sender;
+	receive_data(&sender,&rect,sizeof(BRect));
+
+	return this_pointer->DoRender(rect, false);
+}
 
 
-int32 Image::DoRender(BRect area)
+int32 Image::DoRender(BRect area, bool bg)
 {
 	// The area is stated in rendered_image's coordinate system
 	// this function will combine all the visible layers into the
@@ -1218,22 +1237,35 @@ int32 Image::DoRender(BRect area)
 	int32 layer_number = 0;
 
 	// First clear the image for the required part.
-	d_bits = (uint32*)rendered_image->Bits();
+	if (bg) {
+		int32 gridSize;
+		uint32 color1;
+		uint32 color2;
 
-	d_bits += drl*d_start_y + d_start_x;
+		gridSize = 20;
+		rgb_color rgb1, rgb2;
+		rgb1.red = rgb1.green = rgb1.blue = 0xBB;
+		rgb2.red = rgb2.green = rgb2.blue = 0x99;
+		color1 = RGBColorToBGRA(rgb1);
+		color2 = RGBColorToBGRA(rgb2);
 
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} clear_color;
-	clear_color.word = 0xFFFFFFFF;
-	clear_color.bytes[3] = 0x00;
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
 
-	for (int y=0;y<height;y++) {
-		for (int x=0;x<width;x++) {
-			*d_bits++ = clear_color.word;
+			gridSize = settings.GetInt32(skBgGridSize, gridSize);
+			color1 = settings.GetUInt32(skBgColor1, color1);
+			color2 = settings.GetUInt32(skBgColor2, color2);
 		}
-		d_bits += drl - width;
+
+		BitmapUtilities::CheckerBitmap(rendered_image,
+			color1, color2, gridSize, &area);
+	} else {
+		union color_conversion white_alpha;
+		white_alpha.word = 0xFFFFFFFF;
+		white_alpha.bytes[3] = 0x00;
+
+		BitmapUtilities::ClearBitmap(rendered_image, white_alpha.word, &area);
 	}
 
 	// Then mix each layer over the previous ones.
@@ -1405,7 +1437,6 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 			}
 		}
 
-
 		uint32 *composite_bits = (uint32*)rendered_image->Bits();
 		uint32	composite_bpr = rendered_image->BytesPerRow()/4;
 		// Then we iterate through all the pixels in the composite image and
@@ -1418,10 +1449,33 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 		int32 right = (int32)area.right;
 		int32 bottom = (int32)area.bottom;
 
+		int32 gridSize;
+		uint32 color1;
+		uint32 color2;
+
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+
+			settings.FindInt32(skBgGridSize, (int32*)&gridSize);
+			settings.FindUInt32(skBgColor1, (uint32*)&color1);
+			settings.FindUInt32(skBgColor2, (uint32*)&color2);
+		} else {
+			gridSize = 20;
+			rgb_color rgb1, rgb2;
+			rgb1.red = rgb1.green = rgb1.blue = 0xBB;
+			rgb2.red = rgb2.green = rgb2.blue = 0x99;
+			color1 = RGBColorToBGRA(rgb1);
+			color2 = RGBColorToBGRA(rgb2);
+		}
+
+		BitmapUtilities::CheckerBitmap(rendered_image,
+			color1, color2, gridSize, &area);
+
 		for (int32 y=top;y<=bottom;y+=resolution) {
 			for (int32 x=left;x<=right;x+=resolution) {
 				// Get the target value by combining the layers' pixels
-				uint32 target = 0xFFFFFFFF;
+				uint32 target = *(composite_bits + x + y*composite_bpr);
 				for (int32 j=0;j<visible_layer_count;j++) {
 					uint32 layer = layer_bits[j][x + y*layer_bprs[j]];
 					uint32 As;

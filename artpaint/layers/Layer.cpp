@@ -9,12 +9,15 @@
 
 #include "Layer.h"
 
+#include "BitmapUtilities.h"
 #include "Image.h"
 #include "ImageView.h"
 #include "LayerView.h"
 #include "MessageConstants.h"
+#include "PixelOperations.h"
 #include "ProjectFileFunctions.h"
 #include "Selection.h"
+#include "SettingsServer.h"
 #include "UtilityClasses.h"
 
 
@@ -174,15 +177,27 @@ int32 Layer::calc_mini_image()
 	// destroyed. This is because the bitmap and miniature image are destroyed.
 	// We need something to stop this thread when the layer is being destroyed.
 
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} white, color;
+	int32 gridSize;
+	uint32 color1;
+	uint32 color2;
 
-	white.bytes[0] = 0xFF;
-	white.bytes[1] = 0xFF;
-	white.bytes[2] = 0xFF;
-	white.bytes[3] = 0x00;
+	gridSize = 20;
+	rgb_color rgb1, rgb2;
+	rgb1.red = rgb1.green = rgb1.blue = 0xBB;
+	rgb2.red = rgb2.green = rgb2.blue = 0x99;
+	color1 = RGBColorToBGRA(rgb1);
+	color2 = RGBColorToBGRA(rgb2);
+
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		gridSize = settings.GetInt32(skBgGridSize, gridSize);
+		color1 = settings.GetUInt32(skBgColor1, color1);
+		color2 = settings.GetUInt32(skBgColor2, color2);
+	}
+
+	gridSize = max_c(gridSize/5, 4);
 
 	// increase the number of waiting threads
 	atomic_add(&fLayerPreviewThreads,1);
@@ -210,41 +225,34 @@ int32 Layer::calc_mini_image()
 	// The bitmap might be changed and deleted while we are accessing it.
 	int32	b_bpr = fLayerData->BytesPerRow()/4;
 	uint32* big_image;
+
+	BRect bounds = fLayerPreview->Bounds();
+	BitmapUtilities::CheckerBitmap(fLayerPreview, color1, color2, 4,
+		&bounds);
+
+	union color_conversion color;
+
 	uint32* small_image = (uint32*)fLayerPreview->Bits();
 	big_image = (uint32*)fLayerData->Bits();
 	// Clear the parts that we do not set.
-	for (int32 i=0;i<HS_MINIATURE_IMAGE_WIDTH*y_offset;i++)
-		*small_image++ = white.word;
+	small_image += HS_MINIATURE_IMAGE_WIDTH*y_offset;
 
 	while ((y < miniature_height) && (fLayerPreviewThreads == 0)) {
-		for (int32 i=0;i<x_offset_left;i++)
-			*small_image++ = white.word;
+		small_image += x_offset_left;
 
 		while ((x < miniature_width) && (fLayerPreviewThreads == 0)) {
 			color.word = *(big_image + ((int32)(y*dy))*b_bpr + (int32)(x*dx));
-			color.bytes[0] = (uint8)(color.bytes[0] *
-				float_alpha_table[color.bytes[3]] + 255 *
-				(1.0 - float_alpha_table[color.bytes[3]]));
-			color.bytes[1] = (uint8)(color.bytes[1] *
-				float_alpha_table[color.bytes[3]] + 255 *
-				(1.0 - float_alpha_table[color.bytes[3]]));
-			color.bytes[2] = (uint8)(color.bytes[2] *
-				float_alpha_table[color.bytes[3]] + 255 *
-				(1.0 - float_alpha_table[color.bytes[3]]));
-			*small_image++ = color.word;
+
+			*small_image++ = src_over_fixed(*small_image, color.word);
+
 			x++;
 		}
 		y++;
 
-		for (int32 i=0;i<x_offset_right;i++)
-			*small_image++ = white.word;
+		small_image += x_offset_right;
 
 		x = 0;
 	}
-
-	// Clear the rest of the image
-	while (small_image != ((uint32*)fLayerPreview->Bits() + fLayerPreview->BitsLength()/4))
-		*small_image++ = white.word;
 
 	if (fLayerPreviewThreads == 0) {
 		snooze(50 * 1000);

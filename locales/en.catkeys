@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1463313598
+1	English	application/x-vnd.artpaint	3843079219
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -28,6 +28,7 @@ Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
 Airbrush tool	Tools		Airbrush tool
 Click to blur the image.	Tools		Click to blur the image.
+Color 1	Windows		Color 1
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Click to draw a straight line.	Tools		Click to draw a straight line.
@@ -66,6 +67,7 @@ Flow:	Tools		Flow:
 Picking a color.	Tools		Picking a color.
 Making a selection.	Tools		Making a selection.
 Opens a project from disk.	PaintWindow		Opens a project from disk.
+Background	Windows		Background
 Change transparency…	Manipulators		Change transparency…
 New color set	ColorPalette		New color set
 Cut	PaintWindow		Cut
@@ -117,6 +119,7 @@ Scale…	PaintWindow		Scale…
 Opens the main documentation for ArtPaint.	PaintWindow		Opens the main documentation for ArtPaint.
 Rotate…	Manipulators		Rotate…
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
+Grid Size	Windows		Grid Size
 Size:	Manipulators		Size:
 Color set	ColorPalette		Color set
 Fill ellipse	Tools		Fill ellipse
@@ -208,6 +211,7 @@ Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° 
 Invert selection	PaintWindow		Invert selection
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Brush	Windows		Brush
+Color 2	Windows		Color 2
 Hairy brush tool	Tools		Hairy brush tool
 Blur tool	Tools		Blur tool
 Adjustable	Windows		Adjustable
@@ -223,6 +227,7 @@ Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
 Merge with front layer	LayerView		Merge with front layer
+Revert	Windows		Revert
 Closes the current window.	PaintWindow		Closes the current window.
 Click to draw a rectangle.	Tools		Click to draw a rectangle.
 Duplicate layer	LayerView		Duplicate layer
@@ -348,5 +353,6 @@ Tools…	PaintWindow		Tools…
 Add area	Tools		Add area
 Hardness:	Tools		Hardness:
 Scales the image.	PaintWindow		Scales the image.
+Drag color from palette to set	Windows		Drag color from palette to set
 Recent images	PaintWindow		Recent images
 Color picker tool	Tools		Color picker tool

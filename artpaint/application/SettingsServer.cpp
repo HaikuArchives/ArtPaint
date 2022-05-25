@@ -234,7 +234,7 @@ status_t
 SettingsServer::SetValue(Setting type, const BString& field, bool value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK)
+		if (settings->RemoveName(field.String()) != B_ERROR)
 			return settings->AddBool(field.String(), value);
 	}
 	return B_ERROR;
@@ -245,8 +245,19 @@ status_t
 SettingsServer::SetValue(Setting type, const BString& field, int32 value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK)
+		if (settings->RemoveName(field.String()) != B_ERROR)
 			return settings->AddInt32(field.String(), value);
+	}
+	return B_ERROR;
+}
+
+
+status_t
+SettingsServer::SetValue(Setting type, const BString& field, uint32 value)
+{
+	if (BMessage* settings = _SettingsForType(type)) {
+		if (settings->RemoveName(field.String()) != B_ERROR)
+			return settings->AddUInt32(field.String(), value);
 	}
 	return B_ERROR;
 }
@@ -256,7 +267,7 @@ status_t
 SettingsServer::SetValue(Setting type, const BString& field, const BRect& value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK)
+		if (settings->RemoveName(field.String()) != B_ERROR)
 			return settings->AddRect(field.String(), value);
 	}
 	return B_ERROR;
@@ -267,7 +278,7 @@ status_t
 SettingsServer::SetValue(Setting type, const BString& field, const BPoint& value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK)
+		if (settings->RemoveName(field.String()) != B_ERROR)
 			return settings->AddPoint(field.String(), value);
 	}
 	return B_ERROR;
@@ -278,7 +289,7 @@ status_t
 SettingsServer::SetValue(Setting type, const BString& field, const char* value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK)
+		if (settings->RemoveName(field.String()) != B_ERROR)
 			return settings->AddString(field.String(), value);
 	}
 	return B_ERROR;
@@ -289,7 +300,7 @@ status_t
 SettingsServer::SetValue(Setting type, const BString& field, const BString& value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK)
+		if (settings->RemoveName(field.String()) != B_ERROR)
 			return settings->AddString(field.String(), value);
 	}
 	return B_ERROR;
@@ -301,7 +312,7 @@ SettingsServer::SetValue(Setting type, const BString& field, type_code typeCode,
 	const void* value, ssize_t size)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) == B_OK) {
+		if (settings->RemoveName(field.String()) != B_ERROR) {
 			return settings->AddData(field.String(), typeCode, value,
 				size);
 		}

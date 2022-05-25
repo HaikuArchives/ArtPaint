@@ -72,6 +72,10 @@ static const char skPosition[]					= "position";
 static const char skMimeType[]					= "mime_type";
 static const char skViews[]						= "views";
 
+static const char skBgGridSize[]				= "bg_grid_size";
+static const char skBgColor1[]					= "bg_color1";
+static const char skBgColor2[]					= "bg_color2";
+
 
 class SettingsServer
 {
@@ -100,6 +104,8 @@ public:
 										bool value);
 			status_t				SetValue(Setting type, const BString& field,
 										int32 value);
+			status_t				SetValue(Setting type, const BString& field,
+										uint32 value);
 			status_t				SetValue(Setting type, const BString& field,
 										const BRect& value);
 			status_t				SetValue(Setting type, const BString& field,

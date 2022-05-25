@@ -424,6 +424,24 @@ PaintWindow::FrameMoved(BPoint newPosition)
 
 
 void
+PaintWindow::Redraw()
+{
+	for (int i = 0; i < sgPaintWindowCount; ++i) {
+		PaintWindow* paintWin = (PaintWindow*)sgPaintWindowList.ItemAt(i);
+
+		ImageView* imgView = paintWin->ReturnImageView();
+		if (imgView != NULL) {
+			if (imgView->LockLooper() == true) {
+				imgView->ReturnImage()->Render();
+				imgView->Invalidate();
+				imgView->UnlockLooper();
+			}
+		}
+	}
+}
+
+
+void
 PaintWindow::MenusBeginning()
 {
 	BWindow::MenusBeginning();
@@ -601,6 +619,7 @@ PaintWindow::MessageReceived(BMessage *message)
 			} else {
 				LayerWindow::ActiveWindowChanged(this);
 			}
+
 		}	break;
 
 		case HS_SHOW_VIEW_SETUP_WINDOW: {
@@ -1413,6 +1432,7 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 
 							if (manipulator != NULL) {
 								manip_map.insert(std::pair(BString(manipulator->ReturnName()), *it));
+
 								delete manipulator;
 								manipulator = NULL;
 							}
@@ -1420,8 +1440,7 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 					}
 				}
 
-				for (auto it = manip_map.begin(); it != manip_map.end(); ++it)
-				{
+				for (auto it = manip_map.begin(); it != manip_map.end(); ++it) {
 					int32 id = it->second;
 					Manipulator* (*Instantiate)(BBitmap*, ManipulatorInformer*);
 					status_t status = get_image_symbol(id, "instantiate_add_on",
@@ -1445,7 +1464,6 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 						}
 					}
 				}
-
 				addOnMenu->SetTargetForItems(paintWindow);
 				paintWindow->Unlock();
 			}
@@ -1711,6 +1729,7 @@ PaintWindow::_SaveImage(BMessage *message)
 		BNode node(&directory, message->FindString("name"));
 		writeAttributes(node);
 
+		fImageView->ReturnImage()->Render(false);
 		// here translate the data using a BitmapStream-object
 		BBitmap* bitmap = fImageView->ReturnImage()->ReturnRenderedImage();
 		printf("Bitmap at 0,0: 0x%8lx\n",*((uint32*)(bitmap->Bits())));
@@ -1754,6 +1773,8 @@ PaintWindow::_SaveImage(BMessage *message)
 			printf("Error while saving: %s\n", strerror(status));
 		}
 	}
+
+	fImageView->ReturnImage()->Render();
 
 	return status;
 }
