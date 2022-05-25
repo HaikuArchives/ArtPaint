@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 #ifndef PIXEL_OPERATIONS_H
@@ -13,8 +14,8 @@
 #include <math.h>
 
 
-union color_conversion_union {
-	char bytes[4];
+union color_conversion {
+	uint8 bytes[4];
 	uint32 word;
 };
 
@@ -154,7 +155,6 @@ inline uint32 combine_4_pixels_fixed(uint32 p1,uint32 p2,uint32 p3,uint32 p4,uin
 }
 
 
-
 // Parameters u and v should be in range [0,1]
 inline uint32 bilinear_interpolation(uint32 p1,uint32 p2,uint32 p3,uint32 p4,float u,float v)
 {
@@ -195,7 +195,6 @@ inline uint32 mix_2_pixels(uint32 p1,uint32 p2,float c)
 }
 
 
-
 #if __POWERPC__
 //// This inline assemler function mixes the two pixels just like mix_2_pixels
 inline asm uint32 mix_2_pixels_asm(uint32 p1, uint32 p2, float c)
@@ -227,14 +226,106 @@ inline asm uint32 mix_2_pixels_asm(uint32 p1, uint32 p2, float c)
 }
 #endif
 
+
 inline uint32 mix_2_pixels_fixed(uint32 p1,uint32 p2,uint32 c)
 {
 	uint32 inv_c = 32768 - c;
 
-	return 	((((((p1 >> 24) &0xFF) * c + ((p2 >> 24)&0xFF) * inv_c)>>15)<<24) & 0xFF000000) |
+	uint32 result = ((((((p1 >> 24) &0xFF) * c + ((p2 >> 24)&0xFF) * inv_c)>>15)<<24) & 0xFF000000) |
 			((((((p1 >> 16)&0xFF) * c + ((p2 >> 16)&0xFF) * inv_c)>>15)<<16) & 0x00FF0000) |
 			((((((p1 >> 8)&0xFF) * c + ((p2 >> 8)&0xFF) * inv_c)>>15)<<8) & 0x0000FF00) |
 			(((((p1&0xFF) * c + (p2&0xFF) * inv_c)>>15)) & 0x000000FF);
+
+	return result;
+}
+
+
+inline uint32 src_over_fixed(uint32 dst, uint32 src)
+{
+	union color_conversion src_rgba, dst_rgba, result_rgba;
+
+	src_rgba.word = src;
+	dst_rgba.word = dst;
+
+	uint8 src_alpha = src_rgba.bytes[3] ;
+	uint8 dst_alpha = dst_rgba.bytes[3];
+
+	uint32 inv_src_alpha = 255 - src_alpha;
+	uint32 inv_dst_alpha = (dst_alpha * inv_src_alpha) / 255;
+	uint32 result_alpha = src_alpha + inv_dst_alpha;
+	if (result_alpha == 0)
+		result_alpha = 1;
+
+	// r-rgb * r-a = s-rgb * s-a + d-rgb * d-a * (1 - s-a)
+
+	result_rgba.bytes[0] = (src_rgba.bytes[0] * src_alpha +
+		dst_rgba.bytes[0] * inv_dst_alpha) / result_alpha;
+	result_rgba.bytes[1] = (src_rgba.bytes[1] * src_alpha +
+		dst_rgba.bytes[1] * inv_dst_alpha) / result_alpha;
+	result_rgba.bytes[2] = (src_rgba.bytes[2] * src_alpha +
+		dst_rgba.bytes[2] * inv_dst_alpha) / result_alpha;
+	result_rgba.bytes[3] = result_alpha;
+
+	return result_rgba.word;
+}
+
+
+inline uint32 dst_over_fixed(uint32 dst, uint32 src)
+{
+	union color_conversion src_rgba, dst_rgba, result_rgba;
+
+	src_rgba.word = src;
+	dst_rgba.word = dst;
+
+	uint8 src_alpha = src_rgba.bytes[3];
+	uint8 dst_alpha = dst_rgba.bytes[3];
+
+	uint32 inv_dst_alpha = 255 - dst_alpha;
+	uint32 inv_src_alpha = (src_alpha * inv_dst_alpha) / 255;
+	uint32 result_alpha = inv_src_alpha + dst_alpha;
+	if (result_alpha == 0)
+		result_alpha = 1;
+
+	// r-rgb * r-a = s-rgb * s-a * (1 - d-a) + d-rgb * d-a
+
+	result_rgba.bytes[0] = (src_rgba.bytes[0] * inv_src_alpha +
+		dst_rgba.bytes[0] * dst_alpha) / result_alpha;
+	result_rgba.bytes[1] = (src_rgba.bytes[1] * inv_src_alpha +
+		dst_rgba.bytes[1] * dst_alpha) / result_alpha;
+	result_rgba.bytes[2] = (src_rgba.bytes[2] * inv_src_alpha +
+		dst_rgba.bytes[2] * dst_alpha) / result_alpha;
+	result_rgba.bytes[3] = result_alpha;
+
+	return result_rgba.word;
+}
+
+
+inline uint32 src_out_fixed(uint32 dst, uint32 src)
+{
+	union color_conversion src_rgba, dst_rgba, result_rgba;
+
+	src_rgba.word = src;
+	dst_rgba.word = dst;
+
+	uint8 src_alpha = src_rgba.bytes[3];
+	uint8 dst_alpha = dst_rgba.bytes[3];
+
+	uint32 inv_dst_alpha = 255 - dst_alpha;
+	uint32 result_alpha = (src_alpha * inv_dst_alpha) / 255;
+	if (result_alpha == 0)
+		result_alpha = 1;
+
+	// r-rgb * r-a = s-rgb * s-a * (1 - d-a)
+
+	result_rgba.bytes[0] = (src_rgba.bytes[0] * src_alpha * inv_dst_alpha) /
+		result_alpha;
+	result_rgba.bytes[1] = (src_rgba.bytes[1] * src_alpha * inv_dst_alpha) /
+		result_alpha;
+	result_rgba.bytes[2] = (src_rgba.bytes[2] * src_alpha * inv_dst_alpha) /
+		result_alpha;
+	result_rgba.bytes[3] = result_alpha;
+
+	return result_rgba.word;
 }
 
 

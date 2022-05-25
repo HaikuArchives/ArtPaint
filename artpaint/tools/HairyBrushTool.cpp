@@ -76,13 +76,6 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-//	coordinate_queue = new CoordinateQueue();
-//	image_view = view;
-//	thread_id coordinate_reader = spawn_thread(CoordinateReader,
-//		"read coordinates",B_NORMAL_PRIORITY,this);
-//	resume_thread(coordinate_reader);
-//	reading_coordinates = TRUE;
-
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	if (!buffer)
 		return NULL;
@@ -106,6 +99,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	float minimum_width = 0.5;//floor(max_c(2,initial_width*0.5));
 	float current_width = initial_width;
 	float color_randomness = GetCurrentValue(TOLERANCE_OPTION);
+	float color_randomnessx2 = color_randomness * 2.0;
 	float initial_color_amount = GetCurrentValue(CONTINUITY_OPTION) / 10.0;
 	float color_amount_randomness = 4;
 	rgb_color color =  ((PaintApplication*)be_app)->Color(true);
@@ -116,30 +110,38 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BPoint *start_point_array = new BPoint[hair_count];
 	int32 *index_array = new int32[hair_count];
 
-	for (int32 i=0;i<hair_count;i++) {
-		float red,green,blue,alpha;
-		color_amount_array[i] = initial_color_amount - color_amount_randomness + random()%1000/1000.0*color_amount_randomness*2.0;
+	for (int32 i = 0;i < hair_count;i++) {
+		float red, green, blue, alpha;
+		color_amount_array[i] = initial_color_amount -
+			color_amount_randomness +
+			random() % 1000 / 1000.0 * color_amount_randomness * 2.0;
+
 		color_array[i] = ((PaintApplication*)be_app)->Color(true);
 		red = color_array[i].red;
 		green = color_array[i].green;
 		blue = color_array[i].blue;
 		alpha = color_array[i].alpha;
 
-		red = red - color_randomness + ((rand() % 1000) / 1000.0 * color_randomness * 2.0);
-		red = min_c(255,max_c(red,0));
+		red = red - color_randomness + ((rand() % 1000) / 1000.0 *
+			color_randomnessx2);
+		red = min_c(255, max_c(red, 0));
 
-		green = green - color_randomness + ((rand() % 1000) / 1000.0 * color_randomness * 2.0);
-		green = min_c(255,max_c(green,0));
+		green = green - color_randomness + ((rand() % 1000) / 1000.0 *
+			color_randomnessx2);
+		green = min_c(255, max_c(green, 0));
 
-		blue = blue - color_randomness + ((rand() % 1000) / 1000.0 * color_randomness * 2.0);
-		blue = min_c(255,max_c(blue,0));
+		blue = blue - color_randomness + ((rand() % 1000) / 1000.0 *
+			color_randomnessx2);
+		blue = min_c(255, max_c(blue, 0));
 
-		alpha = alpha - color_randomness + ((rand() % 1000) / 1000.0 * color_randomness * 2.0);
-		alpha = min_c(255,max_c(alpha,0));
+		alpha = alpha - color_randomness + ((rand() % 1000) / 1000.0 *
+			color_randomnessx2);
+		alpha = min_c(255, max_c(alpha, 0));
 
 		color_array[i].red = (uint8)red;
 		color_array[i].green = (uint8)green;
 		color_array[i].blue = (uint8)blue;
+		color_array[i].alpha = (uint8)alpha;
 
 		start_point_array[i] = point;
 	}
@@ -162,10 +164,10 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			line_normal.x /= normal_length;
 			line_normal.y /= normal_length;
 
-			for (int32 i=0;i<hair_count;i++)
+			for (int32 i = 0;i < hair_count;i++)
 				index_array[i] = i;
 
-			for (int32 j=hair_count-1;j>=0;j--) {
+			for (int32 j = hair_count - 1;j >= 0;j--) {
 				// First calculate the points where to draw this line
 				int32 random_index;
 				if (j != 0)
@@ -182,8 +184,10 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 
 				// Randomly weight the rounding
-				start_point.x = random_round(start_point.x,random_stream->UniformDistribution(0.0,1.0));
-				start_point.y = random_round(start_point.y,random_stream->UniformDistribution(0.0,1.0));
+				start_point.x = random_round(start_point.x,
+					random_stream->UniformDistribution(0.0,1.0));
+				start_point.y = random_round(start_point.y,
+					random_stream->UniformDistribution(0.0,1.0));
 
 //				start_point.x = round(start_point.x);
 //				start_point.y = round(start_point.y);
@@ -196,45 +200,48 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				// Then calculate how much and what color will be used. Also
 				// calculate how the colors will be mixed with previous color.
 				if (color_amount_array[i] > 0)
-					color_amount_array[i] -= min_c(normal_length / 100.0,0.1);
+					color_amount_array[i] -= min_c(normal_length / 100.0, 0.1);
 				else {
 					// Borrow some color from our neighbours.
-					int32 neighbour_index = ((i>=1) ? i-1 : hair_count-1);
+					int32 neighbour_index = ((i >= 1) ?
+						i - 1 : hair_count - 1);
 					if (color_amount_array[neighbour_index] > 0) {
-						color_amount_array[i] = color_amount_array[neighbour_index]/4;
-						color_amount_array[neighbour_index] -= color_amount_array[i];
+						color_amount_array[i] =
+							color_amount_array[neighbour_index] / 4;
+						color_amount_array[neighbour_index] -=
+							color_amount_array[i];
 					}
-					neighbour_index = (i+1)%hair_count;
+					neighbour_index = (i + 1) % hair_count;
 					if (color_amount_array[neighbour_index] > 0) {
-						color_amount_array[i] += color_amount_array[neighbour_index]/4;
-						color_amount_array[neighbour_index] -= color_amount_array[neighbour_index]/4;
+						color_amount_array[i] +=
+							color_amount_array[neighbour_index] / 4;
+						color_amount_array[neighbour_index] -=
+							color_amount_array[neighbour_index] / 4;
 					}
 
 				}
 
 				if (color_amount_array[i] > 0) {
-					drawer->DrawHairLine(start_point,end_point,RGBColorToBGRA(color_array[i]),true,selection);
+					drawer->DrawHairLine(start_point, end_point,
+						RGBColorToBGRA(color_array[i]), true, selection);
 //					drawer->DrawLine(start_point,end_point,RGBColorToBGRA(color_array[i]),2,false,selection);
 				}
 				else {
 				}
-				updated_rect = updated_rect | BRect(start_point,start_point);
-				updated_rect = updated_rect | BRect(end_point,end_point);
+				updated_rect = updated_rect | BRect(start_point, start_point);
+				updated_rect = updated_rect | BRect(end_point, end_point);
 			}
 			updated_rect.left = floor(updated_rect.left);
 			updated_rect.top = floor(updated_rect.top);
 			updated_rect.right = ceil(updated_rect.right);
 			updated_rect.bottom = ceil(updated_rect.bottom);
-			updated_rect.InsetBy(-1,-1);
+			updated_rect.InsetBy(-1, -1);
 			imageUpdater->AddRect(updated_rect);
 			SetLastUpdatedRect(updated_rect);
 		}
 		else {
-			initial_width = min_c(maximum_width,initial_width+0.5);
+			initial_width = min_c(maximum_width, initial_width + 0.5);
 		}
-	}
-	if (!initialized) {
-
 	}
 	imageUpdater->ForceUpdate();
 
@@ -246,26 +253,29 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			the_script->AddPoint(point);
 
 			BPoint line_normal;
-			line_normal.x = -(point-prev_point).y;
-			line_normal.y = (point-prev_point).x;
-			float normal_length = sqrt(pow(line_normal.x,2) + pow(line_normal.y,2));
+			line_normal.x = -(point - prev_point).y;
+			line_normal.y = (point - prev_point).x;
+			float normal_length = sqrt(pow(line_normal.x, 2) +
+				pow(line_normal.y, 2));
 			line_normal.x /= normal_length;
 			line_normal.y /= normal_length;
 
 			// This controls the width of resulting line
-			float width_coeff = min_c(normal_length/30.0,1.0);
-			float new_width = current_width * 0.5 + 0.5*(width_coeff*minimum_width + (1.0-width_coeff)*maximum_width);
+			float width_coeff = min_c(normal_length / 30.0, 1.0);
+			float new_width = current_width * 0.5 + 0.5 *
+				(width_coeff * minimum_width + (1.0 - width_coeff) *
+				maximum_width);
 			if (new_width > current_width) {
-				current_width += min_c(number_of_consecutive_growths/20.0,1.0) * (new_width-current_width);
-				current_width = min_c(current_width,maximum_width);
+				current_width += min_c(number_of_consecutive_growths / 20.0,
+					1.0) * (new_width - current_width);
+				current_width = min_c(current_width, maximum_width);
 				number_of_consecutive_growths++;
 			}
 			else if (new_width <= current_width) {
 				current_width = new_width;
 				number_of_consecutive_growths = 0;
 			}
-			updated_rect = BRect(point,point);
-
+			updated_rect = BRect(point, point);
 
 			// Here we make an array of indexes and also swap hairs with
 			// their neighbours randomly.
@@ -275,15 +285,16 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				if (number > 0.9) {
 					float old_amount = color_amount_array[i];
 					rgb_color old_color = color_array[i];
-
-					color_amount_array[i] = color_amount_array[(i+1)%hair_count];
-					color_array[i] = color_array[(i+1)%hair_count];
-					color_amount_array[(i+1)%hair_count] = old_amount;
-					color_array[(i+1)%hair_count] = old_color;
+					int32 swap_index = (i + 1) % hair_count;
+					color_amount_array[i] =
+						color_amount_array[swap_index];
+					color_array[i] = color_array[swap_index];
+					color_amount_array[swap_index] = old_amount;
+					color_array[swap_index] = old_color;
 				}
 				else if (number > 0.8) {
 					// NOT: (i-1)%hair_count might be also negative if i happens to be 0.
-					int32 other_index = ((i>=1) ? i-1 : hair_count-1);
+					int32 other_index = ((i >= 1) ? i - 1 : hair_count - 1);
 					float old_amount = color_amount_array[i];
 					rgb_color old_color = color_array[i];
 
@@ -294,7 +305,7 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				}
 			}
 
-			for (int32 j=hair_count-1;j>=0;j--) {
+			for (int32 j = hair_count - 1;j >= 0;j--) {
 				// First calculate the points where to draw this line
 				int32 random_index;
 				if (j != 0)
@@ -304,19 +315,21 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				int32 i = index_array[random_index];
 				index_array[random_index] = index_array[j];
 				BPoint offset = line_normal;
-				offset.x = offset.x * current_width - offset.x * ((float)i/(float)hair_count)*2*current_width;
-				offset.y = offset.y * current_width - offset.y * ((float)i/(float)hair_count)*2*current_width;
+				offset.x = offset.x * current_width - offset.x *
+					((float)i / (float)hair_count) * 2 * current_width;
+				offset.y = offset.y * current_width - offset.y *
+					((float)i / (float)hair_count) * 2 * current_width;
 				BPoint start_point = start_point_array[i];
 				BPoint end_point = point + offset;
 
-
 				// Randomly weight the rounding
-				end_point.x = random_round(end_point.x,random_stream->UniformDistribution(0.0,1.0));
-				end_point.y = random_round(end_point.y,random_stream->UniformDistribution(0.0,1.0));
+				end_point.x = random_round(end_point.x,
+					random_stream->UniformDistribution(0.0, 1.0));
+				end_point.y = random_round(end_point.y,
+					random_stream->UniformDistribution(0.0, 1.0));
 
 //				end_point.x = round(end_point.x);
 //				end_point.y = round(end_point.y);
-
 
 				start_point_array[i] = end_point;
 
@@ -326,33 +339,38 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 					color_amount_array[i] -= min_c(normal_length / 100.0,0.1);
 				else {
 					// Borrow some color from our neighbours.
-					int32 neighbour_index = ((i>=1) ? i-1 : hair_count-1);
+					int32 neighbour_index = ((i >= 1) ?
+						i - 1 : hair_count - 1);
 					if (color_amount_array[neighbour_index] > 0) {
-						color_amount_array[i] = color_amount_array[neighbour_index]/4;
-						color_amount_array[neighbour_index] -= color_amount_array[i];
+						color_amount_array[i] =
+							color_amount_array[neighbour_index] / 4;
+						color_amount_array[neighbour_index] -=
+							color_amount_array[i];
 					}
-					neighbour_index = (i+1)%hair_count;
+					neighbour_index = (i + 1) % hair_count;
 					if (color_amount_array[neighbour_index] > 0) {
-						color_amount_array[i] += color_amount_array[neighbour_index]/4;
-						color_amount_array[neighbour_index] -= color_amount_array[neighbour_index]/4;
+						color_amount_array[i] +=
+							color_amount_array[neighbour_index] / 4;
+						color_amount_array[neighbour_index] -=
+							color_amount_array[neighbour_index] / 4;
 					}
-
 				}
 
 				if (color_amount_array[i] > 0) {
-					drawer->DrawHairLine(start_point,end_point,RGBColorToBGRA(color_array[i]),true,selection);
+					drawer->DrawHairLine(start_point, end_point,
+						RGBColorToBGRA(color_array[i]), true, selection);
 //					drawer->DrawLine(start_point,end_point,RGBColorToBGRA(color_array[i]),2,false,selection);
 				}
 				else {
 				}
-				updated_rect = updated_rect | BRect(start_point,start_point);
-				updated_rect = updated_rect | BRect(end_point,end_point);
+				updated_rect = updated_rect | BRect(start_point, start_point);
+				updated_rect = updated_rect | BRect(end_point, end_point);
 			}
 			updated_rect.left = floor(updated_rect.left);
 			updated_rect.top = floor(updated_rect.top);
 			updated_rect.right = ceil(updated_rect.right);
 			updated_rect.bottom = ceil(updated_rect.bottom);
-			updated_rect.InsetBy(-1,-1);
+			updated_rect.InsetBy(-1, -1);
 
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
@@ -360,9 +378,6 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			imageUpdater->ForceUpdate();
 
 			prev_point = point;
-		}
-		else {
-//			current_width = max_c(current_width-0.5,minimum_width);
 		}
 	}
 	imageUpdater->ForceUpdate();

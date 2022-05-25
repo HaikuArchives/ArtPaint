@@ -1702,7 +1702,8 @@ FillToolConfigView::GradientView::_CalculateGradient()
 	int32 width = fGradient->BytesPerRow() / 4;
 
 	for (int32 x = 0; x < width; ++x) {
-		c.word = mix_2_pixels(c1, c2, 1 - float(x) / float(width + 1.0));
+		uint32 fixed_alpha = (1.0 - float(x) / float(width + 1.0)) * 32768;
+		c.word = mix_2_pixels_fixed(c1, c2, fixed_alpha);
 		float coeff = c.bytes[3] / 255.0;
 		if ((x % 2)	== 0) {
 			c.bytes[0] = (uint8)(c.bytes[0] * coeff);

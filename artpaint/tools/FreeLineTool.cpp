@@ -13,12 +13,14 @@
 #include "FreeLineTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "Cursors.h"
 #include "CoordinateQueue.h"
 #include "Image.h"
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
+#include "PixelOperations.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
@@ -69,9 +71,18 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		((PaintApplication*)be_app)->Color(true));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	BBitmap* srcBuffer = new BBitmap(buffer);
+	BBitmap* tmpBuffer = new BBitmap(buffer);
+
+	union color_conversion clear_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x01;
+
+	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
 	Selection *selection = view->GetSelection();
 //	BView *buffer_view = view->getBufferView();
-	BitmapDrawer *drawer = new BitmapDrawer(buffer);
+	BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
 	rgb_color new_color;
 	uint32 new_color_bgra;
 //	int32 original_mouse_speed;
@@ -93,9 +104,11 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	new_color = ((PaintApplication*)be_app)->Color(true);
 	new_color_bgra = RGBColorToBGRA(new_color);
 	if (diameter != 1)
-		drawer->DrawCircle(prev_point,diameter/2,new_color_bgra,true, true,selection);
+		drawer->DrawCircle(prev_point, diameter / 2, new_color_bgra,
+			true, false, selection, NULL);
 	else
-		drawer->DrawHairLine(prev_point,point,new_color_bgra, false, selection);
+		drawer->DrawHairLine(prev_point, point, new_color_bgra,
+			false, selection, NULL);
 
 	// This makes sure that the view is updated even if just one point is drawn
 	updated_rect.left = min_c(point.x-diameter/2,prev_point.x-diameter/2);
@@ -107,6 +120,8 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	// a separate thread.
 	view->ReturnImage()->Render(updated_rect);
 	view->Window()->Lock();
+	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+		tmpBuffer, updated_rect);
 	// We have to use Draw, because Invalidate causes flickering by erasing
 	// the area before calling Draw.
 	view->Draw(view->convertBitmapRectToView(updated_rect));
@@ -127,17 +142,20 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			// first set the color
 			new_color = ((PaintApplication*)be_app)->Color(true);
 			new_color_bgra = RGBColorToBGRA(new_color);
+
 			diameter = fToolSettings.size;
 			if ((diameter%2) == 0)
 				diameter++;
 
-
 			if (diameter != 1) {
-				drawer->DrawCircle(point,diameter/2,new_color_bgra,true,false,selection);
-				drawer->DrawLine(prev_point,point,new_color_bgra,diameter,false,selection);
+				drawer->DrawCircle(point,diameter / 2, new_color_bgra,
+					true, false, selection, NULL);
+				drawer->DrawLine(prev_point,point, new_color_bgra, diameter,
+					false, selection, NULL);
 			}
 			else
-				drawer->DrawHairLine(prev_point,point,new_color_bgra,false,selection);
+				drawer->DrawHairLine(prev_point, point, new_color_bgra,
+					false, selection);
 
 			updated_rect.left = min_c(point.x-diameter/2-1,prev_point.x-diameter/2-1);
 			updated_rect.top = min_c(point.y-diameter/2-1,prev_point.y-diameter/2-1);
@@ -149,6 +167,8 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			// We should do the composite picture and re-draw the window in
 			// a separate thread.
 			view->Window()->Lock();
+			BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+				tmpBuffer, updated_rect);
 			view->UpdateImage(updated_rect);
 			view->Sync();
 			view->Window()->Unlock();

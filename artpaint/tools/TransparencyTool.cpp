@@ -84,9 +84,12 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		uint32 word;
 	} color;
 
+	uint32 transparency_value =
+		((PaintApplication*)be_app)->Color(true).alpha;
+
 	while (buttons) {
 		the_script->AddPoint(point);
-		uint32 transparency_value = ((PaintApplication*)be_app)->Color(true).alpha;
+
 		int32 x_dist,y_sqr;
 
 		int32 width = rc.IntegerWidth();
@@ -104,11 +107,13 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 						color.word = *(bits_origin + real_y*bpr + real_x);
 						if (color.bytes[3] < transparency_value) {
 							color.bytes[3] = (uint8)min_c(color.bytes[3] +
-								GetCurrentValue(PRESSURE_OPTION)/4.0,transparency_value);
+								GetCurrentValue(PRESSURE_OPTION)/4.0,
+								transparency_value);
 							*(bits_origin + real_y*bpr + real_x) = color.word;
 						} else if (color.bytes[3] > transparency_value) {
 							color.bytes[3] = (uint8)max_c(color.bytes[3] -
-								GetCurrentValue(PRESSURE_OPTION)/4.0,transparency_value);
+								GetCurrentValue(PRESSURE_OPTION)/4.0,
+								transparency_value);
 							*(bits_origin + real_y*bpr + real_x) = color.word;
 						}
 //					}

@@ -19,6 +19,7 @@
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
+#include "PixelOperations.h"
 #include "ToolScript.h"
 
 
@@ -60,6 +61,8 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	// here we first get the necessary data from view
 	// and then start drawing while mousebutton is held down
 
+	uint32 (*composite_func)(uint32, uint32) = src_out_fixed;
+
 	// Wait for the last_updated_region to become empty
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
@@ -93,6 +96,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		background.bytes[1] = c.green;
 		background.bytes[2] = c.red;
 		background.bytes[3] = c.alpha;
+		composite_func = src_over_fixed;
 	}
 
 	if (buffer == NULL) {
@@ -109,9 +113,11 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		diameter++;
 
 	if (diameter != 1)
-		drawer->DrawCircle(prev_point,diameter/2,background.word,true,true,selection);
+		drawer->DrawCircle(prev_point, diameter/2, background.word,
+			true, true, selection, composite_func);
 	else
-		drawer->DrawHairLine(prev_point,point,background.word, false,selection);
+		drawer->DrawHairLine(prev_point, point, background.word,
+			true, selection, composite_func);
 
 	// This makes sure that the view is updated even if just one point is drawn
 	updated_rect.left = min_c(point.x-diameter/2,prev_point.x-diameter/2);
@@ -146,11 +152,14 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 
 			if (diameter != 1) {
-				drawer->DrawCircle(point,diameter/2,background.word,true,false,selection);
-				drawer->DrawLine(prev_point,point,background.word,diameter,false,selection);
+				drawer->DrawCircle(point, diameter/2, background.word,
+					true, true, selection, composite_func);
+				drawer->DrawLine(prev_point, point, background.word,
+					diameter, true, selection, composite_func);
 			}
 			else
-				drawer->DrawHairLine(prev_point,point,background.word, false,selection);
+				drawer->DrawHairLine(prev_point, point, background.word,
+					true, selection, composite_func);
 
 			updated_rect.left = min_c(point.x-diameter/2-1,prev_point.x-diameter/2-1);
 			updated_rect.top = min_c(point.y-diameter/2-1,prev_point.y-diameter/2-1);
