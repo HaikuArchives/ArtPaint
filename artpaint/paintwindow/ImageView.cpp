@@ -505,54 +505,62 @@ void ImageView::MessageReceived(BMessage *message)
 		// this comes from menubar->"Edit"->"Invert Selection", we should then invert the
 		// selected area and redisplay it
 		case HS_INVERT_SELECTION:
-			selection->Invert();
-			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Invert selection"),the_image->ReturnThumbnailImage());
-				if (new_event != NULL) {
-					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-					undo_queue->SetSelectionData(selection->ReturnSelectionData());
+			if (!fManipulator) {
+				selection->Invert();
+				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
+					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Invert selection"),the_image->ReturnThumbnailImage());
+					if (new_event != NULL) {
+						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
+						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+					}
 				}
-			}
 
-			Invalidate();
+				Invalidate();
+			}
 			break;
 
 		// this comes from menubar->"Edit"->"Clear Selection", we should then clear the
 		// selection and redisplay the image
 		case HS_CLEAR_SELECTION:
-			selection->Clear();
-			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear selection"),the_image->ReturnThumbnailImage());
-				if (new_event != NULL) {
-					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-					undo_queue->SetSelectionData(selection->ReturnSelectionData());
+			if (!fManipulator) {
+				selection->Clear();
+				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
+					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear selection"),the_image->ReturnThumbnailImage());
+					if (new_event != NULL) {
+						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
+						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+					}
 				}
+				Invalidate();
 			}
-			Invalidate();
 			break;
 
 		case HS_GROW_SELECTION:
-			selection->Dilatate();
-			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),the_image->ReturnThumbnailImage());
-				if (new_event != NULL) {
-					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-					undo_queue->SetSelectionData(selection->ReturnSelectionData());
+			if (!fManipulator) {
+				selection->Dilatate();
+				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
+					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),the_image->ReturnThumbnailImage());
+					if (new_event != NULL) {
+						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
+						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+					}
 				}
+				Invalidate();
 			}
-			Invalidate();
 			break;
 
 		case HS_SHRINK_SELECTION:
-			selection->Erode();
-			if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-				UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Shrink selection"),the_image->ReturnThumbnailImage());
-				if (new_event != NULL) {
-					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-					undo_queue->SetSelectionData(selection->ReturnSelectionData());
+			if (!fManipulator) {
+				selection->Erode();
+				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
+					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Shrink selection"),the_image->ReturnThumbnailImage());
+					if (new_event != NULL) {
+						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
+						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+					}
 				}
+				Invalidate();
 			}
-			Invalidate();
 			break;
 
 		// this comes from menubar->"Canvas"->"Clear Canvas", we should then clear all the
@@ -584,23 +592,34 @@ void ImageView::MessageReceived(BMessage *message)
 		case B_COPY:
 		case B_CUT:
 			{
-				int32 copied_layers;
-				if (message->FindInt32("layers",&copied_layers) == B_OK) {
-					DoCopyOrCut(copied_layers,message->what == B_CUT);
+				if (!fManipulator) {
+					int32 copied_layers;
+					if (message->FindInt32("layers",&copied_layers) == B_OK) {
+						DoCopyOrCut(copied_layers,message->what == B_CUT);
+					}
 				}
 				break;
 			}
 
 		case B_PASTE:
-			DoPaste();
+			if (!fManipulator)
+				DoPaste();
 			break;
 
 		case HS_UNDO:
-			Undo();
+			if (!fManipulator)
+				Undo();
+			else
+				PostponeMessageAndFinishManipulator();
+
 			break;
 
 		case HS_REDO:
-			Redo();
+			if (!fManipulator)
+				Redo();
+			else
+				PostponeMessageAndFinishManipulator();
+
 			break;
 
 		case HS_START_MANIPULATOR: {
