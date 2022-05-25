@@ -9,8 +9,12 @@
  */
 
 #include "Image.h"
+
+
+#include "BitmapUtilities.h"
 #include "ImageView.h"
 #include "Layer.h"
+#include "PixelOperations.h"
 #include "ProjectFileFunctions.h"
 #include "UndoEvent.h"
 #include "UndoQueue.h"
@@ -1218,23 +1222,12 @@ int32 Image::DoRender(BRect area)
 	int32 layer_number = 0;
 
 	// First clear the image for the required part.
-	d_bits = (uint32*)rendered_image->Bits();
+	union color_conversion color1, color2;
+	color1.word = 0xFFAAAAAA;
+	color2.word = 0xFF999999;
 
-	d_bits += drl*d_start_y + d_start_x;
-
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} clear_color;
-	clear_color.word = 0xFFFFFFFF;
-	clear_color.bytes[3] = 0x00;
-
-	for (int y=0;y<height;y++) {
-		for (int x=0;x<width;x++) {
-			*d_bits++ = clear_color.word;
-		}
-		d_bits += drl - width;
-	}
+	BitmapUtilities::CheckerBitmap(rendered_image,
+		color1.word, color2.word, &area);
 
 	// Then mix each layer over the previous ones.
 	const uint32 *FixedAlphaTable;
@@ -1418,10 +1411,17 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 		int32 right = (int32)area.right;
 		int32 bottom = (int32)area.bottom;
 
+		union color_conversion color1, color2;
+		color1.word = 0xFFAAAAAA;
+		color2.word = 0xFF999999;
+
+		BitmapUtilities::CheckerBitmap(rendered_image,
+			color1.word, color2.word, &area);
+
 		for (int32 y=top;y<=bottom;y+=resolution) {
 			for (int32 x=left;x<=right;x+=resolution) {
 				// Get the target value by combining the layers' pixels
-				uint32 target = 0xFFFFFFFF;
+				uint32 target = *(composite_bits + x + y*composite_bpr);
 				for (int32 j=0;j<visible_layer_count;j++) {
 					uint32 layer = layer_bits[j][x + y*layer_bprs[j]];
 					uint32 As;
