@@ -103,6 +103,7 @@
 // these constants are used in the Edit-menu
 #define	HS_INVERT_SELECTION		'InSl'
 #define	HS_CLEAR_SELECTION		'ClSl'
+#define HS_SELECT_ALL			'SlAl'
 #define HS_GROW_SELECTION		'GrSl'
 #define HS_SHRINK_SELECTION		'SrSL'
 

@@ -1155,6 +1155,9 @@ PaintWindow::openMenuBar()
 
 	menu->AddItem(new BSeparatorItem());
 
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Select all"),
+		new BMessage(HS_SELECT_ALL), 'A', 0, this,
+		B_TRANSLATE("Selects entire canvas")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Grow selection"),
 		new BMessage(HS_GROW_SELECTION), 'G', 0, this,
 		B_TRANSLATE("Grows the selection in all directions.")));

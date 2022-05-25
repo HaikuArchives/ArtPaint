@@ -112,12 +112,14 @@ void	StartDrawing(BView*,float);
 // The parameter point-list is not copied and thus should not be deleted in the calling function.
 void	AddSelection(HSPolygon*,bool add_to_selection=TRUE);
 
-
 // This function adds a binary bitmap to the selection.
 void	AddSelection(BBitmap*,bool add_to_selection);
 
 // This function clears the selection.
 void	Clear();
+
+// this function selects the entire canvas
+void	SelectAll();
 
 // This dilates the selection map so that the size of the selection will increase
 void	Dilatate();

@@ -255,6 +255,22 @@ Selection::AddSelection(BBitmap *bitmap, bool add_to_selection)
 
 
 void
+Selection::SelectAll()
+{
+	BPoint* corners = new BPoint[4];
+
+	corners[0] = image_bounds.LeftTop();
+	corners[1] = image_bounds.RightTop();
+	corners[2] = image_bounds.RightBottom();
+	corners[3] = image_bounds.LeftBottom();
+
+	HSPolygon* bound_poly = new (std::nothrow) HSPolygon(corners, 4);
+	bound_poly->ChangeDirection(HS_POLYGON_CLOCKWISE);
+	AddSelection(bound_poly, true);
+}
+
+
+void
 Selection::Clear()
 {
 	if (original_selections) {
