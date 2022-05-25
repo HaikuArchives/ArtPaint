@@ -186,7 +186,7 @@ PaintApplication::MessageReceived(BMessage* message)
 			}
 
 			fProjectOpenPanel->SetMessage(&filePanelMessage);
-			fImageOpenPanel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open project" B_UTF8_ELLIPSIS));
+			fProjectOpenPanel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open project" B_UTF8_ELLIPSIS));
 			fProjectOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fProjectOpenPanel);
