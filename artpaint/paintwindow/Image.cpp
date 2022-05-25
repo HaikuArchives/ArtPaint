@@ -1227,7 +1227,7 @@ int32 Image::DoRender(BRect area)
 	color2.word = 0xFF999999;
 
 	BitmapUtilities::CheckerBitmap(rendered_image,
-		color1.word, color2.word, &area);
+		color1.word, color2.word, 20, &area);
 
 	// Then mix each layer over the previous ones.
 	const uint32 *FixedAlphaTable;
@@ -1416,7 +1416,7 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 		color2.word = 0xFF999999;
 
 		BitmapUtilities::CheckerBitmap(rendered_image,
-			color1.word, color2.word, &area);
+			color1.word, color2.word, 20, &area);
 
 		for (int32 y=top;y<=bottom;y+=resolution) {
 			for (int32 x=left;x<=right;x+=resolution) {

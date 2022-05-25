@@ -21,6 +21,7 @@
 
 #include <new>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 namespace ArtPaint {
@@ -142,7 +143,10 @@ NumberSliderControl::SetEnabled(bool enabled)
 void
 NumberSliderControl::SetValue(int32 value)
 {
+	printf("value %d\n", value);
+
 	value = _FixValue(value);
+	printf("fix value %d\n", value);
 
 	if (fSlider)
 		fSlider->SetPosition(_PositionForValue(value));

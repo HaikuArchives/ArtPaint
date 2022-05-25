@@ -9,10 +9,12 @@
 
 #include "Layer.h"
 
+#include "BitmapUtilities.h"
 #include "Image.h"
 #include "ImageView.h"
 #include "LayerView.h"
 #include "MessageConstants.h"
+#include "PixelOperations.h"
 #include "ProjectFileFunctions.h"
 #include "Selection.h"
 #include "UtilityClasses.h"
@@ -180,7 +182,7 @@ int32 Layer::calc_mini_image()
 	} white, color;
 
 	white.bytes[0] = 0xFF;
-	white.bytes[1] = 0xFF;
+	white.bytes[1] = 0xCC;
 	white.bytes[2] = 0xFF;
 	white.bytes[3] = 0x00;
 
@@ -210,19 +212,30 @@ int32 Layer::calc_mini_image()
 	// The bitmap might be changed and deleted while we are accessing it.
 	int32	b_bpr = fLayerData->BytesPerRow()/4;
 	uint32* big_image;
+
+	union color_conversion color1, color2;
+	color1.word = 0xFFAAAAAA;
+	color2.word = 0xFF999999;
+
+	BRect bounds = fLayerPreview->Bounds();
+	BitmapUtilities::CheckerBitmap(fLayerPreview, color1.word, color2.word, 4,
+		&bounds);
+
 	uint32* small_image = (uint32*)fLayerPreview->Bits();
 	big_image = (uint32*)fLayerData->Bits();
 	// Clear the parts that we do not set.
 	for (int32 i=0;i<HS_MINIATURE_IMAGE_WIDTH*y_offset;i++)
-		*small_image++ = white.word;
+		small_image++;
+		//*small_image++ = white.word;
 
 	while ((y < miniature_height) && (fLayerPreviewThreads == 0)) {
 		for (int32 i=0;i<x_offset_left;i++)
-			*small_image++ = white.word;
+			small_image++;
+			//*small_image++ = white.word;
 
 		while ((x < miniature_width) && (fLayerPreviewThreads == 0)) {
 			color.word = *(big_image + ((int32)(y*dy))*b_bpr + (int32)(x*dx));
-			color.bytes[0] = (uint8)(color.bytes[0] *
+			/*color.bytes[0] = (uint8)(color.bytes[0] *
 				float_alpha_table[color.bytes[3]] + 255 *
 				(1.0 - float_alpha_table[color.bytes[3]]));
 			color.bytes[1] = (uint8)(color.bytes[1] *
@@ -231,20 +244,25 @@ int32 Layer::calc_mini_image()
 			color.bytes[2] = (uint8)(color.bytes[2] *
 				float_alpha_table[color.bytes[3]] + 255 *
 				(1.0 - float_alpha_table[color.bytes[3]]));
-			*small_image++ = color.word;
+			*/
+			*small_image++ = src_over_fixed(*small_image, color.word);
+			//*small_image++ = color.word;
+
 			x++;
 		}
 		y++;
 
 		for (int32 i=0;i<x_offset_right;i++)
-			*small_image++ = white.word;
+			small_image++;
+			//*small_image++ = white.word;
 
 		x = 0;
 	}
 
 	// Clear the rest of the image
 	while (small_image != ((uint32*)fLayerPreview->Bits() + fLayerPreview->BitsLength()/4))
-		*small_image++ = white.word;
+		small_image++;
+		//*small_image++ = white.word;
 
 	if (fLayerPreviewThreads == 0) {
 		snooze(50 * 1000);

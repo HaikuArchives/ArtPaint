@@ -12,12 +12,14 @@
 
 #include "GlobalSetupWindow.h"
 
+#include "BitmapUtilities.h"
 #include "BrushStoreWindow.h"
 #include "Cursors.h"
 #include "ColorPalette.h"
 #include "LayerWindow.h"
 #include "ManipulatorWindow.h"
 #include "NumberControl.h"
+#include "NumberSliderControl.h"
 #include "SettingsServer.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
@@ -28,6 +30,7 @@
 #include <Button.h>
 #include <Catalog.h>
 #include <CheckBox.h>
+#include <Control.h>
 #include <GroupLayout.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
@@ -37,11 +40,15 @@
 #include <TabView.h>
 
 
+#include <stdio.h>
+
+
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "Windows"
 
 
 using ArtPaint::Interface::NumberControl;
+using ArtPaint::Interface::NumberSliderControl;
 
 
 const uint32 kCloseAndApplySettings				= 'caas';
@@ -62,6 +69,12 @@ const uint32 kUndoDepthAdjusted					= '_uda';
 const uint32 kToolCursorMode					= '_too';
 const uint32 kCrossHairCursorMode				= '_cro';
 const uint32 kConfirmShutdownChanged			= '_con';
+
+const uint32 kBgColorsChanged					= '_bgc';
+const uint32 kBgGridSizeChanged					= '_bgg';
+
+const uint32 kDrop								= '_drp';
+
 
 GlobalSetupWindow* GlobalSetupWindow::fSetupWindow = NULL;
 
@@ -486,6 +499,280 @@ GlobalSetupWindow::GeneralControlView::ApplyChanges()
 }
 
 
+// #pragma mark -- BackgroundControlView
+
+
+class GlobalSetupWindow::BackgroundControlView : public BView {
+public:
+						BackgroundControlView();
+	virtual				~BackgroundControlView() {}
+
+	virtual	void		AttachedToWindow();
+	virtual	void		MessageReceived(BMessage* message);
+
+			void		ApplyChanges();
+			void		SetColor(PreviewPane* which, uint32 color);
+
+private:
+			void		_Update();
+
+private:
+			NumberSliderControl*	fGridSizeControl;
+			BBitmap*				fPreview;
+			PreviewPane*			fBgContainer;
+			ColorSwatch*			fColorSwatch1;
+			ColorSwatch*			fColorSwatch2;
+
+			uint32		fColor1;
+			uint32		fColor2;
+			int32		fGridSize;
+};
+
+
+GlobalSetupWindow::BackgroundControlView::BackgroundControlView()
+	: BView("background control view", 0)
+{
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
+	BMessage* message = new BMessage(kBgGridSizeChanged);
+	fGridSizeControl = new NumberSliderControl("Grid Size",
+								"0", message, 4, 50, true, true);
+
+	BRect frame(0, 0, 200, 100);
+
+	fBgContainer = new PreviewPane(frame);
+
+	BRect frameSwatch = (0, 0, 30, 30);
+
+	fColorSwatch1 = new ColorSwatch(frameSwatch, "color1");
+	fColorSwatch2 = new ColorSwatch(frameSwatch, "color2");
+
+	BStringView* labelColor1 = new BStringView("color1label", "Color 1");
+	BStringView* labelColor2 = new BStringView("color2label", "Color 2");
+
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+		.Add(fBgContainer)
+		.AddGroup(B_HORIZONTAL, 5.0)
+			.Add(labelColor1)
+			.Add(fColorSwatch1)
+		.End()
+		.AddGroup(B_HORIZONTAL, 5.0)
+			.Add(labelColor2)
+			.Add(fColorSwatch2)
+		.End()
+		.Add(fGridSizeControl)
+		.AddGlue()
+		.SetInsets(20.0, 20.0, 10.0, 10.0)
+	);
+
+	rgb_color color1, color2;
+	color1.red = color1.green = color1.blue = 0xBB;
+	color2.red = color2.green = color2.blue = 0x99;
+	fColor1 = RGBColorToBGRA(color1);
+	fColor2 = RGBColorToBGRA(color2);
+	fGridSize = 20;
+
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		settings.FindInt32(skBgGridSize, (int32*)&fGridSize);
+		settings.FindUInt32(skBgColor1, (uint32*)&fColor1);
+		settings.FindUInt32(skBgColor2, (uint32*)&fColor2);
+	}
+
+	fGridSize = max_c(4, fGridSize);
+
+	printf("%d %x %x\n", fGridSize, fColor1, fColor2);
+
+
+}
+
+
+void
+GlobalSetupWindow::BackgroundControlView::AttachedToWindow()
+{
+	if (Parent())
+		SetViewColor(Parent()->ViewColor());
+
+	printf("here\n");
+	fGridSizeControl->SetValue(fGridSize);
+
+	fColorSwatch1->SetColor(fColor1);
+	fColorSwatch2->SetColor(fColor2);
+
+	fGridSizeControl->SetTarget(this);
+	fColorSwatch1->SetTarget(this);
+	fColorSwatch2->SetTarget(this);
+
+	_Update();
+}
+
+
+void
+GlobalSetupWindow::BackgroundControlView::MessageReceived(BMessage* message)
+{
+	switch (message->what) {
+		case kBgGridSizeChanged: {
+			fGridSize = fGridSizeControl->Value();
+			_Update();
+		} break;
+		case kBgColorsChanged: {
+			const char* name;
+			if (message->FindString("name", &name) == B_OK) {
+				uint32 new_color;
+				if (message->FindUInt32("color", &new_color) == B_OK) {
+					if (strcmp(name, "color1") == 0)
+						fColor1 = new_color;
+					else
+						fColor2 = new_color;
+
+					_Update();
+				}
+			}
+		} break;
+		default: {
+			BView::MessageReceived(message);
+		}	break;
+	}
+}
+
+
+void
+GlobalSetupWindow::BackgroundControlView::ApplyChanges()
+{
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		if (server->SetValue(SettingsServer::Application, skBgGridSize,
+			fGridSize) == B_ERROR)
+			if (settings.AddInt32(skBgGridSize, fGridSize) != B_OK)
+				printf("still bad\n");
+		if (server->SetValue(SettingsServer::Application, skBgColor1,
+			fColor1) == B_ERROR)
+			settings.AddUInt32(skBgColor1, fColor1);
+		if (server->SetValue(SettingsServer::Application, skBgColor2,
+			fColor2) == B_ERROR)
+			settings.AddUInt32(skBgColor2, fColor2);
+	}
+}
+
+
+void
+GlobalSetupWindow::BackgroundControlView::_Update()
+{
+	fColorSwatch1->SetColor(fColor1);
+	fColorSwatch2->SetColor(fColor2);
+	BitmapUtilities::CheckerBitmap(fBgContainer->previewBitmap(), fColor1, fColor2, fGridSize);
+	fBgContainer->Redraw();
+}
+
+
+PreviewPane::PreviewPane(BRect frame)
+	: BView(frame, "previewpane", B_FOLLOW_NONE, B_WILL_DRAW)
+	, fPreviewBitmap(NULL)
+{
+	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
+	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
+
+	frame.InsetBy(1.0, 1.0);
+	fPreviewBitmap = new BBitmap(BRect(0.0, 0.0, frame.Width() - 1.0,
+		frame.Height() - 1.0), B_RGBA32);
+}
+
+
+PreviewPane::~PreviewPane()
+{
+	delete fPreviewBitmap;
+}
+
+
+void
+PreviewPane::Draw(BRect updateRect)
+{
+	BView::Draw(updateRect);
+
+	DrawBitmap(fPreviewBitmap, BPoint(1.0, 1.0));
+}
+
+
+void PreviewPane::MessageReceived(BMessage* message)
+{
+	switch(message->what) {
+		default:
+			BView::MessageReceived(message);
+	}
+}
+
+
+ColorSwatch::ColorSwatch(BRect frame, const char* name)
+	: BControl(frame, "colorswatch", name, new BMessage(kBgColorsChanged),
+			B_FOLLOW_NONE, B_WILL_DRAW)
+	, fSwatchBitmap(NULL)
+	, fColor(0)
+{
+	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
+	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
+
+	Message()->AddString("name", name);
+	Message()->AddUInt32("color", fColor);
+
+	frame.InsetBy(1.0, 1.0);
+	fSwatchBitmap = new BBitmap(BRect(0.0, 0.0, frame.Width() - 1.0,
+		frame.Height() - 1.0), B_RGBA32);
+}
+
+
+ColorSwatch::~ColorSwatch()
+{
+	delete fSwatchBitmap;
+}
+
+
+void
+ColorSwatch::Draw(BRect updateRect)
+{
+	BControl::Draw(updateRect);
+
+	BitmapUtilities::ClearBitmap(fSwatchBitmap, fColor);
+	DrawBitmap(fSwatchBitmap, BPoint(1.0, 1.0));
+}
+
+
+void ColorSwatch::MessageReceived(BMessage* message)
+{
+	switch(message->what) {
+		case B_PASTE: {
+			if (message->WasDropped()) {
+				BPoint dropPoint = ConvertFromScreen(message->DropPoint());
+				ssize_t size;
+				const void* data;
+				if (message->FindData("RGBColor", B_RGB_COLOR_TYPE, &data,
+					&size) == B_OK && size == sizeof(rgb_color)) {
+					rgb_color new_color;
+					memcpy((void*)(&new_color), data, size);
+					SetColor(RGBColorToBGRA(new_color));
+					Message()->ReplaceUInt32("color", fColor);
+					Draw(Bounds());
+					Invoke();
+				}
+			}
+		} break;
+		default:
+			BControl::MessageReceived(message);
+	}
+}
+
+
+void
+ColorSwatch::SetColor(uint32 color)
+{
+	fColor = color;
+	Draw(Bounds());
+}
+
+
 // #pragma mark -- GlobalSetupWindow
 
 
@@ -514,6 +801,11 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	fGeneralControlView = new GeneralControlView;
 	fTabView->AddTab(fGeneralControlView, tab);
 	tab->SetLabel(B_TRANSLATE("Miscellaneous"));
+
+	tab = new BTab();
+	fBackgroundControlView = new BackgroundControlView;
+	fTabView->AddTab(fBackgroundControlView, tab);
+	tab->SetLabel(B_TRANSLATE("Background"));
 
 	layout->AddView(fTabView);
 	layout->AddView(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
@@ -563,6 +855,9 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 			if (fGeneralControlView)
 				fGeneralControlView->ApplyChanges();
 
+			if (fBackgroundControlView)
+				fBackgroundControlView->ApplyChanges();
+
 		// fall through
 		case kCloseAndDiscardSettings:
 			Quit();
@@ -573,6 +868,7 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 		}	break;
 	}
 }
+
 
 void
 GlobalSetupWindow::ShowGlobalSetupWindow()

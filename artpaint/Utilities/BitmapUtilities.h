@@ -26,7 +26,7 @@ public:
 							BRect* area = NULL);
 	static	void		CheckerBitmap(BBitmap* bitmap,
 							uint32 color1, uint32 color2,
-							BRect* area = NULL);
+							uint32 grid_size, BRect* area = NULL);
 };
 
 

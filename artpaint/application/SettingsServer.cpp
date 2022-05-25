@@ -253,6 +253,17 @@ SettingsServer::SetValue(Setting type, const BString& field, int32 value)
 
 
 status_t
+SettingsServer::SetValue(Setting type, const BString& field, uint32 value)
+{
+	if (BMessage* settings = _SettingsForType(type)) {
+		if (settings->RemoveName(field.String()) == B_OK)
+			return settings->AddUInt32(field.String(), value);
+	}
+	return B_ERROR;
+}
+
+
+status_t
 SettingsServer::SetValue(Setting type, const BString& field, const BRect& value)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
