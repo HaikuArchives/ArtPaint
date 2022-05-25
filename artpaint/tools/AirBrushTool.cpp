@@ -79,8 +79,11 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BBitmap *srcBuffer = new BBitmap(bitmap);
 	BBitmap *tmpBuffer = new BBitmap(bitmap);
 
+	rgb_color c = ((PaintApplication*)be_app)->Color(true);
+	uint32 target_color = RGBColorToBGRA(c);
+
 	union color_conversion clear_color;
-	clear_color.word = 0xFFFFFFFF;
+	clear_color.word = target_color;
 	clear_color.bytes[3] = 0x01;
 
 	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
@@ -97,13 +100,10 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 		prev_point = point - BPoint(1,1);
 		SetLastUpdatedRect(BRect(point, point));
-		uint32 target_color;
 		while (buttons) {
 			the_script->AddPoint(point);
 
 			float half_size = fToolSettings.size/2;
-			rgb_color c = ((PaintApplication*)be_app)->Color(true);
-			target_color = RGBColorToBGRA(c);
 			// we should only consider points that are inside this rectangle
 			rc = BRect(point.x-half_size,point.y-half_size,point.x+half_size,point.y+half_size);
 			rc = rc & bounds;
@@ -175,8 +175,6 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			float width = fToolSettings.size;
 			float angle;
 			float opacity = 0.4;
-			rgb_color c = ((PaintApplication*)be_app)->Color(true);
-			uint32 target_color = RGBColorToBGRA(c);
 
 			BRect rc(point,point);
 
