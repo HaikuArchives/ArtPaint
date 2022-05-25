@@ -105,7 +105,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 		RGBColorToBGRA(((PaintApplication*)be_app)->Color(true));
 
 	union color_conversion clear_color;
-	clear_color.word = 0xFFFFFFFF;
+	clear_color.word = new_color.word;
 	clear_color.bytes[3] = 0x01;
 
 	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
