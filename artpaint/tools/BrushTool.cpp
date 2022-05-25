@@ -124,6 +124,10 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 		point.y - brush_height_per_2, point.x + brush_width_per_2,
 		point.y + brush_height_per_2);
 	SetLastUpdatedRect(updated_rect);
+	buffer->Lock();
+	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+		tmpBuffer, updated_rect);
+	buffer->Unlock();
 	prev_point = point;
 
 	ImageUpdater* imageUpdater = new ImageUpdater(view, 20000);

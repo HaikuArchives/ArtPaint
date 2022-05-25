@@ -125,6 +125,8 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	// We have to use Draw, because Invalidate causes flickering by erasing
 	// the area before calling Draw.
 	view->Draw(view->convertBitmapRectToView(updated_rect));
+	view->UpdateImage(updated_rect);
+	view->Sync();
 	view->Window()->Unlock();
 
 	SetLastUpdatedRect(updated_rect);
