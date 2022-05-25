@@ -147,7 +147,8 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	new_bitmap->AddChild(new_view);
 	new_bitmap->Lock();
 	new_view->SetFont(&(new_settings->font));
-	new_view->SetDrawingMode(B_OP_OVER);
+	new_view->SetDrawingMode(B_OP_ALPHA);
+	new_view->SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_COMPOSITE);
 	new_view->MovePenTo(new_settings->starting_point);
 	font_height fHeight;
 	new_settings->font.GetHeight(&fHeight);
@@ -281,7 +282,8 @@ int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BReg
 		escapement_delta deltas[4];
 		BPoint pen_location;
 		view->SetFont(&(fSettings.font));
-		view->SetDrawingMode(B_OP_OVER);
+		view->SetDrawingMode(B_OP_ALPHA);
+		view->SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_COMPOSITE);
 		view->MovePenTo(current_settings.starting_point);
 		font_height fHeight;
 		current_settings.font.GetHeight(&fHeight);
