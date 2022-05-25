@@ -8,10 +8,11 @@
  */
 #include "BitmapUtilities.h"
 
-#include <stdio.h>
+
+#include "PixelOperations.h"
+
 
 #include <Screen.h>
-
 
 
 status_t
@@ -101,5 +102,67 @@ BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
 	}
 	else {
 		return NULL;
+	}
+}
+
+
+void
+BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, BBitmap* fromBuffer,
+	BRect updated_rect)
+{
+	updated_rect = updated_rect & toBuffer->Bounds();
+
+	int32 bpr = toBuffer->BytesPerRow() / 4;
+	int32 width = updated_rect.IntegerWidth()+1;
+	int32 height = updated_rect.IntegerHeight()+1;
+
+	int32 start_x, start_y;
+	start_x = (int32)updated_rect.left;
+	start_y = (int32)updated_rect.top;
+
+	uint32* bits = (uint32*)toBuffer->Bits();
+	bits += bpr*start_y + start_x;
+
+	uint32* src_bits = (uint32*)srcBuffer->Bits();
+	uint32* from_bits = (uint32*)fromBuffer->Bits();
+	src_bits += bpr*start_y + start_x;
+	from_bits += bpr*start_y + start_x;
+
+	for (int y=0;y<height;y++) {
+		int32 ypos = y*bpr;
+		for (int x=0;x<width;x++) {
+			*bits++ = src_over_fixed(*(src_bits + x + ypos),
+				*(from_bits + x + ypos));
+		}
+		bits += bpr - width;
+	}
+}
+
+
+void
+BitmapUtilities::ClearBitmap(BBitmap* bitmap, uint32 color, BRect* area)
+{
+	uint32 width = bitmap->Bounds().IntegerWidth()+1;
+	uint32 height = bitmap->Bounds().IntegerHeight()+1;
+	uint32 bpr = bitmap->BytesPerRow() / 4;
+
+	int32 start_x = 0;
+	int32 start_y = 0;
+
+	if (area) {
+		width = area->IntegerWidth()+1;
+		height = area->IntegerHeight()+1;
+		start_x = (int32)area->left;
+		start_y = (int32)area->top;
+	}
+
+	uint32* bits = (uint32*)bitmap->Bits();
+	bits += start_x + bpr * start_y;
+
+	for (int y = 0;y < height;++y) {
+		for (int x = 0;x < width;++x) {
+			*bits++ = color;
+		}
+		bits += bpr - width;
 	}
 }

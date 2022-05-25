@@ -13,6 +13,7 @@
 #include "AirBrushTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "CoordinateReader.h"
 #include "Cursors.h"
 #include "Image.h"
@@ -75,7 +76,16 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BPoint prev_point;
 	BWindow *window = view->Window();
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
-	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
+	BBitmap *srcBuffer = new BBitmap(bitmap);
+	BBitmap *tmpBuffer = new BBitmap(bitmap);
+
+	union color_conversion clear_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x01;
+
+	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
+	BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
 	Selection *selection = view->GetSelection();
 
 	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
@@ -104,67 +114,37 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				int32 width = rc.IntegerWidth();
 				int32 left = (int32)rc.left;
 				int32 top = (int32)rc.top;
-				if (selection->IsEmpty()) {
-					for (int32 y=0;y<=height;y++) {
-						int32 y_sqr = (int32)((point.y-rc.top-y)*(point.y-rc.top-y));
-						for (int32 x=0;x<=width;x++) {
-							int32 dx = (int32)(point.x-rc.left-x);
-							float distance = sqrt_table[dx*dx + y_sqr];
-							if (distance <= half_size) {
-								float change = (half_size-distance)/half_size;
-								change = change*(((float)fToolSettings.pressure)/100.0);
 
+				for (int32 y=0;y<=height;y++) {
+					int32 y_sqr = (int32)((point.y-rc.top-y)*(point.y-rc.top-y));
+					for (int32 x=0;x<=width;x++) {
+						int32 dx = (int32)(point.x-rc.left-x);
+						float distance = sqrt_table[dx*dx + y_sqr];
+						if ((distance <= half_size) &&
+							(selection->IsEmpty() ||
+							selection->ContainsPoint(left + x, top + y))) {
+							float change = (half_size - distance) / half_size;
+							change *= ((float)fToolSettings.pressure) / 100.0;
 
-								// This is experimental for doing a real transparency
-								// Seems to work quite well
-								union {
-									uint8 bytes[4];
-									uint32 word;
-								} color;
-								color.word = drawer->GetPixel(left+x,top+y);
-								if (color.bytes[3] != 0x00) {
-									drawer->SetPixel(left+x, top+y,
-										mix_2_pixels_fixed(target_color,
-											color.word, (uint32)(32768*change)));
-								} else {
-									color.word = target_color;
-									color.bytes[3] = 0x00;
-									drawer->SetPixel(left+x, top+y,
-										mix_2_pixels_fixed(target_color,
-											color.word, (uint32)(32768*change)));
-								}
-							}
-						}
-					}
-				} else {
-					for (int32 y=0;y<=height;y++) {
-						int32 y_sqr = (int32)((point.y-rc.top-y)*(point.y-rc.top-y));
-						for (int32 x=0;x<=width;x++) {
-							int32 dx = (int32)(point.x-rc.left-x);
-							float distance = sqrt_table[dx*dx + y_sqr];
-							if ((distance <= half_size)
-								&& (selection->ContainsPoint(left+x,top+y))) {
-								float change = (half_size-distance)/half_size;
-								change = change*(((float)fToolSettings.pressure)/100.0);
-
-								// This is experimental for doing a real transparency
-								// Seems to work quite well
-								union {
-									uint8 bytes[4];
-									uint32 word;
-								} color;
-								color.word = drawer->GetPixel(left+x,top+y);
-								if (color.bytes[3] != 0x00) {
-									drawer->SetPixel(left+x, top+y,
-										mix_2_pixels_fixed(target_color,
-											color.word, (uint32)(32768*change)));
-								} else {
-									color.word = target_color;
-									color.bytes[3] = 0x00;
-									drawer->SetPixel(left+x, top+y,
-										mix_2_pixels_fixed(target_color,
-											color.word, (uint32)(32768*change)));
-								}
+							// This is experimental for doing a real transparency
+							// Seems to work quite well
+							union {
+								uint8 bytes[4];
+								uint32 word;
+							} color;
+							color.word = drawer->GetPixel(left+x,top+y);
+							if (color.bytes[3] != 0x00) {
+								drawer->SetPixel(left+x, top+y,
+									mix_2_pixels_fixed(target_color,
+										color.word, (uint32)(32768*change)),
+										selection, NULL);
+							} else {
+								color.word = target_color;
+								color.bytes[3] = 0x00;
+								drawer->SetPixel(left+x, top+y,
+									mix_2_pixels_fixed(target_color,
+										color.word, (uint32)(32768*change)),
+										selection, NULL);
 							}
 						}
 					}
@@ -172,6 +152,8 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			}
 
 			window->Lock();
+			BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer,
+				tmpBuffer, rc);
 			if (rc.IsValid()) {
 				view->UpdateImage(rc);
 				view->Sync();
@@ -198,104 +180,58 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 			BRect rc(point,point);
 
-			if (selection->IsEmpty()) {
-				if (point == prev_point) {
-					for (int32 i=0;i<flow;i++) {
-						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,
-							sqrt((width*.5)*(width*.5)-x*x));
+			if (point == prev_point) {
+				for (int32 i=0;i<flow;i++) {
+					float x = generator->UniformDistribution(0,width*.5);
+					float y = generator->UniformDistribution(0,
+						sqrt((width*.5)*(width*.5)-x*x));
 
-						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
-						float old_x = x;
-						x = cos(angle)*x - sin(angle)*y;
-						y = sin(angle)*old_x + cos(angle)*y;
-						BPoint new_point = point+BPoint(x,y);
-						new_point.x = round(new_point.x);
-						new_point.y = round(new_point.y);
-						rc = rc | BRect(new_point,new_point);
+					angle = generator->UniformDistribution(0,1.0)*2*M_PI;
+					float old_x = x;
+					x = cos(angle)*x - sin(angle)*y;
+					y = sin(angle)*old_x + cos(angle)*y;
+					BPoint new_point = point+BPoint(x,y);
+					new_point.x = round(new_point.x);
+					new_point.y = round(new_point.y);
+					rc = rc | BRect(new_point,new_point);
 
+					if (selection->IsEmpty() ||
+						selection->ContainsPoint(new_point)) {
 						drawer->SetPixel(new_point,
 							mix_2_pixels_fixed(target_color,
-								drawer->GetPixel(new_point), (uint32)(32768*opacity)));
-					}
-				} else {
-					BPoint center;
-					for (int32 i=0;i<flow;i++) {
-						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,
-							sqrt((width*.5)*(width*.5)-x*x));
-
-						// Select center randomly from the line between prev_point and point.
-						// This is done by doing a linear interpolation between the
-						// two points and rounding the result to nearest integer.
-						float a = generator->UniformDistribution(0,1.0);
-						center.x = round(a*prev_point.x + (1.0-a)*point.x);
-						center.y = round(a*prev_point.y + (1.0-a)*point.y);
-
-						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
-						float old_x = x;
-						x = cos(angle)*x - sin(angle)*y;
-						y = sin(angle)*old_x + cos(angle)*y;
-						BPoint new_point = center + BPoint(x,y);
-						new_point.x = round(new_point.x);
-						new_point.y = round(new_point.y);
-						rc = rc | BRect(new_point,new_point);
-
-						drawer->SetPixel(new_point,
-							mix_2_pixels_fixed(target_color,
-								drawer->GetPixel(new_point), (uint32)(32768*opacity)));
+								drawer->GetPixel(new_point), (uint32)(32768*opacity)),
+								selection, NULL);
 					}
 				}
 			} else {
-				if (point == prev_point) {
-					for (int32 i=0;i<flow;i++) {
-						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,
-							sqrt((width*.5)*(width*.5)-x*x));
+				BPoint center;
+				for (int32 i=0;i<flow;i++) {
+					float x = generator->UniformDistribution(0,width*.5);
+					float y = generator->UniformDistribution(0,
+						sqrt((width*.5)*(width*.5)-x*x));
 
-						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
-						float old_x = x;
-						x = cos(angle)*x - sin(angle)*y;
-						y = sin(angle)*old_x + cos(angle)*y;
-						BPoint new_point = point+BPoint(x,y);
-						new_point.x = round(new_point.x);
-						new_point.y = round(new_point.y);
-						rc = rc | BRect(new_point,new_point);
+					// Select center randomly from the line between prev_point and point.
+					// This is done by doing a linear interpolation between the
+					// two points and rounding the result to nearest integer.
+					float a = generator->UniformDistribution(0,1.0);
+					center.x = round(a*prev_point.x + (1.0-a)*point.x);
+					center.y = round(a*prev_point.y + (1.0-a)*point.y);
 
-						if (selection->ContainsPoint(new_point)) {
-							drawer->SetPixel(new_point,
-								mix_2_pixels_fixed(target_color,
-									drawer->GetPixel(new_point), (uint32)(32768*opacity)));
-						}
-					}
-				} else {
-					BPoint center;
-					for (int32 i=0;i<flow;i++) {
-						float x = generator->UniformDistribution(0,width*.5);
-						float y = generator->UniformDistribution(0,
-							sqrt((width*.5)*(width*.5)-x*x));
+					angle = generator->UniformDistribution(0,1.0)*2*M_PI;
+					float old_x = x;
+					x = cos(angle)*x - sin(angle)*y;
+					y = sin(angle)*old_x + cos(angle)*y;
+					BPoint new_point = center + BPoint(x,y);
+					new_point.x = round(new_point.x);
+					new_point.y = round(new_point.y);
+					rc = rc | BRect(new_point,new_point);
 
-						// Select center randomly from the line between prev_point and point.
-						// This is done by doing a linear interpolation between the
-						// two points and rounding the result to nearest integer.
-						float a = generator->UniformDistribution(0,1.0);
-						center.x = round(a*prev_point.x + (1.0-a)*point.x);
-						center.y = round(a*prev_point.y + (1.0-a)*point.y);
-
-						angle = generator->UniformDistribution(0,1.0)*2*M_PI;
-						float old_x = x;
-						x = cos(angle)*x - sin(angle)*y;
-						y = sin(angle)*old_x + cos(angle)*y;
-						BPoint new_point = center + BPoint(x,y);
-						new_point.x = round(new_point.x);
-						new_point.y = round(new_point.y);
-						rc = rc | BRect(new_point,new_point);
-
-						if (selection->ContainsPoint(new_point)) {
-							drawer->SetPixel(new_point,
-								mix_2_pixels_fixed(target_color,
-									drawer->GetPixel(new_point), (uint32)(32768*opacity)));
-						}
+					if (selection->IsEmpty() ||
+						selection->ContainsPoint(new_point)) {
+						drawer->SetPixel(new_point,
+							mix_2_pixels_fixed(target_color,
+								drawer->GetPixel(new_point), (uint32)(32768*opacity)),
+								selection, NULL);
 					}
 				}
 			}
@@ -303,6 +239,8 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 			imageUpdater->AddRect(rc);
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
+			BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer,
+				tmpBuffer, rc);
 		}
 		imageUpdater->ForceUpdate();
 

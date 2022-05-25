@@ -9,73 +9,85 @@
 #ifndef BITMAP_DRAWER_H
 #define BITMAP_DRAWER_H
 
+
 #include <Rect.h>
 #include <Bitmap.h>
 
+
+#include "PixelOperations.h"
+
+
 class Selection;
 
+
 class BitmapDrawer {
-	BRect 	bitmap_bounds;
+		BRect 	bitmap_bounds;
 
-	uint32	*bitmap_bits;
-	int32	bitmap_bpr;
-	int32	bitmap_data_length;
+		uint32	*bitmap_bits;
+		int32	bitmap_bpr;
+		int32	bitmap_data_length;
 
-
-		float	MinimumCrossingPoint(BPoint&,BPoint&,int32);
-		float	MaximumCrossingPoint(BPoint&,BPoint&,int32);
-inline	uint32	MixColors(uint32 c1,uint32 c2,float mix);
+		float	MinimumCrossingPoint(BPoint&, BPoint&, int32);
+		float	MaximumCrossingPoint(BPoint&, BPoint&, int32);
 
 public:
-			BitmapDrawer(BBitmap*);
+				BitmapDrawer(BBitmap*);
 
-status_t	DrawHairLine(BPoint,BPoint,uint32,bool anti_alias=TRUE,Selection *sel=NULL);
-status_t	DrawHairLine(BPoint,BPoint,uint32,float,bool anti_alias=TRUE,Selection *sel=NULL);
-status_t	DrawLine(BPoint,BPoint,uint32,float,bool anti_alias=TRUE,Selection *sel=NULL);
-status_t	DrawCircle(BPoint,float,uint32,bool fill=TRUE,bool anti_alias=TRUE,Selection *sel=NULL);
-status_t	DrawEllipse(BRect,uint32,bool fill=TRUE,bool anti_alias=TRUE,Selection *sel=NULL);
-status_t	DrawBitmap(BBitmap*,BRect,BRect,bool use_alpha=TRUE);
+	status_t	DrawHairLine(BPoint, BPoint, uint32,
+					bool anti_alias = TRUE, Selection *sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
+	status_t	DrawLine(BPoint, BPoint, uint32, float,
+					bool anti_alias = TRUE, Selection *sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
+	status_t	DrawCircle(BPoint, float, uint32, bool fill = TRUE,
+					bool anti_alias = TRUE, Selection *sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
+	status_t	DrawEllipse(BRect, uint32, bool fill = TRUE,
+					bool anti_alias = TRUE, Selection *sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
+	status_t	DrawBitmap(BBitmap*, BRect, BRect, bool use_alpha = TRUE);
 
-status_t	DrawConvexPolygon(BPoint*,int32,uint32,bool fill=TRUE,bool anti_alias=TRUE);
-status_t	DrawRectanglePolygon(BPoint*,uint32,bool fill=TRUE,bool anti_alias=TRUE,Selection *sel=NULL);
+	status_t	DrawConvexPolygon(BPoint*, int32, uint32, bool fill = TRUE,
+					bool anti_alias = TRUE);
+	status_t	DrawRectanglePolygon(BPoint*, uint32, bool fill = TRUE,
+					bool anti_alias = TRUE, Selection *sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
 
-status_t	FillAntiAliasedRectangle(BPoint*,uint32,Selection*);
-status_t	FillRectangle(BPoint*,uint32,Selection*);
+	status_t	FillAntiAliasedRectangle(BPoint*, uint32,
+					Selection* sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
+	status_t	FillRectangle(BPoint*, uint32,
+					Selection* sel = NULL,
+					uint32 (*composite_func)(uint32, uint32) =
+						src_over_fixed);
 
-// These BPoint versions check that the point is within bitmap's bounds.
-status_t	SetPixel(BPoint,uint32);
-status_t	SetPixel(BPoint,uint32,Selection*);
-void		SetPixel(int32,int32,uint32,Selection*);
-uint32		GetPixel(BPoint);
+	status_t	SetPixel(BPoint location, uint32 color,
+		Selection* sel = NULL,
+		uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
+	status_t	SetPixel(int32 x, int32 y, uint32 color,
+		Selection* sel = NULL,
+		uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
 
-// These versions do not check that the point is within bitmap's bounds.
-inline	void		SetPixel(int32,int32,uint32);
-inline	uint32		GetPixel(int32,int32);
+	uint32		GetPixel(BPoint location);
+	uint32		GetPixel(int32 x, int32 y);
 
+	void SetMirroredPixels(BPoint center, uint32 x, uint32 y, uint32 color,
+		Selection* sel = NULL,
+		uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
+	void FillColumn(BPoint center, uint32 x, uint32 miny, uint32 maxy,
+		uint32 color, Selection* sel = NULL,
+		uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
+	void FillRow(BPoint center, uint32 minx, uint32 maxx, uint32 y,
+		uint32 color, Selection* sel = NULL,
+		uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
 };
 
-inline void BitmapDrawer::SetPixel(int32 x, int32 y, uint32 color)
-{
-	*(bitmap_bits + x + y*bitmap_bpr) = color;
-}
-
-inline uint32 BitmapDrawer::GetPixel(int32 x,int32 y)
-{
-	return *(bitmap_bits + x + y*bitmap_bpr);
-}
-
-inline uint32 BitmapDrawer::MixColors(uint32 c1, uint32 c2, float mix)
-{
-	// Mixes two colors. c1 will get the weight mix and c2 1.0-mix.
-	float inv_mix = 1.0-mix;
-
-	return 	(((uint32)(((c1 >> 24) & 0xFF) * mix)<<24) + ((uint32)(((c2 >> 24) & 0xFF) * inv_mix)<<24)) |
-			(((uint32)(((c1 >> 16) & 0xFF) * mix)<<16) + ((uint32)(((c2 >> 16) & 0xFF) * inv_mix)<<16)) |
-			(((uint32)(((c1 >> 8) & 0xFF) * mix)<<8) + ((uint32)(((c2 >> 8) & 0xFF) * inv_mix)<<8)) |
-			(((uint32)(((c1) & 0xFF) * mix)) + ((uint32)(((c2) & 0xFF) * inv_mix)));
-
-
-}
 
 inline float round_float(float c)
 {

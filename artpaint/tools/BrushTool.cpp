@@ -12,6 +12,7 @@
 
 #include "BrushTool.h"
 
+#include "BitmapUtilities.h"
 #include "Brush.h"
 #include "BrushEditor.h"
 #include "CoordinateReader.h"
@@ -80,40 +81,43 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	selection = view->GetSelection();
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	BBitmap* srcBuffer = new BBitmap(buffer);
 
 	bits = (uint32*)buffer->Bits();
 	bpr = buffer->BytesPerRow()/4;
 	BRect bitmap_bounds = buffer->Bounds();
+
 	left_bound = (int32)bitmap_bounds.left;
 	right_bound = (int32)bitmap_bounds.right;
 	top_bound = (int32)bitmap_bounds.top;
 	bottom_bound = (int32)bitmap_bounds.bottom;
+
+	BBitmap* tmpBuffer = new BBitmap(bitmap_bounds, buffer->ColorSpace());
 
 	float brush_width_per_2 = floor(brush->Width()/2);
 	float brush_height_per_2 = floor(brush->Height()/2);
 
 	BPoint prev_point;
 
-	uint32 new_color;
-	union {
-		char bytes[4];
-		uint32 word;
-	} c;
-	rgb_color col = ((PaintApplication*)be_app)->Color(true);
-	c.bytes[0] = col.blue;
-	c.bytes[1] = col.green;
-	c.bytes[2] = col.red;
-	c.bytes[3] = col.alpha;
+	union color_conversion new_color;
 
-	new_color = c.word;
+	new_color.word =
+		RGBColorToBGRA(((PaintApplication*)be_app)->Color(true));
+
+	union color_conversion clear_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x01;
+
+	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
 	prev_point = last_point = point;
 	BRect updated_rect;
 
 	the_script->AddPoint(point);
 
 	if (coordinate_reader->GetPoint(point) == B_OK) {
-		draw_brush_handle_selection(BPoint(point.x - brush_width_per_2,
-			point.y - brush_height_per_2), 0, 0, new_color);
+		draw_brush(tmpBuffer, BPoint(point.x - brush_width_per_2,
+			point.y - brush_height_per_2), 0, 0, new_color.word);
 	}
 
 	updated_rect = BRect(point.x - brush_width_per_2,
@@ -125,31 +129,22 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	ImageUpdater* imageUpdater = new ImageUpdater(view, 20000);
 	imageUpdater->AddRect(updated_rect);
 
-	if (selection->IsEmpty()) {
-		while (coordinate_reader->GetPoint(point) == B_OK) {
-			draw_brush(BPoint(point.x - brush_width_per_2,
-				point.y - brush_height_per_2), int32(point.x - prev_point.x),
-				int32(point.y - prev_point.y), new_color);
-			updated_rect = BRect(point.x - brush_width_per_2,
-				point.y - brush_height_per_2, point.x + brush_width_per_2,
-				point.y + brush_height_per_2);
-			imageUpdater->AddRect(updated_rect);
-			SetLastUpdatedRect(updated_rect | LastUpdatedRect());
-			prev_point = point;
-		}
-	} else {
-		while (coordinate_reader->GetPoint(point) == B_OK) {
-			draw_brush_handle_selection(BPoint(point.x - brush_width_per_2,
-				point.y - brush_height_per_2), int32(point.x - prev_point.x),
-				int32(point.y - prev_point.y), new_color);
-			updated_rect = BRect(point.x - brush_width_per_2,
-				point.y - brush_height_per_2, point.x + brush_width_per_2,
-				point.y + brush_height_per_2);
-			imageUpdater->AddRect(updated_rect);
-			SetLastUpdatedRect(updated_rect | LastUpdatedRect());
-			prev_point = point;
-		}
+	while (coordinate_reader->GetPoint(point) == B_OK) {
+		draw_brush(tmpBuffer, BPoint(point.x - brush_width_per_2,
+			point.y - brush_height_per_2), int32(point.x - prev_point.x),
+			int32(point.y - prev_point.y), new_color.word);
+		updated_rect = BRect(point.x - brush_width_per_2,
+			point.y - brush_height_per_2, point.x + brush_width_per_2,
+			point.y + brush_height_per_2);
+		imageUpdater->AddRect(updated_rect);
+		SetLastUpdatedRect(updated_rect | LastUpdatedRect());
+		buffer->Lock();
+		BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+			tmpBuffer, updated_rect);
+		buffer->Unlock();
+		prev_point = point;
 	}
+
 	imageUpdater->ForceUpdate();
 
 	delete imageUpdater;
@@ -197,7 +192,7 @@ BrushTool::HelpString(bool isInUse) const
 
 
 BRect
-BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
+BrushTool::draw_line(BBitmap* buffer, BPoint start,BPoint end,uint32 color)
 {
 	int32 brush_width_per_2 = (int32)floor(brush->Width()/2);
 	int32 brush_height_per_2 = (int32)floor(brush->Height()/2);
@@ -239,13 +234,9 @@ BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
 
 			dx = new_x - last_x;
 			dy = new_y - last_y;
-			if (selection->IsEmpty()) {
-				draw_brush(BPoint(new_x - brush_width_per_2, new_y -
-					brush_height_per_2), dx, dy, color);
-			} else {
-				draw_brush_handle_selection(BPoint(new_x - brush_width_per_2,
-					new_y-brush_height_per_2), dx, dy, color);
-			}
+			draw_brush(buffer, BPoint(new_x - brush_width_per_2, new_y -
+				brush_height_per_2), dx, dy, color);
+
 //			view->Window()->Lock();
 //			view->Invalidate();
 //			view->Window()->Unlock();
@@ -267,10 +258,7 @@ BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
 
 			dx = new_x - last_x;
 			dy = new_y - last_y;
-			if (selection->IsEmpty())
-				draw_brush(BPoint(new_x-brush_width_per_2,new_y-brush_height_per_2),dx,dy,color);
-			else
-				draw_brush_handle_selection(BPoint(new_x-brush_width_per_2,new_y-brush_height_per_2),dx,dy,color);
+			draw_brush(buffer, BPoint(new_x-brush_width_per_2,new_y-brush_height_per_2),dx,dy,color);
 
 //			view->Window()->Lock();
 //			view->Invalidate();
@@ -283,13 +271,15 @@ BrushTool::draw_line(BPoint start,BPoint end,uint32 color)
 
 
 void
-BrushTool::draw_brush_handle_selection(BPoint point, int32 dx, int32 dy, uint32 c)
+BrushTool::draw_brush(BBitmap* buffer, BPoint point,
+	int32 dx, int32 dy, uint32 c)
 {
 	span* spans;
 	int32 px = (int32)point.x;
-	int32 	py = (int32)point.y;
+	int32 py = (int32)point.y;
 	uint32** brush_matrix = brush->GetData(&spans, dx, dy);
 
+	bits = (uint32*)buffer->Bits();
 	uint32* target_bits = bits;
 	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
 		int32 left = max_c(px + spans->span_start, left_bound) ;
@@ -299,7 +289,8 @@ BrushTool::draw_brush_handle_selection(BPoint point, int32 dx, int32 dy, uint32 
 			// This works even if there are many spans in one row.
 			target_bits = bits + (y + py) * bpr + left;
 			for (int32 x = left; x <= right; ++x) {
-				if (selection->ContainsPoint(x, y + py)) {
+				if (selection->IsEmpty() || selection->ContainsPoint(x, y + py)) {
+
 					*target_bits = mix_2_pixels_fixed(c, *target_bits,
 						brush_matrix[y][x-px]);
 				}
@@ -308,89 +299,6 @@ BrushTool::draw_brush_handle_selection(BPoint point, int32 dx, int32 dy, uint32 
 		}
 		spans = spans->next;
 	}
-}
-
-
-void
-BrushTool::draw_brush(BPoint point, int32 dx, int32 dy, uint32 c)
-{
-	span* spans;
-	int32 px = (int32)point.x;
-	int32 py = (int32)point.y;
-	uint32** brush_matrix = brush->GetData(&spans, dx, dy);
-
-	uint32* target_bits = bits;
-	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
-		int32 left = max_c(px + spans->span_start, left_bound) ;
-		int32 right = min_c(px + spans->span_end, right_bound);
-		int32 y = spans->row;
-		if (y + py >= top_bound) {
-			// This works even if there are many spans in one row.
-			target_bits = bits + (y + py) * bpr + left;
-			for (int32 x = left; x <= right; ++x) {
-				*target_bits = mix_2_pixels_fixed(c, *target_bits,
-						brush_matrix[y][x-px]);
-				target_bits++;
-			}
-		}
-		spans = spans->next;
-	}
-}
-
-
-void
-BrushTool::test_brush(BPoint point,uint32 color)
-{
-	draw_brush(point-BPoint(50,50),-1,-1,color);
-	draw_brush(point-BPoint(0,50),0,-1,color);
-	draw_brush(point-BPoint(-50,50),1,-1,color);
-	draw_brush(point-BPoint(50,0),-1,0,color);
-	draw_brush(point-BPoint(0,0),0,0,color);
-	draw_brush(point-BPoint(-50,0),1,0,color);
-	draw_brush(point-BPoint(50,-50),-1,1,color);
-	draw_brush(point-BPoint(0,-50),0,1,color);
-	draw_brush(point-BPoint(-50,-50),1,1,color);
-}
-
-
-void
-BrushTool::test_brush2(BPoint point,uint32 color)
-{
-	point.x = 50;
-	int32 brush_width_per_2 = (int32)floor(brush->Width() / 2);
-	int32 brush_height_per_2 = (int32)floor(brush->Height() / 2);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(0,2),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(-2,2),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(-2,0),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(-2,-2),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(0,-2),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(2,-2),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(2,0),color);
-	point += BPoint(50,0);
-
-	draw_brush(point-BPoint(brush_width_per_2,brush_height_per_2),0,0,color);
-	draw_line(point,point+BPoint(2,2),color);
-	point += BPoint(50,0);
 }
 
 
