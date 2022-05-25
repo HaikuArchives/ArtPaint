@@ -50,9 +50,9 @@ SelectorTool::SelectorTool()
 	// the value for mode will be either B_OP_ADD or B_OP_SUBTRACT
 	fOptions = MODE_OPTION | SHAPE_OPTION | TOLERANCE_OPTION;
 
-	SetOption(MODE_OPTION,B_OP_ADD);
-	SetOption(SHAPE_OPTION,HS_RECTANGLE);
-	SetOption(TOLERANCE_OPTION,10);
+	SetOption(MODE_OPTION, B_OP_ADD);
+	SetOption(SHAPE_OPTION, HS_RECTANGLE);
+	SetOption(TOLERANCE_OPTION, 10);
 }
 
 
@@ -628,7 +628,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
 		fScissors =  new
 			BRadioButton(B_TRANSLATE("Intelligent scissors"),
-			message);
+				new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_MAGIC_WAND);
 		fMagicWand =
