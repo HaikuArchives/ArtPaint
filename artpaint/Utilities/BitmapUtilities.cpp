@@ -4,6 +4,7 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 #include "BitmapUtilities.h"
@@ -181,8 +182,13 @@ BitmapUtilities::CheckerBitmap(BBitmap* bitmap,
 	int32 start_y = 0;
 
 	if (area) {
+		*area = *area & bitmap->Bounds();
 		width = area->IntegerWidth()+1;
 		height = area->IntegerHeight()+1;
+		if (width > bitmap->Bounds().IntegerWidth()+1)
+			return;
+		if (height > bitmap->Bounds().IntegerHeight()+1)
+			return;
 		start_x = (int32)area->left;
 		start_y = (int32)area->top;
 	}
@@ -192,18 +198,19 @@ BitmapUtilities::CheckerBitmap(BBitmap* bitmap,
 
 	uint32* bits = (uint32*)bitmap->Bits();
 	bits += start_x + bpr * start_y;
+	uint32 row_size = bpr - width;
 
-	for (int y = 0;y < height;++y) {
-		for (int x = 0;x < width;++x) {
-			int row = (x+start_x) / grid_size;
-			int col = (y+start_y) / grid_size;
-			if (row % 2 == col % 2)
+	for (int y = start_y;y < height+start_y;++y) {
+		int rowMod2 = (y / grid_size) % 2;
+		for (int x = start_x;x < width+start_x;++x) {
+			int col = x / grid_size;
+			if (rowMod2 == col % 2)
 				cur_color = grid_color[1];
 			else
 				cur_color = grid_color[0];
 
 			*bits++ = cur_color;
 		}
-		bits += bpr - width;
+		bits += row_size;
 	}
 }

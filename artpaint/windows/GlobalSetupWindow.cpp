@@ -539,26 +539,24 @@ GlobalSetupWindow::BackgroundControlView::BackgroundControlView()
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
 	BMessage* message = new BMessage(kBgGridSizeChanged);
-	fGridSizeControl = new NumberSliderControl(B_TRANSLATE("Grid Size"),
+	fGridSizeControl = new NumberSliderControl(B_TRANSLATE("Grid size:"),
 								"0", message, 4, 50, false, true);
 
-	BRect frame(0, 0, 200, 100);
+	BRect frame(0, 0, 250, 100);
 
 	fBgContainer = new PreviewPane(frame);
 
 	BRect frameSwatch = (0, 0, 30, 30);
 
 	fColorSwatch1 = new ColorSwatch(frameSwatch, "color1");
-	fColorSwatch1->SetToolTip(B_TRANSLATE("Drag color from palette to set"));
+	fColorSwatch1->SetToolTip(B_TRANSLATE("Drop a color from the Colors window"));
 	fColorSwatch2 = new ColorSwatch(frameSwatch, "color2");
-	fColorSwatch2->SetToolTip(B_TRANSLATE("Drag color from palette to set"));
+	fColorSwatch2->SetToolTip(B_TRANSLATE("Drop a color from the Colors window"));
 
-	BStringView* labelColor1 = new BStringView("color1label",
-		B_TRANSLATE("Color 1"));
-	BStringView* labelColor2 = new BStringView("color2label",
-		B_TRANSLATE("Color 2"));
+	BStringView* labelColors = new BStringView("color1label",
+		B_TRANSLATE("Colors:"));
 
-	fDefaultsButton = new BButton(B_TRANSLATE("Revert"),
+	fDefaultsButton = new BButton(B_TRANSLATE("Defaults"),
 		new BMessage(kBgRevertToDefaults));
 
 	BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
@@ -566,22 +564,22 @@ GlobalSetupWindow::BackgroundControlView::BackgroundControlView()
 		.Add(fGridSizeControl->LabelLayoutItem(), 0, 0)
 		.Add(fGridSizeControl->TextViewLayoutItem(), 1, 0)
 		.Add(fGridSizeControl->Slider(), 2, 0);
-	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDERSLIDER"));
 
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 		.Add(fBgContainer)
 		.AddGroup(B_HORIZONTAL, 5.0)
-			.Add(labelColor1)
+			.Add(labelColors)
 			.Add(fColorSwatch1)
-		.End()
-		.AddGroup(B_HORIZONTAL, 5.0)
-			.Add(labelColor2)
 			.Add(fColorSwatch2)
 		.End()
 		.Add(gridLayout->View())
 		.AddGlue()
-		.Add(fDefaultsButton)
-		.SetInsets(20.0, 20.0, 10.0, 10.0)
+		.AddGroup(B_HORIZONTAL, 5.0)
+			.Add(fDefaultsButton)
+			.AddGlue()
+		.End()
+		.SetInsets(20.0, 25.0, 10.0, 10.0)
 	);
 
 	_SetDefaults();
@@ -803,6 +801,15 @@ ColorSwatch::SetColor(uint32 color)
 }
 
 
+void
+ColorSwatch::MouseDown(BPoint point)
+{
+	rgb_color color = BGRAColorToRGB(fColor);
+	ColorPaletteWindow::showPaletteWindow();
+	ColorPaletteWindow::ChangePaletteColor(color);
+}
+
+
 // #pragma mark -- GlobalSetupWindow
 
 
@@ -828,14 +835,14 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	tab->SetLabel(B_TRANSLATE("Undo"));
 
 	tab = new BTab();
+	fBackgroundControlView = new BackgroundControlView;
+	fTabView->AddTab(fBackgroundControlView, tab);
+	tab->SetLabel(B_TRANSLATE("Transparency"));
+
+	tab = new BTab();
 	fGeneralControlView = new GeneralControlView;
 	fTabView->AddTab(fGeneralControlView, tab);
 	tab->SetLabel(B_TRANSLATE("Miscellaneous"));
-
-	tab = new BTab();
-	fBackgroundControlView = new BackgroundControlView;
-	fTabView->AddTab(fBackgroundControlView, tab);
-	tab->SetLabel(B_TRANSLATE("Background"));
 
 	layout->AddView(fTabView);
 	layout->AddView(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
@@ -844,6 +851,7 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 			new BMessage(kCloseAndDiscardSettings)))
 		.Add(new BButton(B_TRANSLATE("OK"),
 			new BMessage(kCloseAndApplySettings)))
+		.AddGlue()
 		.TopView()
 	);
 	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
@@ -903,7 +911,7 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 void
 GlobalSetupWindow::ShowGlobalSetupWindow()
 {
-	BRect frame(100, 100, 350, 300);
+	BRect frame(100, 100, 300, 300);
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
