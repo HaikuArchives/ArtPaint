@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1143824986
+1	English	application/x-vnd.artpaint	2503525248
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -138,7 +138,6 @@ Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
 Speed:	Tools		Speed:
-Rectangularity:	Tools		Rectangularity:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
 Translate…	PaintWindow		Translate…
@@ -321,6 +320,7 @@ Wand tolerance	Tools		Wand tolerance
 Invert selection	ImageView		Invert selection
 Much	Tools		Much
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
+Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Unsaved changes!	ImageView		Unsaved changes!
