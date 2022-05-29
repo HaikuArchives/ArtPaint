@@ -19,4 +19,4 @@ mv -f objects_artpaint/ArtPaint dist
 cp -rf addons/AddOns/*/objects_addons/*.so dist/add-ons
 cp -arf documentation dist/Documentation
 
-echo "Build has finished!"
+echo "Build has finished: dist/ArtPaint"
