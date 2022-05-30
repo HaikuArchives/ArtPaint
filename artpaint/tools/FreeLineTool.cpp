@@ -37,7 +37,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 FreeLineTool::FreeLineTool()
-	: DrawingTool(B_TRANSLATE("Freehand line"),
+	: DrawingTool(B_TRANSLATE("Freehand line tool"),
 		FREE_LINE_TOOL)
 {
 	fOptions = SIZE_OPTION;

@@ -245,7 +245,7 @@ ColorSelectorWindow::Move(BPoint cursor_location)
 
 
 ColorSelectorTool::ColorSelectorTool()
-	: DrawingTool(B_TRANSLATE("Color selector"),
+	: DrawingTool(B_TRANSLATE("Color picker tool"),
 		COLOR_SELECTOR_TOOL)
 {
 	fOptions = SIZE_OPTION | MODE_OPTION;

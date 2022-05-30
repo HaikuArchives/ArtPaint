@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2503525248
+1	English	application/x-vnd.artpaint	1503245567
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -26,6 +26,7 @@ Merge with front layer	Image		Merge with front layer
 Alpha	Tools		Alpha
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
+Airbrush tool	Tools		Airbrush tool
 Click to blur the image.	Tools		Click to blur the image.
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
@@ -33,7 +34,6 @@ Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Add layer	PaintWindow		Add layer
-Selector tool	Tools		Selector tool
 Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Click to select a painting color.
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
@@ -150,6 +150,7 @@ Store brush	Tools		Store brush
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Edit	PaintWindow		Edit
 Drawing an ellipse.	Tools		Drawing an ellipse.
+Straight line tool	Tools		Straight line tool
 Shrink selection	ImageView		Shrink selection
 Freehand line	Tools		Freehand line
 Fill tool	Tools		Fill tool
@@ -192,6 +193,7 @@ Rotates the active layer.	PaintWindow		Rotates the active layer.
 All layers	PaintWindow		All layers
 Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
 No data translator	Windows		No data translator
+Eraser tool	Tools		Eraser tool
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Layer %ld / %ld	ImageView		Layer %ld / %ld
 Active layer	PaintWindow		Active layer
@@ -206,6 +208,7 @@ Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° 
 Invert selection	PaintWindow		Invert selection
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Brush	Windows		Brush
+Hairy brush tool	Tools		Hairy brush tool
 Blur tool	Tools		Blur tool
 Adjustable	Windows		Adjustable
 Center to corner	Tools		Center to corner
@@ -257,12 +260,11 @@ Create canvas	PaintWindow		Create canvas
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
 Crops the image.	PaintWindow		Crops the image.
-Hairy brush	Tools		Hairy brush
 Click to paint with a hairy brush.	Tools		Click to paint with a hairy brush.
 Size:	Tools		Size:
-Color selector	Tools		Color selector
 Off	Windows		Off
 Tools	Windows		Tools
+Freehand line tool	Tools		Freehand line tool
 Angle:	Tools		Angle:
 Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
@@ -286,7 +288,6 @@ Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400%.
 OK	ImageView		OK
 Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 Set zoom level	PaintWindow		Set zoom level
-Straight line	Tools		Straight line
 Enable rotation	Tools		Enable rotation
 Continuous	Tools		Continuous
 OK	PaintWindow		OK
@@ -294,6 +295,7 @@ Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
 User manual…	PaintWindow		User manual…
 Corner to corner	Tools		Corner to corner
 Opens the layers window.	PaintWindow		Opens the layers window.
+Selection tool	Tools		Selection tool
 Add layer	Image		Add layer
 Enable gradient	Tools		Enable gradient
 Opens the colors window.	PaintWindow		Opens the colors window.
@@ -341,7 +343,7 @@ Drag the image to correct position.	Manipulators		Drag the image to correct posi
 Lock	Manipulators	Keep the aspect ratio	Lock
 Tools…	PaintWindow		Tools…
 Add area	Tools		Add area
-Eraser	Tools		Eraser
 Hardness:	Tools		Hardness:
 Scales the image.	PaintWindow		Scales the image.
 Recent images	PaintWindow		Recent images
+Color picker tool	Tools		Color picker tool

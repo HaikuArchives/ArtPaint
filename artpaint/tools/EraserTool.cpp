@@ -38,7 +38,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 EraserTool::EraserTool()
-	: DrawingTool(B_TRANSLATE("Eraser"),
+	: DrawingTool(B_TRANSLATE("Eraser tool"),
 		ERASER_TOOL)
 {
 	fOptions = SIZE_OPTION | MODE_OPTION;
