@@ -469,7 +469,7 @@ HairyBrushToolConfigView::HairyBrushToolConfigView(DrawingTool* tool)
 			"0", message, 5, 100, false);
 
 		fColorAmount =
-			new BSlider("", B_TRANSLATE("Color amount:"),
+			new BSlider("", B_TRANSLATE("Amount of paint:"),
 			new BMessage(COLOR_AMOUNT_CHANGED), 1, 500, B_HORIZONTAL,
 			B_TRIANGLE_THUMB);
 		fColorAmount->SetLimitLabels(B_TRANSLATE("Little"),

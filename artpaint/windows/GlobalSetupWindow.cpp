@@ -491,7 +491,7 @@ GlobalSetupWindow::GeneralControlView::ApplyChanges()
 
 GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	: BWindow(BRect(leftTop, BSize(10.0, 10.0)),
-		B_TRANSLATE("Global settings"),
+		B_TRANSLATE("Settings"),
 		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
 		B_NOT_RESIZABLE | B_AUTO_UPDATE_SIZE_LIMITS | B_CLOSE_ON_ESCAPE)
 {
