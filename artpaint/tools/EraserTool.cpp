@@ -209,7 +209,7 @@ const char*
 EraserTool::HelpString(bool isInUse) const
 {
 	return (isInUse
-		? B_TRANSLATE("Erasing the image.")
+		? B_TRANSLATE("Erasing pixels.")
 		: B_TRANSLATE("Click to use eraser."));
 }
 
@@ -272,12 +272,12 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", HS_ERASE_TO_BACKGROUND_MODE);
 
 		fBackground =
-			new BRadioButton(B_TRANSLATE("Background"),
+			new BRadioButton(B_TRANSLATE("Background color"),
 			new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_ERASE_TO_TRANSPARENT_MODE);
 		fTransparent =
-			new BRadioButton(B_TRANSLATE("Transparent"),
+			new BRadioButton(B_TRANSLATE("Transparency"),
 			message);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);
@@ -285,7 +285,7 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(sizeLayout)
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Color")))
+			.Add(SeparatorView(B_TRANSLATE("Replace pixels with")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fBackground)
 				.Add(fTransparent)

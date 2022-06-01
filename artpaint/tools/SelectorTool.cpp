@@ -617,7 +617,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SHAPE_OPTION);
 		message->AddInt32("value", HS_FREE_LINE);
-		fFreeLine = new BRadioButton(B_TRANSLATE("Freehand line"),
+		fFreeLine = new BRadioButton(B_TRANSLATE("Freehand"),
 			new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_RECTANGLE);
@@ -625,15 +625,15 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 			new BRadioButton(B_TRANSLATE("Rectangle"),
 				new BMessage(*message));
 
-		message->ReplaceInt32("value", HS_MAGIC_WAND);
-		fMagicWand =
-			new BRadioButton(B_TRANSLATE("Magic wand"),
-				new BMessage(*message));
-
 		message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
 		fScissors =  new
 			BRadioButton(B_TRANSLATE("Intelligent scissors"),
 			message);
+
+		message->ReplaceInt32("value", HS_MAGIC_WAND);
+		fMagicWand =
+			new BRadioButton(B_TRANSLATE("Magic wand"),
+				new BMessage(*message));
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", TOLERANCE_OPTION);
@@ -645,19 +645,19 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Mode")))
+			.Add(SeparatorView(B_TRANSLATE("Behavior")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 					.Add(fAddArea)
 					.Add(fSubstractArea)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Shape")))
+			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFreeLine)
 				.Add(fRectangle)
-				.Add(fMagicWand)
 				.Add(fScissors)
+				.Add(fMagicWand)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
