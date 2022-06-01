@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1503245567
+1	English	application/x-vnd.artpaint	2267371746
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -10,7 +10,6 @@ Flips the active layer horizontally.	PaintWindow		Flips the active layer horizon
 Subtract area	Tools		Subtract area
 Layers	Windows		Layers
 Paste as a new project	PaintWindow		Paste as a new project
-Global settings	Windows		Global settings
 Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
 Width:	PaintWindow		Width:
 Click to use eraser.	Tools		Click to use eraser.
@@ -23,6 +22,7 @@ Click to make a selection.	Tools		Click to make a selection.
 Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
 Merge with front layer	Image		Merge with front layer
+Width:	Tools		Width:
 Alpha	Tools		Alpha
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
@@ -91,7 +91,6 @@ Zoom	MagnificationView		Zoom
 Tool setup	Tools		Tool setup
 Resize to fit	PaintWindow		Resize to fit
 Opens the tool selection window.	PaintWindow		Opens the tool selection window.
-Color amount:	Tools		Color amount:
 Fill rectangle	Tools		Fill rectangle
 Text tool	Manipulators		Text tool
 Color model	ColorPalette		Color model
@@ -172,6 +171,7 @@ Merge with back layer	LayerView		Merge with back layer
 Using the airbrush.	Tools		Using the airbrush.
 Tool setup…	PaintWindow		Tool setup…
 Magic wand	Tools		Magic wand
+Amount of paint:	Tools		Amount of paint:
 Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Little	Tools		Little
 Copies the selection.	PaintWindow		Copies the selection.
@@ -250,6 +250,7 @@ Keep in front	Windows		Keep in front
 OK	Image		OK
 Click to draw an ellipse.	Tools		Click to draw an ellipse.
 Click to paint with airbrush.	Tools		Click to paint with airbrush.
+Settings	Windows		Settings
 Colors	Windows		Colors
 Off	PaintWindow		Off
 Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.

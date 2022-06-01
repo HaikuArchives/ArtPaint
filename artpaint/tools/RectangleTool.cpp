@@ -100,7 +100,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			view->getCoords(&point,&buttons,&view_point);
 			window->Unlock();
 			bitmap_rect = MakeRectFromPoints(original_point, point);
-			if (modifiers() & B_LEFT_CONTROL_KEY) {
+			if (modifiers() & B_LEFT_SHIFT_KEY) {
 				// Make the rectangle square.
 				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
 				if (original_point.x == bitmap_rect.left)
@@ -211,7 +211,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 					}
 					new_angle -= original_angle;
 
-					if (modifiers() & B_LEFT_CONTROL_KEY) {
+					if (modifiers() & B_LEFT_SHIFT_KEY) {
 						int32 divider = (int32)new_angle/5;
 						float remainder = new_angle - divider*5;
 						if (remainder >= 2.5)

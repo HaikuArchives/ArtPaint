@@ -123,7 +123,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		while (buttons) {
 			window->Lock();
 			view->getCoords(&point,&buttons,&view_point);
-			if (modifiers() & B_LEFT_CONTROL_KEY) {
+			if (modifiers() & B_LEFT_SHIFT_KEY) {
 				// Make the new point be so that the angle is a multiple of 45°.
 				float x_diff,y_diff;
 				x_diff = fabs(original_point.x-point.x);
