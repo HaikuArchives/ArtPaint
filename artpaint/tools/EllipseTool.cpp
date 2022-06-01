@@ -94,7 +94,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			bitmap_rect = MakeRectFromPoints(original_point, point);
-			if (modifiers() & B_LEFT_CONTROL_KEY) {
+			if (modifiers() & B_LEFT_SHIFT_KEY) {
 				// Make the rectangle square.
 				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
 				if (original_point.x == bitmap_rect.left)
