@@ -510,7 +510,7 @@ TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,
 	preview_started = FALSE;
 
 	twirl_radius_slider = new BSlider("twirl_radius_slider",
-		B_TRANSLATE("Twirl size:"), new BMessage(TWIRL_RADIUS_CHANGED), 10, 1000,
+		B_TRANSLATE("Size:"), new BMessage(TWIRL_RADIUS_CHANGED), 10, 1000,
 		B_HORIZONTAL, B_TRIANGLE_THUMB);
 	twirl_radius_slider->SetLimitLabels(B_TRANSLATE("Small"),B_TRANSLATE("Big"));
 	twirl_radius_slider->SetModificationMessage(new BMessage(TWIRL_RADIUS_ADJUSTING_STARTED));
@@ -518,7 +518,7 @@ TwirlManipulatorView::TwirlManipulatorView(BRect rect,TwirlManipulator *manip,
 	twirl_radius_slider->SetHashMarkCount(11);
 
 	twirl_amount_slider = new BSlider("twirl_amount_slider",
-		B_TRANSLATE("Twirl direction:"), new BMessage(TWIRL_AMOUNT_CHANGED), MIN_TWIRL_AMOUNT,
+		B_TRANSLATE("Direction and amount:"), new BMessage(TWIRL_AMOUNT_CHANGED), MIN_TWIRL_AMOUNT,
 		MAX_TWIRL_AMOUNT, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	twirl_amount_slider->SetLimitLabels(B_TRANSLATE("Left"), B_TRANSLATE("Right"));
 	twirl_amount_slider->SetModificationMessage(new BMessage(TWIRL_AMOUNT_ADJUSTING_STARTED));

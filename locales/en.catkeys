@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2267371746
+1	English	application/x-vnd.artpaint	1314379131
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -51,13 +51,13 @@ Undo	UndoQueue		Undo
 Open	FilePanels		Open
 Rotate -90°	PaintWindow		Rotate -90°
 Save project as…	PaintWindow		Save project as…
-Erasing the image.	Tools		Erasing the image.
 File	PaintWindow		File
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
 Right:	Manipulators		Right:
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
 Redo not available	UndoQueue		Redo not available
 Drawing a freehand line.	Tools		Drawing a freehand line.
+Erasing pixels.	Tools		Erasing pixels.
 Random	Tools		Random
 Flip horizontally	Manipulators		Flip horizontally
 Opens the tool setup window.	PaintWindow		Opens the tool setup window.
@@ -78,7 +78,6 @@ Brush tool	Tools		Brush tool
 Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Redo
 Font	Manipulators		Font
-Shape	Tools		Shape
 Set grid	PaintWindow		Set grid
 Delete selected brush	Windows		Delete selected brush
 Saves the image to disk.	PaintWindow		Saves the image to disk.
@@ -151,7 +150,7 @@ Edit	PaintWindow		Edit
 Drawing an ellipse.	Tools		Drawing an ellipse.
 Straight line tool	Tools		Straight line tool
 Shrink selection	ImageView		Shrink selection
-Freehand line	Tools		Freehand line
+Background color	Tools		Background color
 Fill tool	Tools		Fill tool
 Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
@@ -163,7 +162,6 @@ Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Reset brush	Tools		Reset brush
 Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
-Background	Tools		Background
 Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Clear canvas
 OK	ColorPalette		OK
@@ -215,7 +213,6 @@ Center to corner	Tools		Center to corner
 About ArtPaint	PaintWindow		About ArtPaint
 Don't save	ImageView		Don't save
 Tools	Tools		Tools
-Color	Tools		Color
 Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
@@ -232,7 +229,6 @@ Zooms out from the image.	PaintWindow		Zooms out from the image.
 Clear selection	ImageView		Clear selection
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
-Transparent	Tools		Transparent
 Click here to open color panel.	StatusView		Click here to open color panel.
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 Error reading file	ColorPalette		Error reading file
@@ -258,6 +254,7 @@ Rotation:	Manipulators		Rotation:
 Ellipse tool	Tools		Ellipse tool
 Add layer in front	LayerView		Add layer in front
 Create canvas	PaintWindow		Create canvas
+Replace pixels with	Tools		Replace pixels with
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
 Crops the image.	PaintWindow		Crops the image.
@@ -280,7 +277,9 @@ ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 Tool cursor	Windows		Tool cursor
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Intelligent scissors	Tools		Intelligent scissors
+Freehand	Tools		Freehand
 Hairs:	Tools		Hairs:
+Behavior	Tools		Behavior
 Grow selection	PaintWindow		Grow selection
 Flood fill	Tools		Flood fill
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
@@ -302,6 +301,7 @@ Enable gradient	Tools		Enable gradient
 Opens the colors window.	PaintWindow		Opens the colors window.
 Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
 Quits ArtPaint.	PaintWindow		Quits ArtPaint.
+Transparency	Tools		Transparency
 Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
 Settings…	PaintWindow		Settings…
 Canvas	PaintWindow		Canvas
