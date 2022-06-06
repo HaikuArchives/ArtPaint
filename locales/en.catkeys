@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1314379131
+1	English	application/x-vnd.artpaint	1463313598
 Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
@@ -36,6 +36,7 @@ ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Add layer	PaintWindow		Add layer
 Not a color set file	ColorPalette		Not a color set file
 Click to select a painting color.	ColorPalette		Click to select a painting color.
+ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
 OK	PaintApplication		OK
@@ -156,8 +157,8 @@ Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
 Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
-Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Airbrush	Tools		Airbrush
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Reset brush	Tools		Reset brush
@@ -201,6 +202,7 @@ Height:	PaintWindow		Height:
 Click to use the tool.	Tools		Click to use the tool.
 Window	PaintWindow		Window
 Open image…	PaintWindow		Open image…
+ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
 Invert selection	PaintWindow		Invert selection
@@ -308,8 +310,8 @@ Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
-Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
+Flip horizontally	PaintWindow		Flip horizontally
 Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
 Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles

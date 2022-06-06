@@ -42,6 +42,7 @@ public:
 	static	void				HomeDirectory(BPath& path);
 
 private:
+			void				_InstallMimeType();
 			void				_ReadPreferences();
 			void				_WritePreferences();
 
