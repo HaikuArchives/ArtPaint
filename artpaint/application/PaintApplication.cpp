@@ -45,6 +45,7 @@
 #include <FindDirectory.h>
 #include <NodeInfo.h>
 #include <Path.h>
+#include <Resources.h>
 #include <Roster.h>
 #include <TextView.h>
 #include <TranslationUtils.h>
@@ -293,6 +294,8 @@ PaintApplication::QuitRequested()
 void
 PaintApplication::ReadyToRun()
 {
+	_InstallMimeType();
+
 	BMessage settings;
 	if (SettingsServer* server = SettingsServer::Instance())
 		server->GetApplicationSettings(&settings);
@@ -473,6 +476,71 @@ PaintApplication::SetColor(rgb_color color, bool foreground)
 		server->SetValue(SettingsServer::Application, field, B_RGB_COLOR_TYPE,
 			&color, sizeof(rgb_color));
 	}
+}
+
+
+void
+PaintApplication::_InstallMimeType()
+{
+	// install mime type of documents
+	BMimeType mime(HS_PROJECT_MIME_STRING);
+	if (mime.InitCheck() < B_OK)
+		return;
+
+	BString snifferRule;
+	if (mime.IsInstalled() && mime.GetSnifferRule(&snifferRule)
+			== B_OK && snifferRule.Length() > 0)
+		return;
+
+	mime.Delete();
+
+	status_t ret = mime.Install();
+	if (ret < B_OK) {
+		fprintf(stderr, "Could not install mime type '" HS_PROJECT_MIME_STRING
+			"': %s.\n", strerror(ret));
+		return;
+	}
+
+	// set preferred app
+	if (mime.SetPreferredApp("application/x-vnd.artpaint") < B_OK)
+		fprintf(stderr, "Could not set preferred app!\n");
+
+	// set descriptions
+	if (mime.SetShortDescription(B_TRANSLATE_COMMENT(
+			"ArtPaint project", "MIME type short description")) < B_OK)
+		fprintf(stderr, "Could not set short description of mime type!\n");
+	if (mime.SetLongDescription(B_TRANSLATE_COMMENT(
+			"ArtPaint project format containing layers etc.", "MIME type long description")) != B_OK)
+		fprintf(stderr, "Could not set long description of mime type!\n");
+
+	// set sniffer rule
+/*	According to Pete Goodeve's investigation of ArtPaint's project file format,
+	this seems to be what's at the start of every file:
+	0x ffffffff   01010101   02000000    02020202    00110011     08000000   00000000
+	   little     file ID    number of   section     dimension    section    data?
+	   endian                sections    start       section ID   length
+*/
+	snifferRule = "0.50 ([4] 0x01010101) ([12] 0x0202020200110011)";
+	if (mime.SetSnifferRule(snifferRule.String()) < B_OK) {
+		BString parseError;
+		BMimeType::CheckSnifferRule(snifferRule.String(), &parseError);
+		fprintf(stderr, "Could not set sniffer rule of mime type: %s\n", parseError.String());
+	}
+
+	// set document icons
+	BResources* resources = AppResources();
+		// does not need to be freed (belongs to BApplication base)
+	if (resources == NULL) {
+		fprintf(stderr, "Could not find app resources.\n");
+		return;
+	}
+
+	size_t size;
+	const void* iconData;
+
+	iconData = resources->LoadResource('VICN', HS_PROJECT_MIME_STRING, &size);
+	if (iconData && mime.SetIcon((uint8*)iconData, size) < B_OK)
+		fprintf(stderr, "Could not set vector icon of mime type.\n");
 }
 
 
