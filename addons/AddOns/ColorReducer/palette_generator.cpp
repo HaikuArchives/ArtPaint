@@ -4,10 +4,12 @@
  *
  * Authors:
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
 #include <Bitmap.h>
 #include <stdio.h>
+
 
 #include "palette_generator.h"
 #include "color_mapper.h"
@@ -15,27 +17,51 @@
 #include "RandomNumberGenerator.h"
 #include "Selection.h"
 
+
 /* 'Generalized Lloyd's Algorithm' Palette Generation */
 
 rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 {
-	ColorDistanceMetric *color_metric = new ColorDistanceMetric();
+	ColorDistanceMetric *color_metric = new (std::nothrow) ColorDistanceMetric();
+	if (color_metric == NULL)
+		 return NULL;
 
+	rgb_color *palette = new (std::nothrow) rgb_color[paletteSize];
+	if (palette == NULL) {
+		delete color_metric;
 
+		return NULL;
+	}
 
-	rgb_color *palette = new rgb_color[paletteSize];
-	rgb_color *previous_palette = new rgb_color[paletteSize];
+	rgb_color *previous_palette = new (std::nothrow) rgb_color[paletteSize];
+	if (previous_palette == NULL) {
+		delete color_metric;
+
+		return palette;
+	}
 
 	struct color_chain {
 		color_chain *next;
 		rgb_color color;
 	};
 
-	color_chain **selected_colors = new color_chain*[paletteSize];
+	color_chain **selected_colors = new (std::nothrow) color_chain*[paletteSize];
+	if (selected_colors == NULL) {
+		delete color_metric;
+		delete previous_palette;
 
+		return palette;
+	}
 
+	color_chain **input_colors = new (std::nothrow) color_chain*[32768];
+	if (input_colors == NULL) {
+		delete color_metric;
+		delete selected_colors;
+		delete previous_palette;
 
-	color_chain *input_colors[32768];
+		return palette;
+	}
+
 	for (int32 i=0;i<32768;i++) {
 		input_colors[i] = NULL;
 	}
@@ -207,11 +233,8 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 
 	// Here destroy the input color array/lists
 
-
-
-//	for (int32 i=0;i<paletteSize;i++) {
-//		printf("%d\t%d\t%d\t%d\n",palette[i].red,palette[i].green,palette[i].blue,palette[i].alpha);
-//	}
+	delete input_colors;
+	delete selected_colors;
 
 	return palette;
 }
