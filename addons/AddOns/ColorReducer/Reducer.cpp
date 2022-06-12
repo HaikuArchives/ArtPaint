@@ -104,7 +104,8 @@ BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *
 	else if (new_settings->palette_mode == GLA_PALETTE)
 		palette = gla_palette(source_bitmap,new_settings->palette_size);
 
-	do_dither(source_bitmap,target_bitmap,palette,new_settings->palette_size,new_settings->dither_mode);
+	if (palette != NULL)
+		do_dither(source_bitmap,target_bitmap,palette,new_settings->palette_size,new_settings->dither_mode);
 
 	return target_bitmap;
 }
@@ -132,7 +133,8 @@ int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,B
 	else if (previous_settings.palette_mode == GLA_PALETTE)
 		palette = gla_palette(source_bitmap,previous_settings.palette_size);
 
-	do_dither(source_bitmap,target_bitmap,palette,previous_settings.palette_size,previous_settings.dither_mode);
+	if (palette != NULL)
+		do_dither(source_bitmap,target_bitmap,palette,previous_settings.palette_size,previous_settings.dither_mode);
 
 	config_view->Window()->PostMessage(REDUCER_FINISHED, config_view);
 	return 1;
@@ -342,11 +344,11 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",BEOS_PALETTE);
-	mode_menu->AddItem(new BMenuItem(B_TRANSLATE("BeOS palette") ,message));
+	mode_menu->AddItem(new BMenuItem(B_TRANSLATE("BeOS"), message));
 
 	message = new BMessage(PALETTE_MODE_CHANGED);
 	message->AddInt32("palette_mode",GLA_PALETTE);
-	mode_menu->AddItem(new BMenuItem(B_TRANSLATE("GLA palette") ,message));
+	mode_menu->AddItem(new BMenuItem(B_TRANSLATE("Generalized Lloyd's Algorithm"), message));
 
 	palette_mode_menu_field = new BMenuField("palette_mode_menu_field",
 		B_TRANSLATE("Palette mode:"), mode_menu);
@@ -354,23 +356,32 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator *manip,
 	dither_menu->ItemAt(settings.dither_mode)->SetMarked(true);
 	size_menu->ItemAt(size_menu->CountItems()-1)->SetMarked(true);	// slight hack...
 	mode_menu->ItemAt(settings.palette_mode)->SetMarked(true);
-	
+
 	busy = new BStringView("busy", B_TRANSLATE("Reducing in progress"));
 	busy->SetHighColor(128, 0, 0);
 	busy->SetViewColor(ViewColor());
 	busy->Hide();
 
+	BGridLayout* gridLayout =
+		BLayoutBuilder::Grid<>(B_USE_DEFAULT_SPACING, B_USE_SMALL_SPACING)
+			.Add(dither_mode_menu_field->CreateLabelLayoutItem(), 0, 0)
+			.Add(dither_mode_menu_field->CreateMenuBarLayoutItem(), 1, 0)
+			.Add(palette_size_menu_field->CreateLabelLayoutItem(), 0, 1)
+			.Add(palette_size_menu_field->CreateMenuBarLayoutItem(), 1, 1)
+			.Add(palette_mode_menu_field->CreateLabelLayoutItem(), 0, 2)
+			.Add(palette_mode_menu_field->CreateMenuBarLayoutItem(), 1, 2);
+	gridLayout->SetMinColumnWidth(1, StringWidth("-YES-THIS-IS-A-REALLY-LONG-STRING--"));
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
-		.Add(dither_mode_menu_field)
-		.Add(palette_size_menu_field)
-		.Add(palette_mode_menu_field)
+		.Add(gridLayout->View())
 		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
 			.Add(busy)
 			.AddGlue()
-			.End()
+		.End()
 		.SetInsets(B_USE_SMALL_INSETS)
-		.End();
+	.End();
+
 }
 
 
