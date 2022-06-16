@@ -852,6 +852,12 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 		settings.FindInt32(skSettingsWindowTab, &activeTab);
 	}
 	fTabView->Select(activeTab);
+
+	float width = 0;
+	for (int i = 0; i < fTabView->CountTabs(); i++)
+		width += fTabView->TabFrame(i).Width();
+
+	fTabView->SetExplicitMinSize(BSize(width + 2 * be_plain_font->Size(), B_SIZE_UNSET));
 }
 
 
