@@ -1,5 +1,5 @@
-1	German	application/x-vnd.artpaint-addon	2903644679
-Adjust the sharpness.	AddOns_Sharpness		Steuert die Schärfe
+1	German	application/x-vnd.artpaint-addon	1148738223
+Adjusts the sharpness.	AddOns_Sharpness		Steuert die Schärfe.
 Blurred	AddOns_Sharpness		Unscharf
 Effect strength:	AddOns_Sharpness		Effektstärke:
 High	AddOns_Sharpness		Hoch
@@ -8,4 +8,3 @@ Sharp	AddOns_Sharpness		Scharf
 Sharpness	AddOns_Sharpness		Schärfe
 Sharpness:	AddOns_Sharpness		Schärfe:
 Sharpness…	AddOns_Sharpness		Schärfe…
-Use the slider to set the image sharpness.	AddOns_Sharpness		Die Regler steuern die Schärfe.

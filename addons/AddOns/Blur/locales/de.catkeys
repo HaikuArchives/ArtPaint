@@ -1,8 +1,7 @@
-1	German	application/x-vnd.artpaint-addon	500267057
+1	German	application/x-vnd.artpaint-addon	3937050915
 Adds a blur.	AddOns_Blur		Unschärfe hinzufügen.
 Blur	AddOns_Blur		Unschärfe
 Blur amount:	AddOns_Blur		Unschärfegrad:
 Blur…	AddOns_Blur		Unschärfe…
 High	AddOns_Blur		Hoch
 Low	AddOns_Blur		Niedrig
-Use the slider to adjust blur amount.	AddOns_Blur		Die Regler steuern den Unschärfegrad.

@@ -1,4 +1,4 @@
-1	German	application/x-vnd.artpaint	3223448953
+1	German	application/x-vnd.artpaint	640123077
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
 Cancel	ImageView		Abbrechen
 Clear selection	ImageView		Auswahl aufheben
@@ -23,8 +23,8 @@ Adds a layer to the top of this image.	PaintWindow		Fügt dem Bild eine Ebene hi
 All layers	PaintWindow		Alle Ebenen
 Brushes…	PaintWindow		Stifte…
 Canvas	PaintWindow		Bild
-Change the transparency of active layer.	PaintWindow		Transparenz der aktuellen Ebene ändern.
 Change transparency…	PaintWindow		Transparenz ändern…
+Changes the transparency of active layer.	PaintWindow		Transparenz der aktuellen Ebene ändern.
 Clear canvas	PaintWindow		Bild löschen
 Clear layer	PaintWindow		Ebene löschen
 Clear selection	PaintWindow		Auswahl aufheben
@@ -38,8 +38,8 @@ Copies the selection.	PaintWindow		Kopiert die Auswahl.
 Copy	PaintWindow		Kopieren
 Create canvas	PaintWindow		Bild erstellen
 Creates a new empty canvas.	PaintWindow		Erzeugt ein neues, leeres Bild.
-Crop the image.	PaintWindow		Bild beschneiden.
 Crop…	PaintWindow		Zuschneiden…
+Crops the image.	PaintWindow		Bild beschneiden.
 Cut	PaintWindow		Ausschneiden
 Cuts the selection from all layers to the clipboard.	PaintWindow		Schneidet die Auswahl aller Ebenen aus.
 Cuts the selection to the clipboard.	PaintWindow		Schneidet die Auswahl aus.
@@ -61,9 +61,8 @@ Invert selection	PaintWindow		Auswahl invertieren
 Inverts the selection	PaintWindow		Auswahl invertieren
 Layer	PaintWindow		Ebene
 Layers…	PaintWindow		Ebenen…
-Move all layers.	PaintWindow		Alle Ebenen verschieben.
-Move the active layer.	PaintWindow		Aktuelle Ebene verschieben.
-New project	PaintWindow		Neues Projekt
+Moves all layers.	PaintWindow		Alle Ebenen verschieben.
+Moves the active layer.	PaintWindow		Aktuelle Ebene verschieben.
 New project…	PaintWindow		Neues Projekt…
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Der Speicher reicht nicht aus um dieses Bild zu erstellen. Bitte mit einer kleineren Bildgröße nochmal versuchen!
 Off	PaintWindow		Aus
@@ -94,11 +93,11 @@ Resize to fit	PaintWindow		Optimale Fenstergröße
 Resizes the window to fit image and screen.	PaintWindow		Stellt eine für Bildschirm und Bild optimale Fenstergröße ein.
 Rotate -90°	PaintWindow		Drehen -90°
 Rotate +90°	PaintWindow		Drehen +90°
-Rotate all layers.	PaintWindow		Alle Ebenen drehen.
-Rotate the active layer.	PaintWindow		Aktuelle Ebene drehen.
 Rotate…	PaintWindow		Drehen…
 Rotates all layers 90° clockwise.	PaintWindow		Drehen alle Ebenen 90° im Uhrzeigersinn
 Rotates all layers 90° counter-clockwise.	PaintWindow		Drehen alle Ebenen 90° gegen den Uhrzeigersinn
+Rotates all layers.	PaintWindow		Alle Ebenen drehen.
+Rotates the active layer.	PaintWindow		Aktuelle Ebene drehen.
 Save image	PaintWindow		Bild speichern
 Save image as…	PaintWindow		Bild speichern als…
 Save project	PaintWindow		Projekt speichern
@@ -107,11 +106,11 @@ Saves the image to disk.	PaintWindow		Speichert das Bild auf Festplatte.
 Saves the image under its current name.	PaintWindow		Speichert das Bild unter seinem aktuellen Namen.
 Saves the project to disk.	PaintWindow		Speichert das Projekt.
 Saves the project under its current name.	PaintWindow		Speichert das Projekt unter seinem aktuellen Namen.
-Scale the image.	PaintWindow		Bildgröße ändern.
 Scale…	PaintWindow		Skalieren…
-Select the canvas size you want.	PaintWindow		Gewünschte Bildgröße wählen.
+Scales the image.	PaintWindow		Bildgröße ändern.
 Set grid	PaintWindow		Raster setzen
 Set zoom level	PaintWindow		Zoom-Stufe setzen
+Set/Select the canvas size.	PaintWindow		Gewünschte Bildgröße wählen.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Setzt das Raster auf 2 x 2 Pixel.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Setzt das Raster auf 4 x 4 Pixel.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Setzt das Raster auf 8 x 8 Pixel.
@@ -144,8 +143,13 @@ Add area	Tools		Bereich hinzufügen
 Adjustable width	Tools		Breite einstellbar
 Adjusting the layer's transparency.	Tools		Transparenz der Ebene ändern.
 Airbrush	Tools		Airbrush
+Airbrush tool	Tools		Airbrush
 Alpha	Tools		Alpha
-Background	Tools		Hintergrund
+Amount of paint:	Tools		Farbmenge:
+Angle:	Tools		Winkel:
+Aspect:	Tools		Form:
+Background color	Tools		Hintergrundfarbe
+Behavior	Tools		Aktion
 Blue	Tools		Blau
 Blur tool	Tools		Unschärfe
 Blurring the image.	Tools		Unschärfe hinzufügen.
@@ -166,9 +170,7 @@ Click to pick a color.	Tools		Klicken um eine Farbe aufzunehmen.
 Click to place the text.	Tools		Klicken um Text zu plazieren.
 Click to use eraser.	Tools		Klicken um zu radieren.
 Click to use the tool.	Tools		Klicken um das Werkzeug zu benutzen.
-Color	Tools		Farbe
-Color amount:	Tools		Farbmenge:
-Color selector	Tools		Farbselektion
+Color picker tool	Tools		Farbselektion
 Color variance:	Tools		Farbvarianz:
 Continuous	Tools		Kontinuierlich
 Corner to corner	Tools		Ecke-Ecke
@@ -183,19 +185,20 @@ Enable antialiasing	Tools		Anti-Aliasing
 Enable gradient	Tools		Farbverlauf
 Enable preview	Tools		Vorschau
 Enable rotation	Tools		Drehbar
-Eraser	Tools		Radieren
-Erasing the image.	Tools		Radieren.
-Fade:	Tools		Härte:
+Eraser tool	Tools		Radierer
+Erasing pixels.	Tools		Pixel entfernen.
 Fill ellipse	Tools		Ellipse füllen
 Fill rectangle	Tools		Rechteck füllen
 Fill tool	Tools		Füllen
 Flood fill	Tools		Begrenzt füllen
 Flow:	Tools		Fluss:
-Freehand line	Tools		Freihandlinie
+Freehand	Tools		Freihand
+Freehand line tool	Tools		Freihandlinie
 Green	Tools		Grün
 Hairs:	Tools		Haare:
-Hairy brush	Tools		Pinsel
-Height:	Tools		Höhe:
+Hairy brush tool	Tools		Pinsel
+Hardness:	Tools		Härte:
+Hold shift key to snap to 45° angles	Tools		Shift-Taste halten für 45° Winkel
 Intelligent scissors	Tools		Intelligente Schere
 Little	Tools		Wenig
 Magic wand	Tools		Zauberstab
@@ -205,7 +208,6 @@ Mode	Tools		Modus
 Much	Tools		Viel
 No configuration options available.	Tools		Keine Optionen verfügbar
 None	Tools		Keine
-Not implemented yet.	Tools		Noch nicht implementiert.
 Options	Tools		Optionen
 Painting with a brush.	Tools		Mit Stift zeichnen.
 Painting with a hairy brush.	Tools		Mit Pinsel zeichnen.
@@ -214,21 +216,21 @@ Random	Tools		Zufall
 Rectangle	Tools		Rechteck
 Rectangle tool	Tools		Rechteck
 Red	Tools		Rot
+Replace pixels with	Tools		Pixel ersetzen durch
 Reset brush	Tools		Stift zurücksetzen
-Selector tool	Tools		Auswahl
-Shape	Tools		Form
+Selection tool	Tools		Auswahl
 Size:	Tools		Größe:
 Speed:	Tools		Stärke:
 Spray	Tools		Sprühdose
 Store brush	Tools		Stift speichern
-Straight line	Tools		Linie
+Straight line tool	Tools		Line
 Subtract area	Tools		Bereich abziehen
 Text tool	Tools		Text
 Tolerance:	Tools		Toleranz:
 Tool setup	Tools		Werkzeugeinstellungen
 Tools	Tools		Werkzeuge
+Transparency	Tools		Transparenz
 Transparency tool	Tools		Transparenz
-Transparent	Tools		Transparent
 Using the airbrush.	Tools		Mit Airbrush zeichnen.
 Using the tool.	Tools		Werkzeug benutzen.
 Wand tolerance	Tools		Zauberstab
@@ -254,12 +256,15 @@ Brush	Windows		Stift
 Brushes	Windows		Stifte
 Cancel	Windows		Abbrechen
 Colors	Windows		Farben
+Colors:	Windows		Farben:
 Confirm quitting	Windows		Beenden bestätigen
 Cross-hair cursor	Windows		nur Fadenkreuz
 Cursor	Windows		Zeiger
 Datatype setup: %name%	Windows		Dateityp Einrichtung: %name%
+Defaults	Windows		Standardwerte
 Delete selected brush	Windows		Ausgewählten Stift entfernen
-Global settings	Windows		Globale Einstellungen
+Drop a color from the Colors window	Windows		Eine Farbe aus dem Farben-Fenster fallen lassen
+Grid size:	Windows		Mustergröße:
 Keep in front	Windows		Fenster immer im Vordergrund
 Layers	Windows		Ebenen
 Miscellaneous	Windows		Verschiedenes
@@ -267,9 +272,11 @@ No data translator	Windows		Kein DatenTranslator
 No options	Windows		Keine Optionen
 Off	Windows		Aus
 OK	Windows		OK
+Settings	Windows		Einstellungen
 Tool cursor	Windows		mit Werkzeugsymbol
 Tool setup	Windows		Werkzeugeinstellungen
 Tools	Windows		Werkzeuge
+Transparency	Windows		Transparenz
 Undo	Windows		Rückgängig
 Undo steps:	Windows		Anzahl:
 Unlimited	Windows		Unbegrenzt
@@ -308,7 +315,9 @@ Use the handles or number-fields to set the new borders.	Manipulators		Zum Ände
 Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Linke Maustaste dreht, rechte Maustaste legt den Drehpunkt fest.
 Width:	Manipulators		Breite:
 ArtPaint	System name		ArtPaint
-ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für Haiku.\n
+ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für Haiku.
+ArtPaint project	PaintApplication	MIME type short description	ArtPaint Projekt
+ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint Projektformat samt Ebenen etc.
 ArtPaint: Open image…	PaintApplication		ArtPaint: Bild öffnen…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Projekt öffnen…
 OK	PaintApplication		OK

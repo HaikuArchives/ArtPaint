@@ -1,10 +1,9 @@
-1	German	application/x-vnd.artpaint-addon	1193038644
+1	German	application/x-vnd.artpaint-addon	2894671594
 blacK	AddOns_ColorSeparator		Schwarz (K)
 Color separator	AddOns_ColorSeparator		Farbtrenner
 Color separator…	AddOns_ColorSeparator		Farbtrenner…
 Cyan	AddOns_ColorSeparator		Cyanblau (C)
-Extracts the Cyan, Magenta, Yellow or Key/Black components for printing.	AddOns_ColorSeparator		Trennt die Farbkomponenten Cyanblau (C), Magenta (M), Gelb (Y ellow) oder Schwarz (K ey/Black) für den Druck.
+Extracts the color components for printing.	AddOns_ColorSeparator		Trennt die Farbkomponenten für den Druck.
 Magenta	AddOns_ColorSeparator		Magenta
 Select C-M-Y-K:	AddOns_ColorSeparator		Auswahl C-M-Y-K:
-Use the slider to set the image saturation.	AddOns_ColorSeparator		Der Regler steuert die Bildsättigung.
 Yellow	AddOns_ColorSeparator		Gelb (Y)

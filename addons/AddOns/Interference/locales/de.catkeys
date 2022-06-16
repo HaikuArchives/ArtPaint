@@ -1,11 +1,11 @@
-1	German	application/x-vnd.artpaint-addon	903471744
+1	German	application/x-vnd.artpaint-addon	3475314580
 Center A	AddOns_Interference		Zentrum A
 Center B	AddOns_Interference		Zentrum B
 Creates an interference-pattern.	AddOns_Interference		Erzeugt ein Interferenzmuster.
 Grayscale	AddOns_Interference		Graustufen
 Interference	AddOns_Interference		Interferenz
 Interference…	AddOns_Interference		Interferenz…
-Left-click the image to move Center A, right-click to move Center B.	AddOns_Interference		Ein Linksklick setzt Zentrum A, ein Rechtsklick setzt Zentrum B.
+Left-click to move Center A, right-click to move Center B.	AddOns_Interference		Linksklick setzt Zentrum A, Rechtsklick setzt Zentrum B.
 Long	AddOns_Interference		Lang
 Short	AddOns_Interference		Kurz
 Wavelength:	AddOns_Interference		Wellenlänge:

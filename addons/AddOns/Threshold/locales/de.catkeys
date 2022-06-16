@@ -1,10 +1,9 @@
-1	German	application/x-vnd.artpaint-addon	2162580835
+1	German	application/x-vnd.artpaint-addon	2206202763
 Based on:	AddOns_Threshold		Basis:
 Blue	AddOns_Threshold		Blau
 Green	AddOns_Threshold		Grün
 Intensity	AddOns_Threshold		Intensität
 Red	AddOns_Threshold		Rot
-Show only pixels of a specified threshold.	AddOns_Threshold		Nur Pixel mit bestimmten Schwellenwert zeigen.
+Shows only pixels of a specified threshold.	AddOns_Threshold		Zeigt nur Pixel mit bestimmten Schwellenwert.
 Threshold	AddOns_Threshold		Schwellenwert
 Threshold…	AddOns_Threshold		Schwellenwert…
-Use the slider to set the thresholding value.	AddOns_Threshold		Der Regler steuert den Schwellenwert.

@@ -1,11 +1,11 @@
-1	German	application/x-vnd.artpaint-addon	2852696468
+1	German	application/x-vnd.artpaint-addon	2334857766
 Big	AddOns_Twirl		Groß
-Click on the image to set the twirl center. Use sliders to adjust twirl.	AddOns_Twirl		Ins Bild Klicken, um das Wirbelzentrum zu setzen. Die Regler steuern den Wirbel.
+Click to set the twirl center. Use sliders to adjust twirl.	AddOns_Twirl		Klicken, um das Wirbelzentrum zu setzen. Die Regler steuern den Wirbel.
+Direction and amount:	AddOns_Twirl		Richtung und Stärke:
 Left	AddOns_Twirl		Links
 Right	AddOns_Twirl		Rechts
+Size:	AddOns_Twirl		Größe:
 Small	AddOns_Twirl		Klein
 Twirl	AddOns_Twirl		Wirbel
-Twirl direction:	AddOns_Twirl		Wirbelrichtung:
-Twirl size:	AddOns_Twirl		Wirbelgröße:
 Twirl…	AddOns_Twirl		Wirbel…
 Twirls the active layer.	AddOns_Twirl		Verwirbelt die aktuelle Ebene.
