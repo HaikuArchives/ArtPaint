@@ -37,11 +37,11 @@ private:
 	class	UndoControlView;
 			UndoControlView*		fUndoControlView;
 
-	class	GeneralControlView;
-			GeneralControlView*		fGeneralControlView;
+	class	TransparencyControlView;
+			TransparencyControlView*	fTransparencyControlView;
 
-	class	BackgroundControlView;
-			BackgroundControlView*	fBackgroundControlView;
+	class	MiscControlView;
+			MiscControlView*		fMiscControlView;
 
 
 			BTabView*				fTabView;
