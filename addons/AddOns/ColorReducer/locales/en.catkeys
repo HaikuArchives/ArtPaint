@@ -1,13 +1,13 @@
-1	English	application/x-vnd.artpaint-addon	4028313967
-BeOS palette	AddOns_ColorReducer		BeOS palette
+1	English	application/x-vnd.artpaint-addon	4139515168
 Preserve solids FS	AddOns_ColorReducer		Preserve solids FS
 Palette size:	AddOns_ColorReducer		Palette size:
 Color reducer	AddOns_ColorReducer		Color reducer
+BeOS	AddOns_ColorReducer		BeOS
 Floyd-Steinberg EDD	AddOns_ColorReducer		Floyd-Steinberg EDD
 Color reducer…	AddOns_ColorReducer		Color reducer…
 Dither mode:	AddOns_ColorReducer		Dither mode:
-GLA palette	AddOns_ColorReducer		GLA palette
 No dithering	AddOns_ColorReducer		No dithering
+Generalized Lloyd's Algorithm	AddOns_ColorReducer		Generalized Lloyd's Algorithm
 Palette mode:	AddOns_ColorReducer		Palette mode:
 N-Candidate	AddOns_ColorReducer		N-Candidate
 Reducing in progress	AddOns_ColorReducer		Reducing in progress
