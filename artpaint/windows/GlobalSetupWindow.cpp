@@ -7,6 +7,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *		Karsten Heimrich <host.haiku@gmx.de>
  *		Dale Cieslak <dcieslak@yahoo.com>
+ *		Humdinger <humdingerb@gmail.com>
  *
  */
 
@@ -32,9 +33,7 @@
 #include <Catalog.h>
 #include <CheckBox.h>
 #include <Control.h>
-#include <GroupLayout.h>
-#include <GridLayoutBuilder.h>
-#include <GroupLayoutBuilder.h>
+#include <LayoutBuilder.h>
 #include <RadioButton.h>
 #include <SpaceLayoutItem.h>
 #include <StringView.h>
@@ -154,25 +153,24 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 		new BMessage(kEffectsWindowFeelChanged));
 	fEffects->SetValue(fAddOnWindowFeel == B_FLOATING_SUBSET_WINDOW_FEEL);
 
-	BGroupLayout* layout = new BGroupLayout(B_VERTICAL);
-	SetLayout(layout);
+	BStringView* label = new BStringView("label", B_TRANSLATE("Keep in front"));
+	label->SetFont(be_bold_font);
 
-	BBox* box = new BBox(B_NO_BORDER, BGridLayoutBuilder(10.0, 5.0)
-		.Add(fColor, 0, 0)
-		.Add(fSelection, 0, 1)
-		.Add(fSetup, 0, 2)
-		.Add(fLayer, 1, 0)
-		.Add(fBrush, 1, 1)
-		.Add(fEffects, 1, 2)
-		.Add(BSpaceLayoutItem::CreateGlue(), 2, 0)
-		.SetInsets(20.0, 5.0, 10.0, 10.0)
-		.View()
-	);
-	box->SetLabel(B_TRANSLATE("Keep in front"));
-
-	layout->AddView(box);
-	layout->AddItem(BSpaceLayoutItem::CreateGlue());
-	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(label)
+		.AddGrid(B_HORIZONTAL, B_USE_SMALL_SPACING)
+			.Add(fEffects, 0, 0)
+			.Add(fBrush, 0, 1)
+			.Add(fColor, 0, 2)
+			.Add(BSpaceLayoutItem::CreateHorizontalStrut(B_USE_DEFAULT_SPACING), 1, 0, 1, 3)
+			.Add(fLayer, 2, 0)
+			.Add(fSelection, 2, 1)
+			.Add(fSetup, 2, 2)
+		.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
+		.End()
+		.AddGlue()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 }
 
 
@@ -285,26 +283,27 @@ GlobalSetupWindow::UndoControlView::UndoControlView()
 	: BView("undo control view", 0)
 	, fUndoDepth(UndoQueue::ReturnDepth())
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fDisabledUndo =
-				new BRadioButton(B_TRANSLATE("Off"),
-				new BMessage(kSetUndoDisabled)))
-		.Add(fUnlimitedUndo =
-				new BRadioButton(B_TRANSLATE("Unlimited"),
-				new BMessage(kSetUnlimitedUndo)))
-		.Add(fAdjustableUndo =
-				new BRadioButton(B_TRANSLATE("Adjustable"),
-				new BMessage(kSetAdjustableUndo)))
-		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
-			.AddStrut(15.0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.AddGroup (B_VERTICAL, B_USE_SMALL_SPACING)
+			.Add(fDisabledUndo =
+					new BRadioButton(B_TRANSLATE("Off"),
+					new BMessage(kSetUndoDisabled)))
+			.Add(fUnlimitedUndo =
+					new BRadioButton(B_TRANSLATE("Unlimited"),
+					new BMessage(kSetUnlimitedUndo)))
+			.Add(fAdjustableUndo =
+					new BRadioButton(B_TRANSLATE("Adjustable"),
+					new BMessage(kSetAdjustableUndo)))
+		.End()
+		.AddGroup (B_HORIZONTAL)
+			.AddStrut(B_USE_DEFAULT_SPACING)
 			.Add(fAdjustableUndoInput = new NumberControl(B_TRANSLATE("Undo steps:"), "20",
 					new BMessage(kUndoDepthAdjusted)))
-			.AddGlue())
+			.AddGlue()
+		.End()
 		.AddGlue()
-		.SetInsets(20.0, 20.0, 10.0, 10.0)
-	);
+		.SetInsets(B_USE_BIG_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 
 	fAdjustableUndoInput->SetValue(0);
 	fAdjustableUndoInput->SetEnabled(false);
@@ -380,134 +379,13 @@ GlobalSetupWindow::UndoControlView::_Update(int32 undoDepth, bool enableInput)
 }
 
 
-// #pragma mark -- GeneralControlView
+// #pragma mark -- TransparencyControlView
 
 
-class GlobalSetupWindow::GeneralControlView : public BView {
+class GlobalSetupWindow::TransparencyControlView : public BView {
 public:
-						GeneralControlView();
-	virtual				~GeneralControlView() {}
-
-	virtual	void		AttachedToWindow();
-	virtual	void		MessageReceived(BMessage* message);
-
-			void		ApplyChanges();
-
-private:
-		int32			fCursorMode;
-		int32			fShutdownMode;
-
-		BRadioButton*	fToolCursor;
-		BRadioButton*	fCrossHairCursor;
-		BCheckBox*		fConfirmShutdown;
-};
-
-
-GlobalSetupWindow::GeneralControlView::GeneralControlView()
-	: BView("general control view", 0)
-	, fCursorMode(TOOL_CURSOR_MODE)
-	, fShutdownMode(B_CONTROL_ON)
-{
-	SetLayout(new BGroupLayout(B_VERTICAL));
-
-	BBox* box = new BBox(B_NO_BORDER, BGroupLayoutBuilder(B_VERTICAL, 5.0)
-		.Add(fToolCursor =
-			new BRadioButton(B_TRANSLATE("Tool cursor"),
-			new BMessage(kCrossHairCursorMode)))
-		.Add(fCrossHairCursor =
-			new BRadioButton(B_TRANSLATE("Cross-hair cursor"),
-			new BMessage(kToolCursorMode)))
-		.SetInsets(20.0, 5.0, 10.0, 0.0)
-		.TopView()
-	);
-	fToolCursor->SetValue(B_CONTROL_ON);
-	box->SetLabel(B_TRANSLATE("Cursor"));
-
-	BBox* box2 = new BBox(B_NO_BORDER, BGroupLayoutBuilder(B_VERTICAL)
-		.Add(fConfirmShutdown =
-				new BCheckBox(B_TRANSLATE("Confirm quitting"),
-				new BMessage(kConfirmShutdownChanged)))
-		.SetInsets(20.0, 5.0, 10.0, 0.0)
-		.TopView()
-	);
-	box2->SetLabel("Application");
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL)
-		.Add(box)
-		.AddStrut(15.0)
-		.Add(box2)
-		.AddGlue()
-		.SetInsets(10.0, 10.0, 10.0, 10.0)
-		.TopView()
-	);
-
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		BMessage settings;
-		server->GetApplicationSettings(&settings);
-		settings.FindInt32(skCursorMode, &fCursorMode);
-		settings.FindInt32(skQuitConfirmMode, &fShutdownMode);
-	}
-
-	if (fCursorMode == CROSS_HAIR_CURSOR_MODE)
-		fCrossHairCursor->SetValue(B_CONTROL_ON);
-
-	fConfirmShutdown->SetValue(fShutdownMode);
-}
-
-
-void
-GlobalSetupWindow::GeneralControlView::AttachedToWindow()
-{
-	if (Parent())
-		SetViewColor(Parent()->ViewColor());
-
-	fToolCursor->SetTarget(this);
-	fCrossHairCursor->SetTarget(this);
-	fConfirmShutdown->SetTarget(this);
-}
-
-
-void
-GlobalSetupWindow::GeneralControlView::MessageReceived(BMessage* message)
-{
-	switch (message->what) {
-		case kToolCursorMode: {
-			fCursorMode = TOOL_CURSOR_MODE;
-		}	break;
-
-		case kCrossHairCursorMode: {
-			fCursorMode = CROSS_HAIR_CURSOR_MODE;
-		}	break;
-
-		case kConfirmShutdownChanged: {
-			fShutdownMode = fConfirmShutdown->Value();
-		}	break;
-
-		default: {
-			BView::MessageReceived(message);
-		}	break;
-	}
-}
-
-
-void
-GlobalSetupWindow::GeneralControlView::ApplyChanges()
-{
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skQuitConfirmMode,
-			fShutdownMode);
-		server->SetValue(SettingsServer::Application, skCursorMode, fCursorMode);
-	}
-}
-
-
-// #pragma mark -- BackgroundControlView
-
-
-class GlobalSetupWindow::BackgroundControlView : public BView {
-public:
-						BackgroundControlView();
-	virtual				~BackgroundControlView() {}
+						TransparencyControlView();
+	virtual				~TransparencyControlView() {}
 
 	virtual	void		AllAttached();
 	virtual	void		MessageReceived(BMessage* message);
@@ -533,20 +411,20 @@ private:
 };
 
 
-GlobalSetupWindow::BackgroundControlView::BackgroundControlView()
+GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
 	: BView("background control view", 0)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-
 	BMessage* message = new BMessage(kBgGridSizeChanged);
 	fGridSizeControl = new NumberSliderControl(B_TRANSLATE("Grid size:"),
 								"0", message, 4, 50, false, true);
+	fGridSizeControl->Slider()->SetExplicitMinSize(BSize(
+		StringWidth("SLIDERSLIDERSLIDERSLIDER"), B_SIZE_UNSET));
 
-	BRect frame(0, 0, 250, 100);
+	float size = be_plain_font->Size() / 12.0f;
+	BRect frame(0, 0, size * 250, size * 100);
 
 	fBgContainer = new PreviewPane(frame);
-
-	BRect frameSwatch = (0, 0, 30, 30);
+	BRect frameSwatch = (0, 0, size * 24, size * 24);
 
 	fColorSwatch1 = new ColorSwatch(frameSwatch, "color1");
 	fColorSwatch1->SetToolTip(B_TRANSLATE("Drop a color from the Colors window"));
@@ -559,28 +437,23 @@ GlobalSetupWindow::BackgroundControlView::BackgroundControlView()
 	fDefaultsButton = new BButton(B_TRANSLATE("Defaults"),
 		new BMessage(kBgRevertToDefaults));
 
-	BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
-		.Add(fGridSizeControl, 0, 0, 0, 0)
-		.Add(fGridSizeControl->LabelLayoutItem(), 0, 0)
-		.Add(fGridSizeControl->TextViewLayoutItem(), 1, 0)
-		.Add(fGridSizeControl->Slider(), 2, 0);
-	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDERSLIDER"));
-
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fBgContainer)
-		.AddGroup(B_HORIZONTAL, 5.0)
-			.Add(labelColors)
-			.Add(fColorSwatch1)
-			.Add(fColorSwatch2)
+		.AddGrid(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.Add(fGridSizeControl, 0, 0, 0, 0)
+			.Add(fGridSizeControl->LabelLayoutItem(), 0, 0)
+			.Add(fGridSizeControl->TextViewLayoutItem(), 1, 0, 2)
+			.Add(fGridSizeControl->Slider(), 3, 0)
+			.Add(labelColors, 0, 1)
+			.Add(fColorSwatch1, 1, 1)
+			.Add(fColorSwatch2, 2, 1)
 		.End()
-		.Add(gridLayout->View())
-		.AddGlue()
-		.AddGroup(B_HORIZONTAL, 5.0)
-			.Add(fDefaultsButton)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
 			.AddGlue()
+			.Add(fDefaultsButton)
 		.End()
-		.SetInsets(20.0, 25.0, 10.0, 10.0)
-	);
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 
 	_SetDefaults();
 
@@ -598,7 +471,7 @@ GlobalSetupWindow::BackgroundControlView::BackgroundControlView()
 
 
 void
-GlobalSetupWindow::BackgroundControlView::AllAttached()
+GlobalSetupWindow::TransparencyControlView::AllAttached()
 {
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
@@ -618,7 +491,7 @@ GlobalSetupWindow::BackgroundControlView::AllAttached()
 
 
 void
-GlobalSetupWindow::BackgroundControlView::MessageReceived(BMessage* message)
+GlobalSetupWindow::TransparencyControlView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case kBgGridSizeChanged: {
@@ -652,7 +525,7 @@ GlobalSetupWindow::BackgroundControlView::MessageReceived(BMessage* message)
 
 
 void
-GlobalSetupWindow::BackgroundControlView::ApplyChanges()
+GlobalSetupWindow::TransparencyControlView::ApplyChanges()
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		server->SetValue(SettingsServer::Application, skBgGridSize,
@@ -668,7 +541,7 @@ GlobalSetupWindow::BackgroundControlView::ApplyChanges()
 
 
 void
-GlobalSetupWindow::BackgroundControlView::_Update()
+GlobalSetupWindow::TransparencyControlView::_Update()
 {
 	fColorSwatch1->SetColor(fColor1);
 	fColorSwatch2->SetColor(fColor2);
@@ -678,7 +551,7 @@ GlobalSetupWindow::BackgroundControlView::_Update()
 
 
 void
-GlobalSetupWindow::BackgroundControlView::_SetDefaults()
+GlobalSetupWindow::TransparencyControlView::_SetDefaults()
 {
 	rgb_color color1, color2;
 	color1.red = color1.green = color1.blue = 0xBB;
@@ -810,6 +683,125 @@ ColorSwatch::MouseDown(BPoint point)
 }
 
 
+// #pragma mark -- MiscControlView
+
+
+class GlobalSetupWindow::MiscControlView : public BView {
+public:
+						MiscControlView();
+	virtual				~MiscControlView() {}
+
+	virtual	void		AttachedToWindow();
+	virtual	void		MessageReceived(BMessage* message);
+
+			void		ApplyChanges();
+
+private:
+		int32			fCursorMode;
+		int32			fShutdownMode;
+
+		BRadioButton*	fToolCursor;
+		BRadioButton*	fCrossHairCursor;
+		BCheckBox*		fConfirmShutdown;
+};
+
+
+GlobalSetupWindow::MiscControlView::MiscControlView()
+	: BView("general control view", 0)
+	, fCursorMode(TOOL_CURSOR_MODE)
+	, fShutdownMode(B_CONTROL_ON)
+{
+	BStringView* labelCursor = new BStringView("labelCursor", B_TRANSLATE("Cursor"));
+	labelCursor->SetFont(be_bold_font);
+
+	BStringView* labelApp = new BStringView("labelApp", B_TRANSLATE("Application"));
+	labelApp->SetFont(be_bold_font);
+
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(labelCursor)
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
+			.Add(fToolCursor =
+				new BRadioButton(B_TRANSLATE("Tool cursor"),
+				new BMessage(kCrossHairCursorMode)))
+			.Add(fCrossHairCursor =
+				new BRadioButton(B_TRANSLATE("Cross-hair cursor"),
+				new BMessage(kToolCursorMode)))
+			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
+		.End()
+		.Add(BSpaceLayoutItem::CreateVerticalStrut(B_USE_DEFAULT_SPACING))
+		.Add(labelApp)
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
+			.Add(fConfirmShutdown =
+				new BCheckBox(B_TRANSLATE("Confirm quitting"),
+				new BMessage(kConfirmShutdownChanged)))
+			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
+		.End()
+		.AddGlue()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+
+	fToolCursor->SetValue(B_CONTROL_ON);
+
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+		settings.FindInt32(skCursorMode, &fCursorMode);
+		settings.FindInt32(skQuitConfirmMode, &fShutdownMode);
+	}
+
+	if (fCursorMode == CROSS_HAIR_CURSOR_MODE)
+		fCrossHairCursor->SetValue(B_CONTROL_ON);
+
+	fConfirmShutdown->SetValue(fShutdownMode);
+}
+
+
+void
+GlobalSetupWindow::MiscControlView::AttachedToWindow()
+{
+	if (Parent())
+		SetViewColor(Parent()->ViewColor());
+
+	fToolCursor->SetTarget(this);
+	fCrossHairCursor->SetTarget(this);
+	fConfirmShutdown->SetTarget(this);
+}
+
+
+void
+GlobalSetupWindow::MiscControlView::MessageReceived(BMessage* message)
+{
+	switch (message->what) {
+		case kToolCursorMode: {
+			fCursorMode = TOOL_CURSOR_MODE;
+		}	break;
+
+		case kCrossHairCursorMode: {
+			fCursorMode = CROSS_HAIR_CURSOR_MODE;
+		}	break;
+
+		case kConfirmShutdownChanged: {
+			fShutdownMode = fConfirmShutdown->Value();
+		}	break;
+
+		default: {
+			BView::MessageReceived(message);
+		}	break;
+	}
+}
+
+
+void
+GlobalSetupWindow::MiscControlView::ApplyChanges()
+{
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		server->SetValue(SettingsServer::Application, skQuitConfirmMode,
+			fShutdownMode);
+		server->SetValue(SettingsServer::Application, skCursorMode, fCursorMode);
+	}
+}
+
+
 // #pragma mark -- GlobalSetupWindow
 
 
@@ -819,9 +811,6 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
 		B_NOT_RESIZABLE | B_AUTO_UPDATE_SIZE_LIMITS | B_CLOSE_ON_ESCAPE)
 {
-	BGroupLayout* layout = new BGroupLayout(B_VERTICAL, 10.0);
-	SetLayout(layout);
-
 	fTabView = new BTabView("tab view", B_WIDTH_FROM_LABEL);
 
 	BTab* tab = new BTab();
@@ -835,27 +824,26 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	tab->SetLabel(B_TRANSLATE("Undo"));
 
 	tab = new BTab();
-	fBackgroundControlView = new BackgroundControlView;
-	fTabView->AddTab(fBackgroundControlView, tab);
+	fTransparencyControlView = new TransparencyControlView;
+	fTabView->AddTab(fTransparencyControlView, tab);
 	tab->SetLabel(B_TRANSLATE("Transparency"));
 
 	tab = new BTab();
-	fGeneralControlView = new GeneralControlView;
-	fTabView->AddTab(fGeneralControlView, tab);
+	fMiscControlView = new MiscControlView;
+	fTabView->AddTab(fMiscControlView, tab);
 	tab->SetLabel(B_TRANSLATE("Miscellaneous"));
 
-	layout->AddView(fTabView);
-	layout->AddView(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
-		.AddGlue()
-		.Add(new BButton(B_TRANSLATE("Cancel"),
-			new BMessage(kCloseAndDiscardSettings)))
-		.Add(new BButton(B_TRANSLATE("OK"),
-			new BMessage(kCloseAndApplySettings)))
-		.AddGlue()
-		.TopView()
-	);
-	layout->SetInsets(10.0, 10.0, 10.0, 10.0);
-	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.Add(fTabView)
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.Add(new BButton(B_TRANSLATE("Cancel"),
+				new BMessage(kCloseAndDiscardSettings)))
+			.Add(new BButton(B_TRANSLATE("OK"),
+				new BMessage(kCloseAndApplySettings)))
+			.AddGlue()
+		.End()
+		.SetInsets(-2, B_USE_WINDOW_INSETS, -2, B_USE_WINDOW_INSETS);
 
 	int32 activeTab = 0;
 	if (SettingsServer* server = SettingsServer::Instance()) {
@@ -890,11 +878,11 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 			if (fUndoControlView)
 				fUndoControlView->ApplyChanges();
 
-			if (fGeneralControlView)
-				fGeneralControlView->ApplyChanges();
+			if (fMiscControlView)
+				fMiscControlView->ApplyChanges();
 
-			if (fBackgroundControlView)
-				fBackgroundControlView->ApplyChanges();
+			if (fTransparencyControlView)
+				fTransparencyControlView->ApplyChanges();
 
 		// fall through
 		case kCloseAndDiscardSettings:
