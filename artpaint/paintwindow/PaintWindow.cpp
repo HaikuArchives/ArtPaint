@@ -1211,13 +1211,6 @@ PaintWindow::openMenuBar()
 
 	menu->AddSeparatorItem();
 
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",TEXT_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Insert text" B_UTF8_ELLIPSIS),
-		a_message, 'I', 0, this,
-		B_TRANSLATE("Inserts text into the active layer. Same as the text tool.")));
-	menu->AddSeparatorItem();
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Add layer"),
 		new BMessage(HS_ADD_LAYER_FRONT), '.', 0, this,
 		B_TRANSLATE("Adds a layer to the top of this image.")));
