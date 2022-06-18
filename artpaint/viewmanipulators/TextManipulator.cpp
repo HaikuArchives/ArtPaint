@@ -600,45 +600,45 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 			}
 		}
 	}
-	fFontMenuField = new BMenuField(B_TRANSLATE("Font"),
+	fFontMenuField = new BMenuField(B_TRANSLATE("Font:"),
 		fFontMenu);
 
 	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
 	fSizeControl =
 		new NumberSliderControl(B_TRANSLATE("Size:"), "0",
 		message, 5, 500, false);
-	AddChild(fSizeControl);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
 	fRotationControl =
 		new NumberSliderControl(B_TRANSLATE("Rotation:"),
 		"0", message, -180, 180, false);
-	AddChild(fRotationControl);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
 	fShearControl =
 		new NumberSliderControl(B_TRANSLATE("Shear:"),
 		"45", message, 45, 135, false);
-	AddChild(fShearControl);
 
 	fAntiAliasing =
 		new BCheckBox(B_TRANSLATE("Enable antialiasing"),
 		new BMessage(FONT_ANTI_ALIAS_CHANGED));
 
-	BGridLayout* layout = BGridLayoutBuilder(5.0, 5.0)
+	BGridLayout* layout = BGridLayoutBuilder(B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
+		.Add(fSizeControl, 0, 0, 0, 0)
 		.Add(fSizeControl->LabelLayoutItem(), 0, 0)
 		.Add(fSizeControl->TextViewLayoutItem(), 1, 0)
 		.Add(fSizeControl->Slider(), 2, 0)
+		.Add(fRotationControl, 0, 0, 0, 0)
 		.Add(fRotationControl->LabelLayoutItem(), 0, 1)
 		.Add(fRotationControl->TextViewLayoutItem(), 1, 1)
 		.Add(fRotationControl->Slider(), 2, 1)
+		.Add(fShearControl, 0, 0, 0, 0)
 		.Add(fShearControl->LabelLayoutItem(), 0, 2)
 		.Add(fShearControl->TextViewLayoutItem(), 1, 2)
 		.Add(fShearControl->Slider(), 2, 2);
 	layout->SetMaxColumnWidth(1, fTextView->StringWidth("1000"));
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
-	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
+	AddChild(BGroupLayoutBuilder(B_VERTICAL, B_USE_SMALL_SPACING)
 		.Add(new BBox(B_FANCY_BORDER, fTextView))
 		.Add(fFontMenuField)
 		.Add(layout->View())
