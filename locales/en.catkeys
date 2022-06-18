@@ -1,5 +1,4 @@
-1	English	application/x-vnd.artpaint	640123077
-Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
+1	English	application/x-vnd.artpaint	183125306
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -78,7 +77,6 @@ Save image	PaintWindow		Save image
 Brush tool	Tools		Brush tool
 Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Redo
-Font	Manipulators		Font
 Set grid	PaintWindow		Set grid
 Delete selected brush	Windows		Delete selected brush
 Saves the image to disk.	PaintWindow		Saves the image to disk.
@@ -129,6 +127,7 @@ Ellipse	Tools		Ellipse
 Adjustable width	Tools		Adjustable width
 Transparency:	Manipulators		Transparency:
 Shear:	Manipulators		Shear:
+Font:	Manipulators		Font:
 Redo not available	PaintWindow		Redo not available
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
@@ -141,7 +140,6 @@ Speed:	Tools		Speed:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
 Translate…	PaintWindow		Translate…
-Insert text…	PaintWindow		Insert text…
 Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
 Text tool	Tools		Text tool
 Open project…	PaintWindow		Open project…
@@ -159,8 +157,8 @@ Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
 Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
-Airbrush	Tools		Airbrush
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
+Airbrush	Tools		Airbrush
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Reset brush	Tools		Reset brush
@@ -186,6 +184,7 @@ Enable preview	Tools		Enable preview
 Moves the active layer.	PaintWindow		Moves the active layer.
 Undos the previous action.	PaintWindow		Undos the previous action.
 Rotate -90°	Manipulators		Rotate -90°
+Application	Windows		Application
 Standard sizes	PaintWindow		Standard sizes
 Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Options
@@ -315,8 +314,8 @@ Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
-Mode	Tools		Mode
 Flip horizontally	PaintWindow		Flip horizontally
+Mode	Tools		Mode
 Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
 Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
