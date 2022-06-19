@@ -227,6 +227,10 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius, int
 		wait_for_thread(blur_thread_array[i],&return_value);
 	}
 
+	delete[] kernel_array;
+	delete[] fixed_kernel_array;
+	delete intermediate;
+
 	return B_OK;
 }
 

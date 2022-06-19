@@ -1128,25 +1128,27 @@ void ColorContainer::MessageReceived(BMessage *message)
 		Draw(Bounds());
 		break;
 
-	case HS_NEXT_PALETTE:
+	case HS_NEXT_PALETTE: {
 		ColorSet::moveToNextSet();
-		ColorContainer::sendMessageToAllContainers(new BMessage(HS_PALETTE_CHANGED));
-		break;
-	case HS_PREVIOUS_PALETTE:
+		BMessage paletteChanged(HS_PALETTE_CHANGED);
+		ColorContainer::sendMessageToAllContainers(&paletteChanged);
+	}	break;
+	case HS_PREVIOUS_PALETTE: {
 		ColorSet::moveToPrevSet();
-		ColorContainer::sendMessageToAllContainers(new BMessage(HS_PALETTE_CHANGED));
-		break;
+		BMessage paletteChanged(HS_PALETTE_CHANGED);
+		ColorContainer::sendMessageToAllContainers(&paletteChanged);
+	}	break;
 
 	// this message comes from ColorContainer::sendMessageToAllContainers and that function
 	// is called in ColorWindow's MessageReceived, it informs us that one of the colors in the
 	// set has been changed, this constant is used for the same purpose in a slight different context
 	// the changed color is at "index" int32 data member in the message
-	case HS_COLOR_CHANGED:
+	case HS_COLOR_CHANGED: {
 		// the colorset has been updated, we will draw using colorChanged-function
 		colorChanged(message->FindInt32("index"));
-		break;
+	}	break;
 
-	case B_PASTE:
+	case B_PASTE: {
 		if (message->WasDropped()) {
 			// Here we see on to which button it was dropped and then
 			// try to extract a color from the message
@@ -1168,17 +1170,17 @@ void ColorContainer::MessageReceived(BMessage *message)
 				}
 			}
 		}
-		break;
+	}	break;
 	// this message comes from ColorContainer::sendMessageToAllContainers and that function
 	// is called in ColorContainer::MouseDown, it informs us that the selected color in the
 	// set has changed
-	case HS_PALETTE_SELECTION_CHANGED:
+	case HS_PALETTE_SELECTION_CHANGED: {
 		// the selected color of palette has changed
 		// if we highlight it then draw completely
 		// because we don't know what was the previous color
 		if (highlight_selected)
 			Draw(Bounds());
-		break;
+	}	break;
 	default:
 		BView::MessageReceived(message);
 		break;
@@ -1205,6 +1207,9 @@ void ColorContainer::setUpContainer(BRect frame, int32 number_of_colors,bool add
 	while ((row_count<=color_count/row_count) && (row_count*vert_c_size<=frame.Height()))
 		row_count *= 2;
 	row_count /= 2;
+
+	if (row_count < 1)
+		row_count = 1;
 
 	// then increase the row height to maximum
 	while ((row_count*(vert_c_size + vert_gutter) - vert_gutter)<=frame.Height())

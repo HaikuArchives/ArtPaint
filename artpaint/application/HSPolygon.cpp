@@ -276,9 +276,7 @@ polygon_direction HSPolygon::GetDirection()
 
 bool HSPolygon::operator==(const HSPolygon &poly)
 {
-	bool similar = TRUE;
-	similar = (direction == poly.direction);
-	similar = (point_count == poly.point_count);
+	bool similar = (point_count == poly.point_count);
 
 	for (int32 i=0;(i<point_count) && similar;i++) {
 		similar = (points[i] == poly.points[i]);

@@ -228,7 +228,7 @@ int32 Layer::calc_mini_image()
 	uint32* big_image;
 
 	BRect bounds = fLayerPreview->Bounds();
-	BitmapUtilities::CheckerBitmap(fLayerPreview, color1, color2, 4,
+	BitmapUtilities::CheckerBitmap(fLayerPreview, color1, color2, gridSize,
 		&bounds);
 
 	union color_conversion color;

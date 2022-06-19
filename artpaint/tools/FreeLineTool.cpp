@@ -71,9 +71,14 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		((PaintApplication*)be_app)->Color(true));
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
-	BBitmap* srcBuffer = new BBitmap(buffer);
-	BBitmap* tmpBuffer = new BBitmap(buffer);
-
+	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
+	if (srcBuffer == NULL)
+		return NULL;
+	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
+	if (tmpBuffer == NULL) {
+		delete srcBuffer;
+		return NULL;
+	}
 	union color_conversion clear_color;
 	clear_color.word = 0xFFFFFFFF;
 	clear_color.bytes[3] = 0x01;
@@ -90,6 +95,9 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	if (buffer == NULL) {
 		delete the_script;
+		delete srcBuffer;
+		delete tmpBuffer;
+
 		return NULL;
 	}
 	BPoint prev_point;
@@ -180,6 +188,8 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			snooze(20 * 1000);
 	}
 
+	delete srcBuffer;
+	delete tmpBuffer;
 
 	delete drawer;
 	delete coordinate_queue;

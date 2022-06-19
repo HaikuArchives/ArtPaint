@@ -1234,7 +1234,8 @@ int32 ImageView::PaintToolThread()
 	if (LockLooper() == TRUE) {
 		getCoords(&point,&buttons,&view_point);
 		UnlockLooper();
-	}
+	} else
+		return B_ERROR;
 
 	SetReferencePoint(point,TRUE);
 
@@ -1348,7 +1349,9 @@ int32 ImageView::ManipulatorMouseTrackerThread()
 	if (LockLooper() == TRUE) {
 		getCoords(&point,&buttons);
 		UnlockLooper();
-	}
+	} else
+		return B_ERROR;
+
 	int32 preview_quality;
 	bool first_call_to_mouse_down = TRUE;
 	BRegion *updated_region = new BRegion();
@@ -1441,7 +1444,7 @@ int32 ImageView::GUIManipulatorUpdaterThread()
 	BRegion *updated_region = new BRegion();
 
 	float number_of_frames = 0;
-	float time = system_time();
+
 	while (continue_manipulator_updating) {
 		if (LockLooper() == TRUE) {
 			preview_quality = gui_manipulator->PreviewBitmap(selection,FALSE,updated_region);
@@ -1477,13 +1480,6 @@ int32 ImageView::GUIManipulatorUpdaterThread()
 			snooze(20 * 1000);
 		}
 	}
-
-	time = system_time() - time;
-	time = time / 1000000.0;
-
-//	if (time > 0)
-//		printf("Frames per second: %f\n",number_of_frames/time);
-
 
 	updated_region->Set(BRect(0,0,-1,-1));
 
@@ -1523,6 +1519,7 @@ int32 ImageView::GUIManipulatorUpdaterThread()
 	delete updated_region;
 	return B_OK;
 }
+
 
 int32 ImageView::ManipulatorFinisherThread()
 {
@@ -1905,9 +1902,9 @@ status_t
 ImageView::DoPaste()
 {
 	be_clipboard->Lock();
-	BMessage *bitmap_message = new BMessage();
 	BMessage *clipboard_message = be_clipboard->Data();
 	if (clipboard_message != NULL) {
+		BMessage *bitmap_message = new BMessage();
 		if (clipboard_message->FindMessage("image/bitmap",bitmap_message) == B_OK) {
 			if (bitmap_message != NULL) {
 				BBitmap *pasted_bitmap = new BBitmap(bitmap_message);
@@ -1931,7 +1928,8 @@ ImageView::DoPaste()
 					}
 				}
 			}
-		}
+		} else
+			delete bitmap_message;
 	}
 	be_clipboard->Unlock();
 	return B_OK;
