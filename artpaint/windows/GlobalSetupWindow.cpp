@@ -587,10 +587,10 @@ PreviewPane::Draw(BRect updateRect)
 {
 	BView::Draw(updateRect);
 
+	DrawBitmap(fPreviewBitmap, BPoint(1.0, 1.0));
+
 	SetHighColor(0, 0, 0, 255);
 	StrokeRect(Bounds());
-
-	DrawBitmap(fPreviewBitmap, BPoint(1.0, 1.0));
 }
 
 
