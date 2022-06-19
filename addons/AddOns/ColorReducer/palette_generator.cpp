@@ -48,7 +48,7 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 	color_chain **selected_colors = new (std::nothrow) color_chain*[paletteSize];
 	if (selected_colors == NULL) {
 		delete color_metric;
-		delete previous_palette;
+		delete[] previous_palette;
 
 		return palette;
 	}
@@ -56,8 +56,8 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 	color_chain **input_colors = new (std::nothrow) color_chain*[32768];
 	if (input_colors == NULL) {
 		delete color_metric;
-		delete selected_colors;
-		delete previous_palette;
+		delete[] selected_colors;
+		delete[] previous_palette;
 
 		return palette;
 	}
@@ -228,13 +228,13 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 
 	printf("Number of iterations %d\n",number_of_iterations);
 
-	delete previous_palette;
+	delete[] previous_palette;
 	delete color_metric;
 
 	// Here destroy the input color array/lists
 
-	delete input_colors;
-	delete selected_colors;
+	delete[] input_colors;
+	delete[] selected_colors;
 
 	return palette;
 }

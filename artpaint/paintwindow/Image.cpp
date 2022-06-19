@@ -1233,7 +1233,7 @@ int32 Image::DoRender(BRect area, bool bg)
 	uint32 *d_bits;
 
 	int32 layer_count = layer_list->CountItems();
-	Layer *layer = (Layer*)layer_list->ItemAt(0);
+	Layer *layer;
 	int32 layer_number = 0;
 
 	// First clear the image for the required part.

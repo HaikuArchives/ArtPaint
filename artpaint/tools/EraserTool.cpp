@@ -101,6 +101,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 	if (buffer == NULL) {
 		delete the_script;
+		delete drawer;
 		return NULL;
 	}
 	BPoint prev_point;

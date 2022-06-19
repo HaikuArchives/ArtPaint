@@ -81,7 +81,9 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	selection = view->GetSelection();
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
-	BBitmap* srcBuffer = new BBitmap(buffer);
+	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
+	if (srcBuffer == NULL)
+		return NULL;
 
 	bits = (uint32*)buffer->Bits();
 	bpr = buffer->BytesPerRow()/4;
@@ -92,7 +94,12 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	top_bound = (int32)bitmap_bounds.top;
 	bottom_bound = (int32)bitmap_bounds.bottom;
 
-	BBitmap* tmpBuffer = new BBitmap(bitmap_bounds, buffer->ColorSpace());
+	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(bitmap_bounds,
+		buffer->ColorSpace());
+	if (tmpBuffer == NULL) {
+		delete srcBuffer;
+		return NULL;
+	}
 
 	float brush_width_per_2 = floor(brush->Width()/2);
 	float brush_height_per_2 = floor(brush->Height()/2);
@@ -160,6 +167,9 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 //		view->Invalidate();
 //		view->UnlockLooper();
 //	}
+
+	delete srcBuffer;
+	delete tmpBuffer;
 
 	return the_script;
 }

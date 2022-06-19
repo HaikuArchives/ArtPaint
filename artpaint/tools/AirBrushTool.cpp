@@ -76,8 +76,14 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	BPoint prev_point;
 	BWindow *window = view->Window();
 	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
-	BBitmap *srcBuffer = new BBitmap(bitmap);
-	BBitmap *tmpBuffer = new BBitmap(bitmap);
+	BBitmap *srcBuffer = new (std::nothrow) BBitmap(bitmap);
+	if (srcBuffer == NULL)
+		return NULL;
+	BBitmap *tmpBuffer = new (std::nothrow) BBitmap(bitmap);
+	if (tmpBuffer == NULL) {
+		delete srcBuffer;
+		return NULL;
+	}
 
 	rgb_color c = ((PaintApplication*)be_app)->Color(true);
 	uint32 target_color = RGBColorToBGRA(c);
@@ -248,6 +254,8 @@ AirBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	}
 
 	delete drawer;
+	delete srcBuffer;
+	delete tmpBuffer;
 
 	return the_script;
 }
