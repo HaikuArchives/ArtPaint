@@ -191,6 +191,8 @@ Brush::GetData(span **sp,int32 dx,int32 dy)
 			return diff_11;
 		}
 	}
+
+	*sp = NULL;
 	return NULL;
 }
 

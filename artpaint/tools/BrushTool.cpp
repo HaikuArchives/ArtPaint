@@ -293,6 +293,9 @@ BrushTool::draw_brush(BBitmap* buffer, BPoint point,
 	int32 py = (int32)point.y;
 	uint32** brush_matrix = brush->GetData(&spans, dx, dy);
 
+	if (brush_matrix == NULL)
+		return;
+
 	bits = (uint32*)buffer->Bits();
 	uint32* target_bits = bits;
 	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
