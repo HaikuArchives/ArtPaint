@@ -109,14 +109,15 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		point_list[3] = new_rect.LeftBottom();
 
 		window->Lock();
-		if ((GetCurrentValue(SIZE_OPTION) > 2) && (fToolSettings.mode == B_CONTROL_OFF)) {
+		if ((GetCurrentValue(SIZE_OPTION) > 2) &&
+			(fToolSettings.mode == B_CONTROL_OFF)) {
 			view_polygon = new HSPolygon(point_list,4);
 			BPolygon *bpoly = view_polygon->GetBPolygon();
 			view->StrokePolygon(bpoly);
 			delete bpoly;
 		}
 		else
-			view->StrokeLine(original_view_point,view_point);
+			view->StrokeLine(original_view_point, view_point);
 		window->Unlock();
 
 		float angle = 0;
@@ -167,7 +168,6 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 						y_diff = x_diff;
 				}
 
-
 				signed_x_diff = (view_point.x-original_view_point.x);
 				signed_y_diff = (view_point.y-original_view_point.y);
 				if (signed_x_diff != 0) {
@@ -189,9 +189,12 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			if (old_rect != new_rect) {
-				if ((GetCurrentValue(SIZE_OPTION) > 2) && (fToolSettings.mode == B_CONTROL_OFF)) {
-					BRect bbox = view_polygon->BoundingBox();
-					view->Draw(bbox);
+				if ((GetCurrentValue(SIZE_OPTION) > 2) &&
+					(fToolSettings.mode == B_CONTROL_OFF)) {
+					if (view_polygon != NULL) {
+						BRect bbox = view_polygon->BoundingBox();
+						view->Draw(bbox);
+					}
 					point_list[0] = new_rect.LeftTop();
 					point_list[1] = new_rect.RightTop();
 					point_list[2] = new_rect.RightBottom();

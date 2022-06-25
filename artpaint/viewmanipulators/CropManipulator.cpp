@@ -400,6 +400,8 @@ CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
 	fLeftCrop->SetValue(settings->left);
 	fRightCrop->SetValue(settings->right);
 	fBottomCrop->SetValue(settings->bottom);
+
+	delete settings;
 }
 
 

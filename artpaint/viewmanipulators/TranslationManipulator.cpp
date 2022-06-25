@@ -491,6 +491,8 @@ TranslationManipulatorView::TranslationManipulatorView(
 		= (TranslationManipulatorSettings*)manipulator->ReturnSettings();
 	fXControl->SetValue(settings->x_translation);
 	fYControl->SetValue(settings->y_translation);
+
+	delete settings;
 }
 
 
