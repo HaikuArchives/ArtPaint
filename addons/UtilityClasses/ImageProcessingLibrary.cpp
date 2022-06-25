@@ -52,7 +52,6 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius)
 	uint32 *source_array = new uint32[width + kernel_radius*2];
 	uint32 *target_array = new uint32[width];
 
-
 	for (int32 y=0;y<height;y++) {
 		uint32 *source_array_position = source_array;
 		for (int32 dx = 0;dx<kernel_radius;dx++) {
@@ -75,14 +74,11 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius)
 
 	}
 
-
 	b_bits = (uint32*)bitmap->Bits();
 	i_bits = (uint32*)intermediate->Bits();
 
-
 	delete[] source_array;
 	delete[] target_array;
-
 
 	// Blur from intermediate to bitmap and rotate
 	width = intermediate_bounds.IntegerWidth() + 1;
@@ -140,7 +136,6 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius, int
 		kernel[i] /= sum;
 		fixed_kernel[i] = kernel[i] * 32768;
 	}
-
 
 	// Use thread-count threads.
 	// First blur horizontally and rotate by 90 clockwise.
@@ -233,6 +228,7 @@ status_t ImageProcessingLibrary::gaussian_blur(BBitmap *bitmap,float radius, int
 
 	return B_OK;
 }
+
 
 int32 ImageProcessingLibrary::start_filter_1d_thread_clockwise(void *d)
 {
@@ -393,12 +389,6 @@ void ImageProcessingLibrary::convolve_1d_fixed(uint32 *s, uint32 *t,int32 length
 }
 
 
-
-
-
-
-
-
 /*
 
 Grayscale AHE
@@ -453,7 +443,6 @@ status_t ImageProcessingLibrary::grayscale_ahe(BBitmap *bitmap, int32 regionSize
 		}
 	}
 
-
 	// loop through the picture
 	uint32 *bits = (uint32*)bitmap->Bits();
 	union {
@@ -500,8 +489,7 @@ status_t ImageProcessingLibrary::grayscale_ahe(BBitmap *bitmap, int32 regionSize
 		}
 
 		int32 current_bin = 1;
-		int32 x_dist = region_half;
-		int32 y_dist = region_half;	// distance to the previous center
+		int32 x_dist, y_dist;
 		uint8 hist_index;
 		uint8 map_value;
 
@@ -558,8 +546,6 @@ status_t ImageProcessingLibrary::grayscale_ahe(BBitmap *bitmap, int32 regionSize
 
 	return B_OK;
 }
-
-
 
 
 status_t ImageProcessingLibrary::grayscale_clahe(BBitmap *bitmap, int32 regionSize,int32 clipLimit)
@@ -610,7 +596,6 @@ status_t ImageProcessingLibrary::grayscale_clahe(BBitmap *bitmap, int32 regionSi
 		}
 	}
 
-
 	// loop through the picture
 	uint32 *bits = (uint32*)bitmap->Bits();
 	union {
@@ -657,8 +642,7 @@ status_t ImageProcessingLibrary::grayscale_clahe(BBitmap *bitmap, int32 regionSi
 		}
 
 		int32 current_bin = 1;
-		int32 x_dist = region_half;
-		int32 y_dist = region_half;	// distance to the previous center
+		int32 x_dist, y_dist;
 		uint8 hist_index;
 		uint8 map_value;
 
@@ -715,8 +699,6 @@ status_t ImageProcessingLibrary::grayscale_clahe(BBitmap *bitmap, int32 regionSi
 
 	return B_OK;
 }
-
-
 
 
 void ImageProcessingLibrary::calculate_local_mapping_function(BBitmap *bitmap,int32 cx, int32 cy,int32 regionSize,uint8 *mapFunction)

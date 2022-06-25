@@ -61,21 +61,40 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-	coordinate_queue = new CoordinateQueue();
+	coordinate_queue = new (std::nothrow) CoordinateQueue();
+	if (coordinate_queue == NULL)
+		return NULL;
+
 	image_view = view;
 	thread_id coordinate_reader = spawn_thread(CoordinateReader,
 		"read coordinates", B_NORMAL_PRIORITY, this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
-	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
+	ToolScript *the_script = new (std::nothrow) ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
+	if (the_script == NULL) {
+		delete coordinate_queue;
 
-	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
-	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
-	if (srcBuffer == NULL)
 		return NULL;
+	}
+	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	if (buffer == NULL) {
+		delete coordinate_queue;
+		delete the_script;
+
+		return NULL;
+	}
+	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
+	if (srcBuffer == NULL) {
+		delete coordinate_queue;
+		delete the_script;
+
+		return NULL;
+	}
 	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
 	if (tmpBuffer == NULL) {
+		delete coordinate_queue;
+		delete the_script;
 		delete srcBuffer;
 		return NULL;
 	}
@@ -87,19 +106,21 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	Selection *selection = view->GetSelection();
 //	BView *buffer_view = view->getBufferView();
-	BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
-	rgb_color new_color;
-	uint32 new_color_bgra;
-//	int32 original_mouse_speed;
-//	get_mouse_speed(&original_mouse_speed);
-
-	if (buffer == NULL) {
+	BitmapDrawer *drawer = new (std::nothrow) BitmapDrawer(tmpBuffer);
+	if (drawer == NULL) {
+		delete coordinate_queue;
 		delete the_script;
 		delete srcBuffer;
 		delete tmpBuffer;
 
 		return NULL;
 	}
+
+	rgb_color new_color;
+	uint32 new_color_bgra;
+//	int32 original_mouse_speed;
+//	get_mouse_speed(&original_mouse_speed);
+
 	BPoint prev_point;
 
 	prev_point = point;

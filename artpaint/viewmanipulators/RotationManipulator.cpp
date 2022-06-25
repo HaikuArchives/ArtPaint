@@ -638,6 +638,8 @@ RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 	char text[256];
 	sprintf(text, "%.1f˚", settings->angle);
 	fTextControl->TextView()->SetText(text);
+
+	delete settings;
 }
 
 

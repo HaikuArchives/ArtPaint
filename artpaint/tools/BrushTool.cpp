@@ -72,18 +72,27 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-	CoordinateReader* coordinate_reader = new CoordinateReader(view,
-		LINEAR_INTERPOLATION, false);
+	CoordinateReader* coordinate_reader =
+		new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false);
+	if (coordinate_reader == NULL)
+		return NULL;
 
-	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
-		((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script = new (std::nothrow) ToolScript(Type(),
+		fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	if (the_script == NULL) {
+		delete coordinate_reader;
+		return NULL;
+	}
 
 	selection = view->GetSelection();
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
-	if (srcBuffer == NULL)
+	if (srcBuffer == NULL) {
+		delete coordinate_reader;
+		delete the_script;
 		return NULL;
+	}
 
 	bits = (uint32*)buffer->Bits();
 	bpr = buffer->BytesPerRow()/4;
@@ -97,6 +106,8 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(bitmap_bounds,
 		buffer->ColorSpace());
 	if (tmpBuffer == NULL) {
+		delete coordinate_reader;
+		delete the_script;
 		delete srcBuffer;
 		return NULL;
 	}
