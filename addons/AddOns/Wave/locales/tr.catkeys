@@ -1,0 +1,11 @@
+1	Turkish	application/x-vnd.artpaint-addon	1495551387
+Adds a wave to the active layer.	AddOns_Wave		Etkin katmana bir dalga ekler.
+Click to set the wave center. Use the sliders to adjust wave.	AddOns_Wave		Dalga merkezini ayarlamak için tıklayın. Dalgayı ayarlamak için kaydırıcıyı kullanın.
+Long	AddOns_Wave		Uzun
+Mild	AddOns_Wave		Ilıman
+Short	AddOns_Wave		Kısa
+Strength:	AddOns_Wave		Güç:
+Strong	AddOns_Wave		Güçlü
+Wave	AddOns_Wave		Dalga
+Wave…	AddOns_Wave		Dalga…
+Wavelength:	AddOns_Wave		Dalga boyu:

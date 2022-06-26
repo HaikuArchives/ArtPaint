@@ -1,4 +1,4 @@
-1	English (British)	application/x-vnd.artpaint	3223448953
+1	English (British)	application/x-vnd.artpaint	183125306
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
 Cancel	ImageView		Cancel
 Clear selection	ImageView		Clear selection
@@ -23,8 +23,8 @@ Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of t
 All layers	PaintWindow		All layers
 Brushes…	PaintWindow		Brushes…
 Canvas	PaintWindow		Canvas
-Change the transparency of active layer.	PaintWindow		Change the transparency of active layer.
 Change transparency…	PaintWindow		Change transparency…
+Changes the transparency of active layer.	PaintWindow		Changes the transparency of active layer.
 Clear canvas	PaintWindow		Clear canvas
 Clear layer	PaintWindow		Clear layer
 Clear selection	PaintWindow		Clear selection
@@ -38,8 +38,8 @@ Copies the selection.	PaintWindow		Copies the selection.
 Copy	PaintWindow		Copy
 Create canvas	PaintWindow		Create canvas
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
-Crop the image.	PaintWindow		Crop the image.
 Crop…	PaintWindow		Crop…
+Crops the image.	PaintWindow		Crops the image.
 Cut	PaintWindow		Cut
 Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
 Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
@@ -55,15 +55,12 @@ Flips the active layer vertically.	PaintWindow		Flips the active layer verticall
 Grow selection	PaintWindow		Grow selection
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
 Height:	PaintWindow		Height:
-Insert text…	PaintWindow		Insert text…
-Inserts text into the active layer. Same as the text tool.	PaintWindow		Inserts text into the active layer. Same as the text tool.
 Invert selection	PaintWindow		Invert selection
 Inverts the selection	PaintWindow		Inverts the selection
 Layer	PaintWindow		Layer
 Layers…	PaintWindow		Layers…
-Move all layers.	PaintWindow		Move all layers.
-Move the active layer.	PaintWindow		Move the active layer.
-New project	PaintWindow		New project
+Moves all layers.	PaintWindow		Moves all layers.
+Moves the active layer.	PaintWindow		Moves the active layer.
 New project…	PaintWindow		New project…
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Off	PaintWindow		Off
@@ -94,11 +91,11 @@ Resize to fit	PaintWindow		Resize to fit
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Rotate -90°	PaintWindow		Rotate -90°
 Rotate +90°	PaintWindow		Rotate +90°
-Rotate all layers.	PaintWindow		Rotate all layers.
-Rotate the active layer.	PaintWindow		Rotate the active layer.
 Rotate…	PaintWindow		Rotate…
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
+Rotates all layers.	PaintWindow		Rotates all layers.
+Rotates the active layer.	PaintWindow		Rotates the active layer.
 Save image	PaintWindow		Save image
 Save image as…	PaintWindow		Save image as…
 Save project	PaintWindow		Save project
@@ -107,11 +104,11 @@ Saves the image to disk.	PaintWindow		Saves the image to disk.
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
-Scale the image.	PaintWindow		Scale the image.
 Scale…	PaintWindow		Scale…
-Select the canvas size you want.	PaintWindow		Select the canvas size you want.
+Scales the image.	PaintWindow		Scales the image.
 Set grid	PaintWindow		Set grid
 Set zoom level	PaintWindow		Set zoom level
+Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
@@ -144,8 +141,13 @@ Add area	Tools		Add area
 Adjustable width	Tools		Adjustable width
 Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Airbrush	Tools		Airbrush
+Airbrush tool	Tools		Airbrush tool
 Alpha	Tools		Alpha
-Background	Tools		Background
+Amount of paint:	Tools		Amount of paint:
+Angle:	Tools		Angle:
+Aspect:	Tools		Aspect:
+Background color	Tools		Background colour
+Behavior	Tools		Behaviour
 Blue	Tools		Blue
 Blur tool	Tools		Blur tool
 Blurring the image.	Tools		Blurring the image.
@@ -166,9 +168,7 @@ Click to pick a color.	Tools		Click to pick a colour.
 Click to place the text.	Tools		Click to place the text.
 Click to use eraser.	Tools		Click to use the rubber.
 Click to use the tool.	Tools		Click to use the tool.
-Color	Tools		Colour
-Color amount:	Tools		Colour amount:
-Color selector	Tools		Colour selector
+Color picker tool	Tools		Colour picker tool
 Color variance:	Tools		Colour variance:
 Continuous	Tools		Continuous
 Corner to corner	Tools		Corner to corner
@@ -183,19 +183,20 @@ Enable antialiasing	Tools		Enable antialiasing
 Enable gradient	Tools		Enable gradient
 Enable preview	Tools		Enable preview
 Enable rotation	Tools		Enable rotation
-Eraser	Tools		Rubber
-Erasing the image.	Tools		Erasing the image.
-Fade:	Tools		Fade:
+Eraser tool	Tools		Rubber tool
+Erasing pixels.	Tools		Erasing pixels.
 Fill ellipse	Tools		Fill ellipse
 Fill rectangle	Tools		Fill rectangle
 Fill tool	Tools		Fill tool
 Flood fill	Tools		Flood fill
 Flow:	Tools		Flow:
-Freehand line	Tools		Freehand line
+Freehand	Tools		Freehand
+Freehand line tool	Tools		Freehand line tool
 Green	Tools		Green
 Hairs:	Tools		Hairs:
-Hairy brush	Tools		Hairy brush
-Height:	Tools		Height:
+Hairy brush tool	Tools		Hairy brush tool
+Hardness:	Tools		Hardness:
+Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
 Intelligent scissors	Tools		Intelligent scissors
 Little	Tools		Little
 Magic wand	Tools		Magic wand
@@ -205,7 +206,6 @@ Mode	Tools		Mode
 Much	Tools		Much
 No configuration options available.	Tools		No configuration options available.
 None	Tools		None
-Not implemented yet.	Tools		Not implemented yet.
 Options	Tools		Options
 Painting with a brush.	Tools		Painting with a brush.
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
@@ -214,21 +214,21 @@ Random	Tools		Random
 Rectangle	Tools		Rectangle
 Rectangle tool	Tools		Rectangle tool
 Red	Tools		Red
+Replace pixels with	Tools		Replace pixels with
 Reset brush	Tools		Reset brush
-Selector tool	Tools		Selector tool
-Shape	Tools		Shape
+Selection tool	Tools		Selection tool
 Size:	Tools		Size:
 Speed:	Tools		Speed:
 Spray	Tools		Spray
 Store brush	Tools		Store brush
-Straight line	Tools		Straight line
+Straight line tool	Tools		Straight line tool
 Subtract area	Tools		Subtract area
 Text tool	Tools		Text tool
 Tolerance:	Tools		Tolerance:
 Tool setup	Tools		Tool setup
 Tools	Tools		Tools
+Transparency	Tools		Transparency
 Transparency tool	Tools		Transparency tool
-Transparent	Tools		Transparent
 Using the airbrush.	Tools		Using the airbrush.
 Using the tool.	Tools		Using the tool.
 Wand tolerance	Tools		Wand tolerance
@@ -250,16 +250,20 @@ Merge with front layer	LayerView		Merge with front layer
 Visible	LayerView		Visible
 Add-ons	Windows		Add-ons
 Adjustable	Windows		Adjustable
+Application	Windows		Application
 Brush	Windows		Brush
 Brushes	Windows		Brushes
 Cancel	Windows		Cancel
 Colors	Windows		Colours
+Colors:	Windows		Colours:
 Confirm quitting	Windows		Confirm quitting
 Cross-hair cursor	Windows		Cross-hair cursor
 Cursor	Windows		Cursor
 Datatype setup: %name%	Windows		Datatype setup: %name%
+Defaults	Windows		Defaults
 Delete selected brush	Windows		Delete selected brush
-Global settings	Windows		Global settings
+Drop a color from the Colors window	Windows		Drop a colour from the Colours window
+Grid size:	Windows		Grid size:
 Keep in front	Windows		Keep in front
 Layers	Windows		Layers
 Miscellaneous	Windows		Miscellaneous
@@ -267,9 +271,11 @@ No data translator	Windows		No data translator
 No options	Windows		No options
 Off	Windows		Off
 OK	Windows		Alright
+Settings	Windows		Settings
 Tool cursor	Windows		Tool cursor
 Tool setup	Windows		Tool setup
 Tools	Windows		Tools
+Transparency	Windows		Transparency
 Undo	Windows		Undo
 Undo steps:	Windows		Undo steps:
 Unlimited	Windows		Unlimited
@@ -285,7 +291,7 @@ Drag the text to correct position and set its appearance.	Manipulators		Drag the
 Enable antialiasing	Manipulators		Enable antialiasing
 Flip horizontally	Manipulators		Flip horizontally
 Flip vertically	Manipulators		Flip vertically
-Font	Manipulators		Font
+Font:	Manipulators		Font:
 Height:	Manipulators		Height:
 Left:	Manipulators		Left:
 Lock	Manipulators	Keep the aspect ratio	Lock
@@ -308,7 +314,9 @@ Use the handles or number-fields to set the new borders.	Manipulators		Use the h
 Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use the primary mouse-button to rotate, other buttons to set the rotation center.
 Width:	Manipulators		Width:
 ArtPaint	System name		ArtPaint
-ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.\nSee the tutorial in the manual to get started.
+ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
+ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
+ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 OK	PaintApplication		Alright

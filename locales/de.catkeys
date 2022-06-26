@@ -1,4 +1,4 @@
-1	German	application/x-vnd.artpaint	640123077
+1	German	application/x-vnd.artpaint	183125306
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
 Cancel	ImageView		Abbrechen
 Clear selection	ImageView		Auswahl aufheben
@@ -55,8 +55,6 @@ Flips the active layer vertically.	PaintWindow		Spiegelt die aktive Ebene vertik
 Grow selection	PaintWindow		Auswahl vergrößern
 Grows the selection in all directions.	PaintWindow		Vergrößert die Auswahl in alle Richtungen.
 Height:	PaintWindow		Höhe:
-Insert text…	PaintWindow		Text einfügen…
-Inserts text into the active layer. Same as the text tool.	PaintWindow		Fügt Text in die aktive Ebene ein. Hat dieselbe Funktion wie das Text-Werkzeug.
 Invert selection	PaintWindow		Auswahl invertieren
 Inverts the selection	PaintWindow		Auswahl invertieren
 Layer	PaintWindow		Ebene
@@ -252,6 +250,7 @@ Merge with front layer	LayerView		Mit vorderer Ebene vereinigen
 Visible	LayerView		Sichtbar
 Add-ons	Windows		Filter
 Adjustable	Windows		Einstellbar
+Application	Windows		Anwendung
 Brush	Windows		Stift
 Brushes	Windows		Stifte
 Cancel	Windows		Abbrechen
@@ -260,7 +259,7 @@ Colors:	Windows		Farben:
 Confirm quitting	Windows		Beenden bestätigen
 Cross-hair cursor	Windows		nur Fadenkreuz
 Cursor	Windows		Zeiger
-Datatype setup: %name%	Windows		Dateityp Einrichtung: %name%
+Datatype setup: %name%	Windows		Formateinstellungen: %name%
 Defaults	Windows		Standardwerte
 Delete selected brush	Windows		Ausgewählten Stift entfernen
 Drop a color from the Colors window	Windows		Eine Farbe aus dem Farben-Fenster fallen lassen
@@ -292,7 +291,7 @@ Drag the text to correct position and set its appearance.	Manipulators		Text mit
 Enable antialiasing	Manipulators		Anti-Aliasing
 Flip horizontally	Manipulators		Horizontal spiegeln
 Flip vertically	Manipulators		Vertikal spiegeln
-Font	Manipulators		Schriftart
+Font:	Manipulators		Schriftart:
 Height:	Manipulators		Höhe:
 Left:	Manipulators		Links:
 Lock	Manipulators	Keep the aspect ratio	Fest
