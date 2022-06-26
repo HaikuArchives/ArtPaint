@@ -1,11 +1,11 @@
-1	English (British)	application/x-vnd.artpaint-addon	2852696468
+1	English (British)	application/x-vnd.artpaint-addon	2334857766
 Big	AddOns_Twirl		Big
-Click on the image to set the twirl center. Use sliders to adjust twirl.	AddOns_Twirl		Click on the image to set the twirl centre. Use sliders to adjust twirl.
+Click to set the twirl center. Use sliders to adjust twirl.	AddOns_Twirl		Click to set the twirl centre. Use sliders to adjust twirl.
+Direction and amount:	AddOns_Twirl		Direction and amount:
 Left	AddOns_Twirl		Left
 Right	AddOns_Twirl		Right
+Size:	AddOns_Twirl		Size:
 Small	AddOns_Twirl		Small
 Twirl	AddOns_Twirl		Twirl
-Twirl direction:	AddOns_Twirl		Twirl direction:
-Twirl size:	AddOns_Twirl		Twirl size:
 Twirl…	AddOns_Twirl		Twirl…
 Twirls the active layer.	AddOns_Twirl		Twirls the active layer.
