@@ -11,13 +11,16 @@
 #include "LayerView.h"
 
 #include "ImageView.h"
+#include "LayerWindow.h"
 #include "UtilityClasses.h"
 
 
 #include <Bitmap.h>
 #include <Catalog.h>
 #include <CheckBox.h>
+#include <GroupLayout.h>
 #include <InterfaceDefs.h>
+#include <LayoutBuilder.h>
 #include <MenuItem.h>
 #include <PopUpMenu.h>
 #include <TextControl.h>
@@ -28,76 +31,32 @@
 #define B_TRANSLATION_CONTEXT "LayerView"
 
 
-LayerView::LayerView(BBitmap *image,Layer *layer)
-	:	BBox(BRect(0,0,120,LAYER_VIEW_HEIGHT-1),"a layer view",
-		B_FOLLOW_TOP|B_FOLLOW_LEFT,
+LayerView::LayerView(BBitmap *image, Layer *layer)
+	:	BBox("a layer view",
 		B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS, B_NO_BORDER)
 {
-	the_image = image;
 	the_layer = layer;
 
 	BMessage a_message;
-	a_message.AddInt32("layer_id",the_layer->Id());
-	a_message.AddPointer("layer_pointer",(void*)the_layer);
+	a_message.AddInt32("layer_id", the_layer->Id());
+	a_message.AddPointer("layer_pointer", (void*)the_layer);
 	a_message.what = HS_LAYER_VISIBILITY_CHANGED;
-	visibility_box = new BCheckBox(BRect(80,5,140,30),
-		"visibility check box",
-		B_TRANSLATE("Visible"),new BMessage(a_message));
+	visibility_box = new BCheckBox("visibility check box",
+		"", new BMessage(a_message));
 
-	BRect rect = visibility_box->Frame();
-	rect.OffsetBy(0,rect.Height()+4);
+	thumbnail_view = new ThumbnailView(image);
+	thumbnail_view->SetEventMask(0);
 
-//	The target should be set later, when we know that image-view is alrady in its window.
-	ResizeBy(visibility_box->Frame().right - 120+5,0);
-	AddChild(visibility_box);
+	layer_name_field = new BTextControl("", "Layer",
+		new BMessage(HS_LAYER_NAME_CHANGED));
 
-
-	layer_operation_pop_up_menu = new BPopUpMenu("layer operation menu");
-
-
-	a_message.what = HS_MERGE_WITH_UPPER_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Merge with front layer"),
-		new BMessage(a_message)));
-
-	a_message.what = HS_MERGE_WITH_LOWER_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Merge with back layer"),
-		new BMessage(a_message)));
-
-	layer_operation_pop_up_menu->AddSeparatorItem();
-
-	a_message.what = HS_ADD_LAYER_FRONT;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Add layer in front"),
-		new BMessage(a_message)));
-
-	a_message.what = HS_ADD_LAYER_BEHIND;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Add layer behind"),
-		new BMessage(a_message)));
-
-	layer_operation_pop_up_menu->AddSeparatorItem();
-
-	a_message.what = HS_DUPLICATE_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Duplicate layer"),
-		new BMessage(a_message)));
-
-	layer_operation_pop_up_menu->AddSeparatorItem();
-
-	a_message.what = HS_DELETE_LAYER;
-	layer_operation_pop_up_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Delete layer"),
-		new BMessage(a_message)));
-
-	layer_operation_pop_up_menu->SetRadioMode(false);
-
-	popUpMenuField = new BMenuField(BRect(0,0,0,0),"popUpMenuField","",layer_operation_pop_up_menu);
-	popUpMenuField->ResizeToPreferred();
-	popUpMenuField->MoveTo(visibility_box->Frame().left,visibility_box->Frame().bottom+4);
-	popUpMenuField->MenuItem()->SetLabel("");
-	AddChild(popUpMenuField);
+	BGroupLayout* layerLayout = BLayoutBuilder::Group<>(this,
+		B_HORIZONTAL, B_USE_SMALL_SPACING)
+		.Add(visibility_box)
+		.Add(thumbnail_view)
+		.Add(layer_name_field)
+		.SetInsets(B_USE_SMALL_INSETS, B_USE_SMALL_INSETS,
+			B_USE_SMALL_INSETS, B_USE_SMALL_INSETS);
 }
 
 
@@ -112,33 +71,39 @@ LayerView::~LayerView()
 }
 
 
-void LayerView::AttachedToWindow()
+void
+LayerView::AttachedToWindow()
 {
 	visibility_box->SetTarget(the_layer->GetImageView());
 	if ((Parent() != NULL) && (is_active == FALSE))
 		SetViewColor(Parent()->ViewColor());
 
-//	layer_name_field->SetTarget(this);
+	layer_name_field->SetTarget(this);
+	layer_name_field->SetText(the_layer->ReturnLayerName());
 }
 
-void LayerView::Draw(BRect area)
+
+void
+LayerView::Draw(BRect area)
 {
-	DrawBitmap(the_image,BPoint(5,5));
+	thumbnail_view->Redraw();
 	if (is_active == TRUE) {
-		BRect a_rect = the_image->Bounds();
-		a_rect.InsetBy(-1,-1);
-		a_rect.OffsetTo(4,4);
-		SetHighColor(0,0,255,255);
+		BRect a_rect = thumbnail_view->Frame();
+		SetHighColor(ui_color(B_CONTROL_HIGHLIGHT_COLOR));
 		StrokeRect(a_rect);
 	}
-	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_DARKEN_3_TINT));
-	StrokeLine(Bounds().LeftBottom(),Bounds().RightBottom());
-	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_LIGHTEN_2_TINT));
-	StrokeLine(Bounds().LeftTop(),Bounds().RightTop());
+	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),
+		B_DARKEN_3_TINT));
+	StrokeLine(Bounds().LeftBottom(), Bounds().RightBottom());
+	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),
+		B_LIGHTEN_2_TINT));
+	StrokeLine(Bounds().LeftTop(), Bounds().RightTop());
 	BView::Draw(area);
 }
 
-void LayerView::MessageReceived(BMessage *message)
+
+void
+LayerView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
 		case HS_LAYER_NAME_CHANGED:
@@ -151,89 +116,68 @@ void LayerView::MessageReceived(BMessage *message)
 	}
 }
 
-void LayerView::MouseDown(BPoint location)
+
+void
+LayerView::MouseDown(BPoint location)
 {
 	BView *image_view = the_layer->GetImageView();
 	BWindow *image_window = image_view->Window();
+	LayerWindow *layer_window = (LayerWindow*)Window();
+
 	BMessage a_message;
 	a_message.AddInt32("layer_id",the_layer->Id());
 	a_message.AddPointer("layer_pointer",(void*)the_layer);
 
 	uint32 buttons;
 	Window()->CurrentMessage()->FindInt32("buttons",(int32*)&buttons);
-	BRect mini_image_frame = BRect(5,5,HS_MINIATURE_IMAGE_WIDTH+5,HS_MINIATURE_IMAGE_HEIGHT+5);
+	BRect mini_image_frame = thumbnail_view->Frame();
 
 	if (image_window != NULL) {
 		a_message.what = HS_LAYER_ACTIVATED;
-		image_window->PostMessage(&a_message,image_view);
+		image_window->PostMessage(&a_message, image_view);
+		if (layer_window)
+			layer_window->SetActiveLayer(the_layer);
 	}
 	// Here initiate a drag-session. If mouse was over the image, whole layer should
 	// be dragged. Otherwise we drag this view in it's parent to reorder the layers.
-	if (mini_image_frame.Contains(location)) {
+	/*if (mini_image_frame.Contains(location)) {
 		// This should start a real drag'n'drop session
 		a_message.what = HS_LAYER_DRAGGED;
 		a_message.AddPointer("layer_bitmap",(void*)the_layer->Bitmap());
 		BBitmap *layer_mini_image = new BBitmap(the_layer->GetMiniatureImage());
 		DragMessage(&a_message,layer_mini_image,B_OP_ALPHA,location-BPoint(5,5));
 	}
-	else {
+	else {*/
 		// We start reordering the layers.
-		thread_id reorder = spawn_thread(LayerView::reorder_thread,"reorder layers",B_NORMAL_PRIORITY,(void*)this);
+		thread_id reorder = spawn_thread(LayerView::reorder_thread,
+			"reorder layers", B_NORMAL_PRIORITY, (void*)this);
 		resume_thread(reorder);
-	}
+	//}
 }
 
 
-
-void LayerView::MouseMoved(BPoint where,uint32 transit,const BMessage*)
+void
+LayerView::MouseMoved(BPoint where,uint32 transit,const BMessage*)
 {
-	if (transit == B_EXITED_VIEW) {
-		if (popUpMenuField->Frame().Contains(where)) {
-			int32 number_of_null = 0;
-			if (the_layer->ReturnUpperLayer() == NULL) {
-				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(FALSE);
-				number_of_null++;
-			}
-			else {
-				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(TRUE);
-			}
 
-			if (the_layer->ReturnLowerLayer() == NULL) {
-				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(FALSE);
-				number_of_null++;
-			}
-			else {
-				layer_operation_pop_up_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
-			}
-
-			if (number_of_null == 2) {
-				layer_operation_pop_up_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(FALSE);
-			}
-			else {
-				layer_operation_pop_up_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(TRUE);
-			}
-
-			BView *image_view = the_layer->GetImageView();
-			BWindow *image_window = image_view->Window();
-
-			popUpMenuField->Menu()->SetTargetForItems(BMessenger(image_view,image_window));
-		}
-	}
 }
 
 
-void LayerView::UpdateImage()
+void
+LayerView::UpdateImage()
 {
-	DrawBitmap(the_image,BPoint(5,5));
+	thumbnail_view->Redraw();
 }
 
 
-void LayerView::Activate(bool active)
+void
+LayerView::Activate(bool active)
 {
 	is_active = active;
 	if (LockLooper() == TRUE) {
 		if (active == TRUE) {
-			SetViewColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_DARKEN_1_TINT));
+			SetViewColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),
+				B_DARKEN_1_TINT));
 		}
 		else if (Parent() != NULL) {
 			SetViewColor(Parent()->ViewColor());
@@ -242,27 +186,24 @@ void LayerView::Activate(bool active)
 		visibility_box->SetViewColor(ViewColor());
 		visibility_box->Invalidate();
 
-		popUpMenuField->SetViewColor(ViewColor());
-		popUpMenuField->Invalidate();
-
 		Invalidate();
 		UnlockLooper();
-
 	}
 	else {
 		if (active == TRUE) {
-			SetViewColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),B_DARKEN_1_TINT));
+			SetViewColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR),
+				B_DARKEN_1_TINT));
 		}
 		else if (Parent() != NULL)
 			SetViewColor(Parent()->ViewColor());
 
 		visibility_box->SetViewColor(ViewColor());
-
-		popUpMenuField->SetViewColor(ViewColor());
 	}
 }
 
-void LayerView::SetVisibility(bool visible)
+
+void
+LayerView::SetVisibility(bool visible)
 {
 	BWindow *a_window = visibility_box->Window();
 	if (a_window != NULL)
@@ -278,15 +219,16 @@ void LayerView::SetVisibility(bool visible)
 }
 
 
-
-int32 LayerView::reorder_thread(void *data)
+int32
+LayerView::reorder_thread(void *data)
 {
 	LayerView *this_pointer = (LayerView*)data;
 	return this_pointer->ReorderViews();
 }
 
 
-int32 LayerView::ReorderViews()
+int32
+LayerView::ReorderViews()
 {
 	uint32 buttons;
 	BPoint location;
@@ -356,4 +298,52 @@ int32 LayerView::ReorderViews()
 	}
 
 	return positions_moved;
+}
+
+
+ThumbnailView::ThumbnailView(BBitmap* image)
+	: BView(BRect(0, 0, 1, 1), "thumbview", B_FOLLOW_NONE, B_WILL_DRAW)
+	, fThumbnailBitmap(NULL)
+{
+	BRect frame = image->Bounds();
+
+	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
+	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
+
+	frame.InsetBy(1.0, 1.0);
+	fThumbnailBitmap = image;
+}
+
+
+ThumbnailView::~ThumbnailView()
+{
+
+}
+
+
+void
+ThumbnailView::Draw(BRect updateRect)
+{
+	BView::Draw(updateRect);
+
+	DrawBitmap(fThumbnailBitmap, BPoint(1.0, 1.0));
+
+	SetHighColor(0, 0, 0, 255);
+	StrokeRect(Bounds());
+}
+
+
+void
+ThumbnailView::MessageReceived(BMessage* message)
+{
+	switch(message->what) {
+		default:
+			BView::MessageReceived(message);
+	}
+}
+
+
+void ThumbnailView::MouseDown(BPoint location)
+{
+	Parent()->MouseDown(location);
 }

@@ -20,15 +20,33 @@
 
 #define	LAYER_VIEW_HEIGHT	(HS_MINIATURE_IMAGE_HEIGHT+10)
 
+
+class ThumbnailView : public BView {
+public:
+				ThumbnailView(BBitmap* image);
+	virtual		~ThumbnailView();
+
+	virtual void 	Draw(BRect updateRect);
+	virtual void	MessageReceived(BMessage* message);
+	void		MouseDown(BPoint);
+
+	BBitmap*	ThumbnailBitmap() { return fThumbnailBitmap; }
+
+	void		Redraw() { Draw(Bounds()); }
+
+private:
+	BBitmap*	fThumbnailBitmap;
+};
+
+
 class LayerView : public BBox {
 BBitmap	*the_image;		// Not to be deleted.
 Layer	*the_layer;		// Not to be deleted.
 bool	is_active;
 
-BCheckBox		*visibility_box;
-BPopUpMenu		*layer_operation_pop_up_menu;	// Delete in destructor.
-BMenuField		*popUpMenuField;
-BTextControl	*layer_name_field;
+BCheckBox*		visibility_box;
+BTextControl*	layer_name_field;
+ThumbnailView* 	thumbnail_view;
 
 
 // The returned value will indicate how many positions we moved
@@ -53,5 +71,6 @@ void		SetVisibility(bool);
 
 Layer*		ReturnLayer() { return the_layer; }
 };
+
 
 #endif

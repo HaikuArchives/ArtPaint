@@ -12,34 +12,51 @@
 #include <Window.h>
 #include <StringView.h>
 
+#include "Box.h"
+#include "Layer.h"
+
+
 class BitmapView;
 class LayerListView;
+
+
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
+
 
 // this class displays all the layers of one image at a time in a window
 // the same window is used to display layers for all images
 class LayerWindow : public BWindow {
-				LayerListView			*list_view;		// Layer representations will be added
+				LayerListView*			list_view;		// Layer representations will be added
 												// as children to this view.
 				int32					layer_count;
 
-//				BScrollView		*scroll_view;
-				BScrollBar		*scroll_bar;
-				BStringView		*title_view;
+				Layer*			active_layer;
 
+//				BScrollView*	scroll_view;
+				BScrollBar*		scroll_bar;
+				BStringView*	title_view;
+				NumberSliderControl*
+								transparency_slider;
+				BBox*			top_part;
 
 				// this is the paint-window from which we display the image
-static			BWindow			*target_window;
+static			BWindow*		target_window;
 
-static			BList			*target_list;	// In this list are the layer-item views
+static			BList*			target_list;	// In this list are the layer-item views
 												// of all layers. They will be add as children
 												// to list_view.
 
-static	const	char			*window_title;
+static	const	char*			window_title;
 //static			bool			updates_permitted;
 
 static			sem_id			layer_window_semaphore;
 
-static			LayerWindow		*layer_window;
+static			LayerWindow*	layer_window;
 
 				LayerWindow(BRect frame);
 				~LayerWindow();
@@ -48,11 +65,12 @@ void			Update();
 public:
 		void	MessageReceived(BMessage *message);
 		bool	QuitRequested();
-
+		void	SetActiveLayer(Layer* layer);
 
 static	void	ActiveWindowChanged(BWindow *active_window,BList *list=NULL,BBitmap *composite=NULL);
 static	void	showLayerWindow();
 static	void	setFeel(window_feel);
+		void 	FrameResized(float, float);
 };
 
 

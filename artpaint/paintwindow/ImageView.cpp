@@ -367,6 +367,11 @@ void ImageView::MessageReceived(BMessage *message)
 			}
 		}	break;
 
+		case HS_LAYER_TRANSPARENCY_CHANGED:
+			the_image->Render();
+			Invalidate();
+			break;
+
 		// This comes from layer's view and tells us to change the visibility for that layer.
 		case HS_LAYER_VISIBILITY_CHANGED:
 			int32 changed_layer_id;
