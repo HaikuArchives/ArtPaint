@@ -467,8 +467,20 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 			layer->SetTransparency(coeff);
 			length -= sizeof(float);
 
-			// Skip the extra data that we do not recognize.
-			file.Seek(length,SEEK_CUR);
+			if (length > sizeof(int32)) {
+				int32 nameLen;
+				if (file.Read(&nameLen, sizeof(int32)) == sizeof(int32)) {
+					char name[nameLen+1];
+					length -= sizeof(int32);
+					if (file.Read(&name, nameLen) == nameLen) {
+						name[nameLen] = 0;
+						layer->SetName(name);
+						length -= nameLen;
+					}
+				}
+			}
+
+			file.Seek(length, SEEK_CUR);
 
 			// Here we should get the end-marker for layer's extra data
 			if (file.Read(&marker,sizeof(int32)) != sizeof(int32)) {
@@ -484,7 +496,6 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 				delete layer;
 				return NULL;
 			}
-
 		}
 		else {
 			// Somehow -sizeof(int32) does not seem to work????
@@ -598,9 +609,12 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 	marker = PROJECT_FILE_LAYER_EXTRA_DATA_START_MARKER;
 	written_bytes += file.Write(&marker,sizeof(int32));
 
-	marker = sizeof(float);
+	int32 nameLen = fLayerName.Length();
+	marker = sizeof(float) + sizeof(int32) + nameLen;
 	written_bytes += file.Write(&marker,sizeof(int32));
 	written_bytes += file.Write(&transparency_coefficient,sizeof(float));
+	written_bytes += file.Write(&nameLen, sizeof(int32));
+	written_bytes += file.Write(fLayerName.String(), nameLen);
 
 	marker = PROJECT_FILE_LAYER_EXTRA_DATA_END_MARKER;
 	written_bytes += file.Write(&marker,sizeof(int32));

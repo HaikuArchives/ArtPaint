@@ -10,6 +10,7 @@
 
 #include "LayerView.h"
 
+#include "CustomGridLayout.h"
 #include "ImageView.h"
 #include "LayerWindow.h"
 #include "UtilityClasses.h"
@@ -138,28 +139,16 @@ LayerView::MouseDown(BPoint location)
 		if (layer_window)
 			layer_window->SetActiveLayer(the_layer);
 	}
-	// Here initiate a drag-session. If mouse was over the image, whole layer should
-	// be dragged. Otherwise we drag this view in it's parent to reorder the layers.
-	/*if (mini_image_frame.Contains(location)) {
-		// This should start a real drag'n'drop session
-		a_message.what = HS_LAYER_DRAGGED;
-		a_message.AddPointer("layer_bitmap",(void*)the_layer->Bitmap());
-		BBitmap *layer_mini_image = new BBitmap(the_layer->GetMiniatureImage());
-		DragMessage(&a_message,layer_mini_image,B_OP_ALPHA,location-BPoint(5,5));
-	}
-	else {*/
-		// We start reordering the layers.
-		thread_id reorder = spawn_thread(LayerView::reorder_thread,
-			"reorder layers", B_NORMAL_PRIORITY, (void*)this);
-		resume_thread(reorder);
-	//}
+	// We start reordering the layers.
+	thread_id reorder = spawn_thread(LayerView::reorder_thread,
+		"reorder layers", B_NORMAL_PRIORITY, (void*)this);
+	resume_thread(reorder);
 }
 
 
 void
 LayerView::MouseMoved(BPoint where,uint32 transit,const BMessage*)
 {
-
 }
 
 
@@ -234,28 +223,42 @@ LayerView::ReorderViews()
 	BPoint location;
 	BRect frame;
 
-	BWindow *the_window = Window();
+	LayerWindow* the_window = (LayerWindow*)Window();
 
 	int32 positions_moved = 0;
+
 	if (the_window != NULL) {
 		the_window->Lock();
 		BView *parent_view = Parent();
 		BView *exchanged_view;
-		GetMouse(&location,&buttons);
+		parent_view->GetMouse(&location, &buttons);
 		the_window->Unlock();
+
+		CustomGridLayout* layout = (CustomGridLayout*)the_window->GetListView()->GetLayout();
 
 		if (parent_view != NULL) {
 			while (buttons) {
 				the_window->Lock();
-				location = ConvertToParent(location);
-				frame = ConvertToParent(Bounds());
-				frame.OffsetBy(0,-LAYER_VIEW_HEIGHT);
+				frame = this->ConvertToParent(Bounds());
+				frame.OffsetBy(0, -Bounds().Height());
 				if (frame.Contains(location) == TRUE) {
-					exchanged_view = the_window->FindView(the_window->ConvertFromScreen(parent_view->ConvertToScreen(location)));
+					exchanged_view = the_window->FindView(
+							the_window->ConvertFromScreen(
+								parent_view->ConvertToScreen(location)));
 					if (exchanged_view != NULL) {
-						if (exchanged_view->Parent() == parent_view) {
-							exchanged_view->MoveBy(0,LAYER_VIEW_HEIGHT);
-							MoveBy(0,-LAYER_VIEW_HEIGHT);
+		 				int32 exchangedIndex = layout->IndexOfView(exchanged_view);
+		 				// make sure the selected view is one of the layer views,
+		 				// not another control like the layer name
+						while (exchanged_view != NULL && exchangedIndex < 0) {
+							exchanged_view = exchanged_view->Parent();
+							exchangedIndex = layout->IndexOfView(exchanged_view);
+						}
+
+						if (exchanged_view != NULL &&
+							exchanged_view->Parent() == parent_view &&
+							exchangedIndex >= 0 &&
+							exchanged_view != this) {
+							layout->SwapViews(this, exchanged_view);
 							positions_moved++;
 							if (parent_view->Bounds().Contains(Frame().LeftTop()) == FALSE) {
 								parent_view->ScrollBy(0,Frame().top);
@@ -264,13 +267,25 @@ LayerView::ReorderViews()
 					}
 				}
 				else {
-					frame.OffsetBy(0,2*LAYER_VIEW_HEIGHT);
+					frame.OffsetBy(0, 2 * Bounds().Height());
 					if (frame.Contains(location) == TRUE) {
-						exchanged_view = the_window->FindView(the_window->ConvertFromScreen(parent_view->ConvertToScreen(location)));
+						exchanged_view = the_window->FindView(
+							the_window->ConvertFromScreen(
+								parent_view->ConvertToScreen(location)));
 						if (exchanged_view != NULL) {
-							if (exchanged_view->Parent() == parent_view) {
-								exchanged_view->MoveBy(0,-LAYER_VIEW_HEIGHT);
-								MoveBy(0,LAYER_VIEW_HEIGHT);
+							int32 exchangedIndex = layout->IndexOfView(exchanged_view);
+							// make sure the selected view is one of the layer views,
+		 					// not another control like the layer name
+							while (exchanged_view != NULL && exchangedIndex < 0) {
+								exchanged_view = exchanged_view->Parent();
+								exchangedIndex = layout->IndexOfView(exchanged_view);
+							}
+
+							if (exchanged_view != NULL &&
+								exchanged_view->Parent() == parent_view &&
+								exchangedIndex >= 0 &&
+								exchanged_view != this) {
+								layout->SwapViews(this, exchanged_view);
 								positions_moved--;
 								if (parent_view->Bounds().Contains(Frame().LeftBottom()) == FALSE) {
 									parent_view->ScrollBy(0,Frame().bottom-parent_view->Bounds().bottom);
@@ -279,7 +294,8 @@ LayerView::ReorderViews()
 						}
 					}
 				}
-				GetMouse(&location,&buttons);
+
+				parent_view->GetMouse(&location,&buttons);
 				the_window->Unlock();
 
 				snooze(20 * 1000);
@@ -293,8 +309,8 @@ LayerView::ReorderViews()
 		a_message.what = HS_LAYER_POSITION_CHANGED;
 		a_message.AddInt32("layer_id",the_layer->Id());
 		a_message.AddPointer("layer_pointer",(void*)the_layer);
-		a_message.AddInt32("positions_moved",positions_moved);
-		image_window->PostMessage(&a_message,image_view);
+		a_message.AddInt32("positions_moved", positions_moved);
+		image_window->PostMessage(&a_message, image_view);
 	}
 
 	return positions_moved;
@@ -317,7 +333,6 @@ ThumbnailView::ThumbnailView(BBitmap* image)
 
 ThumbnailView::~ThumbnailView()
 {
-
 }
 
 

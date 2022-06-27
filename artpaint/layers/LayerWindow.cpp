@@ -8,6 +8,7 @@
  *
  */
 
+#include "CustomGridLayout.h"
 #include "FloaterManager.h"
 #include "ImageView.h"
 #include "LayerWindow.h"
@@ -27,6 +28,7 @@
 #include <Catalog.h>
 #include <Font.h>
 #include <GroupLayout.h>
+#include <GridLayout.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <ScrollBar.h>
@@ -66,7 +68,7 @@ LayerWindow::LayerWindow(BRect frame)
 	top_part = new BBox(B_PLAIN_BORDER, NULL);
 	title_view = new BStringView("title", "");
 
-	BMenu* layer_operation_menu = new BMenu(B_TRANSLATE("Actions"));
+	layer_operation_menu = new BMenu(B_TRANSLATE("Actions"));
 
 	layer_operation_menu->AddItem(new BMenuItem(
 		B_TRANSLATE("Merge with layer above"),
@@ -108,7 +110,7 @@ LayerWindow::LayerWindow(BRect frame)
 	message->AddInt32("value", 0);
 
 	transparency_slider =
-		new NumberSliderControl(B_TRANSLATE("\xCE\xB1:"), "0",
+		new NumberSliderControl("\xCE\xB1:", "0",
 		message, 0, 100, false);
 
 	BFont font;
@@ -121,6 +123,8 @@ LayerWindow::LayerWindow(BRect frame)
 	transparencyLayout->SetMaxColumnWidth(1, font.StringWidth("1"));
 	transparencyLayout->SetMinColumnWidth(2,
 		font.StringWidth("SLIDERSLIDERSLIDER"));
+
+	transparency_slider->Slider()->SetToolTip(B_TRANSLATE("Layer transparency"));
 
 	BGroupLayout* topLayout = BLayoutBuilder::Group<>(top_part, B_VERTICAL)
 		.Add(title_view)
@@ -252,13 +256,12 @@ LayerWindow::ActiveWindowChanged(BWindow *active_window,
 	target_list = list;
 
 	Layer *a_layer = NULL;
-	if (list != NULL) {
+	if (list != NULL)
 		a_layer = (Layer*)list->ItemAt(0);
-	}
 
-	if (a_layer != NULL) {
+	if (a_layer != NULL)
 		window_title = a_layer->ReturnProjectName();
-	} else
+	else
 		window_title = NULL;
 
 //	if (target_window != NULL)
@@ -266,9 +269,9 @@ LayerWindow::ActiveWindowChanged(BWindow *active_window,
 //	else
 //		window_title = NULL;
 
-	if (layer_window != NULL) {
+	if (layer_window != NULL)
 		layer_window->Update();
-	}
+
 	release_sem(layer_window_semaphore);
 }
 
@@ -311,12 +314,11 @@ LayerWindow::setFeel(window_feel feel)
 	if (layer_window) {
 		layer_window->Lock();
 		layer_window->SetFeel(feel);
-		if (feel == B_NORMAL_WINDOW_FEEL) {
+		if (feel == B_NORMAL_WINDOW_FEEL)
 			layer_window->SetLook(B_TITLED_WINDOW_LOOK);
-		}
-		else {
+		else
 			layer_window->SetLook(B_FLOATING_WINDOW_LOOK);
-		}
+
 		layer_window->Unlock();
 	}
 }
@@ -360,9 +362,8 @@ LayerWindow::Update()
 
 		BGridLayout* layout = (BGridLayout*)layer_window->list_view->GetLayout();
 
-		while (layout->CountItems() > 0) {
-			layout->RemoveItem(0);
-		}
+		while (layout->CountItems() > 0)
+			layout->RemoveItem((int32) 0);
 
 		// locking target_window here causes deadlocks so we do not lock it at the moment
 		// concurrency problems with the closing of target_window should be solved somehow though
@@ -409,13 +410,22 @@ LayerWindow::SetActiveLayer(Layer* layer)
 {
 	active_layer = layer;
 	transparency_slider->SetValue(active_layer->GetTransparency() * 100);
+	if (layer->ReturnUpperLayer() == NULL)
+		layer_operation_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(FALSE);
+	else
+		layer_operation_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(TRUE);
+
+	if (layer->ReturnLowerLayer() == NULL)
+		layer_operation_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(FALSE);
+	else
+		layer_operation_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
 }
 
 
 LayerListView::LayerListView()
 	: BView("list of layers", B_WILL_DRAW | B_FRAME_EVENTS)
 {
-	BGridLayout *mainLayout = new BGridLayout(B_USE_DEFAULT_SPACING, 0.0);
+	CustomGridLayout *mainLayout = new CustomGridLayout(B_USE_DEFAULT_SPACING, 0.0);
 	SetLayout(mainLayout);
 }
 

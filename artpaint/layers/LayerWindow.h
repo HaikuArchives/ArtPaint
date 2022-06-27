@@ -9,11 +9,13 @@
 #ifndef	LAYER_WINDOW_H
 #define	LAYER_WINDOW_H
 
-#include <Window.h>
+#include <GridLayout.h>
 #include <StringView.h>
+#include <Window.h>
 
 #include "Box.h"
 #include "Layer.h"
+#include "Menu.h"
 
 
 class BitmapView;
@@ -43,6 +45,7 @@ class LayerWindow : public BWindow {
 				NumberSliderControl*
 								transparency_slider;
 				BBox*			top_part;
+				BMenu*			layer_operation_menu;
 
 				// this is the paint-window from which we display the image
 static			BWindow*		target_window;
@@ -71,6 +74,7 @@ static	void	ActiveWindowChanged(BWindow *active_window,BList *list=NULL,BBitmap 
 static	void	showLayerWindow();
 static	void	setFeel(window_feel);
 		void 	FrameResized(float, float);
+		LayerListView*	GetListView() { return list_view; }
 };
 
 

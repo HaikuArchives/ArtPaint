@@ -47,7 +47,7 @@ int32 Image::color_candidate_users = 0;
 rgb_color* Image::color_list = new rgb_color[256];
 
 
-Image::Image(ImageView *view,float width, float height,UndoQueue *q)
+Image::Image(ImageView *view,float width, float height, UndoQueue *q)
 {
 	image_view = view;
 	undo_queue = q;
@@ -94,14 +94,17 @@ Image::~Image()
 }
 
 
-void Image::Render(bool bg)
+void
+Image::Render(bool bg)
 {
 	Render(rendered_image->Bounds(), bg);
 }
 
 #define	ALPHA	(*s_bits & 0xff)
 
-void Image::Render(BRect area, bool bg)
+
+void
+Image::Render(BRect area, bool bg)
 {
 	dithered_up_to_date = FALSE;
 	area = area & rendered_image->Bounds();
@@ -165,7 +168,9 @@ void Image::Render(BRect area, bool bg)
 	CalculateThumbnails();
 }
 
-void Image::RenderPreview(BRect area, int32 resolution)
+
+void
+Image::RenderPreview(BRect area, int32 resolution)
 {
 	dithered_up_to_date = FALSE;
 	area.top = floor(area.top/resolution);
@@ -215,7 +220,9 @@ void Image::RenderPreview(BRect area, int32 resolution)
 	delete[] threads;
 }
 
-void Image::RenderPreview(BRegion &region,int32 resolution)
+
+void
+Image::RenderPreview(BRegion &region, int32 resolution)
 {
 	// Start a thread for each rectangle in the region
 	int32 rect_count = region.CountRects();
@@ -223,22 +230,24 @@ void Image::RenderPreview(BRegion &region,int32 resolution)
 		thread_id *threads = new thread_id[rect_count];
 
 		for (int32 i=0;i<rect_count;i++) {
-			threads[i] = spawn_thread(enter_render_preview,"render_preview_thread",B_NORMAL_PRIORITY,this);
+			threads[i] = spawn_thread(enter_render_preview,
+				"render_preview_thread", B_NORMAL_PRIORITY, this);
 			resume_thread(threads[i]);
 			BRect rect = region.RectAt(i);
-			send_data(threads[i],resolution,&rect,sizeof(BRect));
+			send_data(threads[i],resolution, &rect, sizeof(BRect));
 		}
 
-		for (int32 i=0;i<rect_count;i++) {
+		for (int32 i = 0;i < rect_count;i++) {
 			int32 return_value;
-			wait_for_thread(threads[i],&return_value);
+			wait_for_thread(threads[i], &return_value);
 		}
 		delete[] threads;
 	}
 }
 
 
-void Image::MultiplyRenderedImagePixels(int32 blocksize)
+void
+Image::MultiplyRenderedImagePixels(int32 blocksize)
 {
 	if (rendered_image != NULL) {
 		dithered_up_to_date = FALSE;
@@ -268,15 +277,16 @@ void Image::MultiplyRenderedImagePixels(int32 blocksize)
 }
 
 
-bool Image::SetImageSize()
+bool
+Image::SetImageSize()
 {
 	// Take the minimum dimensions of layers as the new image dimensions.
 	float width = 1000000;
 	float height = 1000000;
 	for (int32 i=0;i<layer_list->CountItems();i++) {
 		Layer *layer = (Layer*)layer_list->ItemAt(i);
-		width = min_c(layer->Bitmap()->Bounds().Width(),width);
-		height = min_c(layer->Bitmap()->Bounds().Height(),height);
+		width = min_c(layer->Bitmap()->Bounds().Width(), width);
+		height = min_c(layer->Bitmap()->Bounds().Height(), height);
 	}
 	image_width = width+1;
 	image_height = height+1;
@@ -284,30 +294,36 @@ bool Image::SetImageSize()
 	if (layer_list->CountItems() >= 1) {
 		if (rendered_image == NULL) {
 			// Here we create new composite picture.
-			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
+			rendered_image = new BBitmap(BRect(0, 0,
+				image_width - 1, image_height - 1), B_RGBA32);
 		}
-		else if ((rendered_image->Bounds().Width() != (image_width-1)) || (rendered_image->Bounds().Height() != (image_height-1))) {
-			// Here we change the bitmap for the composite picture. Also if the dithered picture
-			// is required we change that too.
+		else if ((rendered_image->Bounds().Width() != (image_width - 1)) ||
+			(rendered_image->Bounds().Height() != (image_height - 1))) {
+			// Here we change the bitmap for the composite picture. Also
+			// if the dithered picture is required we change that too.
 			delete rendered_image;
-			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
+			rendered_image = new BBitmap(BRect(0, 0,
+				image_width - 1, image_height - 1), B_RGBA32);
 			if (dithered_image != NULL) {
 				delete dithered_image;
-				dithered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_CMAP8);
+				dithered_image = new BBitmap(BRect(0, 0,
+					image_width - 1, image_height - 1), B_CMAP8);
 			}
 
 			if (rendered_image->IsValid() == FALSE) {
 				rendered_image = NULL;
 				throw std::bad_alloc();
 			}
-			if ((dithered_image != NULL) && (dithered_image->IsValid() == FALSE)) {
+			if ((dithered_image != NULL) &&
+				(dithered_image->IsValid() == FALSE)) {
 				dithered_image = NULL;
 				throw std::bad_alloc();
 			}
 
-//			// If the image size changes, clear the selection.
+			// If the image size changes, clear the selection.
 			image_view->GetSelection()->Clear();
-			image_view->GetSelection()->ImageSizeChanged(rendered_image->Bounds());
+			image_view->GetSelection()->ImageSizeChanged(
+				rendered_image->Bounds());
 
 			image_view->adjustSize();
 			image_view->adjustPosition();
@@ -411,7 +427,9 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 	return new_layer;
 }
 
-bool Image::ChangeActiveLayer(Layer *activated_layer,int32)
+
+bool
+Image::ChangeActiveLayer(Layer *activated_layer, int32)
 {
 	if (((Layer*)(layer_list->ItemAt(current_layer_index))) != activated_layer) {
 		if (layer_list->IndexOf(activated_layer) >= 0) {
@@ -426,7 +444,10 @@ bool Image::ChangeActiveLayer(Layer *activated_layer,int32)
 	return FALSE;
 }
 
-bool Image::ChangeLayerPosition(Layer *changed_layer,int32,int32 positions_moved)
+
+bool
+Image::ChangeLayerPosition(Layer *changed_layer, int32,
+	int32 positions_moved)
 {
 	int32 original_position = layer_list->IndexOf(changed_layer);
 
@@ -447,7 +468,9 @@ bool Image::ChangeLayerPosition(Layer *changed_layer,int32,int32 positions_moved
 	return FALSE;
 }
 
-bool Image::ClearCurrentLayer(rgb_color &c)
+
+bool
+Image::ClearCurrentLayer(rgb_color &c)
 {
 	Layer *cleared_layer = (Layer*)layer_list->ItemAt(current_layer_index);
 	cleared_layer->Clear(c);
@@ -481,7 +504,9 @@ bool Image::ClearCurrentLayer(rgb_color &c)
 	return TRUE;
 }
 
-bool Image::ClearLayers(rgb_color &c)
+
+bool
+Image::ClearLayers(rgb_color &c)
 {
 	for (int32 i=0;i<layer_list->CountItems();i++) {
 		((Layer*)layer_list->ItemAt(i))->Clear(c);
@@ -513,11 +538,14 @@ bool Image::ClearLayers(rgb_color &c)
 	return TRUE;
 }
 
-bool Image::DuplicateLayer(Layer *duplicated_layer,int32)
+
+bool
+Image::DuplicateLayer(Layer *duplicated_layer, int32)
 {
 	if (duplicated_layer != NULL) {
 		BBitmap *new_bitmap = new BBitmap(duplicated_layer->Bitmap());
-		AddLayer(new_bitmap,duplicated_layer,TRUE,duplicated_layer->GetTransparency());
+		AddLayer(new_bitmap, duplicated_layer, TRUE,
+			duplicated_layer->GetTransparency());
 
 		return TRUE;
 	}
@@ -525,18 +553,22 @@ bool Image::DuplicateLayer(Layer *duplicated_layer,int32)
 	return FALSE;
 }
 
-bool Image::MergeLayers(Layer *merged_layer,int32, bool merge_with_upper)
+
+bool
+Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 {
 	Layer *target;
 	Layer *other;
 
 	if (merge_with_upper) {
 		target = merged_layer;
-		other = (Layer*)layer_list->ItemAt(layer_list->IndexOf(merged_layer)+1);
+		other = (Layer*)layer_list->ItemAt(
+			layer_list->IndexOf(merged_layer) + 1);
 	}
 	else {
 		other = merged_layer;
-		target = (Layer*)layer_list->ItemAt(layer_list->IndexOf(merged_layer)-1);
+		target = (Layer*)layer_list->ItemAt(
+			layer_list->IndexOf(merged_layer) - 1);
 	}
 
 	if ((target != NULL) && (other != NULL)) {
@@ -545,9 +577,13 @@ bool Image::MergeLayers(Layer *merged_layer,int32, bool merge_with_upper)
 		// Store the undo.
 		UndoEvent *new_event;
 		if (merge_with_upper)
-			new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Merge with front layer"),ReturnThumbnailImage());
+			new_event = undo_queue->AddUndoEvent(
+				B_TRANSLATE("Merge with layer above"),
+				ReturnThumbnailImage());
 		else
-			new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Merge with back layer"),ReturnThumbnailImage());
+			new_event = undo_queue->AddUndoEvent(
+				B_TRANSLATE("Merge with layer below"),
+				ReturnThumbnailImage());
 
 		if (new_event != NULL) {
 			for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -573,8 +609,10 @@ bool Image::MergeLayers(Layer *merged_layer,int32, bool merge_with_upper)
 		layer_list->RemoveItem(other);
 
 		SetImageSize();
+		if (!merge_with_upper)
+			--current_layer_index;
 
-		current_layer_index = min_c(current_layer_index,layer_list->CountItems()-1);
+		current_layer_index = min_c(current_layer_index, layer_list->CountItems()-1);
 
 		if (current_layer_index >= 0) {
 			((Layer*)layer_list->ItemAt(current_layer_index))->ActivateLayer(TRUE);
@@ -589,7 +627,9 @@ bool Image::MergeLayers(Layer *merged_layer,int32, bool merge_with_upper)
 	return TRUE;
 }
 
-bool Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
+
+bool
+Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 {
 	// Things we should check here:
 	//	1.	Do not remove the only layer.
@@ -654,7 +694,9 @@ bool Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 	return active_layer_changed;
 }
 
-bool Image::ToggleLayerVisibility(Layer *toggled_layer, int32)
+
+bool
+Image::ToggleLayerVisibility(Layer *toggled_layer, int32)
 {
 	bool layer_visibility = toggled_layer->IsVisible();
 	int32 number_of_visible_layers = 0;
@@ -682,7 +724,8 @@ bool Image::ToggleLayerVisibility(Layer *toggled_layer, int32)
 }
 
 
-Layer* Image::ReturnLowerLayer(Layer *l)
+Layer*
+Image::ReturnLowerLayer(Layer *l)
 {
 	int32 index = layer_list->IndexOf(l);
 	if (index > 0) {
@@ -693,7 +736,8 @@ Layer* Image::ReturnLowerLayer(Layer *l)
 }
 
 
-Layer* Image::ReturnUpperLayer(Layer *l)
+Layer*
+Image::ReturnUpperLayer(Layer *l)
 {
 	int32 index = layer_list->IndexOf(l);
 	if (index >= 0) {
@@ -707,16 +751,16 @@ Layer* Image::ReturnUpperLayer(Layer *l)
 }
 
 
-status_t Image::InsertLayer(BBitmap *layer_bitmap)
+status_t
+Image::InsertLayer(BBitmap *layer_bitmap)
 {
 	AddLayer(layer_bitmap,NULL,TRUE);
 	return B_OK;
 }
 
 
-
-
-void Image::UpdateImageStructure(UndoEvent *event)
+void
+Image::UpdateImageStructure(UndoEvent *event)
 {
 	Layer *current_layer = (Layer*)layer_list->ItemAt(current_layer_index);
 	bool current_layer_deleted = FALSE;
@@ -749,7 +793,8 @@ void Image::UpdateImageStructure(UndoEvent *event)
 			if (layer != NULL) {
 				// This should be here in order to crete a miniature picture for
 				// each layer that changes.
-				thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,layer);
+				thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,
+					"create mini picture", B_LOW_PRIORITY, layer);
 				resume_thread(a_thread);
 			}
 		}
@@ -757,21 +802,24 @@ void Image::UpdateImageStructure(UndoEvent *event)
 			// We should add a layer
 			BBitmap *bitmap = actions[i]->ApplyUndo(NULL,a_rect);
 			if (bitmap != NULL) {
-				layer_id_list[layer_id] = new Layer(bitmap->Bounds(),layer_id,image_view,HS_NORMAL_LAYER,bitmap);
+				layer_id_list[layer_id] = new Layer(bitmap->Bounds(),
+					layer_id, image_view, HS_NORMAL_LAYER, bitmap);
 				layer_id_list[layer_id]->SetVisibility(TRUE);
 				layer_id_list[layer_id]->AddToImage(this);
-				thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,layer_id_list[layer_id]);
+				thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,
+					"create mini picture", B_LOW_PRIORITY,
+					layer_id_list[layer_id]);
 				resume_thread(a_thread);
 			}
 			delete bitmap;
 		}
-		updated_rect.left = min_c(updated_rect.left,a_rect.left);
-		updated_rect.right = max_c(updated_rect.right,a_rect.right);
-		updated_rect.top = min_c(updated_rect.top,a_rect.top);
-		updated_rect.bottom = max_c(updated_rect.bottom,a_rect.bottom);
+		updated_rect.left = min_c(updated_rect.left, a_rect.left);
+		updated_rect.right = max_c(updated_rect.right, a_rect.right);
+		updated_rect.top = min_c(updated_rect.top, a_rect.top);
+		updated_rect.bottom = max_c(updated_rect.bottom, a_rect.bottom);
 	}
 	// Here we copy the layers back to layer list
-	for (int32 i=0;i<event->ActionCount();i++) {
+	for (int32 i = 0;i < event->ActionCount();i++) {
 		int32 layer_id = actions[i]->LayerId();
 		if (layer_id_list[layer_id] != NULL)
 			layer_list->AddItem(layer_id_list[layer_id]);
@@ -792,7 +840,9 @@ void Image::UpdateImageStructure(UndoEvent *event)
 	Render(updated_rect);
 }
 
-void Image::RegisterLayersWithUndo()
+
+void
+Image::RegisterLayersWithUndo()
 {
 	if (undo_queue != NULL) {
 		for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -802,23 +852,30 @@ void Image::RegisterLayersWithUndo()
 	}
 }
 
-BBitmap* Image::ReturnThumbnailImage()
+
+BBitmap*
+Image::ReturnThumbnailImage()
 {
 	return thumbnail_image;
 }
 
-BBitmap* Image::ReturnRenderedImage()
+
+BBitmap*
+Image::ReturnRenderedImage()
 {
 	return rendered_image;
 }
 
-BBitmap* Image::ReturnActiveBitmap()
+
+BBitmap*
+Image::ReturnActiveBitmap()
 {
 	return ((Layer*)layer_list->ItemAt(current_layer_index))->Bitmap();
 }
 
 
-bool Image::ContainsLayer(Layer *layer)
+bool
+Image::ContainsLayer(Layer *layer)
 {
 	if (layer_list->IndexOf(layer) < 0)
 		return FALSE;
@@ -826,7 +883,9 @@ bool Image::ContainsLayer(Layer *layer)
 		return TRUE;
 }
 
-status_t Image::ReadLayers(BFile &file)
+
+status_t
+Image::ReadLayers(BFile &file)
 {
 	// The previous is the old way of reading layers. This new way is not
 	// compatible with the old files. Old system should be supported somehow
@@ -835,7 +894,6 @@ status_t Image::ReadLayers(BFile &file)
 	int32 lendian;
 	if (file.Read(&lendian,sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-
 
 	int64 length = FindProjectFileSection(file,PROJECT_FILE_LAYER_SECTION_ID);
 
@@ -909,7 +967,8 @@ status_t Image::ReadLayers(BFile &file)
 }
 
 
-int64 Image::WriteLayers(BFile &file)
+int64
+Image::WriteLayers(BFile &file)
 {
 	int64 written_bytes = 0;
 	int32 layer_count = layer_list->CountItems();
@@ -934,7 +993,8 @@ int64 Image::WriteLayers(BFile &file)
 }
 
 
-status_t Image::ReadLayersOldStyle(BFile &file,int32 count)
+status_t
+Image::ReadLayersOldStyle(BFile &file,int32 count)
 {
 	Layer *layer = NULL;
 	// If count is not within reasonable limits we must presume that the file is corrupt.
@@ -990,8 +1050,8 @@ status_t Image::ReadLayersOldStyle(BFile &file,int32 count)
 }
 
 
-
-void Image::CalculateThumbnails()
+void
+Image::CalculateThumbnails()
 {
 	thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,layer_list->ItemAt(current_layer_index));
 	resume_thread(a_thread);
@@ -1001,13 +1061,13 @@ void Image::CalculateThumbnails()
 }
 
 
-int32 Image::calculate_thumbnail_image(void *data)
+int32
+Image::calculate_thumbnail_image(void *data)
 {
 	Image *this_pointer = (Image*)data;
 
 	BBitmap *from = this_pointer->rendered_image;
 	BBitmap *to = this_pointer->thumbnail_image;
-
 
 	union {
 		uint8 bytes[4];
@@ -1066,7 +1126,8 @@ int32 Image::calculate_thumbnail_image(void *data)
 }
 
 
-status_t Image::RegisterDitheredUser(void *user)
+status_t
+Image::RegisterDitheredUser(void *user)
 {
 	if (dithered_users->CountItems() == 0) {
 		dithered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_CMAP8);
@@ -1094,7 +1155,8 @@ status_t Image::RegisterDitheredUser(void *user)
 }
 
 
-status_t Image::UnregisterDitheredUser(void *user)
+status_t
+Image::UnregisterDitheredUser(void *user)
 {
 	dithered_users->RemoveItem(user);
 
@@ -1107,7 +1169,8 @@ status_t Image::UnregisterDitheredUser(void *user)
 }
 
 
-int32 Image::candidate_creator(void*)
+int32
+Image::candidate_creator(void*)
 {
 	if (color_candidates == NULL) {
 		BScreen *screen = new BScreen();
@@ -1178,7 +1241,8 @@ int32 Image::candidate_creator(void*)
 }
 
 
-int32 Image::enter_render(void *data)
+int32
+Image::enter_render(void *data)
 {
 	Image *this_pointer = (Image*)data;
 
@@ -1191,7 +1255,8 @@ int32 Image::enter_render(void *data)
 }
 
 
-int32 Image::enter_render_nobg(void *data)
+int32
+Image::enter_render_nobg(void *data)
 {
 	Image *this_pointer = (Image*)data;
 
@@ -1204,7 +1269,8 @@ int32 Image::enter_render_nobg(void *data)
 }
 
 
-int32 Image::DoRender(BRect area, bool bg)
+int32
+Image::DoRender(BRect area, bool bg)
 {
 	// The area is stated in rendered_image's coordinate system
 	// this function will combine all the visible layers into the
@@ -1321,7 +1387,8 @@ int32 Image::DoRender(BRect area, bool bg)
 }
 
 
-int32 Image::enter_dither(void *data)
+int32
+Image::enter_dither(void *data)
 {
 	Image *this_pointer = (Image*)data;
 
@@ -1334,7 +1401,8 @@ int32 Image::enter_dither(void *data)
 }
 
 
-int32 Image::DoDither(BRect area)
+int32
+Image::DoDither(BRect area)
 {
 // Here we try to dither with the N-candidate method.
 // The candidates for a color are in the array color_candidates.
@@ -1395,7 +1463,8 @@ int32 Image::DoDither(BRect area)
 }
 
 
-int32 Image::enter_render_preview(void *data)
+int32
+Image::enter_render_preview(void *data)
 {
 	Image *this_pointer = (Image*)data;
 
@@ -1408,7 +1477,8 @@ int32 Image::enter_render_preview(void *data)
 }
 
 
-int32 Image::DoRenderPreview(BRect area,int32 resolution)
+int32
+Image::DoRenderPreview(BRect area,int32 resolution)
 {
 	if (layer_list->CountItems() >= 1){
 		// We take pointers to bitmaps of all visible layers.
