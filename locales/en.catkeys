@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	183125306
+1	English	application/x-vnd.artpaint	3987462369
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -46,10 +46,12 @@ Untitled	PaintWindow		Untitled
 Miscellaneous	Windows		Miscellaneous
 Settings…	FilePanels		Settings…
 Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
+Delete layer	LayerWindow		Delete layer
 Save	FilePanels		Save
 Undo	UndoQueue		Undo
 Open	FilePanels		Open
 Rotate -90°	PaintWindow		Rotate -90°
+Duplicate layer	LayerWindow		Duplicate layer
 Save project as…	PaintWindow		Save project as…
 File	PaintWindow		File
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
@@ -75,8 +77,10 @@ Zoom out	PaintWindow		Zoom out
 Drawing a straight line.	Tools		Drawing a straight line.
 Save image	PaintWindow		Save image
 Brush tool	Tools		Brush tool
+Merge with layer above	LayerWindow		Merge with layer above
 Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Redo
+α:	LayerWindow		α:
 Set grid	PaintWindow		Set grid
 Delete selected brush	Windows		Delete selected brush
 Saves the image to disk.	PaintWindow		Saves the image to disk.
@@ -120,7 +124,6 @@ Size:	Manipulators		Size:
 Color set	ColorPalette		Color set
 Fill ellipse	Tools		Fill ellipse
 Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Click on the image to set the new scale or set it with the numeric fields.
-Add layer behind	LayerView		Add layer behind
 Transparent	Manipulators		Transparent
 Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use the primary mouse-button to rotate, other buttons to set the rotation center.
 Ellipse	Tools		Ellipse
@@ -159,6 +162,7 @@ Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Airbrush	Tools		Airbrush
+Merge with layer below	LayerWindow		Merge with layer below
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Reset brush	Tools		Reset brush
@@ -166,7 +170,6 @@ Click to adjust the layer's transparency.	Tools		Click to adjust the layer's tra
 Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Clear canvas
 OK	ColorPalette		OK
-Merge with back layer	LayerView		Merge with back layer
 Using the airbrush.	Tools		Using the airbrush.
 Tool setup…	PaintWindow		Tool setup…
 Magic wand	Tools		Magic wand
@@ -184,6 +187,7 @@ Enable preview	Tools		Enable preview
 Moves the active layer.	PaintWindow		Moves the active layer.
 Undos the previous action.	PaintWindow		Undos the previous action.
 Rotate -90°	Manipulators		Rotate -90°
+Actions	LayerWindow		Actions
 Application	Windows		Application
 Standard sizes	PaintWindow		Standard sizes
 Datatype setup: %name%	Windows		Datatype setup: %name%
@@ -223,10 +227,8 @@ Pastes previously copied selection as a new project.	PaintWindow		Pastes previou
 Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
-Merge with front layer	LayerView		Merge with front layer
 Closes the current window.	PaintWindow		Closes the current window.
 Click to draw a rectangle.	Tools		Click to draw a rectangle.
-Duplicate layer	LayerView		Duplicate layer
 Shrink selection	PaintWindow		Shrink selection
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Clear selection	ImageView		Clear selection
@@ -255,9 +257,9 @@ Off	PaintWindow		Off
 Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
 Rotation:	Manipulators		Rotation:
 Ellipse tool	Tools		Ellipse tool
-Add layer in front	LayerView		Add layer in front
 Defaults	Windows		Defaults
 Create canvas	PaintWindow		Create canvas
+Add layer above	LayerWindow		Add layer above
 Replace pixels with	Tools		Replace pixels with
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
@@ -268,7 +270,6 @@ Off	Windows		Off
 Tools	Windows		Tools
 Freehand line tool	Tools		Freehand line tool
 Angle:	Tools		Angle:
-Visible	LayerView		Visible
 Grow selection	ImageView		Grow selection
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
 Colors	ColorPalette		Colors
@@ -314,8 +315,8 @@ Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
-Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
+Flip horizontally	PaintWindow		Flip horizontally
 Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
 Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
@@ -333,6 +334,7 @@ Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Unsaved changes!	ImageView		Unsaved changes!
+Add layer below	LayerWindow		Add layer below
 Un-selects all	PaintWindow		Un-selects all
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
@@ -340,7 +342,6 @@ Copies the selection of all layers.	PaintWindow		Copies the selection of all lay
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Undo not available	UndoQueue		Undo not available
-Delete layer	LayerView		Delete layer
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
 Click to pick a color.	Tools		Click to pick a color.

@@ -13,6 +13,7 @@
 #include "Image.h"
 #include "ImageView.h"
 #include "LayerView.h"
+#include "LayerWindow.h"
 #include "MessageConstants.h"
 #include "PixelOperations.h"
 #include "ProjectFileFunctions.h"

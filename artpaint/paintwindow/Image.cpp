@@ -1246,6 +1246,7 @@ int32 Image::DoRender(BRect area, bool bg)
 		rgb_color rgb1, rgb2;
 		rgb1.red = rgb1.green = rgb1.blue = 0xBB;
 		rgb2.red = rgb2.green = rgb2.blue = 0x99;
+		rgb1.alpha = rgb2.alpha = 0xFF;
 		color1 = RGBColorToBGRA(rgb1);
 		color2 = RGBColorToBGRA(rgb2);
 
@@ -1299,23 +1300,12 @@ int32 Image::DoRender(BRect area, bool bg)
 				for (int32 x=0;x<width;++x) {
 					s = *s_bits;
 					d = *d_bits;
-					#if BYTE_ORDER == BIG_ENDIAN
-					As = FixedAlphaTable[s & 0x000000ff];
-					Ad = full_fixed_alpha - As;
-					#else
-					As = FixedAlphaTable[(s>>24) & 0x000000ff];
-					Ad = full_fixed_alpha - As;
-					#endif
 
-					target =	( ( ( (s >> 24) * As ) +
-								( (d >> 24) * Ad ) ) >> 15 ) << 24;
-					target |=	( ( ( ((s >> 16) & 0x000000ff) * As ) +
-								( ((d >> 16) & 0x000000ff) * Ad ) ) >> 15 ) << 16;
-					target |=	( ( ( ((s >> 8) & 0x000000ff) * As ) +
-								( ((d >> 8) & 0x000000ff) * Ad ) ) >> 15 ) << 8;
-					target |=	( ( ( ((s) & 0x000000ff) * As ) +
-								( ((d ) & 0x000000ff) * Ad ) ) >> 15 );
+					union color_conversion src;
+					src.word = s;
+					src.bytes[3] *= layer->GetTransparency();
 
+					target = src_over_fixed(d, src.word);
 					*d_bits++ = target;
 					++s_bits;
 				}
@@ -1424,7 +1414,7 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 		// We take pointers to bitmaps of all visible layers.
 		uint32 **layer_bits = new uint32*[layer_list->CountItems()];
 		uint32 *layer_bprs = new uint32[layer_list->CountItems()];
-		const uint32 **alpha_tables = new const uint32*[layer_list->CountItems()];
+		float *alpha = new float[layer_list->CountItems()];
 
 		int32 visible_layer_count = 0;
 		for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -1432,7 +1422,7 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 			if (layer->IsVisible() == TRUE) {
 				layer_bits[visible_layer_count] = (uint32*)layer->Bitmap()->Bits();
 				layer_bprs[visible_layer_count] = layer->Bitmap()->BytesPerRow()/4;
-				alpha_tables[visible_layer_count] = layer->ReturnFixedAlphaTable();
+				alpha[visible_layer_count] = layer->GetTransparency();
 				visible_layer_count++;
 			}
 		}
@@ -1457,6 +1447,7 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 		rgb_color rgb1, rgb2;
 		rgb1.red = rgb1.green = rgb1.blue = 0xBB;
 		rgb2.red = rgb2.green = rgb2.blue = 0x99;
+		rgb1.alpha = rgb2.alpha = 0xFF;
 		color1 = RGBColorToBGRA(rgb1);
 		color2 = RGBColorToBGRA(rgb2);
 
@@ -1478,34 +1469,12 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 				uint32 target = *(composite_bits + x + y*composite_bpr);
 				for (int32 j=0;j<visible_layer_count;j++) {
 					uint32 layer = layer_bits[j][x + y*layer_bprs[j]];
-					uint32 As;
-					uint32 Ad;
-					#if BYTE_ORDER == BIG_ENDIAN
-					As = alpha_tables[j][layer & 0x000000ff];
-					Ad = full_fixed_alpha - As;
-					#else
-					As = alpha_tables[j][(layer>>24) & 0x000000ff];
-					Ad = full_fixed_alpha - As;
-					#endif
 
-					uint32 spare_target = 0x00000000;
+					union color_conversion src;
+					src.word = layer;
+					src.bytes[3] *= alpha[j];
 
-					#if BYTE_ORDER == BIG_ENDIAN
-					spare_target =	( ( ( (layer >> 24) * As ) +
-								( (target >> 24) * Ad ) ) >> 15 ) << 24;
-					spare_target |=	( ( ( ((layer >> 16) & 0x000000ff) * As ) +
-								( ((target >> 16) & 0x000000ff) * Ad ) ) >> 15 ) << 16;
-					spare_target |=	( ( ( ((layer >> 8) & 0x000000ff) * As ) +
-								( ((target >> 8) & 0x000000ff) * Ad ) ) >> 15 ) << 8;
-					#else
-					spare_target =	( ( ( ((layer >> 16) & 0x000000ff) * As ) +
-								( ((target >> 16) & 0x000000ff) * Ad ) ) >> 15 ) << 16;
-					spare_target |=	( ( ( ((layer >> 8) & 0x000000ff) * As ) +
-								( ((target >> 8) & 0x000000ff) * Ad ) ) >> 15 ) << 8;
-					spare_target |=	( ( ( ((layer) & 0x000000ff) * As ) +
-								( ((target) & 0x000000ff) * Ad ) ) >> 15);
-					#endif
-					target = spare_target;
+					target = src_over_fixed(target, src.word);
 				}
 				// Then copy the target-value to proper places in the composite picture
 				int32 x_dimension = min_c(resolution,width+1-x);
@@ -1520,10 +1489,9 @@ int32 Image::DoRenderPreview(BRect area,int32 resolution)
 
 		for (int32 i=0;i<visible_layer_count;i++) {
 			layer_bits[i] = NULL;
-			alpha_tables[i] = NULL;
 		}
 
-		delete[] alpha_tables;
+		delete[] alpha;
 		delete[] layer_bits;
 		delete[] layer_bprs;
 	}

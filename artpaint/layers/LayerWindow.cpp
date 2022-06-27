@@ -9,27 +9,42 @@
  */
 
 #include "FloaterManager.h"
+#include "ImageView.h"
 #include "LayerWindow.h"
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "Layer.h"
+#include "NumberSliderControl.h"
+#include "PaintApplication.h"
 #include "UtilityClasses.h"
 #include "LayerView.h"
 #include "SettingsServer.h"
+#include "UtilityClasses.h"
 
 
 #include <Bitmap.h>
+#include <Button.h>
 #include <Catalog.h>
+#include <Font.h>
+#include <GroupLayout.h>
+#include <LayoutBuilder.h>
+#include <MenuBar.h>
 #include <ScrollBar.h>
+#include <ScrollView.h>
+#include <SeparatorView.h>
+#include <SpaceLayoutItem.h>
+#include <String.h>
 #include <StringView.h>
 
 
 #include <new>
-#include <stdio.h>
 
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "LayerWindow"
+
+
+using ArtPaint::Interface::NumberSliderControl;
 
 
 // Initialize the static pointer to the layer window.
@@ -46,28 +61,85 @@ sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphor
 LayerWindow::LayerWindow(BRect frame)
 	: BWindow(frame, B_TRANSLATE("Layers"),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE )
+		B_NOT_ZOOMABLE)
 {
-	BBox *top_part = new BBox(BRect(-1, 0, Bounds().Width() + 2,
-		HS_MINIATURE_IMAGE_HEIGHT + 3), NULL, B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
-	AddChild(top_part);
-	title_view = new BStringView(BRect(HS_MINIATURE_IMAGE_WIDTH + 10, 2,
-		top_part->Bounds().Width() - 2, HS_MINIATURE_IMAGE_HEIGHT - 2),
-		"image title", "", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
-	top_part->AddChild(title_view);
+	top_part = new BBox(B_PLAIN_BORDER, NULL);
+	title_view = new BStringView("title", "");
+
+	BMenu* layer_operation_menu = new BMenu(B_TRANSLATE("Actions"));
+
+	layer_operation_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Merge with layer above"),
+		new BMessage(HS_MERGE_WITH_UPPER_LAYER)));
+
+	layer_operation_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Merge with layer below"),
+		new BMessage(HS_MERGE_WITH_LOWER_LAYER)));
+
+	layer_operation_menu->AddSeparatorItem();
+
+	layer_operation_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Add layer above"),
+		new BMessage(HS_ADD_LAYER_FRONT)));
+
+	layer_operation_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Add layer below"),
+		new BMessage(HS_ADD_LAYER_BEHIND)));
+
+	layer_operation_menu->AddSeparatorItem();
+
+	layer_operation_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Duplicate layer"),
+		new BMessage(HS_DUPLICATE_LAYER)));
+
+	layer_operation_menu->AddSeparatorItem();
+
+	layer_operation_menu->AddItem(new BMenuItem(
+		B_TRANSLATE("Delete layer"),
+		new BMessage(HS_DELETE_LAYER)));
+
+	layer_operation_menu->SetRadioMode(false);
+
+	BMenuBar* menu = new BMenuBar("menu bar");
+
+	menu->AddItem(layer_operation_menu);
+
+	BMessage* message = new BMessage(HS_LAYER_TRANSPARENCY_CHANGED);
+	message->AddInt32("value", 0);
+
+	transparency_slider =
+		new NumberSliderControl(B_TRANSLATE("\xCE\xB1:"), "0",
+		message, 0, 100, false);
+
+	BFont font;
+
+	BGridLayout* transparencyLayout = BLayoutBuilder::Grid<>(0.0)
+		.Add(transparency_slider, 0, 0, 0, 0)
+		.Add(transparency_slider->LabelLayoutItem(), 0, 0)
+		.Add(transparency_slider->TextViewLayoutItem(), 1, 0)
+		.Add(transparency_slider->Slider(), 2, 0, 2);
+	transparencyLayout->SetMaxColumnWidth(1, font.StringWidth("1"));
+	transparencyLayout->SetMinColumnWidth(2,
+		font.StringWidth("SLIDERSLIDERSLIDER"));
+
+	BGroupLayout* topLayout = BLayoutBuilder::Group<>(top_part, B_VERTICAL)
+		.Add(title_view)
+		.Add(new BSeparatorView(""))
+		.Add(transparencyLayout)
+		.SetInsets(5.0, 5.0, 5.0, 5.0);
 
 	list_view = new LayerListView();
 	list_view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	list_view->MoveTo(top_part->Frame().LeftBottom()+BPoint(0,1));
-	list_view->ResizeTo(frame.Width()-B_V_SCROLL_BAR_WIDTH,frame.Height()-list_view->Frame().top);
-	AddChild(list_view);
 
-	scroll_bar = new BScrollBar(BRect(0,0,B_V_SCROLL_BAR_WIDTH-1,100),"layer_window_scroll_bar",list_view,0,0,B_VERTICAL);
-	scroll_bar->MoveTo(list_view->Frame().RightTop()+BPoint(2,0));
-	scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,
-		frame.Height() - list_view->Frame().top);
-	scroll_bar->SetSteps(8.0, 32.0);
-	AddChild(scroll_bar);
+	BScrollView* scroll_view = new BScrollView("scroller", list_view,
+		B_FRAME_EVENTS, false, true, B_NO_BORDER);
+	scroll_view->ScrollBar(B_VERTICAL)->SetSteps(8.0, 32.0);
+
+	BGroupLayout* mainLayout = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.Add(menu)
+		.Add(top_part)
+		.Add(scroll_view)
+		.SetInsets(0, 0, -1, -1);
 
 	layer_count = 0;
 	layer_window = this;
@@ -82,18 +154,24 @@ LayerWindow::LayerWindow(BRect frame)
 			true);
 	}
 	setFeel(feel);
+	float min_width = font.StringWidth("W") * 20;
 
-	ResizeBy(1,0);
-	ResizeBy(-1,0);
+	scroll_view->SetExplicitMinSize(BSize(min_width -
+		scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width(),
+		LAYER_VIEW_HEIGHT));
 
 	Lock();
 	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,
 		B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
 	AddCommonFilter(activation_filter);
+	SetSizeLimits(min_width, 1000,
+		LAYER_VIEW_HEIGHT * 2.5, 1000);
 	Unlock();
 	Show();
 
 	FloaterManager::AddFloater(this);
+
+	active_layer = NULL;
 }
 
 
@@ -116,23 +194,58 @@ LayerWindow::~LayerWindow()
 }
 
 
-void LayerWindow::MessageReceived(BMessage *message)
+void
+LayerWindow::MessageReceived(BMessage *message)
 {
 	// a standard switch to handle the messages
 	switch (message->what) {
-	default:
-		BWindow::MessageReceived(message);
-		break;
+		case HS_ADD_LAYER_FRONT:
+		case HS_ADD_LAYER_BEHIND:
+		case HS_DUPLICATE_LAYER:
+		case HS_DELETE_LAYER:
+		case HS_MERGE_WITH_LOWER_LAYER:
+		case HS_MERGE_WITH_UPPER_LAYER:
+			if (active_layer != NULL) {
+				BMessage layer_op_message;
+				layer_op_message.what = message->what;
+				layer_op_message.AddInt32("layer_id", active_layer->Id());
+				layer_op_message.AddPointer("layer_pointer",(void*)active_layer);
+
+				BView *image_view = (BView*)active_layer->GetImageView();
+				BWindow *image_window = image_view->Window();
+
+				if (image_window && active_layer->IsActive())
+					image_window->PostMessage(&layer_op_message, image_view);
+			}
+			break;
+		case HS_LAYER_TRANSPARENCY_CHANGED:
+			if (active_layer != NULL && active_layer->IsActive()) {
+				int32 value = transparency_slider->Value();
+				active_layer->SetTransparency((float)value / 100.0f);
+
+				BView *image_view = (BView*)active_layer->GetImageView();
+				BWindow *image_window = image_view->Window();
+
+				if (image_window && active_layer->IsActive())
+					image_window->PostMessage(message, image_view);
+			}
+		default:
+			BWindow::MessageReceived(message);
+			break;
 	}
 }
 
 
-bool LayerWindow::QuitRequested()
+bool
+LayerWindow::QuitRequested()
 {
 	return true;
 }
 
-void LayerWindow::ActiveWindowChanged(BWindow *active_window,BList *list,BBitmap *composite)
+
+void
+LayerWindow::ActiveWindowChanged(BWindow *active_window,
+	BList *list, BBitmap *composite)
 {
 	acquire_sem(layer_window_semaphore);
 	target_window = active_window;
@@ -143,9 +256,9 @@ void LayerWindow::ActiveWindowChanged(BWindow *active_window,BList *list,BBitmap
 		a_layer = (Layer*)list->ItemAt(0);
 	}
 
-	if (a_layer != NULL)
+	if (a_layer != NULL) {
 		window_title = a_layer->ReturnProjectName();
-	else
+	} else
 		window_title = NULL;
 
 //	if (target_window != NULL)
@@ -172,6 +285,7 @@ LayerWindow::showLayerWindow()
 			settings.FindRect(skLayerWindowFrame, &frame);
 		}
 		new LayerWindow(FitRectToScreen(frame));
+
 		layer_window->Update();
 	}
 	else {
@@ -198,19 +312,24 @@ LayerWindow::setFeel(window_feel feel)
 		layer_window->Lock();
 		layer_window->SetFeel(feel);
 		if (feel == B_NORMAL_WINDOW_FEEL) {
-			layer_window->SetLook(B_DOCUMENT_WINDOW_LOOK);
-			layer_window->scroll_bar->ResizeTo(layer_window->scroll_bar->Bounds().Width(),layer_window->list_view->Bounds().Height()-B_H_SCROLL_BAR_HEIGHT+1);
+			layer_window->SetLook(B_TITLED_WINDOW_LOOK);
 		}
 		else {
 			layer_window->SetLook(B_FLOATING_WINDOW_LOOK);
-			layer_window->scroll_bar->ResizeTo(layer_window->scroll_bar->Bounds().Width(),layer_window->list_view->Bounds().Height()+1);
 		}
 		layer_window->Unlock();
 	}
 }
 
 
-void LayerWindow::Update()
+void
+LayerWindow::FrameResized(float width, float height)
+{
+}
+
+
+void
+LayerWindow::Update()
 {
 	// Only update if the order or the amount of the layers has changed or
 	// the layers have completely changed.
@@ -220,11 +339,12 @@ void LayerWindow::Update()
 		if (layer_count != target_list->CountItems())
 			must_update = TRUE;
 		else {
-			for (int32 i=0;i<list_view->CountChildren();i++) {
+			for (int32 i = 0;i < list_view->CountChildren(); i++) {
 				Layer *layer = (Layer*)((LayerView*)list_view->ChildAt(i))->ReturnLayer();
 				if (layer != (Layer*)target_list->ItemAt(i))
 					must_update = TRUE;
-
+				if (layer->IsActive())
+					SetActiveLayer(layer);
 			}
 		}
 		if ((window_title == NULL) || (title_view->Text() == NULL) || (strcmp(window_title,title_view->Text()) != 0))
@@ -238,68 +358,75 @@ void LayerWindow::Update()
 	if (must_update) {
 		layer_window->Lock();
 
-		// Here we must first remove any existing layer views.
-		while (layer_window->list_view->CountChildren() > 0) {
-			layer_window->list_view->RemoveChild(layer_window->list_view->ChildAt(0));
+		BGridLayout* layout = (BGridLayout*)layer_window->list_view->GetLayout();
+
+		while (layout->CountItems() > 0) {
+			layout->RemoveItem(0);
 		}
 
 		// locking target_window here causes deadlocks so we do not lock it at the moment
 		// concurrency problems with the closing of target_window should be solved somehow though
 
-		// Move the scroll-bar up
-		float scroll_bar_old_value = layer_window->list_view->ScrollBar(B_VERTICAL)->Value();
-		layer_window->list_view->ScrollBar(B_VERTICAL)->SetValue(0);
-
 		int32 number_of_layers = 0;
 		// then we add the layers of current paint window
+		float height = layer_window->list_view->Bounds().Height();
 		if ((target_window != NULL)) {
 			if (target_list != NULL) {
 				// Reorder the layers' views so that the topmost layer's view is at the top.
-				for (int32 i=0;i<target_list->CountItems();i++) {
-					BView *added_view = (BView*)((Layer*)target_list->ItemAt(i))->GetView();
-					layer_window->list_view->AddChild(added_view);
-					layer_window->list_view->ChildAt(i)->MoveTo(1,(target_list->CountItems() - i-1)*LAYER_VIEW_HEIGHT+1);
+				int numItems = target_list->CountItems();
+				for (int32 i = numItems - 1;i >= 0; i--) {
+					Layer* added_layer = (Layer*)target_list->ItemAt(i);
+					LayerView *added_view = (LayerView*)(added_layer)->GetView();
+					layout->AddView(added_view, 0, numItems - i);
+					if (added_layer->IsActive())
+						SetActiveLayer(added_layer);
 				}
 				number_of_layers = target_list->CountItems();
+				layout->AddItem(BSpaceLayoutItem::CreateGlue(), 0,
+					number_of_layers + 1);
 			}
 		}
 
 		layer_count = number_of_layers;
 
-		BView *first_layer = layer_window->list_view->ChildAt(0);
-		if (first_layer != NULL) {
-			ResizeBy(first_layer->Bounds().Width() - layer_window->list_view->Bounds().Width(),0);
-		}
-
-
-	//	layer_window->SetSizeLimits(10,1000,140,layer_window->scroll_view->Frame().top + number_of_layers * LAYER_VIEW_HEIGHT);
-
-		layer_window->list_view->ScrollBar(B_VERTICAL)->SetRange(0,number_of_layers * LAYER_VIEW_HEIGHT-layer_window->list_view->Bounds().Height());
-		layer_window->list_view->ScrollBar(B_VERTICAL)->SetProportion(layer_window->list_view->Bounds().Height()/(float)(number_of_layers * LAYER_VIEW_HEIGHT));
-		layer_window->list_view->ScrollBar(B_VERTICAL)->SetValue(scroll_bar_old_value);
-
-		layer_window->title_view->SetText(window_title);
+		BFont font;
+		float width = font.StringWidth("AVERYLONGFILENAMESERIOUSLY");
+		BString name(window_title);
+		font.TruncateString(&name, B_TRUNCATE_MIDDLE, width);
+		layer_window->title_view->SetText(name);
 
 		layer_window->Unlock();
+
+		// jiggle the window to update the scroll bar
+		layer_window->ResizeBy(1, 0);
+		layer_window->ResizeBy(-1, 0);
 	}
 }
 
 
+void
+LayerWindow::SetActiveLayer(Layer* layer)
+{
+	active_layer = layer;
+	transparency_slider->SetValue(active_layer->GetTransparency() * 100);
+}
 
 
 LayerListView::LayerListView()
-	: BView(BRect(0,0,120,140),"list of layers",B_FOLLOW_ALL,B_WILL_DRAW|B_FRAME_EVENTS)
+	: BView("list of layers", B_WILL_DRAW | B_FRAME_EVENTS)
 {
+	BGridLayout *mainLayout = new BGridLayout(B_USE_DEFAULT_SPACING, 0.0);
+	SetLayout(mainLayout);
 }
 
 
 LayerListView::~LayerListView()
 {
-
 }
 
 
-void LayerListView::DetachedFromWindow()
+void
+LayerListView::DetachedFromWindow()
 {
 	BView *view = ScrollBar(B_VERTICAL);
 
@@ -310,23 +437,7 @@ void LayerListView::DetachedFromWindow()
 }
 
 
-void LayerListView::FrameResized(float, float height)
+void
+LayerListView::FrameResized(float, float height)
 {
-	// We only care about the height.
-	BScrollBar *v_scroll_bar = ScrollBar(B_VERTICAL);
-	if (CountChildren() > 0) {
-		if (v_scroll_bar != NULL) {
-			v_scroll_bar->SetRange(0,max_c(0,CountChildren()*LAYER_VIEW_HEIGHT-height));
-			v_scroll_bar->SetProportion(height/(float)(CountChildren()*LAYER_VIEW_HEIGHT));
-		}
-
-		if (ChildAt(0)->Frame().bottom < height) {
-			if (ChildAt(CountChildren()-1)->Frame().top < 0) {
-				ScrollBy(0,min_c(height-ChildAt(0)->Frame().bottom,height-ChildAt(CountChildren()-1)->Frame().top));
-			}
-		}
-	}
-	else {
-		v_scroll_bar->SetRange(0,0);
-	}
 }
