@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3987462369
+1	English	application/x-vnd.artpaint	714475091
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -20,7 +20,6 @@ Crop…	PaintWindow		Crop…
 Click to make a selection.	Tools		Click to make a selection.
 Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
-Merge with front layer	Image		Merge with front layer
 Width:	Tools		Width:
 Alpha	Tools		Alpha
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
@@ -80,7 +79,6 @@ Brush tool	Tools		Brush tool
 Merge with layer above	LayerWindow		Merge with layer above
 Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
 Redo	UndoQueue		Redo
-α:	LayerWindow		α:
 Set grid	PaintWindow		Set grid
 Delete selected brush	Windows		Delete selected brush
 Saves the image to disk.	PaintWindow		Saves the image to disk.
@@ -102,7 +100,6 @@ Finishing	ImageView		Finishing
 Confirm quitting	Windows		Confirm quitting
 Scale…	Manipulators		Scale…
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
-Merge with back layer	Image		Merge with back layer
 Click to make a fill.	Tools		Click to make a fill.
 Save project	PaintWindow		Save project
 Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
@@ -161,12 +158,15 @@ Enable antialiasing	Tools		Enable antialiasing
 Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
+Merge with layer above	Image		Merge with layer above
 Airbrush	Tools		Airbrush
 Merge with layer below	LayerWindow		Merge with layer below
+Layer transparency	LayerWindow		Layer transparency
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Reset brush	Tools		Reset brush
 Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
+Merge with layer below	Image		Merge with layer below
 Undo steps:	Windows		Undo steps:
 Clear canvas	PaintWindow		Clear canvas
 OK	ColorPalette		OK
