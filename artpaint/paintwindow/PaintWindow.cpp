@@ -1431,7 +1431,7 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 							Manipulator *manipulator = Instantiate(NULL, NULL);
 
 							if (manipulator != NULL) {
-								manip_map.insert(std::pair(BString(manipulator->ReturnName()), *it));
+								manip_map.insert(std::pair<BString, int32>(BString(manipulator->ReturnName()), *it));
 
 								delete manipulator;
 								manipulator = NULL;
