@@ -95,8 +95,6 @@ BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *select
 	int32 spare_bpr = spare_buffer->BytesPerRow()/4;
 
 	// here we can start doing the actual convolution
-	buffer_bits = (int32*)original->Bits();
-	spare_bits = (int32*)spare_buffer->Bits();
 	spare_bits += spare_bpr + 1;
 
 	int32 target_value;

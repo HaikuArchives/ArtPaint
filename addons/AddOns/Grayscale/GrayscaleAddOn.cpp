@@ -40,7 +40,6 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 }
 
 
-
 GrayscaleAddOnManipulator::GrayscaleAddOnManipulator(BBitmap*)
 		: Manipulator()
 {
@@ -73,7 +72,7 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap *original,Selection
 		uint8 bytes[4];
 		uint32 word;
 	} color;
-	if ((selection == NULL) && (selection->IsEmpty() == TRUE)) {
+	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {
 		for (int32 i=0;i<bits_length;i++) {
 			color.word = *bits;
 			blue = color.bytes[0] * 0.114;

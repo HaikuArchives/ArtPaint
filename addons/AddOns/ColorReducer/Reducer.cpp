@@ -103,12 +103,15 @@ BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *
 		palette = screen.ColorMap()->color_list;
 	else if (new_settings->palette_mode == GLA_PALETTE)
 		palette = gla_palette(source_bitmap,new_settings->palette_size);
+	else
+		palette = NULL;
 
 	if (palette != NULL)
 		do_dither(source_bitmap,target_bitmap,palette,new_settings->palette_size,new_settings->dither_mode);
 
 	return target_bitmap;
 }
+
 
 int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
 {
@@ -132,6 +135,8 @@ int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,B
 		palette = screen.ColorMap()->color_list;
 	else if (previous_settings.palette_mode == GLA_PALETTE)
 		palette = gla_palette(source_bitmap,previous_settings.palette_size);
+	else
+		palette = NULL;
 
 	if (palette != NULL)
 		do_dither(source_bitmap,target_bitmap,palette,previous_settings.palette_size,previous_settings.dither_mode);
@@ -139,6 +144,7 @@ int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,B
 	config_view->Window()->PostMessage(REDUCER_FINISHED, config_view);
 	return 1;
 }
+
 
 void ReducerManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
 {
@@ -174,6 +180,7 @@ void ReducerManipulator::Reset(Selection*)
 	}
 }
 
+
 BView* ReducerManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
@@ -190,6 +197,7 @@ ManipulatorSettings* ReducerManipulator::ReturnSettings()
 	return new ReducerManipulatorSettings(settings);
 }
 
+
 void ReducerManipulator::ChangeSettings(ManipulatorSettings *s)
 {
 	ReducerManipulatorSettings *new_settings;
@@ -204,6 +212,7 @@ const char* ReducerManipulator::ReturnName()
 {
 	return B_TRANSLATE("Color reducer");
 }
+
 
 const char* ReducerManipulator::ReturnHelpString()
 {
@@ -267,10 +276,6 @@ void ReducerManipulator::do_dither(BBitmap *source,BBitmap *target,const rgb_col
 
 	delete reduced_map;
 }
-
-
-
-
 
 
 // -------------------------------------

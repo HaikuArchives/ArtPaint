@@ -122,7 +122,8 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 	float s = new_settings->wave_length;
 	float A = new_settings->wave_amount;
 	float k = 0;
-	float dx,dy;
+	float dx = 0;
+	float dy = 0;
 	float sqrt_x_plus_y;
 	float one_per_sqrt_x_plus_y;
 	float cx,cy;
@@ -137,7 +138,6 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 
 	float real_x,real_y;
 	float two_pi_per_s = 2*PI/s;
-	float two_360_per_s = 720.0/s;
 
 	union {
 		uint8 bytes[4];
@@ -212,7 +212,6 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 						dx =  real_x/sqrt_x_plus_y*A*sin(sqrt_x_plus_y*two_pi_per_s);
 						dx = dx*(1-k*sqrt_x_plus_y/R);
 						int32 ceil_y = ceil(y+dy);
-						int32 floor_y = ceil_y -1;
 						int32 floor_x = floor(x+dx);
 						int32 ceil_x = floor_x+1;
 						float x_mix_right = (x+dx)-floor_x;
@@ -234,7 +233,6 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 						int32 ceil_y = ceil(y+dy);
 						int32 floor_y = ceil_y -1;
 						int32 floor_x = floor(x+dx);
-						int32 ceil_x = floor_x+1;
 						float y_mix_upper = ceil(y+dy)-(y+dy);
 						if ((ceil_y<=bottom) && (ceil_y >= top))
 							p1 = *(source_bits + (int32)x + ceil_y*target_bpr);

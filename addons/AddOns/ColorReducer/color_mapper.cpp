@@ -333,9 +333,6 @@ BBitmap* preserve_solids_fs_color_mapper(BBitmap * inSource, const rgb_color * i
 						map_function[rgb15] = find_palette_index(bgra32.word,inPalette,inPaletteSize);
 					}
 
-					uint8 color_index = *destination_bits++ = (uint8)map_function[rgb15];
-
-
 					red_side_error = red_error[x+1] >> 15;
 					blue_side_error = blue_error[x+1] >> 15;
 					green_side_error = green_error[x+1] >> 15;

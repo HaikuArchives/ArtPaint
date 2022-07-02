@@ -42,7 +42,6 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 }
 
 
-
 MarbleManipulator::MarbleManipulator(ManipulatorInformer *i)
 		: Manipulator()
 {
@@ -152,7 +151,6 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 		source += (int32)top*source_bpr;
 
 		for (float y=top;y<=bottom;++y) {
-			int32 y_times_bpr = y*source_bpr;
 			for (float x=left;x<=right;++x) {
 				color.word = *source;
 				float noise = generator.PerlinNoise2D(x*one_per_width,y*one_per_height);

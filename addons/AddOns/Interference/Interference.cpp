@@ -232,10 +232,7 @@ InterferenceManipulator::SetPreviewBitmap(BBitmap *bm)
 		}
 	}
 	if (preview_bitmap != NULL) {
-		double speed = GetSystemClockSpeed() / 15000;
-
 		BRect bounds = preview_bitmap->Bounds();
-		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
 
 		if ((settings.centerA == BPoint(0,0)) && (settings.centerB == BPoint(0,0))) {
 			settings.centerA.x = bounds.Width()/2;

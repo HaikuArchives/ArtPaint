@@ -207,9 +207,7 @@ BBitmap* Halftone::round_dot_halftone(BBitmap *original,Selection *selection, BS
 		return NULL;
 
 	uint32 *source_bits = (uint32*)original->Bits();
-	uint32 *target_bits = (uint32*)original->Bits();
 	int32 source_bpr = original->BytesPerRow()/4;
-	int32 target_bpr = original->BytesPerRow()/4;
 	int32 top,bottom,left,right;
 
 	left = original->Bounds().left;
@@ -292,9 +290,7 @@ BBitmap* Halftone::diagonal_line_halftone(BBitmap *original,Selection *selection
 		return NULL;
 
 	uint32 *source_bits = (uint32*)original->Bits();
-	uint32 *target_bits = (uint32*)original->Bits();
 	int32 source_bpr = original->BytesPerRow()/4;
-	int32 target_bpr = original->BytesPerRow()/4;
 	int32 top,bottom,left,right;
 
 	left = original->Bounds().left;
@@ -376,9 +372,7 @@ BBitmap* Halftone::ordered_dither_halftone(BBitmap *original,Selection *selectio
 		return NULL;
 
 	uint32 *source_bits = (uint32*)original->Bits();
-	uint32 *target_bits = (uint32*)original->Bits();
 	int32 source_bpr = original->BytesPerRow()/4;
-	int32 target_bpr = original->BytesPerRow()/4;
 	int32 top,bottom,left,right;
 
 	left = original->Bounds().left;
@@ -461,9 +455,7 @@ BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BS
 		return NULL;
 
 	uint32 *source_bits = (uint32*)original->Bits();
-	uint32 *target_bits = (uint32*)original->Bits();
 	int32 source_bpr = original->BytesPerRow()/4;
-	int32 target_bpr = original->BytesPerRow()/4;
 	int32 top,bottom,left,right;
 
 	left = original->Bounds().left;
@@ -501,7 +493,6 @@ BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BS
 				float threshold = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
 				float value = min_c(255,max_c(threshold+right_error+errors[x+1],0));
 				errors[x+1] = 0;
-				right_error = 0;
 				float error;
 				if (value > 127) {
 					error = -(255 - value);
@@ -544,6 +535,8 @@ BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BS
 		}
 	}
 
+	delete[] errors;
+
 	return original;
 }
 
@@ -554,9 +547,7 @@ BBitmap* Halftone::ncandidate_dither_halftone(BBitmap *original,Selection *selec
 		return NULL;
 
 	uint32 *source_bits = (uint32*)original->Bits();
-	uint32 *target_bits = (uint32*)original->Bits();
 	int32 source_bpr = original->BytesPerRow()/4;
-	int32 target_bpr = original->BytesPerRow()/4;
 	int32 top,bottom,left,right;
 
 	left = original->Bounds().left;
