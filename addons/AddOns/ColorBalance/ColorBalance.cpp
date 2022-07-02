@@ -92,12 +92,8 @@ BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 		source_bitmap = new_bitmap;
 	}
 
-
 	uint32 *source_bits = (uint32*)source_bitmap->Bits();
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
-	int32 source_bpr = source_bitmap->BytesPerRow()/4;
-	int32 target_bpr = target_bitmap->BytesPerRow()/4;
-
 
 	int32 left = target_bitmap->Bounds().left;
 	int32 right = target_bitmap->Bounds().right;

@@ -90,7 +90,6 @@ BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection
 	*/
 
 	int32 size_of_area = width*height-1;
-	int32 width_times_height = width*height;
 	uint32 moved_pixel;
 	union {
 		uint8 bytes[4];

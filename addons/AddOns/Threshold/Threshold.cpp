@@ -222,7 +222,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
-		uint32 value;
+		uint32 value = 0;
 
 		for (int32 y=top;y<=bottom;y+=step) {
 			int32 y_times_source_bpr = y*source_bpr;
@@ -274,7 +274,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 		float update_amount = 100.0/(bottom-top)*update_interval/(float)number_of_threads;
 
 		// Loop through all pixels in original.
-		uint32 value;
+		uint32 value = 0;
 
 		for (int32 y=top;y<=bottom;y+=step) {
 			int32 y_times_source_bpr = y*source_bpr;

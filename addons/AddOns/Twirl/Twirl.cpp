@@ -114,12 +114,9 @@ BBitmap* TwirlManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *or
 		source_bitmap = new_bitmap;
 	}
 
-
 	uint32 *source_bits = (uint32*)source_bitmap->Bits();
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
 	int32 source_bpr = source_bitmap->BytesPerRow()/4;
-	int32 target_bpr = target_bitmap->BytesPerRow()/4;
-
 
 	float start_y = 0;
 	float end_y = target_bitmap->Bounds().bottom;
@@ -147,7 +144,6 @@ BBitmap* TwirlManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *or
 	background.bytes[1] = 0xFF;
 	background.bytes[2] = 0xFF;
 	background.bytes[3] = 0x00;
-
 
 	if (selection->IsEmpty()) {
 		uint32 p1,p2,p3,p4;

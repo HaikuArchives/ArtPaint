@@ -223,7 +223,6 @@ int32 BlurManipulator::VerticalBlur(int32 thread_number)
 	int32 source_bpr = tall_bpr;
 	uint32 *target_bits = wide_bits;
 	int32 target_bpr = wide_bpr;
-	bool blur_alpha = settings.blur_alpha;
 
 	source_bits += MAX_BLUR_AMOUNT*source_bpr;
 	union {
@@ -304,7 +303,6 @@ int32 BlurManipulator::HorizontalBlur(int32 thread_number)
 	int32 source_bpr = wide_bpr;
 	uint32 *target_bits = final_bits;
 	int32 target_bpr = final_bpr;
-	bool blur_alpha = settings.blur_alpha;
 	union {
 		uint8 bytes[4];
 		uint32 word;
@@ -478,13 +476,11 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 				throw std::bad_alloc();
 			}
 
-
 			// After allocating the bitmaps we should copy the data from preview_bitmap to
 			// tall_copy_of_the_preview_bitmap.
 			uint32 *source_bits = (uint32*)preview_bitmap->Bits();
 			uint32 *target_bits = (uint32*)tall_copy_of_the_preview_bitmap->Bits();
 			int32 source_bpr = preview_bitmap->BytesPerRow()/4;
-			int32 target_bpr = tall_copy_of_the_preview_bitmap->BytesPerRow()/4;
 			int32 width = preview_bitmap->Bounds().Width();
 			int32 height = preview_bitmap->Bounds().Height();
 			// First copy the first row MAX_BLUR_AMOUNT times.
