@@ -39,7 +39,6 @@ LayerWindow* LayerWindow::layer_window = NULL;
 // also the composite picture and target-window's title
 BWindow* LayerWindow::target_window = NULL;
 BList* LayerWindow::target_list = NULL;
-BBitmap* LayerWindow::composite_image = NULL;
 const char* LayerWindow::window_title = NULL;
 sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphore");
 
@@ -52,9 +51,6 @@ LayerWindow::LayerWindow(BRect frame)
 	BBox *top_part = new BBox(BRect(-1, 0, Bounds().Width() + 2,
 		HS_MINIATURE_IMAGE_HEIGHT + 3), NULL, B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
 	AddChild(top_part);
-	bitmap_view = new BitmapView(NULL, BRect(6, 2, HS_MINIATURE_IMAGE_WIDTH - 1 + 6,
-		HS_MINIATURE_IMAGE_HEIGHT - 1 + 2));
-	top_part->AddChild(bitmap_view);
 	title_view = new BStringView(BRect(HS_MINIATURE_IMAGE_WIDTH + 10, 2,
 		top_part->Bounds().Width() - 2, HS_MINIATURE_IMAGE_HEIGHT - 2),
 		"image title", "", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP);
@@ -141,7 +137,6 @@ void LayerWindow::ActiveWindowChanged(BWindow *active_window,BList *list,BBitmap
 	acquire_sem(layer_window_semaphore);
 	target_window = active_window;
 	target_list = list;
-	composite_image = composite;
 
 	Layer *a_layer = NULL;
 	if (list != NULL) {
@@ -284,8 +279,6 @@ void LayerWindow::Update()
 		layer_window->list_view->ScrollBar(B_VERTICAL)->SetValue(scroll_bar_old_value);
 
 		layer_window->title_view->SetText(window_title);
-		layer_window->bitmap_view->SetBitmap(new (std::nothrow) BBitmap(composite_image));
-		layer_window->bitmap_view->Invalidate();
 
 		layer_window->Unlock();
 	}

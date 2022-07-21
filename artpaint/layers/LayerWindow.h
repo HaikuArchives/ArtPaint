@@ -24,7 +24,6 @@ class LayerWindow : public BWindow {
 
 //				BScrollView		*scroll_view;
 				BScrollBar		*scroll_bar;
-				BitmapView		*bitmap_view;
 				BStringView		*title_view;
 
 
@@ -35,7 +34,6 @@ static			BList			*target_list;	// In this list are the layer-item views
 												// of all layers. They will be add as children
 												// to list_view.
 
-static			BBitmap			*composite_image;
 static	const	char			*window_title;
 //static			bool			updates_permitted;
 
