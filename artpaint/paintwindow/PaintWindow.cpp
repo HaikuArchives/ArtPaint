@@ -635,6 +635,10 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_IMAGE_SAVE_PANEL: {
+			if (fImageSizeWindow && fImageSizeWindow->Lock()) {
+				fImageSizeWindow->Hide();
+				fImageSizeWindow->Unlock();
+			}
 			if (!fImageSavePanel) {
 				BPath path;
 				if (fImageEntry.InitCheck() != B_OK) {
@@ -670,6 +674,10 @@ PaintWindow::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_SHOW_PROJECT_SAVE_PANEL: {
+			if (fImageSizeWindow && fImageSizeWindow->Lock()) {
+				fImageSizeWindow->Hide();
+				fImageSizeWindow->Unlock();
+			}
 			// This comes from fMenubar->"File"->"Save Project As…"
 			if (!fProjectSavePanel) {
 				BPath path;
