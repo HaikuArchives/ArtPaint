@@ -384,8 +384,10 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		fAdjustableWidth =
 			new BCheckBox(B_TRANSLATE("Adjustable width"),
 			message);
-		if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF)
+		if (tool->GetCurrentValue(MODE_OPTION) != B_CONTROL_OFF) {
 			fAdjustableWidth->SetValue(B_CONTROL_ON);
+			fLineSize->SetEnabled(FALSE);
+		}
 
 		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);
 
@@ -412,4 +414,22 @@ StraightLineToolConfigView::AttachedToWindow()
 	fLineSize->SetTarget(this);
 	fAntiAliasing->SetTarget(this);
 	fAdjustableWidth->SetTarget(this);
+}
+
+
+void
+StraightLineToolConfigView::MessageReceived(BMessage* message)
+{
+	DrawingToolConfigView::MessageReceived(message);
+
+	switch(message->what) {
+		case OPTION_CHANGED: {
+			if (message->FindInt32("option") == MODE_OPTION) {
+				if (fAdjustableWidth->Value() == B_CONTROL_OFF)
+					fLineSize->SetEnabled(TRUE);
+				else
+					fLineSize->SetEnabled(FALSE);
+			}
+		} break;
+	}
 }

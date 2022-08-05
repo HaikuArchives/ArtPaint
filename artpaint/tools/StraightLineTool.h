@@ -48,6 +48,7 @@ public:
 	virtual							~StraightLineToolConfigView() {}
 
 	virtual	void					AttachedToWindow();
+	virtual void					MessageReceived(BMessage* message);
 
 private:
 			NumberSliderControl*	fLineSize;
