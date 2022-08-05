@@ -46,6 +46,7 @@ class LayerWindow : public BWindow {
 								transparency_slider;
 				BBox*			top_part;
 				BMenu*			layer_operation_menu;
+				BMenu*			blend_mode_menu;
 
 				// this is the paint-window from which we display the image
 static			BWindow*		target_window;

@@ -143,6 +143,4 @@
 
 #define	HS_MANIPULATOR_FINISHED			'MnFi'
 
-#define HS_LAYER_TRANSPARENCY_CHANGED	'LtXc'
-
 #endif

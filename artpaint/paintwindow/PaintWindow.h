@@ -120,6 +120,8 @@ public:
 
 			StatusView*			ReturnStatusView() const { return fStatusView; }
 
+			BMenuBar*			ReturnMenuBar() const { return fMenubar; }
+
 private:
 								PaintWindow(BRect frame, const char* name,
 									uint32 views, const BMessage& settings);

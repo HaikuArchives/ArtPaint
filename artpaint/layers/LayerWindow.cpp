@@ -7,18 +7,20 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
+#include "LayerWindow.h"
 
 #include "CustomGridLayout.h"
 #include "FloaterManager.h"
 #include "ImageView.h"
-#include "LayerWindow.h"
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "Layer.h"
+#include "LayerView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
+#include "PaintWindow.h"
+#include "PixelOperations.h"
 #include "UtilityClasses.h"
-#include "LayerView.h"
 #include "SettingsServer.h"
 #include "UtilityClasses.h"
 
@@ -31,6 +33,8 @@
 #include <GridLayout.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
+#include <MenuField.h>
+#include <PopUpMenu.h>
 #include <ScrollBar.h>
 #include <ScrollView.h>
 #include <SeparatorView.h>
@@ -68,37 +72,23 @@ LayerWindow::LayerWindow(BRect frame)
 	top_part = new BBox(B_PLAIN_BORDER, NULL);
 	title_view = new BStringView("title", "");
 
-	layer_operation_menu = new BMenu(B_TRANSLATE("Actions"));
+	layer_operation_menu = new BMenu(B_TRANSLATE("Layer"));
 
 	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Merge with layer above"),
-		new BMessage(HS_MERGE_WITH_UPPER_LAYER)));
-
-	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Merge with layer below"),
-		new BMessage(HS_MERGE_WITH_LOWER_LAYER)));
-
-	layer_operation_menu->AddSeparatorItem();
-
-	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Add layer above"),
+		B_TRANSLATE("Add"),
 		new BMessage(HS_ADD_LAYER_FRONT)));
 
 	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Add layer below"),
-		new BMessage(HS_ADD_LAYER_BEHIND)));
-
-	layer_operation_menu->AddSeparatorItem();
+		B_TRANSLATE("Delete"),
+		new BMessage(HS_DELETE_LAYER)));
 
 	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Duplicate layer"),
+		B_TRANSLATE("Duplicate"),
 		new BMessage(HS_DUPLICATE_LAYER)));
 
-	layer_operation_menu->AddSeparatorItem();
-
 	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Delete layer"),
-		new BMessage(HS_DELETE_LAYER)));
+		B_TRANSLATE("Merge down"),
+		new BMessage(HS_MERGE_WITH_LOWER_LAYER)));
 
 	layer_operation_menu->SetRadioMode(false);
 
@@ -106,11 +96,106 @@ LayerWindow::LayerWindow(BRect frame)
 
 	menu->AddItem(layer_operation_menu);
 
+	blend_mode_menu = new BPopUpMenu("blend_mode");
+
+	BMessage* blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_NORMAL);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_NORMAL), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_DISSOLVE);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_DISSOLVE), blend_msg));
+
+	blend_mode_menu->AddSeparatorItem();
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_DARKEN);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_DARKEN), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_MULTIPLY);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_MULTIPLY), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_BURN);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_BURN), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_LINEAR_BURN);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_LINEAR_BURN), blend_msg));
+
+	blend_mode_menu->AddSeparatorItem();
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_LIGHTEN);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_LIGHTEN), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_SCREEN);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_SCREEN), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_DODGE);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_DODGE), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_LINEAR_DODGE);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_LINEAR_DODGE), blend_msg));
+
+	blend_mode_menu->AddSeparatorItem();
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_OVERLAY);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_OVERLAY), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_SOFT_LIGHT);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_SOFT_LIGHT), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_HARD_LIGHT);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_HARD_LIGHT), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_VIVID_LIGHT);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_VIVID_LIGHT), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_LINEAR_LIGHT);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_LINEAR_LIGHT), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_PIN_LIGHT);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_PIN_LIGHT), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_HARD_MIX);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_HARD_MIX), blend_msg));
+
+	blend_mode_menu->AddSeparatorItem();
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_DIFFERENCE);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_DIFFERENCE), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_EXCLUSION);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_EXCLUSION), blend_msg));
+
+	blend_msg = new BMessage(HS_LAYER_BLEND_MODE_CHANGED);
+	blend_msg->AddUInt8("blend_mode", BLEND_DIVIDE);
+	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_DIVIDE), blend_msg));
+
+
+
+	BMenuField* blend_dropdown = new BMenuField("blend_dropdown",
+		B_TRANSLATE("Mode:"), blend_mode_menu);
+
 	BMessage* message = new BMessage(HS_LAYER_TRANSPARENCY_CHANGED);
 	message->AddInt32("value", 0);
 
 	transparency_slider =
-		new NumberSliderControl("\xCE\xB1:", "0",
+		new NumberSliderControl("Alpha:", "0",
 		message, 0, 100, false);
 
 	BFont font;
@@ -119,7 +204,10 @@ LayerWindow::LayerWindow(BRect frame)
 		.Add(transparency_slider, 0, 0, 0, 0)
 		.Add(transparency_slider->LabelLayoutItem(), 0, 0)
 		.Add(transparency_slider->TextViewLayoutItem(), 1, 0)
-		.Add(transparency_slider->Slider(), 2, 0, 2);
+		.Add(transparency_slider->Slider(), 2, 0, 2)
+		.Add(blend_dropdown->CreateLabelLayoutItem(), 0, 1)
+		.Add(blend_dropdown->CreateMenuBarLayoutItem(), 1, 1, 3);
+
 	transparencyLayout->SetMaxColumnWidth(1, font.StringWidth("1"));
 	transparencyLayout->SetMinColumnWidth(2,
 		font.StringWidth("SLIDERSLIDERSLIDER"));
@@ -127,10 +215,9 @@ LayerWindow::LayerWindow(BRect frame)
 	transparency_slider->Slider()->SetToolTip(B_TRANSLATE("Layer transparency"));
 
 	BGroupLayout* topLayout = BLayoutBuilder::Group<>(top_part, B_VERTICAL)
-		.Add(title_view)
-		.Add(new BSeparatorView(""))
 		.Add(transparencyLayout)
-		.SetInsets(5.0, 5.0, 5.0, 5.0);
+		.SetInsets(B_USE_SMALL_INSETS, B_USE_SMALL_INSETS,
+			B_USE_SMALL_INSETS, B_USE_SMALL_INSETS);
 
 	list_view = new LayerListView();
 	list_view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
@@ -204,11 +291,9 @@ LayerWindow::MessageReceived(BMessage *message)
 	// a standard switch to handle the messages
 	switch (message->what) {
 		case HS_ADD_LAYER_FRONT:
-		case HS_ADD_LAYER_BEHIND:
 		case HS_DUPLICATE_LAYER:
 		case HS_DELETE_LAYER:
 		case HS_MERGE_WITH_LOWER_LAYER:
-		case HS_MERGE_WITH_UPPER_LAYER:
 			if (active_layer != NULL) {
 				BMessage layer_op_message;
 				layer_op_message.what = message->what;
@@ -220,8 +305,7 @@ LayerWindow::MessageReceived(BMessage *message)
 
 				if (image_window && active_layer->IsActive())
 					image_window->PostMessage(&layer_op_message, image_view);
-			}
-			break;
+			} break;
 		case HS_LAYER_TRANSPARENCY_CHANGED:
 			if (active_layer != NULL && active_layer->IsActive()) {
 				int32 value = transparency_slider->Value();
@@ -232,7 +316,20 @@ LayerWindow::MessageReceived(BMessage *message)
 
 				if (image_window && active_layer->IsActive())
 					image_window->PostMessage(message, image_view);
-			}
+			} break;
+		case HS_LAYER_BLEND_MODE_CHANGED:
+			if (active_layer != NULL && active_layer->IsActive()) {
+				uint8 mode;
+				if(message->FindUInt8("blend_mode", &mode) == B_OK) {
+					active_layer->SetBlendMode(mode);
+
+					BView *image_view = (BView*)active_layer->GetImageView();
+					BWindow *image_window = image_view->Window();
+
+					if (image_window && active_layer->IsActive())
+						image_window->PostMessage(message, image_view);
+				}
+			} break;
 		default:
 			BWindow::MessageReceived(message);
 			break;
@@ -410,15 +507,31 @@ LayerWindow::SetActiveLayer(Layer* layer)
 {
 	active_layer = layer;
 	transparency_slider->SetValue(active_layer->GetTransparency() * 100);
-	if (layer->ReturnUpperLayer() == NULL)
-		layer_operation_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(FALSE);
-	else
-		layer_operation_menu->FindItem(HS_MERGE_WITH_UPPER_LAYER)->SetEnabled(TRUE);
+	BMenuItem* blend_mode_item = blend_mode_menu->FindItem(
+		mode_to_string((BlendModes)(active_layer->GetBlendMode())));
 
-	if (layer->ReturnLowerLayer() == NULL)
+	if (blend_mode_item)
+		blend_mode_item->SetMarked(true);
+
+	BView *image_view = (BView*)active_layer->GetImageView();
+	PaintWindow *image_window = (PaintWindow*)(image_view->Window());
+	BMenuBar* main_menubar = image_window->ReturnMenuBar();
+
+	layer_operation_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(TRUE);
+	main_menubar->FindItem(HS_DELETE_LAYER)->SetEnabled(TRUE);
+
+	if (layer->ReturnLowerLayer() == NULL) {
 		layer_operation_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(FALSE);
-	else
+		main_menubar->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(FALSE);
+		if (layer->ReturnUpperLayer() == NULL) {
+			layer_operation_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(FALSE);
+			main_menubar->FindItem(HS_DELETE_LAYER)->SetEnabled(FALSE);
+		}
+	} else {
 		layer_operation_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
+		main_menubar->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
+	}
+
 }
 
 

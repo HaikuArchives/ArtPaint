@@ -1199,21 +1199,32 @@ PaintWindow::openMenuBar()
 
 	menu->AddSeparatorItem();
 
+/*
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSPARENCY_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Change transparency" B_UTF8_ELLIPSIS),
 		a_message, 0, 0, this,
 		B_TRANSLATE("Changes the transparency of active layer.")));
+*/
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear layer"),
 		new BMessage(HS_CLEAR_LAYER), 0, 0, this,
 		B_TRANSLATE("Clears the active layer.")));
 
 	menu->AddSeparatorItem();
 
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Add layer"),
-		new BMessage(HS_ADD_LAYER_FRONT), '.', 0, this,
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Add"),
+		new BMessage(HS_ADD_LAYER_FRONT), 0, 0, this,
 		B_TRANSLATE("Adds a layer to the top of this image.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Delete"),
+		new BMessage(HS_DELETE_LAYER), 0, 0, this,
+		B_TRANSLATE("Deletes the selected layer.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Duplicate"),
+		new BMessage(HS_DUPLICATE_LAYER), 0, 0, this,
+		B_TRANSLATE("Duplicates the selected layer.")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Merge down"),
+		new BMessage(HS_MERGE_WITH_LOWER_LAYER), 0, 0, this,
+		B_TRANSLATE("Merges selected layer with the layer below.")));
 
 	// The Canvas menu.
 	menu = new BMenu(B_TRANSLATE("Canvas"));
@@ -1532,6 +1543,9 @@ PaintWindow::AddImageView()
 
 	fMenubar->FindItem(B_TRANSLATE("Add-ons"))->Submenu()->SetTargetForItems(fImageView);
 	fMenubar->FindItem(HS_ADD_LAYER_FRONT)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_DELETE_LAYER)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_DUPLICATE_LAYER)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetTarget(fImageView);
 	fMenubar->FindItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS))->SetTarget(fImageView);
 	fMenubar->FindItem(HS_CLEAR_CANVAS)->SetTarget(fImageView);
 	fMenubar->FindItem(HS_CLEAR_LAYER)->SetTarget(fImageView);

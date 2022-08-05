@@ -368,6 +368,7 @@ void ImageView::MessageReceived(BMessage *message)
 		}	break;
 
 		case HS_LAYER_TRANSPARENCY_CHANGED:
+		case HS_LAYER_BLEND_MODE_CHANGED:
 			the_image->Render();
 			Invalidate();
 			break;
@@ -403,12 +404,22 @@ void ImageView::MessageReceived(BMessage *message)
 				int32 removed_layer_id;
 				message->FindInt32("layer_id",&removed_layer_id);
 				message->FindPointer("layer_pointer",(void**)&removed_layer);
-				if (the_image->RemoveLayer(removed_layer,removed_layer_id) == TRUE) {
-					ActiveLayerChanged();
-					AddChange();
+				if (removed_layer == NULL) {
+					removed_layer = the_image->ReturnActiveLayer();
+					if (removed_layer)
+						removed_layer_id = removed_layer->Id();
 				}
-				LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
-				Invalidate();
+				if (removed_layer) {
+					if (the_image->RemoveLayer(removed_layer,
+						removed_layer_id) == TRUE) {
+						ActiveLayerChanged();
+						AddChange();
+					}
+					LayerWindow::ActiveWindowChanged(Window(),
+						the_image->LayerList(),
+						the_image->ReturnThumbnailImage());
+					Invalidate();
+				}
 			}
 			break;
 
@@ -422,8 +433,11 @@ void ImageView::MessageReceived(BMessage *message)
 				int32 merged_layer_id;
 				message->FindInt32("layer_id",&merged_layer_id);
 				message->FindPointer("layer_pointer",(void**)&merged_layer);
-				if (the_image->MergeLayers(merged_layer,merged_layer_id,TRUE) == TRUE) {
-					LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+				if (the_image->MergeLayers(merged_layer, merged_layer_id,
+					TRUE) == TRUE) {
+					LayerWindow::ActiveWindowChanged(Window(),
+						the_image->LayerList(),
+						the_image->ReturnThumbnailImage());
 					Invalidate();
 					AddChange();
 				}
@@ -440,10 +454,20 @@ void ImageView::MessageReceived(BMessage *message)
 				int32 merged_layer_id;
 				message->FindInt32("layer_id",&merged_layer_id);
 				message->FindPointer("layer_pointer",(void**)&merged_layer);
-				if (the_image->MergeLayers(merged_layer,merged_layer_id,FALSE) == TRUE) {
-					LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
-					Invalidate();
-					AddChange();
+				if (merged_layer == NULL) {
+					merged_layer = the_image->ReturnActiveLayer();
+					if (merged_layer)
+						merged_layer_id = merged_layer->Id();
+				}
+				if (merged_layer) {
+					if (the_image->MergeLayers(merged_layer,
+						merged_layer_id, FALSE) == TRUE) {
+						LayerWindow::ActiveWindowChanged(Window(),
+							the_image->LayerList(),
+							the_image->ReturnThumbnailImage());
+						Invalidate();
+						AddChange();
+					}
 				}
 			}
 			break;
@@ -453,9 +477,14 @@ void ImageView::MessageReceived(BMessage *message)
 			{
 				Layer *other_layer;
 				message->FindPointer("layer_pointer",(void**)&other_layer);
+				if (other_layer == NULL)
+					other_layer = the_image->ReturnActiveLayer();
 				try {
-					the_image->AddLayer(NULL,other_layer,message->what == HS_ADD_LAYER_FRONT);
-					LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+					the_image->AddLayer(NULL, other_layer,
+						message->what == HS_ADD_LAYER_FRONT);
+					LayerWindow::ActiveWindowChanged(Window(),
+						the_image->LayerList(),
+						the_image->ReturnThumbnailImage());
 					ActiveLayerChanged();
 					Invalidate();
 					AddChange();
@@ -466,16 +495,23 @@ void ImageView::MessageReceived(BMessage *message)
 				break;
 			}
 
-
 		case HS_DUPLICATE_LAYER:
 			{
 				Layer *duplicated_layer;
 				int32 duplicated_layer_id;
 				message->FindInt32("layer_id",&duplicated_layer_id);
 				message->FindPointer("layer_pointer",(void**)&duplicated_layer);
+				if (duplicated_layer == NULL) {
+					duplicated_layer = the_image->ReturnActiveLayer();
+					if (duplicated_layer)
+						duplicated_layer_id = duplicated_layer->Id();
+				}
 				try {
-					if (the_image->DuplicateLayer(duplicated_layer,duplicated_layer_id) == TRUE) {
-						LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+					if (the_image->DuplicateLayer(duplicated_layer,
+						duplicated_layer_id) == TRUE) {
+						LayerWindow::ActiveWindowChanged(Window(),
+							the_image->LayerList(),
+							the_image->ReturnThumbnailImage());
 						ActiveLayerChanged();
 						Invalidate();
 						AddChange();
@@ -491,12 +527,16 @@ void ImageView::MessageReceived(BMessage *message)
 		case HS_LAYER_DRAGGED:
 			if (message->WasDropped()) {
 				BBitmap *to_be_copied;
-				if (message->FindPointer("layer_bitmap",(void**)&to_be_copied) == B_OK) {
+				if (message->FindPointer("layer_bitmap",
+					(void**)&to_be_copied) == B_OK) {
 					try {
 						BBitmap *new_bitmap = new BBitmap(to_be_copied);
-						if (the_image->AddLayer(new_bitmap,NULL,TRUE) != NULL) {
+						if (the_image->AddLayer(new_bitmap, NULL,
+							TRUE) != NULL) {
 							Invalidate();
-							LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+							LayerWindow::ActiveWindowChanged(Window(),
+								the_image->LayerList(),
+								the_image->ReturnThumbnailImage());
 							AddChange();
 						}
 					}
