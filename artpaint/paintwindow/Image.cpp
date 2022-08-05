@@ -582,7 +582,7 @@ Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 				ReturnThumbnailImage());
 		else
 			new_event = undo_queue->AddUndoEvent(
-				B_TRANSLATE("Merge with layer below"),
+				B_TRANSLATE("Merge down"),
 				ReturnThumbnailImage());
 
 		if (new_event != NULL) {
@@ -1371,7 +1371,7 @@ Image::DoRender(BRect area, bool bg)
 					src.word = s;
 					src.bytes[3] *= layer->GetTransparency();
 
-					target = src_over_fixed(d, src.word);
+					target = src_over_fixed_blend(d, src.word, layer->GetBlendMode());
 					*d_bits++ = target;
 					++s_bits;
 				}
@@ -1485,6 +1485,7 @@ Image::DoRenderPreview(BRect area,int32 resolution)
 		uint32 **layer_bits = new uint32*[layer_list->CountItems()];
 		uint32 *layer_bprs = new uint32[layer_list->CountItems()];
 		float *alpha = new float[layer_list->CountItems()];
+		uint8 *blend = new uint8[layer_list->CountItems()];
 
 		int32 visible_layer_count = 0;
 		for (int32 i=0;i<layer_list->CountItems();i++) {
@@ -1493,6 +1494,7 @@ Image::DoRenderPreview(BRect area,int32 resolution)
 				layer_bits[visible_layer_count] = (uint32*)layer->Bitmap()->Bits();
 				layer_bprs[visible_layer_count] = layer->Bitmap()->BytesPerRow()/4;
 				alpha[visible_layer_count] = layer->GetTransparency();
+				blend[visible_layer_count] = layer->GetBlendMode();
 				visible_layer_count++;
 			}
 		}
@@ -1544,7 +1546,7 @@ Image::DoRenderPreview(BRect area,int32 resolution)
 					src.word = layer;
 					src.bytes[3] *= alpha[j];
 
-					target = src_over_fixed(target, src.word);
+					target = src_over_fixed_blend(target, src.word, blend[j]);
 				}
 				// Then copy the target-value to proper places in the composite picture
 				int32 x_dimension = min_c(resolution,width+1-x);

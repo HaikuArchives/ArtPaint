@@ -11,13 +11,93 @@
 #define PIXEL_OPERATIONS_H
 
 
+#include <Catalog.h>
+
+
 #include <math.h>
+
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "PixelOperations"
 
 
 union color_conversion {
 	uint8 bytes[4];
 	uint32 word;
 };
+
+
+enum BlendModes {
+	BLEND_NORMAL = 0,
+	BLEND_MULTIPLY,
+	BLEND_DIVIDE,
+	BLEND_SCREEN,
+	BLEND_OVERLAY,
+	BLEND_DARKEN,
+	BLEND_LIGHTEN,
+	BLEND_DODGE,
+	BLEND_BURN,
+	BLEND_LINEAR_DODGE,
+	BLEND_LINEAR_BURN,
+	BLEND_HARD_LIGHT,
+	BLEND_SOFT_LIGHT,
+	BLEND_VIVID_LIGHT,
+	BLEND_LINEAR_LIGHT,
+	BLEND_PIN_LIGHT,
+	BLEND_HARD_MIX,
+	BLEND_DIFFERENCE,
+	BLEND_EXCLUSION,
+	BLEND_DISSOLVE
+};
+
+
+inline const char* mode_to_string(BlendModes mode)
+{
+	switch(mode) {
+		case BLEND_NORMAL:
+			return B_TRANSLATE("Normal");
+		case BLEND_MULTIPLY:
+			return B_TRANSLATE("Multiply");
+		case BLEND_DIVIDE:
+			return B_TRANSLATE("Divide");
+		case BLEND_SCREEN:
+			return B_TRANSLATE("Screen");
+		case BLEND_OVERLAY:
+			return B_TRANSLATE("Overlay");
+		case BLEND_DARKEN:
+			return B_TRANSLATE("Darken");
+		case BLEND_LIGHTEN:
+			return B_TRANSLATE("Lighten");
+		case BLEND_DODGE:
+			return B_TRANSLATE("Color dodge");
+		case BLEND_BURN:
+			return B_TRANSLATE("Color burn");
+		case BLEND_LINEAR_DODGE:
+			return B_TRANSLATE("Linear dodge");
+		case BLEND_LINEAR_BURN:
+			return B_TRANSLATE("Linear burn");
+		case BLEND_HARD_LIGHT:
+			return B_TRANSLATE("Hard light");
+		case BLEND_SOFT_LIGHT:
+			return B_TRANSLATE("Soft light");
+		case BLEND_VIVID_LIGHT:
+			return B_TRANSLATE("Vivid light");
+		case BLEND_LINEAR_LIGHT:
+			return B_TRANSLATE("Linear light");
+		case BLEND_PIN_LIGHT:
+			return B_TRANSLATE("Pin light");
+		case BLEND_HARD_MIX:
+			return B_TRANSLATE("Hard mix");
+		case BLEND_DIFFERENCE:
+			return B_TRANSLATE("Difference");
+		case BLEND_EXCLUSION:
+			return B_TRANSLATE("Exclusion");
+		case BLEND_DISSOLVE:
+			return B_TRANSLATE("Dissolve");
+	}
+
+	return "";
+}
 
 
 // This function combines four pixels p1-p4 with weights c1-c4.
@@ -264,6 +344,335 @@ inline uint32 src_over_fixed(uint32 dst, uint32 src)
 		dst_rgba.bytes[1] * inv_dst_alpha) / result_alpha;
 	result_rgba.bytes[2] = (src_rgba.bytes[2] * src_alpha +
 		dst_rgba.bytes[2] * inv_dst_alpha) / result_alpha;
+	result_rgba.bytes[3] = result_alpha;
+
+	return result_rgba.word;
+}
+
+
+inline uint8 add(uint8 dst, uint8 src)
+{
+	return min_c(255, dst + src);
+}
+
+
+inline uint8 subtract(uint8 dst, uint8 src)
+{
+	return max_c(0, dst - src);
+}
+
+
+inline uint8 multiply(uint8 dst, uint8 src)
+{
+	return (dst * src) / 255;
+}
+
+
+inline uint8 divide(uint8 dst, uint8 src)
+{
+	if (src == 0)
+		return 255;
+
+	if (src == 255)
+		return dst;
+
+	return max_c(0, min_c(255, dst * 255 / src));
+}
+
+
+inline uint8 screen(uint8 dst, uint8 src)
+{
+	return dst + src - multiply(dst, src);
+}
+
+
+inline uint8 hard_light(uint8 dst, uint8 src)
+{
+	if (src <= 127)
+		return multiply(dst, 2 * src);
+
+	return screen(dst, 2 * src - 255);
+}
+
+
+inline uint8 darken(uint8 dst, uint8 src)
+{
+	return min_c(src, dst);
+}
+
+
+inline uint8 lighten(uint8 dst, uint8 src)
+{
+	return max_c(src, dst);
+}
+
+
+inline uint8 color_dodge(uint8 dst, uint8 src)
+{
+	if (dst == 0)
+		return 0;
+
+	if (src == 255)
+		return 255;
+
+	return min_c(255, divide(dst, 255 - src));
+}
+
+
+inline uint8 color_burn(uint8 dst, uint8 src)
+{
+	if (dst == 255)
+		return 255;
+
+	if (src == 0)
+		return 0;
+
+	return 255 - min_c(255, divide(255 - dst, src));
+}
+
+
+inline uint8 soft_light(uint8 dst, uint8 src)
+{
+	if (src <= 127)
+		return dst - multiply(255 - (2 * src), dst - multiply(dst, dst));
+
+	return dst + multiply((2 * src) - 255,
+		(sqrt((float)dst / 255) * 255) - dst);
+}
+
+
+inline uint8 vivid_light(uint8 dst, uint8 src)
+{
+	if (src > 127)
+		return color_dodge(dst, 2*src);
+
+	return color_burn(dst, 2*src);
+}
+
+
+inline uint8 linear_light(uint8 dst, uint8 src)
+{
+	return max_c(0, min_c(255, dst + (2 * src) - 255));
+}
+
+
+inline uint8 pin_light(uint8 dst, uint8 src)
+{
+	uint16 cmp = 2 * src;
+	if (dst < cmp - 255)
+		return min_c(255, cmp - 255);
+	if (dst > cmp)
+		return min_c(255, cmp);
+
+	return dst;
+}
+
+
+inline uint8 difference(uint8 dst, uint8 src)
+{
+	return abs(dst - src);
+}
+
+
+inline uint8 exclusion(uint8 dst, uint8 src)
+{
+	return dst + src - (2 * dst * src / 255);
+}
+
+
+inline uint8 linear_dodge(uint8 dst, uint8 src)
+{
+	return min_c(255, add(dst, src));
+}
+
+
+inline uint8 linear_burn(uint8 dst, uint8 src)
+{
+	return max_c(0, src + dst - 255);
+}
+
+
+inline uint8 hard_mix(uint8 dst, uint8 src)
+{
+	if (src < 255 - dst)
+		return 0;
+
+	return 255;
+}
+
+
+inline uint32 dissolve(uint32 dst, uint32 src)
+{
+	uint8 fac = (uint8)(rand() * 255);
+
+	if (fac > 96)
+		return src;
+
+	return dst;
+}
+
+
+inline uint32 blend(uint32 dst, uint32 src, uint32 mode)
+{
+	union color_conversion blend_color, src_color, dst_color;
+
+	src_color.word = src;
+	dst_color.word = dst;
+	blend_color.word = src;
+
+	switch(mode) {
+		case(BLEND_MULTIPLY): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					multiply(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_SCREEN): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					screen(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_OVERLAY): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					hard_light(src_color.bytes[i], dst_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_HARD_LIGHT): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					hard_light(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_DARKEN): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					darken(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_LIGHTEN): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					lighten(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_DODGE): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					color_dodge(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_BURN): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					color_burn(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_SOFT_LIGHT): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					soft_light(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_DIFFERENCE): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					difference(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_EXCLUSION): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					exclusion(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_VIVID_LIGHT): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					vivid_light(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_LINEAR_LIGHT): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					linear_light(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_PIN_LIGHT): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					pin_light(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case(BLEND_DIVIDE): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					divide(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_LINEAR_DODGE): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					linear_dodge(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_LINEAR_BURN): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					linear_burn(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_HARD_MIX): {
+			for (int i = 0; i < 3; ++i) {
+				blend_color.bytes[i] =
+					hard_mix(dst_color.bytes[i], src_color.bytes[i]);
+			}
+		} break;
+		case (BLEND_DISSOLVE): {
+			 blend_color.word = dissolve(dst_color.word, src_color.word);
+		} break;
+	}
+
+	return blend_color.word;
+}
+
+
+inline uint32 src_over_fixed_blend(uint32 dst, uint32 src, uint32 mode=0)
+{
+	union color_conversion src_rgba, dst_rgba, blend_color, result_rgba;
+
+	src_rgba.word = src;
+	dst_rgba.word = dst;
+	blend_color.word = blend(dst_rgba.word, src_rgba.word, mode);
+
+	uint8 src_alpha = src_rgba.bytes[3];
+	uint8 dst_alpha = dst_rgba.bytes[3];
+
+	uint8 inv_src_alpha = 255 - src_alpha;
+	uint8 inv_dst_alpha = 255 - dst_alpha;
+	uint8 inv_src_dst_alpha = (dst_alpha * inv_src_alpha) / 255;
+	uint8 inv_dst_src_alpha = (src_alpha * inv_dst_alpha) / 255;
+	uint8 src_dst_alpha = (src_alpha * dst_alpha) / 255;
+	uint8 result_alpha = src_alpha + inv_src_dst_alpha;
+
+	if (result_alpha == 0)
+		result_alpha = 1;
+
+	// r-rgb * r-a = s-a * (1 - d-a) * s-rgb +
+	//		s-a * d-a * blend(d-rgb, s-rgb) +
+	// 		d-rgb * d-a * (1 - s-a)
+
+	result_rgba.bytes[0] = (src_rgba.bytes[0] * inv_dst_src_alpha +
+		src_dst_alpha * blend_color.bytes[0] +
+		dst_rgba.bytes[0] * inv_src_dst_alpha) / result_alpha;
+	result_rgba.bytes[1] = (src_rgba.bytes[1] * inv_dst_src_alpha +
+		src_dst_alpha * blend_color.bytes[1] +
+		dst_rgba.bytes[1] * inv_src_dst_alpha) / result_alpha;
+	result_rgba.bytes[2] = (src_rgba.bytes[2] * inv_dst_src_alpha +
+		src_dst_alpha * blend_color.bytes[2] +
+		dst_rgba.bytes[2] * inv_src_dst_alpha) / result_alpha;
+
 	result_rgba.bytes[3] = result_alpha;
 
 	return result_rgba.word;

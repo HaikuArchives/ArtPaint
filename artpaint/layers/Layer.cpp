@@ -43,6 +43,7 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 	, fImage(NULL)
 	, fImageView(imageView)
 	, fLayerView(NULL)
+	, fBlendMode(BLEND_NORMAL)
 {
 	frame.OffsetTo(B_ORIGIN);
 	fLayerName << "Layer " << fLayerId;
@@ -59,10 +60,7 @@ Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
 		if (!fLayerData->IsValid())
 			throw std::bad_alloc();
 
-		union {
-			char bytes[4];
-			uint32 word;
-		} color;
+		union color_conversion color;
 		color.bytes[0] = 0xFF;
 		color.bytes[1] = 0xFF;
 		color.bytes[2] = 0xFF;
@@ -313,48 +311,21 @@ Layer::Merge(Layer* top_layer)
 	int32 width = (int32)min_c(top_layer->Bitmap()->Bounds().Width()+1,
 		Bitmap()->Bounds().Width()+1);
 
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} top,bottom,target;
+	union color_conversion top, bottom;
 
-	float alpha;
-	float beta;
+	float top_coefficient = top_layer->GetTransparency();
+	float bot_coefficient = GetTransparency();
 
-	float top_coefficient;
-	float bottom_coefficient;
-	float new_alpha;
+	for (int32 y = 0;y < height;++y) {
+		for (int32 x = 0;x < width;++x) {
+			top.word = *(top_bits + x + y * top_bpr);
+			top.bytes[3] = top.bytes[3] * top_coefficient;
+			bottom.word = *(bottom_bits + x + y * bottom_bpr);
+			bottom.bytes[3] = bottom.bytes[3] * bot_coefficient;
 
-	float* alphas = float_alpha_table;
-	float* betas = top_layer->float_alpha_table;
-
-	for (int32 y=0;y<height;++y) {
-		for (int32 x=0;x<width;++x) {
-			top.word = *(top_bits + x + y*top_bpr);
-			bottom.word = *(bottom_bits + x + y*bottom_bpr);
-			alpha = alphas[bottom.bytes[3]];
-			beta = betas[top.bytes[3]];
-
-			new_alpha = (alpha + beta - alpha*beta);
-			if (new_alpha > 0) {
-				bottom_coefficient = (alpha - alpha*beta)/new_alpha;
-				top_coefficient = beta/new_alpha;
-			}
-			else {
-				// If both layers are fully transparent, the new color will
-				// be fully transparent average of the two colors.
-				bottom_coefficient = 0.5;
-				top_coefficient = 0.5;
-			}
-
-			target.bytes[0] = (uint8)max_c(0,min_c(255,
-				bottom_coefficient*bottom.bytes[0]+top_coefficient*top.bytes[0]));
-			target.bytes[1] = (uint8)max_c(0,min_c(255,
-				bottom_coefficient*bottom.bytes[1]+top_coefficient*top.bytes[1]));
-			target.bytes[2] = (uint8)max_c(0,min_c(255,
-				bottom_coefficient*bottom.bytes[2]+top_coefficient*top.bytes[2]));
-			target.bytes[3] = (uint8)(255*new_alpha);
-			*(bottom_bits + x + y*bottom_bpr) = target.word;
+			*(bottom_bits + x + y * bottom_bpr) =
+				src_over_fixed_blend(bottom.word, top.word,
+					top_layer->GetBlendMode());
 		}
 	}
 
@@ -480,6 +451,14 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 				}
 			}
 
+			if (length > 0) {
+				uint8 blend_mode;
+				if (file.Read(&blend_mode, sizeof(uint8)) == sizeof(uint8)) {
+					length -= sizeof(uint8);
+					layer->SetBlendMode(blend_mode);
+				}
+			}
+
 			file.Seek(length, SEEK_CUR);
 
 			// Here we should get the end-marker for layer's extra data
@@ -565,7 +544,6 @@ Layer::readLayerOldStyle(BFile& file, ImageView* imageView, int32 new_id)
 	}
 	bits += alignment_offset;
 
-
 	if (file.Read(bits,layer->Bitmap()->BitsLength()-alignment_offset)
 		!= (layer->Bitmap()->BitsLength()-alignment_offset)) {
 		delete layer;
@@ -610,11 +588,15 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 	written_bytes += file.Write(&marker,sizeof(int32));
 
 	int32 nameLen = fLayerName.Length();
-	marker = sizeof(float) + sizeof(int32) + nameLen;
+	// this is the length of the extra data
+	marker = sizeof(float) + sizeof(int32) + nameLen + sizeof(uint8);
 	written_bytes += file.Write(&marker,sizeof(int32));
 	written_bytes += file.Write(&transparency_coefficient,sizeof(float));
 	written_bytes += file.Write(&nameLen, sizeof(int32));
 	written_bytes += file.Write(fLayerName.String(), nameLen);
+
+	uint8 blend_mode = GetBlendMode();
+	written_bytes += file.Write(&blend_mode, sizeof(uint8));
 
 	marker = PROJECT_FILE_LAYER_EXTRA_DATA_END_MARKER;
 	written_bytes += file.Write(&marker,sizeof(int32));

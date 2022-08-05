@@ -38,6 +38,8 @@ enum layer_type {
 #define	HS_LAYER_ACTIVATED				'LaAc'
 #define	HS_LAYER_VISIBILITY_CHANGED		'LviC'
 #define	HS_LAYER_POSITION_CHANGED		'LpoC'
+#define HS_LAYER_TRANSPARENCY_CHANGED	'LtXc'
+#define HS_LAYER_BLEND_MODE_CHANGED		'LbmC'
 
 
 // these constants are used in controlling the layers
@@ -123,6 +125,9 @@ public:
 
 			const char*			ReturnProjectName() const;
 
+			void				SetBlendMode(uint8 newBlendMode)
+									{ fBlendMode = newBlendMode; }
+			uint8				GetBlendMode() { return fBlendMode; }
 private:
 			// this bitmap holds the actual image-data of this layer
 			BBitmap*			fLayerData;
@@ -167,6 +172,8 @@ private:
 
 			// this function calculates the fLayerPreview
 			int32				calc_mini_image();
+
+			uint8				fBlendMode;
 };
 
 #endif
