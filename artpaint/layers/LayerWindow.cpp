@@ -186,7 +186,7 @@ LayerWindow::LayerWindow(BRect frame)
 	blend_msg->AddUInt8("blend_mode", BLEND_DIVIDE);
 	blend_mode_menu->AddItem(new BMenuItem(mode_to_string(BLEND_DIVIDE), blend_msg));
 
-
+	blend_mode_menu->ItemAt(0)->SetMarked(TRUE);
 
 	BMenuField* blend_dropdown = new BMenuField("blend_dropdown",
 		B_TRANSLATE("Mode:"), blend_mode_menu);
