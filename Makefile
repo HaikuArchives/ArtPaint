@@ -40,12 +40,15 @@ artpaint/application/MessageFilters.cpp artpaint/application/PaintApplication.cp
 artpaint/application/RandomNumberGenerator.cpp artpaint/application/RefFilters.cpp artpaint/application/ResourceServer.cpp \
 artpaint/application/Selection.cpp artpaint/application/SettingsServer.cpp \
 artpaint/application/UndoAction.cpp artpaint/application/UndoEvent.cpp artpaint/application/UndoQueue.cpp \
-artpaint/application/UndoWindow.cpp artpaint/application/UtilityClasses.cpp artpaint/controls/CMYControl.cpp artpaint/controls/ColorPalette.cpp \
+artpaint/application/UndoWindow.cpp artpaint/application/UtilityClasses.cpp artpaint/controls/ColorPalette.cpp \
 artpaint/application/CustomGridLayout.cpp \
-artpaint/controls/ColorView.cpp artpaint/controls/HSPictureButton.cpp artpaint/controls/HSVControl.cpp artpaint/controls/NumberControl.cpp \
+artpaint/controls/ColorView.cpp artpaint/controls/HSPictureButton.cpp artpaint/controls/NumberControl.cpp \
 artpaint/controls/NumberSliderControl.cpp artpaint/controls/PopUpList.cpp artpaint/controls/PopUpSlider.cpp artpaint/controls/RGBControl.cpp \
 artpaint/controls/FloatControl.cpp artpaint/controls/FloatSliderControl.cpp \
-artpaint/controls/VisualColorControl.cpp artpaint/controls/YIQControl.cpp artpaint/controls/YUVControl.cpp artpaint/layers/Layer.cpp \
+artpaint/controls/VisualColorControl.cpp artpaint/layers/Layer.cpp \
+artpaint/controls/MultichannelColorControl.cpp artpaint/controls/YUVColorControl.cpp \
+artpaint/controls/HSVColorControl.cpp artpaint/controls/CMYColorControl.cpp artpaint/controls/RGBColorControl.cpp \
+artpaint/controls/LABColorControl.cpp artpaint/controls/ColorSlider.cpp artpaint/controls/ColorFloatSlider.cpp \
 artpaint/layers/LayerView.cpp artpaint/layers/LayerWindow.cpp artpaint/paintwindow/BackgroundView.cpp artpaint/paintwindow/Image.cpp \
 artpaint/paintwindow/ImageUpdater.cpp artpaint/paintwindow/ImageView.cpp artpaint/paintwindow/MagnificationView.cpp \
 artpaint/paintwindow/PaintWindow.cpp artpaint/paintwindow/PaintWindowMenuItem.cpp artpaint/paintwindow/StatusView.cpp \

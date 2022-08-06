@@ -7,7 +7,7 @@
  *
  */
 
-#include "FloatSliderControl.h"
+#include "ColorFloatSlider.h"
 
 #include "FloatControl.h"
 
@@ -32,7 +32,7 @@ enum {
 };
 
 
-FloatSliderControl::FloatSliderControl(const char* label, const char* text,
+ColorFloatSlider::ColorFloatSlider(const char* label, const char* text,
 		BMessage* message, float minRange, float maxRange, bool layout,
 		bool continuous, border_style borderStyle, thumb_style thumbStyle,
 		uint8 resolution)
@@ -51,7 +51,7 @@ FloatSliderControl::FloatSliderControl(const char* label, const char* text,
 
 	fFloatControl = new (std::nothrow) FloatControl(label, text,
 		new BMessage(kNumberControlFinished), 5, minRange < 0);
-	fSlider = new (std::nothrow) BSlider(NULL, NULL,
+	fSlider = new (std::nothrow) ColorSlider(NULL, NULL,
 		new BMessage(kSliderModificationFinished), (int32)minRange * fMult,
 		(int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
 
@@ -71,14 +71,14 @@ FloatSliderControl::FloatSliderControl(const char* label, const char* text,
 }
 
 
-FloatSliderControl::~FloatSliderControl()
+ColorFloatSlider::~ColorFloatSlider()
 {
 	delete fMessage;
 }
 
 
 void
-FloatSliderControl::AllAttached()
+ColorFloatSlider::AllAttached()
 {
 	fSlider->SetTarget(this);
 	fFloatControl->SetTarget(this);
@@ -89,7 +89,7 @@ FloatSliderControl::AllAttached()
 
 
 void
-FloatSliderControl::MessageReceived(BMessage* message)
+ColorFloatSlider::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case kNumberControlFinished: {
@@ -120,7 +120,7 @@ FloatSliderControl::MessageReceived(BMessage* message)
 
 
 void
-FloatSliderControl::SetEnabled(bool enabled)
+ColorFloatSlider::SetEnabled(bool enabled)
 {
 	if (fSlider)
 		fSlider->SetEnabled(enabled);
@@ -131,7 +131,7 @@ FloatSliderControl::SetEnabled(bool enabled)
 
 
 void
-FloatSliderControl::SetValue(float value)
+ColorFloatSlider::SetValue(float value)
 {
 	value = _FixValue(value);
 
@@ -145,7 +145,7 @@ FloatSliderControl::SetValue(float value)
 
 
 float
-FloatSliderControl::Value() const
+ColorFloatSlider::Value() const
 {
 	if (fSlider)
 		return (float)(fSlider->Value() / fMult);
@@ -158,14 +158,14 @@ FloatSliderControl::Value() const
 
 
 void
-FloatSliderControl::SetTarget(const BMessenger& target)
+ColorFloatSlider::SetTarget(const BMessenger& target)
 {
 	fTarget = target;
 }
 
 
 void
-FloatSliderControl::SetMessage(BMessage* message)
+ColorFloatSlider::SetMessage(BMessage* message)
 {
 	delete fMessage;
 	fMessage = message;
@@ -175,7 +175,7 @@ FloatSliderControl::SetMessage(BMessage* message)
 
 
 void
-FloatSliderControl::SetMinMax(float min, float max)
+ColorFloatSlider::SetMinMax(float min, float max)
 {
 	fSlider->SetLimits((int32)min * fMult,
 		(int32)max * fMult);
@@ -183,7 +183,7 @@ FloatSliderControl::SetMinMax(float min, float max)
 
 
 void
-FloatSliderControl::SetResolution(uint8 resolution)
+ColorFloatSlider::SetResolution(uint8 resolution)
 {
 	int32 min, max;
 	fSlider->GetLimits(&min, &max);
@@ -197,22 +197,30 @@ FloatSliderControl::SetResolution(uint8 resolution)
 }
 
 
-BSlider*
-FloatSliderControl::Slider() const
+void
+ColorFloatSlider::SetToolTip(const char* tip)
+{
+	fSlider->SetToolTip(tip);
+	fFloatControl->SetToolTip(tip);
+}
+
+
+ColorSlider*
+ColorFloatSlider::Slider() const
 {
 	return fSlider;
 }
 
 
 FloatControl*
-FloatSliderControl::TextControl() const
+ColorFloatSlider::TextControl() const
 {
 	return fFloatControl;
 }
 
 
 BLayoutItem*
-FloatSliderControl::LabelLayoutItem() const
+ColorFloatSlider::LabelLayoutItem() const
 {
 	if (fFloatControl)
 		return fFloatControl->CreateLabelLayoutItem();
@@ -221,7 +229,7 @@ FloatSliderControl::LabelLayoutItem() const
 
 
 BLayoutItem*
-FloatSliderControl::TextViewLayoutItem() const
+ColorFloatSlider::TextViewLayoutItem() const
 {
 	if (fFloatControl)
 		return fFloatControl->CreateTextViewLayoutItem();
@@ -230,7 +238,7 @@ FloatSliderControl::TextViewLayoutItem() const
 
 
 void
-FloatSliderControl::_InitMessage()
+ColorFloatSlider::_InitMessage()
 {
 	// The message returned by the control will have at least
 	// the two items: 'value' and 'final'.
@@ -251,7 +259,7 @@ FloatSliderControl::_InitMessage()
 
 
 float
-FloatSliderControl::_FixValue(float value)
+ColorFloatSlider::_FixValue(float value)
 {
 	if (value > fMaxRange)
 		value = fMaxRange;
@@ -264,7 +272,7 @@ FloatSliderControl::_FixValue(float value)
 
 
 void
-FloatSliderControl::_SendMessage(float value, bool final)
+ColorFloatSlider::_SendMessage(float value, bool final)
 {
 	if (fMessage) {
 		fMessage->ReplaceBool("final", final);
