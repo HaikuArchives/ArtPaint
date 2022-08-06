@@ -9,13 +9,29 @@
 #ifndef COLOR_PALETTE_H
 #define COLOR_PALETTE_H
 
+
+//#include "CMYControl.h"
+//#include "HSVControl.h"
+//#include "RGBControl.h"
+//#include "YIQControl.h"
+//#include "YUVControl.h"
+#include "MultichannelColorControl.h"
+#include "RGBColorControl.h"
+#include "CMYColorControl.h"
+#include "YUVColorControl.h"
+#include "HSVColorControl.h"
+#include "LABColorControl.h"
+
+
 #include <Box.h>
+#include <CardLayout.h>
 #include <ColorControl.h>
 #include <FilePanel.h>
 #include <PictureButton.h>
 #include <Window.h>
 
 
+class ColorChip;
 class ColorContainer;
 class ColorSet;
 class VisualColorControl;
@@ -37,7 +53,8 @@ enum color_window_modes {
 	HS_CMY_COLOR_MODE		=	'CmyM',
 	HS_YIQ_COLOR_MODE		=	'YiqM',
 	HS_YUV_COLOR_MODE		=	'YuvM',
-	HS_HSV_COLOR_MODE		=	'HsvM'
+	HS_HSV_COLOR_MODE		=	'HsvM',
+	HS_LAB_COLOR_MODE		= 	'LabM'
 };
 
 
@@ -50,12 +67,12 @@ private:
 static	BList	*master_window_list;
 static	BList	*palette_window_clients;
 
-
+		BCardLayout*			sliderLayout;
 // this variable holds a derived color control object
 		HSColorControl 			*color_control;
 
 // this holds an ColorControl-object
-		VisualColorControl		*color_slider;
+		MultichannelColorControl		*color_slider;
 
 // this variable points to the color container object
 		ColorContainer *color_container;
@@ -72,7 +89,14 @@ static	BList	*palette_window_clients;
 // these point to file-panels for opening and saving palette
 		BFilePanel *open_panel,*save_panel;
 
+		RGBColorControl* rgbSlider;
+		CMYColorControl* cmySlider;
+		//YIQControl* yiqSlider;
+		//YUVColorControl* yuvSlider;
+		LABColorControl* labSlider;
+		HSVColorControl* hsvSlider;
 
+		ColorChip*	colorPreview;
 // This static holds the pointer to the open palette-window.
 // If no window is open, it is NULL
 static	ColorPaletteWindow	*palette_window;
@@ -112,13 +136,12 @@ static	void	RemovePaletteWindowClient(PaletteWindowClient*);
 };
 
 
-
-
 class ColorContainer : public BView {
 
 		// these variables hold the vital info about the container
 		int32 	color_count;
 		int32	row_count;
+		int32 	column_count;
 		int32	horiz_c_size;
 		int32	vert_c_size;
 		int32	horiz_gutter;
@@ -169,6 +192,7 @@ void	Draw(BRect);
 void	MouseDown(BPoint point);
 void	MouseMoved(BPoint,uint32,const BMessage*);
 void	MessageReceived(BMessage *message);
+void	FrameResized(float width, float height);
 
 void	colorChanged(int32 color_index);
 
@@ -224,6 +248,27 @@ static	inline	int32		numberOfSets() { return color_set_list->CountItems(); }
 // these functions read and write all the sets to the preferences-file
 static			status_t	readSets(BFile &file);
 static			status_t	writeSets(BFile &file);
+};
+
+
+class ColorChip : public BControl {
+public:
+				ColorChip(const char* name);
+	virtual		~ColorChip();
+
+	virtual void 	Draw(BRect updateRect);
+	virtual void	MessageReceived(BMessage* message);
+	virtual void	MouseDown(BPoint point);
+
+	BBitmap*	chipBitmap() { return fChipBitmap; }
+
+	void		Redraw() { Draw(Bounds()); }
+
+	void		SetColor(uint32 new_color);
+	uint32		Color() { return fColor; }
+private:
+	BBitmap*	fChipBitmap;
+	uint32		fColor;
 };
 
 #endif
