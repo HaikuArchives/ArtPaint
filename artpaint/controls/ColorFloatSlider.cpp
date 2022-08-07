@@ -50,7 +50,7 @@ ColorFloatSlider::ColorFloatSlider(const char* label, const char* text,
 	fMult = pow(10, resolution);
 
 	fFloatControl = new (std::nothrow) FloatControl(label, text,
-		new BMessage(kNumberControlFinished), 5, minRange < 0);
+		new BMessage(kNumberControlFinished), 6, minRange < 0);
 	fSlider = new (std::nothrow) ColorSlider(NULL, NULL,
 		new BMessage(kSliderModificationFinished), (int32)minRange * fMult,
 		(int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
