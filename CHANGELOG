@@ -1,0 +1,21 @@
+v2.3.1:
+
+* Fixed initial black canvas where there are no ArtPaint settings
+
+v2.3.0:
+
+* Fixed drawing with transparency
+* Fixed drawing of text
+* Added adjustable checkered background for transparency
+* Interference add-on: added controls
+* Brush tool: new/improved controls
+* Airbrush tool: Fixed spray mode
+* Save/Restore Tools window icon arrangement
+* Fixed save/restore floating window settings
+* Move appropriate menu items to new "ArtPaint" menu
+* General bug fixing (memory leaks etc.)
+* GUI/Layout polishing
+* Improved/updated localization
+* Added/Updated translations: ca de en_GB fr nl pt tr
+* Added ArtPaint project file icon
+* New user manual
