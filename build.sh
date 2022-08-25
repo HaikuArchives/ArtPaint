@@ -28,9 +28,9 @@ builder() {
 				pushd "$addonDir" > /dev/null
 				make OBJ_DIR="objects_addons$debug_suffix" $debug -j
 				if [ "$action" = "catkeys" ] ; then
-					make -f Makefile OBJ_DIR="objects_artpaint$debug_suffix" catkeys
+					make -f Makefile OBJ_DIR="objects_addons$debug_suffix" catkeys
 				fi
-				make OBJ_DIR="objects_addons" bindcatalogs
+				make OBJ_DIR="objects_addons$debug_suffix" bindcatalogs
 				popd > /dev/null
 			done
 
