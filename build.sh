@@ -58,6 +58,11 @@ cleaner() {
 	case "$target" in
 		addons | all)
 			echo "Cleaning addon objects"
+			# In case someone reverted back to when there was an addons/Working folder
+			if [ -d ./addons/AddOns/Working ] ; then
+				rm -rf ./addons/AddOns/Working
+			fi
+
 			for addonDir in $(find ./addons/AddOns/* -maxdepth 0 -type d) ; do
 				pushd "$addonDir" > /dev/null
 				rm -rf objects_addons*
