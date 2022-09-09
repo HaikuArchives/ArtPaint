@@ -24,16 +24,20 @@ LABColorControl::LABColorControl(rgb_color c)
  	: MultichannelColorControl(c, "L", "a", "b", "A")
 {
  	slider1->SetMinMax(0, 100);
-	slider1->SetToolTip(B_TRANSLATE("Lightness"));
-	slider1->SetResolution(1);
+	slider1->SetToolTip(B_TRANSLATE_COMMENT("Lightness",
+		"For CIELAB color sliders - also called L*a*b* color"));
+	slider1->SetResolution(0);
 	slider2->SetMinMax(-128, 127);
-	slider2->SetToolTip(B_TRANSLATE("Channel a"));
-	slider2->SetResolution(1);
+	slider2->SetToolTip(B_TRANSLATE_COMMENT("Channel a",
+		"For CIELAB color sliders - also called L*a*b* color"));
+	slider2->SetResolution(0);
 	slider3->SetMinMax(-128, 127);
-	slider3->SetToolTip(B_TRANSLATE("Channel b"));
-	slider3->SetResolution(1);
-	slider4->SetResolution(1);
-	slider4->SetToolTip(B_TRANSLATE("Alpha"));
+	slider3->SetToolTip(B_TRANSLATE_COMMENT("Channel b",
+		"For CIELAB color sliders - also called L*a*b* color"));
+	slider3->SetResolution(0);
+	slider4->SetResolution(0);
+	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha",
+		"For color sliders"));
 }
 
 

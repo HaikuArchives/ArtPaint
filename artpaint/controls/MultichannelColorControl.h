@@ -19,6 +19,9 @@
 #include <String.h>
 
 
+#define SLIDER_CHANGED		'slCh'
+
+
 using ArtPaint::Interface::ColorFloatSlider;
 
 

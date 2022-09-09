@@ -24,16 +24,20 @@ HSVColorControl::HSVColorControl(rgb_color c)
  	: MultichannelColorControl(c, "H", "S", "V", "A")
 {
 	slider1->SetMinMax(0, 359);
-	slider1->SetToolTip(B_TRANSLATE("Hue"));
-	slider1->SetResolution(1);
+	slider1->SetToolTip(B_TRANSLATE_COMMENT("Hue",
+		"For HSV color slider"));
+	slider1->SetResolution(0);
 	slider2->SetMinMax(0, 1);
-	slider2->SetToolTip(B_TRANSLATE("Saturation"));
-	slider2->SetResolution(100);
+	slider2->SetToolTip(B_TRANSLATE_COMMENT("Saturation",
+		"For HSV color slider"));
+	slider2->SetResolution(2);
 	slider3->SetMinMax(0, 1);
-	slider3->SetToolTip(B_TRANSLATE("Value"));
- 	slider3->SetResolution(100);
- 	slider4->SetResolution(1);
- 	slider4->SetToolTip(B_TRANSLATE("Alpha"));
+	slider3->SetToolTip(B_TRANSLATE_COMMENT("Value",
+		"For HSV color slider - 'value' as 'color value', also called 'lightness'"));
+ 	slider3->SetResolution(2);
+ 	slider4->SetResolution(0);
+ 	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha",
+ 		"For color sliders"));
 }
 
 
@@ -65,8 +69,7 @@ HSVColorControl::SetSliderColors(rgb_color c)
 
 	float r, g, b;
 
-	for (int i = 0; i < 6; ++i)
-	{
+	for (int i = 0; i < 6; ++i) {
 		hsv2rgb((float)(i * 60), s, v, r, g, b);
 		union color_conversion hue;
 		hue.bytes[2] = (uint8)r;

@@ -18,7 +18,7 @@
 class ColorSlider: public BSlider
 {
 public:
- 								ColorSlider(BRect frame, const char* name,
+								ColorSlider(BRect frame, const char* name,
 									const char* label, BMessage* message,
 									int32 minValue, int32 maxValue,
 									thumb_style thumbType = B_BLOCK_THUMB,

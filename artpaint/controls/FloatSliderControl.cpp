@@ -36,14 +36,14 @@ FloatSliderControl::FloatSliderControl(const char* label, const char* text,
 		BMessage* message, float minRange, float maxRange, bool layout,
 		bool continuous, border_style borderStyle, thumb_style thumbStyle,
 		uint8 resolution)
-	: BBox(borderStyle, NULL)
-	, fMinRange(minRange)
-	, fMaxRange(maxRange)
-	, fContinuous(continuous)
-	, fSlider(NULL)
-	, fMessage(message)
-	, fFloatControl(NULL)
-	, fMult(10)
+	: BBox(borderStyle, NULL),
+	fMinRange(minRange),
+	fMaxRange(maxRange),
+	fContinuous(continuous),
+	fSlider(NULL),
+	fMessage(message),
+	fFloatControl(NULL),
+	fMult(10)
 {
 	_InitMessage();
 

@@ -10,11 +10,6 @@
 #define COLOR_PALETTE_H
 
 
-//#include "CMYControl.h"
-//#include "HSVControl.h"
-//#include "RGBControl.h"
-//#include "YIQControl.h"
-//#include "YUVControl.h"
 #include "MultichannelColorControl.h"
 #include "RGBColorControl.h"
 #include "CMYColorControl.h"
@@ -24,6 +19,7 @@
 
 
 #include <Box.h>
+#include <Button.h>
 #include <CardLayout.h>
 #include <ColorControl.h>
 #include <FilePanel.h>
@@ -36,6 +32,9 @@ class ColorContainer;
 class ColorSet;
 class VisualColorControl;
 class PaletteWindowClient;
+
+
+#define COLOR_CHIP_INVOKED			'ccIn'
 
 
 // we have to derive the BColorControl-class just to get
@@ -64,61 +63,60 @@ private:
 
 		// This lists the windows that have the colorwindow in
 		// their subset.
-static	BList	*master_window_list;
-static	BList	*palette_window_clients;
+static	BList*					master_window_list;
+static	BList*					palette_window_clients;
 
 		BCardLayout*			sliderLayout;
 // this variable holds a derived color control object
-		HSColorControl 			*color_control;
+		HSColorControl* 		color_control;
 
 // this holds an ColorControl-object
-		MultichannelColorControl		*color_slider;
+		MultichannelColorControl*		color_slider;
 
 // this variable points to the color container object
-		ColorContainer *color_container;
+		ColorContainer* 		color_container;
 
 // these buttons can change to next or previous color-set
-		BPictureButton *previous_set,*next_set;
+		BButton* 				previous_set;
+		BButton*				next_set;
 
 // this variable points to menubar that is opened
-		BMenuBar *menu_bar;
+		BMenuBar* 				menu_bar;
 
 // these are boxes that can be used to hold the components
-		BBox *box1,*box2;
+		BBox* 					box1;
 
 // these point to file-panels for opening and saving palette
-		BFilePanel *open_panel,*save_panel;
+		BFilePanel*				open_panel;
+		BFilePanel*				save_panel;
 
-		RGBColorControl* rgbSlider;
-		CMYColorControl* cmySlider;
-		//YIQControl* yiqSlider;
-		//YUVColorControl* yuvSlider;
-		LABColorControl* labSlider;
-		HSVColorControl* hsvSlider;
+		RGBColorControl* 		rgbSlider;
+		CMYColorControl* 		cmySlider;
+		LABColorControl* 		labSlider;
+		HSVColorControl* 		hsvSlider;
 
-		ColorChip*	colorPreview;
+		ColorChip*				colorPreview;
 // This static holds the pointer to the open palette-window.
 // If no window is open, it is NULL
-static	ColorPaletteWindow	*palette_window;
+static	ColorPaletteWindow*		palette_window;
 
 // these functions are used to open necessary control views
 // and delete them when necessary
-bool	openControlViews(int32 mode);
-void	deleteControlViews(int32 mode);
-void	openMenuBar();
+		bool	openControlViews(int32 mode);
+		void	openMenuBar();
 
 
 // these functions handle the palette loading and saving
-void	handlePaletteLoad(BMessage *message);
-void	handlePaletteSave(BMessage *message);
+		void	handlePaletteLoad(BMessage *message);
+		void	handlePaletteSave(BMessage *message);
 
 
 static	void	InformClients(const rgb_color&);
 public:
-		ColorPaletteWindow(BRect frame,int32 mode);
-		~ColorPaletteWindow();
-bool	QuitRequested();
-void	MessageReceived(BMessage *message);
+				ColorPaletteWindow(BRect frame,int32 mode);
+				~ColorPaletteWindow();
+		bool	QuitRequested();
+		void	MessageReceived(BMessage *message);
 
 rgb_color	getColor(int32 index);
 
@@ -206,14 +204,14 @@ static	void	sendMessageToAllContainers(BMessage *message);
 
 // this is a class that holds a color_set
 class ColorSet {
-		rgb_color		*palette;
-		int32			current_color_index;
-		int32			color_count;
-		char			*name;
+				rgb_color*	palette;
+				int32		current_color_index;
+				int32		color_count;
+				char*		name;
 
 		// here is the list that holds all the color-sets and the index of current set
-		static	BList	*color_set_list;
-		static	int32	current_set_index;
+static			BList*		color_set_list;
+static			int32		current_set_index;
 
 		// we should probably move the selected color from color-container
 		// to here so that each set could have different selected color
@@ -223,27 +221,41 @@ class ColorSet {
 		// similar. Also a function for setting the current color
 		// should be made available.
 public:
-				ColorSet(int32 amount_of_colors, ColorSet *copy_this_palette = NULL);
-				~ColorSet();
-inline	int32	sizeOfSet() { return color_count; }
-rgb_color	colorAt(int32 index);
+							ColorSet(int32 amount_of_colors,
+								ColorSet *copy_this_palette = NULL);
+							~ColorSet();
+		inline	int32		sizeOfSet() { return color_count; }
+				rgb_color	colorAt(int32 index);
 
-inline	rgb_color	currentColor() { return palette[current_color_index]; }
-inline	int32	currentColorIndex() { return current_color_index; }
-
+		inline	rgb_color	currentColor() { return palette[current_color_index]; }
+		inline	int32		currentColorIndex() { return current_color_index; }
 
 // these are used to set colors of the set, the first is used when loading a set
-void	setColor(int32 index,rgb_color color);
-inline	void	setCurrentColor(rgb_color color) { palette[current_color_index] = color; }
-inline	void	setCurrentColorIndex(int32 index) { current_color_index = index; }
+				void		setColor(int32 index,rgb_color color);
+		inline	void		setCurrentColor(rgb_color color)
+								{ palette[current_color_index] = color; }
+		inline	void		setCurrentColorIndex(int32 index)
+								{ current_color_index = index; }
 
-void	setName(const char *set_name);
-char*	getName();
+				void		setName(const char *set_name);
+				char*		getName();
 
-static	inline	ColorSet*	currentSet() { return (ColorSet*)color_set_list->ItemAt(current_set_index); }
-static	inline	void		moveToNextSet() { current_set_index = min_c(current_set_index+1,color_set_list->CountItems()-1); }
-static	inline	void		moveToPrevSet() { current_set_index = max_c(current_set_index-1,0); }
+static	inline	ColorSet*	currentSet() {
+								return (ColorSet*)color_set_list->ItemAt(
+									current_set_index
+								);
+							}
+static	inline	int32		currentSetIndex() { return current_set_index; }
+static	inline	void		moveToNextSet() {
+								current_set_index =
+									min_c(current_set_index + 1,
+									color_set_list->CountItems() - 1);
+							}
+static	inline	void		moveToPrevSet() {
+								current_set_index = max_c(current_set_index - 1,0);
+							}
 static	inline	int32		numberOfSets() { return color_set_list->CountItems(); }
+static  inline 	void		moveToSet(int32 index) { current_set_index = index; }
 
 // these functions read and write all the sets to the preferences-file
 static			status_t	readSets(BFile &file);

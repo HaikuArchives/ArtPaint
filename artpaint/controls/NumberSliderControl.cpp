@@ -37,15 +37,15 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 		BMessage* message, int32 minRange, int32 maxRange, bool layout,
 		bool continuous, border_style borderStyle, thumb_style thumbStyle,
 		bool proportional)
-	: BBox(borderStyle, NULL)
-	, fMinRange(minRange)
-	, fMaxRange(maxRange)
-	, fContinuous(continuous)
-	, fSlider(NULL)
-	, fMessage(message)
-	, fNumberControl(NULL)
-	, fProportional(proportional)
-	, fExp(4)
+	: BBox(borderStyle, NULL),
+	fMinRange(minRange),
+	fMaxRange(maxRange),
+	fContinuous(continuous),
+	fSlider(NULL),
+	fMessage(message),
+	fNumberControl(NULL),
+	fProportional(proportional),
+	fExp(4)
 {
 	_InitMessage();
 

@@ -19,26 +19,33 @@
 using ArtPaint::Interface::ColorFloatSlider;
 
 
-#define SLIDER_CHANGED		'slCh'
-
-
 MultichannelColorControl::MultichannelColorControl(rgb_color c,
  	BString label1, BString label2, BString label3, BString label4)
  	: BControl("multi color control", "multi-color-control", NULL,
  		B_WILL_DRAW)
 {
+	BFont font;
+	font_height height;
+
+	font.GetHeight(&height);
+	float barHeight = (height.ascent - height.descent) / 1.5;
+
  	BMessage *message = new BMessage(SLIDER_CHANGED);
  	slider1 = new ColorFloatSlider(label1,
  		"0", message, 0, 255, false);
+ 	slider1->Slider()->SetBarThickness(barHeight);
 
  	slider2 = new ColorFloatSlider(label2,
  		"0", message, 0, 255, false);
+	slider2->Slider()->SetBarThickness(barHeight);
 
  	slider3 = new ColorFloatSlider(label3,
  		"0", message, 0, 255, false);
+	slider3->Slider()->SetBarThickness(barHeight);
 
  	slider4 = new ColorFloatSlider(label4,
  		"0", message, 0, 255, false);
+ 	slider4->Slider()->SetBarThickness(barHeight);
 
  	BGridLayout* sliderGrid = BLayoutBuilder::Grid<>(this,
  		B_USE_SMALL_SPACING, 0)
@@ -61,6 +68,8 @@ MultichannelColorControl::MultichannelColorControl(rgb_color c,
  	sliderGrid->SetColumnWeight(0, 0.2);
 	sliderGrid->SetColumnWeight(1, 0.1);
 	sliderGrid->SetColumnWeight(2, 0.7);
+	sliderGrid->SetMinColumnWidth(1, font.StringWidth("XXX"));
+	sliderGrid->SetMaxColumnWidth(1, font.StringWidth("XXX"));
 
 	SetValue(c);
 }
@@ -68,6 +77,19 @@ MultichannelColorControl::MultichannelColorControl(rgb_color c,
 
 MultichannelColorControl::~MultichannelColorControl()
 {
+	slider1->RemoveSelf();
+	slider2->RemoveSelf();
+	slider3->RemoveSelf();
+	slider4->RemoveSelf();
+
+	if (slider1 != NULL)
+		delete slider1;
+	if (slider2 != NULL)
+		delete slider2;
+	if (slider3 != NULL)
+		delete slider3;
+	if (slider4 != NULL)
+		delete slider4;
 }
 
 
@@ -91,7 +113,7 @@ MultichannelColorControl::Draw(BRect rect)
 void
 MultichannelColorControl::MessageReceived(BMessage* message)
 {
- 	switch(message->what) {
+ 	switch (message->what) {
  		case SLIDER_CHANGED: {
  			uint32 buttons;
  			BPoint point;

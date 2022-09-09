@@ -78,6 +78,8 @@ ColorSlider::ColorSlider(BMessage* archive)
 
 ColorSlider::~ColorSlider()
 {
+	if (gradient != NULL)
+		delete gradient;
 }
 
 void
@@ -118,7 +120,7 @@ ColorSlider::DetachedFromWindow()
 void
 ColorSlider::MessageReceived(BMessage* message)
 {
-	switch(message->what) {
+	switch (message->what) {
 		default:
 			BSlider::MessageReceived(message);
 	}
@@ -250,13 +252,23 @@ ColorSlider::SetColors(rgb_color start, rgb_color end)
 	float b_delta = (float)(end.blue - start.blue) / (float)(RES);
 	float a_delta = (float)(end.alpha - start.alpha) / (float)(RES);
 
-	for (int i = 0; i < rowLen - 1; ++i) {
+	float r = (float)pixel.bytes[2];
+	float g = (float)pixel.bytes[1];
+	float b = (float)pixel.bytes[0];
+	float a = (float)pixel.bytes[3];
+
+	for (int i = 0; i < rowLen; ++i) {
 		*bits++ = pixel.word;
 
-		pixel.bytes[0] = min_c(255, pixel.bytes[0] + ceil(b_delta));
-		pixel.bytes[1] = min_c(255, pixel.bytes[1] + ceil(g_delta));
-		pixel.bytes[2] = min_c(255, pixel.bytes[2] + ceil(r_delta));
-		pixel.bytes[3] = min_c(255, pixel.bytes[3] + ceil(a_delta));
+		r += r_delta;
+		g += g_delta;
+		b += b_delta;
+		a += a_delta;
+
+		pixel.bytes[0] = (uint8)min_c(255, max_c(0, b));
+		pixel.bytes[1] = (uint8)min_c(255, max_c(0, g));
+		pixel.bytes[2] = (uint8)min_c(255, max_c(0, r));
+		pixel.bytes[3] = (uint8)min_c(255, max_c(0, a));
 	}
 }
 

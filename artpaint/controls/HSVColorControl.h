@@ -49,7 +49,7 @@ HSVColorControl::hsv2rgb(float h, float s, float v,
  	q = v * (1.0 - (s * ff));
  	t = v * (1.0 - (s * (1.0 - ff)));
 
- 	switch(i) {
+ 	switch (i) {
  		case 0: {
  			r = v;
  			g = t;

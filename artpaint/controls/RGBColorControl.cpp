@@ -23,14 +23,18 @@
 RGBColorControl::RGBColorControl(rgb_color c)
  	: MultichannelColorControl(c, "R", "G", "B", "A")
 {
-	slider1->SetResolution(1);
-	slider1->SetToolTip(B_TRANSLATE("Red"));
-	slider2->SetResolution(1);
-	slider2->SetToolTip(B_TRANSLATE("Green"));
-	slider3->SetResolution(1);
-	slider3->SetToolTip(B_TRANSLATE("Blue"));
-	slider4->SetResolution(1);
-	slider4->SetToolTip(B_TRANSLATE("Alpha"));
+	slider1->SetResolution(0);
+	slider1->SetToolTip(B_TRANSLATE_COMMENT("Red",
+		"For RGB color sliders"));
+	slider2->SetResolution(0);
+	slider2->SetToolTip(B_TRANSLATE_COMMENT("Green",
+		"For RGB color sliders"));
+	slider3->SetResolution(0);
+	slider3->SetToolTip(B_TRANSLATE_COMMENT("Blue",
+		"For RGB color sliders"));
+	slider4->SetResolution(0);
+	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha",
+		"For color sliders"));
 }
 
 

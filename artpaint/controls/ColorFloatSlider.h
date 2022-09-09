@@ -68,10 +68,11 @@ private:
 			float				fMaxRange;
 			bool				fContinuous;
 
-			ColorSlider*			fSlider;
+			ColorSlider*		fSlider;
 			BMessage*			fMessage;
 			FloatControl*		fFloatControl;
 			float				fMult;
+			BString				fFormat;
 };
 
 	}	// namespace Interface
