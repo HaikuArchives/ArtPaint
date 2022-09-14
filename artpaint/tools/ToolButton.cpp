@@ -106,6 +106,14 @@ ToolButton::Draw(BRect updateRect)
 			SetDrawingMode(B_OP_ALPHA);
 			DrawBitmap(fIcon, BPoint(gInset, gInset));
 		}
+
+		if (Value() & B_CONTROL_ON) {
+			SetHighColor(ui_color(B_KEYBOARD_NAVIGATION_COLOR));
+			BRect buttonFrame = Bounds();
+			StrokeRect(buttonFrame);
+			buttonFrame.InsetBy(1, 1);
+			StrokeRect(buttonFrame);
+		}
 	} else {
 		SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 		FillRect(Bounds());
