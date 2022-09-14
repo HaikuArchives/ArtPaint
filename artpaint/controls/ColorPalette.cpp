@@ -165,11 +165,43 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		B_SIZE_UNSET));
 	colorPreview->SetExplicitMaxSize(BSize(color_control->Bounds().Height(),
 		B_SIZE_UNSET));
+	hexColorField = new BTextControl("", "hex-color", new BMessage(HEX_COLOR_EDITED));
+	for (uint32 i = 0; i < 256; ++i)
+		hexColorField->TextView()->DisallowChar(i);
+	hexColorField->TextView()->AllowChar('0');
+	hexColorField->TextView()->AllowChar('1');
+	hexColorField->TextView()->AllowChar('2');
+	hexColorField->TextView()->AllowChar('3');
+	hexColorField->TextView()->AllowChar('4');
+	hexColorField->TextView()->AllowChar('5');
+	hexColorField->TextView()->AllowChar('6');
+	hexColorField->TextView()->AllowChar('7');
+	hexColorField->TextView()->AllowChar('8');
+	hexColorField->TextView()->AllowChar('9');
+	hexColorField->TextView()->AllowChar('A');
+	hexColorField->TextView()->AllowChar('B');
+	hexColorField->TextView()->AllowChar('C');
+	hexColorField->TextView()->AllowChar('D');
+	hexColorField->TextView()->AllowChar('E');
+	hexColorField->TextView()->AllowChar('F');
+	hexColorField->TextView()->AllowChar('a');
+	hexColorField->TextView()->AllowChar('b');
+	hexColorField->TextView()->AllowChar('c');
+	hexColorField->TextView()->AllowChar('d');
+	hexColorField->TextView()->AllowChar('e');
+	hexColorField->TextView()->AllowChar('f');
+	hexColorField->TextView()->AllowChar('#');
+	hexColorField->TextView()->SetMaxBytes(9);
+	hexColorField->SetTarget(this);
+
 	BGridLayout* colorLayout = BLayoutBuilder::Grid<>(B_USE_SMALL_SPACING,
 		B_USE_SMALL_SPACING)
 		.Add(container_box, 0, 0)
 		.Add(sliderLayout, 1, 0, 2)
-		.Add(colorPreview, 3, 0)
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING, 3, 0)
+			.Add(colorPreview)
+			.Add(hexColorField)
+		.End()
 		.SetInsets(5, 5, 5, 5);
 
 	BGroupLayout* mainLayout = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
@@ -214,7 +246,8 @@ ColorPaletteWindow::~ColorPaletteWindow()
 	previous_set->RemoveSelf();
 	next_set->RemoveSelf();
 	color_container->RemoveSelf();
-
+	hexColorField->RemoveSelf();
+	colorPreview->RemoveSelf();
 	sliderLayout->RemoveSelf();
 	rgbSlider->RemoveSelf();
 	labSlider->RemoveSelf();
@@ -245,7 +278,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 	switch (message->what) {
 
 	// this comes from the HSColorControl object and indicates that it's value has changed
-	case HS_COLOR_CONTROL_INVOKED:
+	case HS_COLOR_CONTROL_INVOKED: {
 		// send message to each container
 		// message should contain the index of that color in color-set
 		// this should only be done if the color_container is in edit-mode
@@ -268,11 +301,12 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 
 		InformClients(ColorSet::currentSet()->currentColor());
 		colorPreview->SetColor(RGBColorToBGRA(color));
-		break;
+		SetHexColor(color);
+	} break;
 
 	// This comes from the RGBControl-object and indicates that it's value has changed.
 	// This might also come from CMYControl, YIQControl ...
-	case HS_RGB_CONTROL_INVOKED:
+	case HS_RGB_CONTROL_INVOKED: {
 		// send message to each container
 		// message should contain the index of that color in color-set
 		// this should only be done if the color_container is in edit-mode
@@ -291,10 +325,12 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 		else
 			((PaintApplication*)be_app)->SetColor(color_slider->ValueAsColor(),FALSE);
 
-		InformClients(ColorSet::currentSet()->currentColor());
-		break;
+		rgb_color current = ColorSet::currentSet()->currentColor();
+		InformClients(current);
+		SetHexColor(current);
+	} break;
 
-	case COLOR_CHIP_INVOKED:
+	case COLOR_CHIP_INVOKED: {
 		rgb_color* color;
 		ssize_t color_size;
 		if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,
@@ -317,9 +353,11 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 				((PaintApplication*)be_app)->SetColor(*color,TRUE);
 			else
 				((PaintApplication*)be_app)->SetColor(*color,FALSE);
+
 			InformClients(ColorSet::currentSet()->currentColor());
+			SetHexColor(*color);
 		}
-		break;
+	} break;
 
 	// this comes from the menubar->"Set"->"New Palette"->"N" and indicates that a new
 	// palette-set should be created, the "colors"-parameter tells us how many colors the
@@ -394,21 +432,23 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 
 	// this is sent from ColorContainer::MouseDown and it's purpose is to
 	// let us change the corresponding color to the color-controller also
-	case HS_PALETTE_SELECTION_CHANGED:
+	case HS_PALETTE_SELECTION_CHANGED: {
 		// update the color controller to display this new color
 		// only should do it if container is in edit mode
+		rgb_color current = ColorSet::currentSet()->currentColor();
 		if (color_control != NULL)
-			color_control->SetValue(ColorSet::currentSet()->currentColor());
+			color_control->SetValue(current);
 		if (color_slider != NULL)
-			color_slider->SetValue(ColorSet::currentSet()->currentColor());
-		InformClients(ColorSet::currentSet()->currentColor());
+			color_slider->SetValue(current);
+		InformClients(current);
 		colorPreview->
-			SetColor(RGBColorToBGRA(ColorSet::currentSet()->currentColor()));
-		break;
+			SetColor(RGBColorToBGRA(current));
+		SetHexColor(current);
+	} break;
 
 	// this comes from the menubar->"Set"->"Open Set" and indicates that
 	// a file panel should be opened for the purpose of loading new set
-	case HS_SHOW_PALETTE_OPEN_PANEL:
+	case HS_SHOW_PALETTE_OPEN_PANEL: {
 		// here we must open the file-panel for loading
 		// here get the path for palette-files, should be made relative to apps directory
 		// or maybe remember the directory from last use
@@ -433,11 +473,11 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 		open_panel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open color set" B_UTF8_ELLIPSIS));
 		set_filepanel_strings(open_panel);
 		open_panel->Show();
-		break;
+	} break;
 
 	// this comes from the menubar->"Set"->"Save Set" and indicates that
 	// a file panel should be opened for the purpose of saving current set
-	case HS_SHOW_PALETTE_SAVE_PANEL:
+	case HS_SHOW_PALETTE_SAVE_PANEL: {
 		// here we must open the file-panel for saving
 		if (save_panel == NULL) {
 			// get the home directory of the app
@@ -460,7 +500,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 		save_panel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open color set" B_UTF8_ELLIPSIS));
 		set_filepanel_strings(save_panel);
 		save_panel->Show();
-		break;
+	} break;
 
 	// this comes from the open_panel or the applocation-object and includes refs for
 	// the palette-files that should be loaded
@@ -484,66 +524,139 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 
 	// this comes from the save_panel and indicates that current set should be saved
 	// to the file that the "refs" indicate
-	case HS_PALETTE_SAVE_REFS:
+	case HS_PALETTE_SAVE_REFS: {
 		handlePaletteSave(message);
-		break;
+	} break;
 
 	// this comes from the menubar->"Mode"->"RGB-Mode" and indicates that
 	// the color selector should be changed to a RGBControl, this is used
 	// also for other purposes than just a message-constant
-	case HS_RGB_COLOR_MODE:
+	case HS_RGB_COLOR_MODE: {
 		if (selector_mode != HS_RGB_COLOR_MODE) {
 			selector_mode = HS_RGB_COLOR_MODE;
 			openControlViews(HS_RGB_COLOR_MODE);
 		}
-		break;
+	} break;
 
 	// this comes from the menubar->"Mode"->"CMY-Mode" and indicates that
 	// the color selector should be changed to a RGBControl, this is used
 	// also for other purposes than just a message-constant
-	case HS_CMY_COLOR_MODE:
+	case HS_CMY_COLOR_MODE: {
 		if (selector_mode != HS_CMY_COLOR_MODE) {
 			selector_mode = HS_CMY_COLOR_MODE;
 			openControlViews(HS_CMY_COLOR_MODE);
 		}
-		break;
+	} break;
 
 	// this comes from the menubar->"Mode"->"YIQ-Mode" and indicates that
 	// the color selector should be changed to a RGBControl, this is used
 	// also for other purposes than just a message-constant
-	case HS_YIQ_COLOR_MODE:
+	case HS_YIQ_COLOR_MODE: {
 		if (selector_mode != HS_YIQ_COLOR_MODE) {
 			selector_mode = HS_YIQ_COLOR_MODE;
 			openControlViews(HS_YIQ_COLOR_MODE);
 		}
-		break;
+	} break;
 
 	// this comes from the menubar->"Mode"->"LAB-Mode" and indicates that
 	// the color selector should be changed to a RGBControl, this is used
 	// also for other purposes than just a message-constant
-	case HS_LAB_COLOR_MODE:
+	case HS_LAB_COLOR_MODE: {
 		if (selector_mode != HS_LAB_COLOR_MODE) {
 			selector_mode = HS_LAB_COLOR_MODE;
 			openControlViews(HS_LAB_COLOR_MODE);
 		}
-		break;
+	} break;
 
-	case HS_HSV_COLOR_MODE:
+	case HS_HSV_COLOR_MODE: {
 		if (selector_mode != HS_HSV_COLOR_MODE) {
 			selector_mode = HS_HSV_COLOR_MODE;
 			openControlViews(HS_HSV_COLOR_MODE);
 		}
-		break;
+	} break;
 
 	// this comes from the menubar->"Mode"->"Simple-Mode" and indicates that
 	// the color selector should be changed to a HSColorControl, this is used
 	// also for other purposes than just a message-constant
-	case HS_SIMPLE_COLOR_MODE:
+	case HS_SIMPLE_COLOR_MODE: {
 		if (selector_mode != HS_SIMPLE_COLOR_MODE) {
 			selector_mode = HS_SIMPLE_COLOR_MODE;
 			openControlViews(HS_SIMPLE_COLOR_MODE);
 		}
-		break;
+	} break;
+
+	case HEX_COLOR_EDITED: {
+		BString hexColor = hexColorField->Text();
+		hexColor.ReplaceAll("#", "");
+		hexColor.ToUpper();
+		union color_conversion color;
+		bool valid_color = FALSE;
+		if (hexColor.Length() == 3 || hexColor.Length() == 4) {
+			BString byteStr;
+			uint8 byteVal;
+
+			for (int i = 0; i < 3; ++i) {
+				char digit = hexColor.ByteAt(i);
+				byteStr.SetToFormat("%c%c", digit, digit);
+				byteStr.ScanWithFormat("%X", &byteVal);
+				color.bytes[2 - i] = byteVal;
+			}
+			if (hexColor.Length() == 4) {
+				char digit = hexColor.ByteAt(3);
+				byteStr.SetToFormat("%c%c", digit, digit);
+				byteStr.ScanWithFormat("%X", &byteVal);
+				color.bytes[3] = byteVal;
+			} else
+				color.bytes[3] = 0xFF;
+
+			valid_color = TRUE;
+		} else if (hexColor.Length() == 6 || hexColor.Length() == 8) {
+			BString byteStr;
+			uint8 byteVal;
+
+			for (int i = 0; i < 3; ++i) {
+				int j = i * 2;
+				char digit1 = hexColor.ByteAt(j);
+				char digit2 = hexColor.ByteAt(j + 1);
+				byteStr.SetToFormat("%c%c", digit1, digit2);
+				byteStr.ScanWithFormat("%x", &byteVal);
+				color.bytes[2 - i] = byteVal;
+			}
+			if (hexColor.Length() == 8) {
+				char digit1 = hexColor.ByteAt(6);
+				char digit2 = hexColor.ByteAt(7);
+
+				byteStr.SetToFormat("%c%c", digit1, digit2);
+				byteStr.ScanWithFormat("%X", &byteVal);
+				color.bytes[3] = byteVal;
+			} else
+				color.bytes[3] = 0xFF;
+			valid_color = TRUE;
+		} else {
+			SetHexColor(ColorSet::currentSet()->currentColor());
+		}
+
+		if (valid_color == TRUE) {
+			rgb_color newColor = BGRAColorToRGB(color.word);
+			if (color_control != NULL)
+				color_control->SetValue(newColor);
+			if (color_slider != NULL)
+				color_slider->SetValue(newColor);
+
+			colorPreview->SetColor(color.word);
+			((PaintApplication*)be_app)->SetColor(newColor, TRUE);
+
+			ColorSet::currentSet()->setCurrentColor(newColor);
+			color_message = new BMessage(HS_COLOR_CHANGED);
+			color_message->AddInt32("index",
+				ColorSet::currentSet()->currentColorIndex());
+			ColorContainer::sendMessageToAllContainers(color_message);
+			SelectedColorsView::sendMessageToAll(color_message);
+
+			InformClients(ColorSet::currentSet()->currentColor());
+			SetHexColor(newColor);
+		}
+	} break;
 
 	default:
 		BWindow::MessageReceived(message);
@@ -593,14 +706,17 @@ ColorPaletteWindow::openControlViews(int32 mode)
 	}
 
 	// Update the color-controllers and slider's values
+	rgb_color current = ColorSet::currentSet()->currentColor();
 	if (color_control != NULL)
-		color_control->SetValue(ColorSet::currentSet()->currentColor());
+		color_control->SetValue(current);
 
 	if (color_slider != NULL)
-		color_slider->SetValue(ColorSet::currentSet()->currentColor());
+		color_slider->SetValue(current);
 
 	colorPreview->
-		SetColor(RGBColorToBGRA(ColorSet::currentSet()->currentColor()));
+		SetColor(RGBColorToBGRA(current));
+
+	SetHexColor(current);
 
 	return TRUE;
 }
@@ -858,6 +974,8 @@ ColorPaletteWindow::ChangePaletteColor(rgb_color& c)
 			palette_window->color_slider->SetValue(c);
 		if (palette_window->colorPreview != NULL)
 			palette_window->colorPreview->SetColor(RGBColorToBGRA(c));
+		if (palette_window->hexColorField != NULL)
+			palette_window->SetHexColor(c);
 
 		palette_window->Unlock();
 	}
@@ -924,6 +1042,15 @@ ColorPaletteWindow::InformClients(const rgb_color& c)
 		if (client)
 			client->PaletteColorChanged(c);
 	}
+}
+
+
+void
+ColorPaletteWindow::SetHexColor(const rgb_color c)
+{
+	BString hexColor;
+	hexColor.SetToFormat("#%02X%02X%02X%02X", c.red, c.green, c.blue, c.alpha);
+	hexColorField->SetText(hexColor);
 }
 
 
