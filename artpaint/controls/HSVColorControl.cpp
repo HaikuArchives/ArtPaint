@@ -89,7 +89,7 @@ HSVColorControl::SetSliderColors(rgb_color c)
  	slider1->Slider()->SetColors(&colorList);
 
  	while (colorList.CountItems() > 0) {
- 		uint32* hue_word = (uint32*)(colorList.RemoveItem(0));
+ 		uint32* hue_word = (uint32*)(colorList.RemoveItem((int32)0));
  		delete hue_word;
  	}
 

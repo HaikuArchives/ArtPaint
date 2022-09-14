@@ -14,13 +14,18 @@
 #include "MultichannelColorControl.h"
 
 
+#define SLIDER5_CHANGED		's5Ch'
+
+
 using ArtPaint::Interface::ColorFloatSlider;
 
 
 class CMYColorControl : public MultichannelColorControl {
 public:
-		CMYColorControl(rgb_color c);
+					CMYColorControl(rgb_color c);
+					~CMYColorControl();
 
+		void		AttachedToWindow();
 		void		MessageReceived(BMessage* message);
 virtual	void		SetValue(rgb_color c);
 virtual	void		SetValue(float one, float two,

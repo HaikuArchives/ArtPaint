@@ -50,7 +50,7 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 	_InitMessage();
 
 	fNumberControl = new (std::nothrow) NumberControl(label, text,
-		new BMessage(kNumberControlFinished), 3, minRange < 0);
+		new BMessage(kNumberControlFinished), 5, minRange < 0);
 	int32 range = fMaxRange - fMinRange;
 	int32 inc = 1000. / range;
 
@@ -185,6 +185,13 @@ NumberSliderControl::SetMessage(BMessage* message)
 	fMessage = message;
 
 	_InitMessage();
+}
+
+
+BString
+NumberSliderControl::Label() const
+{
+	return fNumberControl->Label();
 }
 
 

@@ -47,11 +47,13 @@ ColorFloatSlider::ColorFloatSlider(const char* label, const char* text,
 {
 	_InitMessage();
 
+	BFont font;
+
 	fMult = pow(10, resolution);
 
 	fFormat.SetToFormat("%%0.%df", resolution);
 	fFloatControl = new (std::nothrow) FloatControl(label, text,
-		new BMessage(kNumberControlFinished), 6, minRange < 0);
+		new BMessage(kNumberControlFinished), 5, minRange < 0);
 	fSlider = new (std::nothrow) ColorSlider(NULL, NULL,
 		new BMessage(kSliderModificationFinished), (int32)minRange * fMult,
 		(int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
@@ -102,6 +104,11 @@ ColorFloatSlider::MessageReceived(BMessage* message)
 			BString value;
 			value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
 			fFloatControl->SetText(value.String());
+			if (modifiers() & B_SHIFT_KEY)
+				fMessage->ReplaceInt32("modifiers", modifiers());
+			else
+				fMessage->ReplaceInt32("modifiers", 0);
+
 			if (fContinuous)
 				_SendMessage((float)(fSlider->Value() / fMult), false);
 		} break;
@@ -110,6 +117,11 @@ ColorFloatSlider::MessageReceived(BMessage* message)
 			BString value;
 			value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
 			fFloatControl->SetText(value.String());
+			if (modifiers() & B_SHIFT_KEY)
+				fMessage->ReplaceInt32("modifiers", modifiers());
+			else
+				fMessage->ReplaceInt32("modifiers", 0);
+
 			_SendMessage((float)(fSlider->Value() / fMult), true);
 		} break;
 
@@ -262,6 +274,8 @@ ColorFloatSlider::_InitMessage()
 			fMessage->AddFloat("value", 0.0);
 
 		fMessage->AddBool("final", true);
+		fMessage->AddInt32("modifiers", 0);
+		fMessage->AddPointer("id", this);
 	}
 }
 

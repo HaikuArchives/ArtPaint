@@ -47,6 +47,8 @@ public:
 			void				SetMinMax(float min, float max);
 			void				SetResolution(uint8 resolution);
 
+			BString				Label() const;
+
 			BSlider*			Slider() const;
 			FloatControl*		TextControl() const;
 
