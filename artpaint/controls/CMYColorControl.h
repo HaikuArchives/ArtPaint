@@ -62,7 +62,7 @@ CMYColorControl::rgb2cmyk(float r, float g, float b,
 	b /= 255.;
 
 	k = 1.0 - max_c(r, max_c(g, b));
-	float inv_k = 1.0 - k; // + 0.00001;
+	float inv_k = 1.0 - k + 0.00001;  // guard against divide-by-zero
 	c = ((1.0 - r - k) / inv_k) * 100.;
  	m = ((1.0 - g - k) / inv_k) * 100.;
  	y = ((1.0 - b - k) / inv_k) * 100.;

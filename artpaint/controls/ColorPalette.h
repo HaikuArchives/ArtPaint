@@ -24,6 +24,7 @@
 #include <ColorControl.h>
 #include <FilePanel.h>
 #include <PictureButton.h>
+#include <TextControl.h>
 #include <Window.h>
 
 
@@ -35,6 +36,7 @@ class PaletteWindowClient;
 
 
 #define COLOR_CHIP_INVOKED			'ccIn'
+#define HEX_COLOR_EDITED			'hcEd'
 
 
 // we have to derive the BColorControl-class just to get
@@ -96,6 +98,9 @@ static	BList*					palette_window_clients;
 		HSVColorControl* 		hsvSlider;
 
 		ColorChip*				colorPreview;
+		BTextControl*			hexColorField;
+
+		void					SetHexColor(const rgb_color c);
 // This static holds the pointer to the open palette-window.
 // If no window is open, it is NULL
 static	ColorPaletteWindow*		palette_window;
