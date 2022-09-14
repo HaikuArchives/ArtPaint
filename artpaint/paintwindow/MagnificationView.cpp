@@ -87,6 +87,8 @@ MagnificationView::MagnificationView()
 	: BBox("magnificationView", B_WILL_DRAW | B_FRAME_EVENTS | B_SUPPORTS_LAYOUT,
 	B_PLAIN_BORDER)
 {
+	BFont font;
+
 	char string[256];
 	sprintf(string,"%s: %.1f%%", B_TRANSLATE("Zoom"), 1600.0);
 
@@ -98,11 +100,12 @@ MagnificationView::MagnificationView()
 	fPlusButton = new BButton("plusButton", "+",
 		new BMessage(HS_ZOOM_IMAGE_IN));
 
-	fMinusButton->SetExplicitMaxSize(BSize(25, 25));
-	fMinusButton->SetExplicitMinSize(BSize(25, 25));
+	float button_size = font.StringWidth("XXX");
+	fMinusButton->SetExplicitMaxSize(BSize(button_size, button_size));
+	fMinusButton->SetExplicitMinSize(BSize(button_size, button_size));
 
-	fPlusButton->SetExplicitMaxSize(BSize(25, 25));
-	fPlusButton->SetExplicitMinSize(BSize(25, 25));
+	fPlusButton->SetExplicitMaxSize(BSize(button_size, button_size));
+	fPlusButton->SetExplicitMinSize(BSize(button_size, button_size));
 
 	BGridLayout* mainLayout = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
 		.Add(fMagStringView, 0, 0)
