@@ -103,9 +103,9 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	// Here add the buttons that control the color-set.
 	previous_set = new BButton("\xe2\xaf\x87",
 		new BMessage(HS_PREVIOUS_PALETTE));
-	previous_set->SetExplicitMaxSize(BSize(font.StringWidth("XXX"),
+	previous_set->SetExplicitMaxSize(BSize(font.StringWidth("xx\xe2\xaf\x87X"),
 		B_SIZE_UNSET));
-	previous_set->SetExplicitMinSize(BSize(font.StringWidth("XXX"),
+	previous_set->SetExplicitMinSize(BSize(font.StringWidth("xx\xe2\xaf\x87X"),
 		B_SIZE_UNSET));
 	previous_set->SetTarget(this);
 	previous_set->SetToolTip(B_TRANSLATE_COMMENT("Previous color set",
@@ -114,9 +114,9 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 
 	next_set = new BButton("\xe2\xaf\x88",
 		new BMessage(HS_NEXT_PALETTE));
-	next_set->SetExplicitMaxSize(BSize(font.StringWidth("XXX"),
+	next_set->SetExplicitMaxSize(BSize(font.StringWidth("xx\xe2\xaf\x88X"),
 		B_SIZE_UNSET));
-	next_set->SetExplicitMinSize(BSize(font.StringWidth("XXX"),
+	next_set->SetExplicitMinSize(BSize(font.StringWidth("xx\xe2\xaf\x88X"),
 		B_SIZE_UNSET));
 	next_set->SetTarget(this);
 	next_set->SetToolTip(B_TRANSLATE_COMMENT("Next color set",
@@ -128,7 +128,7 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 			.Add(color_container, 0, 0, 1, 3)
 			.Add(previous_set, 1, 0)
 			.Add(next_set, 1, 2)
-			.SetInsets(3, 3, 10, 3);
+			.SetInsets(3, 3, 8, 3);
 
 	colorSetGrid->SetMinColumnWidth(0, font.StringWidth("PALETTEPALETTE"));
 
@@ -159,11 +159,22 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		.Add(hsvSlider)
 		.Add(color_control);
 
+	rgbSlider->SetExplicitMinSize(
+		BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
+	cmySlider->SetExplicitMinSize(
+		BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
+	labSlider->SetExplicitMinSize(
+		BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
+	hsvSlider->SetExplicitMinSize(
+		BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
+	color_control->SetExplicitMinSize(
+		BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
+
 	colorPreview = new ColorChip("chippy");
 	colorPreview->SetColor(RGBColorToBGRA(c));
-	colorPreview->SetExplicitMinSize(BSize(color_control->Bounds().Height(),
+	colorPreview->SetExplicitMinSize(BSize(font.StringWidth("#dddddddd#"),
 		B_SIZE_UNSET));
-	colorPreview->SetExplicitMaxSize(BSize(color_control->Bounds().Height(),
+	colorPreview->SetExplicitMaxSize(BSize(font.StringWidth("#dddddddd#"),
 		B_SIZE_UNSET));
 	hexColorField = new BTextControl("", "hex-color", new BMessage(HEX_COLOR_EDITED));
 	for (uint32 i = 0; i < 256; ++i)
@@ -194,11 +205,10 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	hexColorField->TextView()->SetMaxBytes(9);
 	hexColorField->SetTarget(this);
 
-	BGridLayout* colorLayout = BLayoutBuilder::Grid<>(B_USE_SMALL_SPACING,
-		B_USE_SMALL_SPACING)
+	BGridLayout* colorLayout = BLayoutBuilder::Grid<>(5, 3)
 		.Add(container_box, 0, 0)
-		.Add(sliderLayout, 1, 0, 2)
-		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING, 3, 0)
+		.Add(sliderLayout, 1, 0)
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING, 2, 0)
 			.Add(colorPreview)
 			.Add(hexColorField)
 		.End()
@@ -588,7 +598,7 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 	case HEX_COLOR_EDITED: {
 		BString hexColor = hexColorField->Text();
 		hexColor.ReplaceAll("#", "");
-		hexColor.ToUpper();
+		hexColor.ToLower();
 		union color_conversion color;
 		bool valid_color = FALSE;
 		if (hexColor.Length() == 3 || hexColor.Length() == 4) {
@@ -681,23 +691,23 @@ ColorPaletteWindow::openControlViews(int32 mode)
 
 	// in this case just open a HSColorControl and color-set container
 		case HS_SIMPLE_COLOR_MODE: {
-			sliderLayout->SetVisibleItem(4);
+			sliderLayout->SetVisibleItem((int32)4);
 		} break;
 	// in this case open an RGBControl
 		case HS_RGB_COLOR_MODE: {
-			sliderLayout->SetVisibleItem(0);
+			sliderLayout->SetVisibleItem((int32)0);
 			color_slider = rgbSlider;
 		}	break;
 		case HS_CMY_COLOR_MODE: {
-			sliderLayout->SetVisibleItem(1);
+			sliderLayout->SetVisibleItem((int32)1);
 			color_slider = cmySlider;
 		}	break;
 		case HS_LAB_COLOR_MODE: {
-			sliderLayout->SetVisibleItem(2);
+			sliderLayout->SetVisibleItem((int32)2);
 			color_slider = labSlider;
 		}	break;
 		case HS_HSV_COLOR_MODE: {
-			sliderLayout->SetVisibleItem(3);
+			sliderLayout->SetVisibleItem((int32)3);
 			color_slider = hsvSlider;
 		}	break;
 
@@ -1049,7 +1059,7 @@ void
 ColorPaletteWindow::SetHexColor(const rgb_color c)
 {
 	BString hexColor;
-	hexColor.SetToFormat("#%02X%02X%02X%02X", c.red, c.green, c.blue, c.alpha);
+	hexColor.SetToFormat("#%02x%02x%02x%02x", c.red, c.green, c.blue, c.alpha);
 	hexColorField->SetText(hexColor);
 }
 

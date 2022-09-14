@@ -197,6 +197,13 @@ FloatSliderControl::SetResolution(uint8 resolution)
 }
 
 
+BString
+FloatSliderControl::Label() const
+{
+	return fFloatControl->Label();
+}
+
+
 BSlider*
 FloatSliderControl::Slider() const
 {

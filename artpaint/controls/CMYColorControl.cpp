@@ -29,7 +29,7 @@ CMYColorControl::CMYColorControl(rgb_color c)
 {
 	BGridLayout* mainLayout = (BGridLayout*)GetLayout();
 
-	BMessage *message = new BMessage(SLIDER_CHANGED);
+	BMessage* message = new BMessage(SLIDER5_CHANGED);
 	slider5 = new ColorFloatSlider("A",
  		"0", message, 0, 255, false);
  	slider5->Slider()->SetBarThickness(slider1->Slider()->BarThickness());
@@ -62,11 +62,33 @@ CMYColorControl::CMYColorControl(rgb_color c)
 }
 
 
+CMYColorControl::~CMYColorControl()
+{
+	slider5->RemoveSelf();
+
+	if (slider5 != NULL)
+		delete slider5;
+}
+
+
+void
+CMYColorControl::AttachedToWindow()
+{
+ 	slider5->SetTarget(this);
+
+ 	MultichannelColorControl::AttachedToWindow();
+}
+
+
 void
 CMYColorControl::MessageReceived(BMessage* message)
 {
- 	switch (message->what) {
- 		case SLIDER_CHANGED: {
+	switch (message->what) {
+ 		case SLIDER1_CHANGED:
+ 		case SLIDER2_CHANGED:
+ 		case SLIDER3_CHANGED:
+ 		case SLIDER4_CHANGED:
+ 		case SLIDER5_CHANGED: {
  			uint32 buttons;
  			BPoint point;
  			GetMouse(&point, &buttons);

@@ -19,7 +19,10 @@
 #include <String.h>
 
 
-#define SLIDER_CHANGED		'slCh'
+#define SLIDER1_CHANGED		'slCh'
+#define SLIDER2_CHANGED		's2Ch'
+#define SLIDER3_CHANGED		's3Ch'
+#define SLIDER4_CHANGED		's4Ch'
 
 
 using ArtPaint::Interface::ColorFloatSlider;
@@ -34,7 +37,7 @@ virtual				~MultichannelColorControl();
 
 		void		AttachedToWindow();
  		void 		Draw(BRect rect);
- 		void 		MessageReceived(BMessage* message);
+		void 		MessageReceived(BMessage* message);
  		void		SetValue(uint32 val);
 virtual void		SetValue(rgb_color c);
 virtual void		SetValue(float one, float two,

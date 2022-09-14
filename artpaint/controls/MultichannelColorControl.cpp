@@ -30,25 +30,27 @@ MultichannelColorControl::MultichannelColorControl(rgb_color c,
 	font.GetHeight(&height);
 	float barHeight = (height.ascent - height.descent) / 1.5;
 
- 	BMessage *message = new BMessage(SLIDER_CHANGED);
+ 	BMessage* message1 = new BMessage(SLIDER1_CHANGED);
  	slider1 = new ColorFloatSlider(label1,
- 		"0", message, 0, 255, false);
+ 		"0", message1, 0, 255, false);
  	slider1->Slider()->SetBarThickness(barHeight);
 
+	BMessage* message2 = new BMessage(SLIDER2_CHANGED);
  	slider2 = new ColorFloatSlider(label2,
- 		"0", message, 0, 255, false);
+ 		"0", message2, 0, 255, false);
 	slider2->Slider()->SetBarThickness(barHeight);
 
+	BMessage* message3 = new BMessage(SLIDER3_CHANGED);
  	slider3 = new ColorFloatSlider(label3,
- 		"0", message, 0, 255, false);
+ 		"0", message3, 0, 255, false);
 	slider3->Slider()->SetBarThickness(barHeight);
 
+	BMessage* message4 = new BMessage(SLIDER4_CHANGED);
  	slider4 = new ColorFloatSlider(label4,
- 		"0", message, 0, 255, false);
+ 		"0", message4, 0, 255, false);
  	slider4->Slider()->SetBarThickness(barHeight);
 
- 	BGridLayout* sliderGrid = BLayoutBuilder::Grid<>(this,
- 		B_USE_SMALL_SPACING, 0)
+ 	BGridLayout* sliderGrid = BLayoutBuilder::Grid<>(this, 0, 0)
  			.Add(slider1, 0, 0, 0, 0)
  			.Add(slider1->LabelLayoutItem(), 0, 0)
  			.Add(slider1->TextViewLayoutItem(), 1, 0)
@@ -64,12 +66,13 @@ MultichannelColorControl::MultichannelColorControl(rgb_color c,
  			.Add(slider4, 0, 3, 0, 0)
  			.Add(slider4->LabelLayoutItem(), 0, 3)
  			.Add(slider4->TextViewLayoutItem(), 1, 3)
- 			.Add(slider4->Slider(), 2, 3);
- 	sliderGrid->SetColumnWeight(0, 0.2);
+ 			.Add(slider4->Slider(), 2, 3)
+ 			.SetInsets(0, 0, 0, 0);
+ 	sliderGrid->SetColumnWeight(0, 0.1);
 	sliderGrid->SetColumnWeight(1, 0.1);
-	sliderGrid->SetColumnWeight(2, 0.7);
-	sliderGrid->SetMinColumnWidth(1, font.StringWidth("XXX"));
-	sliderGrid->SetMaxColumnWidth(1, font.StringWidth("XXX"));
+	sliderGrid->SetColumnWeight(2, 0.8);
+	sliderGrid->SetMaxColumnWidth(0, font.StringWidth("XXX"));
+	sliderGrid->SetMaxColumnWidth(1, font.StringWidth("XXXXX"));
 
 	SetValue(c);
 }
@@ -114,7 +117,10 @@ void
 MultichannelColorControl::MessageReceived(BMessage* message)
 {
  	switch (message->what) {
- 		case SLIDER_CHANGED: {
+ 		case SLIDER1_CHANGED:
+ 		case SLIDER2_CHANGED:
+ 		case SLIDER3_CHANGED:
+ 		case SLIDER4_CHANGED: {
  			uint32 buttons;
  			BPoint point;
  			GetMouse(&point, &buttons);

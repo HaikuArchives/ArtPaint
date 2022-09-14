@@ -15,8 +15,9 @@
 
 class RGBColorControl : public MultichannelColorControl {
 public:
- 		RGBColorControl(rgb_color c);
+ 					RGBColorControl(rgb_color c);
 
+		void		MessageReceived(BMessage* message);
 virtual	void		SetValue(rgb_color c);
 virtual	void		SetValue(float one, float two,
  							float three, float four);

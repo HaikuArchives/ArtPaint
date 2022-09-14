@@ -44,6 +44,8 @@ public:
 
 			void				SetMessage(BMessage* message);
 
+			BString				Label() const;
+
 			BSlider*			Slider() const;
 			NumberControl*		TextControl() const;
 

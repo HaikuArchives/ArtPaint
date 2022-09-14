@@ -39,6 +39,56 @@ RGBColorControl::RGBColorControl(rgb_color c)
 
 
 void
+RGBColorControl::MessageReceived(BMessage* message)
+{
+ 	switch (message->what) {
+ 		case SLIDER1_CHANGED:
+ 		case SLIDER2_CHANGED:
+ 		case SLIDER3_CHANGED:
+ 		case SLIDER4_CHANGED: {
+ 			uint32 buttons;
+ 			BPoint point;
+ 			GetMouse(&point, &buttons);
+
+			if (message->HasInt32("modifiers"))
+			{
+				int32 modifiers = message->FindInt32("modifiers");
+ 				if (modifiers & B_SHIFT_KEY) {
+ 					float value;
+
+ 					if (message->what == SLIDER1_CHANGED)
+ 						value = slider1->Value();
+ 					else if (message->what == SLIDER2_CHANGED)
+ 						value = slider2->Value();
+ 					else if (message->what == SLIDER3_CHANGED)
+ 						value = slider3->Value();
+
+ 					if (message->what != SLIDER4_CHANGED) {
+ 						slider1->SetValue(value);
+ 						slider2->SetValue(value);
+ 						slider3->SetValue(value);
+ 					}
+ 				}
+ 			}
+
+ 			SetValue(slider1->Value(),
+ 				slider2->Value(),
+ 				slider3->Value(),
+ 				slider4->Value());
+
+ 			if (buttons != 0 && Message() != NULL)
+ 				if (Message()->HasInt32("buttons"))
+ 					Message()->ReplaceInt32("buttons", buttons);
+
+ 			Invoke();
+ 		} break;
+ 		default:
+ 			BControl::MessageReceived(message);
+ 	}
+}
+
+
+void
 RGBColorControl::SetValue(rgb_color c)
 {
 	MultichannelColorControl::SetValue(c);
