@@ -25,6 +25,7 @@ public:
 
 			float		Value() const;
 	virtual	void		SetValue(float value);
+			void		SetWidthInBytes(uint32 bytes);
 
 	virtual	void		AttachedToWindow();
 
