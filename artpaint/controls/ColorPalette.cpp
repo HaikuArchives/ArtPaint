@@ -1673,8 +1673,10 @@ ColorSet::readSets(BFile &file)
 
 		for (int32 b = 0; b < size_of_set; b++) {
 			rgb_color c;
-			if (file.Read(&c, sizeof(rgb_color)) != sizeof(rgb_color))
+			if (file.Read(&c, sizeof(rgb_color)) != sizeof(rgb_color)) {
+				delete new_set;
 				return B_ERROR;
+			}
 
 			new_set->palette[b] = c;
 		}

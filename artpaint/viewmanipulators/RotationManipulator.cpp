@@ -266,8 +266,6 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 
 	BWindow* status_bar_window = status_bar->Window();
 
-	float red, green, blue, alpha;	// before optimization was int32
-
 	float floor_x, ceil_x, floor_y, ceil_y;	// was int32 before optimization
 
 	uint32 p1, p2, p3, p4;
@@ -296,8 +294,6 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 				ceil_x = floor_x + 1;
 				floor_y = floor(source_y);
 				ceil_y = floor_y + 1;
-
-				red = green = blue = alpha = 0;
 
 				float u = source_x - floor_x;
 				float v = source_y - floor_y;
@@ -385,8 +381,6 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 					ceil_x = floor_x + 1;
 					floor_y = floor(source_y);
 					ceil_y = floor_y + 1;
-
-					red = green = blue = alpha = 0;
 
 					float u = source_x - floor_x;
 					float v = source_y - floor_y;

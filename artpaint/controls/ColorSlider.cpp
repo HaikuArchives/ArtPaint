@@ -280,7 +280,6 @@ ColorSlider::SetColors(BList* colors)
 
 	uint32* bits = (uint32*)gradient->Bits();
 
-	int32 rowLen = gradient->BytesPerRow() / 4;
 	uint32 numColors = colors->CountItems();
 	uint32 step = ceil((float)RES / (numColors - 1));
 

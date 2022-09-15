@@ -1563,6 +1563,7 @@ Image::DoRenderPreview(BRect area,int32 resolution)
 			layer_bits[i] = NULL;
 		}
 
+		delete[] blend;
 		delete[] alpha;
 		delete[] layer_bits;
 		delete[] layer_bprs;
