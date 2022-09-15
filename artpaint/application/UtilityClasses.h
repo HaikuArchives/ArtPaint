@@ -11,6 +11,8 @@
 #ifndef UTILITY_CLASSES_H
 #define UTILITY_CLASSES_H
 
+
+#include <String.h>
 #include <View.h>
 
 
@@ -86,5 +88,69 @@ BGRAColorToRGB(uint32 bgra_color)
 #endif
 	return c;
 }
+
+
+inline bool
+HexStringToBGRA(BString hexColor, uint32& bgra_color)
+{
+	bool valid_color = FALSE;
+
+	union {
+		char bytes[4];
+		uint32 word;
+	} color;
+
+	hexColor.ReplaceAll("#", "");
+	hexColor.ToUpper();
+
+	if (hexColor.Length() == 3 || hexColor.Length() == 4) {
+		BString byteStr;
+		uint8 byteVal;
+
+		for (int i = 0; i < 3; ++i) {
+			char digit = hexColor.ByteAt(i);
+			byteStr.SetToFormat("%c%c", digit, digit);
+			byteStr.ScanWithFormat("%X", &byteVal);
+			color.bytes[2 - i] = byteVal;
+		}
+
+		if (hexColor.Length() == 4) {
+			char digit = hexColor.ByteAt(3);
+			byteStr.SetToFormat("%c%c", digit, digit);
+			byteStr.ScanWithFormat("%X", &byteVal);
+			color.bytes[3] = byteVal;
+		} else
+			color.bytes[3] = 0xFF;
+
+		valid_color = TRUE;
+	} else if (hexColor.Length() == 6 || hexColor.Length() == 8) {
+		BString byteStr;
+		uint8 byteVal;
+
+		for (int i = 0; i < 3; ++i) {
+			int j = i * 2;
+			char digit1 = hexColor.ByteAt(j);
+			char digit2 = hexColor.ByteAt(j + 1);
+			byteStr.SetToFormat("%c%c", digit1, digit2);
+			byteStr.ScanWithFormat("%x", &byteVal);
+			color.bytes[2 - i] = byteVal;
+		}
+		if (hexColor.Length() == 8) {
+			char digit1 = hexColor.ByteAt(6);
+			char digit2 = hexColor.ByteAt(7);
+
+			byteStr.SetToFormat("%c%c", digit1, digit2);
+			byteStr.ScanWithFormat("%X", &byteVal);
+			color.bytes[3] = byteVal;
+		} else
+			color.bytes[3] = 0xFF;
+		valid_color = TRUE;
+	}
+
+	bgra_color = color.word;
+
+	return valid_color;
+}
+
 
 #endif

@@ -597,63 +597,20 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 
 	case HEX_COLOR_EDITED: {
 		BString hexColor = hexColorField->Text();
-		hexColor.ReplaceAll("#", "");
-		hexColor.ToLower();
-		union color_conversion color;
-		bool valid_color = FALSE;
-		if (hexColor.Length() == 3 || hexColor.Length() == 4) {
-			BString byteStr;
-			uint8 byteVal;
 
-			for (int i = 0; i < 3; ++i) {
-				char digit = hexColor.ByteAt(i);
-				byteStr.SetToFormat("%c%c", digit, digit);
-				byteStr.ScanWithFormat("%X", &byteVal);
-				color.bytes[2 - i] = byteVal;
-			}
-			if (hexColor.Length() == 4) {
-				char digit = hexColor.ByteAt(3);
-				byteStr.SetToFormat("%c%c", digit, digit);
-				byteStr.ScanWithFormat("%X", &byteVal);
-				color.bytes[3] = byteVal;
-			} else
-				color.bytes[3] = 0xFF;
+		bool valid_color;
 
-			valid_color = TRUE;
-		} else if (hexColor.Length() == 6 || hexColor.Length() == 8) {
-			BString byteStr;
-			uint8 byteVal;
-
-			for (int i = 0; i < 3; ++i) {
-				int j = i * 2;
-				char digit1 = hexColor.ByteAt(j);
-				char digit2 = hexColor.ByteAt(j + 1);
-				byteStr.SetToFormat("%c%c", digit1, digit2);
-				byteStr.ScanWithFormat("%x", &byteVal);
-				color.bytes[2 - i] = byteVal;
-			}
-			if (hexColor.Length() == 8) {
-				char digit1 = hexColor.ByteAt(6);
-				char digit2 = hexColor.ByteAt(7);
-
-				byteStr.SetToFormat("%c%c", digit1, digit2);
-				byteStr.ScanWithFormat("%X", &byteVal);
-				color.bytes[3] = byteVal;
-			} else
-				color.bytes[3] = 0xFF;
-			valid_color = TRUE;
-		} else {
-			SetHexColor(ColorSet::currentSet()->currentColor());
-		}
+		uint32 color;
+		valid_color = HexStringToBGRA(hexColor, color);
 
 		if (valid_color == TRUE) {
-			rgb_color newColor = BGRAColorToRGB(color.word);
+			rgb_color newColor = BGRAColorToRGB(color);
 			if (color_control != NULL)
 				color_control->SetValue(newColor);
 			if (color_slider != NULL)
 				color_slider->SetValue(newColor);
 
-			colorPreview->SetColor(color.word);
+			colorPreview->SetColor(color);
 			((PaintApplication*)be_app)->SetColor(newColor, TRUE);
 
 			ColorSet::currentSet()->setCurrentColor(newColor);
@@ -665,6 +622,8 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 
 			InformClients(ColorSet::currentSet()->currentColor());
 			SetHexColor(newColor);
+		} else {
+			SetHexColor(ColorSet::currentSet()->currentColor());
 		}
 	} break;
 
@@ -1780,9 +1739,25 @@ void ColorChip::MessageReceived(BMessage* message)
 			if (message->WasDropped()) {
 				rgb_color* color;
 				ssize_t color_size;
-				if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,
-						(const void**)&color, &color_size) == B_OK) {
+				const char* hexColor;
+				ssize_t textLen;
+				bool valid_color = FALSE;
+
+				if (message->FindData("RGBColor", B_RGB_COLOR_TYPE,
+					(const void**)&color, &color_size) == B_OK) {
 					SetColor(RGBColorToBGRA(*color));
+					valid_color = TRUE;
+				} else if (message->FindData("text/plain", B_MIME_TYPE,
+					(const void**)&hexColor, &textLen) == B_OK) {
+					uint32 color_word;
+					valid_color = HexStringToBGRA(hexColor, color_word);
+					if (valid_color == TRUE) {
+						SetColor(color_word);
+						*color = BGRAColorToRGB(color_word);
+					}
+				}
+
+				if (valid_color == TRUE) {
 					Message()->ReplaceData("RGBColor", B_RGB_COLOR_TYPE,
 						color, sizeof(rgb_color));
 					int32 buttons;
@@ -1824,5 +1799,10 @@ ColorChip::MouseDown(BPoint point)
 	BMessage dragger_message(B_PASTE);
 	dragger_message.AddData("RGBColor", B_RGB_COLOR_TYPE, &c,
 		sizeof(rgb_color));
+	BString hexColor;
+	hexColor.SetToFormat("%02X%02X%02X%02X", c.red, c.green, c.blue,
+		c.alpha);
+	dragger_message.AddData("text/plain", B_MIME_TYPE, hexColor,
+		sizeof(hexColor));
 	DragMessage(&dragger_message, dragged_map, BPoint(7,7));
 }
