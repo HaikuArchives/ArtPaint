@@ -239,6 +239,10 @@ TranslationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
 	else
 		last_calculated_resolution = lowest_available_quality;
 
+	// DEC: TEST disable low-res preview
+	last_calculated_resolution = 1;
+	//
+
 	if (last_calculated_resolution > 0) {
 		union color_conversion background;
 		// Transparent background.
@@ -271,10 +275,10 @@ TranslationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
 //			uncleared_rect.PrintToStream();
 			uncleared_rect.left = max_c(0, x_translation_local);
 			uncleared_rect.top = max_c(0, y_translation_local);
-			uncleared_rect.right = min_c(width - 1,
-				width - 1 + x_translation_local);
-			uncleared_rect.bottom = min_c(height - 1,
-				height - 1 + y_translation_local);
+			uncleared_rect.right = min_c(width,
+				width + x_translation_local);
+			uncleared_rect.bottom = min_c(height,
+				height + y_translation_local);
 			to_be_cleared.Exclude(uncleared_rect);
 			for (int32 i = 0; i < to_be_cleared.CountRects(); i++) {
 				BRect rect = to_be_cleared.RectAt(i);
@@ -326,17 +330,18 @@ TranslationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
 			uncleared_rect = uncleared_rect & preview_bitmap->Bounds();
 			for (int32 i = 0; i < to_be_cleared.CountRects(); i++) {
 				BRect rect = to_be_cleared.RectAt(i);
+				rect = rect & preview_bitmap->Bounds();
 				int32 left = (int32)(floor(rect.left /
 					last_calculated_resolution) * last_calculated_resolution);
 				int32 top = (int32)(floor(rect.top /
 					last_calculated_resolution) * last_calculated_resolution);
-				int32 right = (int32)(floor(rect.right /
+				int32 right = (int32)(ceil(rect.right /
 					last_calculated_resolution) * last_calculated_resolution);
-				int32 bottom = (int32)(floor(rect.bottom /
+				int32 bottom = (int32)(ceil(rect.bottom /
 					last_calculated_resolution) * last_calculated_resolution);
 
-				for (int32 y = top; y <= bottom;y += last_calculated_resolution) {
-					for (int32 x = left; x <= right;x += last_calculated_resolution) {
+				for (int32 y = top; y < bottom;y += last_calculated_resolution) {
+					for (int32 x = left; x < right;x += last_calculated_resolution) {
 						*(target_bits + x + y*target_bpr) =
 							*(source_bits + x + y * source_bpr);
 					}
@@ -349,6 +354,11 @@ TranslationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
 				last_calculated_resolution) * last_calculated_resolution;
 			selection_bounds.top = ceil(selection_bounds.top /
 				last_calculated_resolution) * last_calculated_resolution;
+			selection_bounds.right = ceil(selection_bounds.right /
+				last_calculated_resolution) * last_calculated_resolution;
+			selection_bounds.bottom = ceil(selection_bounds.bottom /
+				last_calculated_resolution) * last_calculated_resolution;
+
 			int32 left = (int32)selection_bounds.left;
 			int32 right = (int32)selection_bounds.right;
 			int32 top = (int32)selection_bounds.top;
@@ -368,12 +378,17 @@ TranslationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
 				last_calculated_resolution) * last_calculated_resolution;
 			selection_bounds.top = ceil(selection_bounds.top /
 				last_calculated_resolution) * last_calculated_resolution;
+			selection_bounds.right = floor(selection_bounds.right /
+				last_calculated_resolution) * last_calculated_resolution;
+			selection_bounds.bottom = floor(selection_bounds.bottom /
+				last_calculated_resolution) * last_calculated_resolution;
+
 			left = (int32)selection_bounds.left;
 			right = (int32)selection_bounds.right;
 			top = (int32)selection_bounds.top;
 			bottom = (int32)selection_bounds.bottom;
-			for (int32 y = top; y <= bottom;y += last_calculated_resolution) {
-				for (int32 x = left;x <= right;x += last_calculated_resolution) {
+			for (int32 y = top; y < bottom;y += last_calculated_resolution) {
+				for (int32 x = left;x < right;x += last_calculated_resolution) {
 					int32 new_x = (int32)(x - settings->x_translation);
 					int32 new_y = (int32)(y - settings->y_translation);
 					if (selection->ContainsPoint(new_x, new_y))
