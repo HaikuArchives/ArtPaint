@@ -26,6 +26,7 @@ public:
 
 			int32		Value() const;
 	virtual	void		SetValue(int32 value);
+			void		SetWidthInBytes(uint32 bytes);
 
 	virtual	void		AttachedToWindow();
 

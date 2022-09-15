@@ -419,6 +419,7 @@ GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
 								"0", message, 4, 50, false, true);
 	fGridSizeControl->Slider()->SetExplicitMinSize(BSize(
 		StringWidth("SLIDERSLIDERSLIDERSLIDER"), B_SIZE_UNSET));
+	fGridSizeControl->TextControl()->SetWidthInBytes(7);
 
 	float size = be_plain_font->Size() / 12.0f;
 	BRect frame(0, 0, size * 250, size * 100);
@@ -840,9 +841,7 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	for (int i = 0; i < fTabView->CountTabs(); i++)
 		width += fTabView->TabFrame(i).Width();
 
-	width += be_plain_font->StringWidth(B_TRANSLATE("Grid size:"));
-
-	fTabView->SetExplicitMinSize(BSize(width, B_SIZE_UNSET));
+	fTabView->SetExplicitMinSize(BSize(width + 2 * be_plain_font->Size(), B_SIZE_UNSET));
 }
 
 
