@@ -1096,13 +1096,6 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 	BBitmap *binary_map;
 	binary_map = binary_fill_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),
 		B_GRAY1);
-	uchar *binary_bits = (uchar*)binary_map->Bits();
-	int32 binary_bitslength = binary_map->BitsLength();
-	// Clear the binary map.
-	for (int32 i=0;i<binary_bitslength;i++)
-		*binary_bits++ = 0x00;
-
-	binary_bits = (uchar*)binary_map->Bits();
 
 	// We can use the functions CheckLowerSpans, CheckUpperSpans and CheckBothSpans
 	// to calculate the binary_fill_map and then return it.
@@ -1159,11 +1152,6 @@ FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
 	uint32 x_source,x_target;
 	uint32 y_source,y_target;
 
-	if (dx < 0)
-		x_target = gradient_color;
-	else
-		x_target = new_color;
-
 	if (dy<0) {
 		y_target = gradient_color;
 		y_source = new_color;
@@ -1188,7 +1176,6 @@ FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
 	y_green_diff = (int16)((y_target>>16) & 0xFF) - (int16)((y_source>>16) & 0xFF);
 	y_blue_diff = (int16)((y_target>>24) & 0xFF) - (int16)((y_source>>24) & 0xFF);
 	y_alpha_diff = (int16)((y_target) & 0xFF) - (int16)((y_source) & 0xFF);
-
 
 	for (int32 y = min_y; y <=max_y; ++y) {
 		int32 bytes_advanced = 0;
@@ -1288,12 +1275,6 @@ FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
 	uint32 x_source,x_target;
 	uint32 y_source,y_target;
 
-
-	if (dx<0)
-		x_target = gradient_color;
-	else
-		x_target = new_color;
-
 	if (dy<0) {
 		y_target = gradient_color;
 		y_source = new_color;
@@ -1311,7 +1292,6 @@ FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
 	float x_accumulation;
 	float y_accumulation = 0;
 
-	y_gradient = y_source;
 	uchar next_value = 0;
 	uchar next_rows_value = 0;
 
@@ -1362,7 +1342,6 @@ FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
 		x_blue_diff = (int16)((x_target>>24) & 0xFF) - (int16)((x_source>>24) & 0xFF);
 		x_alpha_diff = (int16)((x_target) & 0xFF) - (int16)((x_source) & 0xFF);
 
-		x_accumulation = 0;
 		for (int32 x=min_x;x<=max_x-1;x+=2) {
 			// This might crash if max_x == min_x
 			if (dx < 0)
