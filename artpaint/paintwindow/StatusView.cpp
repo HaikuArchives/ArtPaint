@@ -59,8 +59,6 @@ StatusView::StatusView()
 	fHelpView = new BStringView("message view", "");
 
 	BRect rect = BRect(0, 0, 50, 50);
-	int32 color_count = ColorSet::currentSet()->sizeOfSet();
-	color_container = new ColorContainer(rect, color_count, 0, true, true);
 
 	selected_colors = new SelectedColorsView(rect);
 	selected_colors->SetExplicitMinSize(BSize(52, 52));
@@ -73,7 +71,6 @@ StatusView::StatusView()
 	BGridLayout* toolsAndColorsCard = BLayoutBuilder::Grid<>(5.0, 0.0)
 		.AddGlue(0, 0)
 		.Add(selected_colors, 1, 0, 1, 2)
-		.Add(color_container, 2, 0, 1, 2)
 		.SetInsets(0.0, 0.0, 0.0, 0.0);
 	toolsAndColorsCard->SetMaxColumnWidth(2, 52);
 
@@ -110,9 +107,6 @@ StatusView::~StatusView()
 
 	if (selected_colors->Parent() == NULL)
 		delete selected_colors;
-
-	if (color_container->Parent() == NULL)
-		delete color_container;
 }
 
 

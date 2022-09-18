@@ -1,13 +1,15 @@
 /*
- * Copyright 2009, Karsten Heimrich
+ * Copyright 2022, Dale Cieslak
  * Distributed under the terms of the MIT License.
  *
  * Authors:
- *		Karsten Heimrich <host.haiku@gmx.de>
+ *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#ifndef FLOAT_CONTROL_SLIDER_BOX_H
-#define FLOAT_CONTROL_SLIDER_BOX_H
+#ifndef COLOR_FLOAT_SLIDER_H
+#define COLOR_FLOAT_SLIDER_H
+
+#include "ColorSlider.h"
 
 #include <Box.h>
 #include <Messenger.h>
@@ -23,16 +25,16 @@ namespace ArtPaint {
 
 class FloatControl;
 
-class FloatSliderControl : public BBox {
+class ColorFloatSlider : public BBox {
 public:
-								FloatSliderControl(const char* label,
+								ColorFloatSlider(const char* label,
 									const char* text, BMessage* message,
 									float minRange, float maxRange,
 									bool layout, bool continuous = true,
 									border_style borderStyle = B_NO_BORDER,
 									thumb_style thumbStyle = B_TRIANGLE_THUMB,
 									uint8 resolution = 1);
-	virtual						~FloatSliderControl();
+	virtual						~ColorFloatSlider();
 
 	virtual	void				AllAttached();
 	virtual	void				MessageReceived(BMessage* message);
@@ -46,8 +48,9 @@ public:
 
 			void				SetMinMax(float min, float max);
 			void				SetResolution(uint8 resolution);
+			void				SetToolTip(const char* tip);
 
-			BSlider*			Slider() const;
+			ColorSlider*		Slider() const;
 			FloatControl*		TextControl() const;
 
 			BLayoutItem*		LabelLayoutItem() const;
@@ -65,13 +68,14 @@ private:
 			float				fMaxRange;
 			bool				fContinuous;
 
-			BSlider*			fSlider;
+			ColorSlider*		fSlider;
 			BMessage*			fMessage;
 			FloatControl*		fFloatControl;
 			float				fMult;
+			BString				fFormat;
 };
 
 	}	// namespace Interface
 }	// namespace ArtPaint
 
-#endif	//	CONTROL_SLIDER_BOX_H
+#endif	//	COLOR_FLOAT_SLIDER_H

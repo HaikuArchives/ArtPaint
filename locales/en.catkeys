@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	427753257
+1	English	application/x-vnd.artpaint	457503359
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -27,6 +27,7 @@ Cross-hair cursor	Windows		Cross-hair cursor
 Width:	Tools		Width:
 Alpha	Tools		Alpha
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel b
 ArtPaint	System name		ArtPaint
 Airbrush tool	Tools		Airbrush tool
 Click to blur the image.	Tools		Click to blur the image.
@@ -35,12 +36,12 @@ Not enough free memory to start the effect you requested. You may close other im
 Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
-Add layer	PaintWindow		Add layer
 Click to select a painting color.	ColorPalette		Click to select a painting color.
 Not a color set file	ColorPalette		Not a color set file
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
+Next color set	ColorPalette	In Color Palette window	Next color set
 OK	PaintApplication		OK
 Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
 Cancel	ImageView		Cancel
@@ -50,6 +51,7 @@ Miscellaneous	Windows		Miscellaneous
 Settings…	FilePanels		Settings…
 Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Save	FilePanels		Save
+Alpha	ColorSliders	For color sliders	Alpha
 Exclusion	PixelOperations		Exclusion
 Open	FilePanels		Open
 Undo	UndoQueue		Undo
@@ -74,8 +76,9 @@ Change transparency…	Manipulators		Change transparency…
 New color set	ColorPalette		New color set
 Cut	PaintWindow		Cut
 OK	Windows		OK
-Flip vertically	PaintWindow		Flip vertically
 Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
+Yellow	ColorSliders	For CMYK color slider	Yellow
+Flip vertically	PaintWindow		Flip vertically
 Zoom out	PaintWindow		Zoom out
 Drawing a straight line.	Tools		Drawing a straight line.
 Save image	PaintWindow		Save image
@@ -89,7 +92,6 @@ Add-ons	PaintWindow		Add-ons
 Saves the image to disk.	PaintWindow		Saves the image to disk.
 Rotate +90°	Manipulators		Rotate +90°
 Blurring the image.	Tools		Blurring the image.
-Changes the transparency of active layer.	PaintWindow		Changes the transparency of active layer.
 Add-ons	Windows		Add-ons
 Zoom	MagnificationView		Zoom
 Tool setup	Tools		Tool setup
@@ -139,6 +141,7 @@ Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Opaque	Manipulators		Opaque
 Layers…	PaintWindow		Layers…
+Hue	ColorSliders	For HSV color slider	Hue
 Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
@@ -153,6 +156,7 @@ Open project…	PaintWindow		Open project…
 Green	Tools		Green
 Store brush	Tools		Store brush
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
+Merge down	PaintWindow		Merge down
 Edit	PaintWindow		Edit
 Drop a color from the Colors window	Windows		Drop a color from the Colors window
 Drawing an ellipse.	Tools		Drawing an ellipse.
@@ -166,15 +170,16 @@ Enable antialiasing	Tools		Enable antialiasing
 Turns the grid off.	PaintWindow		Turns the grid off.
 Undo	Windows		Undo
 Airbrush	Tools		Airbrush
-Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Merge with layer above	Image		Merge with layer above
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
 Layer transparency	LayerWindow		Layer transparency
 Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
+Black	ColorSliders	For CMYK color slider	Black
 Reset brush	Tools		Reset brush
 Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
-Merge with layer below	Image		Merge with layer below
 Undo steps:	Windows		Undo steps:
+Magenta	ColorSliders	For CMYK color slider	Magenta
 Clear canvas	PaintWindow		Clear canvas
 OK	ColorPalette		OK
 Using the airbrush.	Tools		Using the airbrush.
@@ -208,11 +213,13 @@ Eraser tool	Tools		Eraser tool
 Pin light	PixelOperations		Pin light
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Layer %ld / %ld	ImageView		Layer %ld / %ld
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel a
 Active layer	PaintWindow		Active layer
 Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
 Click to use the tool.	Tools		Click to use the tool.
+Merge down	Image		Merge down
 Color burn	PixelOperations		Color burn
 Window	PaintWindow		Window
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
@@ -222,6 +229,7 @@ Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° 
 Multiply	PixelOperations		Multiply
 Invert selection	PaintWindow		Invert selection
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
+Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Brush	Windows		Brush
 Hairy brush tool	Tools		Hairy brush tool
 Blur tool	Tools		Blur tool
@@ -234,6 +242,7 @@ Tools	Tools		Tools
 Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
+Blue	ColorSliders	For RGB color sliders	Blue
 Pastes previously copied selection as a new project.	PaintWindow		Pastes previously copied selection as a new project.
 Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
@@ -257,13 +266,16 @@ Color variance:	Tools		Color variance:
 Dissolve	PixelOperations		Dissolve
 Clear layer	PaintWindow		Clear layer
 Rotates all layers.	PaintWindow		Rotates all layers.
+Deletes the selected layer.	PaintWindow		Deletes the selected layer.
 Painting with a brush.	Tools		Painting with a brush.
 Rectangle	Tools		Rectangle
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
 Restore	Manipulators		Restore
 Keep in front	Windows		Keep in front
 OK	Image		OK
+Cyan	ColorSliders	For CMYK color slider	Cyan
 Click to draw an ellipse.	Tools		Click to draw an ellipse.
+Red	ColorSliders	For RGB color sliders	Red
 Click to paint with airbrush.	Tools		Click to paint with airbrush.
 Screen	PixelOperations		Screen
 Settings	Windows		Settings
@@ -287,6 +299,7 @@ Duplicate	LayerWindow		Duplicate
 Angle:	Tools		Angle:
 Layer	LayerWindow		Layer
 Grow selection	ImageView		Grow selection
+Duplicate	PaintWindow		Duplicate
 Colors	ColorPalette		Colors
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
 Save	ImageView		Save
@@ -301,12 +314,13 @@ Intelligent scissors	Tools		Intelligent scissors
 Freehand	Tools		Freehand
 Hairs:	Tools		Hairs:
 Behavior	Tools		Behavior
+Saturation	ColorSliders	For HSV color slider	Saturation
 Grow selection	PaintWindow		Grow selection
 Flood fill	Tools		Flood fill
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
 Grid size:	Windows		Grid size:
-Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of this image.
 Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400%.
+Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of this image.
 OK	ImageView		OK
 Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 Set zoom level	PaintWindow		Set zoom level
@@ -316,6 +330,7 @@ OK	PaintWindow		OK
 Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
 User manual…	PaintWindow		User manual…
 Corner to corner	Tools		Corner to corner
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lightness
 Opens the layers window.	PaintWindow		Opens the layers window.
 Transparency	Windows		Transparency
 Selection tool	Tools		Selection tool
@@ -328,14 +343,15 @@ Transparency	Tools		Transparency
 Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
 Delete	LayerWindow		Delete
 Settings…	PaintWindow		Settings…
+Delete	PaintWindow		Delete
 Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
 Mode	Tools		Mode
 Flip horizontally	PaintWindow		Flip horizontally
-Change transparency…	PaintWindow		Change transparency…
 Bottom:	Manipulators		Bottom:
+Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
 Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
 Overlay	PixelOperations		Overlay
 Clears the active layer.	PaintWindow		Clears the active layer.
@@ -351,14 +367,17 @@ Change the transparency with the slider.	Manipulators		Change the transparency w
 Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Value
 Unsaved changes!	ImageView		Unsaved changes!
 Un-selects all	PaintWindow		Un-selects all
+Previous color set	ColorPalette	In Color Palette window	Previous color set
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Undo not available	UndoQueue		Undo not available
+Green	ColorSliders	For RGB color sliders	Green
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
 Add	LayerWindow		Add
@@ -368,6 +387,7 @@ Using the tool.	Tools		Using the tool.
 Drag the image to correct position.	Manipulators		Drag the image to correct position.
 Lock	Manipulators	Keep the aspect ratio	Lock
 Tools…	PaintWindow		Tools…
+Add	PaintWindow		Add
 Add area	Tools		Add area
 Hardness:	Tools		Hardness:
 Divide	PixelOperations		Divide

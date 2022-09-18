@@ -7,7 +7,7 @@
  *
  */
 
-#include "FloatSliderControl.h"
+#include "ColorFloatSlider.h"
 
 #include "FloatControl.h"
 
@@ -32,7 +32,7 @@ enum {
 };
 
 
-FloatSliderControl::FloatSliderControl(const char* label, const char* text,
+ColorFloatSlider::ColorFloatSlider(const char* label, const char* text,
 		BMessage* message, float minRange, float maxRange, bool layout,
 		bool continuous, border_style borderStyle, thumb_style thumbStyle,
 		uint8 resolution)
@@ -49,13 +49,14 @@ FloatSliderControl::FloatSliderControl(const char* label, const char* text,
 
 	fMult = pow(10, resolution);
 
+	fFormat.SetToFormat("%%0.%df", resolution);
 	fFloatControl = new (std::nothrow) FloatControl(label, text,
-		new BMessage(kNumberControlFinished), 5, minRange < 0);
-	fSlider = new (std::nothrow) BSlider(NULL, NULL,
+		new BMessage(kNumberControlFinished), 6, minRange < 0);
+	fSlider = new (std::nothrow) ColorSlider(NULL, NULL,
 		new BMessage(kSliderModificationFinished), (int32)minRange * fMult,
 		(int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
 
-	if (fFloatControl && fSlider && layout) {
+	if (fFloatControl != NULL && fSlider != NULL && layout) {
 		SetLayout(new BGroupLayout(B_VERTICAL));
 		AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 			.Add(fFloatControl)
@@ -66,91 +67,94 @@ FloatSliderControl::FloatSliderControl(const char* label, const char* text,
 			MinSize().Height()));
 	}
 
-	if (fSlider)
+	if (fSlider != NULL)
 		fSlider->SetModificationMessage(new BMessage(kSliderValueModified));
 }
 
 
-FloatSliderControl::~FloatSliderControl()
+ColorFloatSlider::~ColorFloatSlider()
 {
 	delete fMessage;
 }
 
 
 void
-FloatSliderControl::AllAttached()
+ColorFloatSlider::AllAttached()
 {
 	fSlider->SetTarget(this);
 	fFloatControl->SetTarget(this);
 
-	if (fMessage)
+	if (fMessage != NULL)
 		SetValue(fMessage->FindFloat("value"));
 }
 
 
 void
-FloatSliderControl::MessageReceived(BMessage* message)
+ColorFloatSlider::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case kNumberControlFinished: {
-			fSlider->SetValue(_FixValue(atof(fFloatControl->Text())) * fMult);
+			SetValue(atof(fFloatControl->Text()));
 			_SendMessage(atof(fFloatControl->Text()));
-		}	break;
+		} break;
 
 		case kSliderValueModified: {
 			BString value;
-			value << (float)(fSlider->Value() / fMult);
+			value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
 			fFloatControl->SetText(value.String());
 			if (fContinuous)
 				_SendMessage((float)(fSlider->Value() / fMult), false);
-		}	break;
+		} break;
 
 		case kSliderModificationFinished: {
 			BString value;
-			value << (float)(fSlider->Value() / fMult);
+			value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
 			fFloatControl->SetText(value.String());
 			_SendMessage((float)(fSlider->Value() / fMult), true);
-		}	break;
+		} break;
 
 		default: {
 			BBox::MessageReceived(message);
-		}	break;
+		} break;
 	}
 }
 
 
 void
-FloatSliderControl::SetEnabled(bool enabled)
+ColorFloatSlider::SetEnabled(bool enabled)
 {
-	if (fSlider)
+	if (fSlider != NULL)
 		fSlider->SetEnabled(enabled);
 
-	if (fFloatControl)
+	if (fFloatControl != NULL)
 		fFloatControl->SetEnabled(enabled);
 }
 
 
 void
-FloatSliderControl::SetValue(float value)
+ColorFloatSlider::SetValue(float value)
 {
 	value = _FixValue(value);
 
-	if (fSlider)
+	if (fSlider != NULL)
 		fSlider->SetValue((int32)(value * fMult));
 
-	if (fFloatControl) {
+	if (fFloatControl != NULL) {
 		fFloatControl->SetValue(value);
+		BString valueString;
+		valueString.SetToFormat(fFormat, value);
+		fFloatControl->SetText(valueString.String());
 	}
 }
 
 
 float
-FloatSliderControl::Value() const
+ColorFloatSlider::Value() const
 {
-	if (fSlider)
+	if (fSlider != NULL)
 		return (float)(fSlider->Value() / fMult);
 
-	if (fFloatControl)
+	if (fFloatControl != NULL)
 		return fFloatControl->Value();
 
 	return -1;
@@ -158,14 +162,14 @@ FloatSliderControl::Value() const
 
 
 void
-FloatSliderControl::SetTarget(const BMessenger& target)
+ColorFloatSlider::SetTarget(const BMessenger& target)
 {
 	fTarget = target;
 }
 
 
 void
-FloatSliderControl::SetMessage(BMessage* message)
+ColorFloatSlider::SetMessage(BMessage* message)
 {
 	delete fMessage;
 	fMessage = message;
@@ -175,7 +179,7 @@ FloatSliderControl::SetMessage(BMessage* message)
 
 
 void
-FloatSliderControl::SetMinMax(float min, float max)
+ColorFloatSlider::SetMinMax(float min, float max)
 {
 	fSlider->SetLimits((int32)min * fMult,
 		(int32)max * fMult);
@@ -183,7 +187,7 @@ FloatSliderControl::SetMinMax(float min, float max)
 
 
 void
-FloatSliderControl::SetResolution(uint8 resolution)
+ColorFloatSlider::SetResolution(uint8 resolution)
 {
 	int32 min, max;
 	fSlider->GetLimits(&min, &max);
@@ -191,46 +195,58 @@ FloatSliderControl::SetResolution(uint8 resolution)
 	float minRange = (float)min / fMult;
 	float maxRange = (float)max / fMult;
 
-	fMult = resolution;
+	fMult = pow(10, resolution);;
+	fFormat.SetToFormat("%%0.%df", resolution);
+	BString value;
+	value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
+	fFloatControl->SetText(value.String());
 
 	SetMinMax(minRange, maxRange);
 }
 
 
-BSlider*
-FloatSliderControl::Slider() const
+void
+ColorFloatSlider::SetToolTip(const char* tip)
+{
+	fSlider->SetToolTip(tip);
+	fFloatControl->SetToolTip(tip);
+}
+
+
+ColorSlider*
+ColorFloatSlider::Slider() const
 {
 	return fSlider;
 }
 
 
 FloatControl*
-FloatSliderControl::TextControl() const
+ColorFloatSlider::TextControl() const
 {
 	return fFloatControl;
 }
 
 
 BLayoutItem*
-FloatSliderControl::LabelLayoutItem() const
+ColorFloatSlider::LabelLayoutItem() const
 {
-	if (fFloatControl)
+	if (fFloatControl != NULL)
 		return fFloatControl->CreateLabelLayoutItem();
 	return NULL;
 }
 
 
 BLayoutItem*
-FloatSliderControl::TextViewLayoutItem() const
+ColorFloatSlider::TextViewLayoutItem() const
 {
-	if (fFloatControl)
+	if (fFloatControl != NULL)
 		return fFloatControl->CreateTextViewLayoutItem();
 	return NULL;
 }
 
 
 void
-FloatSliderControl::_InitMessage()
+ColorFloatSlider::_InitMessage()
 {
 	// The message returned by the control will have at least
 	// the two items: 'value' and 'final'.
@@ -238,10 +254,10 @@ FloatSliderControl::_InitMessage()
 	// It may have been given an initial value at construction.
 	// 'final' will be false while the slider is being moved,
 	// and set true at mouse-up.
-	if (!fMessage)
+	if (fMessage == NULL)
 		fMessage = new BMessage;
 
-	if (fMessage) {
+	if (fMessage != NULL) {
 		if (!fMessage->HasFloat("value"))	// may have been set by creator
 			fMessage->AddFloat("value", 0.0);
 
@@ -251,7 +267,7 @@ FloatSliderControl::_InitMessage()
 
 
 float
-FloatSliderControl::_FixValue(float value)
+ColorFloatSlider::_FixValue(float value)
 {
 	if (value > fMaxRange)
 		value = fMaxRange;
@@ -264,18 +280,17 @@ FloatSliderControl::_FixValue(float value)
 
 
 void
-FloatSliderControl::_SendMessage(float value, bool final)
+ColorFloatSlider::_SendMessage(float value, bool final)
 {
-	if (fMessage) {
+	if (fMessage != NULL) {
 		fMessage->ReplaceBool("final", final);
 		fMessage->ReplaceFloat("value", value);
 
 		if (!fTarget.IsValid()) {
 			if (BWindow* window = Window())
 				window->PostMessage(fMessage, window);
-		} else {
+		} else
 			fTarget.SendMessage(fMessage);
-		}
 	}
 }
 
