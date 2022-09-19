@@ -43,6 +43,7 @@ StatusView::StatusView()
 	: BView("status view", B_WILL_DRAW)
 {
 	status_bar = NULL;
+	BFont font;
 
 	// First add the coordinate-view.
 	coordinate_view = new BStringView("coordinate_view","X: , Y:");
@@ -58,11 +59,12 @@ StatusView::StatusView()
 	// It will be under the other views and left from the color container.
 	fHelpView = new BStringView("message view", "");
 
-	BRect rect = BRect(0, 0, 50, 50);
+	float color_size = font.StringWidth("FGCOLOR");
+	BRect rect = BRect(0, 0, color_size, color_size);
 
 	selected_colors = new SelectedColorsView(rect);
-	selected_colors->SetExplicitMinSize(BSize(52, 52));
-	selected_colors->SetExplicitMaxSize(BSize(52, 52));
+	selected_colors->SetExplicitMinSize(BSize(color_size + 2, color_size + 2));
+	selected_colors->SetExplicitMaxSize(BSize(color_size + 2, color_size + 2));
 
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -177,7 +179,6 @@ SelectedColorsView::SelectedColorsView(BRect frame)
 	SetBorder(B_NO_BORDER);
 
 	list_of_views.AddItem(this);
-	ResizeTo(frame.Height(),frame.Height());
 	foreground_color_percentage = 0.6;
 }
 
