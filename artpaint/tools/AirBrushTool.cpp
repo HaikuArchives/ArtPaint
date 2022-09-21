@@ -287,7 +287,7 @@ AirBrushTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Using the airbrush.")
-		: B_TRANSLATE("Click to paint with airbrush."));
+		: B_TRANSLATE("Airbrush tool"));
 }
 
 

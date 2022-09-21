@@ -309,7 +309,7 @@ SelectedColorsView::MouseMoved(BPoint, uint32 transit, const BMessage*)
 	if (transit == B_ENTERED_VIEW && Window()->IsActive()) {
 		BMessage message(HS_TEMPORARY_HELP_MESSAGE);
 		message.AddString("message",
-			B_TRANSLATE("Click here to open color panel."));
+			B_TRANSLATE("Left-click for color panel, right-click to switch colors."));
 		Window()->PostMessage(&message, Window());
 	}
 

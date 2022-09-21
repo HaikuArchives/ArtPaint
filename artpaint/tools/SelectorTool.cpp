@@ -323,7 +323,7 @@ SelectorTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Making a selection.")
-		: B_TRANSLATE("Click to make a selection."));
+		: B_TRANSLATE("Selection tool"));
 }
 
 

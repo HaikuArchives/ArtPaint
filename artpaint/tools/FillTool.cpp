@@ -1529,7 +1529,7 @@ FillTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Making a fill.")
-		: B_TRANSLATE("Click to make a fill."));
+		: B_TRANSLATE("Fill tool"));
 }
 
 

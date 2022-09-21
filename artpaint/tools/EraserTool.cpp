@@ -220,7 +220,7 @@ EraserTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Erasing pixels.")
-		: B_TRANSLATE("Click to use eraser."));
+		: B_TRANSLATE("Eraser tool"));
 }
 
 

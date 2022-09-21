@@ -293,7 +293,7 @@ RectangleTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drawing a rectangle.")
-		: B_TRANSLATE("Click to draw a rectangle."));
+		: B_TRANSLATE("Rectangle: SHIFT for square"));
 }
 
 
