@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	457503359
+1	English	application/x-vnd.artpaint	1267424313
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -12,15 +12,12 @@ Layers	Windows		Layers
 Paste as a new project	PaintWindow		Paste as a new project
 Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
 Width:	PaintWindow		Width:
-Click to use eraser.	Tools		Click to use eraser.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
-Click to draw a freehand line.	Tools		Click to draw a freehand line.
 Color dodge	PixelOperations		Color dodge
 Cursor	Windows		Cursor
 Normal	PixelOperations		Normal
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Crop…	PaintWindow		Crop…
-Click to make a selection.	Tools		Click to make a selection.
 Darken	PixelOperations		Darken
 Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
@@ -29,11 +26,10 @@ Alpha	Tools		Alpha
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel b
 ArtPaint	System name		ArtPaint
+Rectangle: SHIFT for square	Tools		Rectangle: SHIFT for square
 Airbrush tool	Tools		Airbrush tool
-Click to blur the image.	Tools		Click to blur the image.
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
-Click to draw a straight line.	Tools		Click to draw a straight line.
 Clear selection	PaintWindow		Clear selection
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Click to select a painting color.	ColorPalette		Click to select a painting color.
@@ -107,7 +103,6 @@ Finishing	ImageView		Finishing
 Confirm quitting	Windows		Confirm quitting
 Scale…	Manipulators		Scale…
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
-Click to make a fill.	Tools		Click to make a fill.
 Save project	PaintWindow		Save project
 Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
 Spray	Tools		Spray
@@ -177,7 +172,6 @@ Height:	Manipulators		Height:
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Black	ColorSliders	For CMYK color slider	Black
 Reset brush	Tools		Reset brush
-Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
 Undo steps:	Windows		Undo steps:
 Magenta	ColorSliders	For CMYK color slider	Magenta
 Clear canvas	PaintWindow		Clear canvas
@@ -191,7 +185,6 @@ Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
 Little	Tools		Little
 Copies the selection.	PaintWindow		Copies the selection.
 Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
-Click to paint with a brush.	Tools		Click to paint with a brush.
 Tool setup	Windows		Tool setup
 Free 2D transform	FreeTransformManipulator		Free 2D transform
 Colors…	PaintWindow		Colors…
@@ -249,14 +242,12 @@ Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
 Linear light	PixelOperations		Linear light
 Closes the current window.	PaintWindow		Closes the current window.
-Click to draw a rectangle.	Tools		Click to draw a rectangle.
 Shrink selection	PaintWindow		Shrink selection
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Clear selection	ImageView		Clear selection
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 Vivid light	PixelOperations		Vivid light
-Click here to open color panel.	StatusView		Click here to open color panel.
 Error reading file	ColorPalette		Error reading file
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 Recent projects	PaintWindow		Recent projects
@@ -274,9 +265,7 @@ Restore	Manipulators		Restore
 Keep in front	Windows		Keep in front
 OK	Image		OK
 Cyan	ColorSliders	For CMYK color slider	Cyan
-Click to draw an ellipse.	Tools		Click to draw an ellipse.
 Red	ColorSliders	For RGB color sliders	Red
-Click to paint with airbrush.	Tools		Click to paint with airbrush.
 Screen	PixelOperations		Screen
 Settings	Windows		Settings
 Colors	Windows		Colors
@@ -290,9 +279,9 @@ Replace pixels with	Tools		Replace pixels with
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
 Crops the image.	PaintWindow		Crops the image.
-Click to paint with a hairy brush.	Tools		Click to paint with a hairy brush.
 Size:	Tools		Size:
 Off	Windows		Off
+Click to open color panel, right-click to switch colors.	StatusView		Click to open color panel, right-click to switch colors.
 Tools	Windows		Tools
 Freehand line tool	Tools		Freehand line tool
 Duplicate	LayerWindow		Duplicate
@@ -350,6 +339,7 @@ Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
 Mode	Tools		Mode
 Flip horizontally	PaintWindow		Flip horizontally
+Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
 Bottom:	Manipulators		Bottom:
 Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
 Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
@@ -374,6 +364,7 @@ Previous color set	ColorPalette	In Color Palette window	Previous color set
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
+Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Undo not available	UndoQueue		Undo not available
@@ -381,7 +372,6 @@ Green	ColorSliders	For RGB color sliders	Green
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
 Add	LayerWindow		Add
-Click to pick a color.	Tools		Click to pick a color.
 Tolerance:	Tools		Tolerance:
 Using the tool.	Tools		Using the tool.
 Drag the image to correct position.	Manipulators		Drag the image to correct position.

@@ -244,7 +244,7 @@ FreeLineTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drawing a freehand line.")
-		: B_TRANSLATE("Click to draw a freehand line."));
+		: B_TRANSLATE("Freehand line tool"));
 }
 
 
