@@ -84,6 +84,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 	view->SetPenSize(1);
 	view->SetDrawingMode(B_OP_COPY);
 	view->MovePenTo(view_point);
+	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	window->Unlock();
 
 	if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
@@ -101,6 +102,9 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			view->SetPenSize(2.0);
 			view->UnlockLooper();
 		}
+		BRect old_rect;
+		BRect old_bitmap_rect;
+
 		while (!finished) {
 			// Add support for different zoom-levels. Currently it does not support
 			// changing the zoom-level while the tool is working.
@@ -158,7 +162,9 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 				if (point != prev_point) {
 					if (view->LockLooper()) {
 						if (active_view_polygon != NULL) {
-							view->StrokePolygon(active_view_polygon,false);
+							bitmap_rect = active_view_polygon->Frame();
+							view_rect = view->convertBitmapRectToView(bitmap_rect);
+							view->Draw(view_rect);
 							delete active_view_polygon;
 						}
 						int32 num_points;
@@ -181,7 +187,21 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 							active_view_polygon->MapTo(bitmap_rect,view_rect);
 						}
 						delete[] point_list;
-						view->StrokePolygon(active_view_polygon,false);
+						view->SetDrawingMode(B_OP_OVER);
+						view->DrawBitmap(buffer, old_bitmap_rect, old_rect);
+						view->Draw(old_rect);
+						view->SetDrawingMode(B_OP_INVERT);
+						view->StrokePolygon(active_view_polygon,false); //, B_SOLID_LOW);
+						old_bitmap_rect = bitmap_rect.InsetByCopy(-1, -1);
+						old_rect = view->convertBitmapRectToView(old_bitmap_rect);
+						view->SetDrawingMode(B_OP_COPY);
+						BPolygon *bpoly = the_polygon->GetBPolygon();
+						bitmap_rect = bpoly->Frame();
+						view_rect = view->convertBitmapRectToView(bitmap_rect);
+						bpoly->MapTo(bitmap_rect,view_rect);
+						view->SetHighColor(255,255,0,255);
+						view->SetLowColor(0,0,0,255);
+						view->StrokePolygon(bpoly,false,HS_ANIMATED_STRIPES_1);
 						view->UnlockLooper();
 					}
 					prev_point = point;
