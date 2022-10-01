@@ -78,10 +78,16 @@ NumberControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuos)
 	TextView()->SetMaxBytes(maxBytes);
 	SetAlignment(B_ALIGN_LEFT, B_ALIGN_RIGHT);
 
-	BFont font;
-	TextView()->SetExplicitMinSize(BSize(font.StringWidth("X") * maxBytes, B_SIZE_UNSET));
-	TextView()->SetExplicitMaxSize(BSize(font.StringWidth("X") * maxBytes, B_SIZE_UNSET));
+	SetWidthInBytes(maxBytes);
+}
 
+
+void
+NumberControl::SetWidthInBytes(uint32 bytes)
+{
+	BFont font;
+	TextView()->SetExplicitMinSize(BSize(font.StringWidth("D") * bytes, B_SIZE_UNSET));
+	TextView()->SetExplicitMaxSize(BSize(font.StringWidth("D") * bytes, B_SIZE_UNSET));
 }
 
 	}	// namespace Interface

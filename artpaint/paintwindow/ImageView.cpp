@@ -1648,12 +1648,14 @@ int32 ImageView::ManipulatorFinisherThread()
 				the_image->ReturnThumbnailImage());
 
 			for (int32 i = 0; i < layerCount; ++i) {
-				if (LockLooper()) {
-					BString format(B_TRANSLATE("Layer %ld / %ld"));
-					BString text;
-					text.SetToFormat(format, i + 1, layerCount);
-					status_bar->SetTrailingText(text);
-					UnlockLooper();
+				if (status_bar != NULL) {
+					if (LockLooper()) {
+						BString format(B_TRANSLATE("Layer %ld / %ld"));
+						BString text;
+						text.SetToFormat(format, i + 1, layerCount);
+						status_bar->SetTrailingText(text);
+						UnlockLooper();
+					}
 				}
 
 				Layer* the_layer = static_cast<Layer*> (layer_list->ItemAt(i));

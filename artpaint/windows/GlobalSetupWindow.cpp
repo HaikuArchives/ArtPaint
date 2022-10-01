@@ -419,6 +419,7 @@ GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
 								"0", message, 4, 50, false, true);
 	fGridSizeControl->Slider()->SetExplicitMinSize(BSize(
 		StringWidth("SLIDERSLIDERSLIDERSLIDER"), B_SIZE_UNSET));
+	fGridSizeControl->TextControl()->SetWidthInBytes(7);
 
 	float size = be_plain_font->Size() / 12.0f;
 	BRect frame(0, 0, size * 250, size * 100);
@@ -702,7 +703,6 @@ private:
 
 		BRadioButton*	fToolCursor;
 		BRadioButton*	fCrossHairCursor;
-		BCheckBox*		fConfirmShutdown;
 };
 
 
@@ -722,18 +722,10 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
 			.Add(fToolCursor =
 				new BRadioButton(B_TRANSLATE("Tool cursor"),
-				new BMessage(kCrossHairCursorMode)))
+				new BMessage(kToolCursorMode)))
 			.Add(fCrossHairCursor =
 				new BRadioButton(B_TRANSLATE("Cross-hair cursor"),
-				new BMessage(kToolCursorMode)))
-			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
-		.End()
-		.Add(BSpaceLayoutItem::CreateVerticalStrut(B_USE_DEFAULT_SPACING))
-		.Add(labelApp)
-		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
-			.Add(fConfirmShutdown =
-				new BCheckBox(B_TRANSLATE("Confirm quitting"),
-				new BMessage(kConfirmShutdownChanged)))
+				new BMessage(kCrossHairCursorMode)))
 			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
 		.End()
 		.AddGlue()
@@ -746,13 +738,10 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
 		settings.FindInt32(skCursorMode, &fCursorMode);
-		settings.FindInt32(skQuitConfirmMode, &fShutdownMode);
 	}
 
 	if (fCursorMode == CROSS_HAIR_CURSOR_MODE)
 		fCrossHairCursor->SetValue(B_CONTROL_ON);
-
-	fConfirmShutdown->SetValue(fShutdownMode);
 }
 
 
@@ -764,7 +753,6 @@ GlobalSetupWindow::MiscControlView::AttachedToWindow()
 
 	fToolCursor->SetTarget(this);
 	fCrossHairCursor->SetTarget(this);
-	fConfirmShutdown->SetTarget(this);
 }
 
 
@@ -778,10 +766,6 @@ GlobalSetupWindow::MiscControlView::MessageReceived(BMessage* message)
 
 		case kCrossHairCursorMode: {
 			fCursorMode = CROSS_HAIR_CURSOR_MODE;
-		}	break;
-
-		case kConfirmShutdownChanged: {
-			fShutdownMode = fConfirmShutdown->Value();
 		}	break;
 
 		default: {
@@ -857,9 +841,7 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	for (int i = 0; i < fTabView->CountTabs(); i++)
 		width += fTabView->TabFrame(i).Width();
 
-	width += be_plain_font->StringWidth(B_TRANSLATE("Grid size:"));
-
-	fTabView->SetExplicitMinSize(BSize(width, B_SIZE_UNSET));
+	fTabView->SetExplicitMinSize(BSize(width + 2 * be_plain_font->Size(), B_SIZE_UNSET));
 }
 
 
