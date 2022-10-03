@@ -1,3 +1,23 @@
+v2.4:
+
+* Overhauled the Layers window and handling:
+  - improved layout
+  - reduced commands to the most useful, moved to main menu
+  - added naming layers
+  - added transparency slider
+  - added blending modes: Normal, Multiply. Divide, Screen,
+	Overlay, Hard light, Soft light, Vivid light, Pin light,
+	Hard mix, Difference, Exclusion, Color dodge, Linear dodge,
+	Color burn, Linear burn, Darken, and Lighten
+* Improved Colors window
+  - removed YIQ and YUV color modes
+  - added CIELAB color mode
+  - accept drag'n'dropped colors
+  - set/show hex-value of current color
+  - removed palette from main window
+* Make current tool more obvious in Tools window
+* Bufixes and polishing
+
 v2.3.1:
 
 * Fixed initial black canvas where there are no ArtPaint settings

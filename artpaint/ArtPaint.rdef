@@ -8,8 +8,8 @@ resource app_flags B_SINGLE_LAUNCH;
 
 resource app_version {
 	major  = 2,
-	middle = 3,
-	minor  = 1,
+	middle = 4,
+	minor  = 0,
 
 	/* 0 = development	1 = alpha			2 = beta
 	   3 = gamma		4 = golden master	5 = final */
