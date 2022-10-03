@@ -1,4 +1,4 @@
-1	Catalan	application/x-vnd.artpaint	183125306
+1	Catalan	application/x-vnd.artpaint	3689499495
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Heu fet un canvi des de l'última vegada que s'ha desat el projecte.\nVoleu desar el canvi?}other{%project_name%: Heu fet # canvis des de l'última vegada el projecte s'ha desat.\nVoleu desar els canvis?}}
 Cancel	ImageView		Cancel·la
 Clear selection	ImageView		Neteja la selecció
@@ -17,14 +17,12 @@ Shrink selection	ImageView		Redueix la selecció
 Unsaved changes!	ImageView		Canvis no desats!
 About ArtPaint	PaintWindow		Sobre l'ArtPaint
 Active layer	PaintWindow		Capa activa
-Add layer	PaintWindow		Afegeix-hi una capa
+Add	PaintWindow		Add
 Add-ons	PaintWindow		Complements
 Adds a layer to the top of this image.	PaintWindow		Afegeix una capa sobre aquesta imatge.
 All layers	PaintWindow		Totes les capes
 Brushes…	PaintWindow		Pinzells…
 Canvas	PaintWindow		Tela
-Change transparency…	PaintWindow		Canvia'n la transparència...
-Changes the transparency of active layer.	PaintWindow		Canvia la transparència de la capa activa.
 Clear canvas	PaintWindow		Neteja la tela
 Clear layer	PaintWindow		Neteja la capa
 Clear selection	PaintWindow		Neteja la selecció
@@ -43,6 +41,10 @@ Crops the image.	PaintWindow		Retalla la imatge.
 Cut	PaintWindow		Retalla
 Cuts the selection from all layers to the clipboard.	PaintWindow		Retalla la selecció de totes les capes al porta-retalls.
 Cuts the selection to the clipboard.	PaintWindow		Retalla la selecció al porta-retalls.
+Delete	PaintWindow		Delete
+Deletes the selected layer.	PaintWindow		Deletes the selected layer.
+Duplicate	PaintWindow		Duplicate
+Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
 Edit	PaintWindow		Edita
 Empty paint window	PaintWindow		Finestra de pintura buida
 File	PaintWindow		Fitxer
@@ -59,6 +61,8 @@ Invert selection	PaintWindow		Inverteix la selecció
 Inverts the selection	PaintWindow		Inverteix la selecció
 Layer	PaintWindow		Capa
 Layers…	PaintWindow		Capes…
+Merge down	PaintWindow		Merge down
+Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Moves all layers.	PaintWindow		Mou totes les capes.
 Moves the active layer.	PaintWindow		Mou la capa activa.
 New project…	PaintWindow		Projecte nou...
@@ -137,6 +141,14 @@ Zoom in	PaintWindow		Amplia
 Zoom out	PaintWindow		Redueix
 Zooms into the image.	PaintWindow		Apropa la imatge
 Zooms out from the image.	PaintWindow		Allunya la imatge
+Add	LayerWindow		Add
+Delete	LayerWindow		Delete
+Duplicate	LayerWindow		Duplicate
+Layer	LayerWindow		Layer
+Layer transparency	LayerWindow		Transparència de la capa
+Layers	LayerWindow		Capes
+Merge down	LayerWindow		Merge down
+Mode:	LayerWindow		Mode:
 Add area	Tools		Afegeix-hi una àrea
 Adjustable width	Tools		Amplada ajustable
 Adjusting the layer's transparency.	Tools		Ajust de la transparència de la capa.
@@ -153,20 +165,7 @@ Blur tool	Tools		Eina de desenfocament
 Blurring the image.	Tools		Desenfoca la imatge.
 Brush tool	Tools		Eina de pinzell
 Center to corner	Tools		Del centre al cantó
-Click to adjust the layer's transparency.	Tools		Cliqueu per ajustar la transparència de la capa.
-Click to blur the image.	Tools		Cliqueu per desenfocar la imatge.
-Click to draw a freehand line.	Tools		Cliqueu per dibuixar una línia a mà.
-Click to draw a rectangle.	Tools		Cliqueu per dibuixar un rectangle.
-Click to draw a straight line.	Tools		Cliqueu per dibuixar una línia recta.
-Click to draw an ellipse.	Tools		Cliqueu per dibuixar una el·lipse.
-Click to make a fill.	Tools		Cliqueu per omplir un espai.
-Click to make a selection.	Tools		Cliqueu per fer una selecció.
-Click to paint with a brush.	Tools		Cliqueu per pintar amb un pinzell.
-Click to paint with a hairy brush.	Tools		Cliqueu per pintar amb un pinzell gruixut.
-Click to paint with airbrush.	Tools		Cliqueu per pintar amb un aerògraf.
-Click to pick a color.	Tools		Cliqueu per triar un color.
 Click to place the text.	Tools		Cliqueu per col·locar el text.
-Click to use eraser.	Tools		Cliqueu per usar la goma d'esborrar.
 Click to use the tool.	Tools		Cliqueu per usar l'eina.
 Color picker tool	Tools		Eina de selecció de colors
 Color variance:	Tools		Variància del color:
@@ -179,6 +178,7 @@ Drawing a straight line.	Tools		Es dibuixa una línia recta.
 Drawing an ellipse.	Tools		Es dibuixa una el·lipse.
 Ellipse	Tools		El·lipse
 Ellipse tool	Tools		Eina d'el·lipse
+Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
 Enable antialiasing	Tools		Habilita l'antialiàsing
 Enable gradient	Tools		Habilita el gradient
 Enable preview	Tools		Habilita la previsualització
@@ -213,6 +213,7 @@ Picking a color.	Tools		Es tria un color.
 Random	Tools		Aleatori
 Rectangle	Tools		Rectangle
 Rectangle tool	Tools		Eina de rectangle
+Rectangle: SHIFT for square	Tools		Rectangle: SHIFT for square
 Red	Tools		Vermell
 Replace pixels with	Tools		Substitueix els píxels per
 Reset brush	Tools		Restableix el pinzell
@@ -222,6 +223,7 @@ Speed:	Tools		Velocitat:
 Spray	Tools		Esprai
 Store brush	Tools		Desa el pinzell
 Straight line tool	Tools		Eina de línia recta
+Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
 Subtract area	Tools		Resta l'àrea
 Text tool	Tools		Eina de text
 Tolerance:	Tools		Tolerància:
@@ -238,16 +240,9 @@ Cannot delete the only layer. Create another picture to get a fresh start.	Image
 Clear canvas	Image		Neteja la tela
 Clear layer	Image		Neteja la capa
 Delete layer	Image		Suprimeix la capa
-Merge with back layer	Image		Combina amb la capa posterior
-Merge with front layer	Image		Combina amb la capa frontal
+Merge down	Image		Merge down
+Merge with layer above	Image		Merge with layer above
 OK	Image		D'acord
-Add layer behind	LayerView		Afegeix-hi una capa darrere
-Add layer in front	LayerView		Afegeix-hi una capa al davant
-Delete layer	LayerView		Suprimeix la capa
-Duplicate layer	LayerView		Duplica la capa
-Merge with back layer	LayerView		Combina amb la capa posterior
-Merge with front layer	LayerView		Combina amb la capa frontal
-Visible	LayerView		Visible
 Add-ons	Windows		Complements
 Adjustable	Windows		Ajustable
 Application	Windows		Aplicació
@@ -280,6 +275,20 @@ Undo	Windows		Desfés
 Undo steps:	Windows		Passos de l'acció de desfer:
 Unlimited	Windows		Sense límit
 Windows	Windows		Finestres
+Alpha	ColorSliders	For color sliders	Alpha
+Black	ColorSliders	For CMYK color slider	Black
+Blue	ColorSliders	For RGB color sliders	Blue
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel b
+Cyan	ColorSliders	For CMYK color slider	Cyan
+Green	ColorSliders	For RGB color sliders	Green
+Hue	ColorSliders	For HSV color slider	Hue
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lightness
+Magenta	ColorSliders	For CMYK color slider	Magenta
+Red	ColorSliders	For RGB color sliders	Red
+Saturation	ColorSliders	For HSV color slider	Saturation
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Value
+Yellow	ColorSliders	For CMYK color slider	Yellow
 Angle:	Manipulators		Angle:
 Bottom:	Manipulators		Fons:
 Change the transparency with the slider.	Manipulators		Canvieu-ne la transparència amb el control lliscant.
@@ -332,9 +341,11 @@ Delete current set	ColorPalette		Suprimeix-ne el conjunt actual.
 Error reading file	ColorPalette		Error en llegir el fitxer
 File structure corrupted	ColorPalette		Estructura del fitxer malmesa
 New color set	ColorPalette		Conjunt de colors nou
+Next color set	ColorPalette	In Color Palette window	Next color set
 Not a color set file	ColorPalette		No és un fitxer de conjunt de colors.
 OK	ColorPalette		D'acord
 Open color set…	ColorPalette		Obre el conjunt de colors...
+Previous color set	ColorPalette	In Color Palette window	Previous color set
 Save color set	ColorPalette		Desa el conjunt de colors
 ArtPaint: Save image	FilePanels		ArtPaint: Desa la imatge
 Cancel	FilePanels		Cancel·la
@@ -349,8 +360,27 @@ Redo not available	UndoQueue		L'acció de refer no està disponible.
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		El mecanisme de desfer s'ha quedat sense memòria.\nLa profunditat de l'acció de desfer es limitarà perquè els esdeveniments més recents es puguin desar a la memòria. És recomanable desar la feina en aquest punt per evitar qualsevol pèrdua de dades en cas que la memòria s'esgoti completament.\nTambé podeu ajustar la profunditat de l'acció de desfer a la finestra de configuració.
 Undo	UndoQueue		Desfés
 Undo not available	UndoQueue		L'acció de desfer no està disponible.
-Click here to open color panel.	StatusView		Cliqueu aquí per obrir el tauler de color.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Cliqueu a la imatge per girar-la, moure-la o estirar-la.
 Free 2D transform	FreeTransformManipulator		Transformació a 2D lliure
-Layers	LayerWindow		Capes
+Color burn	PixelOperations		Color burn
+Color dodge	PixelOperations		Color dodge
+Darken	PixelOperations		Darken
+Difference	PixelOperations		Difference
+Dissolve	PixelOperations		Dissolve
+Divide	PixelOperations		Divide
+Exclusion	PixelOperations		Exclusion
+Hard light	PixelOperations		Hard light
+Hard mix	PixelOperations		Hard mix
+Lighten	PixelOperations		Lighten
+Linear burn	PixelOperations		Linear burn
+Linear dodge	PixelOperations		Linear dodge
+Linear light	PixelOperations		Linear light
+Multiply	PixelOperations		Multiply
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Overlay
+Pin light	PixelOperations		Pin light
+Screen	PixelOperations		Screen
+Soft light	PixelOperations		Soft light
+Vivid light	PixelOperations		Vivid light
+Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
 Zoom	MagnificationView		Lupa

@@ -1,4 +1,4 @@
-1	Portuguese	application/x-vnd.artpaint	183125306
+1	Portuguese	application/x-vnd.artpaint	3689499495
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Fez uma alteração desde a última vez que o projeto foi salvo.nDo quer guardar a mudança?} outros{%project_name%: Fez # alterações desde a última vez que o projeto foi salvo.nDo você quer guardar as alterações?}}
 Cancel	ImageView		Cancelar
 Clear selection	ImageView		Seleção clara
@@ -17,14 +17,12 @@ Shrink selection	ImageView		Seleção de encolher
 Unsaved changes!	ImageView		Mudanças não salvas!
 About ArtPaint	PaintWindow		About ArtPaint
 Active layer	PaintWindow		Active layer
-Add layer	PaintWindow		Add layer
+Add	PaintWindow		Adicionar
 Add-ons	PaintWindow		Add-ons
 Adds a layer to the top of this image.	PaintWindow		Adds a layer to the top of this image.
 All layers	PaintWindow		All layers
 Brushes…	PaintWindow		Brushes…
 Canvas	PaintWindow		Canvas
-Change transparency…	PaintWindow		Change transparency…
-Changes the transparency of active layer.	PaintWindow		Changes the transparency of active layer.
 Clear canvas	PaintWindow		Clear canvas
 Clear layer	PaintWindow		Clear layer
 Clear selection	PaintWindow		Clear selection
@@ -43,6 +41,10 @@ Crops the image.	PaintWindow		Crops the image.
 Cut	PaintWindow		Cut
 Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
 Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
+Delete	PaintWindow		Excluir
+Deletes the selected layer.	PaintWindow		Elimina a camada selecionada.
+Duplicate	PaintWindow		Duplicado
+Duplicates the selected layer.	PaintWindow		Duplica a camada selecionada.
 Edit	PaintWindow		Edit
 Empty paint window	PaintWindow		Empty paint window
 File	PaintWindow		File
@@ -59,6 +61,8 @@ Invert selection	PaintWindow		Invert selection
 Inverts the selection	PaintWindow		Inverts the selection
 Layer	PaintWindow		Layer
 Layers…	PaintWindow		Layers…
+Merge down	PaintWindow		Fundem baixo
+Merges selected layer with the layer below.	PaintWindow		Combina camada selecionada com a camada abaixo.
 Moves all layers.	PaintWindow		Moves all layers.
 Moves the active layer.	PaintWindow		Moves the active layer.
 New project…	PaintWindow		New project…
@@ -137,6 +141,14 @@ Zoom in	PaintWindow		Zoom in
 Zoom out	PaintWindow		Zoom out
 Zooms into the image.	PaintWindow		Zooms into the image.
 Zooms out from the image.	PaintWindow		Zooms out from the image.
+Add	LayerWindow		Adicionar
+Delete	LayerWindow		Excluir
+Duplicate	LayerWindow		Duplicado
+Layer	LayerWindow		Camada
+Layer transparency	LayerWindow		Transparência da camada
+Layers	LayerWindow		Camadas
+Merge down	LayerWindow		Fusão baixo
+Mode:	LayerWindow		Modo:
 Add area	Tools		Add area
 Adjustable width	Tools		Adjustable width
 Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
@@ -153,20 +165,7 @@ Blur tool	Tools		Blur tool
 Blurring the image.	Tools		Blurring the image.
 Brush tool	Tools		Brush tool
 Center to corner	Tools		Center to corner
-Click to adjust the layer's transparency.	Tools		Click to adjust the layer's transparency.
-Click to blur the image.	Tools		Click to blur the image.
-Click to draw a freehand line.	Tools		Click to draw a freehand line.
-Click to draw a rectangle.	Tools		Click to draw a rectangle.
-Click to draw a straight line.	Tools		Click to draw a straight line.
-Click to draw an ellipse.	Tools		Click to draw an ellipse.
-Click to make a fill.	Tools		Click to make a fill.
-Click to make a selection.	Tools		Click to make a selection.
-Click to paint with a brush.	Tools		Click to paint with a brush.
-Click to paint with a hairy brush.	Tools		Click to paint with a hairy brush.
-Click to paint with airbrush.	Tools		Click to paint with airbrush.
-Click to pick a color.	Tools		Click to pick a color.
 Click to place the text.	Tools		Click to place the text.
-Click to use eraser.	Tools		Click to use eraser.
 Click to use the tool.	Tools		Click to use the tool.
 Color picker tool	Tools		Color picker tool
 Color variance:	Tools		Color variance:
@@ -179,6 +178,7 @@ Drawing a straight line.	Tools		Drawing a straight line.
 Drawing an ellipse.	Tools		Drawing an ellipse.
 Ellipse	Tools		Ellipse
 Ellipse tool	Tools		Ellipse tool
+Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
 Enable antialiasing	Tools		Enable antialiasing
 Enable gradient	Tools		Enable gradient
 Enable preview	Tools		Enable preview
@@ -213,6 +213,7 @@ Picking a color.	Tools		Picking a color.
 Random	Tools		Random
 Rectangle	Tools		Rectangle
 Rectangle tool	Tools		Rectangle tool
+Rectangle: SHIFT for square	Tools		Rectangle: SHIFT for square
 Red	Tools		Red
 Replace pixels with	Tools		Replace pixels with
 Reset brush	Tools		Reset brush
@@ -222,6 +223,7 @@ Speed:	Tools		Speed:
 Spray	Tools		Spray
 Store brush	Tools		Store brush
 Straight line tool	Tools		Straight line tool
+Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
 Subtract area	Tools		Subtract area
 Text tool	Tools		Text tool
 Tolerance:	Tools		Tolerance:
@@ -238,16 +240,9 @@ Cannot delete the only layer. Create another picture to get a fresh start.	Image
 Clear canvas	Image		Tela clara
 Clear layer	Image		Camada clara
 Delete layer	Image		Eliminar camada
-Merge with back layer	Image		Fundir com camada traseira
-Merge with front layer	Image		Fundir com camada frontal
+Merge down	Image		Fusão baixo
+Merge with layer above	Image		Fundir com camada acima
 OK	Image		OK
-Add layer behind	LayerView		Adicione camada por trás
-Add layer in front	LayerView		Adicione camada na frente
-Delete layer	LayerView		Eliminar camada
-Duplicate layer	LayerView		Camada duplicada
-Merge with back layer	LayerView		Fundir com camada traseira
-Merge with front layer	LayerView		Fundir com camada frontal
-Visible	LayerView		Visível
 Add-ons	Windows		Add-ons
 Adjustable	Windows		Adjustable
 Application	Windows		Application
@@ -280,6 +275,20 @@ Undo	Windows		Undo
 Undo steps:	Windows		Undo steps:
 Unlimited	Windows		Unlimited
 Windows	Windows		Windows
+Alpha	ColorSliders	For color sliders	Alfa
+Black	ColorSliders	For CMYK color slider	Preto
+Blue	ColorSliders	For RGB color sliders	Azul
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Canal a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Canal b
+Cyan	ColorSliders	For CMYK color slider	Ciano
+Green	ColorSliders	For RGB color sliders	Verde
+Hue	ColorSliders	For HSV color slider	Matiz
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Leveza
+Magenta	ColorSliders	For CMYK color slider	Magenta
+Red	ColorSliders	For RGB color sliders	Vermelho
+Saturation	ColorSliders	For HSV color slider	Saturação
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Valor
+Yellow	ColorSliders	For CMYK color slider	Amarelo
 Angle:	Manipulators		Ângulo:
 Bottom:	Manipulators		Em baixo:
 Change the transparency with the slider.	Manipulators		Mude a transparência com o deslizador.
@@ -332,9 +341,11 @@ Delete current set	ColorPalette		Eliminar conjunto de corrente
 Error reading file	ColorPalette		Ficheiro de leitura de erros
 File structure corrupted	ColorPalette		Estrutura de arquivo corrompida
 New color set	ColorPalette		Novo conjunto de cores
+Next color set	ColorPalette	In Color Palette window	Próximo conjunto de cores
 Not a color set file	ColorPalette		Não um arquivo de conjunto de cores
 OK	ColorPalette		OK
 Open color set…	ColorPalette		Conjunto de cores aberta...
+Previous color set	ColorPalette	In Color Palette window	Conjunto de cores anterior
 Save color set	ColorPalette		Guardar conjunto de cores
 ArtPaint: Save image	FilePanels		ArtPaint: Guardar imagem
 Cancel	FilePanels		Cancelar
@@ -349,8 +360,27 @@ Redo not available	UndoQueue		Redo não disponível
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		O mecanismo de desfazer ficou sem memória.nA profundidade de desfazer será limitada para que os eventos mais recentes possam ser mantidos na memória. É aconselhável guardar o seu trabalho neste ponto para evitar qualquer perda de dados no caso de a memória se esgotar completamente.n Também pode querer ajustar a fase de desfazer na janela de definições.
 Undo	UndoQueue		Desfazer
 Undo not available	UndoQueue		Desfazer não disponível
-Click here to open color panel.	StatusView		Clique aqui para abrir o painel de cores.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Clique na imagem para rodar, mover ou esticar.
 Free 2D transform	FreeTransformManipulator		Transformação 2D gratuita
-Layers	LayerWindow		Camadas
+Color burn	PixelOperations		Color burn
+Color dodge	PixelOperations		Color dodge
+Darken	PixelOperations		Darken
+Difference	PixelOperations		Difference
+Dissolve	PixelOperations		Dissolve
+Divide	PixelOperations		Divide
+Exclusion	PixelOperations		Exclusion
+Hard light	PixelOperations		Hard light
+Hard mix	PixelOperations		Hard mix
+Lighten	PixelOperations		Lighten
+Linear burn	PixelOperations		Linear burn
+Linear dodge	PixelOperations		Linear dodge
+Linear light	PixelOperations		Linear light
+Multiply	PixelOperations		Multiply
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Overlay
+Pin light	PixelOperations		Pin light
+Screen	PixelOperations		Screen
+Soft light	PixelOperations		Soft light
+Vivid light	PixelOperations		Vivid light
+Left-click for color panel, right-click to switch colors.	StatusView		Clique no botão esquerdo para painel de cores, clique à direita para mudar de cor.
 Zoom	MagnificationView		Zoom

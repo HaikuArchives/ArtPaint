@@ -1,0 +1,11 @@
+1	Japanese	application/x-vnd.artpaint-addon	3475314580
+Center A	AddOns_Interference		中心点 A
+Center B	AddOns_Interference		中心点 B
+Creates an interference-pattern.	AddOns_Interference		干渉パターンを作成します。
+Grayscale	AddOns_Interference		グレースケール
+Interference	AddOns_Interference		干渉縞
+Interference…	AddOns_Interference		干渉縞…
+Left-click to move Center A, right-click to move Center B.	AddOns_Interference		左クリックで中心点 Aを移動、右クリックで中心点Bを移動します。
+Long	AddOns_Interference		長
+Short	AddOns_Interference		短
+Wavelength:	AddOns_Interference		波長:

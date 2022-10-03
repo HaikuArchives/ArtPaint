@@ -1,0 +1,9 @@
+1	Japanese	application/x-vnd.artpaint-addon	2206202763
+Based on:	AddOns_Threshold		ベース:
+Blue	AddOns_Threshold		青
+Green	AddOns_Threshold		緑
+Intensity	AddOns_Threshold		明暗度
+Red	AddOns_Threshold		赤
+Shows only pixels of a specified threshold.	AddOns_Threshold		指定のしきい値のピクセルだけを表示します。
+Threshold	AddOns_Threshold		しきい値
+Threshold…	AddOns_Threshold		しきい値…

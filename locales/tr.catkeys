@@ -1,4 +1,4 @@
-1	Turkish	application/x-vnd.artpaint	183125306
+1	Turkish	application/x-vnd.artpaint	3689499495
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Proje son kaydedildiğinden bu yana bir değişiklik yaptınız.\nDeğişikliği kaydetmek istiyor musunuz?}other{%project_name%: Proje son kaydedildiğinden bu yana # değişiklik yaptınız.\nDeğişiklikleri kaydetmek istiyor musunuz?}}
 Cancel	ImageView		İptal
 Clear selection	ImageView		Seçimi temizle
@@ -17,14 +17,12 @@ Shrink selection	ImageView		Seçimi küçült
 Unsaved changes!	ImageView		Kaydedilmemiş değişiklikler!
 About ArtPaint	PaintWindow		ArtPaint hakkında
 Active layer	PaintWindow		Etkin katman
-Add layer	PaintWindow		Katman ekle
+Add	PaintWindow		Ekle
 Add-ons	PaintWindow		Eklentiler
 Adds a layer to the top of this image.	PaintWindow		Bu görselin üzerine bir katman ekler.
 All layers	PaintWindow		Tüm katmanlar
 Brushes…	PaintWindow		Fırçalar…
 Canvas	PaintWindow		Tuval
-Change transparency…	PaintWindow		Saydamlığı değiştir…
-Changes the transparency of active layer.	PaintWindow		Etkin katmanın saydamlığını değiştirir.
 Clear canvas	PaintWindow		Tuvali temizle
 Clear layer	PaintWindow		Katmanı temizle
 Clear selection	PaintWindow		Seçimi temizle
@@ -43,6 +41,10 @@ Crops the image.	PaintWindow		Görseli kırpar.
 Cut	PaintWindow		Kes
 Cuts the selection from all layers to the clipboard.	PaintWindow		Tüm katmanlardaki seçimi panoya keser.
 Cuts the selection to the clipboard.	PaintWindow		Seçimi panoya keser.
+Delete	PaintWindow		Sil
+Deletes the selected layer.	PaintWindow		Seçili katmanı siler.
+Duplicate	PaintWindow		Çoğalt
+Duplicates the selected layer.	PaintWindow		Seçili katmanı çoğaltır.
 Edit	PaintWindow		Düzen
 Empty paint window	PaintWindow		Boş boyama penceresi
 File	PaintWindow		Dosya
@@ -59,6 +61,8 @@ Invert selection	PaintWindow		Seçimi ters çevir
 Inverts the selection	PaintWindow		Seçimi ters çevirir.
 Layer	PaintWindow		Katman
 Layers…	PaintWindow		Katmanlar…
+Merge down	PaintWindow		Aşağı birleştir
+Merges selected layer with the layer below.	PaintWindow		Seçili katmanı, aşağısındaki katman ile birleştirir.
 Moves all layers.	PaintWindow		Tüm katmanları taşır.
 Moves the active layer.	PaintWindow		Etkin katmanı taşır.
 New project…	PaintWindow		Yeni proje…
@@ -104,7 +108,7 @@ Saves the image to disk.	PaintWindow		Görseli, diske kaydeder.
 Saves the image under its current name.	PaintWindow		Görseli, geçerli adı altında kaydeder.
 Saves the project to disk.	PaintWindow		Projeyi diske kaydeder.
 Saves the project under its current name.	PaintWindow		Projeyi, geçerli adı altında kaydeder.
-Scale…	PaintWindow		Ölçek…
+Scale…	PaintWindow		Ölçeklendir…
 Scales the image.	PaintWindow		Görseli ölçeklendirir.
 Set grid	PaintWindow		Izgarayı ayarla
 Set zoom level	PaintWindow		Yakınlaştırma düzeyini ayarla
@@ -137,6 +141,14 @@ Zoom in	PaintWindow		Yakınlaştır
 Zoom out	PaintWindow		Uzaklaştır
 Zooms into the image.	PaintWindow		Görseli yakınlaştırır.
 Zooms out from the image.	PaintWindow		Görseli uzaklaştırır.
+Add	LayerWindow		Ekle
+Delete	LayerWindow		Sil
+Duplicate	LayerWindow		Çoğalt
+Layer	LayerWindow		Katman
+Layer transparency	LayerWindow		Katman saydamlığı
+Layers	LayerWindow		Katmanlar
+Merge down	LayerWindow		Aşağı birleştir
+Mode:	LayerWindow		Kip:
 Add area	Tools		Alan ekle
 Adjustable width	Tools		Ayarlanabilir genişlik
 Adjusting the layer's transparency.	Tools		Katmanın saydamlığı ayarlanıyor.
@@ -153,20 +165,7 @@ Blur tool	Tools		Bulanıklaştırma aracı
 Blurring the image.	Tools		Görsel bulanıklaştırılıyor.
 Brush tool	Tools		Fırça aracı
 Center to corner	Tools		Merkezden köşeye
-Click to adjust the layer's transparency.	Tools		Katmanın saydamlığını ayarlamak için tıklayın.
-Click to blur the image.	Tools		Görseli bulanıklaştırmak için tıklayın.
-Click to draw a freehand line.	Tools		Serbest bir çizgi çizmek için tıklayın.
-Click to draw a rectangle.	Tools		Bir dörtgen çizmek için tıklayın.
-Click to draw a straight line.	Tools		Düz bir çizgi çizmek için tıklayın.
-Click to draw an ellipse.	Tools		Bir elips çizmek için tıklayın.
-Click to make a fill.	Tools		Bir dolgu yapmak için tıklayın.
-Click to make a selection.	Tools		Bir seçim yapmak için tıklayın.
-Click to paint with a brush.	Tools		Bir fırça ile boyamak için tıklayın.
-Click to paint with a hairy brush.	Tools		İnce kıllı bir fırça ile boyamak için tıklayın.
-Click to paint with airbrush.	Tools		Boya tabancası ile boyamak için tıklayın.
-Click to pick a color.	Tools		Bir renk seçmek için tıklayın.
 Click to place the text.	Tools		Metni yerleştirmek için tıklayın.
-Click to use eraser.	Tools		Silgiyi kullanmak için tıklayın.
 Click to use the tool.	Tools		Aracı kullanmak için tıklayın.
 Color picker tool	Tools		Renk seçici aracı
 Color variance:	Tools		Renk ayrımı:
@@ -179,6 +178,7 @@ Drawing a straight line.	Tools		Düz bir çizgi çiziliyor.
 Drawing an ellipse.	Tools		Bir elips çiziliyor.
 Ellipse	Tools		Elips
 Ellipse tool	Tools		Elips aracı
+Ellipse: SHIFT for circle	Tools		Elips: Çember için SHIFT düğmesini basılı tutun
 Enable antialiasing	Tools		Yumuşatmayı etkinleştir
 Enable gradient	Tools		Gradyanları etkinleştir
 Enable preview	Tools		Önizlemeyi etkinleştir
@@ -213,6 +213,7 @@ Picking a color.	Tools		Bir renk seçiliyor.
 Random	Tools		Rastgele
 Rectangle	Tools		Dörtgen
 Rectangle tool	Tools		Dörtgen aracı
+Rectangle: SHIFT for square	Tools		Dörtgen: Kare için SHIFT düğmesini basılı tutun
 Red	Tools		Kırmızı
 Replace pixels with	Tools		Pikselleri şununla değiştir:
 Reset brush	Tools		Fırçayı sıfırla
@@ -222,6 +223,7 @@ Speed:	Tools		Hız:
 Spray	Tools		Sprey
 Store brush	Tools		Fırçayı sakla
 Straight line tool	Tools		Düz çizgi aracı
+Straight line: SHIFT locks 45° angles	Tools		Düz çizgi: SHIFT düğmesini basılı tutmak, 45°lik açılar kilitler
 Subtract area	Tools		Alanı çıkar
 Text tool	Tools		Metin aracı
 Tolerance:	Tools		Tolerans:
@@ -238,16 +240,9 @@ Cannot delete the only layer. Create another picture to get a fresh start.	Image
 Clear canvas	Image		Tuvali temizle
 Clear layer	Image		Katmanı temizle
 Delete layer	Image		Katmanı sil
-Merge with back layer	Image		Arka katman ile birleştir
-Merge with front layer	Image		Ön katman ile birleştir
+Merge down	Image		Aşağı birleştir
+Merge with layer above	Image		Yukarıdaki katman ile birleştir
 OK	Image		Tamam
-Add layer behind	LayerView		Arkaya katman ekle
-Add layer in front	LayerView		Öne katmak ekle
-Delete layer	LayerView		Katmanı sil
-Duplicate layer	LayerView		Katmanı çoğalt
-Merge with back layer	LayerView		Arka katman ile birleştir
-Merge with front layer	LayerView		Ön katman ile birleştir
-Visible	LayerView		Görünür
 Add-ons	Windows		Eklentiler
 Adjustable	Windows		Ayarlanabilir
 Application	Windows		Uygulama
@@ -280,6 +275,20 @@ Undo	Windows		Geri al
 Undo steps:	Windows		Geri alma adımları:
 Unlimited	Windows		Sınırsız
 Windows	Windows		Pencereler
+Alpha	ColorSliders	For color sliders	Alfa
+Black	ColorSliders	For CMYK color slider	Siyah
+Blue	ColorSliders	For RGB color sliders	Mavi
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanal A
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanal B
+Cyan	ColorSliders	For CMYK color slider	Camgöbeği
+Green	ColorSliders	For RGB color sliders	Yeşil
+Hue	ColorSliders	For HSV color slider	Renk tonu
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Açıklık
+Magenta	ColorSliders	For CMYK color slider	Mor
+Red	ColorSliders	For RGB color sliders	Kırmızı
+Saturation	ColorSliders	For HSV color slider	Doygunluk
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Değer
+Yellow	ColorSliders	For CMYK color slider	Sarı
 Angle:	Manipulators		Açı:
 Bottom:	Manipulators		Alt:
 Change the transparency with the slider.	Manipulators		Kaydırıcı ile saydamlığı değiştirin.
@@ -332,9 +341,11 @@ Delete current set	ColorPalette		Geçerli kümeyi sil
 Error reading file	ColorPalette		Dosya okunurken hata
 File structure corrupted	ColorPalette		Dosya yapısı hasarlı
 New color set	ColorPalette		Yeni renk kümesi
+Next color set	ColorPalette	In Color Palette window	Sonraki renk kümesi
 Not a color set file	ColorPalette		Bir renk kümesi dosyası değil
 OK	ColorPalette		Tamam
 Open color set…	ColorPalette		Renk kümesi aç…
+Previous color set	ColorPalette	In Color Palette window	Önceki renk kümesi
 Save color set	ColorPalette		Renk kümesini kaydet
 ArtPaint: Save image	FilePanels		ArtPaint: Görseli kaydet
 Cancel	FilePanels		İptal
@@ -349,8 +360,27 @@ Redo not available	UndoQueue		Yineleme kullanılamıyor
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Geri alma mekanizması için yeterli bellek yok.\nGeri alma derinliği, son gerçekleştirilen eylemlerin bellekte tutulabilmesi için sınırlıdır. Bu noktada veri kaybını önlemek için çalışmanızı kaydetmeniz önerilir.\nAyarlar penceresinde geri alma derinliğini de değiştirmek isteyebilirsiniz.
 Undo	UndoQueue		Geri al
 Undo not available	UndoQueue		Geri alma kullanılamıyor
-Click here to open color panel.	StatusView		Renk panelini açmak için buraya tıklayın.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Görseli döndürmek, taşımak veya germek için üzerine tıklayın.
 Free 2D transform	FreeTransformManipulator		Serbest 2B dönüşüm
-Layers	LayerWindow		Katmanlar
-Zoom	MagnificationView		Büyüt
+Color burn	PixelOperations		Renk yak
+Color dodge	PixelOperations		Renk atla
+Darken	PixelOperations		Koyulaştır
+Difference	PixelOperations		Ayrım
+Dissolve	PixelOperations		Çöz
+Divide	PixelOperations		Böl
+Exclusion	PixelOperations		Dışta tut
+Hard light	PixelOperations		Sert ışık
+Hard mix	PixelOperations		Sert karışım
+Lighten	PixelOperations		Aydınlat
+Linear burn	PixelOperations		Doğrusal yak
+Linear dodge	PixelOperations		Doğrusal atla
+Linear light	PixelOperations		Doğrusal ışık
+Multiply	PixelOperations		Çarp
+Normal	PixelOperations		Olağan
+Overlay	PixelOperations		Kapla
+Pin light	PixelOperations		Işığı sabitle
+Screen	PixelOperations		Ekran
+Soft light	PixelOperations		Yumuşak ışık
+Vivid light	PixelOperations		Keskin ışık
+Left-click for color panel, right-click to switch colors.	StatusView		Renk paneli için sol, renkleri birbiriyle değiştirmek için sağ tıklayın.
+Zoom	MagnificationView		Yakınlaştır

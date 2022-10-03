@@ -1,4 +1,4 @@
-1	Dutch	application/x-vnd.artpaint	183125306
+1	Dutch	application/x-vnd.artpaint	3689499495
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Je hebt een aanpassing gedaan sinds de laatste keer je project was opgeslagen.\nWil je de aanpassing opslaan?}other{%project_name%: Je hebt # aanpassingen gedaan sinds de laatste keer je project was opgeslagen.\nWil je deze aanpassingen opslaan?}}
 Cancel	ImageView		Annuleren
 Clear selection	ImageView		Verwijder selectie
@@ -17,14 +17,12 @@ Shrink selection	ImageView		Krimp selectie
 Unsaved changes!	ImageView		Niet opgeslagen aanpassingen!
 About ArtPaint	PaintWindow		Over ArtPaint
 Active layer	PaintWindow		Actieve laag
-Add layer	PaintWindow		Laag toevoegen
+Add	PaintWindow		Add
 Add-ons	PaintWindow		Add-ons
 Adds a layer to the top of this image.	PaintWindow		Voegt een laag toe boven deze afbeelding.
 All layers	PaintWindow		Alle lagen
 Brushes…	PaintWindow		Borstels…
 Canvas	PaintWindow		Canvas
-Change transparency…	PaintWindow		Transparantie aanpassen…
-Changes the transparency of active layer.	PaintWindow		Veranderd de transparantie van de actieve laag.
 Clear canvas	PaintWindow		Canvas verwijderen
 Clear layer	PaintWindow		Verwijder laag
 Clear selection	PaintWindow		Verwijder selectie
@@ -43,6 +41,10 @@ Crops the image.	PaintWindow		Knipt de afbeelding.
 Cut	PaintWindow		Knip
 Cuts the selection from all layers to the clipboard.	PaintWindow		Snijd de selectie van alle lagen naar het klembord.
 Cuts the selection to the clipboard.	PaintWindow		Snijd de selectie naar het klembord.
+Delete	PaintWindow		Delete
+Deletes the selected layer.	PaintWindow		Deletes the selected layer.
+Duplicate	PaintWindow		Duplicate
+Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
 Edit	PaintWindow		Bewerken
 Empty paint window	PaintWindow		Leeg verfvenster
 File	PaintWindow		Bestand
@@ -59,6 +61,8 @@ Invert selection	PaintWindow		Selectie omkeren
 Inverts the selection	PaintWindow		Keert de selectie om
 Layer	PaintWindow		Laag
 Layers…	PaintWindow		Lagen...
+Merge down	PaintWindow		Merge down
+Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Moves all layers.	PaintWindow		Verplaatst alle lagen.
 Moves the active layer.	PaintWindow		Verplaatst de actieve laag.
 New project…	PaintWindow		Nieuw project…
@@ -137,6 +141,14 @@ Zoom in	PaintWindow		Inzoomen
 Zoom out	PaintWindow		Zoom uit
 Zooms into the image.	PaintWindow		Zoomt in op de afbeelding.
 Zooms out from the image.	PaintWindow		Zoomt uit op de afbeelding.
+Add	LayerWindow		Toevoegen
+Delete	LayerWindow		Verwijderen
+Duplicate	LayerWindow		Dupliceren
+Layer	LayerWindow		Laag
+Layer transparency	LayerWindow		Laag transparantie
+Layers	LayerWindow		Laagen
+Merge down	LayerWindow		Samensmelten naar onder
+Mode:	LayerWindow		Modus:
 Add area	Tools		Zone toevoegen
 Adjustable width	Tools		Breedte instelbaar
 Adjusting the layer's transparency.	Tools		Aanpassen van de transparantie voor de laag.
@@ -153,20 +165,7 @@ Blur tool	Tools		Vervaag werktuig
 Blurring the image.	Tools		De afbeelding vervagen.
 Brush tool	Tools		Penseel werktuig
 Center to corner	Tools		Centreer naar hoek
-Click to adjust the layer's transparency.	Tools		Klik om de transparantie voor de laag aan te passen.
-Click to blur the image.	Tools		Klik om de afbeelding te vervagen.
-Click to draw a freehand line.	Tools		Klik om te tekenen uit vrije hand.
-Click to draw a rectangle.	Tools		Klik om een rechthoek te tekenen.
-Click to draw a straight line.	Tools		Klik om een rechte lijn te tekenen.
-Click to draw an ellipse.	Tools		Klik om een ​​ellips te tekenen.
-Click to make a fill.	Tools		Klik om te vullen.
-Click to make a selection.	Tools		Klik om een selectie te maken.
-Click to paint with a brush.	Tools		Klik om te verven met een penseel.
-Click to paint with a hairy brush.	Tools		Klik om te verven met een kwast.
-Click to paint with airbrush.	Tools		Klik om te verven met een spuitbus.
-Click to pick a color.	Tools		Klik om een kleur te kiezen.
 Click to place the text.	Tools		Klik om de tekst te plaatsen.
-Click to use eraser.	Tools		Klik om de gom te gebruiken.
 Click to use the tool.	Tools		Klik om het werktuig te gebruiken.
 Color picker tool	Tools		Kleur pallet werktuig.
 Color variance:	Tools		Kleurvariatie:
@@ -179,6 +178,7 @@ Drawing a straight line.	Tools		Teken een rechte lijn
 Drawing an ellipse.	Tools		Teken een ellips.
 Ellipse	Tools		Ovaal
 Ellipse tool	Tools		Ovaal werktuig
+Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
 Enable antialiasing	Tools		Inschakelen anti-aliasing
 Enable gradient	Tools		Inschakelen verloop
 Enable preview	Tools		Inschakelen voorbeeld
@@ -213,6 +213,7 @@ Picking a color.	Tools		Kleur kiezen.
 Random	Tools		Willekeurig
 Rectangle	Tools		Rechthoek
 Rectangle tool	Tools		Rechthoek werktuig
+Rectangle: SHIFT for square	Tools		Rectangle: SHIFT for square
 Red	Tools		Rood
 Replace pixels with	Tools		Pixels vervangen met
 Reset brush	Tools		Penseel resetten
@@ -222,6 +223,7 @@ Speed:	Tools		Snelheid:
 Spray	Tools		Verstuif
 Store brush	Tools		Penseel opslaan
 Straight line tool	Tools		Rechte lijn werktuig
+Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
 Subtract area	Tools		Gebied verwijderen
 Text tool	Tools		Tekst werktuig
 Tolerance:	Tools		Tolerantie:
@@ -238,16 +240,9 @@ Cannot delete the only layer. Create another picture to get a fresh start.	Image
 Clear canvas	Image		Canvas verwijderen
 Clear layer	Image		Verwijder laag
 Delete layer	Image		Verwijder laag
-Merge with back layer	Image		Samenvoegen met achterlaag
-Merge with front layer	Image		Samenvoegeen met voorlaag
+Merge down	Image		Omlaag samenvoegen
+Merge with layer above	Image		Met laag boven samenvoegen
 OK	Image		OK
-Add layer behind	LayerView		Laag toevoegen op de achtergrond
-Add layer in front	LayerView		Laag toevoegen op de voorgrond
-Delete layer	LayerView		Verwijder laag
-Duplicate layer	LayerView		Laag dupliceren
-Merge with back layer	LayerView		Samenvoegen met achterlaag
-Merge with front layer	LayerView		Samenvoegeen met voorlaag
-Visible	LayerView		Zichtbaar
 Add-ons	Windows		Add-ons
 Adjustable	Windows		Instelbaar
 Application	Windows		Toepassing
@@ -280,6 +275,20 @@ Undo	Windows		Ongedaan maken
 Undo steps:	Windows		Ongedaan maken stappen
 Unlimited	Windows		Onbegrensd
 Windows	Windows		Vensters
+Alpha	ColorSliders	For color sliders	Alpha
+Black	ColorSliders	For CMYK color slider	Zwart
+Blue	ColorSliders	For RGB color sliders	Blauw
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanaal a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanaal b
+Cyan	ColorSliders	For CMYK color slider	Cyan
+Green	ColorSliders	For RGB color sliders	Groen
+Hue	ColorSliders	For HSV color slider	Tint
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lichtheid
+Magenta	ColorSliders	For CMYK color slider	Magenta
+Red	ColorSliders	For RGB color sliders	Rood
+Saturation	ColorSliders	For HSV color slider	Verzadiging
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Waarde
+Yellow	ColorSliders	For CMYK color slider	Geel
 Angle:	Manipulators		Hoek:
 Bottom:	Manipulators		Onder:
 Change the transparency with the slider.	Manipulators		Verander de transparantie met de schuifregelaar.
@@ -332,9 +341,11 @@ Delete current set	ColorPalette		Verwijder huidige set
 Error reading file	ColorPalette		Fout bij lezen bestand
 File structure corrupted	ColorPalette		Bestandsstructuur beschadigt
 New color set	ColorPalette		Nieuwe kleurset
+Next color set	ColorPalette	In Color Palette window	Volgende kleur set
 Not a color set file	ColorPalette		Geen kleur set bestand
 OK	ColorPalette		OK
 Open color set…	ColorPalette		Open Kleurset…
+Previous color set	ColorPalette	In Color Palette window	Vorige kleur set
 Save color set	ColorPalette		Kleurset opslaan
 ArtPaint: Save image	FilePanels		ArtPaint: Afbeelding opslaan
 Cancel	FilePanels		Annuleren
@@ -349,8 +360,27 @@ Redo not available	UndoQueue		Opnieuw uitvoeren niet mogelijk
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Het ongedaan maken is zonder geheugen geraakt.\nDe diepte van ongedaan maken zal gelimiteerd worden zodat de meest recente aanpassingen in het geheugen kunnen blijven. Het is aangeraden om je werk op te slaan op dit punt om verlies van data te voorkomen als het geheugen helemaal vol zit.\nJe kan ook de diepte voor ongedaan maken instellen in het instellingen venster.
 Undo	UndoQueue		Ongedaan maken
 Undo not available	UndoQueue		Ongedaan maken niet beschikbaar
-Click here to open color panel.	StatusView		Klik hier om het kleurpaneel te openen.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Klik op de afbeelding om te draaien, verplaatsen of uit te rekken.
 Free 2D transform	FreeTransformManipulator		Vrije 2D transformatie
-Layers	LayerWindow		Laagen
+Color burn	PixelOperations		Color burn
+Color dodge	PixelOperations		Color dodge
+Darken	PixelOperations		Darken
+Difference	PixelOperations		Difference
+Dissolve	PixelOperations		Dissolve
+Divide	PixelOperations		Divide
+Exclusion	PixelOperations		Exclusion
+Hard light	PixelOperations		Hard light
+Hard mix	PixelOperations		Hard mix
+Lighten	PixelOperations		Lighten
+Linear burn	PixelOperations		Linear burn
+Linear dodge	PixelOperations		Linear dodge
+Linear light	PixelOperations		Linear light
+Multiply	PixelOperations		Multiply
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Overlay
+Pin light	PixelOperations		Pin light
+Screen	PixelOperations		Screen
+Soft light	PixelOperations		Soft light
+Vivid light	PixelOperations		Vivid light
+Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
 Zoom	MagnificationView		Zoom

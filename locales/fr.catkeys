@@ -1,4 +1,4 @@
-1	French	application/x-vnd.artpaint	183125306
+1	French	application/x-vnd.artpaint	3689499495
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Vous avez effectué un changement depuis la dernière sauvegarde du projet.\nVoulez vous sauvegarder ce changement ?}other{%project_name%: YVous avez effectué # changements depuis la dernière sauvegarde du projet.\nVoulez vous sauvegarder ces changements ?
 Cancel	ImageView		Annuler
 Clear selection	ImageView		Effacer la sélection
@@ -17,14 +17,12 @@ Shrink selection	ImageView		Réduire la sélection
 Unsaved changes!	ImageView		Changements non sauvegardés !
 About ArtPaint	PaintWindow		À propos de ArtPaint
 Active layer	PaintWindow		Calque actif
-Add layer	PaintWindow		Ajouter un calque
-Add-ons	PaintWindow		Greffons
+Add	PaintWindow		Ajouter
+Add-ons	PaintWindow		Extensions
 Adds a layer to the top of this image.	PaintWindow		Ajoute un calque par-dessus les autres.
 All layers	PaintWindow		Tous les calques
 Brushes…	PaintWindow		Pinceaux…
 Canvas	PaintWindow		Image
-Change transparency…	PaintWindow		Changer la transparence…
-Changes the transparency of active layer.	PaintWindow		Change la transparence du calque actif.
 Clear canvas	PaintWindow		Effacer l'image
 Clear layer	PaintWindow		Effacer le calque
 Clear selection	PaintWindow		Effacer la sélection
@@ -43,15 +41,19 @@ Crops the image.	PaintWindow		Recadre l'image.
 Cut	PaintWindow		Couper
 Cuts the selection from all layers to the clipboard.	PaintWindow		Coupe la sélection de tous les calques vers le presse-papier.
 Cuts the selection to the clipboard.	PaintWindow		Coupe la sélection vers le presse-papier.
+Delete	PaintWindow		Supprimer
+Deletes the selected layer.	PaintWindow		Supprime le calque sélectionné.
+Duplicate	PaintWindow		Dupliquer
+Duplicates the selected layer.	PaintWindow		Duplique le calque sélectionné.
 Edit	PaintWindow		Édition
 Empty paint window	PaintWindow		Fenêtre de dessin vide
 File	PaintWindow		Fichier
 Flip horizontally	PaintWindow		Inversement horizontal
 Flip vertically	PaintWindow		Inversement vertical
-Flips all layers horizontally.	PaintWindow		Inverse horizontallement tous les calques.
-Flips all layers vertically.	PaintWindow		Inverse verticallement tous les calques.
-Flips the active layer horizontally.	PaintWindow		Inverse horizontallement le calque actif.
-Flips the active layer vertically.	PaintWindow		Inverse verticallement le calque actif.
+Flips all layers horizontally.	PaintWindow		Inverse horizontalement tous les calques.
+Flips all layers vertically.	PaintWindow		Inverse verticalement tous les calques.
+Flips the active layer horizontally.	PaintWindow		Inverse horizontalement le calque actif.
+Flips the active layer vertically.	PaintWindow		Inverse verticalement le calque actif.
 Grow selection	PaintWindow		Agrandir la sélection
 Grows the selection in all directions.	PaintWindow		Agrandit la sélection dans toutes les directions.
 Height:	PaintWindow		Hauteur:
@@ -59,6 +61,8 @@ Invert selection	PaintWindow		Inverser la sélection
 Inverts the selection	PaintWindow		Inverse la sélection.
 Layer	PaintWindow		Calque
 Layers…	PaintWindow		Calques…
+Merge down	PaintWindow		Fusionner ver le bas
+Merges selected layer with the layer below.	PaintWindow		Fusionne le calque sélectionné avec celui en dessous.
 Moves all layers.	PaintWindow		Déplace tous les calques.
 Moves the active layer.	PaintWindow		Déplace le calque actif.
 New project…	PaintWindow		Nouveau projet…
@@ -137,6 +141,14 @@ Zoom in	PaintWindow		Zoom avant
 Zoom out	PaintWindow		Zoom arrière
 Zooms into the image.	PaintWindow		Zoom dans l'image.
 Zooms out from the image.	PaintWindow		Zoom en arrière de l'image.
+Add	LayerWindow		Ajouter
+Delete	LayerWindow		Supprimer
+Duplicate	LayerWindow		Dupliquer
+Layer	LayerWindow		Calque
+Layer transparency	LayerWindow		Transparence du calque
+Layers	LayerWindow		Calques
+Merge down	LayerWindow		Fusionner vers le bas
+Mode:	LayerWindow		Mode:
 Add area	Tools		Ajouter la zone
 Adjustable width	Tools		Largeur ajustable
 Adjusting the layer's transparency.	Tools		Ajustement de la transparence du calque.
@@ -152,33 +164,21 @@ Blue	Tools		Bleu
 Blur tool	Tools		Flou
 Blurring the image.	Tools		Floutage de l'image.
 Brush tool	Tools		Pinceau
-Center to corner	Tools		D'un coin à un autre
-Click to adjust the layer's transparency.	Tools		Cliquer pour ajuster la transparence du calque.
-Click to blur the image.	Tools		Cliquer pour flouter l'image.
-Click to draw a freehand line.	Tools		Cliquer pour dessiner une ligne à main levée.
-Click to draw a rectangle.	Tools		Cliquer pour dessiner un rectangle.
-Click to draw a straight line.	Tools		Cliquer pour dessigner une ligne droite.
-Click to draw an ellipse.	Tools		Cliquer pour dessiner une ellipse.
-Click to make a fill.	Tools		Cliquer pour faire un remplissage.
-Click to make a selection.	Tools		Cliquer pour faire une sélection.
-Click to paint with a brush.	Tools		Cliquer pour peindre avec un pinceau.
-Click to paint with a hairy brush.	Tools		Cliquer pour peindre avec un pinceau cheveux.
-Click to paint with airbrush.	Tools		Cliquer pour peindre avec aérographe.
-Click to pick a color.	Tools		Cliquer pour choisir une couleur.
+Center to corner	Tools		Du centre à un coin
 Click to place the text.	Tools		Cliquer pour placer le texte.
-Click to use eraser.	Tools		Cliquer pour utiliser la gomme.
 Click to use the tool.	Tools		Cliquer pour utiliser l'outil.
 Color picker tool	Tools		Outil de sélection couleur.
 Color variance:	Tools		Variance couleur:
 Continuous	Tools		Continu
 Corner to corner	Tools		D'un coin à un autre
 Drag the text to correct position and set its appearance.	Tools		Faire glisser le texte vers sa position correcte et choisir son apparence.
-Drawing a freehand line.	Tools		Dessin à main levée.
-Drawing a rectangle.	Tools		Dessin d'un rectangle.
-Drawing a straight line.	Tools		Dessin d'une ligne droite.
-Drawing an ellipse.	Tools		Dessin d'une ellipse.
+Drawing a freehand line.	Tools		Dessine à main levée.
+Drawing a rectangle.	Tools		Dessine un rectangle.
+Drawing a straight line.	Tools		Dessine une ligne droite.
+Drawing an ellipse.	Tools		Dessine une ellipse.
 Ellipse	Tools		Ellipse
-Ellipse tool	Tools		Ellipse
+Ellipse tool	Tools		Outil Ellipse
+Ellipse: SHIFT for circle	Tools		Ellipse: Maj pour un cercle
 Enable antialiasing	Tools		Activer l'anti-crénelage
 Enable gradient	Tools		Activer le dégradé
 Enable preview	Tools		Activer la prévisualisation
@@ -193,35 +193,37 @@ Flow:	Tools		Débit :
 Freehand	Tools		À main levée
 Freehand line tool	Tools		Outil ligne à main levée
 Green	Tools		Vert
-Hairs:	Tools		Poils:
-Hairy brush tool	Tools		Outil pinceau cheveux
+Hairs:	Tools		Poils :
+Hairy brush tool	Tools		Outil brosse
 Hardness:	Tools		Dureté :
 Hold shift key to snap to 45° angles	Tools		Maintenez la touche Maj enfoncée pour aimanter aux angles à 45°
 Intelligent scissors	Tools		Lasso magnétique
 Little	Tools		Peu
 Magic wand	Tools		Baguette magique
-Making a fill.	Tools		Remplissage.
+Making a fill.	Tools		Remplit.
 Making a selection.	Tools		Sélection.
 Mode	Tools		Mode
 Much	Tools		Beaucoup
 No configuration options available.	Tools		Aucune option de configuration disponible.
 None	Tools		Aucune
 Options	Tools		Préférences
-Painting with a brush.	Tools		Peinture avec un peinceau.
-Painting with a hairy brush.	Tools		Peinture avec un pinceau cheveux.
+Painting with a brush.	Tools		Peint avec un pinceau.
+Painting with a hairy brush.	Tools		Peint avec une brosse.
 Picking a color.	Tools		Choix d'une couleur.
 Random	Tools		Au hazard
 Rectangle	Tools		Rectangle
 Rectangle tool	Tools		Rectangle
+Rectangle: SHIFT for square	Tools		Rectangle: Maj pour un carré
 Red	Tools		Rouge
 Replace pixels with	Tools		Remplace des pixels avec
 Reset brush	Tools		Réinitialiser le pinceau
 Selection tool	Tools		Outil sélection
 Size:	Tools		Taille:
 Speed:	Tools		Vitesse:
-Spray	Tools		Aérographe
+Spray	Tools		Bombe
 Store brush	Tools		Sauver
 Straight line tool	Tools		Outil ligne droite
+Straight line: SHIFT locks 45° angles	Tools		Ligne droite: Maj fixe les angles à 45°
 Subtract area	Tools		Ôter la zone
 Text tool	Tools		Texte
 Tolerance:	Tools		Tolérance:
@@ -238,17 +240,10 @@ Cannot delete the only layer. Create another picture to get a fresh start.	Image
 Clear canvas	Image		Effacer l'image
 Clear layer	Image		Effacer le calque
 Delete layer	Image		Supprimer ce calque
-Merge with back layer	Image		Fusionner avec le calque inférieur
-Merge with front layer	Image		Fusionner avec le calque supérieur
+Merge down	Image		Fusionner vers le bas
+Merge with layer above	Image		Fusionner avec le calque supérieur
 OK	Image		D'accord
-Add layer behind	LayerView		Ajouter un calque derrière
-Add layer in front	LayerView		Ajouter un calque devant
-Delete layer	LayerView		Supprimer ce calque
-Duplicate layer	LayerView		Dupliquer ce calque
-Merge with back layer	LayerView		Fusionner avec le calque inférieur
-Merge with front layer	LayerView		Fusionner avec le calque supérieur
-Visible	LayerView		Visible
-Add-ons	Windows		Modules complémentaires
+Add-ons	Windows		Extensions
 Adjustable	Windows		Ajustable
 Application	Windows		Application
 Brush	Windows		Pinceau
@@ -280,6 +275,20 @@ Undo	Windows		Défaire
 Undo steps:	Windows		Nombre d'étapes annulables :
 Unlimited	Windows		Illimitée
 Windows	Windows		Fenêtres
+Alpha	ColorSliders	For color sliders	Alpha
+Black	ColorSliders	For CMYK color slider	Noir
+Blue	ColorSliders	For RGB color sliders	Bleu
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Paramètre a*
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Paramètre b*
+Cyan	ColorSliders	For CMYK color slider	Cyan
+Green	ColorSliders	For RGB color sliders	Vert
+Hue	ColorSliders	For HSV color slider	Teinte
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Clarté L*
+Magenta	ColorSliders	For CMYK color slider	Magenta
+Red	ColorSliders	For RGB color sliders	Rouge
+Saturation	ColorSliders	For HSV color slider	Saturation
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Valeur
+Yellow	ColorSliders	For CMYK color slider	Jaune
 Angle:	Manipulators		Angle :
 Bottom:	Manipulators		Bas :
 Change the transparency with the slider.	Manipulators		Changez la transparence avec le curseur.
@@ -332,9 +341,11 @@ Delete current set	ColorPalette		Effacer la palette courante
 Error reading file	ColorPalette		Échec à la lecture du fichier
 File structure corrupted	ColorPalette		Structure du fichier corrompue
 New color set	ColorPalette		Nouvelle palette
+Next color set	ColorPalette	In Color Palette window	Palette de couleurs suivante
 Not a color set file	ColorPalette		Ce n'est pas un fichier palette de couleurs
 OK	ColorPalette		D'accord
 Open color set…	ColorPalette		Ouvrir une palette…
+Previous color set	ColorPalette	In Color Palette window	Palette de couleurs précèdente
 Save color set	ColorPalette		Sauvegarder la palette
 ArtPaint: Save image	FilePanels		ArtPaint : Sauvegarder l'image
 Cancel	FilePanels		Annuler
@@ -349,8 +360,27 @@ Redo not available	UndoQueue		Pas de rétablissement
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Le mécanisme d'annulation a manqué de mémoire.\nLa profondeur d'annulation sera limitée de façon à garder en mémoire les évènements les plus récents. Il est conseillé de sauvegarder votre travail maintenant pour éviter toute perte de données en cas d'épuisement total de la mémoire.\nVous pourriez également ajuster la profondeur d'annulation dans la fenêtre de préférences.
 Undo	UndoQueue		Annuler
 Undo not available	UndoQueue		Pas d'annulation
-Click here to open color panel.	StatusView		Cliquez ici pour ouvrir le paneau de couleurs.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Cliquer sur l'image pour la faire pivoter, la déplacer ou l'étirer.
 Free 2D transform	FreeTransformManipulator		Transformation 2D libre
-Layers	LayerWindow		Calques
+Color burn	PixelOperations		Densité couleur +
+Color dodge	PixelOperations		Densité couleur -
+Darken	PixelOperations		Obscurcir
+Difference	PixelOperations		Différence
+Dissolve	PixelOperations		Fondu
+Divide	PixelOperations		Division
+Exclusion	PixelOperations		Exclusion
+Hard light	PixelOperations		Lumière crue
+Hard mix	PixelOperations		Mélange maximal
+Lighten	PixelOperations		Eclaircir
+Linear burn	PixelOperations		Densité linéaire +
+Linear dodge	PixelOperations		Densité linéaire -
+Linear light	PixelOperations		Lumière linéaire
+Multiply	PixelOperations		Produit
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Incrustation
+Pin light	PixelOperations		Lumière ponctuelle
+Screen	PixelOperations		Superposition
+Soft light	PixelOperations		Lumière tamisée
+Vivid light	PixelOperations		Lumière vive
+Left-click for color panel, right-click to switch colors.	StatusView		Clic gauche pour le panneau de couleurs, clic droit pour échanger les couleurs.
 Zoom	MagnificationView		Zoom

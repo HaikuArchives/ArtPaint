@@ -1,0 +1,11 @@
+1	Japanese	application/x-vnd.artpaint-addon	1495551387
+Adds a wave to the active layer.	AddOns_Wave		アクティブレイヤーに波を追加します。
+Click to set the wave center. Use the sliders to adjust wave.	AddOns_Wave		クリックして波の中心を設定、スライダーで波を調整します。
+Long	AddOns_Wave		長
+Mild	AddOns_Wave		中
+Short	AddOns_Wave		短
+Strength:	AddOns_Wave		強度:
+Strong	AddOns_Wave		強
+Wave	AddOns_Wave		波
+Wave…	AddOns_Wave		波…
+Wavelength:	AddOns_Wave		波長:

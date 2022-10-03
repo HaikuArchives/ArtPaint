@@ -1,4 +1,4 @@
-1	German	application/x-vnd.artpaint	183125306
+1	German	application/x-vnd.artpaint	3689499495
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
 Cancel	ImageView		Abbrechen
 Clear selection	ImageView		Auswahl aufheben
@@ -17,14 +17,12 @@ Shrink selection	ImageView		Auswahl verkleinern
 Unsaved changes!	ImageView		Ungespeicherte Änderungen!
 About ArtPaint	PaintWindow		Über ArtPaint…
 Active layer	PaintWindow		Aktive Ebene
-Add layer	PaintWindow		Ebene hinzufügen
+Add	PaintWindow		Hinzufügen
 Add-ons	PaintWindow		Filter
 Adds a layer to the top of this image.	PaintWindow		Fügt dem Bild eine Ebene hinzu.
 All layers	PaintWindow		Alle Ebenen
 Brushes…	PaintWindow		Stifte…
 Canvas	PaintWindow		Bild
-Change transparency…	PaintWindow		Transparenz ändern…
-Changes the transparency of active layer.	PaintWindow		Transparenz der aktuellen Ebene ändern.
 Clear canvas	PaintWindow		Bild löschen
 Clear layer	PaintWindow		Ebene löschen
 Clear selection	PaintWindow		Auswahl aufheben
@@ -43,6 +41,10 @@ Crops the image.	PaintWindow		Bild beschneiden.
 Cut	PaintWindow		Ausschneiden
 Cuts the selection from all layers to the clipboard.	PaintWindow		Schneidet die Auswahl aller Ebenen aus.
 Cuts the selection to the clipboard.	PaintWindow		Schneidet die Auswahl aus.
+Delete	PaintWindow		Entfernen
+Deletes the selected layer.	PaintWindow		Entfernt die ausgewählte Ebene.
+Duplicate	PaintWindow		Duplizieren
+Duplicates the selected layer.	PaintWindow		Dupliziert die ausgewählte Ebene.
 Edit	PaintWindow		Bearbeiten
 Empty paint window	PaintWindow		Leer Farbfenster
 File	PaintWindow		Datei
@@ -59,6 +61,8 @@ Invert selection	PaintWindow		Auswahl invertieren
 Inverts the selection	PaintWindow		Auswahl invertieren
 Layer	PaintWindow		Ebene
 Layers…	PaintWindow		Ebenen…
+Merge down	PaintWindow		Nach unten vereinigen
+Merges selected layer with the layer below.	PaintWindow		Vereinigt die ausgewählte Ebene mit der darunter.
 Moves all layers.	PaintWindow		Alle Ebenen verschieben.
 Moves the active layer.	PaintWindow		Aktuelle Ebene verschieben.
 New project…	PaintWindow		Neues Projekt…
@@ -137,6 +141,14 @@ Zoom in	PaintWindow		Vergrößern
 Zoom out	PaintWindow		Verkleinern
 Zooms into the image.	PaintWindow		Bilddarstellung vergrößern.
 Zooms out from the image.	PaintWindow		Bilddarstellung verkleinern.
+Add	LayerWindow		Hinzufügen
+Delete	LayerWindow		Entfernen
+Duplicate	LayerWindow		Duplizieren
+Layer	LayerWindow		Ebene
+Layer transparency	LayerWindow		Ebenen-Transparenz
+Layers	LayerWindow		Ebenen
+Merge down	LayerWindow		Nach unten vereinigen
+Mode:	LayerWindow		Modus:
 Add area	Tools		Bereich hinzufügen
 Adjustable width	Tools		Breite einstellbar
 Adjusting the layer's transparency.	Tools		Transparenz der Ebene ändern.
@@ -153,20 +165,7 @@ Blur tool	Tools		Unschärfe
 Blurring the image.	Tools		Unschärfe hinzufügen.
 Brush tool	Tools		Stift
 Center to corner	Tools		Mittelpunkt-Ecke
-Click to adjust the layer's transparency.	Tools		Klicken um die Transparenz der Ebene zu ändern.
-Click to blur the image.	Tools		Klicken um Unschärfe hinzuzufügen.
-Click to draw a freehand line.	Tools		Klicken um eine Freihandlinie zu zeichnen.
-Click to draw a rectangle.	Tools		Klicken um ein Rechteck zu zeichnen.
-Click to draw a straight line.	Tools		Klicken um eine Linie zu zeichnen.
-Click to draw an ellipse.	Tools		Klicken um eine Ellipse zu zeichnen.
-Click to make a fill.	Tools		Klicken um eine Fläche zu füllen.
-Click to make a selection.	Tools		Klicken um eine Auswahl zu markieren.
-Click to paint with a brush.	Tools		Klicken um mit dem Stift zu zeichnen.
-Click to paint with a hairy brush.	Tools		Klicken um mit dem Pinsel zu zeichnen.
-Click to paint with airbrush.	Tools		Klicken um mit dem Airbrush zu zeichnen.
-Click to pick a color.	Tools		Klicken um eine Farbe aufzunehmen.
 Click to place the text.	Tools		Klicken um Text zu plazieren.
-Click to use eraser.	Tools		Klicken um zu radieren.
 Click to use the tool.	Tools		Klicken um das Werkzeug zu benutzen.
 Color picker tool	Tools		Farbselektion
 Color variance:	Tools		Farbvarianz:
@@ -179,6 +178,7 @@ Drawing a straight line.	Tools		Linie zeichnen.
 Drawing an ellipse.	Tools		Ellipse zeichnen.
 Ellipse	Tools		Ellipse
 Ellipse tool	Tools		Ellipse
+Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT für Kreis
 Enable antialiasing	Tools		Anti-Aliasing
 Enable gradient	Tools		Farbverlauf
 Enable preview	Tools		Vorschau
@@ -213,6 +213,7 @@ Picking a color.	Tools		Farbe aufnehmen.
 Random	Tools		Zufall
 Rectangle	Tools		Rechteck
 Rectangle tool	Tools		Rechteck
+Rectangle: SHIFT for square	Tools		Rechteck: SHIFT für Quadrat
 Red	Tools		Rot
 Replace pixels with	Tools		Pixel ersetzen durch
 Reset brush	Tools		Stift zurücksetzen
@@ -222,6 +223,7 @@ Speed:	Tools		Stärke:
 Spray	Tools		Sprühdose
 Store brush	Tools		Stift speichern
 Straight line tool	Tools		Line
+Straight line: SHIFT locks 45° angles	Tools		Linie: SHIFT für 45° Winkel
 Subtract area	Tools		Bereich abziehen
 Text tool	Tools		Text
 Tolerance:	Tools		Toleranz:
@@ -238,16 +240,9 @@ Cannot delete the only layer. Create another picture to get a fresh start.	Image
 Clear canvas	Image		Bild löschen
 Clear layer	Image		Ebene löschen
 Delete layer	Image		Ebene entfernen
-Merge with back layer	Image		Mit hinterer Ebene vereinigen
-Merge with front layer	Image		Mit vorderer Ebene vereinigen
+Merge down	Image		Nach unten vereinigen
+Merge with layer above	Image		Mit Ebene darüber vereinigen
 OK	Image		OK
-Add layer behind	LayerView		Ebene dahinter hinzufügen
-Add layer in front	LayerView		Ebene davor hinzufügen
-Delete layer	LayerView		Ebene entfernen
-Duplicate layer	LayerView		Ebene duplizieren
-Merge with back layer	LayerView		Mit hinterer Ebene vereinigen
-Merge with front layer	LayerView		Mit vorderer Ebene vereinigen
-Visible	LayerView		Sichtbar
 Add-ons	Windows		Filter
 Adjustable	Windows		Einstellbar
 Application	Windows		Anwendung
@@ -280,6 +275,20 @@ Undo	Windows		Rückgängig
 Undo steps:	Windows		Anzahl:
 Unlimited	Windows		Unbegrenzt
 Windows	Windows		Fenster
+Alpha	ColorSliders	For color sliders	Alpha
+Black	ColorSliders	For CMYK color slider	Schwarz
+Blue	ColorSliders	For RGB color sliders	Blau
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanal a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanal b
+Cyan	ColorSliders	For CMYK color slider	Cyan
+Green	ColorSliders	For RGB color sliders	Grün
+Hue	ColorSliders	For HSV color slider	Farbton
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Helligkeit
+Magenta	ColorSliders	For CMYK color slider	Magenta
+Red	ColorSliders	For RGB color sliders	Rot
+Saturation	ColorSliders	For HSV color slider	Sättigung
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Helligkeit
+Yellow	ColorSliders	For CMYK color slider	Gelb
 Angle:	Manipulators		Winkel:
 Bottom:	Manipulators		Unten:
 Change the transparency with the slider.	Manipulators		Gewünschte Transparenz einstellen.
@@ -332,9 +341,11 @@ Delete current set	ColorPalette		Aktuellen Farbsatz entfernen
 Error reading file	ColorPalette		Lesen der Datei fehlgeschlagen
 File structure corrupted	ColorPalette		Dateistruktur beschädigt
 New color set	ColorPalette		Neu Farbsatz
+Next color set	ColorPalette	In Color Palette window	Nächster Farbsatz
 Not a color set file	ColorPalette		Keine Farbsatz-Datei
 OK	ColorPalette		OK
 Open color set…	ColorPalette		Farbsatz laden…
+Previous color set	ColorPalette	In Color Palette window	Voriger Farbsatz
 Save color set	ColorPalette		Farbsatz speichern…
 ArtPaint: Save image	FilePanels		ArtPaint: Bild speichern
 Cancel	FilePanels		Abbrechen
@@ -349,8 +360,27 @@ Redo not available	UndoQueue		Wiederholen nicht verfügbar
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Dem Rückgängig-Mechanismus ist der Speicher ausgegangen.\nDie Anzahl der Rückgängig-Schritte wird begrenzt, so dass die letzten Schritte im Speicher gehalten werden können. Es ist empfehlenswert das Projekt jetzt zu speichern, um nichts zu verlieren falls der Speicher komplett ausgeht.\nVielleicht sollte auch mal die Anzahl der rückgängig zu machenden Schritte in den Globalen Einstellungen erhöht werden...
 Undo	UndoQueue		Rückgängig
 Undo not available	UndoQueue		Rückgängig nicht verfügbar
-Click here to open color panel.	StatusView		Hier klicken um die Farbpalette zu öffnen.
 Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Zum Rotieren, Bewegen oder Dehnen ins Bild klicken.
 Free 2D transform	FreeTransformManipulator		Freie 2D Transformation
-Layers	LayerWindow		Ebenen
+Color burn	PixelOperations		Farbig abwedeln
+Color dodge	PixelOperations		Farbig nachbelichten
+Darken	PixelOperations		Abdunkeln
+Difference	PixelOperations		Differenz
+Dissolve	PixelOperations		Auflösen
+Divide	PixelOperations		Dividieren
+Exclusion	PixelOperations		Ausschluss
+Hard light	PixelOperations		Hartes Licht
+Hard mix	PixelOperations		Harter Mix
+Lighten	PixelOperations		Aufhellen
+Linear burn	PixelOperations		Linear abwedeln
+Linear dodge	PixelOperations		Linear nachbelichten
+Linear light	PixelOperations		Lineares Licht
+Multiply	PixelOperations		Multiplizieren
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Überlagern
+Pin light	PixelOperations		Lichtpunkt
+Screen	PixelOperations		Umgekehrt multiplizieren
+Soft light	PixelOperations		Weiches Licht
+Vivid light	PixelOperations		Strahlendes Licht
+Left-click for color panel, right-click to switch colors.	StatusView		Linksklick für Farbpalette, Rechtsklick um Farben zu tauschen
 Zoom	MagnificationView		Zoom
