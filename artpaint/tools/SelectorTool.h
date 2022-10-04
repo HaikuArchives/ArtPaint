@@ -74,6 +74,7 @@ private:
 			BRadioButton*			fSubstractArea;
 			BRadioButton*			fFreeLine;
 			BRadioButton*			fRectangle;
+			BRadioButton*			fEllipse;
 			BRadioButton*			fMagicWand;
 			BRadioButton*			fScissors;
 			NumberSliderControl*	fTolerance;

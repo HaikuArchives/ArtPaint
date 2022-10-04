@@ -25,11 +25,7 @@ BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
 	if (bitmap->ColorSpace() != B_RGB32)
 		return B_BAD_TYPE;
 
-
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} c;
+	union color_conversion c;
 
 	for (int32 i=0;i<bits_length;i++) {
 		c.word = *bits++;
@@ -50,14 +46,12 @@ BitmapUtilities::FixMissingAlpha(BBitmap *bitmap)
 }
 
 
-
 BBitmap*
 BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
 {
 	if (inBitmap->ColorSpace() == wantSpace) {
 		return inBitmap;
-	}
-	else if (wantSpace == B_RGBA32) {
+	} else if (wantSpace == B_RGBA32) {
 		switch (inBitmap->ColorSpace()) {
 			case B_RGB32:
 				return inBitmap;
@@ -71,10 +65,7 @@ BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
 				uint8 *in_bits = (uint8*)inBitmap->Bits();
 				int32 in_bpr = inBitmap->BytesPerRow();
 
-				union {
-					uint8 bytes[4];
-					uint32 word;
-				} c;
+				union color_conversion c;
 
 				c.bytes[3] = 0xff;
 
@@ -100,8 +91,45 @@ BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
 			default:
 				return NULL;
 		}
-	}
-	else {
+	} else if (wantSpace == B_GRAY8) {
+		switch (inBitmap->ColorSpace()) {
+			case B_GRAY8:
+				return inBitmap;
+
+			case B_RGBA32:
+			{
+				BBitmap* out_map = new BBitmap(inBitmap->Bounds(), wantSpace);
+				uint8* out_bits = (uint8*)out_map->Bits();
+				int32 out_bpr = out_map->BytesPerRow();
+
+				uint32 *in_bits = (uint32*)inBitmap->Bits();
+				int32 in_bpr = inBitmap->BytesPerRow()/4;
+
+				union color_conversion c;
+
+				out_map->LockBits();
+				uint32 pos = 0;
+				for (int32 y = 0; y < out_map->Bounds().IntegerHeight(); y++) {
+					for (int32 x = 0; x < out_map->Bounds().IntegerWidth(); x++) {
+						c.word = *(in_bits + x + y * in_bpr);
+						float alpha = (float)c.bytes[3] / 255.;
+						float value = 0.21 * ((float)c.bytes[2] / 255.) +
+							0.72 * ((float)c.bytes[1] / 255.) +
+							0.07 * ((float)c.bytes[0] / 255.);
+
+						*(out_bits + x + y * out_bpr) = (uint8)(value * alpha * 255);
+					}
+
+				}
+				out_map->UnlockBits();
+
+				return out_map;
+			}
+
+			default:
+				return NULL;
+		}
+	} else {
 		return NULL;
 	}
 }

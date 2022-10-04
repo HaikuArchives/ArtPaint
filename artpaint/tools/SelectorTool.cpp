@@ -13,6 +13,7 @@
 #include "SelectorTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
@@ -263,7 +264,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		view->Window()->Lock();
 		drawing_mode old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
-		view->StrokeRect(view->convertBitmapRectToView(new_rect));
+		view->StrokeRect(view->convertBitmapRectToView(new_rect), B_SOLID_LOW);
 		view->Window()->Unlock();
 
 		the_script->AddPoint(point);
@@ -271,8 +272,8 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		while (buttons) {
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
-				view->StrokeRect(view->convertBitmapRectToView(old_rect));
-				view->StrokeRect(view->convertBitmapRectToView(new_rect));
+				view->Draw(view->convertBitmapRectToView(old_rect));
+				view->StrokeRect(view->convertBitmapRectToView(new_rect), B_SOLID_LOW );
 				view->Window()->Unlock();
 
 				old_rect = new_rect;
@@ -290,7 +291,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		}
 		the_script->AddPoint(point);
 		view->Window()->Lock();
-		view->StrokeRect(view->convertBitmapRectToView(old_rect));
+		view->Draw(view->convertBitmapRectToView(old_rect));
 		view->SetDrawingMode(old_mode);
 		view->Window()->Unlock();
 
@@ -312,6 +313,53 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			int32(original_bitmap->Bounds().bottom),
 			drawer->GetPixel(original_point), original_point);
 		selection->AddSelection(selection_map,fToolSettings.mode == B_OP_ADD);
+		delete drawer;
+		delete selection_map;
+	} else if (fToolSettings.shape == HS_CIRCLE) {
+		BRect old_rect, new_rect;
+		old_rect = new_rect = BRect(point,point);
+		float left,top,right,bottom;
+		view->Window()->Lock();
+		drawing_mode old_mode = view->DrawingMode();
+		view->SetDrawingMode(B_OP_INVERT);
+		view->StrokeEllipse(view->convertBitmapRectToView(new_rect), B_SOLID_LOW);
+		view->Window()->Unlock();
+
+		the_script->AddPoint(point);
+
+		while (buttons) {
+			if (old_rect != new_rect) {
+				view->Window()->Lock();
+				view->Draw(view->convertBitmapRectToView(old_rect));
+				view->StrokeEllipse(view->convertBitmapRectToView(new_rect), B_SOLID_LOW);
+				view->Window()->Unlock();
+
+				old_rect = new_rect;
+			}
+			view->Window()->Lock();
+			view->getCoords(&point,&buttons,&view_point);
+			view->Window()->Unlock();
+
+			left = min_c(original_point.x,point.x);
+			top = min_c(original_point.y,point.y);
+			right = max_c(original_point.x,point.x);
+			bottom = max_c(original_point.y,point.y);
+			new_rect = BRect(BPoint(left,top),BPoint(right,bottom));
+			snooze(20 * 1000);
+		}
+		the_script->AddPoint(point);
+		view->Window()->Lock();
+		view->Draw(view->convertBitmapRectToView(old_rect));
+		view->SetDrawingMode(old_mode);
+		view->Window()->Unlock();
+
+		BBitmap* selection_map;
+		BBitmap* draw_map = new BBitmap(view->ReturnImage()->ReturnActiveBitmap()->Bounds(), B_RGBA32);
+		// We use a fill-tool to select the area:
+		BitmapDrawer *drawer = new BitmapDrawer(draw_map);
+		drawer->DrawEllipse(new_rect, 0xFFFFFFFF, TRUE, FALSE);
+		selection_map = BitmapUtilities::ConvertColorSpace(draw_map, B_GRAY8);
+		selection->AddSelection(selection_map, fToolSettings.mode == B_OP_ADD);
 		delete drawer;
 		delete selection_map;
 	}
@@ -645,6 +693,11 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 			new BRadioButton(B_TRANSLATE("Rectangle"),
 				new BMessage(*message));
 
+		message->ReplaceInt32("value", HS_CIRCLE);
+		fEllipse =
+			new BRadioButton(B_TRANSLATE("Ellipse"),
+				new BMessage(*message));
+
 		message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
 		fScissors =  new
 			BRadioButton(B_TRANSLATE("Intelligent scissors"),
@@ -676,6 +729,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFreeLine)
 				.Add(fRectangle)
+				.Add(fEllipse)
 				.Add(fScissors)
 				.Add(fMagicWand)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
@@ -698,6 +752,9 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_RECTANGLE)
 			fRectangle->SetValue(B_CONTROL_ON);
 
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CIRCLE)
+			fEllipse->SetValue(B_CONTROL_ON);
+
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_MAGIC_WAND)
 			fMagicWand->SetValue(B_CONTROL_ON);
 
@@ -716,6 +773,7 @@ SelectorToolConfigView::AttachedToWindow()
 	fSubstractArea->SetTarget(this);
 	fFreeLine->SetTarget(this);
 	fRectangle->SetTarget(this);
+	fEllipse->SetTarget(this);
 	fMagicWand->SetTarget(this);
 	fScissors->SetTarget(this);
 	fTolerance->SetTarget(this);
