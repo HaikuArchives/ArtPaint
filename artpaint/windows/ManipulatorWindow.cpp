@@ -46,12 +46,12 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 		server->GetApplicationSettings(&settings);
 		settings.FindInt32(skAddOnWindowFeel, (int32*)&feel);
 	}
-	SetFeel(feel);
+	//SetFeel(feel);
 
 	window_look look = B_FLOATING_WINDOW_LOOK;
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		look = B_TITLED_WINDOW_LOOK;
-	SetLook(look);
+	//SetLook(look);
 
 	AddToSubset(master);
 
