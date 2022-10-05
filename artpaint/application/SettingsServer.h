@@ -29,6 +29,7 @@ static const char skSettingsWindowTab[]			= "settings_window_tab";
 static const char skQuitConfirmMode[]			= "quit_confirm_mode";
 static const char skUndoQueueDepth[]			= "undo_queue_depth";
 static const char skPaletteColorMode[]			= "palette_color_mode";
+static const char skPaletteSelectedColor[]		= "palette_color_index";
 
 static const char skPrimaryColor[]				= "primary_color";
 static const char skSecondaryColor[]			= "secondary_color";
