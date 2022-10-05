@@ -251,6 +251,8 @@ ColorPaletteWindow::~ColorPaletteWindow()
 			false);
 		server->SetValue(SettingsServer::Application, skPaletteColorMode,
 			selector_mode);
+		server->SetValue(SettingsServer::Application, skPaletteSelectedColor,
+			ColorSet::currentSet()->currentColorIndex());
 	}
 
 	previous_set->RemoveSelf();
@@ -941,6 +943,9 @@ ColorPaletteWindow::showPaletteWindow(BMessage *msg)
 			server->GetApplicationSettings(&settings);
 			settings.FindRect(skPaletteWindowFrame, &frame);
 			settings.FindInt32(skPaletteColorMode, (int32*)&mode);
+			int32 color_index;
+			settings.FindInt32(skPaletteSelectedColor, (int32*)&color_index);
+			ColorSet::currentSet()->setCurrentColorIndex(color_index);
 		}
 
 		ColorPaletteWindow* window = new ColorPaletteWindow(frame, mode);
