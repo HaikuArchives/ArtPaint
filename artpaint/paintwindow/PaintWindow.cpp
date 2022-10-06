@@ -2012,12 +2012,14 @@ PaintWindow::_SaveProject(BMessage *message)
 void
 PaintWindow::writeAttributes(BNode& node)
 {
-	float zoom = 1;
-	BPoint point(0.0, 0.0);
+	float 	zoom = 1;
+	BPoint 	point(0.0, 0.0);
+	int32 	active_layer = 0;
 
 	if (fImageView && fImageView->LockLooper()) {
 		point = fImageView->LeftTop();
 		zoom = fImageView->getMagScale();
+		active_layer = fImageView->ReturnImage()->ReturnActiveLayerIndex();
 		fImageView->UnlockLooper();
 	}
 
@@ -2028,6 +2030,7 @@ PaintWindow::writeAttributes(BNode& node)
 	node.WriteAttr("ArtP:zoom_level", B_FLOAT_TYPE, 0, &zoom, sizeof(float));
 	node.WriteAttr("ArtP:frame_rect", B_RECT_TYPE, 0, &frame, sizeof(BRect));
 	node.WriteAttr("ArtP:view_position", B_POINT_TYPE, 0, &point, sizeof(BPoint));
+	node.WriteAttr("ArtP:active_layer", B_INT32_TYPE, 0, &active_layer, sizeof(int32));
 }
 
 
@@ -2058,6 +2061,13 @@ PaintWindow::ReadAttributes(const BNode& node)
 			MoveTo(frame.left, frame.top);
 			fSettings.ReplaceRect(skFrame, frame);
 			ResizeTo(frame.Width(), frame.Height());
+		}
+
+		int32 active_layer;
+		if (node.ReadAttr("ArtP:active_layer", B_INT32_TYPE, 0, &active_layer,
+			sizeof(int32)) == sizeof(int32)) {
+			if (fImageView)
+				fImageView->ReturnImage()->ChangeActiveLayer(active_layer);
 		}
 
 		Unlock();
