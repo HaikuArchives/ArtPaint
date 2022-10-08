@@ -59,27 +59,27 @@
 
 
 ImageView::ImageView(BRect frame, float width, float height)
-		: BView(frame,"image_view",B_FOLLOW_NONE,B_WILL_DRAW)
+	: BView(frame,"image_view", B_FOLLOW_NONE, B_WILL_DRAW)
 {
 	// Initialize the undo-queue
-	undo_queue = new UndoQueue(NULL,NULL,this);
+	undo_queue = new UndoQueue(NULL, NULL, this);
 
 // This will only be set once after reafing the prefs-file
 //	UndoQueue::SetQueueDepth(((PaintApplication*)be_app)->GlobalSettings()->undo_queue_depth);
 
 	// Initialize the image.
-	the_image = new Image(this,width,height,undo_queue);
+	the_image = new Image(this, width, height, undo_queue);
 	current_display_mode = FULL_RGB_DISPLAY_MODE;
 
 	// here set the magnify_scale for image
 	magnify_scale = 1.0;
 
 	// here we set the grid
-	setGrid(BPoint(0,0),1);
+	setGrid(BPoint(0, 0), 1);
 
 	// We are not yet inside any actions, so...
-	mouse_mutex = create_sem(1,"mouse_mutex");
-	action_semaphore = create_sem(1,"action_semaphore");
+	mouse_mutex = create_sem(1, "mouse_mutex");
+	action_semaphore = create_sem(1, "action_semaphore");
 
 	// Set the correct color for view (i.e. B_TRANSPARENT_32_BIT)
 	SetViewColor(B_TRANSPARENT_32_BIT);
@@ -89,8 +89,8 @@ ImageView::ImageView(BRect frame, float width, float height)
 	manipulator_finishing_message = NULL;
 
 	// Create an empty selection.
-	selection = new Selection(BRect(0,0,width-1,height-1));
-	selection->StartDrawing(this,magnify_scale);
+	selection = new Selection(BRect(0, 0, width - 1, height - 1));
+	selection->StartDrawing(this, magnify_scale);
 
 	cursor_mode = NORMAL_CURSOR_MODE;
 	manipulated_layers = HS_MANIPULATE_NO_LAYER;
@@ -117,7 +117,7 @@ ImageView::ImageView(BRect frame, float width, float height)
 
 	mag_scale_array_index = -1;	// This has not yet been decided
 
-	reference_point = BPoint(0,0);
+	reference_point = BPoint(0, 0);
 	use_reference_point = FALSE;
 
 	project_changed = 0;
@@ -157,7 +157,9 @@ ImageView::~ImageView()
 	delete_sem(action_semaphore);
 }
 
-void ImageView::AttachedToWindow()
+
+void
+ImageView::AttachedToWindow()
 {
 	// Set the type (dithered or full color).
 	BScreen screen(Window());
@@ -170,14 +172,17 @@ void ImageView::AttachedToWindow()
 	the_image->Render();
 
 	// Initialize the undo-queue
-	undo_queue->SetMenuItems(Window()->KeyMenuBar()->FindItem(HS_UNDO),Window()->KeyMenuBar()->FindItem(HS_REDO));
+	undo_queue->SetMenuItems(Window()->KeyMenuBar()->FindItem(HS_UNDO),
+		Window()->KeyMenuBar()->FindItem(HS_REDO));
 
 
 	// Make this view the focus-view (receives key-down events).
 	MakeFocus();
 }
 
-void ImageView::Draw(BRect updateRect)
+
+void
+ImageView::Draw(BRect updateRect)
 {
 	// copy image from bitmap to the part requiring updating
 
@@ -185,7 +190,7 @@ void ImageView::Draw(BRect updateRect)
 
 	BRegion a_region;
 	GetClippingRegion(&a_region);
-	for (int32 i=0;i<a_region.CountRects();i++) {
+	for (int32 i = 0; i < a_region.CountRects(); i++) {
 		BlitImage(convertViewRectToBitmap(a_region.RectAt(i) & updateRect));
 	}
 
@@ -197,33 +202,34 @@ void ImageView::Draw(BRect updateRect)
 
 	// finally Flush() after drawing asynchronously
 	Flush();
-
 }
 
 
-void ImageView::BlitImage(BRect bitmap_rect)
+void
+ImageView::BlitImage(BRect bitmap_rect)
 {
 	BRect image_rect;
 	float mag_scale = getMagScale();
 
-	BBitmap *source_bitmap;
-	if ((current_display_mode == FULL_RGB_DISPLAY_MODE) || (the_image->IsDitheredUpToDate() == FALSE))
+	BBitmap* source_bitmap;
+	if ((current_display_mode == FULL_RGB_DISPLAY_MODE) ||
+		(the_image->IsDitheredUpToDate() == FALSE))
 		source_bitmap = the_image->ReturnRenderedImage();
 	else
 		source_bitmap = the_image->ReturnDitheredImage();
 
 	if (mag_scale == 1.0) {
 		image_rect = bitmap_rect;
-		DrawBitmapAsync(source_bitmap,image_rect,bitmap_rect);
-	}
-	else if (mag_scale != 1.0) {
+		DrawBitmapAsync(source_bitmap, image_rect, bitmap_rect);
+	} else if (mag_scale != 1.0) {
 		image_rect = convertBitmapRectToView(bitmap_rect);
-		DrawBitmapAsync(source_bitmap,bitmap_rect,image_rect);
+		DrawBitmapAsync(source_bitmap, bitmap_rect, image_rect);
 	}
 }
 
 
-void ImageView::UpdateImage(BRect bitmap_rect)
+void
+ImageView::UpdateImage(BRect bitmap_rect)
 {
 	bitmap_rect = bitmap_rect & the_image->ReturnRenderedImage()->Bounds();
 	the_image->Render(bitmap_rect);
@@ -231,58 +237,61 @@ void ImageView::UpdateImage(BRect bitmap_rect)
 }
 
 
-void ImageView::DrawManipulatorGUI(bool blit_image)
+void
+ImageView::DrawManipulatorGUI(bool blit_image)
 {
-	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 	if (gui_manipulator != NULL) {
 		if (blit_image == TRUE) {
-			for (int32 i=0;i<region_drawn_by_manipulator.CountRects();i++) {
-				BlitImage(convertViewRectToBitmap(region_drawn_by_manipulator.RectAt(i)));
+			for (int32 i = 0; i < region_drawn_by_manipulator.CountRects(); i++) {
+				BlitImage(convertViewRectToBitmap(
+					region_drawn_by_manipulator.RectAt(i)));
 			}
 		}
 
-		region_drawn_by_manipulator = gui_manipulator->Draw(this,getMagScale());
-	}
-	else {
+		region_drawn_by_manipulator = gui_manipulator->Draw(this, getMagScale());
+	} else
 		region_drawn_by_manipulator = BRegion();
-	}
 }
 
 
-void ImageView::KeyDown(const char *bytes, int32 numBytes)
+void
+ImageView::KeyDown(const char* bytes, int32 numBytes)
 {
 	if (*bytes == B_LEFT_ARROW) {
 		BRect bounds = Bounds();
 		float delta = bounds.Width() / 2;
 		if (bounds.left - delta < 0) delta = bounds.left;
 		ScrollBy(-delta, 0);
-	}
-	else if (*bytes == B_UP_ARROW) {
+	} else if (*bytes == B_UP_ARROW) {
 		BRect bounds = Bounds();
 		float delta = bounds.Height() / 2;
 		if (bounds.top - delta < 0) delta = bounds.top;
 		ScrollBy(0, -delta);
-	}
-	else if (*bytes == B_RIGHT_ARROW) {
+	} else if (*bytes == B_RIGHT_ARROW) {
 		BRect bounds = Bounds();
 		float delta = bounds.Width() / 2;
-		BRect bitmap_rect = convertBitmapRectToView(the_image->ReturnRenderedImage()->Bounds());
-		if (bounds.right + delta > bitmap_rect.right) delta = bitmap_rect.right - bounds.right;
+		BRect bitmap_rect =
+			convertBitmapRectToView(the_image->ReturnRenderedImage()->Bounds());
+		if (bounds.right + delta > bitmap_rect.right)
+			delta = bitmap_rect.right - bounds.right;
 		ScrollBy(delta, 0);
-	}
-	else if (*bytes == B_DOWN_ARROW) {
+	} else if (*bytes == B_DOWN_ARROW) {
 		BRect bounds = Bounds();
 		float delta = bounds.Height() / 2;
-		BRect bitmap_rect = convertBitmapRectToView(the_image->ReturnRenderedImage()->Bounds());
-		if (bounds.bottom + delta > bitmap_rect.bottom) delta = bitmap_rect.bottom - bounds.bottom;
+		BRect bitmap_rect = convertBitmapRectToView(
+			the_image->ReturnRenderedImage()->Bounds());
+		if (bounds.bottom + delta > bitmap_rect.bottom)
+			delta = bitmap_rect.bottom - bounds.bottom;
 		ScrollBy(0, delta);
-	}
-	else if (fManipulator == NULL) {
-		ToolManager::Instance().KeyDown(this,bytes,numBytes);
+	} else if (fManipulator == NULL) {
+		ToolManager::Instance().KeyDown(this, bytes, numBytes);
 	}
 }
 
-void ImageView::MessageReceived(BMessage *message)
+
+void
+ImageView::MessageReceived(BMessage* message)
 {
 	BMessage message_to_window;
 	BMessage message_to_app;
@@ -290,19 +299,20 @@ void ImageView::MessageReceived(BMessage *message)
 	// here check what the message is all about and initiate proper action
 	switch (message->what) {
 		// This comes from layer's view and tells us to change the active layer.
-		case HS_LAYER_ACTIVATED:
+		case HS_LAYER_ACTIVATED: {
 			// Only change the layer if we can acquire the action_semaphore.
-			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
+			if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
 				int32 activated_layer_id;
-				Layer *activated_layer;
-				message->FindInt32("layer_id",&activated_layer_id);
-				message->FindPointer("layer_pointer",(void**)&activated_layer);
-				if (the_image->ChangeActiveLayer(activated_layer,activated_layer_id) == TRUE)
+				Layer* activated_layer;
+				message->FindInt32("layer_id", &activated_layer_id);
+				message->FindPointer("layer_pointer", (void**)&activated_layer);
+				if (the_image->ChangeActiveLayer(activated_layer,
+					activated_layer_id) == TRUE)
 					ActiveLayerChanged();
 
 				release_sem(action_semaphore);
 			}
-			break;
+		} break;
 
 		case HS_ZOOM_IMAGE_IN: {
 			if (mag_scale_array_index == -1) {
@@ -312,13 +322,12 @@ void ImageView::MessageReceived(BMessage *message)
 					&& (mag_scale_array[mag_scale_array_index] <= magnify_scale)) {
 					mag_scale_array_index++;
 				}
-			} else {
+			} else
 				mag_scale_array_index = min_c(mag_scale_array_index + 1,
 					mag_scale_array_length - 1);
-			}
 
 			setMagScale(mag_scale_array[mag_scale_array_index]);
-		}	break;
+		} break;
 
 		case HS_ZOOM_IMAGE_OUT: {
 			if (mag_scale_array_index == -1) {
@@ -328,12 +337,11 @@ void ImageView::MessageReceived(BMessage *message)
 					&& (mag_scale_array[mag_scale_array_index] >= magnify_scale)) {
 					mag_scale_array_index--;
 				}
-			} else {
+			} else
 				mag_scale_array_index = max_c(mag_scale_array_index - 1, 0);
-			}
 
 			setMagScale(mag_scale_array[mag_scale_array_index]);
-		}	break;
+		} break;
 
 		case HS_SET_MAGNIFYING_SCALE: {
 			mag_scale_array_index = -1;
@@ -342,19 +350,19 @@ void ImageView::MessageReceived(BMessage *message)
 				setMagScale(newMagScale);
 				((PaintWindow*)Window())->displayMag(newMagScale);
 			} else {
-				void *source;
+				void* source;
 				if (message->FindPointer("source", &source) == B_OK) {
-					BSlider *slider = static_cast<BSlider*> (source);
+					BSlider* slider = static_cast<BSlider*>(source);
 					if (slider == NULL)
 						break;
 
-					// Convert nonlinear from [10,1600] -> [0.1,16]
-					float scale = (pow(10.0, (slider->Value() - 10.0) / 1590.0)
-						- 1.0) * (15.9 / 9.0) + 0.1;
+					// Convert nonlinear from [10, 1600] -> [0.1, 16]
+					float scale = (pow(10.0, (slider->Value() - 10.0) /
+						1590.0) - 1.0) * (15.9 / 9.0) + 0.1;
 					setMagScale(scale);
 				}
 			}
-		}	break;
+		} break;
 
 		case HS_GRID_ADJUSTED: {
 			BPoint origin;
@@ -365,45 +373,49 @@ void ImageView::MessageReceived(BMessage *message)
 					grid_origin = origin;
 				}
 			}
-		}	break;
+		} break;
 
 		case HS_LAYER_TRANSPARENCY_CHANGED:
-		case HS_LAYER_BLEND_MODE_CHANGED:
+		case HS_LAYER_BLEND_MODE_CHANGED: {
 			the_image->Render();
 			Invalidate();
-			break;
+		} break;
 
 		// This comes from layer's view and tells us to change the visibility for that layer.
-		case HS_LAYER_VISIBILITY_CHANGED:
+		case HS_LAYER_VISIBILITY_CHANGED: {
 			int32 changed_layer_id;
-			Layer *changed_layer;
-			message->FindInt32("layer_id",&changed_layer_id);
-			message->FindPointer("layer_pointer",(void**)&changed_layer);
-			if (the_image->ToggleLayerVisibility(changed_layer,changed_layer_id) == TRUE) {
+			Layer* changed_layer;
+			message->FindInt32("layer_id", &changed_layer_id);
+			message->FindPointer("layer_pointer", (void**)&changed_layer);
+			if (the_image->ToggleLayerVisibility(changed_layer,
+				changed_layer_id) == TRUE) {
 				Invalidate();
 				AddChange();	// Is this really necessary?
 			}
-			break;
+		} break;
 
 		// This comes from layer's view and tells us to move layer to another position in the list.
-		case HS_LAYER_POSITION_CHANGED:
+		case HS_LAYER_POSITION_CHANGED: {
+			int32 changed_layer_id;
 			int32 positions_moved;
-			message->FindInt32("layer_id",&changed_layer_id);
-			message->FindPointer("layer_pointer",(void**)&changed_layer);
-			message->FindInt32("positions_moved",&positions_moved);
-			if (the_image->ChangeLayerPosition(changed_layer,changed_layer_id,positions_moved) == TRUE) {
+			Layer* changed_layer;
+			message->FindInt32("layer_id", &changed_layer_id);
+			message->FindPointer("layer_pointer", (void**)&changed_layer);
+			message->FindInt32("positions_moved", &positions_moved);
+			if (the_image->ChangeLayerPosition(changed_layer, changed_layer_id,
+				positions_moved) == TRUE) {
 				Invalidate();
 				AddChange();
 			}
-			break;
+		} break;
 
 		// This comes from layer's view and tells us to delete the layer.
-		case HS_DELETE_LAYER:
+		case HS_DELETE_LAYER: {
 			if (!PostponeMessageAndFinishManipulator()) {
-				Layer *removed_layer;
+				Layer* removed_layer;
 				int32 removed_layer_id;
-				message->FindInt32("layer_id",&removed_layer_id);
-				message->FindPointer("layer_pointer",(void**)&removed_layer);
+				message->FindInt32("layer_id", &removed_layer_id);
+				message->FindPointer("layer_pointer", (void**)&removed_layer);
 				if (removed_layer == NULL) {
 					removed_layer = the_image->ReturnActiveLayer();
 					if (removed_layer)
@@ -421,18 +433,18 @@ void ImageView::MessageReceived(BMessage *message)
 					Invalidate();
 				}
 			}
-			break;
+		} break;
 
 		// This comes from layer's view and tells us to merge that layer with the one
 		// that is on top of it. If no layer is on top of it nothing should be done.
 		// The merged layer will then be made visible if necessary. But the active layer
 		// stays the same unless one of the merged layers was the active layer
-		case HS_MERGE_WITH_UPPER_LAYER:
+		case HS_MERGE_WITH_UPPER_LAYER: {
 			if (!PostponeMessageAndFinishManipulator()) {
-				Layer *merged_layer;
+				Layer* merged_layer;
 				int32 merged_layer_id;
-				message->FindInt32("layer_id",&merged_layer_id);
-				message->FindPointer("layer_pointer",(void**)&merged_layer);
+				message->FindInt32("layer_id", &merged_layer_id);
+				message->FindPointer("layer_pointer", (void**)&merged_layer);
 				if (the_image->MergeLayers(merged_layer, merged_layer_id,
 					TRUE) == TRUE) {
 					LayerWindow::ActiveWindowChanged(Window(),
@@ -442,18 +454,18 @@ void ImageView::MessageReceived(BMessage *message)
 					AddChange();
 				}
 			}
-			break;
+		} break;
 
 		// This comes from layer's view and tells us to merge that layer with the one
 		// that is under it. If no layer is under it nothing should be done.
 		// The merged layer will then be made visible if necessary. But the active layer
 		// stays the same unless one of the merged layers was the active layer
-		case HS_MERGE_WITH_LOWER_LAYER:
+		case HS_MERGE_WITH_LOWER_LAYER: {
 			if (!PostponeMessageAndFinishManipulator()) {
-				Layer *merged_layer;
+				Layer* merged_layer;
 				int32 merged_layer_id;
-				message->FindInt32("layer_id",&merged_layer_id);
-				message->FindPointer("layer_pointer",(void**)&merged_layer);
+				message->FindInt32("layer_id", &merged_layer_id);
+				message->FindPointer("layer_pointer", (void**)&merged_layer);
 				if (merged_layer == NULL) {
 					merged_layer = the_image->ReturnActiveLayer();
 					if (merged_layer)
@@ -470,18 +482,41 @@ void ImageView::MessageReceived(BMessage *message)
 					}
 				}
 			}
-			break;
+		} break;
 
 		case HS_ADD_LAYER_FRONT:
-		case HS_ADD_LAYER_BEHIND:
-			{
-				Layer *other_layer;
-				message->FindPointer("layer_pointer",(void**)&other_layer);
-				if (other_layer == NULL)
-					other_layer = the_image->ReturnActiveLayer();
-				try {
-					the_image->AddLayer(NULL, other_layer,
-						message->what == HS_ADD_LAYER_FRONT);
+		case HS_ADD_LAYER_BEHIND: {
+			Layer* other_layer;
+			message->FindPointer("layer_pointer", (void**)&other_layer);
+			if (other_layer == NULL)
+				other_layer = the_image->ReturnActiveLayer();
+			try {
+				the_image->AddLayer(NULL, other_layer,
+					message->what == HS_ADD_LAYER_FRONT);
+				LayerWindow::ActiveWindowChanged(Window(),
+					the_image->LayerList(),
+					the_image->ReturnThumbnailImage());
+				ActiveLayerChanged();
+				Invalidate();
+				AddChange();
+			} catch (std::bad_alloc) {
+				ShowAlert(CANNOT_ADD_LAYER_ALERT);
+			}
+		} break;
+
+		case HS_DUPLICATE_LAYER: {
+			Layer* duplicated_layer;
+			int32 duplicated_layer_id;
+			message->FindInt32("layer_id", &duplicated_layer_id);
+			message->FindPointer("layer_pointer", (void**)&duplicated_layer);
+			if (duplicated_layer == NULL) {
+				duplicated_layer = the_image->ReturnActiveLayer();
+				if (duplicated_layer)
+					duplicated_layer_id = duplicated_layer->Id();
+			}
+			try {
+				if (the_image->DuplicateLayer(duplicated_layer,
+					duplicated_layer_id) == TRUE) {
 					LayerWindow::ActiveWindowChanged(Window(),
 						the_image->LayerList(),
 						the_image->ReturnThumbnailImage());
@@ -489,48 +524,20 @@ void ImageView::MessageReceived(BMessage *message)
 					Invalidate();
 					AddChange();
 				}
-				catch (std::bad_alloc){
-					ShowAlert(CANNOT_ADD_LAYER_ALERT);
-				}
-				break;
+			} catch (std::bad_alloc e) {
+				ShowAlert(CANNOT_ADD_LAYER_ALERT);
 			}
+		} break;
 
-		case HS_DUPLICATE_LAYER:
-			{
-				Layer *duplicated_layer;
-				int32 duplicated_layer_id;
-				message->FindInt32("layer_id",&duplicated_layer_id);
-				message->FindPointer("layer_pointer",(void**)&duplicated_layer);
-				if (duplicated_layer == NULL) {
-					duplicated_layer = the_image->ReturnActiveLayer();
-					if (duplicated_layer)
-						duplicated_layer_id = duplicated_layer->Id();
-				}
-				try {
-					if (the_image->DuplicateLayer(duplicated_layer,
-						duplicated_layer_id) == TRUE) {
-						LayerWindow::ActiveWindowChanged(Window(),
-							the_image->LayerList(),
-							the_image->ReturnThumbnailImage());
-						ActiveLayerChanged();
-						Invalidate();
-						AddChange();
-					}
-				}
-				catch (std::bad_alloc e) {
-					ShowAlert(CANNOT_ADD_LAYER_ALERT);
-				}
-				break;
-			}
 		// This comes when a layer's miniature image is dragged on the view.
 		// We should copy the image from that layer and add it to this image.
-		case HS_LAYER_DRAGGED:
+		case HS_LAYER_DRAGGED: {
 			if (message->WasDropped()) {
-				BBitmap *to_be_copied;
+				BBitmap* to_be_copied;
 				if (message->FindPointer("layer_bitmap",
 					(void**)&to_be_copied) == B_OK) {
 					try {
-						BBitmap *new_bitmap = new BBitmap(to_be_copied);
+						BBitmap* new_bitmap = new BBitmap(to_be_copied);
 						if (the_image->AddLayer(new_bitmap, NULL,
 							TRUE) != NULL) {
 							Invalidate();
@@ -539,21 +546,23 @@ void ImageView::MessageReceived(BMessage *message)
 								the_image->ReturnThumbnailImage());
 							AddChange();
 						}
-					}
-					catch (std::bad_alloc) {
+					} catch (std::bad_alloc) {
 						ShowAlert(CANNOT_ADD_LAYER_ALERT);
 					}
 				}
 			}
-			break;
+		} break;
 
 		// this comes from menubar->"Edit"->"Invert Selection", we should then invert the
 		// selected area and redisplay it
-		case HS_INVERT_SELECTION:
+		case HS_INVERT_SELECTION: {
 			if (!fManipulator) {
 				selection->Invert();
-				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Invert selection"),the_image->ReturnThumbnailImage());
+				if (!(*undo_queue->ReturnSelectionData() ==
+					*selection->ReturnSelectionData())) {
+					UndoEvent* new_event =
+						undo_queue->AddUndoEvent(B_TRANSLATE("Invert selection"),
+							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -562,15 +571,18 @@ void ImageView::MessageReceived(BMessage *message)
 
 				Invalidate();
 			}
-			break;
+		} break;
 
 		// this comes from menubar->"Edit"->"Clear Selection", we should then clear the
 		// selection and redisplay the image
-		case HS_CLEAR_SELECTION:
+		case HS_CLEAR_SELECTION: {
 			if (!fManipulator) {
 				selection->Clear();
-				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear selection"),the_image->ReturnThumbnailImage());
+				if (!(*undo_queue->ReturnSelectionData() ==
+					*selection->ReturnSelectionData())) {
+					UndoEvent* new_event =
+						undo_queue->AddUndoEvent(B_TRANSLATE("Clear selection"),
+							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -578,13 +590,16 @@ void ImageView::MessageReceived(BMessage *message)
 				}
 				Invalidate();
 			}
-			break;
+		} break;
 
-		case HS_GROW_SELECTION:
+		case HS_GROW_SELECTION: {
 			if (!fManipulator) {
 				selection->Dilatate();
-				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),the_image->ReturnThumbnailImage());
+				if (!(*undo_queue->ReturnSelectionData() ==
+					*selection->ReturnSelectionData())) {
+					UndoEvent* new_event =
+						undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),
+							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -592,13 +607,16 @@ void ImageView::MessageReceived(BMessage *message)
 				}
 				Invalidate();
 			}
-			break;
+		} break;
 
-		case HS_SHRINK_SELECTION:
+		case HS_SHRINK_SELECTION: {
 			if (!fManipulator) {
 				selection->Erode();
-				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Shrink selection"),the_image->ReturnThumbnailImage());
+				if (!(*undo_queue->ReturnSelectionData() ==
+					*selection->ReturnSelectionData())) {
+					UndoEvent* new_event =
+						undo_queue->AddUndoEvent(B_TRANSLATE("Shrink selection"),
+							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -606,12 +624,12 @@ void ImageView::MessageReceived(BMessage *message)
 				}
 				Invalidate();
 			}
-			break;
+		} break;
 
 		// this comes from menubar->"Canvas"->"Clear Canvas", we should then clear all the
 		// layers and recalculate the composite picture and redisplay
-		case HS_CLEAR_CANVAS:
-			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
+		case HS_CLEAR_CANVAS: {
+			if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
 				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
 				if (the_image->ClearLayers(c) == TRUE) {
 					Invalidate();
@@ -619,12 +637,12 @@ void ImageView::MessageReceived(BMessage *message)
 				}
 				release_sem(action_semaphore);
 			}
-			break;
+		} break;
 
 		// This comes from menubar->"Layer"->"Clear Layer". We should clear the layer, recalculate
 		// the composite picture and redisplay the image.
-		case HS_CLEAR_LAYER:
-			if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
+		case HS_CLEAR_LAYER: {
+			if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
 				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
 				if (the_image->ClearCurrentLayer(c) == TRUE) {
 					Invalidate();
@@ -632,40 +650,36 @@ void ImageView::MessageReceived(BMessage *message)
 				}
 				release_sem(action_semaphore);
 			}
-			break;
+		} break;
 
 		case B_COPY:
-		case B_CUT:
-			{
-				if (!fManipulator) {
-					int32 copied_layers;
-					if (message->FindInt32("layers",&copied_layers) == B_OK) {
-						DoCopyOrCut(copied_layers,message->what == B_CUT);
-					}
+		case B_CUT: {
+			if (!fManipulator) {
+				int32 copied_layers;
+				if (message->FindInt32("layers", &copied_layers) == B_OK) {
+					DoCopyOrCut(copied_layers, message->what == B_CUT);
 				}
-				break;
 			}
+		} break;
 
-		case B_PASTE:
+		case B_PASTE: {
 			if (!fManipulator)
 				DoPaste();
-			break;
+		} break;
 
-		case HS_UNDO:
+		case HS_UNDO: {
 			if (!fManipulator)
 				Undo();
 			else
 				PostponeMessageAndFinishManipulator();
+		} break;
 
-			break;
-
-		case HS_REDO:
+		case HS_REDO: {
 			if (!fManipulator)
 				Redo();
 			else
 				PostponeMessageAndFinishManipulator();
-
-			break;
+		} break;
 
 		case HS_START_MANIPULATOR: {
 			if (PostponeMessageAndFinishManipulator())
@@ -682,10 +696,11 @@ void ImageView::MessageReceived(BMessage *message)
 
 				fManipulator = server->ManipulatorFor((manipulator_type)manip_type,
 					add_on_id);
-				status_t err = message->FindInt32("layers",&manipulated_layers);
+				status_t err = message->FindInt32("layers", &manipulated_layers);
 				if ((err == B_OK) && (fManipulator != NULL)) {
-					GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
-					ImageAdapter *adapter = cast_as(fManipulator,ImageAdapter);
+					GUIManipulator* gui_manipulator = cast_as(fManipulator,
+						GUIManipulator);
+					ImageAdapter* adapter = cast_as(fManipulator, ImageAdapter);
 					if (adapter != NULL)
 						adapter->SetImage(the_image);
 
@@ -700,14 +715,16 @@ void ImageView::MessageReceived(BMessage *message)
 						// and only after that open the GUI for the manipulator.
 						if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
 							gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
-						}
-						else {
+						} else
 							gui_manipulator->SetPreviewBitmap(the_image->ReturnRenderedImage());
-						}
-						//StatusBarGUIManipulator *status_bar_gui_manipulator = cast_as(gui_manipulator,StatusBarGUIManipulator);
-						WindowGUIManipulator *window_gui_manipulator = cast_as(gui_manipulator,WindowGUIManipulator);
 
-						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),HS_TOOL_HELP_MESSAGE);
+						// StatusBarGUIManipulator* status_bar_gui_manipulator =
+						//	cast_as(gui_manipulator, StatusBarGUIManipulator);
+						WindowGUIManipulator* window_gui_manipulator =
+							cast_as(gui_manipulator, WindowGUIManipulator);
+
+						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),
+							HS_TOOL_HELP_MESSAGE);
 						if (window_gui_manipulator != NULL) {
 							char window_name[256];
 							sprintf(window_name, "%s: %s",
@@ -738,13 +755,12 @@ void ImageView::MessageReceived(BMessage *message)
 							window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED, this);
 					}
 				}
-			}
-			catch (std::bad_alloc) {
+			} catch (std::bad_alloc) {
 				ShowAlert(CANNOT_START_MANIPULATOR_ALERT);
 				delete fManipulator;
 				fManipulator = NULL;
 			}
-		}	break;
+		} break;
 
 		case HS_MANIPULATOR_FINISHED: {
 			// First find whether the manipulator finished cancelling or OKing.
@@ -781,38 +797,40 @@ void ImageView::MessageReceived(BMessage *message)
 			SetCursor();
 			// changes the help-string
 			ToolManager::Instance().NotifyViewEvent(this, TOOL_ACTIVATED);
-		}	break;
+		} break;
 
-		case HS_MANIPULATOR_ADJUSTING_STARTED: {
-		case HS_MANIPULATOR_ADJUSTING_FINISHED:
+		case HS_MANIPULATOR_ADJUSTING_STARTED:
+		case HS_MANIPULATOR_ADJUSTING_FINISHED: {
 			continue_manipulator_updating = false;
 			if (message->what == HS_MANIPULATOR_ADJUSTING_STARTED)
 				continue_manipulator_updating = true;
 			start_thread(MANIPULATOR_UPDATER_THREAD);
-		}	break;
+		} break;
 
 		default: {
 			BView::MessageReceived(message);
-		}	break;
+		} break;
 	}
 }
 
-void ImageView::MouseDown(BPoint view_point)
+
+void
+ImageView::MouseDown(BPoint view_point)
 {
 	// From this function we call view-manipulator's MouseDown-function.
 	// It will be the correct function depending on what manipulator is
 	// in use currently.
 
 	// here read the modifier keys
-	BMessage *message = Window()->CurrentMessage();
-	//int32 modifiers = message->FindInt32("modifiers");
+	BMessage* message = Window()->CurrentMessage();
+	// int32 modifiers = message->FindInt32("modifiers");
 
 	// here we read which mousebutton was pressed
 	uint32 buttons = message->FindInt32("buttons");
 
 	// The window activation should probably be made a user preference.
 	// Also backgroundview should activate the window if the user wants it.
-//	// activate the window if necessary
+	// activate the window if necessary
 	if (Window()->IsActive() == FALSE)
 		Window()->Activate(TRUE);
 
@@ -821,53 +839,51 @@ void ImageView::MouseDown(BPoint view_point)
 		MakeFocus(true);
 
 	// try to acquire the mouse_mutex
-	if (acquire_sem_etc(mouse_mutex,1,B_TIMEOUT,0) == B_OK) {
-		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
-		if (gui_manipulator != NULL) {
+	if (acquire_sem_etc(mouse_mutex, 1, B_TIMEOUT, 0) == B_OK) {
+		GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
+		if (gui_manipulator != NULL)
 			start_thread(MANIPULATOR_MOUSE_THREAD);
-		}
-		else if (fManipulator == NULL){
+		else if (fManipulator == NULL) {
 			if (buttons & B_SECONDARY_MOUSE_BUTTON) {
-				BMenuItem *item = ToolManager::Instance().ToolPopUpMenu()->Go(ConvertToScreen(view_point));
+				BMenuItem* item =
+					ToolManager::Instance().
+						ToolPopUpMenu()->Go(ConvertToScreen(view_point));
 				if (item != NULL) {
 					ToolManager::Instance().ChangeTool(item->Command());
 					SetCursor();	// If the tool changes, the cursor should change too.
 				}
 				release_sem(mouse_mutex);
-			}
-			else if (buttons & B_TERTIARY_MOUSE_BUTTON) {
-				BPoint point,prev_point;
+			} else if (buttons & B_TERTIARY_MOUSE_BUTTON) {
+				BPoint point, prev_point;
 				uint32 buttons;
-				GetMouse(&point,&buttons);
+				GetMouse(&point, &buttons);
 				while (buttons) {
 					prev_point = point;
-					GetMouse(&point,&buttons);
-					ScrollBy(point.x-prev_point.x,point.y-prev_point.y);
+					GetMouse(&point, &buttons);
+					ScrollBy(point.x - prev_point.x, point.y - prev_point.y);
 					snooze(25 * 1000);
 				}
 				release_sem(mouse_mutex);
-			}
-			else {
+			} else
 				start_thread(PAINTER_THREAD);
-			}
-		}
-		else {
+		} else
 			release_sem(mouse_mutex);
-		}
-	}
-	else {
+	} else {
 		if (fManipulator == NULL) {
 			BPoint bitmap_point;
 			uint32 buttons;
-			getCoords(&bitmap_point,&buttons,&view_point);
+			getCoords(&bitmap_point, &buttons, &view_point);
 			int32 clicks;
-			if (Window()->CurrentMessage()->FindInt32("clicks",&clicks) == B_OK)
-				ToolManager::Instance().MouseDown(this,view_point,bitmap_point,buttons,clicks);
+			if (Window()->CurrentMessage()->FindInt32("clicks", &clicks) == B_OK)
+				ToolManager::Instance().MouseDown(this,
+					view_point, bitmap_point, buttons, clicks);
 		}
 	}
 }
 
-void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message)
+
+void
+ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage* message)
 {
 	// here we will display the coordinates
 	// we will also change the cursor whenever mouse enters the view or leaves it
@@ -877,14 +893,15 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 		if ((transit == B_ENTERED_VIEW) || (transit == B_EXITED_VIEW)) {
 			if (fManipulator == NULL) {
 				if (transit == B_ENTERED_VIEW)
-					ToolManager::Instance().NotifyViewEvent(this,CURSOR_ENTERED_VIEW);
+					ToolManager::Instance().NotifyViewEvent(this,
+						CURSOR_ENTERED_VIEW);
 				else
-					ToolManager::Instance().NotifyViewEvent(this,CURSOR_EXITED_VIEW);
+					ToolManager::Instance().NotifyViewEvent(this,
+						CURSOR_EXITED_VIEW);
 			}
 			SetCursor();
 		}
-	}
-	else {
+	} else {
 		if (message->what == HS_LAYER_DRAGGED) {
 			BMessage help_view_message;
 
@@ -892,11 +909,10 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 				help_view_message.what = HS_TEMPORARY_HELP_MESSAGE;
 				help_view_message.AddString("message",
 					B_TRANSLATE("Drop layer to copy it to this image."));
-				Window()->PostMessage(&help_view_message,Window());
-			}
-			else if (transit == B_EXITED_VIEW) {
+				Window()->PostMessage(&help_view_message, Window());
+			} else if (transit == B_EXITED_VIEW) {
 				help_view_message.what = HS_TOOL_HELP_MESSAGE;
-				Window()->PostMessage(&help_view_message,Window());
+				Window()->PostMessage(&help_view_message, Window());
 			}
 		}
 	}
@@ -909,13 +925,14 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 		where = roundToGrid(where);
 
 		// Here we set the window to display coordinates.
-		((PaintWindow *)Window())->DisplayCoordinates(where,reference_point,use_reference_point);
-	}
-	else {
+		((PaintWindow*)Window())->DisplayCoordinates(where, reference_point,
+			use_reference_point);
+	} else {
 		where.x = the_image->Width();
 		where.y = the_image->Height();
 
-		((PaintWindow *)Window())->DisplayCoordinates(where,BPoint(0,0),false);
+		((PaintWindow*)Window())->DisplayCoordinates(where,
+			BPoint(0, 0), false);
 	}
 }
 
@@ -923,7 +940,7 @@ void ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage *message
 bool
 ImageView::Quit()
 {
-	 int32 mode = B_CONTROL_ON;
+	int32 mode = B_CONTROL_ON;
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
@@ -973,7 +990,8 @@ ImageView::Quit()
 }
 
 
-status_t ImageView::Freeze()
+status_t
+ImageView::Freeze()
 {
 	if (acquire_sem(mouse_mutex) == B_OK) {
 		if (acquire_sem(action_semaphore) == B_OK)
@@ -985,7 +1003,7 @@ status_t ImageView::Freeze()
 	// also acquire mouse_mutex and action_semaphore semaphores to protect
 	// the image from any further changes. These restorations must of course
 	// be done only after we have acquired the desired semaphores.
-	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 	if (gui_manipulator != NULL) {
 		gui_manipulator->Reset(selection);
 		the_image->Render();
@@ -994,7 +1012,8 @@ status_t ImageView::Freeze()
 }
 
 
-status_t ImageView::UnFreeze()
+status_t
+ImageView::UnFreeze()
 {
 	// Release the semaphores. We could also tell the manipulator to preview
 	// with the settings that it last had, but we will not do it yet.
@@ -1005,27 +1024,29 @@ status_t ImageView::UnFreeze()
 }
 
 
-void ImageView::getCoords(BPoint *bitmap_point, uint32 *buttons,BPoint *view_point)
+void
+ImageView::getCoords(BPoint* bitmap_point, uint32* buttons, BPoint* view_point)
 {
 	// this function converts the points using magnifying_scale
 	// to correspond to real points in buffer
 	// we also take any possible grids into account
 	BPoint point;
-	GetMouse(&point,buttons);
+	GetMouse(&point, buttons);
 	(*bitmap_point).x = floor(point.x / getMagScale());
 	(*bitmap_point).y = floor(point.y / getMagScale());
 	// and finally we round the point to grid units
-	(*bitmap_point) =	roundToGrid(*bitmap_point);
+	(*bitmap_point) = roundToGrid(*bitmap_point);
 
 	// Also if the view_point is not NULL put the point into it
 	if (view_point != NULL) {
-		view_point->x = (*bitmap_point).x*getMagScale();
-		view_point->y = (*bitmap_point).y*getMagScale();
+		view_point->x = (*bitmap_point).x * getMagScale();
+		view_point->y = (*bitmap_point).y * getMagScale();
 	}
 }
 
 
-void ImageView::setGrid(BPoint origin, int32 unit)
+void
+ImageView::setGrid(BPoint origin, int32 unit)
 {
 	// here we give the grid-variables new values
 	grid_unit = (unit >= 1 ? unit : 1);
@@ -1033,7 +1054,8 @@ void ImageView::setGrid(BPoint origin, int32 unit)
 }
 
 
-void ImageView::setMagScale(float scale)
+void
+ImageView::setMagScale(float scale)
 {
 	// this will be used to see if the scale was actually changed
 	// and is there a need to draw the view
@@ -1042,15 +1064,12 @@ void ImageView::setMagScale(float scale)
 	if (scale <= HS_MAX_MAG_SCALE) {
 		if (scale >= HS_MIN_MAG_SCALE) {
 			magnify_scale = scale;
-		}
-		else
+		} else
 			magnify_scale = HS_MIN_MAG_SCALE;
-	}
-	else
+	} else
 		magnify_scale = HS_MAX_MAG_SCALE;
 
 	selection->ChangeMagnifyingScale(magnify_scale);
-
 
 	// if the scale was changed and the view is on screen draw the view
 	// also update the scrollbars
@@ -1066,7 +1085,8 @@ void ImageView::setMagScale(float scale)
 }
 
 
-BPoint ImageView::roundToGrid(BPoint point)
+BPoint
+ImageView::roundToGrid(BPoint point)
 {
 	// here we round the coordinates of point to nearest grid-unit
 	// this version does not take the grid_origin into account
@@ -1077,7 +1097,8 @@ BPoint ImageView::roundToGrid(BPoint point)
 }
 
 
-BRect ImageView::convertBitmapRectToView(BRect rect)
+BRect
+ImageView::convertBitmapRectToView(BRect rect)
 {
 	// bitmap might also have some offset that should be taken
 	// into account
@@ -1090,22 +1111,22 @@ BRect ImageView::convertBitmapRectToView(BRect rect)
 		rect.top = rect.top * scale;
 		rect.right = rect.right * scale + scale - 1;
 		rect.bottom = rect.bottom * scale + scale - 1;
-	}
-	else if (scale < 1.0) {
+	} else if (scale < 1.0) {
 		rect.left = floor(rect.left * scale);
 		rect.top = floor(rect.top * scale);
 		rect.right = floor(rect.right * scale);
 		rect.bottom = floor(rect.bottom * scale);
 	}
 
-
 	// here convert the rect to use offset
-	//rect.OffsetBy(((Layer*)layer_list->ItemAt(current_layer_index))->Offset().LeftTop());
+	// rect.OffsetBy(((Layer*)layer_list->ItemAt(current_layer_index))->Offset().LeftTop());
 
 	return rect;
 }
 
-BRect ImageView::convertViewRectToBitmap(BRect rect)
+
+BRect
+ImageView::convertViewRectToBitmap(BRect rect)
 {
 	// It is not possible to convert a view rectangle into
 	// a bitmap rectangle perfectly if magnifying scale is
@@ -1126,23 +1147,26 @@ BRect ImageView::convertViewRectToBitmap(BRect rect)
 }
 
 
-
-void ImageView::ActiveLayerChanged()
+void
+ImageView::ActiveLayerChanged()
 {
-	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 
-	if ((gui_manipulator != NULL) && (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER)) {
+	if ((gui_manipulator != NULL) &&
+		(manipulated_layers == HS_MANIPULATE_CURRENT_LAYER)) {
 		gui_manipulator->Reset(selection);
 		gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
 
 		// We should also tell the manipulator to recalculate its preview.
 		// This can be best achieved by sending a HS_MANIPULATOR_ADJUSTING_FINISHED
 		// message to this view.
-		Window()->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
+		Window()->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED, this);
 	}
 }
 
-void ImageView::adjustSize()
+
+void
+ImageView::adjustSize()
 {
 	if (LockLooper() == TRUE) {
 		// resize the view to proper size
@@ -1160,7 +1184,9 @@ void ImageView::adjustSize()
 	}
 }
 
-void ImageView::adjustPosition()
+
+void
+ImageView::adjustPosition()
 {
 	if (LockLooper() == TRUE) {
 		BPoint top_left;
@@ -1168,12 +1194,12 @@ void ImageView::adjustPosition()
 		BRect vertBounds = ScrollBar(B_VERTICAL)->Bounds();
 		BRect horzBounds = ScrollBar(B_HORIZONTAL)->Bounds();
 		top_left.x = (bg_bounds.Width() - vertBounds.Width() -
-			getMagScale()*the_image->Width()) / 2;
+			getMagScale() * the_image->Width()) / 2;
 		top_left.y = (bg_bounds.Height() - horzBounds.Height() -
-			getMagScale()*the_image->Height()) / 2;
+			getMagScale() * the_image->Height()) / 2;
 
-		top_left.x = max_c(0,(int32)top_left.x);
-		top_left.y = max_c(0,(int32)top_left.y);
+		top_left.x = max_c(0, (int32)top_left.x);
+		top_left.y = max_c(0, (int32)top_left.y);
 
 		if (top_left != Frame().LeftTop())
 			MoveTo(top_left);
@@ -1183,58 +1209,73 @@ void ImageView::adjustPosition()
 }
 
 
-void ImageView::adjustScrollBars()
+void
+ImageView::adjustScrollBars()
 {
 	if (LockLooper() == TRUE) {
 		// set the horizontal bar
-		if ((getMagScale()*the_image->Width() - (Frame().Width() + 1)) <= 0) {
-			ScrollBar(B_HORIZONTAL)->SetRange(0,0);
+		if ((getMagScale() * the_image->Width() -
+			(Frame().Width() + 1)) <= 0) {
+			ScrollBar(B_HORIZONTAL)->SetRange(0, 0);
 			ScrollBar(B_HORIZONTAL)->SetProportion(1);
-		}
-		else {
-			ScrollBar(B_HORIZONTAL)->SetRange(0,getMagScale()*the_image->Width() - (Frame().Width() + 1));
-			ScrollBar(B_HORIZONTAL)->SetProportion((Frame().Width() + 1)/(getMagScale()*the_image->Width()));
+		} else {
+			ScrollBar(B_HORIZONTAL)->SetRange(0,
+				getMagScale() * the_image->Width() -
+				(Frame().Width() + 1));
+			ScrollBar(B_HORIZONTAL)->SetProportion((Frame().Width() + 1) /
+				(getMagScale() * the_image->Width()));
 		}
 
 		// set the vertical bar
-		if ((getMagScale()*the_image->Height() - (Frame().Height() + 1)) <= 0) {
-			ScrollBar(B_VERTICAL)->SetRange(0,0);
+		if ((getMagScale() * the_image->Height() -
+			(Frame().Height() + 1)) <= 0) {
+			ScrollBar(B_VERTICAL)->SetRange(0, 0);
 			ScrollBar(B_VERTICAL)->SetProportion(1);
-		}
-		else {
-			ScrollBar(B_VERTICAL)->SetRange(0,getMagScale()*the_image->Height() - (Frame().Height() + 1));
-			ScrollBar(B_VERTICAL)->SetProportion((Frame().Height() + 1)/(getMagScale()*the_image->Height()));
+		} else {
+			ScrollBar(B_VERTICAL)->SetRange(0,
+				getMagScale() * the_image->Height() -
+				(Frame().Height() + 1));
+			ScrollBar(B_VERTICAL)->SetProportion((Frame().Height() + 1) /
+				(getMagScale() * the_image->Height()));
 		}
 
 		UnlockLooper();
 	}
 }
 
-Selection* ImageView::GetSelection()
+
+Selection*
+ImageView::GetSelection()
 {
 	return selection;
 }
 
-void ImageView::start_thread(int32 thread_type)
+
+void
+ImageView::start_thread(int32 thread_type)
 {
-	thread_id a_thread = spawn_thread(enter_thread,"ImageView thread",B_NORMAL_PRIORITY,this);
+	thread_id a_thread = spawn_thread(enter_thread, "ImageView thread",
+		B_NORMAL_PRIORITY, this);
 	if (a_thread >= 0) {
 		resume_thread(a_thread);
-		send_data(a_thread,thread_type,NULL,0);
+		send_data(a_thread, thread_type, NULL, 0);
 	}
 }
 
-int32 ImageView::enter_thread(void *data)
+
+int32
+ImageView::enter_thread(void* data)
 {
-	ImageView *this_pointer = (ImageView*)data;
-	int32 thread_type = receive_data(NULL,NULL,0);
+	ImageView* this_pointer = (ImageView*)data;
+	int32 thread_type = receive_data(NULL, NULL, 0);
 	int32 err = B_OK;
 
 	if (thread_type == MANIPULATOR_FINISHER_THREAD) {
 		acquire_sem(this_pointer->action_semaphore);
-	}
-	else if (acquire_sem_etc(this_pointer->action_semaphore,1,B_TIMEOUT,0) != B_OK) {
-		if ((thread_type == PAINTER_THREAD) || (thread_type == MANIPULATOR_MOUSE_THREAD))
+	} else if (acquire_sem_etc(this_pointer->action_semaphore,
+		1, B_TIMEOUT, 0) != B_OK) {
+		if ((thread_type == PAINTER_THREAD) ||
+			(thread_type == MANIPULATOR_MOUSE_THREAD))
 			release_sem(this_pointer->mouse_mutex);
 		return B_ERROR;
 	}
@@ -1260,29 +1301,31 @@ int32 ImageView::enter_thread(void *data)
 
 	// When the work has been done we may once again permit
 	// the reading of the mouse.
-	if ((thread_type == PAINTER_THREAD) || (thread_type == MANIPULATOR_MOUSE_THREAD))
+	if ((thread_type == PAINTER_THREAD) ||
+		(thread_type == MANIPULATOR_MOUSE_THREAD))
 		release_sem(this_pointer->mouse_mutex);
 
 	release_sem(this_pointer->action_semaphore);
 
-	this_pointer->SetReferencePoint(BPoint(0,0),FALSE);
+	this_pointer->SetReferencePoint(BPoint(0, 0), FALSE);
 
 	return err;
 }
 
 
-int32 ImageView::PaintToolThread()
+int32
+ImageView::PaintToolThread()
 {
 	uint32 buttons;
 	BPoint point;
 	BPoint view_point;
 	if (LockLooper() == TRUE) {
-		getCoords(&point,&buttons,&view_point);
+		getCoords(&point, &buttons, &view_point);
 		UnlockLooper();
 	} else
 		return B_ERROR;
 
-	SetReferencePoint(point,TRUE);
+	SetReferencePoint(point, TRUE);
 
 	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
 
@@ -1299,37 +1342,41 @@ int32 ImageView::PaintToolThread()
 				view_point, tool_type);
 			if (script && tool_type != SELECTOR_TOOL) {
 				const DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
-				UndoEvent *new_event = undo_queue->AddUndoEvent(tool->Name(),
+				UndoEvent* new_event = undo_queue->AddUndoEvent(tool->Name(),
 					the_image->ReturnThumbnailImage());
-				BList *layer_list = the_image->LayerList();
+				BList* layer_list = the_image->LayerList();
 				if (new_event != NULL) {
-					for (int32 i=0;i<layer_list->CountItems();i++) {
-						Layer *layer = (Layer*)layer_list->ItemAt(i);
-						UndoAction *new_action;
+					for (int32 i = 0; i < layer_list->CountItems(); i++) {
+						Layer* layer = (Layer*)layer_list->ItemAt(i);
+						UndoAction* new_action;
 						if (layer->IsActive() == FALSE)
 							new_action = new UndoAction(layer->Id());
 						else
-							new_action = new UndoAction(layer->Id(), script,ToolManager::Instance().LastUpdatedRect(this));
+							new_action = new UndoAction(layer->Id(), script,
+								ToolManager::Instance().LastUpdatedRect(this));
 
 						new_event->AddAction(new_action);
 						new_action->StoreUndo(layer->Bitmap());
 					}
-					if ((new_event != NULL) && (new_event->IsEmpty() == TRUE)) {
+					if ((new_event != NULL) &&
+						(new_event->IsEmpty() == TRUE)) {
 						undo_queue->RemoveEvent(new_event);
 						delete new_event;
 					}
 					AddChange();
-				}
-				else {
+				} else {
 					delete script;
 					ToolManager::Instance().LastUpdatedRect(this);
 				}
-			}
-			else if (tool_type == SELECTOR_TOOL) {
+			} else if (tool_type == SELECTOR_TOOL) {
 				// Add selection-change to the undo-queue.
-				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
-					const DrawingTool *used_tool = ToolManager::Instance().ReturnTool(tool_type);
-					UndoEvent *new_event = undo_queue->AddUndoEvent(used_tool->Name(),the_image->ReturnThumbnailImage());
+				if (!(*undo_queue->ReturnSelectionData() ==
+					*selection->ReturnSelectionData())) {
+					const DrawingTool* used_tool =
+						ToolManager::Instance().ReturnTool(tool_type);
+					UndoEvent* new_event =
+						undo_queue->AddUndoEvent(used_tool->Name(),
+							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
@@ -1337,7 +1384,7 @@ int32 ImageView::PaintToolThread()
 				}
 
 				// Tell the selection to start drawing itself.
-				selection->StartDrawing(this,magnify_scale);
+				selection->StartDrawing(this, magnify_scale);
 			}
 			return B_OK;
 		}
@@ -1382,54 +1429,55 @@ int32 ImageView::PaintToolThread()
 }
 
 
-int32 ImageView::ManipulatorMouseTrackerThread()
+int32
+ImageView::ManipulatorMouseTrackerThread()
 {
-	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 	if (gui_manipulator == NULL)
 		return B_ERROR;
-
 
 	BPoint point;
 	uint32 buttons;
 	if (LockLooper() == TRUE) {
-		getCoords(&point,&buttons);
+		getCoords(&point, &buttons);
 		UnlockLooper();
 	} else
 		return B_ERROR;
 
 	int32 preview_quality;
 	bool first_call_to_mouse_down = TRUE;
-	BRegion *updated_region = new BRegion();
+	BRegion* updated_region = new BRegion();
 
 	float number_of_frames = 0;
 	float time = system_time();
 	while (buttons) {
 		updated_region->MakeEmpty();
 		if (LockLooper() == TRUE) {
-			gui_manipulator->MouseDown(point,buttons,this,first_call_to_mouse_down);
+			gui_manipulator->MouseDown(point, buttons, this,
+				first_call_to_mouse_down);
 			first_call_to_mouse_down = FALSE;
-			preview_quality = gui_manipulator->PreviewBitmap(selection,FALSE,updated_region);
+			preview_quality = gui_manipulator->PreviewBitmap(selection,
+				FALSE, updated_region);
 			if (preview_quality != DRAW_NOTHING) {
-				if ((preview_quality != DRAW_ONLY_GUI) && (updated_region->Frame().IsValid())) {
+				if ((preview_quality != DRAW_ONLY_GUI) &&
+					(updated_region->Frame().IsValid())) {
 					if (manipulated_layers != HS_MANIPULATE_ALL_LAYERS) {
-						the_image->RenderPreview(updated_region->Frame(),preview_quality);
-					}
-					else {
+						the_image->RenderPreview(updated_region->Frame(),
+							preview_quality);
+					} else {
 						the_image->MultiplyRenderedImagePixels(preview_quality);
 					}
-					for (int32 i=0;i<updated_region->CountRects();i++)
+					for (int32 i = 0; i < updated_region->CountRects(); i++)
 						Draw(convertBitmapRectToView(updated_region->RectAt(i)));
-				}
-				else if (preview_quality == DRAW_ONLY_GUI) {
+				} else if (preview_quality == DRAW_ONLY_GUI) {
 					DrawManipulatorGUI(TRUE);
 					selection->Draw();
 					Flush();
 				}
 				number_of_frames++;
-			}
-			else {
+			} else
 				snooze(50 * 1000);
-			}
+
 			getCoords(&point,&buttons);
 			UnlockLooper();
 		}
@@ -1443,23 +1491,24 @@ int32 ImageView::ManipulatorMouseTrackerThread()
 	cursor_mode = BLOCKING_CURSOR_MODE;
 	SetCursor();
 
-	updated_region->Set(BRect(0,0,-1,-1));
-	preview_quality = gui_manipulator->PreviewBitmap(selection,TRUE,updated_region);
+	updated_region->Set(BRect(0, 0, -1, -1));
+	preview_quality = gui_manipulator->PreviewBitmap(selection, TRUE,
+		updated_region);
 	if (preview_quality != DRAW_NOTHING) {
-		if ((preview_quality != DRAW_ONLY_GUI) && (updated_region->Frame().IsValid())) {
+		if ((preview_quality != DRAW_ONLY_GUI) &&
+			(updated_region->Frame().IsValid())) {
 			if (manipulated_layers != HS_MANIPULATE_ALL_LAYERS) {
-				the_image->RenderPreview(updated_region->Frame(),preview_quality);
-			}
-			else
+				the_image->RenderPreview(updated_region->Frame(),
+					preview_quality);
+			} else
 				the_image->MultiplyRenderedImagePixels(preview_quality);
 
 			if (LockLooper() == TRUE) {
-				for (int32 i=0;i<updated_region->CountRects();i++)
+				for (int32 i = 0; i < updated_region->CountRects(); i++)
 					Draw(convertBitmapRectToView(updated_region->RectAt(i)));
 				UnlockLooper();
 			}
-		}
-		else if (preview_quality == DRAW_ONLY_GUI) {
+		} else if (preview_quality == DRAW_ONLY_GUI) {
 			if (LockLooper() == TRUE) {
 				DrawManipulatorGUI(TRUE);
 				selection->Draw();
@@ -1477,78 +1526,76 @@ int32 ImageView::ManipulatorMouseTrackerThread()
 }
 
 
-int32 ImageView::GUIManipulatorUpdaterThread()
+int32
+ImageView::GUIManipulatorUpdaterThread()
 {
-	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 	if (gui_manipulator == NULL)
 		return B_ERROR;
 
-
 	int32 preview_quality = 0;
 	int32 lowest_quality = 0;
-	BRegion *updated_region = new BRegion();
+	BRegion* updated_region = new BRegion();
 
 	float number_of_frames = 0;
 
 	while (continue_manipulator_updating) {
 		if (LockLooper() == TRUE) {
-			preview_quality = gui_manipulator->PreviewBitmap(selection,FALSE,updated_region);
-			lowest_quality = max_c(lowest_quality,preview_quality);
+			preview_quality = gui_manipulator->PreviewBitmap(selection, FALSE,
+				updated_region);
+			lowest_quality = max_c(lowest_quality, preview_quality);
 
-			if ((preview_quality != DRAW_NOTHING) && (updated_region->Frame().IsValid())) {
+			if ((preview_quality != DRAW_NOTHING) &&
+				(updated_region->Frame().IsValid())) {
 				if (preview_quality != DRAW_ONLY_GUI) {
 					if (manipulated_layers != HS_MANIPULATE_ALL_LAYERS) {
-						the_image->RenderPreview(updated_region->Frame(),preview_quality);
-					}
-					else
+						the_image->RenderPreview(updated_region->Frame(),
+							preview_quality);
+					} else
 						the_image->MultiplyRenderedImagePixels(preview_quality);
 
-					for (int32 i=0;i<updated_region->CountRects();i++)
+					for (int32 i = 0; i < updated_region->CountRects(); i++)
 						Draw(convertBitmapRectToView(updated_region->RectAt(i)));
-				}
-				else if (preview_quality == DRAW_ONLY_GUI) {
+				} else if (preview_quality == DRAW_ONLY_GUI) {
 					DrawManipulatorGUI(TRUE);
 					selection->Draw();
 					Flush();
 				}
 				number_of_frames++;
-			}
-			else {
+			} else
 				snooze(50 * 1000);
-			}
+
 			UnlockLooper();
 		}
-		if (preview_quality == lowest_quality) {
+		if (preview_quality == lowest_quality)
 			snooze(50 * 1000);
-		}
-		else {
+		else
 			snooze(20 * 1000);
-		}
 	}
 
-	updated_region->Set(BRect(0,0,-1,-1));
+	updated_region->Set(BRect(0, 0, -1, -1));
 
 	cursor_mode = BLOCKING_CURSOR_MODE;
 	SetCursor();
 
-	preview_quality = gui_manipulator->PreviewBitmap(selection,TRUE,updated_region);
-
+	preview_quality = gui_manipulator->PreviewBitmap(selection, TRUE,
+		updated_region);
 
 	if (preview_quality != DRAW_NOTHING) {
-		if ((preview_quality != DRAW_ONLY_GUI) && (updated_region->Frame().IsValid())) {
+		if ((preview_quality != DRAW_ONLY_GUI) &&
+			(updated_region->Frame().IsValid())) {
 			if (manipulated_layers != HS_MANIPULATE_ALL_LAYERS) {
-				the_image->RenderPreview(updated_region->Frame(),preview_quality);
-			}
-			else
+				the_image->RenderPreview(updated_region->Frame(),
+					preview_quality);
+			} else
 				the_image->MultiplyRenderedImagePixels(preview_quality);
 
 			if (LockLooper() == TRUE) {
-				for (int32 i=0;i<updated_region->CountRects();i++)
+				for (int32 i = 0; i < updated_region->CountRects(); i++)
 					Draw(convertBitmapRectToView(updated_region->RectAt(i)));
 				UnlockLooper();
 			}
-		}
-		else if (preview_quality == DRAW_ONLY_GUI){
+		} else if (preview_quality == DRAW_ONLY_GUI) {
 			if (LockLooper() == TRUE) {
 				DrawManipulatorGUI(TRUE);
 				selection->Draw();
@@ -1566,12 +1613,13 @@ int32 ImageView::GUIManipulatorUpdaterThread()
 }
 
 
-int32 ImageView::ManipulatorFinisherThread()
+int32
+ImageView::ManipulatorFinisherThread()
 {
 	if (fManipulator == NULL) {
 		if (manipulator_finishing_message != NULL) {
 			if (LockLooper() == TRUE) {
-				Window()->PostMessage(manipulator_finishing_message,this);
+				Window()->PostMessage(manipulator_finishing_message, this);
 				delete manipulator_finishing_message;
 				manipulator_finishing_message = NULL;
 				UnlockLooper();
@@ -1583,7 +1631,8 @@ int32 ImageView::ManipulatorFinisherThread()
 	SetCursor();
 
 	// Here we should set up the status-bar
-	BStatusBar *status_bar = ((PaintWindow*)Window())->ReturnStatusView()->DisplayProgressIndicator();
+	BStatusBar* status_bar = ((PaintWindow*)Window())->ReturnStatusView()->
+		DisplayProgressIndicator();
 	if (status_bar != NULL) {
 		if (LockLooper() == TRUE) {
 			status_bar->Reset();
@@ -1591,34 +1640,36 @@ int32 ImageView::ManipulatorFinisherThread()
 			UnlockLooper();
 		}
 	}
-	GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
-	UndoEvent *new_event = NULL;
+	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
+	UndoEvent* new_event = NULL;
 
 	try {
 		if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
-			BBitmap *buffer = the_image->ReturnActiveBitmap();
-			BBitmap *new_buffer = NULL;
+			BBitmap* buffer = the_image->ReturnActiveBitmap();
+			BBitmap* new_buffer = NULL;
 			if (gui_manipulator != NULL) {
-				ManipulatorSettings *settings = gui_manipulator->ReturnSettings();
-				new_buffer = gui_manipulator->ManipulateBitmap(settings,buffer,selection,status_bar);
+				ManipulatorSettings* settings =
+					gui_manipulator->ReturnSettings();
+				new_buffer =
+					gui_manipulator->ManipulateBitmap(settings, buffer,
+						selection, status_bar);
 				delete settings;
-			}
-			else {
-				new_buffer = fManipulator->ManipulateBitmap(buffer,selection,status_bar);
-			}
+			} else
+				new_buffer = fManipulator->ManipulateBitmap(buffer,
+					selection, status_bar);
 
-			Layer *the_layer = the_image->ReturnActiveLayer();
+			Layer* the_layer = the_image->ReturnActiveLayer();
 			if (new_buffer && new_buffer != buffer)
 				the_layer->ChangeBitmap(new_buffer);
 
 			new_event = undo_queue->AddUndoEvent(fManipulator->ReturnName(),
 				the_image->ReturnThumbnailImage());
 			if (new_event != NULL) {
-				BList *layer_list = the_image->LayerList();
-				for (int32 i=0;i<layer_list->CountItems();i++) {
-					Layer *layer = (Layer*)layer_list->ItemAt(i);
+				BList* layer_list = the_image->LayerList();
+				for (int32 i = 0; i < layer_list->CountItems(); i++) {
+					Layer* layer = (Layer*)layer_list->ItemAt(i);
 
-					UndoAction *new_action;
+					UndoAction* new_action;
 					if ((layer != the_layer) || (new_buffer == NULL))
 						new_action = new UndoAction(layer->Id());
 					else {
@@ -1632,8 +1683,7 @@ int32 ImageView::ManipulatorFinisherThread()
 					new_action->StoreUndo(layer->Bitmap());
 				}
 			}
-		}
-		else {
+		} else {
 			// Do all the layers.
 			// Here we record the dimensions of all the bitmaps. If the
 			// dimensions change the composite bitmap should be changed to
@@ -1659,16 +1709,18 @@ int32 ImageView::ManipulatorFinisherThread()
 				}
 
 				Layer* the_layer = static_cast<Layer*> (layer_list->ItemAt(i));
-				BBitmap *buffer = the_layer->Bitmap();
-				BBitmap *new_buffer;
+				BBitmap* buffer = the_layer->Bitmap();
+				BBitmap* new_buffer;
 				if (gui_manipulator != NULL) {
-					ManipulatorSettings *settings = gui_manipulator->ReturnSettings();
-					new_buffer = gui_manipulator->ManipulateBitmap(settings,buffer,selection,status_bar);
+					ManipulatorSettings* settings =
+						gui_manipulator->ReturnSettings();
+					new_buffer =
+						gui_manipulator->ManipulateBitmap(settings,
+							buffer, selection, status_bar);
 					delete settings;
-				}
-				else {
-					new_buffer = fManipulator->ManipulateBitmap(buffer,selection,status_bar);
-				}
+				} else
+					new_buffer = fManipulator->ManipulateBitmap(buffer,
+						selection, status_bar);
 
 				if (new_buffer && new_buffer != buffer)
 					the_layer->ChangeBitmap(new_buffer);
@@ -1676,22 +1728,25 @@ int32 ImageView::ManipulatorFinisherThread()
 				if (new_event != NULL) {
 					if (new_buffer != NULL) {
 						BRegion affected_region(new_buffer->Bounds());
-						UndoAction *new_action;
-						new_action = new UndoAction(the_layer->Id(),fManipulator->ReturnSettings(),new_buffer->Bounds(),(manipulator_type)manip_type,add_on_id);
+						UndoAction* new_action;
+						new_action =
+							new UndoAction(the_layer->Id(),
+								fManipulator->ReturnSettings(),
+								new_buffer->Bounds(),
+								(manipulator_type)manip_type, add_on_id);
 
 						new_event->AddAction(new_action);
 						new_action->StoreUndo(the_layer->Bitmap());
-						thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,the_layer);
+						thread_id a_thread =
+							spawn_thread(Layer::CreateMiniatureImage,
+							"create mini picture", B_LOW_PRIORITY, the_layer);
 						resume_thread(a_thread);
-					}
-					else {
+					} else
 						new_event->AddAction(new UndoAction(the_layer->Id()));
-					}
 				}
 			}
 		}
-	}
-	catch (std::bad_alloc e) {
+	} catch (std::bad_alloc e) {
 		ShowAlert(CANNOT_FINISH_MANIPULATOR_ALERT);
 		// The manipulator should be asked to reset the preview-bitmap, if it is
 		// a GUIManipulator.
@@ -1701,7 +1756,6 @@ int32 ImageView::ManipulatorFinisherThread()
 	}
 
 	manipulated_layers = HS_MANIPULATE_NO_LAYER;
-
 
 	// If the added UndoEvent is empty then destroy it.
 	if ((new_event != NULL) && (new_event->IsEmpty() == TRUE)) {
@@ -1716,7 +1770,9 @@ int32 ImageView::ManipulatorFinisherThread()
 	selection->Recalculate();
 
 	// Change the selection for the undo-queue if necessary.
-	if ((new_event != NULL) && !(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
+	if ((new_event != NULL) &&
+		!(*undo_queue->ReturnSelectionData() ==
+			*selection->ReturnSelectionData())) {
 		new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 		undo_queue->SetSelectionData(selection->ReturnSelectionData());
 	}
@@ -1724,7 +1780,6 @@ int32 ImageView::ManipulatorFinisherThread()
 	// Store the manipulator settings.
 	if (ManipulatorServer* server = ManipulatorServer::Instance())
 		server->StoreManipulatorSettings(fManipulator);
-
 
 	// Finally return the window to normal state and redisplay it.
 	if (LockLooper() == true) {
@@ -1743,33 +1798,31 @@ int32 ImageView::ManipulatorFinisherThread()
 
 	if (manipulator_finishing_message != NULL) {
 		if (LockLooper() == TRUE) {
-			Window()->PostMessage(manipulator_finishing_message,this);
+			Window()->PostMessage(manipulator_finishing_message, this);
 			delete manipulator_finishing_message;
 			manipulator_finishing_message = NULL;
 			UnlockLooper();
 		}
 	}
 
-
 	return B_OK;
 }
 
 
-
-
-void ImageView::Undo()
+void
+ImageView::Undo()
 {
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
+	if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
 		// If there is a GUI-manipulator, it should reset the bitmap before undo can be done.
 		cursor_mode = BLOCKING_CURSOR_MODE;
 		SetCursor();
 
-		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+		GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 		if (gui_manipulator != NULL) {
 			gui_manipulator->Reset(selection);
 		}
 
-		UndoEvent *event = undo_queue->Undo();
+		UndoEvent* event = undo_queue->Undo();
 		if (event != NULL) {
 			if (event->IsEmpty() == FALSE) {
 				the_image->UpdateImageStructure(event);
@@ -1778,17 +1831,22 @@ void ImageView::Undo()
 				// After the undo, the current buffer might have changed and the
 				// possible gui_manipulator should be informed about it.
 				if (gui_manipulator != NULL) {
-					gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
+					gui_manipulator->SetPreviewBitmap(
+						the_image->ReturnActiveBitmap());
 					// We should also tell the manipulator to recalculate its preview.
-					Window()->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
+					Window()->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,
+						this);
 					cursor_mode = MANIPULATOR_CURSOR_MODE;
 				}
-				LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+				LayerWindow::ActiveWindowChanged(Window(),
+					the_image->LayerList(),
+					the_image->ReturnThumbnailImage());
 				AddChange();	// Removing a change here is not a good thing
 			}
 
 			if (event->ReturnSelectionData() != NULL) {
-				SelectionData *data = new SelectionData(event->ReturnSelectionData());
+				SelectionData* data = new SelectionData(
+					event->ReturnSelectionData());
 				event->SetSelectionData(selection->ReturnSelectionData());
 				selection->SetSelectionData(data);
 
@@ -1811,18 +1869,18 @@ void ImageView::Undo()
 }
 
 
-
-void ImageView::Redo()
+void
+ImageView::Redo()
 {
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
+	if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
 		// If there is a GUI-manipulator, it should reset the bitmap before redo
 		// can be done.
-		GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+		GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 		if (gui_manipulator != NULL) {
 			gui_manipulator->Reset(selection);
 		}
 
-		UndoEvent *event = undo_queue->Redo();
+		UndoEvent* event = undo_queue->Redo();
 		if (event != NULL) {
 			if (event->IsEmpty() == FALSE) {
 				the_image->UpdateImageStructure(event);
@@ -1830,16 +1888,20 @@ void ImageView::Redo()
 				// After the redo, the current buffer might have changed and the
 				// possible gui_manipulator should be informed about it.
 				if (gui_manipulator != NULL) {
-					gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
+					gui_manipulator->SetPreviewBitmap(
+						the_image->ReturnActiveBitmap());
 					// We should also tell the manipulator to recalculate its preview.
-					Window()->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,this);
+					Window()->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED,
+						this);
 				}
 
-				LayerWindow::ActiveWindowChanged(Window(),the_image->LayerList(),the_image->ReturnThumbnailImage());
+				LayerWindow::ActiveWindowChanged(Window(),
+					the_image->LayerList(), the_image->ReturnThumbnailImage());
 				AddChange();
 			}
 			if (event->ReturnSelectionData() != NULL) {
-				SelectionData *data = new SelectionData(event->ReturnSelectionData());
+				SelectionData* data = new SelectionData(
+					event->ReturnSelectionData());
 				event->SetSelectionData(selection->ReturnSelectionData());
 				selection->SetSelectionData(data);
 
@@ -1854,23 +1916,23 @@ void ImageView::Redo()
 	}
 }
 
+
 status_t
-ImageView::DoCopyOrCut(int32 layers,bool cut)
+ImageView::DoCopyOrCut(int32 layers, bool cut)
 {
-	if (acquire_sem_etc(action_semaphore,1,B_TIMEOUT,0) == B_OK) {
-		BBitmap *buffer;
+	if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
+		BBitmap* buffer;
 		BRect* offset;
 		bool ok_to_archive = TRUE;
 		if (layers == HS_MANIPULATE_CURRENT_LAYER)
 			buffer = the_image->ReturnActiveBitmap();
 		else
 			buffer = the_image->ReturnRenderedImage();
-		BMessage *bitmap_archive = new BMessage();
+		BMessage* bitmap_archive = new BMessage();
 		if (selection->IsEmpty() == TRUE) {
 			if (buffer->Archive(bitmap_archive) != B_OK)
 				ok_to_archive = FALSE;
-		}
-		else {
+		} else {
 			BRect selection_bounds = selection->GetBoundingRect();
 			selection_bounds.left = floor(selection_bounds.left);
 			selection_bounds.top = floor(selection_bounds.top);
@@ -1879,10 +1941,10 @@ ImageView::DoCopyOrCut(int32 layers,bool cut)
 			selection_bounds = selection_bounds & buffer->Bounds();
 			BRect bounds = selection_bounds;
 
-			bounds.OffsetTo(0,0);
-			BBitmap *to_be_archived = new BBitmap(bounds,B_RGBA32,0); //stargater, Pete
-			uint32 *target_bits = (uint32*)to_be_archived->Bits();
-			int32 bits_length = to_be_archived->BitsLength()/4;
+			bounds.OffsetTo(0, 0);
+			BBitmap* to_be_archived = new BBitmap(bounds, B_RGBA32, 0); // stargater, Pete
+			uint32* target_bits = (uint32*)to_be_archived->Bits();
+			int32 bits_length = to_be_archived->BitsLength() / 4;
 			union {
 				uint8 bytes[4];
 				uint32 word;
@@ -1892,8 +1954,7 @@ ImageView::DoCopyOrCut(int32 layers,bool cut)
 			color.bytes[2] = 0xFF;
 			color.bytes[3] = 0x00;
 
-
-			for (int32 i=0;i<bits_length;i++) {
+			for (int32 i = 0; i < bits_length; i++) {
 				*target_bits++ = color.word;
 			}
 			target_bits = (uint32*)to_be_archived->Bits();
@@ -1902,13 +1963,13 @@ ImageView::DoCopyOrCut(int32 layers,bool cut)
 			int32 top = (int32)selection_bounds.top;
 			int32 bottom = (int32)selection_bounds.bottom;
 
-			uint32 *source_bits = (uint32*)buffer->Bits();
-			int32 source_bpr = buffer->BytesPerRow()/4;
+			uint32* source_bits = (uint32*)buffer->Bits();
+			int32 source_bpr = buffer->BytesPerRow() / 4;
 
-			for (int32 y=top;y<=bottom;y++) {
-				for (int32 x=left;x<=right;x++) {
-					if (selection->ContainsPoint(x,y))
-						*target_bits = *(source_bits + x + y*source_bpr);
+			for (int32 y = top; y <= bottom; y++) {
+				for (int32 x = left; x <= right; x++) {
+					if (selection->ContainsPoint(x, y))
+						*target_bits = *(source_bits + x + y * source_bpr);
 
 					target_bits++;
 				}
@@ -1922,25 +1983,25 @@ ImageView::DoCopyOrCut(int32 layers,bool cut)
 		if (ok_to_archive == TRUE) {
 			be_clipboard->Lock();
 			be_clipboard->Clear();
-			BMessage *clipboard_message = be_clipboard->Data();
-			clipboard_message->AddMessage("image/bitmap",bitmap_archive);
+			BMessage* clipboard_message = be_clipboard->Data();
+			clipboard_message->AddMessage("image/bitmap", bitmap_archive);
 			if (selection->IsEmpty() == FALSE)
-				clipboard_message->AddRect("offset", selection->GetBoundingRect());
+				clipboard_message->AddRect("offset",
+					selection->GetBoundingRect());
 			be_clipboard->Commit();
 			be_clipboard->Unlock();
 			delete bitmap_archive;
 		}
 		if (cut == TRUE) {
 			if (layers == HS_MANIPULATE_CURRENT_LAYER)
-				Window()->PostMessage(HS_CLEAR_LAYER,this);
+				Window()->PostMessage(HS_CLEAR_LAYER, this);
 			else
-				Window()->PostMessage(HS_CLEAR_CANVAS,this);
+				Window()->PostMessage(HS_CLEAR_CANVAS, this);
 		}
 
 		release_sem(action_semaphore);
 		return B_OK;
-	}
-	else
+	} else
 		return B_ERROR;
 }
 
@@ -1949,16 +2010,18 @@ status_t
 ImageView::DoPaste()
 {
 	be_clipboard->Lock();
-	BMessage *clipboard_message = be_clipboard->Data();
+	BMessage* clipboard_message = be_clipboard->Data();
 	if (clipboard_message != NULL) {
-		BMessage *bitmap_message = new BMessage();
-		if (clipboard_message->FindMessage("image/bitmap",bitmap_message) == B_OK) {
+		BMessage* bitmap_message = new BMessage();
+		if (clipboard_message->FindMessage("image/bitmap", bitmap_message) ==
+			B_OK) {
 			if (bitmap_message != NULL) {
-				BBitmap *pasted_bitmap = new BBitmap(bitmap_message);
+				BBitmap* pasted_bitmap = new BBitmap(bitmap_message);
 				BRect offset;
 				clipboard_message->FindRect("offset", &offset);
 				delete bitmap_message;
-				if ((pasted_bitmap != NULL) && (pasted_bitmap->IsValid() == TRUE)) {
+				if ((pasted_bitmap != NULL) &&
+					(pasted_bitmap->IsValid() == TRUE)) {
 					try {
 						if (the_image->AddLayer(pasted_bitmap, NULL, TRUE,
 							1.0, &offset) != NULL) {
@@ -1969,8 +2032,7 @@ ImageView::DoPaste()
 								the_image->ReturnThumbnailImage());
 							AddChange();
 						}
-					}
-					catch (std::bad_alloc e) {
+					} catch (std::bad_alloc e) {
 						ShowAlert(CANNOT_ADD_LAYER_ALERT);
 					}
 				}
@@ -1983,31 +2045,41 @@ ImageView::DoPaste()
 }
 
 
-
-status_t ImageView::ShowAlert(int32 alert)
+status_t
+ImageView::ShowAlert(int32 alert)
 {
-	const char *text;
+	const char* text;
 	switch (alert) {
 		case CANNOT_ADD_LAYER_ALERT:
 			text = B_TRANSLATE("Not enough free memory to add a layer ."\
-				"You can free more memory by disabling the undo and closing other images. It is also a good idea "\
-				"to save the image now because running out of memory later on might make saving difficult or "\
-				"impossible. I am very sorry about this inconvenience.");
+				"You can free more memory by disabling the undo and closing " \
+				"other images. It is also a good idea to save the image now " \
+				"because running out of memory later on might make saving " \
+				"difficult or impossible. I am very sorry about this " \
+				"inconvenience.");
 			break;
 		case CANNOT_START_MANIPULATOR_ALERT:
-			text = B_TRANSLATE("Not enough free memory to start the effect you requested. You may close other images and try again. "\
-				"Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. "\
-				"If you have other applications running, closing them gives you more free memory. "\
-				"It is also a good idea to save your work at this point, because if the memory runs out completely "\
-				"saving might become impossible. I am very sorry about this inconvenience.");
+			text = B_TRANSLATE("Not enough free memory to start the effect " \
+				"you requested. You may close other images and try again. "\
+				"Also shortening the depth of undo or disabling undo " \
+				"altogether helps in achieving more memory. "\
+				"If you have other applications running, closing them gives " \
+				"you more free memory. It is also a good idea to save your " \
+				"work at this point, because if the memory runs out " \
+				"completely saving might become impossible. I am very sorry " \
+				"about this inconvenience.");
 			break;
 
 		case CANNOT_FINISH_MANIPULATOR_ALERT:
-			text = B_TRANSLATE("Not enough free memory to finish the effect you requested. You may close other images and try again. "\
-				"Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. "\
-				"If you have other applications running, closing them gives you more free memory. "\
-				"It is also a good idea to save your work at this point, because if the memory runs out completely "\
-				"saving might become impossible. I am very sorry about this inconvenience.");
+			text = B_TRANSLATE("Not enough free memory to finish the effect " \
+				"you requested. You may close other images and try again. "\
+				"Also shortening the depth of undo or disabling undo " \
+				"altogether helps in achieving more memory. "\
+				"If you have other applications running, closing them gives " \
+				"you more free memory. It is also a good idea to save your " \
+				"work at this point, because if the memory runs out " \
+				"completely saving might become impossible. I am very sorry " \
+				"about this inconvenience.");
 			break;
 
 		default:
@@ -2015,15 +2087,16 @@ status_t ImageView::ShowAlert(int32 alert)
 			break;
 	}
 
-	BAlert *alert_box = new BAlert("alert_box",text,B_TRANSLATE("OK"),NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
+	BAlert* alert_box = new BAlert("alert_box", text, B_TRANSLATE("OK"), NULL,
+		NULL, B_WIDTH_AS_USUAL, B_WARNING_ALERT);
 	alert_box->Go();
-
 
 	return B_OK;
 }
 
 
-void ImageView::SetCursor()
+void
+ImageView::SetCursor()
 {
 	BPoint point;
 	uint32 buttons;
@@ -2031,34 +2104,31 @@ void ImageView::SetCursor()
 
 	if (LockLooper() == TRUE) {
 		GetClippingRegion(&region);
-		GetMouse(&point,&buttons);
+		GetMouse(&point, &buttons);
 		UnlockLooper();
 	}
 
 	if (region.Contains(point)) {
 		if (cursor_mode == NORMAL_CURSOR_MODE) {
 			be_app->SetCursor(ToolManager::Instance().ReturnCursor());
-		}
-		else if (cursor_mode == MANIPULATOR_CURSOR_MODE) {
-			GUIManipulator *gui_manipulator = cast_as(fManipulator,GUIManipulator);
+		} else if (cursor_mode == MANIPULATOR_CURSOR_MODE) {
+			GUIManipulator* gui_manipulator = cast_as(fManipulator,
+				GUIManipulator);
 			if (gui_manipulator != NULL) {
 				if (gui_manipulator->ManipulatorCursor() != NULL)
 					be_app->SetCursor(gui_manipulator->ManipulatorCursor());
 				else
 					be_app->SetCursor(B_HAND_CURSOR);
 			}
-		}
-		else if (cursor_mode == BLOCKING_CURSOR_MODE) {
+		} else if (cursor_mode == BLOCKING_CURSOR_MODE)
 			be_app->SetCursor(HS_BLOCKING_CURSOR);
-		}
-	}
-	else {
+	} else
 		be_app->SetCursor(B_HAND_CURSOR);
-	}
 }
 
 
-void ImageView::SetDisplayMode(int32 new_display_mode)
+void
+ImageView::SetDisplayMode(int32 new_display_mode)
 {
 	if (current_display_mode != new_display_mode) {
 		current_display_mode = new_display_mode;
@@ -2067,52 +2137,54 @@ void ImageView::SetDisplayMode(int32 new_display_mode)
 			if (the_image->RegisterDitheredUser(this) == B_ERROR) {
 				current_display_mode = FULL_RGB_DISPLAY_MODE;
 			}
-		}
-		else {
+		} else
 			the_image->UnregisterDitheredUser(this);
-		}
 
 		Invalidate();
 	}
 }
 
 
-void ImageView::SetReferencePoint(BPoint point,bool use)
+void
+ImageView::SetReferencePoint(BPoint point, bool use)
 {
 	reference_point = point;
 	use_reference_point = use;
 }
 
-void ImageView::SetToolHelpString(const char *string)
+
+void
+ImageView::SetToolHelpString(const char* string)
 {
 	if (LockLooper() == TRUE) {
-		((PaintWindow*)Window())->SetHelpString(string,HS_TOOL_HELP_MESSAGE);
+		((PaintWindow*)Window())->SetHelpString(string, HS_TOOL_HELP_MESSAGE);
 		UnlockLooper();
 	}
 }
 
 
-void ImageView::SetProjectName(const char *name)
+void
+ImageView::SetProjectName(const char* name)
 {
 	delete[] project_name;
 
 	project_name = new char[strlen(name) + 1];
-	strcpy(project_name,name);
+	strcpy(project_name, name);
 
 	setWindowTitle();
 }
 
 
-void ImageView::SetImageName(const char *name)
+void
+ImageView::SetImageName(const char* name)
 {
 	delete[] image_name;
 
 	image_name = new char[strlen(name) + 1];
-	strcpy(image_name,name);
+	strcpy(image_name, name);
 
 	setWindowTitle();
 }
-
 
 
 void
@@ -2147,7 +2219,8 @@ ImageView::setWindowTitle()
 }
 
 
-void ImageView::AddChange()
+void
+ImageView::AddChange()
 {
 	project_changed++;
 	image_changed++;
@@ -2158,14 +2231,16 @@ void ImageView::AddChange()
 }
 
 
-void ImageView::RemoveChange()
+void
+ImageView::RemoveChange()
 {
-	project_changed = max_c(0,project_changed-1);
-	image_changed = max_c(0,image_changed-1);
+	project_changed = max_c(0, project_changed - 1);
+	image_changed = max_c(0, image_changed - 1);
 }
 
 
-void ImageView::ResetChangeStatistics(bool project, bool image)
+void
+ImageView::ResetChangeStatistics(bool project, bool image)
 {
 	if (project)
 		project_changed = 0;
@@ -2176,7 +2251,8 @@ void ImageView::ResetChangeStatistics(bool project, bool image)
 }
 
 
-bool ImageView::PostponeMessageAndFinishManipulator()
+bool
+ImageView::PostponeMessageAndFinishManipulator()
 {
 	if (fManipulator) {
 		BMessage message(HS_MANIPULATOR_FINISHED);
@@ -2190,20 +2266,17 @@ bool ImageView::PostponeMessageAndFinishManipulator()
 }
 
 
-
-
-
-
-
-filter_result KeyFilterFunction(BMessage *message,BHandler **handler,BMessageFilter*)
+filter_result
+KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 {
 //	message->PrintToStream();
-	ImageView *view = dynamic_cast<ImageView*>(*handler);
+	ImageView* view = dynamic_cast<ImageView*>(*handler);
 	if (view != NULL) {
-		if (acquire_sem_etc(view->mouse_mutex,1,B_RELATIVE_TIMEOUT,0) == B_OK) {
-			const char *bytes;
-			if ((!(modifiers() & B_COMMAND_KEY)) && (!(modifiers() & B_CONTROL_KEY))) {
-				if (message->FindString("bytes",&bytes) == B_OK) {
+		if (acquire_sem_etc(view->mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
+			const char* bytes;
+			if ((!(modifiers() & B_COMMAND_KEY)) &&
+				(!(modifiers() & B_CONTROL_KEY))) {
+				if (message->FindString("bytes", &bytes) == B_OK) {
 					switch (bytes[0]) {
 						case 'b':
 							ToolManager::Instance().ChangeTool(BRUSH_TOOL);
