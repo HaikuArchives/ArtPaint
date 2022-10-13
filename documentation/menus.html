@@ -28,7 +28,7 @@
 
 <p>Most menus and their items are standard or don't need much explanation. Also, a short help text appears in the status bar, if you hover over an item. Let's just move quickly through them and concentrate on the  not immediately obvious ones:</p>
 
-<table>
+<table summary="layout">
 <tr><td style="vertical-align: top"><img src="./images/menus_artpaint.png" style="border:none;padding:15px;float:right" alt="Menu: ArtPaint" /></td><td style="vertical-align: top">
 <h3>ArtPaint</h3>
 <p>Everything related to the application itself:<br />
@@ -45,27 +45,35 @@ Start a <span class="menu">New project…</span>, open the <span class="menu">Se
 <h3>Edit</h3>
 <p><span class="menu">Undo/Redo</span> the last action (the number of reversible actions can be adjusted in the settings).</p>
 
-<p>You can <span class="menu">Cut</span> or <span class="menu">Copy</span> the selection of the <span class="menu">Active layer</span> or <span class="menu">All layers</span> from their submenus.</p>
+<p>You can <span class="menu">Cut</span> or <span class="menu">Copy</span> the selection of the <span class="menu">Active layer</span> or <span class="menu">All layers</span> from their submenus. If there's no selection, the whole layer gets cut or copied.</p>
 
 <p>The copied selection can then be <span class="menu">Paste as a new layer</span> or <span class="menu">Paste as a new project</span>.</p>
 
-<p>Finally, you can <span class="menu">Grow/Shrink/Invert/Clear</span> the current selection.</p>
+<p><span class="menu">Delete</span> will remove all pixels from the selection (or the whole layer if there's no selection). You can also press <span class="key">DEL</span>.</p>
+
+<p>As with cut and copy, you can <span class="menu">Rotate…</span>, <span class="menu">Translate…</span>, <span class="menu">Scale…</span> and <span class="menu">Flip horizontally/vertically</span> the selection of the <span class="menu">Active layer</span> or <span class="menu">All layers</span> from their submenus. If there's no selection, the whole layer gets transformed.</p>
+<p><span class="menu">Rotate…</span>, <span class="menu">Translate…</span> and <span class="menu">Scale…</span> pop up a window to enter angle, x/y coordinates or dimensions manually, or by rotating/moving/resizing it all directly on the canvas.<br />
+A right-click sets the rotation point. Holding <span class="key">SHIFT</span> snaps to 22.5° angles.</p>
+</td></tr>
+
+<tr><td style="vertical-align: top"><img src="./images/menus_selection.png" style="border:none;padding:15px;float:right" alt="Menu: Selection" /></td><td style="vertical-align: top">
+<h3><a id="selection" name="selection">Selection</a></h3>
+<p>You can select <span class="menu">All</span> of the layer, or only <span class="menu">All non-transparent</span> pixels. You can un-select everything with <span class="menu">None</span> or <span class="menu">Invert</span> the selection.</p>
+
+<p>Selections can also <span class="menu">Grow</span> and <span class="menu">Shrink</span> by one pixel.</p>
+
+<p>With <span class="menu">Hide borders</span> the ant-line demarcating the selection can be turned off/on, in case you need an infestation-free view of your work of art.</p>
 </td></tr>
 
 <tr><td style="vertical-align: top"><img src="./images/menus_layer.png" style="border:none;padding:15px;float:right" alt="Menu: Layer" /></td><td style="vertical-align: top">
 <h3>Layer</h3>
-<p>You can <span class="menu">Rotate…</span> and <span class="menu">Translate…</span> the current layer/selection. It'll pop up a window to enter the angle or x/y coordinates manually, or you can just rotate/move it all directly on the canvas. A right-click sets the rotation point.</p>
-
-<p>You can <span class="menu">Flip horizontally/vertically</span> or <span class="menu">Clear</span> the current layer.</p>
-
-<p><span class="menu">Add</span> creates a new layer and you can also <span class="menu">Delete</span>, <span class="menu">Duplicate</span> or <span class="menu">Merge down</span> (i.e. merge with one below) the currently selected layer.</p>
+<p><span class="menu">Add</span> creates a new layer. You can <span class="menu">Delete</span>, <span class="menu">Duplicate</span> or <span class="menu">Merge down</span> (i.e. merge with one below) the currently active layer.</p>
 </td></tr>
 
 <tr><td style="vertical-align: top"><img src="./images/menus_canvas.png" style="border:none;padding:15px;float:right" alt="Menu: Canvas" /></td><td style="vertical-align: top">
 <h3>Canvas</h3>
-<p>Many of the actions in this menu are similar to the ones in the Layer menu, but apply to the whole canvas, i.e. all layers: <span class="menu">Rotate/Translate/Flip</span></p>
-
-<p><span class="menu">Crop…</span> and <span class="menu">Scale…</span> open a panel to enter values manually, but you can also manipulate the canvas right in the window.</p>
+<p><span class="menu">Rotate ±90°</span> will rotate the whole canvas clockwise/counter-clockwise.</p>
+<p><span class="menu">Resize…</span> and <span class="menu">Crop…</span> open a panel to enter values manually, but you can also manipulate the canvas directly in the window. Hold <span class="key">SHIFT</span> to lock the aspect ratio.</p>
 </td></tr>
 
 <tr><td style="vertical-align: top"><img src="./images/menus_window.png" style="border:none;padding:15px;float:right" alt="Menu: Window" /></td><td>
@@ -73,8 +81,6 @@ Start a <span class="menu">New project…</span>, open the <span class="menu">Se
 <p><span class="menu">Zoom in/out</span> or <span class="menu">Set zoom level</span> between 25% and 800%.</p>
 
 <p><span class="menu">Set grid</span> lets you activate an invisible grid of 2x2, 4x4 or 8x8 pixels.</p>
-
-<p><span class="menu">Resize to fit</span> changes the main window size to best fit the canvas.</p>
 
 <p>Last is a list of the special panels which are described under <a href="other_windows.html">The other windows</a>. It's a good idea to memorize the shortcuts to them.</p>
 </td></tr>
@@ -85,8 +91,8 @@ Start a <span class="menu">New project…</span>, open the <span class="menu">Se
 </td></tr>
 </table>
 <hr />
-<a href="main_window.html" style="border:none;float:left" alt="index">Back: The main window</a>
-<a href="settings.html" style="border:none;float:right" alt="index">Next: The settings</a>
+<a href="main_window.html" style="border:none;float:left">Back: The main window</a>
+<a href="settings.html" style="border:none;float:right">Next: The settings</a>
 </div>
 </body>
 </html>

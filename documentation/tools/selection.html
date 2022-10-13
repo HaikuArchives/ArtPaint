@@ -25,35 +25,38 @@
 
 <div id="content">
 <img src="../icons/selection_64.png" style="border:none;padding:15px;float:left" alt="Icon: Selection tool" />
-<h2>The Selection tool</h2>
+<h2>The Selection tool - <span class="key">S</span></h2>
 
-<table>
+<table summary="layout">
 <tr><td style="vertical-align: top"><img src="./images/selection.png" style="border:none;padding-right:15px;float:right" alt="Setup: Selection tool" /></td><td style="vertical-align: top">
 
-<p>The <span class="menu">Behavior</span> determines how consecutive selections are treated. You can either <span class="menu">Add area</span> or <span class="menu">Substract area</span>.</p>
+<p>Normally, consecutive selections are added together. However, holding <span class="key">OPT</span> will substract instead.</p>
 
-<p>By the way, the <span class="menu">Edit</span> menu of the main window holds more selection related commands: <span class="menu">Grow / Shrink / Invert / Clear selection</span>.</p>
+<p>By the way, more selection related commands are in the <a href="../menus.html#selection">Selection</a> menu of the main window, amongst those are items to <span class="menu">Grow / Shrink / Invert</span> selections.</p>
 
-<p>There are several <span class="menu">Modes</span> available:</p>
+<p>There are several modes available:</p>
 <ul>
 <li><p><span class="menu">Freehand</span> lets you draw an arbitrary area.</p></li>
 
-<li><p><span class="menu">Rectangle</span> selects in the shape of a rectangle.</p></li>
+<li><p><span class="menu">Rectangle</span> / <span class="menu">Ellipse</span> selects in the shape of a rectangle/ellipse.<br />
+Similar to the <a href="./rectangle.html">Rectangle</a> or <a href="./ellipse.html">Ellipse</a> tools, holding <span class="key">SHIFT</span> creates a square/circular selection, <span class="key">ALT</span> switches to center-to-corner mode.</p></li>
 
-<li><p><span class="menu">Intelligent scissors</span> tries to select along detected edges.</p></li>
+<li><p><span class="menu">Intelligent scissors</span> tries to select along detected edges. You move the mouse along the edge of the object you want to select. The detected edge is drawn as a grey line; you left-click to confirm the selection made so far and the line becomes a black &amp; white "ant-line". You continue like this until the object is completely circled. Finally you double-click to complete the selection.</p></li>
 
 <li><p><span class="menu">Magic wand</span> chooses all pixels of a similar color. You set the <span class="menu">Tolerance</span> for what's considered 'similar' with the slider below.</p></li>
 </ul>
+
+<p>The quick key to choose the selection tool is <span class="key">S</span>.</p>
 
 </td></tr>
 </table>
 
 <hr />
 <div align="center">
-<a href="../tools.html" alt="tools">Index: The tools</a>
+<a href="../tools.html">Index: The tools</a>
 </div>
-<a href="eraser.html" style="border:none;float:left" alt="index">Back: The Eraser tool</a>
-<a href="color-picker.html" style="border:none;float:right" alt="index">Back: The Color Picker tool</a>
+<a href="eraser.html" style="border:none;float:left">Back: The Eraser tool</a>
+<a href="color-picker.html" style="border:none;float:right">Back: The Color Picker tool</a>
 </div>
 </body>
 </html>
