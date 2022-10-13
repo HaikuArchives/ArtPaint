@@ -39,6 +39,7 @@
 #include <Catalog.h>
 #include <ClassInfo.h>
 #include <Clipboard.h>
+#include <Cursor.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
@@ -126,6 +127,11 @@ ImageView::ImageView(BRect frame, float width, float height)
 	project_name = NULL;
 	image_name = NULL;
 
+	space_down = FALSE;
+	fGrabCursor = new BCursor(B_CURSOR_ID_GRAB);
+	fGrabbingCursor = new BCursor(B_CURSOR_ID_GRABBING);
+	get_key_repeat_rate(&fKeyRate);
+
 	AddFilter(new BMessageFilter(B_KEY_DOWN, KeyFilterFunction));
 }
 
@@ -152,6 +158,9 @@ ImageView::~ImageView()
 
 	delete[] mag_scale_array;
 
+	delete fGrabCursor;
+	delete fGrabbingCursor;
+
 	// Delete the semaphores
 	delete_sem(mouse_mutex);
 	delete_sem(action_semaphore);
@@ -175,7 +184,6 @@ ImageView::AttachedToWindow()
 	undo_queue->SetMenuItems(Window()->KeyMenuBar()->FindItem(HS_UNDO),
 		Window()->KeyMenuBar()->FindItem(HS_REDO));
 
-
 	// Make this view the focus-view (receives key-down events).
 	MakeFocus();
 }
@@ -185,7 +193,6 @@ void
 ImageView::Draw(BRect updateRect)
 {
 	// copy image from bitmap to the part requiring updating
-
 	SetDrawingMode(B_OP_COPY);
 
 	BRegion a_region;
@@ -284,8 +291,23 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 		if (bounds.bottom + delta > bitmap_rect.bottom)
 			delta = bitmap_rect.bottom - bounds.bottom;
 		ScrollBy(0, delta);
+	} else if (*bytes == B_SPACE && fManipulator == NULL) {
+		if (space_down == FALSE) {
+			space_down = TRUE;
+			be_app->SetCursor(fGrabCursor);
+		}
 	} else if (fManipulator == NULL) {
 		ToolManager::Instance().KeyDown(this, bytes, numBytes);
+	}
+}
+
+
+void
+ImageView::KeyUp(const char* bytes, int32 numBytes)
+{
+	if (*bytes == B_SPACE) {
+		space_down = FALSE;
+		SetCursor();
 	}
 }
 
@@ -853,22 +875,38 @@ ImageView::MouseDown(BPoint view_point)
 					SetCursor();	// If the tool changes, the cursor should change too.
 				}
 				release_sem(mouse_mutex);
-			} else if (buttons & B_TERTIARY_MOUSE_BUTTON) {
+			} else if (buttons & B_TERTIARY_MOUSE_BUTTON ||
+				((buttons & B_PRIMARY_MOUSE_BUTTON) && space_down == TRUE))  {
 				BPoint point, prev_point;
 				uint32 buttons;
 				GetMouse(&point, &buttons);
+				this->ConvertToScreen(&point);
 				while (buttons) {
 					prev_point = point;
 					GetMouse(&point, &buttons);
-					ScrollBy(point.x - prev_point.x, point.y - prev_point.y);
+					this->ConvertToScreen(&point);
+
+					float delta_x = point.x - prev_point.x;
+					float delta_y = point.y - prev_point.y;
+
+					if (space_down == TRUE) {
+						be_app->SetCursor(fGrabbingCursor);
+						delta_x = -delta_x;
+						delta_y = -delta_y;
+					}
+
+					ScrollBy(delta_x, delta_y);
 					snooze(25 * 1000);
 				}
+
+				SetCursor();
 				release_sem(mouse_mutex);
 			} else
 				start_thread(PAINTER_THREAD);
 		} else
 			release_sem(mouse_mutex);
 	} else {
+		SetCursor();
 		if (fManipulator == NULL) {
 			BPoint bitmap_point;
 			uint32 buttons;
@@ -2122,6 +2160,9 @@ ImageView::SetCursor()
 			}
 		} else if (cursor_mode == BLOCKING_CURSOR_MODE)
 			be_app->SetCursor(HS_BLOCKING_CURSOR);
+
+		if (space_down == TRUE)
+			be_app->SetCursor(fGrabCursor);
 	} else
 		be_app->SetCursor(B_HAND_CURSOR);
 }
@@ -2269,7 +2310,9 @@ ImageView::PostponeMessageAndFinishManipulator()
 filter_result
 KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 {
-//	message->PrintToStream();
+	filter_result filter_message = B_DISPATCH_MESSAGE;
+
+	//message->PrintToStream();
 	ImageView* view = dynamic_cast<ImageView*>(*handler);
 	if (view != NULL) {
 		if (acquire_sem_etc(view->mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
@@ -2278,6 +2321,10 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 				(!(modifiers() & B_CONTROL_KEY))) {
 				if (message->FindString("bytes", &bytes) == B_OK) {
 					switch (bytes[0]) {
+						case B_SPACE:
+							if (view->space_down == TRUE)
+								filter_message = B_SKIP_MESSAGE;
+							break;
 						case 'b':
 							ToolManager::Instance().ChangeTool(BRUSH_TOOL);
 							view->SetCursor();
@@ -2354,5 +2401,5 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 			release_sem(view->mouse_mutex);
 		}
 	}
-	return B_DISPATCH_MESSAGE;
+	return filter_message;
 }
