@@ -961,6 +961,7 @@ void Selection::SimplifySelection()
 						new_polygon = new HSPolygon(point_list,point_count,HS_POLYGON_CLOCKWISE);
 					else
 						new_polygon = new HSPolygon(point_list,point_count,HS_POLYGON_COUNTERCLOCKWISE);
+
 					delete[] point_list;
 					selection_data->AddSelection(new_polygon);
 				}
@@ -987,9 +988,9 @@ void Selection::SimplifySelection()
 					excluded++;
 			}
 		}
-		if ((included == 0) || (excluded == 0))
-			Clear();
 
+		if (included == 0 && excluded == 0)
+			Clear();
 	}
 }
 
