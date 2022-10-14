@@ -202,7 +202,7 @@ void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 
 const char* FreeTransformManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Click on the image to rotate, move or stretch it.");
+	return B_TRANSLATE("Transform: Drag to rotate, move or stretch.");
 }
 
 

@@ -408,7 +408,7 @@ ScaleManipulator::MakeConfigurationView(const BMessenger& target)
 const char*
 ScaleManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Click on the image to set the new scale or set it with the numeric fields.");
+	return B_TRANSLATE("Scale: Drag to resize or use number-fields.");
 }
 
 
