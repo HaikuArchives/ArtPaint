@@ -320,6 +320,43 @@ ImageView::MessageReceived(BMessage* message)
 
 	// here check what the message is all about and initiate proper action
 	switch (message->what) {
+		case B_MOUSE_WHEEL_CHANGED: {
+			if (modifiers() & B_COMMAND_KEY) {
+				float delta;
+				if (message->FindFloat("be:wheel_delta_y", &delta) == B_OK) {
+					delta *= 2.;
+
+					if (modifiers() & B_SHIFT_KEY)
+						delta *= 2.;
+					BPoint point;
+					uint32 buttons;
+					BPoint norm_point;
+
+					GetMouse(&point, &buttons);
+					getCoords(&norm_point, &buttons, &point);
+
+					float magScale = getMagScale();
+					float f = magScale / 16.;
+					float scaleFactor = (pow(f, f) - 0.1) /
+						(pow(16., max_c(0.25, 1. - f)) - 0.1);
+					float scaleChange = scaleFactor * delta;
+
+					magScale += scaleChange;
+
+					if (magScale < 16.0) {
+						setMagScale(magScale);
+
+						float delta_x = norm_point.x * scaleChange;
+						float delta_y = norm_point.y * scaleChange;
+
+						ScrollBy(delta_x, delta_y);
+					}
+				}
+			} else
+				BView::MessageReceived(message);
+
+		} break;
+
 		// This comes from layer's view and tells us to change the active layer.
 		case HS_LAYER_ACTIVATED: {
 			// Only change the layer if we can acquire the action_semaphore.
@@ -1382,9 +1419,8 @@ ImageView::PaintToolThread()
 
 	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
 
-	if (modifiers() & B_COMMAND_KEY) {
+	if (modifiers() & B_COMMAND_KEY)
 		tool_type = COLOR_SELECTOR_TOOL;
-	}
 
 	if (tool_type != TEXT_TOOL) {
 		if (tool_type != NO_TOOL) {
