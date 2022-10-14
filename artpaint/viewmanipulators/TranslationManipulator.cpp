@@ -483,7 +483,7 @@ TranslationManipulator::ReturnName()
 const char*
 TranslationManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Drag the image to correct position.");
+	return B_TRANSLATE("Translate: Drag to move or use number-fields.");
 }
 
 

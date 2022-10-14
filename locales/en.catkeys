@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3689499495
+1	English	application/x-vnd.artpaint	3348436892
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -43,11 +43,14 @@ Redos the action that was last undone.	PaintWindow		Redos the action that was la
 Cancel	ImageView		Cancel
 Save color set	ColorPalette		Save color set
 Untitled	PaintWindow		Untitled
+Color picker window	Tools		Color picker window
 Miscellaneous	Windows		Miscellaneous
 Settings…	FilePanels		Settings…
 Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
+Use selection	Manipulators		Use selection
 Save	FilePanels		Save
 Alpha	ColorSliders	For color sliders	Alpha
+Lock	Manipulators		Lock
 Exclusion	PixelOperations		Exclusion
 Open	FilePanels		Open
 Undo	UndoQueue		Undo
@@ -55,7 +58,6 @@ Rotate -90°	PaintWindow		Rotate -90°
 Save project as…	PaintWindow		Save project as…
 File	PaintWindow		File
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
-Right:	Manipulators		Right:
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
 Redo not available	UndoQueue		Redo not available
 Drawing a freehand line.	Tools		Drawing a freehand line.
@@ -100,11 +102,9 @@ Color model	ColorPalette		Color model
 File structure corrupted	ColorPalette		File structure corrupted
 Undo not available	PaintWindow		Undo not available
 Finishing	ImageView		Finishing
-Confirm quitting	Windows		Confirm quitting
 Scale…	Manipulators		Scale…
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Save project	PaintWindow		Save project
-Use the handles or number-fields to set the new borders.	Manipulators		Use the handles or number-fields to set the new borders.
 Spray	Tools		Spray
 Colors:	Windows		Colors:
 None	Tools		None
@@ -122,9 +122,7 @@ Rotate…	Manipulators		Rotate…
 Size:	Manipulators		Size:
 Color set	ColorPalette		Color set
 Fill ellipse	Tools		Fill ellipse
-Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Click on the image to set the new scale or set it with the numeric fields.
 Transparent	Manipulators		Transparent
-Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use the primary mouse-button to rotate, other buttons to set the rotation center.
 Soft light	PixelOperations		Soft light
 Ellipse	Tools		Ellipse
 Adjustable width	Tools		Adjustable width
@@ -149,9 +147,11 @@ Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in a
 Text tool	Tools		Text tool
 Merge down	LayerWindow		Merge down
 Open project…	PaintWindow		Open project…
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.
 Green	Tools		Green
 Store brush	Tools		Store brush
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
+Translate: Drag to move or use number-fields.	Manipulators		Translate: Drag to move or use number-fields.
 Merge down	PaintWindow		Merge down
 Edit	PaintWindow		Edit
 Drop a color from the Colors window	Windows		Drop a color from the Colors window
@@ -160,6 +160,7 @@ Straight line tool	Tools		Straight line tool
 Shrink selection	ImageView		Shrink selection
 Hard mix	PixelOperations		Hard mix
 Background color	Tools		Background color
+Scale: Drag to resize or use number-fields.	Manipulators		Scale: Drag to resize or use number-fields.
 Fill tool	Tools		Fill tool
 Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
@@ -193,6 +194,7 @@ Copy	PaintWindow		Copy
 Enable preview	Tools		Enable preview
 Moves the active layer.	PaintWindow		Moves the active layer.
 Undos the previous action.	PaintWindow		Undos the previous action.
+Reset to canvas	Manipulators		Reset to canvas
 Rotate -90°	Manipulators		Rotate -90°
 Application	Windows		Application
 Standard sizes	PaintWindow		Standard sizes
@@ -233,7 +235,6 @@ About ArtPaint	PaintWindow		About ArtPaint
 Linear dodge	PixelOperations		Linear dodge
 Don't save	ImageView		Don't save
 Tools	Tools		Tools
-Drag the text to correct position and set its appearance.	Manipulators		Drag the text to correct position and set its appearance.
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
 Blue	ColorSliders	For RGB color sliders	Blue
@@ -242,6 +243,7 @@ Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
 Linear light	PixelOperations		Linear light
+Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Closes the current window.	PaintWindow		Closes the current window.
 Shrink selection	PaintWindow		Shrink selection
 Zooms out from the image.	PaintWindow		Zooms out from the image.
@@ -253,7 +255,6 @@ Error reading file	ColorPalette		Error reading file
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 Recent projects	PaintWindow		Recent projects
 Brushes…	PaintWindow		Brushes…
-Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Click on the image to rotate, move or stretch it.
 Color variance:	Tools		Color variance:
 Dissolve	PixelOperations		Dissolve
 Clear layer	PaintWindow		Clear layer
@@ -340,9 +341,7 @@ Cancel	FilePanels		Cancel
 Mode	Tools		Mode
 Flip horizontally	PaintWindow		Flip horizontally
 Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
-Bottom:	Manipulators		Bottom:
 Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
-Hold shift key to snap to 45° angles	Tools		Hold shift key to snap to 45° angles
 Overlay	PixelOperations		Overlay
 Clears the active layer.	PaintWindow		Clears the active layer.
 Clear layer	Image		Clear layer
@@ -357,8 +356,10 @@ Change the transparency with the slider.	Manipulators		Change the transparency w
 Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
 Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
+Text: Position text and set its appearance.	Manipulators		Text: Position text and set its appearance.
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Value
 Unsaved changes!	ImageView		Unsaved changes!
+Rotate: Left-drag to rotate, right-click to set rotation center.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center.
 Un-selects all	PaintWindow		Un-selects all
 Previous color set	ColorPalette	In Color Palette window	Previous color set
 Layers	LayerWindow		Layers
@@ -367,6 +368,7 @@ Copies the selection of all layers.	PaintWindow		Copies the selection of all lay
 Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
 Undo not available	UndoQueue		Undo not available
 Green	ColorSliders	For RGB color sliders	Green
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
@@ -374,7 +376,6 @@ New project…	PaintWindow		New project…
 Add	LayerWindow		Add
 Tolerance:	Tools		Tolerance:
 Using the tool.	Tools		Using the tool.
-Drag the image to correct position.	Manipulators		Drag the image to correct position.
 Lock	Manipulators	Keep the aspect ratio	Lock
 Tools…	PaintWindow		Tools…
 Add	PaintWindow		Add

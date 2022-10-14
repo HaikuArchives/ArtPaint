@@ -194,7 +194,7 @@ private:
 
 
 ColorSelectorWindow::ColorSelectorWindow(BPoint cursor_location)
-	: BWindow(BRect(0,0,0,0), "Color Selector Window", B_BORDERED_WINDOW, 0)
+	: BWindow(BRect(0,0,0,0), B_TRANSLATE("Color picker window"), B_BORDERED_WINDOW, 0)
 {
 	screen_bounds = BScreen().Frame();
 	cs_view = new ColorSelectorView(Bounds());
@@ -362,7 +362,7 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		}
 
 
-		// Close the color selector window
+		// Close the color picker window
 		if (cs_window != NULL) {
 			cs_window->Lock();
 			cs_window->Quit();

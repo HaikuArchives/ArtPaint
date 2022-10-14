@@ -594,7 +594,7 @@ CropManipulator::ReturnName()
 const char*
 CropManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the handles or number-fields to set the new borders. Hold SHIFT to lock the aspect ratio.");
+	return B_TRANSLATE("Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.");
 }
 
 

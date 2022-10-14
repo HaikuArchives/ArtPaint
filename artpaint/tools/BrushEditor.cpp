@@ -380,7 +380,7 @@ BrushView::BrushView(BRect frame, Brush* brush)
 	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
 	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
 
-	SetToolTip(B_TRANSLATE("Hold shift key to snap to 45° angles"));
+	SetToolTip(B_TRANSLATE("Hold SHIFT to snap to 45° angles"));
 
 	frame.InsetBy(1.0, 1.0);
 	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width() - 1.0,

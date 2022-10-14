@@ -539,7 +539,7 @@ TextManipulator::ReturnName()
 const char*
 TextManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Drag the text to correct position and set its appearance.");
+	return B_TRANSLATE("Text: Position text and set its appearance.");
 }
 
 

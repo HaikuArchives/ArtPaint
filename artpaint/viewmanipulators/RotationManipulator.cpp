@@ -611,7 +611,7 @@ RotationManipulator::SetAngle(float angle)
 const char*
 RotationManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Use the primary mouse-button to rotate, other buttons to set the rotation center.");
+	return B_TRANSLATE("Rotate: Left-drag to rotate, right-click to set rotation center.");
 }
 
 
