@@ -885,6 +885,8 @@ ImageView::MessageReceived(BMessage* message)
 			BView::MessageReceived(message);
 		} break;
 	}
+
+	SetCursor();
 }
 
 
@@ -1197,10 +1199,10 @@ ImageView::convertBitmapRectToView(BRect rect)
 	float scale = getMagScale();
 
 	if (scale > 1.0) {
-		rect.left = rect.left * scale;
-		rect.top = rect.top * scale;
-		rect.right = rect.right * scale + scale - 1;
-		rect.bottom = rect.bottom * scale + scale - 1;
+		rect.left = ceil(rect.left * scale);
+		rect.top = ceil(rect.top * scale);
+		rect.right = ceil(rect.right * scale + scale - 1);
+		rect.bottom = ceil(rect.bottom * scale + scale - 1);
 	} else if (scale < 1.0) {
 		rect.left = floor(rect.left * scale);
 		rect.top = floor(rect.top * scale);
@@ -2369,7 +2371,8 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 		if (acquire_sem_etc(view->mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
 			const char* bytes;
 			if ((!(modifiers() & B_COMMAND_KEY)) &&
-				(!(modifiers() & B_CONTROL_KEY))) {
+				(!(modifiers() & B_CONTROL_KEY)) &&
+				(!(modifiers() & B_OPTION_KEY))) {
 				if (message->FindString("bytes", &bytes) == B_OK) {
 					switch (bytes[0]) {
 						case B_SPACE:
@@ -2448,7 +2451,6 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 					}
 				}
 			}
-
 			release_sem(view->mouse_mutex);
 		}
 	}
