@@ -1153,21 +1153,22 @@ PaintWindow::openMenuBar()
 		new BMessage(B_PASTE), 'V', B_SHIFT_KEY, this,
 		B_TRANSLATE("Pastes previously copied selection as a new project.")));
 
-	menu->AddItem(new BSeparatorItem());
-
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Select all"),
+	menu = new BMenu(B_TRANSLATE("Selection"));
+	fMenubar->AddItem(menu);
+	
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All"),
 		new BMessage(HS_SELECT_ALL), 'A', 0, this,
 		B_TRANSLATE("Selects entire canvas")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Grow selection"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Grow"),
 		new BMessage(HS_GROW_SELECTION), 'G', 0, this,
 		B_TRANSLATE("Grows the selection in all directions.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Shrink selection"),
-		new BMessage(HS_SHRINK_SELECTION), 'H', 0, this,
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Shrink"),
+		new BMessage(HS_SHRINK_SELECTION), 'G', B_SHIFT_KEY, this,
 		B_TRANSLATE("Shrinks the selection in all directions.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Invert selection"),
-		new BMessage(HS_INVERT_SELECTION), 0, 0, this,
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Invert"),
+		new BMessage(HS_INVERT_SELECTION), 'I', 0, this,
 		B_TRANSLATE("Inverts the selection")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear selection"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear"),
 		new BMessage(HS_CLEAR_SELECTION), 'D', 0, this,
 		B_TRANSLATE("Un-selects all")));
 
@@ -1540,6 +1541,7 @@ PaintWindow::AddImageView()
 	// Change image for target for certain menu-items. These cannot be changed
 	// before image is added as a child to this window.
 	fMenubar->FindItem(B_TRANSLATE("Edit"))->Submenu()->SetTargetForItems(fImageView);
+	fMenubar->FindItem(B_TRANSLATE("Selection"))->Submenu()->SetTargetForItems(fImageView);
 	fMenubar->FindItem(B_TRANSLATE("Paste as a new project"))->SetTarget(be_app);
 
 	BMenu *menu = fMenubar->FindItem(B_TRANSLATE("Edit"))->Submenu();
@@ -2150,6 +2152,7 @@ PaintWindow::_ChangeMenuMode(menu_modes newMode)
 			_DisableMenuItem(B_TRANSLATE("Save image as" B_UTF8_ELLIPSIS));
 			_DisableMenuItem(B_TRANSLATE("Save project as" B_UTF8_ELLIPSIS));
 			_DisableMenuItem(B_TRANSLATE("Edit"));
+			_DisableMenuItem(B_TRANSLATE("Selection"));
 			_DisableMenuItem(B_TRANSLATE("Add-ons"));
 		}	// fall through
 
