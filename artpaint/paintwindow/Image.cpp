@@ -449,7 +449,7 @@ bool
 Image::ChangeActiveLayer(int32 layer_index)
 {
 	if (current_layer_index != layer_index) {
-		if (layer_index >= 0 && layer_index <= layer_list->CountItems()) {
+		if (layer_index >= 0 && layer_index < layer_list->CountItems()) {
 			((Layer*)(layer_list->ItemAt(current_layer_index)))->ActivateLayer(FALSE);
 			current_layer_index = layer_index;
 			((Layer*)(layer_list->ItemAt(current_layer_index)))->ActivateLayer(TRUE);
