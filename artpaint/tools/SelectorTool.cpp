@@ -89,6 +89,8 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	window->Unlock();
 
+	bool addSelection = true;
+
 	if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
 		if (buffer->Bounds().Contains(point) == FALSE)
 			return NULL;
@@ -119,6 +121,8 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			if (is_clicks_data_valid) {
 				is_clicks_data_valid = false;
 				if (last_click_clicks >= 2) {
+					if (modifiers() & B_OPTION_KEY)
+						addSelection = false;
 					finished = true;
 					delete active_view_polygon;
 					active_view_polygon = NULL;
@@ -225,13 +229,17 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			view->UnlockLooper();
 		}
 		delete path_finder;
-		selection->AddSelection(the_polygon, fToolSettings.mode == B_OP_ADD);
+		selection->AddSelection(the_polygon, addSelection);
 	} else if (fToolSettings.shape == HS_FREE_LINE) {
 		int32 size = 100;
 		BPoint* point_list = new BPoint[size];
 		int32 next_index = 0;
 
 		while (buttons) {
+			if (modifiers() & B_OPTION_KEY)
+				addSelection = false;
+			else
+				addSelection = true;
 			point_list[next_index++] = point;
 			the_script->AddPoint(point);
 			if (next_index == size) {
@@ -254,54 +262,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		HSPolygon* poly = new HSPolygon(point_list, next_index,
 			HS_POLYGON_CLOCKWISE);
 		delete[] point_list;
-		selection->AddSelection(poly, fToolSettings.mode == B_OP_ADD);
-	} else if (fToolSettings.shape == HS_RECTANGLE) {
-		BRect old_rect, new_rect;
-		old_rect = new_rect = BRect(point, point);
-		float left, top, right, bottom;
-		view->Window()->Lock();
-		drawing_mode old_mode = view->DrawingMode();
-		view->SetDrawingMode(B_OP_INVERT);
-		view->StrokeRect(view->convertBitmapRectToView(new_rect),
-			HS_ANIMATED_STRIPES_1);
-		view->Window()->Unlock();
-
-		the_script->AddPoint(point);
-
-		while (buttons) {
-			if (old_rect != new_rect) {
-				view->Window()->Lock();
-				view->Draw(view->convertBitmapRectToView(old_rect));
-				view->StrokeRect(view->convertBitmapRectToView(new_rect),
-					HS_ANIMATED_STRIPES_1);
-				view->Window()->Unlock();
-
-				old_rect = new_rect;
-			}
-			view->Window()->Lock();
-			view->getCoords(&point, &buttons, &view_point);
-			view->Window()->Unlock();
-
-			left = min_c(original_point.x, point.x);
-			top = min_c(original_point.y, point.y);
-			right = max_c(original_point.x, point.x);
-			bottom = max_c(original_point.y, point.y);
-			new_rect = BRect(BPoint(left, top), BPoint(right, bottom));
-			snooze(20 * 1000);
-		}
-		the_script->AddPoint(point);
-		view->Window()->Lock();
-		view->Draw(view->convertBitmapRectToView(old_rect));
-		view->SetDrawingMode(old_mode);
-		view->Window()->Unlock();
-
-		BPoint point_list[4];
-		point_list[0] = old_rect.LeftTop();
-		point_list[1] = old_rect.RightTop();
-		point_list[2] = old_rect.RightBottom();
-		point_list[3] = old_rect.LeftBottom();
-		HSPolygon* poly = new HSPolygon(point_list, 4, HS_POLYGON_CLOCKWISE);
-		selection->AddSelection(poly, fToolSettings.mode == B_OP_ADD);
+		selection->AddSelection(poly, addSelection);
 	} else if (fToolSettings.shape == HS_MAGIC_WAND) {
 		BBitmap* original_bitmap = view->ReturnImage()->ReturnActiveBitmap();
 		BBitmap* selection_map;
@@ -311,10 +272,13 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			int32(original_bitmap->Bounds().right), 0,
 			int32(original_bitmap->Bounds().bottom),
 			drawer->GetPixel(original_point), original_point);
-		selection->AddSelection(selection_map, fToolSettings.mode == B_OP_ADD);
+		if (modifiers() & B_OPTION_KEY)
+			addSelection = false;
+		selection->AddSelection(selection_map, addSelection);
 		delete drawer;
 		delete selection_map;
-	} else if (fToolSettings.shape == HS_CIRCLE) {
+	} else if (fToolSettings.shape == HS_CIRCLE ||
+		fToolSettings.shape == HS_RECTANGLE) {
 		BRect old_rect, new_rect;
 		old_rect = new_rect = BRect(point, point);
 		float left, top, right, bottom;
@@ -328,11 +292,22 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		the_script->AddPoint(point);
 
 		while (buttons) {
+			if (modifiers() & B_OPTION_KEY)
+				addSelection = false;
+			else
+				addSelection = true;
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
 				view->Draw(view->convertBitmapRectToView(old_rect));
-				view->StrokeEllipse(view->convertBitmapRectToView(new_rect),
-					HS_ANIMATED_STRIPES_1);
+				if (fToolSettings.shape == HS_CIRCLE)
+					view->StrokeEllipse(
+						view->convertBitmapRectToView(new_rect),
+						HS_ANIMATED_STRIPES_1);
+				else
+					view->StrokeRect(
+						view->convertBitmapRectToView(new_rect),
+						HS_ANIMATED_STRIPES_1);
+
 				view->Window()->Unlock();
 
 				old_rect = new_rect;
@@ -341,11 +316,38 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			view->getCoords(&point, &buttons, &view_point);
 			view->Window()->Unlock();
 
-			left = min_c(original_point.x, point.x);
-			top = min_c(original_point.y, point.y);
-			right = max_c(original_point.x, point.x);
-			bottom = max_c(original_point.y, point.y);
-			new_rect = BRect(BPoint(left, top), BPoint(right, bottom));
+			BRect bitmap_rect = MakeRectFromPoints(original_point, point);
+			if (modifiers() & B_SHIFT_KEY) {
+				// Make the rectangle square.
+				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
+				if (original_point.x == bitmap_rect.left)
+					bitmap_rect.right = bitmap_rect.left + max_distance;
+				else
+					bitmap_rect.left = bitmap_rect.right - max_distance;
+
+				if (original_point.y == bitmap_rect.top)
+					bitmap_rect.bottom = bitmap_rect.top + max_distance;
+				else
+					bitmap_rect.top = bitmap_rect.bottom - max_distance;
+			}
+			if (modifiers() & B_COMMAND_KEY) {
+				// Make the the rectangle original corner be at the center of
+				// new rectangle.
+				float y_distance = bitmap_rect.Height();
+				float x_distance = bitmap_rect.Width();
+
+				if (bitmap_rect.left == original_point.x)
+					bitmap_rect.left = bitmap_rect.left - x_distance;
+				else
+					bitmap_rect.right = bitmap_rect.right + x_distance;
+
+				if (bitmap_rect.top == original_point.y)
+					bitmap_rect.top = bitmap_rect.top - y_distance;
+				else
+					bitmap_rect.bottom = bitmap_rect.bottom + y_distance;
+
+			}
+			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			snooze(20 * 1000);
 		}
 		the_script->AddPoint(point);
@@ -354,17 +356,30 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		view->SetDrawingMode(old_mode);
 		view->Window()->Unlock();
 
-		BBitmap* selection_map;
-		BBitmap* draw_map =
-			new BBitmap(view->ReturnImage()->ReturnActiveBitmap()->Bounds(),
-				B_RGBA32);
-		// We use a fill-tool to select the area:
-		BitmapDrawer* drawer = new BitmapDrawer(draw_map);
-		drawer->DrawEllipse(new_rect, 0xFFFFFFFF, TRUE, FALSE);
-		selection_map = BitmapUtilities::ConvertColorSpace(draw_map, B_GRAY8);
-		selection->AddSelection(selection_map, fToolSettings.mode == B_OP_ADD);
-		delete drawer;
-		delete selection_map;
+		if (fToolSettings.shape == HS_CIRCLE) {
+			BBitmap* selection_map;
+			BBitmap* draw_map =
+				new BBitmap(
+					view->ReturnImage()->ReturnActiveBitmap()->Bounds(),
+					B_RGBA32);
+			// We use a fill-tool to select the area:
+			BitmapDrawer* drawer = new BitmapDrawer(draw_map);
+			drawer->DrawEllipse(new_rect, 0xFFFFFFFF, TRUE, FALSE);
+			selection_map =
+				BitmapUtilities::ConvertColorSpace(draw_map, B_GRAY8);
+			selection->AddSelection(selection_map, addSelection);
+			delete drawer;
+			delete selection_map;
+		} else {
+			BPoint point_list[4];
+			point_list[0] = old_rect.LeftTop();
+			point_list[1] = old_rect.RightTop();
+			point_list[2] = old_rect.RightBottom();
+			point_list[3] = old_rect.LeftBottom();
+			HSPolygon* poly = new HSPolygon(point_list, 4,
+				HS_POLYGON_CLOCKWISE);
+			selection->AddSelection(poly, addSelection);
+		}
 	}
 
 	view->Window()->Lock();
@@ -394,7 +409,7 @@ SelectorTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Making a selection.")
-		: B_TRANSLATE("Selection tool"));
+		: B_TRANSLATE("Selection tool: SHIFT maintains aspect, ALT centers selection, OPTION subtracts"));
 }
 
 
@@ -567,17 +582,6 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
-		message->AddInt32("option", MODE_OPTION);
-		message->AddInt32("value", B_OP_ADD);
-		fAddArea = new BRadioButton(B_TRANSLATE("Add area"),
-			new BMessage(*message));
-
-		message->ReplaceInt32("value", B_OP_SUBTRACT);
-		fSubstractArea =
-			new BRadioButton(B_TRANSLATE("Subtract area"),
-				message);
-
-		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SHAPE_OPTION);
 		message->AddInt32("value", HS_FREE_LINE);
 		fFreeLine = new BRadioButton(B_TRANSLATE("Freehand"),
@@ -613,13 +617,6 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Behavior")))
-			.AddGroup(B_VERTICAL, kWidgetSpacing)
-					.Add(fAddArea)
-					.Add(fSubstractArea)
-				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
-			.End()
-			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFreeLine)
@@ -634,12 +631,6 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 			.Add(toleranceLayout)
 			.TopView()
 		);
-
-		if (tool->GetCurrentValue(MODE_OPTION) == B_OP_ADD)
-			fAddArea->SetValue(B_CONTROL_ON);
-
-		if (tool->GetCurrentValue(MODE_OPTION) == B_OP_SUBTRACT)
-			fSubstractArea->SetValue(B_CONTROL_ON);
 
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_FREE_LINE)
 			fFreeLine->SetValue(B_CONTROL_ON);
@@ -664,8 +655,6 @@ SelectorToolConfigView::AttachedToWindow()
 {
 	DrawingToolConfigView::AttachedToWindow();
 
-	fAddArea->SetTarget(this);
-	fSubstractArea->SetTarget(this);
 	fFreeLine->SetTarget(this);
 	fRectangle->SetTarget(this);
 	fEllipse->SetTarget(this);

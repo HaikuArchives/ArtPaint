@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3060624465
+1	English	application/x-vnd.artpaint	3852441949
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -7,7 +7,6 @@ Crop…	Manipulators		Crop…
 Opens an image from disk.	PaintWindow		Opens an image from disk.
 Drawing a rectangle.	Tools		Drawing a rectangle.
 Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
-Subtract area	Tools		Subtract area
 Layers	Windows		Layers
 Paste as a new project	PaintWindow		Paste as a new project
 Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
@@ -122,6 +121,7 @@ Rotate…	Manipulators		Rotate…
 Size:	Manipulators		Size:
 Color set	ColorPalette		Color set
 Fill ellipse	Tools		Fill ellipse
+Selection tool: SHIFT maintains aspect, ALT centers selection, OPTION subtracts	Tools		Selection tool: SHIFT maintains aspect, ALT centers selection, OPTION subtracts
 Transparent	Manipulators		Transparent
 Soft light	PixelOperations		Soft light
 Ellipse	Tools		Ellipse
@@ -304,7 +304,6 @@ The undo-mechanism has run out of memory.\nThe depth of undo will be limited so 
 Intelligent scissors	Tools		Intelligent scissors
 Freehand	Tools		Freehand
 Hairs:	Tools		Hairs:
-Behavior	Tools		Behavior
 Saturation	ColorSliders	For HSV color slider	Saturation
 Grow selection	PaintWindow		Grow selection
 Select all	ImageView		Select all
@@ -380,7 +379,6 @@ Using the tool.	Tools		Using the tool.
 Lock	Manipulators	Keep the aspect ratio	Lock
 Tools…	PaintWindow		Tools…
 Add	PaintWindow		Add
-Add area	Tools		Add area
 Hardness:	Tools		Hardness:
 Divide	PixelOperations		Divide
 Scales the image.	PaintWindow		Scales the image.
