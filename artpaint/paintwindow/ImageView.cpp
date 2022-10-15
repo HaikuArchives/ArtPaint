@@ -668,7 +668,7 @@ ImageView::MessageReceived(BMessage* message)
 
 		case HS_GROW_SELECTION: {
 			if (!fManipulator) {
-				selection->Dilatate();
+				selection->Dilate();
 				if (!(*undo_queue->ReturnSelectionData() ==
 					*selection->ReturnSelectionData())) {
 					UndoEvent* new_event =
