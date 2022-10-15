@@ -22,6 +22,12 @@ class ImageView;
 class PointStack;
 class ToolScript;
 
+enum spans {
+	BOTH = 0,
+	UPPER,
+	LOWER
+};
+
 
 namespace ArtPaint {
 	namespace Interface {
@@ -46,15 +52,9 @@ private:
 								// These functions handle the magic wand thing.
 								// They have been copied from FillTool and
 								// altered a little.
-			void				CheckLowerSpans(BPoint, BitmapDrawer*,
+			void				CheckSpans(BPoint, BitmapDrawer*,
 									PointStack&, int32, int32, uint32, int32,
-									BBitmap*);
-			void				CheckUpperSpans(BPoint, BitmapDrawer*,
-									PointStack&, int32, int32, uint32, int32,
-									BBitmap*);
-			void				CheckBothSpans(BPoint, BitmapDrawer*,
-									PointStack&, int32, int32, uint32, int32,
-									BBitmap*);
+									BBitmap*, uint8 spans = BOTH);
 			void				FillSpan(BPoint, BitmapDrawer*, int32, int32,
 									uint32, int32, BBitmap*);
 			BBitmap*			MakeFloodBinaryMap(BitmapDrawer*, int32, int32,
