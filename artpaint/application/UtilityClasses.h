@@ -46,10 +46,10 @@ public:
 };
 
 
-
 BRect FitRectToScreen(BRect source);
 BRect CenterRectOnScreen(BRect source);
 BRect MakeRectFromPoints(const BPoint& point1, const BPoint& point2);
+float SnapToAngle(const float snap_angle, const float src_angle);
 
 
 inline uint32

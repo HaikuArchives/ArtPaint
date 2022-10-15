@@ -112,3 +112,32 @@ MakeRectFromPoints(const BPoint& point1, const BPoint& point2)
 	return BRect(min_c(point1.x, point2.x), min_c(point1.y, point2.y),
 		max_c(point1.x, point2.x), max_c(point1.y, point2.y));
 }
+
+
+float
+SnapToAngle(const float snap_angle, const float src_angle)
+{
+	float new_angle = src_angle;
+
+	if (src_angle > 90)
+		new_angle = -(90. - ((int32)src_angle % 90));
+	if (src_angle < -90)
+		new_angle = 90. - ((int32)-src_angle % 90);
+
+	float abs_src_angle = fabs(new_angle);
+	float abs_snap_angle = fabs(snap_angle);
+	float half_angle = abs_snap_angle / 2.;
+
+	float sign = 1;
+	if (new_angle < 0)
+		sign = -1;
+
+	for (float i = 0; i <= 90; i += abs_snap_angle) {
+		if (abs_src_angle > i - half_angle && abs_src_angle < i + half_angle) {
+			new_angle = i;
+			return new_angle * sign;
+		}
+	}
+
+	return src_angle;
+}
