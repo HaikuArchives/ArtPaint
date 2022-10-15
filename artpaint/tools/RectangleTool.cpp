@@ -84,15 +84,17 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		BPoint original_point;
 		BRect bitmap_rect,old_rect,new_rect;
 		window->Lock();
+		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
-		rgb_color c=((PaintApplication*)be_app)->Color(true);
+		rgb_color c = ((PaintApplication*)be_app)->Color(true);
 		original_point = point;
 		bitmap_rect = BRect(point,point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
 		window->Lock();
-		view->StrokeRect(new_rect);
+		view->SetHighColor(c);
+		view->StrokeRect(new_rect, B_SOLID_HIGH);
 		window->Unlock();
 
 		while (buttons) {
@@ -100,7 +102,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			view->getCoords(&point,&buttons,&view_point);
 			window->Unlock();
 			bitmap_rect = MakeRectFromPoints(original_point, point);
-			if (modifiers() & B_LEFT_SHIFT_KEY) {
+			if (modifiers() & B_SHIFT_KEY) {
 				// Make the rectangle square.
 				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
 				if (original_point.x == bitmap_rect.left)
@@ -113,7 +115,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 				else
 					bitmap_rect.top = bitmap_rect.bottom - max_distance;
 			}
-			if (GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER) {
+			if (modifiers() & B_COMMAND_KEY) {
 				// Make the the rectangle original corner be at the center of
 				// new rectangle.
 				float y_distance = bitmap_rect.Height();
@@ -135,7 +137,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			if (view->LockLooper() == true) {
 				if (old_rect != new_rect) {
 					view->Draw(old_rect);
-					view->StrokeRect(new_rect);
+					view->StrokeRect(new_rect, B_SOLID_HIGH);
 					old_rect = new_rect;
 				}
 				view->UnlockLooper();
@@ -206,18 +208,26 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 					if (centroid.x != point.x) {
 						new_angle = atan((centroid.y-point.y)
 							/ (centroid.x-point.x)) * 180 / M_PI;
+						if (new_angle > 90)
+							new_angle = -(90. - ((int32)new_angle % 90));
+						if (new_angle < -90)
+							new_angle = 90. - ((int32)-new_angle % 90);
 					} else {
 						new_angle = 90;
 					}
 					new_angle -= original_angle;
 
-					if (modifiers() & B_LEFT_SHIFT_KEY) {
-						int32 divider = (int32)new_angle/5;
-						float remainder = new_angle - divider*5;
-						if (remainder >= 2.5)
-							new_angle = (divider+1)*5;
-						else
-							new_angle = divider*5;
+					if (modifiers() & B_SHIFT_KEY) {
+						if (new_angle < 22 && new_angle > -22)
+							new_angle = 0;
+						else if (new_angle > 22 && new_angle < 75)
+							new_angle = 45;
+						else if (new_angle < -22 && new_angle > -75)
+							new_angle = -45;
+						else if (new_angle > 75)
+							new_angle = 90;
+						else if (new_angle < -75)
+							new_angle = -90;
 					}
 					snooze(20 * 1000);
 
@@ -254,6 +264,7 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		delete[] corners;
 
 		window->Lock();
+		view->SetHighColor(old_color);
 		view->SetDrawingMode(old_mode);
 		view->UpdateImage(LastUpdatedRect());
 		view->Sync();
@@ -293,7 +304,7 @@ RectangleTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drawing a rectangle.")
-		: B_TRANSLATE("Rectangle: SHIFT for square"));
+		: B_TRANSLATE("Rectangle: SHIFT for square, ALT for centered"));
 }
 
 
@@ -310,22 +321,6 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 
 		fFillRectangle =
 			new BCheckBox(B_TRANSLATE("Fill rectangle"),
-			message);
-
-		message = new BMessage(OPTION_CHANGED);
-		message->AddInt32("option", SHAPE_OPTION);
-		message->AddInt32("value", HS_CORNER_TO_CORNER);
-
-		fCorner2Corner =
-			new BRadioButton(B_TRANSLATE("Corner to corner"),
-			message);
-
-		message = new BMessage(OPTION_CHANGED);
-		message->AddInt32("option", SHAPE_OPTION);
-		message->AddInt32("value", HS_CENTER_TO_CORNER);
-
-		fCenter2Corner =
-			new BRadioButton(B_TRANSLATE("Center to corner"),
 			message);
 
 		message = new BMessage(OPTION_CHANGED);
@@ -356,13 +351,6 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Mode")))
-			.AddGroup(B_VERTICAL, kWidgetSpacing)
-				.Add(fCorner2Corner)
-				.Add(fCenter2Corner)
-				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
-			.End()
-			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fRotation)
@@ -374,12 +362,6 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 
 		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
 			fFillRectangle->SetValue(B_CONTROL_ON);
-
-		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
-			fCorner2Corner->SetValue(B_CONTROL_ON);
-
-		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
-			fCenter2Corner->SetValue(B_CONTROL_ON);
 
 		if (tool->GetCurrentValue(ROTATION_ENABLED_OPTION) != B_CONTROL_OFF)
 			fRotation->SetValue(B_CONTROL_ON);
@@ -396,8 +378,6 @@ RectangleToolConfigView::AttachedToWindow()
 	DrawingToolConfigView::AttachedToWindow();
 
 	fFillRectangle->SetTarget(this);
-	fCorner2Corner->SetTarget(this);
-	fCenter2Corner->SetTarget(this);
 	fRotation->SetTarget(this);
 	fAntiAlias->SetTarget(this);
 }

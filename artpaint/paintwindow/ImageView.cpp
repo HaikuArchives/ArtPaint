@@ -1419,7 +1419,7 @@ ImageView::PaintToolThread()
 
 	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
 
-	if (modifiers() & B_COMMAND_KEY)
+	if (modifiers() & B_CONTROL_KEY)
 		tool_type = COLOR_SELECTOR_TOOL;
 
 	if (tool_type != TEXT_TOOL) {
