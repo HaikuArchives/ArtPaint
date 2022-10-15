@@ -80,16 +80,20 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 
+	bool addSelection = true;
+
 	window->Lock();
 	view->SetHighColor(255, 255, 255, 255);
 	view->SetLowColor(0, 0, 0, 255);
 	view->SetPenSize(1);
 	view->SetDrawingMode(B_OP_COPY);
 	view->MovePenTo(view_point);
+	if (modifiers() & B_OPTION_KEY)
+		addSelection = false;
+	else
+		addSelection = true;
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	window->Unlock();
-
-	bool addSelection = true;
 
 	if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
 		if (buffer->Bounds().Contains(point) == FALSE)
@@ -240,6 +244,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				addSelection = false;
 			else
 				addSelection = true;
+
 			point_list[next_index++] = point;
 			the_script->AddPoint(point);
 			if (next_index == size) {
@@ -274,6 +279,9 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			drawer->GetPixel(original_point), original_point);
 		if (modifiers() & B_OPTION_KEY)
 			addSelection = false;
+		else
+			addSelection = true;
+
 		selection->AddSelection(selection_map, addSelection);
 		delete drawer;
 		delete selection_map;
@@ -285,8 +293,12 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		view->Window()->Lock();
 		drawing_mode old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
-		view->StrokeEllipse(view->convertBitmapRectToView(new_rect),
-			HS_ANIMATED_STRIPES_1);
+		if (fToolSettings.shape == HS_CIRCLE)
+			view->StrokeEllipse(view->convertBitmapRectToView(new_rect),
+				HS_ANIMATED_STRIPES_1);
+		else
+			view->StrokeRect(view->convertBitmapRectToView(new_rect),
+				HS_ANIMATED_STRIPES_1);
 		view->Window()->Unlock();
 
 		the_script->AddPoint(point);
@@ -296,6 +308,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				addSelection = false;
 			else
 				addSelection = true;
+
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
 				view->Draw(view->convertBitmapRectToView(old_rect));
@@ -319,7 +332,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			BRect bitmap_rect = MakeRectFromPoints(original_point, point);
 			if (modifiers() & B_SHIFT_KEY) {
 				// Make the rectangle square.
-				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
+				float max_distance = max_c(bitmap_rect.Height(), bitmap_rect.Width());
 				if (original_point.x == bitmap_rect.left)
 					bitmap_rect.right = bitmap_rect.left + max_distance;
 				else
@@ -347,7 +360,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					bitmap_rect.bottom = bitmap_rect.bottom + y_distance;
 
 			}
-			new_rect = view->convertBitmapRectToView(bitmap_rect);
+			new_rect = bitmap_rect;
 			snooze(20 * 1000);
 		}
 		the_script->AddPoint(point);
@@ -400,6 +413,9 @@ SelectorTool::ConfigView()
 const void*
 SelectorTool::ToolCursor() const
 {
+	if (modifiers() & B_OPTION_KEY)
+		return HS_SELECTOR_SUBTRACT_CURSOR;
+
 	return HS_SELECTOR_CURSOR;
 }
 
@@ -409,7 +425,7 @@ SelectorTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Making a selection.")
-		: B_TRANSLATE("Selection tool: SHIFT maintains aspect, ALT centers selection, OPTION subtracts"));
+		: B_TRANSLATE("Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts"));
 }
 
 
@@ -617,18 +633,15 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFreeLine)
 				.Add(fRectangle)
 				.Add(fEllipse)
 				.Add(fScissors)
 				.Add(fMagicWand)
+				.Add(toleranceLayout)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
-			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Wand tolerance")))
-			.Add(toleranceLayout)
 			.TopView()
 		);
 

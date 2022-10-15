@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3852441949
+1	English	application/x-vnd.artpaint	2738454561
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -121,7 +121,6 @@ Rotate…	Manipulators		Rotate…
 Size:	Manipulators		Size:
 Color set	ColorPalette		Color set
 Fill ellipse	Tools		Fill ellipse
-Selection tool: SHIFT maintains aspect, ALT centers selection, OPTION subtracts	Tools		Selection tool: SHIFT maintains aspect, ALT centers selection, OPTION subtracts
 Transparent	Manipulators		Transparent
 Soft light	PixelOperations		Soft light
 Ellipse	Tools		Ellipse
@@ -244,6 +243,7 @@ Translate…	Manipulators		Translate…
 Cannot write to file	ColorPalette		Cannot write to file
 Delete current set	ColorPalette		Delete current set
 Linear light	PixelOperations		Linear light
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Closes the current window.	PaintWindow		Closes the current window.
 Shrink selection	PaintWindow		Shrink selection
@@ -349,7 +349,6 @@ Rotate…	PaintWindow		Rotate…
 Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
 No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
-Wand tolerance	Tools		Wand tolerance
 Invert selection	ImageView		Invert selection
 Much	Tools		Much
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
