@@ -208,29 +208,15 @@ RectangleTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 					if (centroid.x != point.x) {
 						new_angle = atan((centroid.y-point.y)
 							/ (centroid.x-point.x)) * 180 / M_PI;
-						if (new_angle > 90)
-							new_angle = -(90. - ((int32)new_angle % 90));
-						if (new_angle < -90)
-							new_angle = 90. - ((int32)-new_angle % 90);
 					} else {
 						new_angle = 90;
 					}
 					new_angle -= original_angle;
 
-					if (modifiers() & B_SHIFT_KEY) {
-						if (new_angle < 22 && new_angle > -22)
-							new_angle = 0;
-						else if (new_angle > 22 && new_angle < 75)
-							new_angle = 45;
-						else if (new_angle < -22 && new_angle > -75)
-							new_angle = -45;
-						else if (new_angle > 75)
-							new_angle = 90;
-						else if (new_angle < -75)
-							new_angle = -90;
-					}
-					snooze(20 * 1000);
+					if (modifiers() & B_SHIFT_KEY)
+						new_angle = SnapToAngle(22.5, new_angle);
 
+					snooze(20 * 1000);
 				}
 			}
 			poly->RotateAboutCenter(prev_angle);

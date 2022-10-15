@@ -502,23 +502,9 @@ BrushView::MouseDown(BPoint point)
 			else {
 				angle = atan2(point.x-c.x,c.y-point.y)*180/M_PI;
 			}
-			if (angle > 90)
-				angle = -(90. - ((int32)angle % 90));
-			if (angle < -90)
-				angle = 90. - ((int32)-angle % 90);
 
-			if (modifiers() & B_LEFT_SHIFT_KEY) {
-				if (angle < 22 && angle > -22)
-					angle = 0;
-				else if (angle > 22 && angle < 75)
-					angle = 45;
-				else if (angle < -22 && angle > -75)
-					angle = -45;
-				else if (angle > 75)
-					angle = 90;
-				else if (angle < -75)
-					angle = -90;
-			}
+			if (modifiers() & B_LEFT_SHIFT_KEY)
+				angle = SnapToAngle(45., angle);
 
 			info.angle = angle;
 			snooze(20000);

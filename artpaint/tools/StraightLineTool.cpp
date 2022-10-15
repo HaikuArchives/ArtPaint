@@ -94,6 +94,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		window->Lock();
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
+		rgb_color old_color = view->HighColor();
 		window->Unlock();
 		original_point = point;
 		rgb_color c = ((PaintApplication*)be_app)->Color(true);
@@ -109,6 +110,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		point_list[3] = new_rect.LeftBottom();
 
 		window->Lock();
+		view->SetHighColor(c);
 		if ((GetCurrentValue(SIZE_OPTION) > 2) &&
 			(fToolSettings.mode == B_CONTROL_OFF)) {
 			view_polygon = new HSPolygon(point_list,4);
@@ -124,59 +126,32 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		while (buttons) {
 			window->Lock();
 			view->getCoords(&point,&buttons,&view_point);
-			if (modifiers() & B_LEFT_SHIFT_KEY) {
-				// Make the new point be so that the angle is a multiple of 45°.
-				float x_diff,y_diff;
-				x_diff = fabs(original_point.x-point.x);
-				y_diff = fabs(original_point.y-point.y);
+			if (modifiers() & B_SHIFT_KEY) {
+				// Make the new point be so that the angle is a multiple of 22.5°.
+				float x_diff, y_diff;
+				x_diff = fabs(original_point.x - point.x);
+				y_diff = fabs(original_point.y - point.y);
+				float len = sqrt(x_diff * x_diff + y_diff * y_diff);
+				float angle = atan(y_diff / x_diff) * 180 / M_PI;
 
-				if (x_diff < y_diff) {
-					if (x_diff < y_diff/2)
-						x_diff = 0;
-					else
-						x_diff = y_diff;
-				}
-				else {
-					if (y_diff < x_diff/2)
-						y_diff = 0;
-					else
-						y_diff = x_diff;
-				}
+				angle = SnapToAngle(22.5, angle);
 
-				float signed_x_diff = (point.x-original_point.x);
-				float signed_y_diff = (point.y-original_point.y);
+				y_diff = len * sin(angle * M_PI / 180.);
+				x_diff = len * cos(angle * M_PI / 180.);
 
-				if (signed_x_diff != 0)
-					point.x = original_point.x + x_diff * signed_x_diff/fabs(signed_x_diff);
-
-				if (signed_y_diff != 0)
-					point.y = original_point.y + y_diff * signed_y_diff/fabs(signed_y_diff);
-
-				x_diff = fabs(original_view_point.x-view_point.x);
-				y_diff = fabs(original_view_point.y-view_point.y);
-
-				if (x_diff < y_diff) {
-					if (x_diff < y_diff/2)
-						x_diff = 0;
-					else
-						x_diff = y_diff;
-				}
-				else {
-					if (y_diff < x_diff/2)
-						y_diff = 0;
-					else
-						y_diff = x_diff;
-				}
-
-				signed_x_diff = (view_point.x-original_view_point.x);
-				signed_y_diff = (view_point.y-original_view_point.y);
+				float signed_x_diff = (view_point.x - original_view_point.x);
+				float signed_y_diff = (view_point.y - original_view_point.y);
 				if (signed_x_diff != 0) {
 					view_point.x = original_view_point.x +
+						x_diff * signed_x_diff / fabs(signed_x_diff);
+					point.x = original_point.x +
 						x_diff * signed_x_diff / fabs(signed_x_diff);
 				}
 
 				if (signed_y_diff != 0) {
 					view_point.y = original_view_point.y +
+						y_diff * signed_y_diff / fabs(signed_y_diff);
+					point.y = original_point.y +
 						y_diff * signed_y_diff / fabs(signed_y_diff);
 				}
 			}
@@ -307,6 +282,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		SetLastUpdatedRect(updated_rect);
 		window->Lock();
 		view->SetDrawingMode(old_mode);
+		view->SetHighColor(old_color);
 		view->UpdateImage(updated_rect);
 		view->Sync();
 		window->Unlock();
