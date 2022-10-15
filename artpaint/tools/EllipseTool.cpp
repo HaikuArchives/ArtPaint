@@ -73,15 +73,17 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		BPoint original_point;
 		BRect bitmap_rect,old_rect,new_rect;
 		window->Lock();
+		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
-		rgb_color c=((PaintApplication*)be_app)->Color(true);
+		rgb_color c = ((PaintApplication*)be_app)->Color(true);
 		original_point = point;
 		bitmap_rect = BRect(point,point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
 		window->Lock();
-		view->StrokeEllipse(new_rect);
+		view->SetHighColor(c);
+		view->StrokeEllipse(new_rect, B_SOLID_HIGH);
 		window->Unlock();
 
 		while (buttons) {
@@ -94,8 +96,8 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			bitmap_rect = MakeRectFromPoints(original_point, point);
-			if (modifiers() & B_LEFT_SHIFT_KEY) {
-				// Make the rectangle square.
+			if (modifiers() & B_SHIFT_KEY) {
+				// Make the ellipse circular.
 				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
 				if (original_point.x == bitmap_rect.left)
 					bitmap_rect.right = bitmap_rect.left + max_distance;
@@ -107,9 +109,9 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				else
 					bitmap_rect.top = bitmap_rect.bottom - max_distance;
 			}
-			if (GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER) {
-				// Make the the rectangle original corner be at the center of
-				// new rectangle.
+			if (modifiers() & B_COMMAND_KEY) {
+				// Make the the ellipse's origin at the center of
+				// new ellipse.
 				float y_distance = bitmap_rect.Height();
 				float x_distance = bitmap_rect.Width();
 
@@ -142,6 +144,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 		bitmap_rect.InsetBy(-1,-1);
 		window->Lock();
+		view->SetHighColor(old_color);
 		view->SetDrawingMode(old_mode);
 		view->UpdateImage(bitmap_rect);
 		view->Sync();
@@ -179,7 +182,7 @@ EllipseTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drawing an ellipse.")
-		: B_TRANSLATE("Ellipse: SHIFT for circle"));
+		: B_TRANSLATE("Ellipse: SHIFT for circle, ALT for centered"));
 }
 
 
@@ -198,20 +201,6 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
-		message->AddInt32("option", SHAPE_OPTION);
-		message->AddInt32("value", HS_CORNER_TO_CORNER);
-		fCorner2Corner =
-			new BRadioButton(B_TRANSLATE("Corner to corner"),
-				message);
-
-		message = new BMessage(OPTION_CHANGED);
-		message->AddInt32("option", SHAPE_OPTION);
-		message->AddInt32("value", HS_CENTER_TO_CORNER);
-		fCenter2Corner =
-			new BRadioButton(B_TRANSLATE("Center to corner"),
-				message);
-
-		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
 		message->AddInt32("value", 0x00000000);
 
@@ -222,13 +211,6 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFillEllipse)
-				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
-			.End()
-			.AddStrut(kWidgetSpacing)
-			.Add(SeparatorView(B_TRANSLATE("Mode")))
-			.AddGroup(B_VERTICAL, kWidgetSpacing)
-				.Add(fCorner2Corner)
-				.Add(fCenter2Corner)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.AddStrut(kWidgetSpacing)
@@ -243,12 +225,6 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
 			fFillEllipse->SetValue(B_CONTROL_ON);
 
-		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CORNER_TO_CORNER)
-			fCorner2Corner->SetValue(B_CONTROL_ON);
-
-		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CENTER_TO_CORNER)
-			fCenter2Corner->SetValue(B_CONTROL_ON);
-
 		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
 			fAntiAlias->SetValue(B_CONTROL_ON);
 	}
@@ -261,7 +237,5 @@ EllipseToolConfigView::AttachedToWindow()
 	DrawingToolConfigView::AttachedToWindow();
 
 	fFillEllipse->SetTarget(this);
-	fCorner2Corner->SetTarget(this);
-	fCenter2Corner->SetTarget(this);
 	fAntiAlias->SetTarget(this);
 }
