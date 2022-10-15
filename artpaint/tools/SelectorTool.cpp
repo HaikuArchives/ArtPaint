@@ -100,7 +100,7 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		BPoint seed_point = point;
 		if (view->LockLooper()) {
 			view->SetDrawingMode(B_OP_INVERT);
-			view->SetPenSize(2.0);
+			view->SetPenSize(1.0);
 			view->UnlockLooper();
 		}
 		BRect old_rect;
@@ -142,8 +142,6 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 						bitmap_rect = bpoly->Frame();
 						view_rect = view->convertBitmapRectToView(bitmap_rect);
 						bpoly->MapTo(bitmap_rect,view_rect);
-						view->SetHighColor(255,255,0,255);
-						view->SetLowColor(0,0,0,255);
 						view->StrokePolygon(bpoly,false,HS_ANIMATED_STRIPES_1);
 						view->SetDrawingMode(B_OP_INVERT);
 						view->UnlockLooper();
@@ -200,8 +198,6 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 						bitmap_rect = bpoly->Frame();
 						view_rect = view->convertBitmapRectToView(bitmap_rect);
 						bpoly->MapTo(bitmap_rect,view_rect);
-						view->SetHighColor(255,255,0,255);
-						view->SetLowColor(0,0,0,255);
 						view->StrokePolygon(bpoly,false,HS_ANIMATED_STRIPES_1);
 						view->UnlockLooper();
 					}
@@ -224,7 +220,6 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		selection->AddSelection(the_polygon,fToolSettings.mode == B_OP_ADD);
 	}
 	else if (fToolSettings.shape == HS_FREE_LINE) {
-		int32 turn = 0;
 		int32 size = 100;
 		BPoint *point_list = new BPoint[size];
 		int32 next_index = 0;
@@ -243,15 +238,11 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			}
 
 			view->Window()->Lock();
-			if (turn == 0)
-				view->StrokeLine(view_point,B_SOLID_HIGH);
-			else
-				view->StrokeLine(view_point,B_SOLID_LOW);
+			view->StrokeLine(view_point, HS_ANIMATED_STRIPES_1);
 			view->getCoords(&point,&buttons,&view_point);
 			view->Window()->Unlock();
 
 			snooze(20 * 1000);
-			turn = (turn + 1) % 2;
 		}
 		HSPolygon *poly = new HSPolygon(point_list,next_index,HS_POLYGON_CLOCKWISE);
 		delete[] point_list;
@@ -264,7 +255,8 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		view->Window()->Lock();
 		drawing_mode old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
-		view->StrokeRect(view->convertBitmapRectToView(new_rect), B_SOLID_LOW);
+		view->StrokeRect(view->convertBitmapRectToView(new_rect),
+			HS_ANIMATED_STRIPES_1);
 		view->Window()->Unlock();
 
 		the_script->AddPoint(point);
@@ -273,7 +265,8 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
 				view->Draw(view->convertBitmapRectToView(old_rect));
-				view->StrokeRect(view->convertBitmapRectToView(new_rect), B_SOLID_LOW );
+				view->StrokeRect(view->convertBitmapRectToView(new_rect),
+					HS_ANIMATED_STRIPES_1);
 				view->Window()->Unlock();
 
 				old_rect = new_rect;
@@ -322,7 +315,8 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		view->Window()->Lock();
 		drawing_mode old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
-		view->StrokeEllipse(view->convertBitmapRectToView(new_rect), B_SOLID_LOW);
+		view->StrokeEllipse(view->convertBitmapRectToView(new_rect),
+			HS_ANIMATED_STRIPES_1);
 		view->Window()->Unlock();
 
 		the_script->AddPoint(point);
@@ -331,7 +325,8 @@ SelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
 				view->Draw(view->convertBitmapRectToView(old_rect));
-				view->StrokeEllipse(view->convertBitmapRectToView(new_rect), B_SOLID_LOW);
+				view->StrokeEllipse(view->convertBitmapRectToView(new_rect),
+					HS_ANIMATED_STRIPES_1);
 				view->Window()->Unlock();
 
 				old_rect = new_rect;
