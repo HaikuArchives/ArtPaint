@@ -283,8 +283,9 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		bool select_foreground = (buttons & B_PRIMARY_MOUSE_BUTTON) != 0x00;
 
 		// for the quick calculation of square-roots
-		float sqrt_table[500];
-		for (int32 i=0;i<500;i++)
+		int num_sqrt = 500;
+		float sqrt_table[num_sqrt];
+		for (int32 i = 0; i < num_sqrt; i++)
 			sqrt_table[i] = sqrt(i);
 
 		float half_size = fToolSettings.size/2;
@@ -315,7 +316,9 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 				for (int32 x=0;x<width+1;x++) {
 					x_dist = (int32)(point.x-rc.left-x);
 					real_x = (int32)(rc.left+x);
-					if (sqrt_table[x_dist*x_dist + y_sqr] <= half_size) {
+					int32 index = x_dist * x_dist + y_sqr;
+					if (index < num_sqrt &&
+						sqrt_table[index] <= half_size) {
 						uint32 tmp_color = drawer->GetPixel(real_x,real_y);
 						red += (tmp_color >> 8) & 0xFF;
 						green += (tmp_color >> 16) & 0xFF;
