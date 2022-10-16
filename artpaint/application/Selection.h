@@ -181,17 +181,16 @@ inline	bool			ContainsPoint(int32, int32);
 bool
 Selection::ContainsPoint(BPoint p)
 {
-	int32 y = (int32)p.y;
-	int32 x = (int32)p.x;
-
-	return (selection_bits == NULL || (image_bounds.Contains(p) &&
-		((*(selection_bits + y * selection_bpr + x)) != 0x00)));
+	return ContainsPoint((int32)p.x, (int32)p.y);
 }
 
 
 bool
 Selection::ContainsPoint(int32 x, int32 y)
 {
+	if (x < 0 || y < 0)
+		return false;
+
 	return (selection_bits == NULL ||
 		((*(selection_bits + y * selection_bpr + x)) != 0x00));
 }

@@ -274,6 +274,36 @@ polygon_direction HSPolygon::GetDirection()
 }
 
 
+bool
+HSPolygon::Contains(BPoint test_point)
+{
+	BRect b_box = BoundingBox();
+	bool inside = false;
+
+	if (b_box.Contains(test_point) == false)
+		return inside;
+
+	for (int i = 0, j = point_count - 1; i < point_count; j = i++) {
+		if (
+			(points[i].y > test_point.y) != (points[j].y > test_point.y) &&
+			test_point.x < (points[j].x - points[i].x) *
+			(test_point.y - points[i].y) / (points[j].y - points[i].y) +
+			points[i].x
+		)
+			inside = !inside;
+	}
+
+	return inside;
+}
+
+
+bool
+HSPolygon::Contains(int32 x, int32 y)
+{
+	return Contains(BPoint(x, y));
+}
+
+
 bool HSPolygon::operator==(const HSPolygon &poly)
 {
 	bool similar = (point_count == poly.point_count);
