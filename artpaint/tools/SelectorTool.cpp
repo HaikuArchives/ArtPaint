@@ -446,8 +446,11 @@ SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 	uint32 binary_bpr = binary_fill_map->BytesPerRow();
 	uchar* binary_bits = (uchar*)binary_fill_map->Bits();
 
+	if (y > binary_fill_map->Bounds().Height() || y < 0)
+		return;
+
 	// Then go from start towards the left side of the bitmap.
-	while (x >= min_x &&
+	while (x >= min_x && x <= max_x &&
 		compare_2_pixels_with_variance(
 			drawer->GetPixel(x, y), old_color, tolerance) &&
 		(*(binary_bits + y * binary_bpr + x) & 0x01) == 0x00) {
@@ -484,7 +487,7 @@ SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 		drawer->GetPixel(start_x, y - 1),
 		old_color, tolerance);
 	x = start_x + 1;
-	while (x <= max_x &&
+	while (x >= min_x && x <= max_x &&
 		compare_2_pixels_with_variance(
 			drawer->GetPixel(x, y), old_color, tolerance) &&
 		(*(binary_bits + y * binary_bpr + x) & 0x01) == 0x00) {
