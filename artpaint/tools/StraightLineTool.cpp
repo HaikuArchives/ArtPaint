@@ -126,6 +126,8 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		while (buttons) {
 			window->Lock();
 			view->getCoords(&point,&buttons,&view_point);
+			float scale = view->getMagScale();
+
 			if (modifiers() & B_SHIFT_KEY) {
 				// Make the new point be so that the angle is a multiple of 22.5°.
 				float x_diff, y_diff;
@@ -143,14 +145,14 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				float signed_y_diff = (view_point.y - original_view_point.y);
 				if (signed_x_diff != 0) {
 					view_point.x = original_view_point.x +
-						x_diff * signed_x_diff / fabs(signed_x_diff);
+						x_diff * signed_x_diff * scale / fabs(signed_x_diff);
 					point.x = original_point.x +
 						x_diff * signed_x_diff / fabs(signed_x_diff);
 				}
 
 				if (signed_y_diff != 0) {
 					view_point.y = original_view_point.y +
-						y_diff * signed_y_diff / fabs(signed_y_diff);
+						y_diff * signed_y_diff * scale / fabs(signed_y_diff);
 					point.y = original_point.y +
 						y_diff * signed_y_diff / fabs(signed_y_diff);
 				}
@@ -183,13 +185,17 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					delete bpoly;
 				}
 				else {
-					float left = min_c(original_view_point.x, prev_view_point.x);
-					float top = min_c(original_view_point.y, prev_view_point.y);
-					float right = max_c(original_view_point.x, prev_view_point.x);
-					float bottom = max_c(original_view_point.y, prev_view_point.y);
+					float left = min_c(point.x,
+						min_c(original_view_point.x, prev_view_point.x));
+					float top = min_c(point.y,
+						min_c(original_view_point.y, prev_view_point.y));
+					float right = max_c(point.x,
+						max_c(original_view_point.x, prev_view_point.x));
+					float bottom = max_c(point.y,
+						max_c(original_view_point.y, prev_view_point.y));
 					BRect bbox(left, top, right, bottom);
 					view->Draw(bbox);
-					view->StrokeLine(original_view_point,view_point);
+					view->StrokeLine(original_view_point, view_point);
 					angle = atan2((view_point.y-original_view_point.y),
 						(view_point.x - original_view_point.x)) * 180 / M_PI;
 					prev_view_point = view_point;
