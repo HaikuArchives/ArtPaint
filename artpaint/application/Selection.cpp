@@ -173,8 +173,6 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE,
 			B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
-		selection_bits = (uint8*)selection_map->Bits();
-		selection_bpr = selection_map->BytesPerRow();
 
 		if (selection_map->Lock()) {
 			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
@@ -183,6 +181,7 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 	}
 
 	if (selection_map->Lock()) {
+		selection_view->DrawBitmap(selection_map);
 		BPolygon* p = poly->GetBPolygon();
 		if (!add_to_selection) {
 			if (bound_poly) {
