@@ -174,6 +174,8 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE,
 			B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
+		selection_bits = (uint8*)selection_map->Bits();
+		selection_bpr = selection_map->BytesPerRow();
 
 		if (selection_map->Lock()) {
 			rgb_color low = selection_view->LowColor();
