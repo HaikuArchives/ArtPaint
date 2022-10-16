@@ -334,7 +334,7 @@ inline uint32 src_over_fixed(uint32 dst, uint32 src)
 	uint32 inv_dst_alpha = (dst_alpha * inv_src_alpha) / 255;
 	uint32 result_alpha = src_alpha + inv_dst_alpha;
 	if (result_alpha == 0)
-		result_alpha = 1;
+		return 0;
 
 	// r-rgb * r-a = s-rgb * s-a + d-rgb * d-a * (1 - s-a)
 
@@ -657,7 +657,7 @@ inline uint32 src_over_fixed_blend(uint32 dst, uint32 src, uint32 mode=0)
 	uint8 result_alpha = src_alpha + inv_src_dst_alpha;
 
 	if (result_alpha == 0)
-		result_alpha = 1;
+		return 0;
 
 	// r-rgb * r-a = s-a * (1 - d-a) * s-rgb +
 	//		s-a * d-a * blend(d-rgb, s-rgb) +
@@ -722,7 +722,7 @@ inline uint32 src_out_fixed(uint32 dst, uint32 src)
 	uint32 inv_dst_alpha = 255 - dst_alpha;
 	uint32 result_alpha = (src_alpha * inv_dst_alpha) / 255;
 	if (result_alpha == 0)
-		result_alpha = 1;
+		return 0;
 
 	// r-rgb * r-a = s-rgb * s-a * (1 - d-a)
 
