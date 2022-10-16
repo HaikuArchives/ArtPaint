@@ -132,6 +132,8 @@ ImageView::ImageView(BRect frame, float width, float height)
 	fGrabbingCursor = new BCursor(B_CURSOR_ID_GRABBING);
 	get_key_repeat_rate(&fKeyRate);
 
+	show_selection = TRUE;
+
 	AddFilter(new BMessageFilter(B_KEY_DOWN, KeyFilterFunction));
 }
 
@@ -202,7 +204,8 @@ ImageView::Draw(BRect updateRect)
 	}
 
 	// Draw the selection also
-	selection->Draw();
+	if (show_selection == TRUE)
+		selection->Draw();
 
 	// Make the manipulator draw it's UI here.
 	DrawManipulatorGUI(FALSE);
@@ -698,6 +701,22 @@ ImageView::MessageReceived(BMessage* message)
 				}
 				Invalidate();
 			}
+		} break;
+
+		case HS_HIDE_SELECTION_BORDERS: {
+			BMenuItem* showBorders =
+				Window()->KeyMenuBar()->FindItem(HS_HIDE_SELECTION_BORDERS);
+
+			show_selection = !show_selection;
+			if (show_selection == FALSE) {
+				selection->StopDrawing();
+				showBorders->SetMarked(TRUE);
+			} else {
+				selection->StartDrawing(this, magnify_scale);
+				showBorders->SetMarked(FALSE);
+			}
+
+			Invalidate();
 		} break;
 
 		// this comes from menubar->"Canvas"->"Clear Canvas", we should then clear all the
@@ -1475,7 +1494,8 @@ ImageView::PaintToolThread()
 				}
 
 				// Tell the selection to start drawing itself.
-				selection->StartDrawing(this, magnify_scale);
+				if (show_selection == TRUE)
+					selection->StartDrawing(this, magnify_scale);
 			}
 			return B_OK;
 		}
@@ -1562,7 +1582,8 @@ ImageView::ManipulatorMouseTrackerThread()
 						Draw(convertBitmapRectToView(updated_region->RectAt(i)));
 				} else if (preview_quality == DRAW_ONLY_GUI) {
 					DrawManipulatorGUI(TRUE);
-					selection->Draw();
+					if (show_selection == TRUE)
+						selection->Draw();
 					Flush();
 				}
 				number_of_frames++;
@@ -1602,7 +1623,8 @@ ImageView::ManipulatorMouseTrackerThread()
 		} else if (preview_quality == DRAW_ONLY_GUI) {
 			if (LockLooper() == TRUE) {
 				DrawManipulatorGUI(TRUE);
-				selection->Draw();
+				if (show_selection == TRUE)
+					selection->Draw();
 				Flush();
 				UnlockLooper();
 			}
@@ -1649,7 +1671,8 @@ ImageView::GUIManipulatorUpdaterThread()
 						Draw(convertBitmapRectToView(updated_region->RectAt(i)));
 				} else if (preview_quality == DRAW_ONLY_GUI) {
 					DrawManipulatorGUI(TRUE);
-					selection->Draw();
+					if (show_selection == TRUE)
+						selection->Draw();
 					Flush();
 				}
 				number_of_frames++;
@@ -1689,7 +1712,8 @@ ImageView::GUIManipulatorUpdaterThread()
 		} else if (preview_quality == DRAW_ONLY_GUI) {
 			if (LockLooper() == TRUE) {
 				DrawManipulatorGUI(TRUE);
-				selection->Draw();
+				if (show_selection == TRUE)
+					selection->Draw();
 				Flush();
 				UnlockLooper();
 			}

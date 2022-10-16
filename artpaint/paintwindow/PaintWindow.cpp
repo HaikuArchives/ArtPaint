@@ -495,6 +495,13 @@ PaintWindow::MenusBeginning()
 			item->SetEnabled(false);
 		else
 			item->SetEnabled(true);
+
+		item = fMenubar->FindItem(HS_HIDE_SELECTION_BORDERS);
+		if (fImageView->GetSelection()->IsEmpty())
+			item->SetEnabled(false);
+		else
+			item->SetEnabled(true);
+
 	}
 
 	if ((fImageEntry.InitCheck() == B_OK) && (fCurrentHandler != 0)) {
@@ -1171,6 +1178,10 @@ PaintWindow::openMenuBar()
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Shrink"),
 		new BMessage(HS_SHRINK_SELECTION), 'G', B_SHIFT_KEY, this,
 		B_TRANSLATE("Shrinks the selection in all directions.")));
+	menu->AddSeparatorItem();
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Hide borders"),
+		new BMessage(HS_HIDE_SELECTION_BORDERS), 'H', 0, this,
+		B_TRANSLATE("Hides the selection borders.")));
 
 	// The Layer menu.
 	menu = new BMenu(B_TRANSLATE("Layer"));
