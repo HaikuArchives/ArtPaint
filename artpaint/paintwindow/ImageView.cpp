@@ -321,40 +321,36 @@ ImageView::MessageReceived(BMessage* message)
 	// here check what the message is all about and initiate proper action
 	switch (message->what) {
 		case B_MOUSE_WHEEL_CHANGED: {
-			if (modifiers() & B_COMMAND_KEY) {
-				float delta;
-				if (message->FindFloat("be:wheel_delta_y", &delta) == B_OK) {
+			float delta;
+			if (message->FindFloat("be:wheel_delta_y", &delta) == B_OK) {
+				delta = -delta * 2.;
+
+				if (modifiers() & B_SHIFT_KEY)
 					delta *= 2.;
+				BPoint point;
+				uint32 buttons;
+				BPoint norm_point;
 
-					if (modifiers() & B_SHIFT_KEY)
-						delta *= 2.;
-					BPoint point;
-					uint32 buttons;
-					BPoint norm_point;
+				GetMouse(&point, &buttons);
+				getCoords(&norm_point, &buttons, &point);
 
-					GetMouse(&point, &buttons);
-					getCoords(&norm_point, &buttons, &point);
+				float magScale = getMagScale();
+				float f = magScale / 16.;
+				float scaleFactor = (pow(f, f) - 0.1) /
+					(pow(16., max_c(0.25, 1. - f)) - 0.1);
+				float scaleChange = scaleFactor * delta;
 
-					float magScale = getMagScale();
-					float f = magScale / 16.;
-					float scaleFactor = (pow(f, f) - 0.1) /
-						(pow(16., max_c(0.25, 1. - f)) - 0.1);
-					float scaleChange = scaleFactor * delta;
+				magScale += scaleChange;
 
-					magScale += scaleChange;
+				if (magScale < 16.0) {
+					setMagScale(magScale);
 
-					if (magScale < 16.0) {
-						setMagScale(magScale);
+					float delta_x = norm_point.x * scaleChange;
+					float delta_y = norm_point.y * scaleChange;
 
-						float delta_x = norm_point.x * scaleChange;
-						float delta_y = norm_point.y * scaleChange;
-
-						ScrollBy(delta_x, delta_y);
-					}
+					ScrollBy(delta_x, delta_y);
 				}
-			} else
-				BView::MessageReceived(message);
-
+			}
 		} break;
 
 		// This comes from layer's view and tells us to change the active layer.
@@ -940,14 +936,10 @@ ImageView::MouseDown(BPoint view_point)
 					GetMouse(&point, &buttons);
 					this->ConvertToScreen(&point);
 
-					float delta_x = point.x - prev_point.x;
-					float delta_y = point.y - prev_point.y;
+					float delta_x = prev_point.x - point.x;
+					float delta_y = prev_point.y - point.y;
 
-					if (space_down == TRUE) {
-						be_app->SetCursor(fGrabbingCursor);
-						delta_x = -delta_x;
-						delta_y = -delta_y;
-					}
+					be_app->SetCursor(fGrabbingCursor);
 
 					ScrollBy(delta_x, delta_y);
 					snooze(25 * 1000);
