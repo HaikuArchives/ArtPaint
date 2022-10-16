@@ -200,6 +200,7 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 		selection_view->SetLowColor(255, 255, 255, 255);
 		selection_view->SetHighColor(0, 0, 0, 0);
 
+		selection_view->DrawBitmap(selection_map);
 		BPolygon* p = poly->GetBPolygon();
 		if (!add_to_selection) {
 			if (bound_poly) {
@@ -899,8 +900,6 @@ Selection::SimplifySelection()
 						}
 
 						next_point = BPoint(new_x, new_y);
-						if (bounds.Contains(next_point) == FALSE)
-							direction = -1;
 					}
 
 					HSPolygon* new_polygon;
