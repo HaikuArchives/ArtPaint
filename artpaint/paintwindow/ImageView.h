@@ -185,6 +185,8 @@ static	int32		enter_thread(void*);
 		void		SetCursor();
 
 		void		SetReferencePoint(BPoint, bool);
+
+		bool		show_selection;
 public:
 					ImageView(BRect frame, float width, float height);
 					~ImageView();
@@ -242,6 +244,8 @@ inline	float		getMagScale() { return magnify_scale; }
 
 const	char*		ReturnProjectName() { return project_name; }
 const	char*		ReturnImageName() { return image_name; }
+
+		bool		ShowSelection() { return show_selection; }
 };
 
 filter_result KeyFilterFunction(BMessage*, BHandler**, BMessageFilter*);

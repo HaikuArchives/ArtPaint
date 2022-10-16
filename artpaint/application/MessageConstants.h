@@ -100,12 +100,13 @@
 #define	HS_SHOW_DATATYPE_SETTINGS	'SdtS'
 
 
-// these constants are used in the Edit-menu
-#define	HS_INVERT_SELECTION		'InSl'
-#define	HS_CLEAR_SELECTION		'ClSl'
-#define HS_SELECT_ALL			'SlAl'
-#define HS_GROW_SELECTION		'GrSl'
-#define HS_SHRINK_SELECTION		'SrSL'
+// these constants are used in the Selection menu
+#define	HS_INVERT_SELECTION			'InSl'
+#define	HS_CLEAR_SELECTION			'ClSl'
+#define HS_SELECT_ALL				'SlAl'
+#define HS_GROW_SELECTION			'GrSl'
+#define HS_SHRINK_SELECTION			'SrSL'
+#define HS_HIDE_SELECTION_BORDERS	'HbSL'
 
 // These constants are used to inform about clearing of
 // the canvas or a individual layer.

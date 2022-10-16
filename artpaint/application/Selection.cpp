@@ -122,6 +122,16 @@ Selection::StartDrawing(BView* view, float mag_scale)
 
 
 void
+Selection::StopDrawing()
+{
+	if (drawer_thread > 0)
+		kill_thread(drawer_thread);
+
+	continue_drawing = false;
+}
+
+
+void
 Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 {
 	acquire_sem(selection_mutex);

@@ -108,6 +108,7 @@ public:
 		void			SetSelectionData(const SelectionData*);
 
 		void			StartDrawing(BView*, float);
+		void			StopDrawing();
 
 		// This function adds a polygon to the selection. The point list
 		// describes polygons vertices. The polygon is stored as a point list
