@@ -251,13 +251,15 @@ LayerWindow::LayerWindow(BRect frame)
 		scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width(),
 		LAYER_VIEW_HEIGHT));
 
-	Lock();
-	BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,
-		B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
-	AddCommonFilter(activation_filter);
-	SetSizeLimits(min_width, 1000,
-		LAYER_VIEW_HEIGHT * 2.5, 1000);
-	Unlock();
+	if (Lock()) {
+		BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,
+			B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
+		AddCommonFilter(activation_filter);
+		AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
+		SetSizeLimits(min_width, 1000,
+			LAYER_VIEW_HEIGHT * 2.5, 1000);
+		Unlock();
+	}
 	Show();
 
 	FloaterManager::AddFloater(this);
