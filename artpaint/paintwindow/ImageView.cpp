@@ -675,7 +675,7 @@ ImageView::MessageReceived(BMessage* message)
 				if (!(*undo_queue->ReturnSelectionData() ==
 					*selection->ReturnSelectionData())) {
 					UndoEvent* new_event =
-						undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),
+						undo_queue->AddUndoEvent(B_TRANSLATE("Select non-transparent"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
