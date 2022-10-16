@@ -107,6 +107,7 @@
 #define HS_GROW_SELECTION			'GrSl'
 #define HS_SHRINK_SELECTION			'SrSL'
 #define HS_HIDE_SELECTION_BORDERS	'HbSL'
+#define HS_SELECT_LAYER_PIXELS		'SlPx'
 
 // These constants are used to inform about clearing of
 // the canvas or a individual layer.

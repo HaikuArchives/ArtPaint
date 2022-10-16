@@ -135,6 +135,35 @@ BitmapUtilities::ConvertColorSpace(BBitmap *inBitmap, color_space wantSpace)
 }
 
 
+BBitmap*
+BitmapUtilities::ConvertToMask(BBitmap *inBitmap, uint8 color)
+{
+	BBitmap* out_map = new BBitmap(inBitmap->Bounds(), B_GRAY8);
+	uint8* out_bits = (uint8*)out_map->Bits();
+	int32 out_bpr = out_map->BytesPerRow();
+
+	uint32 *in_bits = (uint32*)inBitmap->Bits();
+	int32 in_bpr = inBitmap->BytesPerRow()/4;
+
+	union color_conversion c;
+
+	out_map->LockBits();
+	uint32 pos = 0;
+	for (int32 y = 0; y < out_map->Bounds().IntegerHeight(); y++) {
+		for (int32 x = 0; x < out_map->Bounds().IntegerWidth(); x++) {
+			c.word = *(in_bits + x + y * in_bpr);
+			float alpha = (float)c.bytes[3] / 255.;
+
+			*(out_bits + x + y * out_bpr) = (uint8)((float)color * alpha);
+		}
+
+	}
+	out_map->UnlockBits();
+
+	return out_map;
+}
+
+
 void
 BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, BBitmap* fromBuffer,
 	BRect updated_rect)
