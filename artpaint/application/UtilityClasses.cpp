@@ -115,14 +115,14 @@ MakeRectFromPoints(const BPoint& point1, const BPoint& point2)
 
 
 float
-SnapToAngle(const float snap_angle, const float src_angle)
+SnapToAngle(const float snap_angle, const float src_angle, const float max_angle)
 {
 	float new_angle = src_angle;
 
-	if (src_angle > 90)
-		new_angle = -(90. - ((int32)src_angle % 90));
-	if (src_angle < -90)
-		new_angle = 90. - ((int32)-src_angle % 90);
+	if (src_angle > max_angle)
+		new_angle = -(max_angle - ((int32)src_angle % (int32)max_angle));
+	if (src_angle < -max_angle)
+		new_angle = max_angle - ((int32)-src_angle % (int32)max_angle);
 
 	float abs_src_angle = fabs(new_angle);
 	float abs_snap_angle = fabs(snap_angle);
@@ -132,7 +132,7 @@ SnapToAngle(const float snap_angle, const float src_angle)
 	if (new_angle < 0)
 		sign = -1;
 
-	for (float i = 0; i <= 90; i += abs_snap_angle) {
+	for (float i = 0; i <= max_angle; i += abs_snap_angle) {
 		if (abs_src_angle > i - half_angle && abs_src_angle < i + half_angle) {
 			new_angle = i;
 			return new_angle * sign;
