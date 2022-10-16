@@ -19,6 +19,7 @@ public:
 	static	status_t	FixMissingAlpha(BBitmap *bitmap);
 	static	BBitmap*	ConvertColorSpace(BBitmap *inBitmap,
 							color_space wantSpace);
+	static	BBitmap*	ConvertToMask(BBitmap *inBitmap, uint8 color);
 	static  void		CompositeBitmapOnSource(BBitmap* toBuffer,
 							BBitmap* srcBuffer, BBitmap* fromBuffer,
 							BRect updated_rect);

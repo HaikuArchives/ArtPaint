@@ -8,6 +8,7 @@
  *
  */
 
+#include "BitmapUtilities.h"
 #include "Cursors.h"
 #include "DrawingTools.h"
 #include "Image.h"
@@ -656,6 +657,26 @@ ImageView::MessageReceived(BMessage* message)
 				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
 					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Select all"),
 						the_image->ReturnThumbnailImage());
+					if (new_event != NULL) {
+						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
+						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+					}
+				}
+				Invalidate();
+			}
+		} break;
+
+		case HS_SELECT_LAYER_PIXELS: {
+			if (!fManipulator) {
+				BBitmap* layerBitmap = the_image->ReturnActiveBitmap();
+				BBitmap* selection_map =
+					BitmapUtilities::ConvertToMask(layerBitmap, 0xFF);
+				selection->AddSelection(selection_map, true);
+				if (!(*undo_queue->ReturnSelectionData() ==
+					*selection->ReturnSelectionData())) {
+					UndoEvent* new_event =
+						undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),
+							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());

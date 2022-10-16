@@ -1166,6 +1166,9 @@ PaintWindow::openMenuBar()
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All"),
 		new BMessage(HS_SELECT_ALL), 'A', 0, this,
 		B_TRANSLATE("Selects entire layer")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All non-transparent"),
+		new BMessage(HS_SELECT_LAYER_PIXELS), 'A', B_SHIFT_KEY, this,
+		B_TRANSLATE("Selects all non-transparent layer pixels")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("None"),
 		new BMessage(HS_CLEAR_SELECTION), 'D', 0, this,
 		B_TRANSLATE("Un-selects all")));
