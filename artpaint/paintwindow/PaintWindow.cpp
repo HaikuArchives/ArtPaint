@@ -1160,6 +1160,12 @@ PaintWindow::openMenuBar()
 		new BMessage(B_PASTE), 'V', B_SHIFT_KEY, this,
 		B_TRANSLATE("Pastes previously copied selection as a new project.")));
 
+	menu->AddSeparatorItem();
+
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Delete"),
+		new BMessage(HS_EDIT_DELETE), 0, 0, this,
+		B_TRANSLATE("Clears the selection or layer.")));
+
 	menu = new BMenu(B_TRANSLATE("Selection"));
 	fMenubar->AddItem(menu);
 
@@ -1223,8 +1229,6 @@ PaintWindow::openMenuBar()
 		a_message, B_UP_ARROW, 0, this,
 		B_TRANSLATE("Flips the active layer vertically.")));
 
-	menu->AddSeparatorItem();
-
 /*
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSPARENCY_MANIPULATOR);
@@ -1233,9 +1237,6 @@ PaintWindow::openMenuBar()
 		a_message, 0, 0, this,
 		B_TRANSLATE("Changes the transparency of active layer.")));
 */
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear"),
-		new BMessage(HS_CLEAR_LAYER), 0, 0, this,
-		B_TRANSLATE("Clears the active layer.")));
 
 	menu->AddSeparatorItem();
 
@@ -1311,11 +1312,6 @@ PaintWindow::openMenuBar()
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
 		a_message, 'S', B_CONTROL_KEY, this,
 		B_TRANSLATE("Scales the image.")));
-
-	menu->AddItem(new BSeparatorItem());
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear"),
-		new BMessage(HS_CLEAR_CANVAS), 0, 0, this,
-		B_TRANSLATE("Clears all layers.")));
 
 	// The Window menu,
 	menu = new BMenu(B_TRANSLATE("Window"));
@@ -1574,8 +1570,7 @@ PaintWindow::AddImageView()
 	fMenubar->FindItem(HS_DUPLICATE_LAYER)->SetTarget(fImageView);
 	fMenubar->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetTarget(fImageView);
 	fMenubar->FindItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS))->SetTarget(fImageView);
-	fMenubar->FindItem(HS_CLEAR_CANVAS)->SetTarget(fImageView);
-	fMenubar->FindItem(HS_CLEAR_LAYER)->SetTarget(fImageView);
+	fMenubar->FindItem(HS_EDIT_DELETE)->SetTarget(fImageView);
 	fMenubar->FindItem(HS_ZOOM_IMAGE_IN)->SetTarget(fImageView);
 	fMenubar->FindItem(HS_ZOOM_IMAGE_OUT)->SetTarget(fImageView);
 	fMenubar->FindItem(B_TRANSLATE("Set zoom level"))->Submenu()->SetTargetForItems(fImageView);

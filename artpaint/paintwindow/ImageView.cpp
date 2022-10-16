@@ -736,24 +736,11 @@ ImageView::MessageReceived(BMessage* message)
 			Invalidate();
 		} break;
 
-		// this comes from menubar->"Canvas"->"Clear Canvas", we should then clear all the
-		// layers and recalculate the composite picture and redisplay
-		case HS_CLEAR_CANVAS: {
+		// This comes from menubar->"Edit"->"Delete". We should clear the layer,
+		// recalculate the composite picture and redisplay the image.
+		case HS_EDIT_DELETE: {
 			if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
-				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
-				if (the_image->ClearLayers(c) == TRUE) {
-					Invalidate();
-					AddChange();
-				}
-				release_sem(action_semaphore);
-			}
-		} break;
-
-		// This comes from menubar->"Layer"->"Clear Layer". We should clear the layer, recalculate
-		// the composite picture and redisplay the image.
-		case HS_CLEAR_LAYER: {
-			if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
-				rgb_color c = ((PaintApplication*)be_app)->Color(FALSE);
+				rgb_color c = BGRAColorToRGB(0);
 				if (the_image->ClearCurrentLayer(c) == TRUE) {
 					Invalidate();
 					AddChange();
@@ -2122,9 +2109,7 @@ ImageView::DoCopyOrCut(int32 layers, bool cut)
 		}
 		if (cut == TRUE) {
 			if (layers == HS_MANIPULATE_CURRENT_LAYER)
-				Window()->PostMessage(HS_CLEAR_LAYER, this);
-			else
-				Window()->PostMessage(HS_CLEAR_CANVAS, this);
+				Window()->PostMessage(HS_EDIT_DELETE, this);
 		}
 
 		release_sem(action_semaphore);

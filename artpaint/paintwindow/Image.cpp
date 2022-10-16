@@ -493,7 +493,7 @@ Image::ClearCurrentLayer(rgb_color &c)
 	cleared_layer->Clear(c);
 
 	// Store the undo.
-	UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear layer"),ReturnThumbnailImage());
+	UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Delete"),ReturnThumbnailImage());
 	if (new_event != NULL) {
 		for (int32 i=0;i<layer_list->CountItems();i++) {
 			Layer *layer = (Layer*)layer_list->ItemAt(i);
@@ -506,40 +506,6 @@ Image::ClearCurrentLayer(rgb_color &c)
 
 			new_event->AddAction(new_action);
 			new_action->StoreUndo(layer->Bitmap());
-		}
-	}
-
-	// If the added UndoEvent is empty then destroy it. This is because there was nothing
-	// to be cleared.
-	if ((new_event != NULL) && (new_event->IsEmpty() == TRUE)) {
-		undo_queue->RemoveEvent(new_event);
-		delete new_event;
-		return FALSE;
-	}
-
-	Render();
-	return TRUE;
-}
-
-
-bool
-Image::ClearLayers(rgb_color &c)
-{
-	for (int32 i=0;i<layer_list->CountItems();i++) {
-		((Layer*)layer_list->ItemAt(i))->Clear(c);
-	}
-
-	// Store the undo.
-	UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Clear canvas"),ReturnThumbnailImage());
-	if (new_event != NULL) {
-		for (int32 i=0;i<layer_list->CountItems();i++) {
-			Layer *layer = (Layer*)layer_list->ItemAt(i);
-			UndoAction *new_action;
-			new_action = new UndoAction(layer->Id(),CLEAR_LAYER_ACTION,layer->Bitmap()->Bounds());
-			new_event->AddAction(new_action);
-			new_action->StoreUndo(layer->Bitmap());
-			thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,layer);
-			resume_thread(a_thread);
 		}
 	}
 

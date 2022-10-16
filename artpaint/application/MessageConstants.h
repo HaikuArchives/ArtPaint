@@ -109,10 +109,8 @@
 #define HS_HIDE_SELECTION_BORDERS	'HbSL'
 #define HS_SELECT_LAYER_PIXELS		'SlPx'
 
-// These constants are used to inform about clearing of
-// the canvas or a individual layer.
-#define	HS_CLEAR_CANVAS			'Clcv'
-#define HS_CLEAR_LAYER			'Clla'
+// These constants are used to inform about deleting a layer or selection
+#define HS_EDIT_DELETE			'Clla'
 
 // This constant is used in a message that contains
 // an int32 'mode' that describes the new mode for ImageView.
