@@ -899,6 +899,8 @@ Selection::SimplifySelection()
 						}
 
 						next_point = BPoint(new_x, new_y);
+						if (bounds.Contains(next_point) == FALSE)
+							direction = -1;
 					}
 
 					HSPolygon* new_polygon;
