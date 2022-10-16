@@ -32,7 +32,7 @@ class HSPolygon {
 BPoint				*points;
 int32				point_count;
 polygon_direction	direction;
-
+BRect				boundingRect;
 
 public:
 				HSPolygon(BPoint*,int32,polygon_direction dir=HS_POLYGON_ANY_DIRECTION);
@@ -63,7 +63,8 @@ inline	int32	GetPointCount() { return point_count; }
 		void	ChangeDirection(polygon_direction);
 
 polygon_direction	GetDirection();
-
+		bool	Contains(BPoint test_point);
+		bool 	Contains(int32 x, int32 y);
 
 		bool	operator==(const HSPolygon&);
 };

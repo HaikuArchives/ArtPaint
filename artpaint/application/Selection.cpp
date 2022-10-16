@@ -90,6 +90,7 @@ Selection::SetSelectionData(const SelectionData *data)
 
 		if (selection_map->Lock()) {
 			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			selection_view->StrokeRect(image_bounds, B_SOLID_HIGH);
 			selection_map->Unlock();
 		}
 	}
@@ -177,12 +178,28 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 		selection_bpr = selection_map->BytesPerRow();
 
 		if (selection_map->Lock()) {
+			rgb_color low = selection_view->LowColor();
+			rgb_color high = selection_view->HighColor();
+
+			selection_view->SetLowColor(255, 255, 255, 255);
+			selection_view->SetHighColor(0, 0, 0, 0);
+
 			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			selection_view->StrokeRect(image_bounds, B_SOLID_HIGH);
+
+			selection_view->SetLowColor(low);
+			selection_view->SetHighColor(high);
 			selection_map->Unlock();
 		}
 	}
 
 	if (selection_map->Lock()) {
+		rgb_color low = selection_view->LowColor();
+		rgb_color high = selection_view->HighColor();
+
+		selection_view->SetLowColor(255, 255, 255, 255);
+		selection_view->SetHighColor(0, 0, 0, 0);
+
 		BPolygon* p = poly->GetBPolygon();
 		if (!add_to_selection) {
 			if (bound_poly) {
@@ -199,6 +216,8 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 		}
 
 		selection_view->Sync();
+		selection_view->SetLowColor(low);
+		selection_view->SetHighColor(high);
 		selection_map->Unlock();
 		delete p;
 	}
@@ -235,11 +254,22 @@ Selection::AddSelection(BBitmap* bitmap, bool add_to_selection)
 		selection_bpr = selection_map->BytesPerRow();
 
 		if (selection_map->Lock()) {
-			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			rgb_color low = selection_view->LowColor();
+			rgb_color high = selection_view->HighColor();
 
-			if (!add_to_selection)
+			selection_view->SetLowColor(255, 255, 255, 255);
+			selection_view->SetHighColor(0, 0, 0, 0);
+
+			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
+			selection_view->StrokeRect(image_bounds, B_SOLID_HIGH);
+
+			if (!add_to_selection) {
 				selection_view->FillRect(selection_map->Bounds(), B_SOLID_LOW);
+				selection_view->StrokeRect(selection_map->Bounds(), B_SOLID_LOW);
+			}
 			selection_view->Sync();
+			selection_view->SetHighColor(high);
+			selection_view->SetLowColor(low);
 			selection_map->Unlock();
 		}
 	}
@@ -742,47 +772,44 @@ Selection::SimplifySelection()
 	// This version makes the polygons by connecting centers
 	// of edge pixels.
 	BRect bounds = GetBoundingRect();
-	int32 left = (int32)bounds.left;
-	int32 right = (int32)bounds.right;
-	int32 top = (int32)bounds.top;
-	int32 bottom = (int32)bounds.bottom;
+	int32 leftb = (int32)bounds.left;
+	int32 rightb = (int32)bounds.right;
+	int32 topb = (int32)bounds.top;
+	int32 bottomb = (int32)bounds.bottom;
 
-	enum {
-		NONE,
-		LEFT,
-		UP,
-		RIGHT,
-		DOWN
-	} direction, wall;
+	BPoint neighbors[4] = {
+		BPoint(-1,  0),
+		BPoint( 0, -1),
+		BPoint( 1,  0),
+		BPoint( 0,  1)
+	};
+
+	int8 direction;
+	bool wall;
 
 	PointContainer* included_points = new PointContainer();
 
 	selection_data->EmptySelectionData();
 
-	for (int32 y = top; y <= bottom; y++) {
-		for (int32 x = left; x <= right; x++) {
+	for (int32 y = topb; y <= bottomb; y++) {
+		for (int32 x = leftb; x <= rightb; x++) {
 			// We start a new polygon if point at x,y is at the edge and
 			// has not been included in previous polygons.
+			direction = -1;
+			wall = false;
 			if (ContainsPoint(x, y) &&
 				included_points->HasPoint(x, y) == false) {
 				// If this point is at the edge we start making a polygon.
-				if (!ContainsPoint(BPoint(x - 1, y))) {
-					direction = UP;
-					wall = LEFT;
-				} else if (!ContainsPoint(BPoint(x, y - 1))) {
-					direction = RIGHT;
-					wall = UP;
-				} else if (!ContainsPoint(BPoint(x + 1, y))) {
-					direction = DOWN;
-					wall = RIGHT;
-				} else if (!ContainsPoint(BPoint(x, y + 1))) {
-					direction = LEFT;
-					wall = DOWN;
-				} else {
-					direction = NONE;
-					wall = NONE;
+				for (int i = 0; i < 4; ++i) {
+					if (!ContainsPoint(x + neighbors[i].x,
+							y + neighbors[i].y)) {
+						direction = (i + 1) % 4;
+						wall = true;
+						i = 4;
+					}
 				}
-				if ((direction != NONE) && (wall != NONE)) {
+
+				if ((direction != -1) && (wall == true)) {
 					int32 max_point_count = 32;
 					BPoint* point_list = new BPoint[max_point_count];
 					int32 point_count = 0;
@@ -798,82 +825,35 @@ Selection::SimplifySelection()
 					// This if structure decides what is the next point.
 					int32 new_x = (int32)next_point.x;
 					int32 new_y = (int32)next_point.y;
-					bool contains_left =
-						ContainsPoint(BPoint(new_x - 1, new_y));
-					bool contains_up =
-						ContainsPoint(BPoint(new_x, new_y - 1));
-					bool contains_right =
-						ContainsPoint(BPoint(new_x + 1, new_y));
-					bool contains_down =
-						ContainsPoint(BPoint(new_x, new_y + 1));
-					if (direction == UP) {
-						if (contains_left) {
-							turns--;
-							direction = LEFT;
-						} else if (!contains_up) {
-							if (contains_right) {
-								turns++;
-								direction = RIGHT;
-							} else if (contains_down) {
-								turns += 2;
-								direction = DOWN;
-							} else
-								direction = NONE;
-						}
-					} else if (direction == RIGHT) {
-						if (contains_up) {
-							turns--;
-							direction = UP;
-						} else if (!contains_right) {
-							if (contains_down) {
-								turns++;
-								direction = DOWN;
-							} else if (contains_left) {
-								turns += 2;
-								direction = LEFT;
-							} else
-								direction = NONE;
-						}
-					} else if (direction == DOWN) {
-						if (contains_right) {
-							turns--;
-							direction = RIGHT;
-						} else if (!contains_down) {
-							if (contains_left) {
-								turns++;
-								direction = LEFT;
-							} else if (contains_up) {
-								turns += 2;
-								direction = UP;
-							} else direction = NONE;
-						}
-					} else if (direction == LEFT) {
-						if (contains_down) {
-							turns--;
-							direction = DOWN;
-						} else if (!contains_left) {
-							if (contains_up) {
-								turns++;
-								direction = UP;
-							} else if (contains_right) {
-								turns += 2;
-								direction = RIGHT;
-							} else
-								direction = NONE;
-						}
+
+					int8 left = (direction + 3) % 4;
+					int8 right = (direction + 1) % 4;
+					int8 down = (direction + 2) % 4;
+					if (ContainsPoint(new_x + neighbors[left].x,
+						new_y + neighbors[left].y)) {
+						--turns;
+						direction = left;
+					} else if (!ContainsPoint(new_x + neighbors[direction].x,
+						new_y + neighbors[direction].y)) {
+						if (ContainsPoint(new_x + neighbors[right].x,
+							new_y + neighbors[right].y)) {
+							++turns;
+							direction = right;
+						} else if (ContainsPoint(new_x + neighbors[down].x,
+							new_y + neighbors[down].y)) {
+							turns += 2;
+							direction = down;
+						} else
+							direction = -1;
 					}
 
-					if (direction == UP)
-						new_y = new_y - 1;
-					else if (direction == RIGHT)
-						new_x = new_x + 1;
-					else if (direction == DOWN)
-						new_y = new_y + 1;
-					else if (direction == LEFT)
-						new_x = new_x - 1;
+					if (direction >= 0) {
+						new_x += neighbors[direction].x;
+						new_y += neighbors[direction].y;
+					}
 
 					next_point = BPoint(new_x, new_y);
-					while (next_point != starting_point && direction != NONE) {
+					while (next_point != starting_point && direction != -1) {
 						included_points->InsertPoint(int32(next_point.x),
 							int32(next_point.y));
 						point_list[point_count++] = next_point;
@@ -890,80 +870,33 @@ Selection::SimplifySelection()
 						// This if structure decides what is the next point.
 						int32 new_x = (int32)next_point.x;
 						int32 new_y = (int32)next_point.y;
-						bool contains_left =
-							ContainsPoint(BPoint(new_x - 1, new_y));
-						bool contains_up =
-							ContainsPoint(BPoint(new_x, new_y - 1));
-						bool contains_right =
-							ContainsPoint(BPoint(new_x + 1, new_y));
-						bool contains_down =
-							ContainsPoint(BPoint(new_x, new_y + 1));
-						if (direction == UP) {
-							if (contains_left) {
-								turns--;
-								direction = LEFT;
-							} else if (!contains_up) {
-								if (contains_right) {
-									turns++;
-									direction = RIGHT;
-								} else if (contains_down) {
-									turns += 2;
-									direction = DOWN;
-								} else
-									direction = NONE;
-							}
-						} else if (direction == RIGHT) {
-							if (contains_up) {
-								turns--;
-								direction = UP;
-							} else if (!contains_right) {
-								if (contains_down) {
-									turns++;
-									direction = DOWN;
-								} else if (contains_left) {
-									turns += 2;
-									direction = LEFT;
-								} else
-									direction = NONE;
-							}
-						} else if (direction == DOWN) {
-							if (contains_right) {
-								turns--;
-								direction = RIGHT;
-							} else if (!contains_down) {
-								if (contains_left) {
-									turns++;
-									direction = LEFT;
-								} else if (contains_up) {
-									turns += 2;
-									direction = UP;
-								} else
-									direction = NONE;
-							}
-						} else if (direction == LEFT) {
-							if (contains_down) {
-								turns--;
-								direction = DOWN;
-							} else if (!contains_left) {
-								if (contains_up) {
-									turns++;
-									direction = UP;
-								} else if (contains_right) {
-									turns += 2;
-									direction = RIGHT;
-								} else
-									direction = NONE;
-							}
+
+						int8 left = (direction + 3) % 4;
+						int8 right = (direction + 1) % 4;
+						int8 down = (direction + 2) % 4;
+						if (ContainsPoint(new_x + neighbors[left].x,
+							new_y + neighbors[left].y)) {
+							--turns;
+							direction = left;
+						} else if (!ContainsPoint(
+							new_x + neighbors[direction].x,
+							new_y + neighbors[direction].y)) {
+							if (ContainsPoint(new_x + neighbors[right].x,
+								new_y + neighbors[right].y)) {
+								++turns;
+								direction = right;
+							} else if (ContainsPoint(new_x + neighbors[down].x,
+								new_y + neighbors[down].y)) {
+								turns += 2;
+								direction = down;
+							} else
+								direction = -1;
 						}
 
-						if (direction == UP)
-							new_y = new_y - 1;
-						else if (direction == RIGHT)
-							new_x = new_x + 1;
-						else if (direction == DOWN)
-							new_y = new_y + 1;
-						else if (direction == LEFT)
-							new_x = new_x - 1;
+						if (direction >= 0) {
+							new_x += neighbors[direction].x;
+							new_y += neighbors[direction].y;
+						}
 
 						next_point = BPoint(new_x, new_y);
 					}
