@@ -15,6 +15,7 @@
 #include "PixelOperations.h"
 #include "RotationManipulator.h"
 #include "Selection.h"
+#include "UtilityClasses.h"
 
 
 #include <Catalog.h>
@@ -180,19 +181,27 @@ RotationManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_
 		float dy = point.y - settings->origo.y;
 		float dx = point.x - settings->origo.x;
 		new_angle = atan2(dy, dx);
-		new_angle = new_angle / PI *180;
+		new_angle = new_angle / PI * 180;
 		if (first_click == TRUE) {
+			if (modifiers() & B_SHIFT_KEY)
+				new_angle = SnapToAngle(22.5, new_angle, 360.);
+
 			starting_angle = new_angle;
-		}
-		else {
+		} else {
+			float delta = settings->angle + new_angle - starting_angle;
+			if (modifiers() & B_SHIFT_KEY) {
+				delta = SnapToAngle(22.5, delta, 360.);
+				new_angle = delta - settings->angle + starting_angle;
+			}
+
 			settings->angle += new_angle - starting_angle;
+
 			starting_angle = new_angle;
 			if ((config_view != NULL) && (new_angle != previous_angle)) {
 				config_view->SetAngle(settings->angle);
 			}
 		}
-	}
-	else {
+	} else {
 		// Set the new origo for rotation and reset the angle.
 		previous_angle = settings->angle;
 		settings->angle = 0;
@@ -611,7 +620,9 @@ RotationManipulator::SetAngle(float angle)
 const char*
 RotationManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Rotate: Left-drag to rotate, right-click to set rotation center.");
+	return B_TRANSLATE("Rotate: Left-drag to rotate, " \
+		"right-click to set rotation center, " \
+		"SHIFT to snap angle.");
 }
 
 
