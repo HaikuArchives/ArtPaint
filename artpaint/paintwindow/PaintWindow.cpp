@@ -542,13 +542,6 @@ PaintWindow::MessageReceived(BMessage *message)
 			be_app_messenger.SendMessage(message);
 		}	break;
 
-		case HS_RESIZE_WINDOW_TO_FIT: {
-			// this comes from fMenubar->"Window"->"Resize to fit" and
-			// informs us that we should fit the window to display exactly the
-			// image use a private function to do resizing
-			_ResizeToImage();
-		}	break;
-
 		case HS_RECENT_IMAGE_SIZE: {
 			// This comes from the recent image-size pop-up-list.
 			if (fImageSizeWindow && fImageSizeWindow->Lock()) {
@@ -949,7 +942,6 @@ PaintWindow::Zoom(BPoint leftTop, float width, float height)
 		if (Image* image = fImageView->ReturnImage()) {
 			if (Frame() == _PreferredSize(image)) {
 				MoveTo(fUserFrame.LeftTop());
-				printf("here: %f x %f\n", fUserFrame.Width(), fUserFrame.Height());
 				ResizeTo(fUserFrame.Width(), fUserFrame.Height());
 			} else {
 				_ResizeToImage();
@@ -1392,9 +1384,6 @@ PaintWindow::openMenuBar()
 	subMenu->ItemAt(0)->SetMarked(true);
 
 	// use here the same shortcut as the tracker uses == Y
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Resize to fit"),
-		new BMessage(HS_RESIZE_WINDOW_TO_FIT), 'Y', 0, this,
-		B_TRANSLATE("Resizes the window to fit image and screen.")));
 	menu->AddSeparatorItem();
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Colors" B_UTF8_ELLIPSIS),
 		new BMessage(HS_SHOW_COLOR_WINDOW), 'P', 0, this,
@@ -1682,26 +1671,42 @@ PaintWindow::_PreferredSize(Image* image) const
 		free(tokens);
 	}
 
+	float scrollWidth = fVerticalScrollbar->Frame().Width();
+	float scrollHeight = fHorizontalScrollbar->Frame().Height();
+	float statusHeight = fStatusView->Frame().Height();
+	float menuHeight = fMenubar->Frame().Height();
+
 	BRect screenFrame = BScreen().Frame().OffsetToCopy(B_ORIGIN);
 	screenFrame.top += tabHeight;
 	screenFrame.InsetBy(borderSize, borderSize);
 
 	BRect rect = Frame();
 	const float scale = fImageView->getMagScale();
-	const float width = (scale * image->Width());
+	const float width = ceil(scale * image->Width());
+	float totalWidth = width + scrollWidth;
+
 	if (screenFrame.Width() < width) {
 		rect.left = borderSize;
 		rect.right = rect.left + screenFrame.Width();
 	} else {
-		rect.right = rect.left + width;
+		if (rect.left + totalWidth > screenFrame.Width()) {
+			rect.left = (screenFrame.Width() - totalWidth) / 2.;
+		}
+		rect.right = rect.left + totalWidth;
 	}
 
-	const float height = (scale * image->Height());
+	const float height = ceil(scale * image->Height());
+	float totalHeight = height + statusHeight + scrollHeight + menuHeight +
+		borderSize;
+
 	if (screenFrame.Height() < height) {
 		rect.top = tabHeight + borderSize;
 		rect.bottom = rect.top + screenFrame.Height();
 	} else {
-		rect.bottom = rect.top + height;
+		if (rect.top + totalHeight > screenFrame.Height()) {
+			rect.top = (screenFrame.Height() - totalHeight) / 2;
+		}
+		rect.bottom = rect.top + totalHeight;
 	}
 
 	return rect;
@@ -2152,7 +2157,6 @@ PaintWindow::_ChangeMenuMode(menu_modes newMode)
 		case NO_IMAGE_MENU: {
 			// In this case we disable some additional items and then let fall
 			// through to the next case that disables most of the other items.
-			_DisableMenuItem(B_TRANSLATE("Resize to fit"));
 			_DisableMenuItem(B_TRANSLATE("Zoom in"));
 			_DisableMenuItem(B_TRANSLATE("Zoom out"));
 			_DisableMenuItem(B_TRANSLATE("Set zoom level"));
