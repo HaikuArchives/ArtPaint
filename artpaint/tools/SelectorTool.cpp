@@ -375,6 +375,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				new BBitmap(
 					view->ReturnImage()->ReturnActiveBitmap()->Bounds(),
 					B_RGBA32);
+			memset(draw_map->Bits(), 0x00, draw_map->BitsLength());
 			// We use a fill-tool to select the area:
 			BitmapDrawer* drawer = new BitmapDrawer(draw_map);
 			drawer->DrawEllipse(new_rect, 0xFFFFFFFF, TRUE, FALSE);
