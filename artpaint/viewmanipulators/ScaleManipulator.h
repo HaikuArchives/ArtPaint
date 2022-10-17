@@ -12,6 +12,7 @@
 #define SCALE_MANIPULATOR_H
 
 #include "ManipulatorSettings.h"
+#include "Selection.h"
 #include "WindowGUIManipulator.h"
 
 
@@ -76,6 +77,10 @@ class ScaleManipulator : public WindowGUIManipulator {
 	float		original_height;
 
 	Selection*	selection;
+	SelectionData*	orig_selection_data;
+	
+	BPoint		previous_point;
+	bool		reject_mouse_input;
 
 public:
 	ScaleManipulator(BBitmap*);
@@ -96,8 +101,8 @@ public:
 	const	char*	ReturnName();
 
 	ManipulatorSettings*	ReturnSettings();
-	void		SetSelection(Selection* new_selection)
-					{ selection = new_selection; };
+	void		SetSelection(Selection* new_selection);
+
 };
 
 

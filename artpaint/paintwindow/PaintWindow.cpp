@@ -1225,6 +1225,13 @@ PaintWindow::openMenuBar()
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip vertically"),
 		a_message, B_UP_ARROW, 0, this,
 		B_TRANSLATE("Flips the active layer or selection vertically.")));
+		
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type",SCALE_MANIPULATOR);
+	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
+		a_message, 'S', B_CONTROL_KEY | B_SHIFT_KEY, this,
+		B_TRANSLATE("Scales the active layer.")));
 
 /*
 	a_message = new BMessage(HS_START_MANIPULATOR);
