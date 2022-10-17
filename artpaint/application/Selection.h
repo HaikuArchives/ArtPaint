@@ -158,6 +158,13 @@ public:
 		// parameters.
 		void			Translate(int32, int32);
 
+		// This function scales the selection by the amount given.
+		void			ScaleBy(BPoint, float, float);
+
+		// These functions flip the selection around its central axes
+		void			FlipHorizontally();
+		void			FlipVertically();
+
 		// This recalculates the actual contents of the selection. It can be
 		// used for example after rotation or translation.
 		void			Recalculate();

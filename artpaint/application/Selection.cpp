@@ -23,7 +23,7 @@
 
 #include <new>
 #include <string.h>
-
+#include <stdio.h>
 
 Selection::Selection(BRect imageBounds)
 	: selection_data(NULL),
@@ -558,6 +558,76 @@ Selection::Translate(int32 dx, int32 dy)
 	for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
 		HSPolygon* p = selection_data->ReturnSelectionAt(i);
 		p->TranslateBy(dx, dy);
+	}
+
+	needs_recalculating = TRUE;
+	release_sem(selection_mutex);
+}
+
+
+void
+Selection::ScaleBy(BPoint origin, float dx, float dy)
+{
+	acquire_sem(selection_mutex);
+	if (original_selections != NULL) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+			delete original_selections[i];
+		}
+		delete[] original_selections;
+		original_selections = NULL;
+	}
+
+	for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		HSPolygon* p = selection_data->ReturnSelectionAt(i);
+		p->ScaleBy(origin, dx, dy);
+	}
+
+	needs_recalculating = TRUE;
+	release_sem(selection_mutex);
+}
+
+
+void
+Selection::FlipHorizontally()
+{
+	acquire_sem(selection_mutex);
+	if (original_selections != NULL) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+			delete original_selections[i];
+		}
+		delete[] original_selections;
+		original_selections = NULL;
+	}
+
+	BRect bounds = GetBoundingRect();
+	float x_axis = (bounds.left + bounds.right) / 2.;
+	for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		HSPolygon* p = selection_data->ReturnSelectionAt(i);
+		p->FlipX(x_axis);
+	}
+
+	needs_recalculating = TRUE;
+	release_sem(selection_mutex);
+}
+
+
+void
+Selection::FlipVertically()
+{
+	acquire_sem(selection_mutex);
+	if (original_selections != NULL) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+			delete original_selections[i];
+		}
+		delete[] original_selections;
+		original_selections = NULL;
+	}
+
+	BRect bounds = GetBoundingRect();
+	float y_axis = (bounds.top + bounds.bottom) / 2.;
+	for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		HSPolygon* p = selection_data->ReturnSelectionAt(i);
+		p->FlipY(y_axis);
 	}
 
 	needs_recalculating = TRUE;

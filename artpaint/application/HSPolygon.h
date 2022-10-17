@@ -45,6 +45,11 @@ void			RotateAboutCenter(float);
 
 void			TranslateBy(int32,int32);
 
+void			ScaleBy(BPoint, float, float);
+
+void 			FlipX(float axis);
+void			FlipY(float axis);
+
 BPolygon*		GetBPolygon();
 
 
