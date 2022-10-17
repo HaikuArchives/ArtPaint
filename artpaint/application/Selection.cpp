@@ -182,7 +182,7 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 			rgb_color high = selection_view->HighColor();
 
 			selection_view->SetLowColor(255, 255, 255, 255);
-			selection_view->SetHighColor(0, 0, 0, 0);
+			selection_view->SetHighColor(0, 0, 0, 255);
 
 			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
 			selection_view->StrokeRect(image_bounds, B_SOLID_HIGH);
@@ -198,7 +198,7 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 		rgb_color high = selection_view->HighColor();
 
 		selection_view->SetLowColor(255, 255, 255, 255);
-		selection_view->SetHighColor(0, 0, 0, 0);
+		selection_view->SetHighColor(0, 0, 0, 255);
 
 		selection_view->DrawBitmap(selection_map);
 		BPolygon* p = poly->GetBPolygon();
@@ -259,7 +259,7 @@ Selection::AddSelection(BBitmap* bitmap, bool add_to_selection)
 			rgb_color high = selection_view->HighColor();
 
 			selection_view->SetLowColor(255, 255, 255, 255);
-			selection_view->SetHighColor(0, 0, 0, 0);
+			selection_view->SetHighColor(0, 0, 0, 255);
 
 			selection_view->FillRect(image_bounds, B_SOLID_HIGH);
 			selection_view->StrokeRect(image_bounds, B_SOLID_HIGH);
@@ -648,7 +648,14 @@ Selection::Recalculate()
 
 		if (selection_map && selection_map->Lock()) {
 			// First clear the selection
+			rgb_color low = selection_view->LowColor();
+			rgb_color high = selection_view->HighColor();
+
+			selection_view->SetLowColor(255, 255, 255, 255);
+			selection_view->SetHighColor(0, 0, 0, 255);
+
 			selection_view->FillRect(selection_map->Bounds(), B_SOLID_HIGH);
+			selection_view->StrokeRect(selection_map->Bounds(), B_SOLID_HIGH);
 			selection_view->Sync();
 
 			for (int32 i = 0; i < selection_data->SelectionCount(); ++i) {
@@ -668,6 +675,8 @@ Selection::Recalculate()
 					delete bPoly;
 				}
 			}
+			selection_view->SetHighColor(high);
+			selection_view->SetLowColor(low);
 			selection_view->Sync();
 			selection_map->Unlock();
 		}
