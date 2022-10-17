@@ -634,6 +634,19 @@ RotationManipulator::ReturnName()
 }
 
 
+void
+RotationManipulator::SetSelection(Selection* new_selection)
+{
+	selection = new_selection;
+	if (selection != NULL && selection->IsEmpty() == false) {
+		BRect bounds = selection->GetBoundingRect();
+
+		settings->origo.x = (bounds.right + bounds.left) / 2;
+		settings->origo.y = (bounds.bottom + bounds.top) / 2;
+	}
+}
+
+
 // #pragma mark -- RotationManipulatorConfigurationView
 
 

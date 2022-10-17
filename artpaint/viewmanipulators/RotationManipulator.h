@@ -87,8 +87,7 @@ public:
 
 	void		SetAngle(float);
 
-	void		SetSelection(Selection* new_selection)
-					{ selection = new_selection; };
+	void		SetSelection(Selection* new_selection);
 };
 
 
