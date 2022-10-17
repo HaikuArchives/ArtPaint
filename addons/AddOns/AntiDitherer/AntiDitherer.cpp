@@ -46,7 +46,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 AntiDithererManipulator::AntiDithererManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -63,7 +64,9 @@ AntiDithererManipulator::~AntiDithererManipulator()
 }
 
 
-BBitmap* AntiDithererManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* AntiDithererManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original,
+	BStatusBar* status_bar)
 {
 	AntiDithererManipulatorSettings *new_settings = cast_as(set,AntiDithererManipulatorSettings);
 
@@ -93,7 +96,8 @@ BBitmap* AntiDithererManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 	return target_bitmap;
 }
 
-int32 AntiDithererManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 AntiDithererManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	updated_region->Set(preview_bitmap->Bounds());
 
@@ -129,7 +133,7 @@ void AntiDithererManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void AntiDithererManipulator::Reset(Selection*)
+void AntiDithererManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.

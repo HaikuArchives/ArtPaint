@@ -82,15 +82,16 @@ class ReducerManipulator : public WindowGUIManipulator {
 
 void		do_dither(BBitmap*,BBitmap*,const rgb_color *palette,int palette_size,int32 dither_mode);
 
+Selection*	selection;
 
 public:
 			ReducerManipulator(BBitmap*);
 			~ReducerManipulator();
 
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-void		Reset(Selection*);
+int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
@@ -100,6 +101,8 @@ ManipulatorSettings*	ReturnSettings();
 BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 
@@ -119,7 +122,7 @@ class ReducerManipulatorView : public WindowGUIManipulatorView {
 		BMenuField		*dither_mode_menu_field;
 		BMenuField		*palette_size_menu_field;
 		BMenuField		*palette_mode_menu_field;
-		
+
 		BStringView		*busy;
 
 public:

@@ -15,18 +15,26 @@ class HorizFlipManipulator : public Manipulator {
 
 public:
 			HorizFlipManipulator();
-BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap* original, BStatusBar*);
 
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
+private:
+Selection*	selection;
 };
 
 class VertFlipManipulator : public Manipulator {
 
 public:
 			VertFlipManipulator();
-BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap* original, BStatusBar*);
 
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
+private:
+Selection*	selection;
 };
 
 

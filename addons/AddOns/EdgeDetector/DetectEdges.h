@@ -15,7 +15,7 @@ class DetectEdgesManipulator : public Manipulator {
 		BBitmap		*source_bitmap;
 		BBitmap		*target_bitmap;
 		BStatusBar	*progress_bar;
-		Selection	*the_selection;
+		Selection	*selection;
 
 static	int32		thread_entry(void*);
 		int32		thread_function(int32);
@@ -25,8 +25,10 @@ public:
 			DetectEdgesManipulator();
 			~DetectEdgesManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; }
 };
 #endif

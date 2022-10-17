@@ -39,8 +39,8 @@ using ArtPaint::Interface::NumberControl;
 
 
 class CropManipulator : public WindowGUIManipulator {
-		BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-						{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
+		BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+						{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
 		BBitmap*	target_bitmap;
 		BBitmap*	preview_bitmap;
@@ -67,6 +67,8 @@ class CropManipulator : public WindowGUIManipulator {
 
 		bool		use_selected;
 		bool		lock_aspect;
+
+		Selection*	selection;
 public:
 					CropManipulator(BBitmap*);
 					~CropManipulator();
@@ -76,14 +78,14 @@ public:
 		BRegion		Draw(BView*, float);
 
 		BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap* original,
-					Selection*, BStatusBar*);
+						BStatusBar*);
 		void		SetValues(float, float, float, float);
 
-		int32		PreviewBitmap(Selection*, bool full_quality = false,
+		int32		PreviewBitmap(bool full_quality = false,
 						BRegion* updated_region = NULL);
 
 		BView*		MakeConfigurationView(const BMessenger& target);
-		void		Reset(Selection*);
+		void		Reset();
 		void		SetPreviewBitmap(BBitmap*);
 
 const	char*		ReturnHelpString();
@@ -93,6 +95,9 @@ const	char*		ReturnName();
 
 		void		UseSelected() { use_selected = TRUE; }
 		void		LockAspect(bool lock) { lock_aspect = lock; }
+
+		void		SetSelection(Selection* new_selection)
+						{ selection = new_selection; };
 };
 
 

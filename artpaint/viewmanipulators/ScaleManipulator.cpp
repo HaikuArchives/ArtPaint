@@ -42,7 +42,8 @@ using ArtPaint::Interface::NumberControl;
 
 
 ScaleManipulator::ScaleManipulator(BBitmap *bm)
-	:	WindowGUIManipulator()
+	:	WindowGUIManipulator(),
+	selection(NULL)
 {
 	configuration_view = NULL;
 	settings = new ScaleManipulatorSettings();
@@ -68,7 +69,7 @@ ScaleManipulator::~ScaleManipulator()
 
 
 BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
-	BBitmap *original, Selection*, BStatusBar *status_bar)
+	BBitmap *original, BStatusBar *status_bar)
 {
 	ScaleManipulatorSettings *new_settings =
 			dynamic_cast<ScaleManipulatorSettings*> (set);
@@ -251,7 +252,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 }
 
 
-int32 ScaleManipulator::PreviewBitmap(Selection*,bool,BRegion *region)
+int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 {
 	if (preview_bitmap == NULL)
 		return 0;
@@ -336,7 +337,7 @@ ScaleManipulator::SetValues(float width, float height)
 
 
 void
-ScaleManipulator::Reset(Selection*)
+ScaleManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.

@@ -34,13 +34,16 @@ ManipulatorInformer	*informer;
 	BBitmap*	ordered_dither_halftone(BBitmap*,Selection*,BStatusBar*);
 	BBitmap*	fs_dither_halftone(BBitmap*,Selection*,BStatusBar*);
 	BBitmap*	ncandidate_dither_halftone(BBitmap*,Selection*,BStatusBar*);
+	Selection*	selection;
 
 public:
 			Halftone(ManipulatorInformer*);
 			~Halftone();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 #endif

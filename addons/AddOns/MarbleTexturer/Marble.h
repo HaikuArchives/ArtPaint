@@ -17,7 +17,6 @@ class MarbleManipulator : public Manipulator {
 		BBitmap		*source_bitmap;
 		BBitmap		*target_bitmap;
 		BStatusBar	*progress_bar;
-		Selection	*the_selection;
 
 		BBitmap		*spare_copy_bitmap;
 
@@ -28,14 +27,17 @@ static	int32		thread_entry(void*);
 
 		float		marble_amount(float);
 		int			processor_count;
+		Selection*	selection;
 
 public:
 			MarbleManipulator(ManipulatorInformer*);
 			~MarbleManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 #endif

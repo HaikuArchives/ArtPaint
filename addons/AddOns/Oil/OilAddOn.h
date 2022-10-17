@@ -13,13 +13,16 @@
 
 
 class OilManipulator : public Manipulator {
+Selection*	selection;
 public:
 			OilManipulator(BBitmap*);
 			~OilManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 #endif

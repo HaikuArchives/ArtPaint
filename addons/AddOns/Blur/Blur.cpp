@@ -47,7 +47,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 BlurManipulator::BlurManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	wide_copy_of_the_preview_bitmap = NULL;
@@ -77,9 +78,10 @@ BlurManipulator::~BlurManipulator()
 }
 
 
-BBitmap* BlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* BlurManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	BlurManipulatorSettings *new_settings = dynamic_cast<BlurManipulatorSettings*>(set);
+	BlurManipulatorSettings* new_settings = dynamic_cast<BlurManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -110,7 +112,7 @@ BBitmap* BlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 }
 
 
-int32 BlurManipulator::PreviewBitmap(Selection *sel, bool full_quality,BRegion *updated_region)
+int32 BlurManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
 	updated_region->Set(preview_bitmap->Bounds());
 //	if ((settings == previous_settings) == FALSE) {
@@ -150,7 +152,7 @@ int32 BlurManipulator::PreviewBitmap(Selection *sel, bool full_quality,BRegion *
 		final_bpr = preview_bitmap->BytesPerRow()/4;
 		final_width = preview_bitmap->Bounds().Width();
 		final_height = preview_bitmap->Bounds().Height();
-		selection = sel;
+		//selection = sel;
 		status_bar = NULL;
 		blur_amount = settings.blur_amount;
 		previous_settings = settings;
@@ -513,7 +515,7 @@ void BlurManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void BlurManipulator::Reset(Selection*)
+void BlurManipulator::Reset()
 {
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)tall_copy_of_the_preview_bitmap->Bits();

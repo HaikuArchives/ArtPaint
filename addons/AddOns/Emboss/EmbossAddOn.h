@@ -12,13 +12,16 @@
 #include "Manipulator.h"
 
 class EmbossManipulator : public Manipulator {
+Selection*	selection;
 public:
 			EmbossManipulator();
 			~EmbossManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 #endif

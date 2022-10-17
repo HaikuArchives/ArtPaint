@@ -39,10 +39,9 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 }
 
 
-
-
 ColorBalanceManipulator::ColorBalanceManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	copy_of_the_preview_bitmap = NULL;
@@ -65,9 +64,10 @@ ColorBalanceManipulator::~ColorBalanceManipulator()
 	}
 }
 
-BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	ColorBalanceManipulatorSettings *new_settings = dynamic_cast<ColorBalanceManipulatorSettings*>(set);
+	ColorBalanceManipulatorSettings* new_settings = dynamic_cast<ColorBalanceManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -140,7 +140,8 @@ BBitmap* ColorBalanceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 }
 
 
-int32 ColorBalanceManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 ColorBalanceManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	if ((settings == previous_settings) == FALSE) {
 		previous_settings = settings;
@@ -236,7 +237,7 @@ const char*	ColorBalanceManipulator::ReturnName()
 	return B_TRANSLATE("Color balance");
 }
 
-void ColorBalanceManipulator::Reset(Selection*)
+void ColorBalanceManipulator::Reset()
 {
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();

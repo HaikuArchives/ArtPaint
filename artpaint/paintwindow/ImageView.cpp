@@ -806,6 +806,7 @@ ImageView::MessageReceived(BMessage* message)
 					// business. If the manipulator is actually a GUIManipulator we give the
 					// correct preview-bitmap to the manipulator and set up its GUI.
 					if (gui_manipulator == NULL) {
+						fManipulator->SetSelection(selection);
 						start_thread(MANIPULATOR_FINISHER_THREAD);
 					} else {
 						// The order is important, first set the preview-bitmap
@@ -819,6 +820,8 @@ ImageView::MessageReceived(BMessage* message)
 						//	cast_as(gui_manipulator, StatusBarGUIManipulator);
 						WindowGUIManipulator* window_gui_manipulator =
 							cast_as(gui_manipulator, WindowGUIManipulator);
+
+						window_gui_manipulator->SetSelection(selection);
 
 						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),
 							HS_TOOL_HELP_MESSAGE);
@@ -881,7 +884,7 @@ ImageView::MessageReceived(BMessage* message)
 				} else {
 					// The manipulator should be instructed to restore
 					// whatever changes it has made and should be quit then.
-					guiManipulator->Reset(selection);
+					guiManipulator->Reset();
 					((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
 					delete fManipulator;
 					fManipulator = NULL;
@@ -1116,7 +1119,7 @@ ImageView::Freeze()
 	// be done only after we have acquired the desired semaphores.
 	GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 	if (gui_manipulator != NULL) {
-		gui_manipulator->Reset(selection);
+		gui_manipulator->Reset();
 		the_image->Render();
 	}
 	return B_ERROR;
@@ -1265,7 +1268,7 @@ ImageView::ActiveLayerChanged()
 
 	if ((gui_manipulator != NULL) &&
 		(manipulated_layers == HS_MANIPULATE_CURRENT_LAYER)) {
-		gui_manipulator->Reset(selection);
+		gui_manipulator->Reset();
 		gui_manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
 
 		// We should also tell the manipulator to recalculate its preview.
@@ -1567,8 +1570,8 @@ ImageView::ManipulatorMouseTrackerThread()
 			gui_manipulator->MouseDown(point, buttons, this,
 				first_call_to_mouse_down);
 			first_call_to_mouse_down = FALSE;
-			preview_quality = gui_manipulator->PreviewBitmap(selection,
-				FALSE, updated_region);
+			preview_quality = gui_manipulator->PreviewBitmap(FALSE,
+				updated_region);
 			if (preview_quality != DRAW_NOTHING) {
 				if ((preview_quality != DRAW_ONLY_GUI) &&
 					(updated_region->Frame().IsValid())) {
@@ -1604,7 +1607,7 @@ ImageView::ManipulatorMouseTrackerThread()
 	SetCursor();
 
 	updated_region->Set(BRect(0, 0, -1, -1));
-	preview_quality = gui_manipulator->PreviewBitmap(selection, TRUE,
+	preview_quality = gui_manipulator->PreviewBitmap(TRUE,
 		updated_region);
 	if (preview_quality != DRAW_NOTHING) {
 		if ((preview_quality != DRAW_ONLY_GUI) &&
@@ -1654,7 +1657,7 @@ ImageView::GUIManipulatorUpdaterThread()
 
 	while (continue_manipulator_updating) {
 		if (LockLooper() == TRUE) {
-			preview_quality = gui_manipulator->PreviewBitmap(selection, FALSE,
+			preview_quality = gui_manipulator->PreviewBitmap(FALSE,
 				updated_region);
 			lowest_quality = max_c(lowest_quality, preview_quality);
 
@@ -1692,7 +1695,7 @@ ImageView::GUIManipulatorUpdaterThread()
 	cursor_mode = BLOCKING_CURSOR_MODE;
 	SetCursor();
 
-	preview_quality = gui_manipulator->PreviewBitmap(selection, TRUE,
+	preview_quality = gui_manipulator->PreviewBitmap(TRUE,
 		updated_region);
 
 	if (preview_quality != DRAW_NOTHING) {
@@ -1767,11 +1770,11 @@ ImageView::ManipulatorFinisherThread()
 					gui_manipulator->ReturnSettings();
 				new_buffer =
 					gui_manipulator->ManipulateBitmap(settings, buffer,
-						selection, status_bar);
+						status_bar);
 				delete settings;
 			} else
 				new_buffer = fManipulator->ManipulateBitmap(buffer,
-					selection, status_bar);
+					status_bar);
 
 			Layer* the_layer = the_image->ReturnActiveLayer();
 			if (new_buffer && new_buffer != buffer)
@@ -1831,11 +1834,11 @@ ImageView::ManipulatorFinisherThread()
 						gui_manipulator->ReturnSettings();
 					new_buffer =
 						gui_manipulator->ManipulateBitmap(settings,
-							buffer, selection, status_bar);
+							buffer, status_bar);
 					delete settings;
 				} else
 					new_buffer = fManipulator->ManipulateBitmap(buffer,
-						selection, status_bar);
+						status_bar);
 
 				if (new_buffer && new_buffer != buffer)
 					the_layer->ChangeBitmap(new_buffer);
@@ -1866,7 +1869,7 @@ ImageView::ManipulatorFinisherThread()
 		// The manipulator should be asked to reset the preview-bitmap, if it is
 		// a GUIManipulator.
 		if (gui_manipulator != NULL) {
-			gui_manipulator->Reset(selection);
+			gui_manipulator->Reset();
 		}
 	}
 
@@ -1934,7 +1937,7 @@ ImageView::Undo()
 
 		GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 		if (gui_manipulator != NULL) {
-			gui_manipulator->Reset(selection);
+			gui_manipulator->Reset();
 		}
 
 		UndoEvent* event = undo_queue->Undo();
@@ -1992,7 +1995,7 @@ ImageView::Redo()
 		// can be done.
 		GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
 		if (gui_manipulator != NULL) {
-			gui_manipulator->Reset(selection);
+			gui_manipulator->Reset();
 		}
 
 		UndoEvent* event = undo_queue->Redo();

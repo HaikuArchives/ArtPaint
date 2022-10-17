@@ -37,7 +37,8 @@ using ArtPaint::Interface::NumberControl;
 
 TranslationManipulator::TranslationManipulator(BBitmap* bm)
 	: WindowGUIManipulator(),
-	copy_of_the_preview_bitmap(NULL)
+	copy_of_the_preview_bitmap(NULL),
+	selection(NULL)
 {
 	preview_bitmap = bm;
 	if (preview_bitmap != NULL)
@@ -84,7 +85,7 @@ TranslationManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 
 BBitmap*
 TranslationManipulator::ManipulateBitmap(ManipulatorSettings* set,
-	BBitmap* original, Selection* selection, BStatusBar* status_bar)
+	BBitmap* original, BStatusBar* status_bar)
 {
 	TranslationManipulatorSettings *new_settings = cast_as(set,
 		TranslationManipulatorSettings);
@@ -212,7 +213,7 @@ TranslationManipulator::ManipulateBitmap(ManipulatorSettings* set,
 
 
 int32
-TranslationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
+TranslationManipulator::PreviewBitmap(bool full_quality,
 	BRegion* updated_region)
 {
 	if (preview_bitmap == NULL || copy_of_the_preview_bitmap == NULL)
@@ -401,9 +402,9 @@ TranslationManipulator::ReturnSettings()
 
 
 void
-TranslationManipulator::Reset(Selection* sel)
+TranslationManipulator::Reset()
 {
-	sel->Translate(int32(-settings->x_translation),
+	selection->Translate(int32(-settings->x_translation),
 		int32(-settings->y_translation));
 	settings->x_translation = 0;
 	settings->y_translation = 0;

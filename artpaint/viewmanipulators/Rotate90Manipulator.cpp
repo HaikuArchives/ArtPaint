@@ -27,7 +27,8 @@ Rotate90ClockwiseManipulator::Rotate90ClockwiseManipulator()
 {
 }
 
-BBitmap* Rotate90ClockwiseManipulator::ManipulateBitmap(BBitmap *original,Selection*,BStatusBar *status_bar)
+BBitmap* Rotate90ClockwiseManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	// create a new bitmap that is as wide as the original is high
 	BRect new_bounds(0,0,original->Bounds().Height(),original->Bounds().Width());
@@ -66,7 +67,8 @@ Rotate90CounterclockwiseManipulator::Rotate90CounterclockwiseManipulator()
 }
 
 
-BBitmap* Rotate90CounterclockwiseManipulator::ManipulateBitmap(BBitmap *original,Selection*,BStatusBar *status_bar)
+BBitmap* Rotate90CounterclockwiseManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	// create a new bitmap that is as wide as the original is high
 	BRect new_bounds(0,0,original->Bounds().Height(),original->Bounds().Width());

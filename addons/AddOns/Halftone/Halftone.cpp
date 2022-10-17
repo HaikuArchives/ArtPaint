@@ -41,8 +41,11 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 
 
 Halftone::Halftone(ManipulatorInformer *i)
-	: Manipulator(), round_dot_size(ROUND_DOT_SIZE), diagonal_line_size(DIAGONAL_LINE_SIZE)
-	, ordered_matrix_size(ORDERED_MATRIX_SIZE)
+	: Manipulator(),
+	round_dot_size(ROUND_DOT_SIZE),
+	diagonal_line_size(DIAGONAL_LINE_SIZE),
+	ordered_matrix_size(ORDERED_MATRIX_SIZE),
+	selection(NULL)
 {
 	informer = i;
 	round_dot_pattern[0][0] = 1;
@@ -179,7 +182,7 @@ Halftone::~Halftone()
 }
 
 
-BBitmap* Halftone::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* Halftone::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	return round_dot_halftone(original,selection,status_bar);
 //	return diagonal_line_halftone(original,selection,status_bar);

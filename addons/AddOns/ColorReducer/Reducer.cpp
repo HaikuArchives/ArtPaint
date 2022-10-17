@@ -54,7 +54,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 ReducerManipulator::ReducerManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -73,9 +74,10 @@ ReducerManipulator::~ReducerManipulator()
 }
 
 
-BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	ReducerManipulatorSettings *new_settings = cast_as(set,ReducerManipulatorSettings);
+	ReducerManipulatorSettings* new_settings = cast_as(set,ReducerManipulatorSettings);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -113,7 +115,8 @@ BBitmap* ReducerManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *
 }
 
 
-int32 ReducerManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 ReducerManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	if (settings == previous_settings ) {
 		return 0;
@@ -168,7 +171,7 @@ void ReducerManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void ReducerManipulator::Reset(Selection*)
+void ReducerManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.

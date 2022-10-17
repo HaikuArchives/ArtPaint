@@ -43,7 +43,8 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 
 
 EmbossManipulator::EmbossManipulator()
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -56,7 +57,8 @@ EmbossManipulator::~EmbossManipulator()
 #define LT (*(spare_bits-spare_bpr-1))
 #define RB (*(spare_bits+spare_bpr+1))
 
-BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *progress_view)
+BBitmap* EmbossManipulator::ManipulateBitmap(BBitmap *original,
+	BStatusBar *progress_view)
 {
 	// We may create another bitmap and return it instead of original, but we may
 	// also do the manipulation on the original and return it. We Should send messages

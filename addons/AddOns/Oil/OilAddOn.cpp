@@ -43,7 +43,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 OilManipulator::OilManipulator(BBitmap*)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -53,7 +54,8 @@ OilManipulator::~OilManipulator()
 
 }
 
-BBitmap* OilManipulator::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* OilManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	BWindow *status_bar_window = NULL;
 	if (status_bar != NULL)

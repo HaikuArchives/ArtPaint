@@ -39,27 +39,28 @@ public:
 	-180˚ and +180. Negative angles are clockwise and positive counterclockwise.
 */
 class RotationManipulator: public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
+	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-	BBitmap	*copy_of_the_preview_bitmap;
-	BBitmap	*preview_bitmap;
+	BBitmap* 	copy_of_the_preview_bitmap;
+	BBitmap* 	preview_bitmap;
 
+	float		previous_angle;
+	float		starting_angle;
+	BPoint		previous_origo;
+	int32		last_calculated_resolution;
+	int32		lowest_available_quality;
+	int32		highest_available_quality;
 
-	float	previous_angle;
-	float	starting_angle;
-	BPoint	previous_origo;
-	int32	last_calculated_resolution;
-	int32	lowest_available_quality;
-	int32	highest_available_quality;
+	RotationManipulatorSettings*			settings;
 
-	RotationManipulatorSettings				*settings;
+	HSPolygon*								view_polygon;
 
-	HSPolygon								*view_polygon;
+	RotationManipulatorConfigurationView*	config_view;
 
-	RotationManipulatorConfigurationView	*config_view;
+	bool		move_origo;
 
-	bool	move_origo;
+	Selection*	selection;
 
 public:
 	RotationManipulator(BBitmap*);
@@ -67,13 +68,13 @@ public:
 
 	void		SetPreviewBitmap(BBitmap*);
 
-	BRegion		Draw(BView*,float);
-	void		MouseDown(BPoint,uint32,BView*,bool);
+	BRegion		Draw(BView*, float);
+	void		MouseDown(BPoint, uint32, BView*, bool);
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
-	void			Reset(Selection*);
-
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+	int32		PreviewBitmap(bool full_quality = FALSE,
+					BRegion* updated_region = NULL);
+	void		Reset();
 
 	const char*	ReturnHelpString();
 	const char*	ReturnName();
@@ -84,8 +85,10 @@ public:
 
 	const	void*			ManipulatorCursor() { return HS_ROTATION_CURSOR; }
 
-
 	void		SetAngle(float);
+
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 

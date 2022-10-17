@@ -29,7 +29,8 @@ HorizFlipManipulator::HorizFlipManipulator()
 {
 }
 
-BBitmap* HorizFlipManipulator::ManipulateBitmap(BBitmap *original,Selection*,BStatusBar *status_bar)
+BBitmap* HorizFlipManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	int32 height = original->Bounds().IntegerHeight();
 	int32 width = original->Bounds().IntegerWidth();
@@ -66,7 +67,8 @@ VertFlipManipulator::VertFlipManipulator()
 {
 }
 
-BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap *original,Selection*,BStatusBar *status_bar)
+BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	int32 height = original->Bounds().IntegerHeight();
 	int32 width = original->Bounds().IntegerWidth();

@@ -57,8 +57,8 @@ public:
 
 
 class TextManipulator : public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
+	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
 	BBitmap	*preview_bitmap;
 	BBitmap	*copy_of_the_preview_bitmap;
@@ -74,17 +74,19 @@ class TextManipulator : public WindowGUIManipulator {
 	int32	last_used_quality;
 	int32	lowest_allowed_quality;
 
+	Selection*	selection;
 public:
 	TextManipulator(BBitmap*);
 	~TextManipulator();
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+	int32		PreviewBitmap(bool full_quality = FALSE,
+					BRegion *updated_region = NULL);
 	BView*		MakeConfigurationView(const BMessenger& target);
 
 	void		MouseDown(BPoint,uint32,BView*,bool);
 	BRegion		Draw(BView*,float);
-	void		Reset(Selection*);
+	void		Reset();
 	void		SetPreviewBitmap(BBitmap*);
 	const	char*	ReturnHelpString();
 	const	char*	ReturnName();
@@ -96,6 +98,9 @@ public:
 
 	status_t	Save(BMessage& settings) const;
 	status_t	Restore(const BMessage& settings);
+
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 

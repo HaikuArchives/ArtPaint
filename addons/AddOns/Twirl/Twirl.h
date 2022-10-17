@@ -81,15 +81,16 @@ float						*cos_table;
 int32						last_calculated_resolution;
 int32						lowest_available_quality;
 int32						highest_available_quality;
+Selection*					selection;
 
 public:
 			TwirlManipulator(BBitmap*);
 			~TwirlManipulator();
 
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-void		Reset(Selection*);
+int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
@@ -98,7 +99,8 @@ ManipulatorSettings*	ReturnSettings();
 
 BView*		MakeConfigurationView(const BMessenger& target);
 void		ChangeSettings(ManipulatorSettings *s);
-
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 class TwirlManipulatorView : public WindowGUIManipulatorView {

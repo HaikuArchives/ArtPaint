@@ -72,7 +72,7 @@ class ThresholdManipulator : public WindowGUIManipulator {
 
 			ThresholdManipulatorSettings	current_settings;
 
-			Selection	*current_selection;
+			Selection	*selection;
 
 			BBitmap		*source_bitmap;
 			BBitmap		*target_bitmap;
@@ -92,9 +92,9 @@ public:
 			~ThresholdManipulator();
 
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-void		Reset(Selection*);
+int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
@@ -107,6 +107,8 @@ void		ChangeSettings(ManipulatorSettings*);
 
 status_t	WriteSettings(BNode *node);
 status_t	ReadSettings(BNode *node);
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 

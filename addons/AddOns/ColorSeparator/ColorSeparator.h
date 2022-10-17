@@ -68,14 +68,16 @@ class ColorSeparatorManipulator : public WindowGUIManipulator {
 
 void		separate_colors();
 
+Selection*	selection;
+
 public:
 			ColorSeparatorManipulator(BBitmap*);
 			~ColorSeparatorManipulator();
 
 void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-void		Reset(Selection*);
+int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
@@ -85,6 +87,8 @@ ManipulatorSettings*	ReturnSettings();
 BView*		MakeConfigurationView(const BMessenger& target);
 
 void		ChangeSettings(ManipulatorSettings*);
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 

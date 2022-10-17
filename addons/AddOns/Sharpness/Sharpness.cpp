@@ -45,7 +45,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 SharpnessManipulator::SharpnessManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -72,9 +73,10 @@ SharpnessManipulator::~SharpnessManipulator()
 }
 
 
-BBitmap* SharpnessManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* SharpnessManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	SharpnessManipulatorSettings *new_settings = dynamic_cast<SharpnessManipulatorSettings*>(set);
+	SharpnessManipulatorSettings* new_settings = dynamic_cast<SharpnessManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -94,9 +96,7 @@ BBitmap* SharpnessManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap
 		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
 	}
 
-
 	current_resolution = 1;
-	current_selection = selection;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
 
@@ -111,7 +111,8 @@ BBitmap* SharpnessManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap
 }
 
 
-int32 SharpnessManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 SharpnessManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	/*
 		With floating-point arithmetic this function takes about 0.12s on
@@ -120,7 +121,6 @@ int32 SharpnessManipulator::PreviewBitmap(Selection *selection,bool full_quality
 	*/
 
 	progress_bar = NULL;
-	current_selection = selection;
 	if (settings == previous_settings ) {
 		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
 			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
@@ -211,7 +211,7 @@ int32 SharpnessManipulator::thread_function(int32 thread_number)
 	int32 coeff_fixed = 32768 * sharpness_coeff;
 	int32 one_minus_coeff_fixed = 32768 * one_minus_coeff;
 
-	if (current_selection->IsEmpty()) {
+	if (selection->IsEmpty()) {
 		// Here handle the whole image.
 		int32 left = target_bitmap->Bounds().left;
 		int32 right = target_bitmap->Bounds().right;
@@ -255,7 +255,7 @@ int32 SharpnessManipulator::thread_function(int32 thread_number)
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		BRect rect = current_selection->GetBoundingRect();
+		BRect rect = selection->GetBoundingRect();
 
 		int32 left = rect.left;
 		int32 right = rect.right;
@@ -278,7 +278,7 @@ int32 SharpnessManipulator::thread_function(int32 thread_number)
 			int32 y_times_target_bpr = y*target_bpr;
 			int32 y_times_blurred_bpr = y*blurred_bpr;
 			for (int32 x=left;x<=right;x+=step) {
-				if (current_selection->ContainsPoint(x,y)) {
+				if (selection->ContainsPoint(x,y)) {
 					color.word = *(source_bits + x + y_times_source_bpr);
 					b_color.word = *(blurred_bits + x + y_times_blurred_bpr);
 					color.bytes[0] = max_c(0,min_c(255,((color.bytes[0] * coeff_fixed)>>15) + ((b_color.bytes[0] * one_minus_coeff_fixed)>>15)));
@@ -347,7 +347,7 @@ void SharpnessManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void SharpnessManipulator::Reset(Selection*)
+void SharpnessManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.
