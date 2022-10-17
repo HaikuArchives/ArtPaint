@@ -1212,14 +1212,14 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip horizontally"),
 		a_message, B_LEFT_ARROW, 0, this,
-		B_TRANSLATE("Flips the active layer horizontally.")));
+		B_TRANSLATE("Flips the active layer or selection horizontally.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",VERT_FLIP_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip vertically"),
 		a_message, B_UP_ARROW, 0, this,
-		B_TRANSLATE("Flips the active layer vertically.")));
+		B_TRANSLATE("Flips the active layer or selection vertically.")));
 
 /*
 	a_message = new BMessage(HS_START_MANIPULATOR);

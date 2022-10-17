@@ -131,11 +131,40 @@ void HSPolygon::RotateAboutCenter(float angle)
 
 void HSPolygon::TranslateBy(int32 dx, int32 dy)
 {
-	for (int32 i=0;i<point_count;i++) {
+	for (int32 i = 0; i < point_count; i++) {
 		points[i].x += dx;
 		points[i].y += dy;
 	}
 }
+
+
+void
+HSPolygon::ScaleBy(BPoint origin, float sx, float sy)
+{
+	for (int32 i = 0; i < point_count; i++) {
+		points[i].x = (points[i].x - origin.x) * sx + origin.x;
+		points[i].y = (points[i].y - origin.y) * sy + origin.y;
+	}
+}
+
+
+void
+HSPolygon::FlipX(float axis)
+{
+	for (int32 i = 0; i < point_count; ++i) {
+		points[i].x = (axis - points[i].x) + axis;
+	}
+}
+
+
+void
+HSPolygon::FlipY(float axis)
+{
+	for (int32 i = 0; i < point_count; ++i) {
+		points[i].y = (axis - points[i].y) + axis;
+	}
+}
+
 
 BPolygon* HSPolygon::GetBPolygon()
 {
