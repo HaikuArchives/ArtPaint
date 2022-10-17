@@ -201,7 +201,10 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	int32 target_bpr = original->BytesPerRow()/4;
 	int32 source_bpr = new_bitmap->BytesPerRow()/4;
 
-	BRect bounds = selection->GetBoundingRect();
+	BRect bounds = original->Bounds();
+	if (selection != NULL && selection->IsEmpty() == false)
+		bounds = selection->GetBoundingRect();
+
 	int32 left = (int32)bounds.left;
 	int32 right = (int32)bounds.right;
 	int32 top = (int32)bounds.top;
@@ -209,7 +212,8 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 
 	for (int32 y=top;y<=bottom;y++) {
 		for (int32 x=left;x<=right;x++) {
-			if (selection->ContainsPoint(x,y))
+			if (selection == NULL || selection->IsEmpty() == true ||
+				selection->ContainsPoint(x,y))
 				*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
 		}
 	}
@@ -254,7 +258,6 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 		BRegion frame_region;
 		frame_region.Set(preview_bitmap->Bounds());
 		previously_updated_region.IntersectWith(&frame_region);
-
 
 		for (int32 i=0;i<previously_updated_region.CountRects();i++) {
 			int32 left = (int32)previously_updated_region.RectAt(i).left;
@@ -355,7 +358,7 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 	// the part that the new settings decide. If a selection is active only pixels
 	// that are inside the selection are updated to preview_bitmap.
 	uint32 spare_value;
-	if (selection->IsEmpty() == TRUE) {
+	if (selection == NULL || selection->IsEmpty() == TRUE) {
 		for (int32 i=0;i<updated_region->CountRects();i++) {
 			preview_bits = (uint32*)preview_bitmap->Bits();
 			copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
@@ -378,8 +381,7 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 				copy_bits += (copy_bpr - right - 1);
 			}
 		}
-	}
-	else {
+	} else {
 		for (int32 i=0;i<updated_region->CountRects();i++) {
 			preview_bits = (uint32*)preview_bitmap->Bits();
 			copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();

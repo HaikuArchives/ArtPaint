@@ -1510,6 +1510,7 @@ ImageView::PaintToolThread()
 					manipulator->SetStartingPoint(point);
 					manipulated_layers = HS_MANIPULATE_CURRENT_LAYER;
 					manipulator->SetPreviewBitmap(the_image->ReturnActiveBitmap());
+					manipulator->SetSelection(selection);
 
 					PaintWindow* window = dynamic_cast<PaintWindow*> (Window());
 					if (window && LockLooper()) {
