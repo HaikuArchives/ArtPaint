@@ -146,16 +146,27 @@ void AntiDithererManipulator::Reset()
 }
 
 
-void AntiDithererManipulator::anti_dither()
+void
+AntiDithererManipulator::anti_dither()
 {
 	uint32 *source_bits = (uint32*)source_bitmap->Bits();
 	uint32 *target_bits = (uint32*)target_bitmap->Bits();
 
-	int32 source_bpr = source_bitmap->BytesPerRow()/4;
-	int32 target_bpr = target_bitmap->BytesPerRow()/4;
+	int32 source_bpr = source_bitmap->BytesPerRow() / 4;
+	int32 target_bpr = target_bitmap->BytesPerRow() / 4;
 
-	int32 width = source_bitmap->Bounds().IntegerWidth();
-	int32 height = source_bitmap->Bounds().IntegerHeight();
+	BRect bounds = source_bitmap->Bounds();
+
+	if (selection != NULL && selection->IsEmpty() == false)
+		bounds = selection->GetBoundingRect();
+
+	int32 width = bounds.IntegerWidth();
+	int32 height = bounds.IntegerHeight();
+
+	float bounds_left = bounds.left;
+	float bounds_right = bounds.right;
+	float bounds_top = bounds.top;
+	float bounds_bottom = bounds.bottom;
 
 	int32 block_size = settings.block_size;
 
@@ -164,77 +175,56 @@ void AntiDithererManipulator::anti_dither()
 		uint32 word;
 	} color;
 
-	if (settings.reduce_resolution) {
-		for (int32 y=0;y<=height;y += block_size) {
-			for (int32 x=0;x<=width;x += block_size) {
-				int32 right = min_c(x+block_size-1,width);
-				int32 bottom = min_c(y+block_size-1,height);
+	int32 step_size = 1;
+	if (settings.reduce_resolution)
+		step_size = block_size;
 
-				float red = 0;
-				float green = 0;
-				float blue = 0;
+	for (int32 y = bounds_top; y <= bounds_bottom; y += step_size) {
+		for (int32 x = bounds_left; x <= bounds_right; x += step_size) {
+			int32 right = min_c(x + block_size - 1, bounds_right);
+			int32 bottom = min_c(y + block_size - 1, bounds_bottom);
 
-				float divider = (right-x+1)*(bottom-y+1);
+			float red = 0;
+			float green = 0;
+			float blue = 0;
+			float alpha = 0;
 
-				for (int32 dy=y;dy<=bottom;dy++) {
-					for (int32 dx=x;dx<=right;dx++) {
-						color.word = *(source_bits + dy*source_bpr + dx);
-						red += color.bytes[2];
-						green += color.bytes[1];
-						blue += color.bytes[0];
-					}
-				}
-				red /= divider;
-				green /= divider;
-				blue /= divider;
+			float divider = (right - x + 1) * (bottom - y + 1);
 
-				color.bytes[2] = red;
-				color.bytes[1] = green;
-				color.bytes[0] = blue;
-				color.bytes[3] = 255;
-
-				for (int32 dy=y;dy<=bottom;dy++) {
-					for (int32 dx=x;dx<=right;dx++) {
-						*(target_bits + dy*target_bpr + dx) = color.word;
-					}
+			for (int32 dy = y; dy <= bottom; dy++) {
+				for (int32 dx = x; dx <= right; dx++) {
+					color.word = *(source_bits + dy * source_bpr + dx);
+					red += color.bytes[2];
+					green += color.bytes[1];
+					blue += color.bytes[0];
+					alpha += color.bytes[3];
 				}
 			}
-		}
-	}
-	else {
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				int32 right = min_c(x+block_size-1,width);
-				int32 bottom = min_c(y+block_size-1,height);
+			red /= divider;
+			green /= divider;
+			blue /= divider;
+			alpha /= divider;
 
-				float red = 0;
-				float green = 0;
-				float blue = 0;
+			color.bytes[2] = red;
+			color.bytes[1] = green;
+			color.bytes[0] = blue;
+			color.bytes[3] = alpha;
 
-				float divider = (right-x+1)*(bottom-y+1);
-
-				for (int32 dy=y;dy<=bottom;dy++) {
-					for (int32 dx=x;dx<=right;dx++) {
-						color.word = *(source_bits + dy*source_bpr + dx);
-						red += color.bytes[2];
-						green += color.bytes[1];
-						blue += color.bytes[0];
+			if (settings.reduce_resolution) {
+				for (int32 dy = y; dy <= bottom; dy++) {
+					for (int32 dx = x; dx <= right; dx++) {
+						if (selection == NULL || selection->IsEmpty() == true ||
+							selection->ContainsPoint(dx, dy))
+							*(target_bits + dy * target_bpr + dx) = color.word;
 					}
 				}
-				red /= divider;
-				green /= divider;
-				blue /= divider;
-
-				color.bytes[2] = red;
-				color.bytes[1] = green;
-				color.bytes[0] = blue;
-				color.bytes[3] = 255;
-
-				*(target_bits + y*target_bpr + x) = color.word;
-			}
+			} else if (selection == NULL || selection->IsEmpty() == true ||
+				selection->ContainsPoint(x, y))
+				*(target_bits + y * target_bpr + x) = color.word;
 		}
 	}
 }
+
 
 BView* AntiDithererManipulator::MakeConfigurationView(const BMessenger& target)
 {
