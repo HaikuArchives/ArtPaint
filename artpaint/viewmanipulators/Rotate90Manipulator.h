@@ -15,20 +15,25 @@ class Rotate90ClockwiseManipulator : public Manipulator {
 
 public:
 			Rotate90ClockwiseManipulator();
-BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap* original, BStatusBar*);
 
 const char*	ReturnName();
-
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 private:
+Selection*	selection;
 };
 
 class Rotate90CounterclockwiseManipulator : public Manipulator {
 
 public:
 			Rotate90CounterclockwiseManipulator();
-BBitmap*	ManipulateBitmap(BBitmap *original,Selection*,BStatusBar*);
-
+BBitmap*	ManipulateBitmap(BBitmap* original, BStatusBar*);
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 const char*	ReturnName();
+private:
+Selection*	selection;
 };
 
 

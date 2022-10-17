@@ -51,7 +51,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 WaveManipulator::WaveManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	last_calculated_resolution = 8;
 	lowest_available_quality = 8;
@@ -81,9 +82,10 @@ WaveManipulator::~WaveManipulator()
 }
 
 
-BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	WaveManipulatorSettings *new_settings = dynamic_cast<WaveManipulatorSettings*>(set);
+	WaveManipulatorSettings* new_settings = dynamic_cast<WaveManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -366,7 +368,9 @@ BBitmap* WaveManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *ori
 	return original;
 }
 
-int32 WaveManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+
+int32
+WaveManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
 	if ((settings == previous_settings) == FALSE) {
 		previous_settings = settings;
@@ -930,7 +934,7 @@ void WaveManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void WaveManipulator::Reset(Selection*)
+void WaveManipulator::Reset()
 {
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();

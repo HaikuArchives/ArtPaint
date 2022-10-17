@@ -15,7 +15,7 @@ class WoodManipulator : public Manipulator {
 		BBitmap		*source_bitmap;
 		BBitmap		*target_bitmap;
 		BStatusBar	*progress_bar;
-		Selection	*the_selection;
+		Selection	*selection;
 
 		BBitmap		*spare_copy_bitmap;
 
@@ -27,9 +27,11 @@ public:
 			WoodManipulator();
 			~WoodManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 #endif

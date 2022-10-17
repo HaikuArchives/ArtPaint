@@ -28,38 +28,41 @@ using ArtPaint::Interface::NumberControl;
 
 
 class TranslationManipulator : public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
+	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-	BBitmap	*preview_bitmap;
-	BBitmap	*copy_of_the_preview_bitmap;
+	BBitmap*	preview_bitmap;
+	BBitmap*	copy_of_the_preview_bitmap;
 
-	int32	previous_x_translation;
-	int32	previous_y_translation;
+	int32		previous_x_translation;
+	int32		previous_y_translation;
 
-	BPoint	previous_point;
+	BPoint		previous_point;
 
-	BRect	uncleared_rect;
+	BRect		uncleared_rect;
 
-	TranslationManipulatorSettings	*settings;
-	TranslationManipulatorView		*config_view;
+	TranslationManipulatorSettings*	settings;
+	TranslationManipulatorView*		config_view;
 
+	int32		last_calculated_resolution;
+	int32		lowest_available_quality;
+	int32		highest_available_quality;
 
-	int32	last_calculated_resolution;
-	int32	lowest_available_quality;
-	int32	highest_available_quality;
+	Selection*	selection;
 
 public:
 	TranslationManipulator(BBitmap*);
 	~TranslationManipulator();
 
-	void			MouseDown(BPoint,uint32,BView*,bool);
+	void			MouseDown(BPoint, uint32, BView*, bool);
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
-	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL);
-	BView*		MakeConfigurationView(const BMessenger& target);
+	BBitmap*		ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
+						BStatusBar*);
+	int32			PreviewBitmap(bool full_quality = FALSE,
+						BRegion* updated_region = NULL);
+	BView*			MakeConfigurationView(const BMessenger& target);
 	void			SetPreviewBitmap(BBitmap*);
-	void			Reset(Selection*);
+	void			Reset();
 
 	const	char*	ReturnName();
 	const	char*	ReturnHelpString();
@@ -67,7 +70,9 @@ public:
 	const	void*	ManipulatorCursor() { return HS_TRANSLATION_CURSOR; }
 
 	ManipulatorSettings*	ReturnSettings();
-	void		SetValues(float,float);
+	void			SetValues(float, float);
+	void			SetSelection(Selection* new_selection)
+						{ selection = new_selection; };
 };
 
 

@@ -68,15 +68,15 @@ class ColorBalanceManipulator : public WindowGUIManipulator {
 		int32	lowest_allowed_quality;
 		int32	last_used_quality;
 
-
+		Selection*	selection;
 
 public:
 			ColorBalanceManipulator(BBitmap*);
 			~ColorBalanceManipulator();
 
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
-void		Reset(Selection*);
+int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
@@ -85,6 +85,8 @@ ManipulatorSettings*	ReturnSettings();
 BView*	MakeConfigurationView(const BMessenger& target);
 
 void	ChangeSettings(ManipulatorSettings*);
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 

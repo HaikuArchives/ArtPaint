@@ -43,7 +43,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 NegativeAddOnManipulator::NegativeAddOnManipulator(BBitmap*)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -54,7 +55,8 @@ NegativeAddOnManipulator::~NegativeAddOnManipulator()
 }
 
 
-BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap *original, Selection *selection, BStatusBar *status_bar)
+BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta",0.0);

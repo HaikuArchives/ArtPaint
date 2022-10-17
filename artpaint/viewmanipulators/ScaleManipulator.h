@@ -63,40 +63,41 @@ public:
 
 
 class ScaleManipulator : public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); }
+	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-	BBitmap						*preview_bitmap;
-	BBitmap						*copy_of_the_preview_bitmap;
+	BBitmap*	preview_bitmap;
+	BBitmap*	copy_of_the_preview_bitmap;
 
 	ScaleManipulatorView		*configuration_view;
 	ScaleManipulatorSettings	*settings;
 
+	float		original_width;
+	float		original_height;
 
-
-	float						original_width;
-	float						original_height;
+	Selection*	selection;
 
 public:
 	ScaleManipulator(BBitmap*);
 	~ScaleManipulator();
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,
-					Selection*,BStatusBar*);
-	int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
+					BStatusBar*);
+	int32		PreviewBitmap(bool, BRegion* =NULL);
 
-	void		MouseDown(BPoint,uint32,BView*,bool);
-	void		SetValues(float,float);
+	void		MouseDown(BPoint, uint32, BView*, bool);
+	void		SetValues(float, float);
 
 	BView*		MakeConfigurationView(const BMessenger& target);
-	void		Reset(Selection*);
+	void		Reset();
 	void		SetPreviewBitmap(BBitmap*);
 
 	const	char*	ReturnHelpString();
 	const	char*	ReturnName();
 
-
 	ManipulatorSettings*	ReturnSettings();
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 

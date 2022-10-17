@@ -42,7 +42,8 @@
 
 
 RotationManipulator::RotationManipulator(BBitmap* bitmap)
-	:	WindowGUIManipulator()
+	:	WindowGUIManipulator(),
+	selection(NULL)
 {
 	settings = new RotationManipulatorSettings();
 	config_view = NULL;
@@ -213,7 +214,7 @@ RotationManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_
 
 BBitmap*
 RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* original,
-	Selection* selection, BStatusBar* status_bar)
+	BStatusBar* status_bar)
 {
 	// Here move the contents of the original-bitmap to the new_bitmap,
 	// rotated by s->angle around s->origin.
@@ -456,7 +457,7 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 
 
 int32
-RotationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
+RotationManipulator::PreviewBitmap(bool full_quality,
 	BRegion* updated_region)
 {
 	// First decide the resolution of the bitmap
@@ -582,7 +583,7 @@ RotationManipulator::PreviewBitmap(Selection* selection, bool full_quality,
 
 
 void
-RotationManipulator::Reset(Selection* selection)
+RotationManipulator::Reset()
 {
 	selection->RotateTo(settings->origo, 0);
 	settings->angle = 0;

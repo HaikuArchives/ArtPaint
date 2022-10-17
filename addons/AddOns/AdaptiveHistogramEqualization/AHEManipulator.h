@@ -13,14 +13,18 @@
 
 class AHEManipulator : public Manipulator {
 BBitmap		*target_bitmap;
+Selection	*selection;
 
 public:
 			AHEManipulator(BBitmap*);
 			~AHEManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 #endif	// _AHE_MANIPULATOR_H

@@ -45,7 +45,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 PolarMapper::PolarMapper(BBitmap*)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -55,7 +56,8 @@ PolarMapper::~PolarMapper()
 
 }
 
-BBitmap* PolarMapper::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* PolarMapper::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	BWindow *status_bar_window = NULL;
 	if (status_bar != NULL)

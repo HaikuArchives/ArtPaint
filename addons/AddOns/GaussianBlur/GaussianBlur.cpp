@@ -47,7 +47,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 GaussianBlurManipulator::GaussianBlurManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -75,7 +76,8 @@ GaussianBlurManipulator::~GaussianBlurManipulator()
 }
 
 
-BBitmap* GaussianBlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* GaussianBlurManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
 	GaussianBlurManipulatorSettings *new_settings = dynamic_cast<GaussianBlurManipulatorSettings*>(set);
 
@@ -99,17 +101,16 @@ BBitmap* GaussianBlurManipulator::ManipulateBitmap(ManipulatorSettings *set,BBit
 
 
 	current_resolution = 1;
-	current_selection = selection;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
 
 	return target_bitmap;
 }
 
-int32 GaussianBlurManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 GaussianBlurManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	progress_bar = NULL;
-	current_selection = selection;
 	if (settings == previous_settings ) {
 		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
 			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
@@ -127,7 +128,7 @@ int32 GaussianBlurManipulator::PreviewBitmap(Selection *selection,bool full_qual
 	if (last_calculated_resolution > 0) {
 		if (selection->IsEmpty()) {
 			updated_region->Set(preview_bitmap->Bounds());
-			Reset(selection);
+			Reset();
 			ipLibrary->gaussian_blur(preview_bitmap,settings.blur,processor_count);
 		}
 		else {
@@ -220,9 +221,8 @@ void GaussianBlurManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void GaussianBlurManipulator::Reset(Selection*)
+void GaussianBlurManipulator::Reset()
 {
-	printf("Reset\n");
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();

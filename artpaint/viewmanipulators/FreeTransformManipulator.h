@@ -77,8 +77,8 @@ float	y_scale_factor;
 
 
 class FreeTransformManipulator : public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, Selection* s, BStatusBar* stb)
-		{ return WindowGUIManipulator::ManipulateBitmap(b, s, stb); };
+	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+		{ return WindowGUIManipulator::ManipulateBitmap(b, stb); };
 
 	BBitmap						*preview_bitmap;
 	BBitmap						*copy_of_the_preview_bitmap;
@@ -89,19 +89,21 @@ class FreeTransformManipulator : public WindowGUIManipulator {
 
 	int32								transformation_mode;
 	BPoint								starting_point;
+	Selection*					selection;
 
 public:
 			FreeTransformManipulator(BBitmap*);
 			~FreeTransformManipulator();
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap *original,Selection*,BStatusBar*);
-int32		PreviewBitmap(Selection*,bool,BRegion* =NULL);
+BBitmap*		ManipulateBitmap(ManipulatorSettings*, BBitmap* original,
+					BStatusBar*);
+int32			PreviewBitmap(bool, BRegion* =NULL);
 
 void			MouseDown(BPoint,uint32,BView*,bool);
 void			ChangeSettings(ManipulatorSettings* settings);
 
 BView*			MakeConfigurationView(const BMessenger& target);
-void			Reset(Selection*);
+void			Reset();
 void			SetPreviewBitmap(BBitmap*);
 
 const char*		ReturnHelpString();
@@ -109,6 +111,8 @@ const char*		ReturnName();
 
 
 ManipulatorSettings*	ReturnSettings();
+void			SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 

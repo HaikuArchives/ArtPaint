@@ -37,7 +37,8 @@ using ArtPaint::Interface::NumberControl;
 
 
 CropManipulator::CropManipulator(BBitmap* bm)
-	: WindowGUIManipulator()
+	: WindowGUIManipulator(),
+	selection(NULL)
 {
 	settings = new CropManipulatorSettings();
 	config_view = NULL;
@@ -347,7 +348,7 @@ CropManipulator::Draw(BView* view, float mag_scale)
 
 BBitmap*
 CropManipulator::ManipulateBitmap(ManipulatorSettings* set,
-	BBitmap* original, Selection*, BStatusBar* status_bar)
+	BBitmap* original, BStatusBar* status_bar)
 {
 	CropManipulatorSettings* new_settings =
 		dynamic_cast<CropManipulatorSettings*> (set);
@@ -415,7 +416,7 @@ CropManipulator::ManipulateBitmap(ManipulatorSettings* set,
 
 
 int32
-CropManipulator::PreviewBitmap(Selection* sel, bool, BRegion* updated_region)
+CropManipulator::PreviewBitmap(bool, BRegion* updated_region)
 {
 	int32* target_bits = (int32*)preview_bitmap->Bits();
 	int32* source_bits = (int32*)copy_of_the_preview_bitmap->Bits();
@@ -432,8 +433,8 @@ CropManipulator::PreviewBitmap(Selection* sel, bool, BRegion* updated_region)
 	float height = preview_bitmap->Bounds().Height();
 	float width = preview_bitmap->Bounds().Width();
 
-	if (use_selected == TRUE && sel != NULL && !sel->IsEmpty()) {
-		BRect selection_bounds = sel->GetBoundingRect();
+	if (use_selected == TRUE && selection != NULL && !selection->IsEmpty()) {
+		BRect selection_bounds = selection->GetBoundingRect();
 		SetValues(selection_bounds.left, selection_bounds.Width(),
 			selection_bounds.top, selection_bounds.Height());
 	}
@@ -520,7 +521,7 @@ CropManipulator::SetPreviewBitmap(BBitmap* bm)
 
 
 void
-CropManipulator::Reset(Selection* sel)
+CropManipulator::Reset()
 {
 	BRect bounds = preview_bitmap->Bounds();
 
@@ -743,7 +744,7 @@ CropManipulatorView::MessageReceived(BMessage* message)
 		} break;
 
 		case RESET_CROP: {
-			fManipulator->Reset(NULL);
+			fManipulator->Reset();
 			fTarget.SendMessage(
 				new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
 		} break;

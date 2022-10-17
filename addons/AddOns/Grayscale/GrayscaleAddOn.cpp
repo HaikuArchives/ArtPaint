@@ -41,7 +41,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 GrayscaleAddOnManipulator::GrayscaleAddOnManipulator(BBitmap*)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -52,7 +53,8 @@ GrayscaleAddOnManipulator::~GrayscaleAddOnManipulator()
 }
 
 
-BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	// We may create another bitmap and return it instead of original, but we may
 	// also do the manipulation on the original and return it. We Should send messages

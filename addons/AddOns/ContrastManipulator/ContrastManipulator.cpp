@@ -38,7 +38,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 ContrastManipulator::ContrastManipulator(BBitmap*)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -49,7 +50,7 @@ ContrastManipulator::~ContrastManipulator()
 }
 
 
-BBitmap* ContrastManipulator::ManipulateBitmap(BBitmap *original, Selection *selection, BStatusBar*)
+BBitmap* ContrastManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 {
 	uint32 *bits = (uint32*)original->Bits();
 	int32 bits_length = original->BitsLength()/4;

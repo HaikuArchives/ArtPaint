@@ -36,7 +36,8 @@
 
 
 FreeTransformManipulator::FreeTransformManipulator(BBitmap *bm)
-	:	WindowGUIManipulator()
+	:	WindowGUIManipulator(),
+	selection(NULL)
 {
 	configuration_view = NULL;
 
@@ -47,7 +48,6 @@ FreeTransformManipulator::FreeTransformManipulator(BBitmap *bm)
 
 	transformation_mode = 0;
 }
-
 
 
 FreeTransformManipulator::~FreeTransformManipulator()
@@ -61,10 +61,9 @@ FreeTransformManipulator::~FreeTransformManipulator()
 }
 
 
-
 BBitmap*
 FreeTransformManipulator::ManipulateBitmap(ManipulatorSettings *set,
-	BBitmap *original, Selection*, BStatusBar *status_bar)
+	BBitmap *original, BStatusBar *status_bar)
 {
 	// TODO: check what's the idea behind this
 
@@ -75,7 +74,7 @@ FreeTransformManipulator::ManipulateBitmap(ManipulatorSettings *set,
 }
 
 
-int32 FreeTransformManipulator::PreviewBitmap(Selection*,bool,BRegion *region)
+int32 FreeTransformManipulator::PreviewBitmap(bool, BRegion *region)
 {
 	if (preview_bitmap == NULL)
 		return 0;
@@ -110,6 +109,7 @@ int32 FreeTransformManipulator::PreviewBitmap(Selection*,bool,BRegion *region)
 
 	return 1;
 }
+
 
 void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
 {
@@ -146,7 +146,6 @@ void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool
 }
 
 
-
 void FreeTransformManipulator::ChangeSettings(ManipulatorSettings *s)
 {
 	// change the values for controls whose values have changed
@@ -156,7 +155,7 @@ void FreeTransformManipulator::ChangeSettings(ManipulatorSettings *s)
 }
 
 
-void FreeTransformManipulator::Reset(Selection*)
+void FreeTransformManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with loop.
@@ -167,6 +166,7 @@ void FreeTransformManipulator::Reset(Selection*)
 		memcpy(target,source,bits_length);
 	}
 }
+
 
 void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 {

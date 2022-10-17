@@ -43,7 +43,8 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 
 
 MarbleManipulator::MarbleManipulator(ManipulatorInformer *i)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 	informer = i;
 	processor_count = GetSystemCpuCount();
@@ -56,13 +57,13 @@ MarbleManipulator::~MarbleManipulator()
 }
 
 
-BBitmap* MarbleManipulator::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* MarbleManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	BStopWatch watch("PerlinMarble");
 
 	source_bitmap = original;
 	target_bitmap = original;
-	the_selection = selection;
 	progress_bar = status_bar;
 
 	thread_id *threads = new thread_id[processor_count];
@@ -129,7 +130,7 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 		uint32 word;
 	} color;
 
-	if (the_selection->IsEmpty()) {
+	if (selection->IsEmpty()) {
 		// Here handle the whole image.
 		float left = target_bitmap->Bounds().left;
 		float right = target_bitmap->Bounds().right;
@@ -178,7 +179,7 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		BRect rect = the_selection->GetBoundingRect();
+		BRect rect = selection->GetBoundingRect();
 
 		int32 left = rect.left;
 		int32 right = rect.right;
@@ -194,22 +195,31 @@ int32 MarbleManipulator::thread_function(int32 thread_number)
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
-		float one_per_width = 1.0/8;
-		float one_per_height = 1.0/256;
+		float one_per_width = 1.0/128;
+		float one_per_height = 1.0/128;
 		float one_per_depth = 1.0/1024;
-		source += (int32)left + (int32)top*source_bpr;
 
 		// Loop through all pixels in original.
 		for (int32 y=top;y<=bottom;++y) {
 			for (int32 x=left;x<=right;++x) {
-				if (the_selection->ContainsPoint(x,y)) {
+				if (selection->ContainsPoint(x,y)) {
+					color.word = *(source + x + y * source_bpr);
+					float noise = generator.PerlinNoise2D(x * one_per_width,
+						y * one_per_height);
 
+					if (noise > 0) {
+						rgb_color c = informer->GetForegroundColor();
+						color.bytes[0] = c.blue;
+						color.bytes[1] = c.green;
+						color.bytes[2] = c.red;
+						color.bytes[3] = c.alpha;
+						*(source + x + y * source_bpr) =
+							mix_2_pixels_fixed(*(source + x + y * source_bpr),
+								color.word, 32768 * (1.0 - noise));
+					}
 				}
-				else {
-					++source;
-				}
+
 			}
-			source += (source_bpr - (int32)(right-left)-1);
 
 			// Update the status-bar
 			if ( (((int32)y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {

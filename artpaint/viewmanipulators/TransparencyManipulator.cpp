@@ -29,19 +29,20 @@
 
 
 TransparencyManipulator::TransparencyManipulator(BBitmap *bm)
-	: WindowGUIManipulator()
-	, ImageAdapter()
-	, preview_bitmap(NULL)
-	, copy_of_the_preview_bitmap(NULL)
-	, preview_layer(NULL)
-	, transparency(0)
-	, last_calculated_resolution(0)
-	, lowest_available_quality(0)
-	, highest_available_quality(0)
-	, previous_transparency_change(0.0)
-	, original_transparency_coefficient(0.0)
-	, settings(NULL)
-	, config_view(NULL)
+	: WindowGUIManipulator(),
+	ImageAdapter(),
+	preview_bitmap(NULL),
+	copy_of_the_preview_bitmap(NULL),
+	preview_layer(NULL),
+	transparency(0),
+	last_calculated_resolution(0),
+	lowest_available_quality(0),
+	highest_available_quality(0),
+	previous_transparency_change(0.0),
+	original_transparency_coefficient(0.0),
+	settings(NULL),
+	config_view(NULL),
+	selection(NULL)
 {
 	if (bm) {
 		preview_bitmap = bm;
@@ -64,14 +65,14 @@ TransparencyManipulator::~TransparencyManipulator()
 
 BBitmap*
 TransparencyManipulator::ManipulateBitmap(ManipulatorSettings* set,
-	BBitmap* original, Selection* selection, BStatusBar* status_bar)
+	BBitmap* original, BStatusBar* status_bar)
 {
 	return NULL;
 }
 
 
 int32
-TransparencyManipulator::PreviewBitmap(Selection* selection, bool full_quality,
+TransparencyManipulator::PreviewBitmap(bool full_quality,
 	BRegion* updated_region)
 {
 	// First decide the resolution of the bitmap
@@ -131,7 +132,7 @@ TransparencyManipulator::SetTransparency(float change)
 
 
 void
-TransparencyManipulator::Reset(Selection*)
+TransparencyManipulator::Reset()
 {
 	if (image && image->ContainsLayer(preview_layer)) {
 		preview_layer->SetTransparency(original_transparency_coefficient);

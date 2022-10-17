@@ -45,7 +45,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 ContrastManipulator::ContrastManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -64,9 +65,10 @@ ContrastManipulator::~ContrastManipulator()
 }
 
 
-BBitmap* ContrastManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* ContrastManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	ContrastManipulatorSettings *new_settings = dynamic_cast<ContrastManipulatorSettings*>(set);
+	ContrastManipulatorSettings* new_settings = dynamic_cast<ContrastManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -88,7 +90,6 @@ BBitmap* ContrastManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 
 
 	current_resolution = 1;
-	current_selection = selection;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
 	current_average_luminance = CalculateAverageLuminance(source_bitmap);
@@ -98,10 +99,10 @@ BBitmap* ContrastManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap 
 	return target_bitmap;
 }
 
-int32 ContrastManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 ContrastManipulator::PreviewBitmap(bool full_quality,\
+	BRegion* updated_region)
 {
 	progress_bar = NULL;
-	current_selection = selection;
 	if (settings == previous_settings ) {
 		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
 			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
@@ -220,7 +221,7 @@ int32 ContrastManipulator::thread_function(int32 thread_number)
 		luminance_values[i] = max_c(0,min_c(255,i * coeff + luminance_factor));
 	}
 
-	if (current_selection->IsEmpty()) {
+	if (selection->IsEmpty()) {
 		// Here handle the whole image.
 		int32 left = target_bitmap->Bounds().left;
 		int32 right = target_bitmap->Bounds().right;
@@ -263,7 +264,7 @@ int32 ContrastManipulator::thread_function(int32 thread_number)
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		BRect rect = current_selection->GetBoundingRect();
+		BRect rect = selection->GetBoundingRect();
 
 		int32 left = rect.left;
 		int32 right = rect.right;
@@ -285,7 +286,7 @@ int32 ContrastManipulator::thread_function(int32 thread_number)
 			int32 y_times_source_bpr = y*source_bpr;
 			int32 y_times_target_bpr = y*target_bpr;
 			for (int32 x=left;x<=right;x+=step) {
-				if (current_selection->ContainsPoint(x,y)) {
+				if (selection->ContainsPoint(x,y)) {
 					color.word = *(source_bits + x + y_times_source_bpr);
 					color.bytes[0] = luminance_values[color.bytes[0]];
 					color.bytes[1] = luminance_values[color.bytes[1]];
@@ -350,7 +351,7 @@ void ContrastManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void ContrastManipulator::Reset(Selection*)
+void ContrastManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.

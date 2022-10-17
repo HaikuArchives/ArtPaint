@@ -53,7 +53,7 @@ public:
 									Manipulator();
 	virtual							~Manipulator() {}
 
-	virtual	BBitmap*				ManipulateBitmap(BBitmap*, Selection*,
+	virtual	BBitmap*				ManipulateBitmap(BBitmap*,
 										BStatusBar*) = 0;
 	virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
 	virtual	const char*				ReturnName() = 0;
@@ -63,6 +63,8 @@ public:
 										{ return fSystemClockSpeed; }
 	int								GetSystemCpuCount()
 										{ return fCpuCount; }
+	virtual void					SetSelection(Selection* new_selection) = 0;
+
 protected:
 			BBitmap*				DuplicateBitmap(BBitmap* source,
 										int32 inset = 0,

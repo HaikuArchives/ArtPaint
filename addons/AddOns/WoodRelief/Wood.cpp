@@ -44,7 +44,8 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 
 
 WoodManipulator::WoodManipulator()
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 	processor_count = GetSystemCpuCount();
 }
@@ -55,13 +56,13 @@ WoodManipulator::~WoodManipulator()
 }
 
 
-BBitmap* WoodManipulator::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* WoodManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	BStopWatch watch("PerlinWood");
 
 	source_bitmap = original;
 	target_bitmap = original;
-	the_selection = selection;
 	progress_bar = status_bar;
 
 	thread_id *threads = new thread_id[processor_count];
@@ -131,7 +132,7 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 		uint32 word;
 	} color,color1,color2,color3;
 
-	if (the_selection->IsEmpty()) {
+	if (selection->IsEmpty()) {
 		// Here handle the whole image.
 		float left = target_bitmap->Bounds().left;
 		float right = target_bitmap->Bounds().right;
@@ -204,7 +205,7 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		BRect rect = the_selection->GetBoundingRect();
+		BRect rect = selection->GetBoundingRect();
 
 		int32 left = rect.left;
 		int32 right = rect.right;
@@ -230,7 +231,7 @@ int32 WoodManipulator::thread_function(int32 thread_number)
 		// Loop through all pixels in original.
 		for (int32 y=top;y<=bottom;++y) {
 			for (int32 x=left;x<=right;++x) {
-				if (the_selection->ContainsPoint(x,y)) {
+				if (selection->ContainsPoint(x,y)) {
 
 					color1.word = *(spare_bits - spare_bpr - 1);
 					color2.word = *(spare_bits + spare_bpr + 1);

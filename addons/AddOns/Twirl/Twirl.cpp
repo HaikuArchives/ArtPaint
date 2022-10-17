@@ -46,7 +46,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 TwirlManipulator::TwirlManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	last_calculated_resolution = 8;
 	lowest_available_quality = 8;
@@ -90,9 +91,10 @@ void TwirlManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
 }
 
 
-BBitmap* TwirlManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* TwirlManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	TwirlManipulatorSettings *new_settings = dynamic_cast<TwirlManipulatorSettings*>(set);
+	TwirlManipulatorSettings* new_settings = dynamic_cast<TwirlManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -286,7 +288,8 @@ BBitmap* TwirlManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *or
 }
 
 
-int32 TwirlManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 TwirlManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	if ((settings == previous_settings) == FALSE) {
 		previous_settings = settings;
@@ -449,7 +452,7 @@ void TwirlManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void TwirlManipulator::Reset(Selection*)
+void TwirlManipulator::Reset()
 {
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();

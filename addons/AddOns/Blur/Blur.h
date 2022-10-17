@@ -106,10 +106,10 @@ public:
 			BlurManipulator(BBitmap*);
 			~BlurManipulator();
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
 BView*		MakeConfigurationView(const BMessenger& target);
-int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion* =NULL);
-void		Reset(Selection*);
+int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 
 
@@ -126,6 +126,8 @@ void		ChangeSettings(ManipulatorSettings*);
 
 status_t	ReadSettings(BNode*);
 status_t	WriteSettings(BNode*);
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; };
 };
 
 

@@ -42,7 +42,8 @@ Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
 
 
 EnhanceEdgesManipulator::EnhanceEdgesManipulator()
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 	processor_count = GetSystemCpuCount();
 }
@@ -53,7 +54,8 @@ EnhanceEdgesManipulator::~EnhanceEdgesManipulator()
 }
 
 
-BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap* original,
+	BStatusBar* status_bar)
 {
 	/*
 		This function will first copy the original and then calculate the effect from the copy
@@ -87,7 +89,6 @@ BBitmap* EnhanceEdgesManipulator::ManipulateBitmap(BBitmap *original,Selection *
 	// know what to do.
 	source_bitmap = duplicate;
 	target_bitmap = original;
-	the_selection = selection;
 	progress_bar = status_bar;
 
 	thread_id *threads = new thread_id[processor_count];
@@ -157,7 +158,7 @@ int32 EnhanceEdgesManipulator::thread_function(int32 thread_number)
 		uint32 word;
 	} color;
 
-	if (the_selection->IsEmpty()) {
+	if (selection->IsEmpty()) {
 		// Here handle the whole image.
 		int32 left = target_bitmap->Bounds().left;
 		int32 right = target_bitmap->Bounds().right;
@@ -257,7 +258,7 @@ int32 EnhanceEdgesManipulator::thread_function(int32 thread_number)
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		BRect rect = the_selection->GetBoundingRect();
+		BRect rect = selection->GetBoundingRect();
 
 		int32 left = rect.left;
 		int32 right = rect.right;
@@ -274,7 +275,7 @@ int32 EnhanceEdgesManipulator::thread_function(int32 thread_number)
 		// Loop through all pixels in original.
 		for (int32 y=top;y<=bottom;++y) {
 			for (int32 x=left;x<=right;++x) {
-				if (the_selection->ContainsPoint(x,y)) {
+				if (selection->ContainsPoint(x,y)) {
 					float red = 0;
 					float green = 0;
 					float blue = 0;

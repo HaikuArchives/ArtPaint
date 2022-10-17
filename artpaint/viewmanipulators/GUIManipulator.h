@@ -36,7 +36,7 @@ enum draw_resolutions {
 
 class GUIManipulator : public Manipulator {
 protected:
-	BBitmap*	ManipulateBitmap(BBitmap *b,Selection*,BStatusBar*) { return b; }
+	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar*) { return b; }
 
 public:
 	GUIManipulator() : Manipulator() {}
@@ -44,10 +44,10 @@ public:
 
 
 	virtual	void		MouseDown(BPoint,uint32,BView*,bool) {}
-	virtual	int32		PreviewBitmap(Selection*,bool full_quality=FALSE,BRegion *updated_region=NULL) = 0;
-	virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,Selection*,BStatusBar*) = 0;
+	virtual	int32		PreviewBitmap(bool full_quality=FALSE,BRegion *updated_region=NULL) = 0;
+	virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,BStatusBar*) = 0;
 	virtual	BRegion		Draw(BView*,float) { return BRegion(); }
-	virtual	void		Reset(Selection*) = 0;
+	virtual	void		Reset() = 0;
 	virtual	void		SetPreviewBitmap(BBitmap*) = 0;
 	virtual	const	void*		ManipulatorCursor() { return NULL; }
 	virtual	const	char*		ReturnHelpString() = 0;

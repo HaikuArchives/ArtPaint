@@ -51,7 +51,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 ThresholdManipulator::ThresholdManipulator(BBitmap *bm,ManipulatorInformer *i)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -76,9 +77,10 @@ ThresholdManipulator::~ThresholdManipulator()
 }
 
 
-BBitmap* ThresholdManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* ThresholdManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	ThresholdManipulatorSettings *new_settings = dynamic_cast<ThresholdManipulatorSettings*>(set);
+	ThresholdManipulatorSettings* new_settings = dynamic_cast<ThresholdManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -100,7 +102,6 @@ BBitmap* ThresholdManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap
 
 
 	current_resolution = 1;
-	current_selection = selection;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
 
@@ -109,10 +110,10 @@ BBitmap* ThresholdManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap
 	return target_bitmap;
 }
 
-int32 ThresholdManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 ThresholdManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	progress_bar = NULL;
-	current_selection = selection;
 	if (settings == previous_settings ) {
 		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
 			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
@@ -205,7 +206,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 	light.bytes[2] = light_color.red;
 	light.bytes[3] = light_color.alpha;
 
-	if (current_selection->IsEmpty()) {
+	if (selection->IsEmpty()) {
 		// Here handle the whole image.
 		int32 left = target_bitmap->Bounds().left;
 		int32 right = target_bitmap->Bounds().right;
@@ -256,7 +257,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 	}
 	else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		BRect rect = current_selection->GetBoundingRect();
+		BRect rect = selection->GetBoundingRect();
 
 		int32 left = rect.left;
 		int32 right = rect.right;
@@ -280,7 +281,7 @@ int32 ThresholdManipulator::thread_function(int32 thread_number)
 			int32 y_times_source_bpr = y*source_bpr;
 			int32 y_times_target_bpr = y*target_bpr;
 			for (int32 x=left;x<=right;x+=step) {
-				if (current_selection->ContainsPoint(x,y)) {	// Adjust only the pixels inside the selection.
+				if (selection->ContainsPoint(x,y)) {	// Adjust only the pixels inside the selection.
 					color.word = *(source_bits + x + y_times_source_bpr);
 
 					if (mode == HISTOGRAM_MODE_INTENSITY)
@@ -353,7 +354,7 @@ void ThresholdManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void ThresholdManipulator::Reset(Selection*)
+void ThresholdManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.

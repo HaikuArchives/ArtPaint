@@ -40,7 +40,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 AHEManipulator::AHEManipulator(BBitmap*)
-		: Manipulator()
+		: Manipulator(),
+		selection(NULL)
 {
 }
 
@@ -50,7 +51,7 @@ AHEManipulator::~AHEManipulator()
 }
 
 
-BBitmap* AHEManipulator::ManipulateBitmap(BBitmap *original, Selection *selection, BStatusBar*)
+BBitmap* AHEManipulator::ManipulateBitmap(BBitmap *original, BStatusBar*)
 {
 	// This manipulator assumes a grayscale image
 	ImageProcessingLibrary iplib;

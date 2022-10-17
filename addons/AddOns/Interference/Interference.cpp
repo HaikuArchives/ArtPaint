@@ -65,7 +65,8 @@ instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 
 
 InterferenceManipulator::InterferenceManipulator(BBitmap* bm, ManipulatorInformer* i)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	copy_of_the_preview_bitmap = NULL;
 	preview_bitmap = NULL;
@@ -95,9 +96,10 @@ InterferenceManipulator::~InterferenceManipulator()
 
 
 BBitmap*
-InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+InterferenceManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap* original, BStatusBar* status_bar)
 {
-	InterferenceManipulatorSettings *new_settings = dynamic_cast<InterferenceManipulatorSettings*>(set);
+	InterferenceManipulatorSettings* new_settings = dynamic_cast<InterferenceManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -105,18 +107,19 @@ InterferenceManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *orig
 	if (original == NULL)
 		return NULL;
 
-	MakeInterference(original,new_settings,selection);
+	MakeInterference(original, new_settings);
 
 	return original;
 }
 
 
 int32
-InterferenceManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+InterferenceManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	if ((settings == previous_settings) == FALSE) {
 		previous_settings = settings;
-		MakeInterference(preview_bitmap,&previous_settings,selection);
+		MakeInterference(preview_bitmap, &previous_settings);
 		updated_region->Set(selection->GetBoundingRect());
 		return 1;
 	}
@@ -142,13 +145,14 @@ InterferenceManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first
 
 
 void
-InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceManipulatorSettings *set, Selection *sel)
+InterferenceManipulator::MakeInterference(BBitmap* target,
+	InterferenceManipulatorSettings* set)
 {
 	BStopWatch watch("Making an interference");
 	uint32 *target_bits = (uint32*)target->Bits();
 	uint32 target_bpr = target->BytesPerRow()/4;
 
-	BRect b = sel->GetBoundingRect();
+	BRect b = selection->GetBoundingRect();
 
 	// the wave lengths are taken as inverse numbers
 	float wl_A = 1.0/set->waveLengthA;
@@ -183,7 +187,7 @@ InterferenceManipulator::MakeInterference(BBitmap *target, InterferenceManipulat
 
 	for (int32 y=b.top;y<=b.bottom;y++) {
 		for (int32 x=b.left;x<=b.right;x++) {
-			if (sel->ContainsPoint(x,y)) {
+			if (selection->ContainsPoint(x,y)) {
 				float dist_A = sqrt(pow(fabs(x-c_A.x),2) + pow(fabs(y-c_A.y),2));
 				float dist_B = sqrt(pow(fabs(x-c_B.x),2) + pow(fabs(y-c_B.y),2));
 
@@ -259,7 +263,7 @@ InterferenceManipulator::ReturnName()
 
 
 void
-InterferenceManipulator::Reset(Selection*)
+InterferenceManipulator::Reset()
 {
 	if (preview_bitmap != NULL) {
 		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();

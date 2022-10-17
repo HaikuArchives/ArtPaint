@@ -51,7 +51,8 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 ColorSeparatorManipulator::ColorSeparatorManipulator(BBitmap *bm)
-		: WindowGUIManipulator()
+		: WindowGUIManipulator(),
+		selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -68,9 +69,10 @@ ColorSeparatorManipulator::~ColorSeparatorManipulator()
 }
 
 
-BBitmap* ColorSeparatorManipulator::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap* ColorSeparatorManipulator::ManipulateBitmap(ManipulatorSettings* set,
+	BBitmap *original, BStatusBar* status_bar)
 {
-	ColorSeparatorManipulatorSettings *new_settings = cast_as(set,ColorSeparatorManipulatorSettings);
+	ColorSeparatorManipulatorSettings* new_settings = cast_as(set,ColorSeparatorManipulatorSettings);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -98,7 +100,8 @@ BBitmap* ColorSeparatorManipulator::ManipulateBitmap(ManipulatorSettings *set,BB
 	return target_bitmap;
 }
 
-int32 ColorSeparatorManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 ColorSeparatorManipulator::PreviewBitmap(bool full_quality,
+	BRegion* updated_region)
 {
 	updated_region->Set(preview_bitmap->Bounds());
 
@@ -134,7 +137,7 @@ void ColorSeparatorManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void ColorSeparatorManipulator::Reset(Selection*)
+void ColorSeparatorManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.

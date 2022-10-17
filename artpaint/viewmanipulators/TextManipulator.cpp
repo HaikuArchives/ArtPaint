@@ -56,7 +56,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 TextManipulator::TextManipulator(BBitmap *bm)
-	:	WindowGUIManipulator()
+	:	WindowGUIManipulator(),
+	selection(NULL)
 {
 	preview_bitmap = NULL;
 	copy_of_the_preview_bitmap = NULL;
@@ -113,7 +114,7 @@ BRegion TextManipulator::Draw(BView *view,float)
 
 
 BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
-	BBitmap *original, Selection *selection, BStatusBar*)
+	BBitmap *original, BStatusBar*)
 {
 	TextManipulatorSettings *new_settings = dynamic_cast<TextManipulatorSettings*> (set);
 
@@ -220,7 +221,7 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 
 
 
-int32 TextManipulator::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
+int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 {
 	// First decide the resolution of the bitmap
 	if (previous_settings == fSettings) {
@@ -435,7 +436,7 @@ void TextManipulator::SetPreviewBitmap(BBitmap *bm)
 
 
 void
-TextManipulator::Reset(Selection*)
+TextManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap) {
 		uint32 *target_bits = (uint32*)preview_bitmap->Bits();

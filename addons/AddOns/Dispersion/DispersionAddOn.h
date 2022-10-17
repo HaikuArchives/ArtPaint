@@ -15,13 +15,17 @@
 #define	MAX_DISPERSION_X	8
 
 class DispersionManipulator : public Manipulator {
+Selection* selection;
+
 public:
 			DispersionManipulator(BBitmap*);
 			~DispersionManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*,Selection*,BStatusBar*);
+BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();
 const char*	ReturnName();
+void		SetSelection(Selection* new_selection)
+				{ selection = new_selection; }
 };
 
 #endif
