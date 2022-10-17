@@ -17,6 +17,7 @@
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
+#include "Selection.h"
 #include "ToolScript.h"
 
 
@@ -68,6 +69,8 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	uint32* bits_origin = (uint32*)bitmap->Bits();
 	int32 bpr = bitmap->BytesPerRow() / 4;
 
+	Selection* selection = view->GetSelection();
+
 	// for the quick calculation of square-roots
 	float sqrt_table[5500];
 	for (int32 i=0;i<5500;i++)
@@ -76,7 +79,12 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	float half_size = fToolSettings.size/2;
 	BRect rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
 		ceil(point.x + half_size), ceil(point.y + half_size));
+
+	if (selection != NULL && selection->IsEmpty() == false)
+		bounds = selection->GetBoundingRect();
+
 	rc = rc & bounds;
+
 	SetLastUpdatedRect(rc);
 
 	union {
@@ -87,44 +95,57 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	uint32 transparency_value =
 		((PaintApplication*)be_app)->Color(true).alpha;
 
+
 	while (buttons) {
-		the_script->AddPoint(point);
+		if (selection == NULL || selection->IsEmpty() == true ||
+			selection->ContainsPoint(point)) {
 
-		int32 x_dist,y_sqr;
+			the_script->AddPoint(point);
 
-		int32 width = rc.IntegerWidth();
-		int32 height = rc.IntegerHeight();
-		for (int32 y=0;y<height+1;y++) {
-			y_sqr = (int32)(point.y - rc.top - y);
-			y_sqr *= y_sqr;
-			int32 real_y = (int32)(rc.top + y);
-			int32 real_x;
-			for (int32 x=0;x<width+1;x++) {
-				x_dist = (int32)(point.x-rc.left-x);
-				real_x = (int32)(rc.left+x);
-				if (sqrt_table[x_dist*x_dist + y_sqr] <= half_size) {
-//					for (int32 i=0;i<(float)GetCurrentValue(PRESSURE_OPTION)/4.0;i++) {
+			int32 x_dist,y_sqr;
+
+			int32 width = rc.IntegerWidth();
+			int32 height = rc.IntegerHeight();
+			for (int32 y=0;y<height+1;y++) {
+				y_sqr = (int32)(point.y - rc.top - y);
+				y_sqr *= y_sqr;
+				int32 real_y = (int32)(rc.top + y);
+				int32 real_x;
+				for (int32 x=0;x<width+1;x++) {
+					x_dist = (int32)(point.x-rc.left-x);
+					real_x = (int32)(rc.left+x);
+					if (sqrt_table[x_dist*x_dist + y_sqr] <= half_size) {
 						color.word = *(bits_origin + real_y*bpr + real_x);
-						if (color.bytes[3] < transparency_value) {
-							color.bytes[3] = (uint8)min_c(color.bytes[3] +
-								GetCurrentValue(PRESSURE_OPTION)/4.0,
-								transparency_value);
-							*(bits_origin + real_y*bpr + real_x) = color.word;
-						} else if (color.bytes[3] > transparency_value) {
-							color.bytes[3] = (uint8)max_c(color.bytes[3] -
-								GetCurrentValue(PRESSURE_OPTION)/4.0,
-								transparency_value);
-							*(bits_origin + real_y*bpr + real_x) = color.word;
+						if (selection == NULL ||
+							selection->IsEmpty() == true ||
+							selection->ContainsPoint(real_x, real_y)) {
+							if (color.bytes[3] < transparency_value) {
+								color.bytes[3] = (uint8)min_c(color.bytes[3] +
+									GetCurrentValue(PRESSURE_OPTION)/4.0,
+									transparency_value);
+								*(bits_origin + real_y*bpr + real_x) =
+									color.word;
+							} else if (color.bytes[3] > transparency_value) {
+								color.bytes[3] = (uint8)max_c(color.bytes[3] -
+									GetCurrentValue(PRESSURE_OPTION)/4.0,
+									transparency_value);
+								*(bits_origin + real_y*bpr + real_x) =
+									color.word;
+							}
 						}
-//					}
+					}
 				}
 			}
-		}
 
-		if (rc.IsValid()) {
 			window->Lock();
-			view->UpdateImage(rc);
-			view->Sync();
+
+			bool do_snooze = false;
+			if (rc.IsValid()) {
+				view->UpdateImage(rc);
+				view->Sync();
+				do_snooze = true;
+			}
+
 			view->getCoords(&point,&buttons);
 			window->Unlock();
 			half_size = fToolSettings.size/2;
@@ -132,16 +153,12 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				ceil(point.x + half_size), ceil(point.y + half_size));
 			rc = rc & bounds;
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
-			//snooze(20.0 * 1000.0);
+			if (do_snooze == true)
+				snooze(20 * 1000);
 		} else {
 			window->Lock();
 			view->getCoords(&point,&buttons);
 			window->Unlock();
-			half_size = fToolSettings.size/2;
-			rc = BRect(floor(point.x - half_size), floor(point.y - half_size),
-				ceil(point.x + half_size), ceil(point.y + half_size));
-			rc = rc & bounds;
-			SetLastUpdatedRect(LastUpdatedRect() | rc);
 			snooze(20 * 1000);
 		}
 	}
