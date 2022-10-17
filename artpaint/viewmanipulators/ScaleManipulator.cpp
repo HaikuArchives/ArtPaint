@@ -12,9 +12,10 @@
 
 #include "ScaleManipulator.h"
 
-#include "PixelOperations.h"
 #include "MessageConstants.h"
 #include "NumberControl.h"
+#include "PixelOperations.h"
+#include "Selection.h"
 
 
 #include <Bitmap.h>
@@ -30,7 +31,6 @@
 
 
 #include <new>
-#include <stdio.h>
 #include <string.h>
 
 
@@ -43,7 +43,8 @@ using ArtPaint::Interface::NumberControl;
 
 ScaleManipulator::ScaleManipulator(BBitmap *bm)
 	:	WindowGUIManipulator(),
-	selection(NULL)
+	selection(NULL),
+	orig_selection_data(NULL)
 {
 	configuration_view = NULL;
 	settings = new ScaleManipulatorSettings();
@@ -52,6 +53,9 @@ ScaleManipulator::ScaleManipulator(BBitmap *bm)
 	copy_of_the_preview_bitmap = NULL;
 
 	SetPreviewBitmap(bm);
+	reject_mouse_input = false;
+	previous_point.x = 0;
+	previous_point.y = 0;
 }
 
 
@@ -62,6 +66,9 @@ ScaleManipulator::~ScaleManipulator()
 		configuration_view->RemoveSelf();
 		delete configuration_view;
 	}
+
+	if (orig_selection_data != NULL)
+		delete orig_selection_data;
 
 	delete copy_of_the_preview_bitmap;
 }
@@ -76,9 +83,82 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	if (new_settings == NULL)
 		return NULL;
 
+	BBitmap *final_bitmap = NULL;	
+	
+	BRect bounds = original->Bounds();
+	BRect orig_bounds = original->Bounds();
+	
+	if (bounds.IsValid() == FALSE)
+		return NULL;
+	
+	union color_conversion background;
+	// Transparent background.
+	background.bytes[0] = 0xFF;
+	background.bytes[1] = 0xFF;
+	background.bytes[2] = 0xFF;
+	background.bytes[3] = 0x00;
+	
+	if (original != preview_bitmap) {
+		/*original->Lock();
+		BRect bitmap_frame = original->Bounds();
+		final_bitmap = new BBitmap(bitmap_frame, B_RGBA32);
+		original->Unlock();
+		if (final_bitmap->IsValid() == FALSE) {
+			throw std::bad_alloc();
+		}*/
+	} else {
+		final_bitmap = original;
+		original = copy_of_the_preview_bitmap;
+	}
+	
+	uint32 *source_bits; 
+	uint32 *target_bits;
+	
+	if (selection != NULL && selection->IsEmpty() == FALSE) {
+		if (orig_selection_data != NULL) {
+			// get the selection before scaling
+			SelectionData new_selection_data = selection->ReturnSelectionData();
+			selection->SetSelectionData(orig_selection_data);
+			
+			// copy non-selected data to result bitmap
+			
+			final_bitmap = new BBitmap(BRect(0, 0, orig_bounds.Width(), 
+				orig_bounds.Height()), B_RGBA32);
+			target_bits = (uint32*)final_bitmap->Bits();
+			uint32 target_bpr = final_bitmap->BytesPerRow() / 4;
+			source_bits = (uint32*)original->Bits();
+			uint32 source_bpr = original->BytesPerRow() / 4;
+			for (int32 y = 0; y <= orig_bounds.bottom; y++) {
+				for (int32 x = 0; x < orig_bounds.right; x++) {
+					if (selection->ContainsPoint(x, y) == false) 
+						*(target_bits + x + y * target_bpr) = 
+							*(source_bits + x + y * source_bpr);
+					else
+						*(target_bits + x + y * target_bpr) = background.word;
+				}
+			}
+			
+			// set the "original" bounds to the size of the
+			// selection before scaling
+			orig_bounds = selection->GetBoundingRect();
+	
+			// and reset selection back to the new selection
+			selection->SetSelectionData(&new_selection_data);
+		}
+		
+		bounds = selection->GetBoundingRect();
+	} 
+	
+	if (bounds.IsValid() == FALSE || orig_bounds.IsValid() == FALSE)
+		return NULL;
+	
+	float starting_width = bounds.Width() + 1;
+	float starting_height = bounds.Height() + 1;
 
-	float starting_width = original->Bounds().Width()+1;
-	float starting_height = original->Bounds().Height()+1;
+	if (orig_bounds != bounds) {
+		starting_width = orig_bounds.Width() + 1;
+		starting_height = orig_bounds.Height() + 1;
+	}
 
 	float new_width = round(starting_width * new_settings->width_coefficient);
 	float new_height = round(starting_height * new_settings->height_coefficient);
@@ -91,164 +171,262 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	if ((new_width == starting_width) && (new_height == starting_height))
 		return NULL;
 
-
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta",0.0);
 
-	BBitmap *intermediate_bitmap;
+	BBitmap *scale_x_bitmap = NULL;
+	BBitmap *scale_y_bitmap = NULL;
+	
 	if (new_width != starting_width) {
-		intermediate_bitmap = new BBitmap(BRect(0, 0, new_width - 1,
-			starting_height - 1), B_RGB_32_BIT);
-		if (intermediate_bitmap->IsValid() == FALSE)
+		float bitmapWidth = new_width - 1;
+		float bitmapHeight = starting_height - 1;
+		scale_x_bitmap = new BBitmap(BRect(0, 0, bitmapWidth, bitmapHeight), 
+			B_RGBA32);
+		if (scale_x_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
-		uint32 *target_bits = (uint32*)intermediate_bitmap->Bits();
-		int32 target_pxpr = intermediate_bitmap->BytesPerRow()/4;
-		uint32 *source_bits = (uint32*)original->Bits();
-		int32 source_pxpr = original->BytesPerRow()/4;
-		int32 bottom = (int32)original->Bounds().bottom;
-		float diff = (starting_width)/(new_width);
+			
+		target_bits = (uint32*)scale_x_bitmap->Bits();
+		int32 target_bpr = scale_x_bitmap->BytesPerRow() / 4;
+		source_bits = (uint32*)original->Bits();
+		int32 source_bpr = original->BytesPerRow() / 4;
+		float diff = starting_width / new_width;
 		float accumulation = 0;
+		int32 left = (int32)bounds.left;
+		int32 top = (int32)bounds.top;
+		int32 right = left + new_width - 1;
+		int32 bottom = (int32)bounds.bottom;
 
-
-		if (diff<1) {
+		for (int32 y = 0; y < starting_height; y++)
+			for (int32 x = 0; x < target_bpr; x++)
+				*(target_bits + x + y * target_bpr) = 
+					background.word;
+					
+		if (diff < 1) {
 			// Enlarge in x direction.
-			for (int32 y=0;y<=bottom;y++) {
+			for (int32 y = 0; y < starting_height; y++) {
 				accumulation = 0;
-				for (int32 x=0;x<target_pxpr;x++) {
+				uint32* src_bits = source_bits + left + (y + top) * source_bpr;
+				
+				for (int32 x = 0; x < target_bpr; x++) {
 					// 'mix_2_pixels' doesn't work -- doesn't take rounding errors into account.
-					*target_bits++ = mix_2_pixels_fixed(*(source_bits + (int32)floor(accumulation)),
-														*(source_bits + (int32)ceil(accumulation)),
-														(uint32)(32768*(ceil(accumulation)-accumulation)));
-
+					*(target_bits + x + y * target_bpr) = 
+						src_over_fixed (*(target_bits + x + y * target_bpr),
+							mix_2_pixels_fixed(*(src_bits + (int32)floor(accumulation)),
+									*(src_bits + (int32)ceil(accumulation)),
+									(uint32)(32768 * (ceil(accumulation) - accumulation)))
+						);
 					accumulation += diff;
-					if (accumulation > source_pxpr-1) accumulation = source_pxpr-1;
+					
+					if (accumulation > source_bpr - 1) 
+						accumulation = source_bpr - 1;
 				}
-				source_bits += source_pxpr;
-				if ((y%10 == 0) && (status_bar != NULL)) {
+				
+				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
 				}
 			}
-		}
-		else if (diff>1) {
+		} else if (diff > 1) {
 			// Make smaller in x direction.
-			diff = (starting_width-1)/new_width;	// Why this line???
-			for (int32 y=0;y<=bottom;y++) {
-				accumulation = 0;
-				for (int32 x=0;x<target_pxpr;x++) {
+			for (int32 y = 0; y <= starting_height - 1; y++) {
+				uint32* src_bits = source_bits + (y + top) * source_bpr;
+				float fx = left;
+				for (int32 x = 0; x < target_bpr; x++) {
 					// Here we average the original pixels between accumulation and accumulation+diff.
 					// The pixels at end get a little lower coefficients than the other pixels.
 					// But for now we just settle for averaging the pixels between floor(accumulation)
 					// and floor(accumulation+diff):
 					float coeff = 1.0;
-					float coeff_diff = 1.0/(floor(accumulation+diff)-floor(accumulation));
+					int32 x_diff = floor(fx + diff);
+					float coeff_diff = 0;
+					if (x_diff - x != 0) 
+						coeff_diff = 1.0 / (float)(x_diff - x);
 					uint32 target_value = 0x00000000;
-					for (int32 i=(int32)floor(accumulation);i<floor(accumulation+diff);i++) {
-						target_value = mix_2_pixels_fixed(*(source_bits + i),target_value,(uint32)(32768*coeff));
+					for (int32 i = (int32)floor(fx); i < x_diff; i++) {
+						target_value = mix_2_pixels_fixed(*(src_bits + i),
+							target_value, (uint32)(32768 * coeff));
 						coeff -= coeff_diff;
 					}
-					*target_bits++ = target_value;
-					accumulation += diff;
+					
+					*(target_bits + x + y * target_bpr) = target_value;
+					fx += diff;
 				}
-				source_bits += source_pxpr;
-				if ((y%10 == 0) && (status_bar != NULL)) {
+				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
 				}
 			}
-		}
-		else {
-			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_pxpr;x++) {
+		} else {
+			for (int32 y = 0; y <= starting_height; y++) {
+				uint32* src_bits = source_bits + y * source_bpr;
+				
+				for (int32 x = 0; x < target_bpr; x++) {
 					// Just copy it straight
-					*target_bits++ = *source_bits++;
+					*(target_bits + x + y * target_bpr) = *(src_bits + x);
 				}
-				if ((y%10 == 0) && (status_bar != NULL)) {
+				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
 				}
 			}
 		}
-	}
-	else {
-		intermediate_bitmap = original;
+	} else {
+		scale_x_bitmap = original;
 	}
 
 	if (new_height != starting_height) {
-		BBitmap *new_bitmap = new BBitmap(BRect(0,0,new_width-1,new_height-1),B_RGB_32_BIT);
-		if (new_bitmap->IsValid() == FALSE)
+		float bitmapWidth = new_width - 1;
+		float bitmapHeight = new_height - 1;
+
+		scale_y_bitmap = new BBitmap(BRect(0, 0 , bitmapWidth, 
+			bitmapHeight), B_RGBA32);
+		if (scale_y_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
 
-		uint32 *target_bits = (uint32*)new_bitmap->Bits();
-		int32 target_pxpr = new_bitmap->BytesPerRow()/4;
-		uint32 *source_bits = (uint32*)intermediate_bitmap->Bits();
-		int32 source_pxpr = intermediate_bitmap->BytesPerRow()/4;
-		int32 bottom = (int32)new_bitmap->Bounds().bottom;
-		float diff = (starting_height-1)/(new_height);
+		target_bits = (uint32*)scale_y_bitmap->Bits();
+		int32 target_bpr = scale_y_bitmap->BytesPerRow() / 4;
+		source_bits = (uint32*)scale_x_bitmap->Bits();
+		int32 source_bpr = scale_x_bitmap->BytesPerRow() / 4;
+		
+		for (int32 y = 0; y < new_height; y++) 
+			for (int32 x = 0; x < new_width; x++) 
+				*(target_bits + x + y * target_bpr) = 
+					background.word;	
+						
+		int32 top = (int32)bounds.top;
+		int32 left = (int32)bounds.left;
+		int32 bottom = (int32)scale_y_bitmap->Bounds().bottom;	
+		int32 right = (int32)scale_y_bitmap->Bounds().right;
+		
+		if (scale_x_bitmap != original) {
+			left = 0;
+			top = 0;
+		}
+		
+		float diff = (starting_height - 1) / new_height;
 		float accumulation = 0;
-		if (diff<1) {
+		if (diff < 1) {
 			// Make larger in y direction.
-			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_pxpr;x++) {
-					*target_bits++ = mix_2_pixels_fixed(*(source_bits + (int32)floor(accumulation)*source_pxpr),*(source_bits + (int32)ceil(accumulation)*source_pxpr),(uint32)(32768*(ceil(accumulation)-accumulation)));
-					source_bits++;
+			float fy = top;
+			for (int32 y = 0; y <= new_height - 1; y++) {
+				int32 y_diff = (int32)floor(fy + diff);
+				for (int32 x = 0; x < new_width - 1; x++) {
+					*(target_bits + x + y * target_bpr) = 
+						mix_2_pixels_fixed(*(source_bits + x + left + (int32)floor(fy) * source_bpr),
+							*(source_bits + x + left + y_diff * source_bpr),
+							(uint32)(32768 * (ceil(accumulation) - accumulation)));
 				}
-				source_bits -= source_pxpr;
+				fy += diff;
 				accumulation += diff;
-				if ((y%10 == 0) && (status_bar != NULL)) {
+				if (accumulation > source_bpr - 1) 
+					accumulation = source_bpr - 1;
+				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
 				}
 			}
-		}
-		else if (diff>1) {
+		} else if (diff > 1) {
 			// Make smaller in y direction.
-			diff = (starting_height-1)/new_height;
-			accumulation = 0;
-			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_pxpr;x++) {
+			float fy = top;
+			for (int32 y = 0; y <= new_height - 1; y++) {
+				for (int32 x = 0; x < new_width - 1; x++) {
 					// Here we average the original pixels between accumulation and accumulation+diff.
 					// The pixels at end get a little lower coefficients than the other pixels.
 					// But for now we just settle for averaging the pixels between floor(accumulation)
 					// and floor(accumulation+diff):
 					uint32 target_value = 0x00000000;
 					float coeff = 1.0;
-					float coeff_diff = 1.0/(floor(accumulation+diff)-floor(accumulation));
-					for (int32 i=(int32)floor(accumulation);i<floor(accumulation+diff);i++) {
-						target_value = mix_2_pixels_fixed(*(source_bits + i*source_pxpr),target_value,(uint32)(32768*coeff));
+					int32 y_diff = floor(fy + diff);
+					float coeff_diff = 0;
+					if (y_diff - y != 0)
+						coeff_diff = 1.0 / (y_diff - y);
+					for (int32 i = (int32)floor(fy); i < y_diff; i++) {
+						target_value = mix_2_pixels_fixed(*(source_bits + x + left + i * source_bpr),
+							target_value, (uint32)(32768 * coeff));
 						coeff -= coeff_diff;
 					}
-					*target_bits++ = target_value;
-					source_bits++;
+					*(target_bits + x + y * target_bpr) = target_value;				
 				}
-				source_bits -= source_pxpr;
-				accumulation += diff;
-				if ((y%10 == 0) && (status_bar != NULL)) {
+				fy += diff;
+				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
 				}
 			}
-		}
-		else {
-			for (int32 y=0;y<=bottom;y++) {
-				for (int32 x=0;x<target_pxpr;x++) {
+		} else {
+			for (int32 y = 0; y <= bottom; y++) {
+				for (int32 x = 0; x < target_bpr; x++) {
 					// Just copy it straight
 					*target_bits++ = *source_bits++;
 				}
-				if ((y%10 == 0) && (status_bar != NULL)) {
+				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
 				}
 			}
 		}
 
-		if (intermediate_bitmap != original)
-			delete intermediate_bitmap;
-
-		return new_bitmap;
+		if (scale_x_bitmap != original)
+			delete scale_x_bitmap;
 	}
-	else
-		return intermediate_bitmap;
+	
+	source_bits = NULL;
+	uint32 source_bpr;
+	BRect final_bounds;
+	
+	if (scale_y_bitmap != NULL) {
+		source_bits = (uint32*)scale_y_bitmap->Bits();
+		source_bpr = scale_y_bitmap->BytesPerRow() / 4;
+		final_bounds = scale_y_bitmap->Bounds();
+	} else if (scale_x_bitmap != NULL) {
+		source_bits = (uint32*)scale_x_bitmap->Bits();
+		source_bpr = scale_x_bitmap->BytesPerRow() / 4;
+		
+		final_bounds = scale_x_bitmap->Bounds();
+	} 
+	
+	if (final_bitmap == NULL && final_bounds.IsValid()) {
+		final_bitmap = new BBitmap(final_bounds, B_RGBA32);
+		
+		target_bits = (uint32*)final_bitmap->Bits();
+		uint32 target_bpr = final_bitmap->BytesPerRow() / 4;	
+	
+		for (int32 y = 0; y < final_bitmap->Bounds().Height(); y++)
+			for (int32 x = 0; x < final_bitmap->Bounds().Width(); x++)
+				*(target_bits + x + y * target_bpr) = background.word;
+	}
+	
+	if (final_bitmap == NULL)
+		return NULL;
+		
+	target_bits = (uint32*)final_bitmap->Bits();
+	uint32 target_bpr = final_bitmap->BytesPerRow() / 4;	
+	
+	if (selection != NULL && selection->IsEmpty() == FALSE)
+		final_bounds = bounds;
+		
+	if (source_bits != NULL) {
+		for (int32 y = final_bounds.top; y <= final_bounds.bottom; y++) {
+			int32 src_y = y - final_bounds.top;
+			//if (src_y >= y * target_bpr)
+			//	break;
+			for (int32 x = final_bounds.left; x < final_bounds.right; x++) {
+				if (selection == NULL || selection->IsEmpty() == TRUE ||
+					selection->ContainsPoint(x, y)) {
+					int32 src_x = x - final_bounds.left;
+					if (src_x >= target_bpr)
+						break;
+					*(target_bits + x + y * target_bpr) = 
+						src_over_fixed(
+							*(target_bits + x + y * target_bpr),
+							*(source_bits + src_x + src_y * source_bpr)
+						);
+				}
+			}
+		}
+	} 
+	
+	return final_bitmap;	
 }
 
 
@@ -257,19 +435,18 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 	if (preview_bitmap == NULL)
 		return 0;
 
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} white;
-
+	union color_conversion white;
 	white.bytes[0] = 0xFF;
 	white.bytes[1] = 0xFF;
 	white.bytes[2] = 0xFF;
 	white.bytes[3] = 0x00;
 
 	// Here do a DDA-scaling from copy_of_the_preview_bitmap to preview_bitmap.
-	int32 width = preview_bitmap->Bounds().IntegerWidth();
-	int32 height = preview_bitmap->Bounds().IntegerHeight();
+	uint32 width = preview_bitmap->Bounds().IntegerWidth();
+	uint32 height = preview_bitmap->Bounds().IntegerHeight();
+
+	if (width == 0 || height == 0)
+		return 0;
 
 	uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 	uint32 *target_bits = (uint32*)preview_bitmap->Bits();
@@ -278,39 +455,143 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 	float width_coeff = 1.0 / settings->width_coefficient;
 	float height_coeff = 1.0 / settings->height_coefficient;
 
-	int32 *source_x_table = new int32[width+1];
-	for (int32 i=0;i<=width;i++)
-		source_x_table[i] = (int32)floor(i*width_coeff);
+	int32 *source_x_table = new int32[width + 1];
 
+	if (selection == NULL || selection->IsEmpty() == true) {
+		for (int32 i = 0; i <= width; i++)
+			source_x_table[i] = (int32)floor(i * width_coeff);
 
-	for (int32 y=0;y<=height;y++) {
-		int32 source_y = (int32)floor(y*height_coeff);
-		int32 y_times_bpr = y*bpr;
-		int32 source_y_times_bpr = source_y*bpr;
-		for (int32 x=0;x<=width;x++) {
-			int32 source_x = source_x_table[x];
-			if ((source_x > width) ||(source_y > height)) {
-				*(target_bits + x + y_times_bpr) = white.word;
-			} else {
-				*(target_bits +x + y_times_bpr) = *(source_bits + source_x + source_y_times_bpr);
+		for (int32 y = 0; y <= height; y++) {
+			int32 source_y = (int32)floor(y * height_coeff);
+			int32 y_times_bpr = y * bpr;
+			int32 source_y_times_bpr = source_y * bpr;
+			for (int32 x = 0; x <= width; x++) {
+				int32 source_x = source_x_table[x];
+				if (source_x > width || source_y > height)
+					*(target_bits + x + y_times_bpr) = white.word;
+				else
+					*(target_bits + x + y_times_bpr) =
+						*(source_bits + source_x + source_y_times_bpr);
+			}
+		}
+	} else {
+		float new_x = settings->width_coefficient * original_width;
+		float new_y = settings->height_coefficient * original_height;
+
+		if (reject_mouse_input == true)
+			return 1;
+			
+		BRect selection_bounds = selection->GetBoundingRect();
+		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
+		int32 sel_top = (int32)selection_bounds.top;
+		int32 sel_bottom = (int32)selection_bounds.bottom;
+		int32 sel_left = (int32)selection_bounds.left;
+		int32 sel_right = (int32)selection_bounds.right;
+
+		SelectionData temp_selection_data(selection->ReturnSelectionData());
+		selection->SetSelectionData(orig_selection_data);
+		for (int32 y = sel_top; y <= sel_bottom; ++y) {
+			for (int32 x = sel_left; x <= sel_right; ++x) {
+				uint32 clear_bits = *(source_bits + x + y * bpr);
+				if (selection->ContainsPoint(x, y))
+					clear_bits = white.word;
+
+				*(target_bits + x + y * bpr) = clear_bits;
+			}
+		}
+		
+		selection_bounds = selection->GetBoundingRect();
+		
+		selection->ScaleTo(selection_bounds.LeftTop(), new_x, new_y);
+		selection->Recalculate();
+		
+		selection_bounds = selection->GetBoundingRect();
+		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
+
+		if (selection_bounds.IsValid() == false) {
+			selection->SetSelectionData(orig_selection_data);
+			selection->Recalculate();		
+			selection_bounds = selection->GetBoundingRect();
+			selection->ScaleTo(selection_bounds.LeftTop(), previous_point.x, previous_point.y);
+			selection->Recalculate();
+		
+			reject_mouse_input = true;
+			delete[] source_x_table;
+			return 1;
+		} 
+		
+		previous_point.x = settings->width_coefficient * original_width;
+		previous_point.y = settings->height_coefficient * original_height;
+	
+		sel_top = (int32)selection_bounds.top;
+		sel_bottom = (int32)selection_bounds.bottom;
+		sel_left = (int32)selection_bounds.left;
+		sel_right = (int32)selection_bounds.right;	
+
+		for (int32 y = sel_top; y <= sel_bottom; y++) {
+			int32 source_y =
+				(int32)floor((y - sel_top) * height_coeff) + sel_top;
+			int32 y_times_bpr = y * bpr;
+			int32 source_y_times_bpr = source_y * bpr;
+			for (int32 x = sel_left; x <= sel_right; x++) {
+				if (selection->ContainsPoint(x, y)) {
+					int32 source_x =
+						(int32)floor((x - sel_left) * width_coeff) + sel_left;
+					if (source_x > width || source_y > height) {
+						*(target_bits + x + y_times_bpr) = white.word;
+					} else {
+						*(target_bits + x + y_times_bpr) = 
+							src_over_fixed(
+								*(target_bits + x + y_times_bpr),
+								*(source_bits + source_x + source_y_times_bpr)
+							);
+					}
+				}
 			}
 		}
 	}
 
 	region->Set(preview_bitmap->Bounds());
-
+	
 	delete[] source_x_table;
 	return 1;
 }
 
 
 void
-ScaleManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_click)
+ScaleManipulator::MouseDown(BPoint point, uint32 buttons, BView* image_view,
+	bool first_click)
 {
-	if (point.x > 0.0 && point.y > 0.0) {
+	BPoint normPoint(point);
+
+	if (reject_mouse_input == true) {
+		if (normPoint.x >= previous_point.x && 
+			normPoint.y >= previous_point.y)
+		return;
+		
+		reject_mouse_input = false;
+	}
+	
+	if (selection != NULL && selection->IsEmpty() == false) {
+		BRect bounds = selection->GetBoundingRect();
+
+		if (bounds.IsValid() == false) {
+			normPoint.x = previous_point.x;
+			normPoint.y = previous_point.y;
+			selection->SetSelectionData(orig_selection_data);
+		} else {
+			if (bounds.left < point.x && bounds.top < point.y) {
+				normPoint.x = point.x - bounds.left;
+				normPoint.y = point.y - bounds.top;
+			} 
+		}
+	}
+
+	if (normPoint.x > 0.0 && normPoint.y > 0.0) {
+		settings->width_coefficient = normPoint.x / original_width;
+		settings->height_coefficient = normPoint.y / original_height;
+
 		if (configuration_view) {
-			settings->width_coefficient = point.x / original_width;
-			settings->height_coefficient = point.y / original_height;
 			if (configuration_view->MaintainProportions()) {
 				settings->width_coefficient = max_c(settings->width_coefficient,
 					settings->height_coefficient);
@@ -319,13 +600,14 @@ ScaleManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_cli
 
 			configuration_view->SetValues(settings->width_coefficient
 				* original_width, settings->height_coefficient * original_height);
-		} else {
-			settings->width_coefficient = point.x/original_width;
-			settings->height_coefficient = point.y/original_height;
+		}
+
+		if (first_click == true) {
+			configuration_view->SetValues(settings->width_coefficient
+				* original_width, settings->height_coefficient * original_height);
 		}
 	}
 }
-
 
 
 void
@@ -339,12 +621,17 @@ ScaleManipulator::SetValues(float width, float height)
 void
 ScaleManipulator::Reset()
 {
-	if (copy_of_the_preview_bitmap) {
+	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.
 		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
 		uint32 *target = (uint32*)preview_bitmap->Bits();
-		memcpy(target, source, preview_bitmap->BitsLength());
+		if (source != NULL)
+			memcpy(target, source, preview_bitmap->BitsLength());
 	}
+
+	if (orig_selection_data != NULL && selection != NULL)
+		selection->SetSelectionData(orig_selection_data);
+
 }
 
 
@@ -387,6 +674,22 @@ ScaleManipulator::SetPreviewBitmap(BBitmap *bitmap)
 		memcpy(target, source, bitslength);
 	}
 }
+
+
+void
+ScaleManipulator::SetSelection(Selection* new_selection)
+{
+	selection = new_selection;
+
+	if (selection != NULL && selection->IsEmpty() == false) {
+		orig_selection_data = new SelectionData(selection->ReturnSelectionData());
+
+		BRect bounds = selection->GetBoundingRect();
+
+		original_width = bounds.IntegerWidth();
+		original_height = bounds.IntegerHeight();
+	}
+};
 
 
 ManipulatorSettings*

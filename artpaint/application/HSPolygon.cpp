@@ -143,7 +143,9 @@ HSPolygon::ScaleBy(BPoint origin, float sx, float sy)
 {
 	for (int32 i = 0; i < point_count; i++) {
 		points[i].x = (points[i].x - origin.x) * sx + origin.x;
+		points[i].x = min_c(100000, points[i].x);
 		points[i].y = (points[i].y - origin.y) * sy + origin.y;
+		points[i].y = min_c(100000, points[i].y);
 	}
 }
 

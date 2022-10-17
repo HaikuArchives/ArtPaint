@@ -586,6 +586,39 @@ Selection::ScaleBy(BPoint origin, float dx, float dy)
 
 
 void
+Selection::ScaleTo(BPoint origin, float x_scale, float y_scale)
+{
+	acquire_sem(selection_mutex);
+	if (original_selections != NULL) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+			delete original_selections[i];
+		}
+		delete[] original_selections;
+		original_selections = NULL;
+	}
+
+	BRect bounds = GetBoundingRect();
+
+	float curr_x_scale = bounds.Width();
+	float curr_y_scale = bounds.Height();
+
+	float dx = x_scale / curr_x_scale;
+	float dy = y_scale / curr_y_scale;
+
+	for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		HSPolygon* p = selection_data->ReturnSelectionAt(i);
+		p->ScaleBy(origin, dx, dy);
+	}
+
+	selection_bounds.right *= dx;
+	selection_bounds.bottom *= dy;
+
+	needs_recalculating = TRUE;
+	release_sem(selection_mutex);
+}
+
+
+void
 Selection::FlipHorizontally()
 {
 	acquire_sem(selection_mutex);

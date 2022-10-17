@@ -1771,12 +1771,14 @@ ImageView::ManipulatorFinisherThread()
 	UndoEvent* new_event = NULL;
 
 	try {
-		if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
-			BBitmap* buffer = the_image->ReturnActiveBitmap();
+		if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {	
+			Layer* the_layer = the_image->ReturnActiveLayer();
+			BBitmap* buffer = the_layer->Bitmap();
 			BBitmap* new_buffer = NULL;
 			if (gui_manipulator != NULL) {
 				ManipulatorSettings* settings =
 					gui_manipulator->ReturnSettings();
+				
 				new_buffer =
 					gui_manipulator->ManipulateBitmap(settings, buffer,
 						status_bar);
@@ -1785,8 +1787,7 @@ ImageView::ManipulatorFinisherThread()
 				new_buffer = fManipulator->ManipulateBitmap(buffer,
 					status_bar);
 
-			Layer* the_layer = the_image->ReturnActiveLayer();
-			if (new_buffer && new_buffer != buffer)
+			if (new_buffer && new_buffer != buffer) 
 				the_layer->ChangeBitmap(new_buffer);
 
 			new_event = undo_queue->AddUndoEvent(fManipulator->ReturnName(),
