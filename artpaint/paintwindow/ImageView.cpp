@@ -189,6 +189,8 @@ ImageView::AttachedToWindow()
 
 	// Make this view the focus-view (receives key-down events).
 	MakeFocus();
+
+	SetEventMask(B_KEYBOARD_EVENTS);
 }
 
 
@@ -295,7 +297,7 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 		if (bounds.bottom + delta > bitmap_rect.bottom)
 			delta = bitmap_rect.bottom - bounds.bottom;
 		ScrollBy(0, delta);
-	} else if (*bytes == B_SPACE && fManipulator == NULL) {
+	} else if (*bytes == B_SPACE) {
 		if (space_down == FALSE) {
 			space_down = TRUE;
 			be_app->SetCursor(fGrabCursor);
@@ -943,6 +945,29 @@ ImageView::MouseDown(BPoint view_point)
 	// try to acquire the mouse_mutex
 	if (acquire_sem_etc(mouse_mutex, 1, B_TIMEOUT, 0) == B_OK) {
 		GUIManipulator* gui_manipulator = cast_as(fManipulator, GUIManipulator);
+		if (buttons & B_TERTIARY_MOUSE_BUTTON ||
+			((buttons & B_PRIMARY_MOUSE_BUTTON) && space_down == TRUE))  {
+			BPoint point, prev_point;
+			uint32 buttons;
+			GetMouse(&point, &buttons);
+			this->ConvertToScreen(&point);
+			while (buttons) {
+				prev_point = point;
+				GetMouse(&point, &buttons);
+				this->ConvertToScreen(&point);
+
+				float delta_x = prev_point.x - point.x;
+				float delta_y = prev_point.y - point.y;
+
+				be_app->SetCursor(fGrabbingCursor);
+
+				ScrollBy(delta_x, delta_y);
+				snooze(25 * 1000);
+			}
+
+			SetCursor();
+			release_sem(mouse_mutex);
+		}
 		if (gui_manipulator != NULL)
 			start_thread(MANIPULATOR_MOUSE_THREAD);
 		else if (fManipulator == NULL) {
@@ -954,28 +979,6 @@ ImageView::MouseDown(BPoint view_point)
 					ToolManager::Instance().ChangeTool(item->Command());
 					SetCursor();	// If the tool changes, the cursor should change too.
 				}
-				release_sem(mouse_mutex);
-			} else if (buttons & B_TERTIARY_MOUSE_BUTTON ||
-				((buttons & B_PRIMARY_MOUSE_BUTTON) && space_down == TRUE))  {
-				BPoint point, prev_point;
-				uint32 buttons;
-				GetMouse(&point, &buttons);
-				this->ConvertToScreen(&point);
-				while (buttons) {
-					prev_point = point;
-					GetMouse(&point, &buttons);
-					this->ConvertToScreen(&point);
-
-					float delta_x = prev_point.x - point.x;
-					float delta_y = prev_point.y - point.y;
-
-					be_app->SetCursor(fGrabbingCursor);
-
-					ScrollBy(delta_x, delta_y);
-					snooze(25 * 1000);
-				}
-
-				SetCursor();
 				release_sem(mouse_mutex);
 			} else
 				start_thread(PAINTER_THREAD);
