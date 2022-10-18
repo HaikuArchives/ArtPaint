@@ -1961,7 +1961,7 @@ ImageView::Undo()
 				LayerWindow::ActiveWindowChanged(Window(),
 					the_image->LayerList(),
 					the_image->ReturnThumbnailImage());
-				AddChange();	// Removing a change here is not a good thing
+				RemoveChange();
 			}
 
 			if (event->ReturnSelectionData() != NULL) {
@@ -1983,6 +1983,9 @@ ImageView::Undo()
 			cursor_mode = NORMAL_CURSOR_MODE;
 
 		SetCursor();
+
+		if (undo_queue->IsEmpty() == TRUE)
+			ResetChangeStatistics(false, true);
 
 		release_sem(action_semaphore);
 	}

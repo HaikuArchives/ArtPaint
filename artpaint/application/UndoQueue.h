@@ -89,6 +89,8 @@ void		RegisterLayer(int32 layer_id,BBitmap *layer_bitmap);
 
 SelectionData*	ReturnSelectionData() { return selection_data; }
 void	SetSelectionData(const SelectionData*);
+
+bool		IsEmpty() { return (ReturnUndoEventName() == NULL); }
 };
 
 #endif
