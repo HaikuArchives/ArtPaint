@@ -410,64 +410,62 @@ Selection::Erode()
 {
 	acquire_sem(selection_mutex);
 
-	// This is almost like dilation. First we invert the bitmap, then dilate
-	// and then invert again.
+	/*
+		This uses two bitmaps to erode the selection. Erosion is done with
+		the following pattern:
 
-	selection_bounds = BRect();
+		1	1	1
+		1	X	1
+		1	1	1
 
-	if (selection_map) {
-		int8* old_bits = (int8*)selection_map->Bits();
-		int32 bits_length = selection_map->BitsLength();
-		for (int32 i = 0; i < bits_length; ++i) {
-			*old_bits = ~(*old_bits);
-			old_bits++;
-		}
-		old_bits = (int8*)selection_map->Bits();
+		All 1s must be contained in the selection for every X, otherwise X is
+		not included in the new selection. The image edges are always eroded 
+		because they cannot satisfy this condition.
+	*/
+	selection_bounds = GetBoundingRect();
 
+	if (selection_map != NULL) {
 		BBitmap* new_map = new BBitmap(selection_map->Bounds(), B_GRAY8);
 		int32 new_bpr = new_map->BytesPerRow();
 		int8* new_bits = (int8*)new_map->Bits();
 
-		memcpy(new_bits, old_bits, bits_length);
+		memcpy(new_bits, selection_map->Bits(), selection_map->BitsLength());
 
 		int32 width = selection_map->Bounds().IntegerWidth();
 		int32 height = selection_map->Bounds().IntegerHeight();
-		for (int32 y = 0; y <= height; ++y) {
-			for (int32 x = 0; x <= width; ++x) {
+		int32 left = selection_bounds.left;
+		int32 right = selection_bounds.right;
+		int32 top = selection_bounds.top;
+		int32 bottom = selection_bounds.bottom;
+		
+		for (int32 y = top; y <= bottom; ++y) {
+			for (int32 x = left; x <= right; ++x) {
 				if (ContainsPoint(x, y)) {
-					if (x > 0) {
-						*(new_bits + y * new_bpr + (x - 1)) = 0xff;
-						if (y > 0) {
-							*(new_bits + (y - 1) * new_bpr + (x - 1)) = 0xff;
-							*(new_bits + (y - 1) * new_bpr + x) = 0xff;
+					// edge pixels get eroded
+					if (x == 0 || y == 0 || 
+						x == width || y == height) {
+						*(new_bits + y * new_bpr + x) = 0x00;
+					} else {
+						bool all = true;
+						for (int32 yy = y - 1; yy <= y + 1; ++yy) {
+							for (int32 xx = x - 1; xx <= x + 1; ++xx) {
+								if (ContainsPoint(xx, yy) == false) {
+									all = false;
+									xx = x + 1;
+									yy = y + 1;
+								}
+							}
 						}
-						if (y < height) {
-							*(new_bits + (y + 1) * new_bpr + (x - 1)) = 0xff;
-							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
-						}
-					}
-					if (x<width) {
-						*(new_bits + y * new_bpr + (x + 1)) = 0xff;
-						if (y > 0) {
-							*(new_bits + (y - 1) * new_bpr + (x + 1)) = 0xff;
-							*(new_bits + (y - 1) * new_bpr + x) = 0xff;
-						}
-						if (y < height) {
-							*(new_bits + (y + 1) * new_bpr + (x + 1)) = 0xff;
-							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
-						}
+						
+						if (all == false) 
+							*(new_bits + y * new_bpr + x) = 0x00;
 					}
 				}
 			}
 		}
 
-		memcpy(old_bits, new_bits, bits_length);
+		memcpy(selection_map->Bits(), new_bits, selection_map->BitsLength());
 		delete new_map;
-
-		for (int32 i = 0; i < bits_length; ++i) {
-			*old_bits = ~(*old_bits);
-			old_bits++;
-		}
 
 		SimplifySelection();
 	}
