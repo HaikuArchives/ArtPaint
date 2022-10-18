@@ -271,39 +271,43 @@ ImageView::DrawManipulatorGUI(bool blit_image)
 void
 ImageView::KeyDown(const char* bytes, int32 numBytes)
 {
-	if (*bytes == B_LEFT_ARROW) {
-		BRect bounds = Bounds();
-		float delta = bounds.Width() / 2;
-		if (bounds.left - delta < 0) delta = bounds.left;
-		ScrollBy(-delta, 0);
-	} else if (*bytes == B_UP_ARROW) {
-		BRect bounds = Bounds();
-		float delta = bounds.Height() / 2;
-		if (bounds.top - delta < 0) delta = bounds.top;
-		ScrollBy(0, -delta);
-	} else if (*bytes == B_RIGHT_ARROW) {
-		BRect bounds = Bounds();
-		float delta = bounds.Width() / 2;
-		BRect bitmap_rect =
-			convertBitmapRectToView(the_image->ReturnRenderedImage()->Bounds());
-		if (bounds.right + delta > bitmap_rect.right)
-			delta = bitmap_rect.right - bounds.right;
-		ScrollBy(delta, 0);
-	} else if (*bytes == B_DOWN_ARROW) {
-		BRect bounds = Bounds();
-		float delta = bounds.Height() / 2;
-		BRect bitmap_rect = convertBitmapRectToView(
-			the_image->ReturnRenderedImage()->Bounds());
-		if (bounds.bottom + delta > bitmap_rect.bottom)
-			delta = bitmap_rect.bottom - bounds.bottom;
-		ScrollBy(0, delta);
-	} else if (*bytes == B_SPACE) {
+	if (*bytes == B_SPACE) {
 		if (space_down == FALSE) {
 			space_down = TRUE;
 			be_app->SetCursor(fGrabCursor);
 		}
-	} else if (fManipulator == NULL) {
-		ToolManager::Instance().KeyDown(this, bytes, numBytes);
+	}
+
+	if (Window()->IsActive()) {
+		if (*bytes == B_LEFT_ARROW) {
+			BRect bounds = Bounds();
+			float delta = bounds.Width() / 2;
+			if (bounds.left - delta < 0) delta = bounds.left;
+			ScrollBy(-delta, 0);
+		} else if (*bytes == B_UP_ARROW) {
+			BRect bounds = Bounds();
+			float delta = bounds.Height() / 2;
+			if (bounds.top - delta < 0) delta = bounds.top;
+			ScrollBy(0, -delta);
+		} else if (*bytes == B_RIGHT_ARROW) {
+			BRect bounds = Bounds();
+			float delta = bounds.Width() / 2;
+			BRect bitmap_rect =
+				convertBitmapRectToView(the_image->ReturnRenderedImage()->Bounds());
+			if (bounds.right + delta > bitmap_rect.right)
+				delta = bitmap_rect.right - bounds.right;
+			ScrollBy(delta, 0);
+		} else if (*bytes == B_DOWN_ARROW) {
+			BRect bounds = Bounds();
+			float delta = bounds.Height() / 2;
+			BRect bitmap_rect = convertBitmapRectToView(
+				the_image->ReturnRenderedImage()->Bounds());
+			if (bounds.bottom + delta > bitmap_rect.bottom)
+				delta = bitmap_rect.bottom - bounds.bottom;
+			ScrollBy(0, delta);
+		} else if (fManipulator == NULL) {
+			ToolManager::Instance().KeyDown(this, bytes, numBytes);
+		}
 	}
 }
 
@@ -2401,86 +2405,100 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 	//message->PrintToStream();
 	ImageView* view = dynamic_cast<ImageView*>(*handler);
 	if (view != NULL) {
+		BWindow* window = view->Window();
+		bool active = window->IsActive();
+
 		if (acquire_sem_etc(view->mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
 			const char* bytes;
 			if ((!(modifiers() & B_COMMAND_KEY)) &&
 				(!(modifiers() & B_CONTROL_KEY)) &&
 				(!(modifiers() & B_OPTION_KEY))) {
-				if (message->FindString("bytes", &bytes) == B_OK) {
-					switch (bytes[0]) {
-						case B_SPACE:
-							if (view->space_down == TRUE)
-								filter_message = B_SKIP_MESSAGE;
-							break;
-						case 'b':
-							ToolManager::Instance().ChangeTool(BRUSH_TOOL);
-							view->SetCursor();
-							break;
+				if (active == true) {
+					if (message->FindString("bytes", &bytes) == B_OK) {
+						switch (bytes[0]) {
+							case B_SPACE:
+								if (view->space_down == TRUE)
+									filter_message = B_SKIP_MESSAGE;
+								break;
+							case 'b':
+								ToolManager::Instance().ChangeTool(BRUSH_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'a':
-							ToolManager::Instance().ChangeTool(AIR_BRUSH_TOOL);
-							view->SetCursor();
-							break;
+							case 'a':
+								ToolManager::Instance().ChangeTool(AIR_BRUSH_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'e':
-							ToolManager::Instance().ChangeTool(ERASER_TOOL);
-							view->SetCursor();
-							break;
+							case 'e':
+								ToolManager::Instance().ChangeTool(ERASER_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'f':
-							ToolManager::Instance().ChangeTool(FREE_LINE_TOOL);
-							view->SetCursor();
-							break;
+							case 'f':
+								ToolManager::Instance().ChangeTool(FREE_LINE_TOOL);
+								view->SetCursor();
+								break;
 
-						case 's':
-							ToolManager::Instance().ChangeTool(SELECTOR_TOOL);
-							view->SetCursor();
-							break;
+							case 's':
+								ToolManager::Instance().ChangeTool(SELECTOR_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'r':
-							ToolManager::Instance().ChangeTool(RECTANGLE_TOOL);
-							view->SetCursor();
-							break;
+							case 'r':
+								ToolManager::Instance().ChangeTool(RECTANGLE_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'l':
-							ToolManager::Instance().ChangeTool(STRAIGHT_LINE_TOOL);
-							view->SetCursor();
-							break;
+							case 'l':
+								ToolManager::Instance().ChangeTool(STRAIGHT_LINE_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'h':
-							ToolManager::Instance().ChangeTool(HAIRY_BRUSH_TOOL);
-							view->SetCursor();
-							break;
+							case 'h':
+								ToolManager::Instance().ChangeTool(HAIRY_BRUSH_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'u':
-							ToolManager::Instance().ChangeTool(BLUR_TOOL);
-							view->SetCursor();
-							break;
+							case 'u':
+								ToolManager::Instance().ChangeTool(BLUR_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'i':
-							ToolManager::Instance().ChangeTool(FILL_TOOL);
-							view->SetCursor();
-							break;
+							case 'i':
+								ToolManager::Instance().ChangeTool(FILL_TOOL);
+								view->SetCursor();
+								break;
 
-						case 't':
-							ToolManager::Instance().ChangeTool(TEXT_TOOL);
-							view->SetCursor();
-							break;
+							case 't':
+								ToolManager::Instance().ChangeTool(TEXT_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'n':
-							ToolManager::Instance().ChangeTool(TRANSPARENCY_TOOL);
-							view->SetCursor();
-							break;
+							case 'n':
+								ToolManager::Instance().ChangeTool(TRANSPARENCY_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'c':
-							ToolManager::Instance().ChangeTool(COLOR_SELECTOR_TOOL);
-							view->SetCursor();
-							break;
+							case 'c':
+								ToolManager::Instance().ChangeTool(COLOR_SELECTOR_TOOL);
+								view->SetCursor();
+								break;
 
-						case 'p':
-							ToolManager::Instance().ChangeTool(ELLIPSE_TOOL);
-							view->SetCursor();
-							break;
+							case 'p':
+								ToolManager::Instance().ChangeTool(ELLIPSE_TOOL);
+								view->SetCursor();
+								break;
+						}
+					}
+				} else {
+					if (message->FindString("bytes", &bytes) == B_OK) {
+						switch (bytes[0]) {
+							case B_SPACE:
+								if (view->space_down == TRUE)
+									filter_message = B_SKIP_MESSAGE;
+								break;
+						}
 					}
 				}
 			}
