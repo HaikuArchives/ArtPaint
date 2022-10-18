@@ -96,9 +96,11 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 	window->Unlock();
 
 	if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
-		if (buffer->Bounds().Contains(point) == FALSE)
+		if (buffer->Bounds().Contains(point) == FALSE) {
+			delete the_script;
 			return NULL;
-
+		}
+		
 		IntelligentPathFinder* path_finder =
 			new IntelligentPathFinder(view->ReturnImage()->ReturnActiveBitmap());
 		HSPolygon* the_polygon = new HSPolygon(&point, 1);

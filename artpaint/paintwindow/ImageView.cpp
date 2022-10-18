@@ -1568,7 +1568,6 @@ ImageView::ManipulatorMouseTrackerThread()
 	BRegion* updated_region = new BRegion();
 
 	float number_of_frames = 0;
-	float time = system_time();
 	while (buttons) {
 		updated_region->MakeEmpty();
 		if (LockLooper() == TRUE) {
@@ -1602,9 +1601,6 @@ ImageView::ManipulatorMouseTrackerThread()
 			UnlockLooper();
 		}
 	}
-
-	time = system_time() - time;
-	time = time / 1000000.0;
 
 //	printf("Frames per second: %f\n",number_of_frames/time);
 

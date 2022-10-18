@@ -471,7 +471,7 @@ BrushView::MouseDown(BPoint point)
 	uint32 buttons;
 
 	GetMouse(&point,&buttons);
-	float angle = info.angle;
+	float angle;
 	float prev_angle;
 	if (point.x == c.x)
 		angle = 0;

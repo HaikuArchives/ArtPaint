@@ -140,9 +140,7 @@ CropManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 		if (move_all == TRUE) {
 			float width = settings->right - settings->left;
 			float height = settings->bottom - settings->top;
-			float x_center = (width / 2) + settings->left;
-			float y_center = (height / 2) + settings->top;
-
+			
 			float delta_x = last_x - point.x;
 			float delta_y = last_y - point.y;
 
