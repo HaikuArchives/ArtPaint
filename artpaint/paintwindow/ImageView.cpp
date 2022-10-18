@@ -305,6 +305,9 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 			if (bounds.bottom + delta > bitmap_rect.bottom)
 				delta = bitmap_rect.bottom - bounds.bottom;
 			ScrollBy(0, delta);
+		} else if (*bytes == B_DELETE) {
+			if (BWindow* window = Window())
+				window->PostMessage(HS_EDIT_DELETE, this);
 		} else if (fManipulator == NULL) {
 			ToolManager::Instance().KeyDown(this, bytes, numBytes);
 		}
