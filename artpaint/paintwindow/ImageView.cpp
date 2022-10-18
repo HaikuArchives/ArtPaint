@@ -898,6 +898,7 @@ ImageView::MessageReceived(BMessage* message)
 					the_image->Render();
 					manipulated_layers = HS_MANIPULATE_NO_LAYER;
 					Invalidate();
+					start_thread(MANIPULATOR_FINISHER_THREAD);
 				}
 			}
 			cursor_mode = NORMAL_CURSOR_MODE;
@@ -2386,11 +2387,12 @@ bool
 ImageView::PostponeMessageAndFinishManipulator()
 {
 	if (fManipulator) {
+		manipulator_finishing_message = Window()->DetachCurrentMessage();
+
 		BMessage message(HS_MANIPULATOR_FINISHED);
-		message.AddBool("status", true);
+		message.AddBool("status", false);
 		Window()->PostMessage(&message, this);
 
-		manipulator_finishing_message = Window()->DetachCurrentMessage();
 		return true;
 	}
 	return false;
