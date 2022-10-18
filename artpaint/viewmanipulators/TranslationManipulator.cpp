@@ -265,20 +265,21 @@ TranslationManipulator::PreviewBitmap(bool full_quality,
 			last_calculated_resolution * last_calculated_resolution;
 		int32 y_translation_local = ((int32)settings->y_translation) /
 			last_calculated_resolution * last_calculated_resolution;
-		if (selection->IsEmpty()) {
+		if (selection == NULL || selection->IsEmpty() == true) {
 			// First clear the target bitmap.
 			BRegion to_be_cleared;
 			to_be_cleared.Set(uncleared_rect);
 //			uncleared_rect.PrintToStream();
-			uncleared_rect.left = max_c(0, x_translation_local);
-			uncleared_rect.top = max_c(0, y_translation_local);
-			uncleared_rect.right = min_c(width - 1,
-				width - 1 + x_translation_local);
-			uncleared_rect.bottom = min_c(height - 1,
-				height - 1 + y_translation_local);
+			uncleared_rect.left = 0;
+			uncleared_rect.top = 0;
+			uncleared_rect.right = width;
+			uncleared_rect.bottom = height;
+			uncleared_rect.OffsetBy(x_translation_local, y_translation_local);
+			uncleared_rect.InsetBy(-10, -10);
 			to_be_cleared.Exclude(uncleared_rect);
 			for (int32 i = 0; i < to_be_cleared.CountRects(); i++) {
 				BRect rect = to_be_cleared.RectAt(i);
+				rect.InsetBy(-10, -10);
 				int32 left = (int32)(floor(rect.left /
 					last_calculated_resolution) * last_calculated_resolution);
 				int32 top = (int32)(floor(rect.top /
@@ -289,7 +290,8 @@ TranslationManipulator::PreviewBitmap(bool full_quality,
 					last_calculated_resolution) * last_calculated_resolution);
 				for (int32 y = top; y <= bottom;y += last_calculated_resolution) {
 					for (int32 x = left; x <= right;x += last_calculated_resolution) {
-						*(target_bits + x + y * target_bpr) = background.word;
+						if (x >= 0 && y >= 0 && x < width && y < height)
+							*(target_bits + x + y * target_bpr) = background.word;
 					}
 				}
 			}
@@ -323,7 +325,7 @@ TranslationManipulator::PreviewBitmap(bool full_quality,
 			to_be_cleared.Set(uncleared_rect);
 			uncleared_rect = selection->GetBoundingRect();
 			uncleared_rect.OffsetBy(x_translation_local, y_translation_local);
-			uncleared_rect.InsetBy(-1, -1);
+			uncleared_rect.InsetBy(-10, -10);
 			uncleared_rect = uncleared_rect & preview_bitmap->Bounds();
 			for (int32 i = 0; i < to_be_cleared.CountRects(); i++) {
 				BRect rect = to_be_cleared.RectAt(i);
