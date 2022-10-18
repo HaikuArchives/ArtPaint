@@ -308,7 +308,7 @@ BrushTool::draw_brush(BBitmap* buffer, BPoint point,
 		return;
 
 	bits = (uint32*)buffer->Bits();
-	uint32* target_bits = bits;
+	uint32* target_bits;
 	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
 		int32 left = max_c(px + spans->span_start, left_bound) ;
 		int32 right = min_c(px + spans->span_end, right_bound);

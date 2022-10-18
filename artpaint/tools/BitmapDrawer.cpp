@@ -648,7 +648,7 @@ BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
 		float right_y_diff = (right.y - top.y) / (right.x - top.x);
 
 		float y = floor(top.y);
-		float bottom_y = floor(bottom.y);
+		float bottom_y;
 		span_left = (y - top.y) * left_diff + top.x;
 		span_right = (y - top.y) * right_diff + top.x;
 
@@ -1059,7 +1059,7 @@ BitmapDrawer::FillRectangle(BPoint *corners, uint32 color, Selection *sel,
 		right_diff = (right.x - top.x) / (right.y - top.y);
 
 		float y = ceil(top.y);
-		float bottom_y = floor(bottom.y);
+		float bottom_y;
 		span_left = (y - top.y) * left_diff + top.x;
 		span_right = (y - top.y) * right_diff + top.x;
 

@@ -469,7 +469,6 @@ LayerWindow::Update()
 
 		int32 number_of_layers = 0;
 		// then we add the layers of current paint window
-		float height = layer_window->list_view->Bounds().Height();
 		if ((target_window != NULL)) {
 			if (target_list != NULL) {
 				// Reorder the layers' views so that the topmost layer's view is at the top.

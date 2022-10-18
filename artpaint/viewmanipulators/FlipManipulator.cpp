@@ -113,7 +113,6 @@ BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap* original,
 	}
 
 	int32 height = bounds.IntegerHeight();
-	int32 width = bounds.IntegerWidth();
 	int32 height_per_2 = height/2;
 	uint32 top_bits, bottom_bits;
 	uint32 *bits = (uint32*)original->Bits();
