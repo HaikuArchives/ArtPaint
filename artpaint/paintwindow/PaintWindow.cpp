@@ -396,6 +396,11 @@ PaintWindow::~PaintWindow()
 
 	// Remove ourselves from the sgPaintWindowList.
 	sgPaintWindowList.RemoveItem(this);
+
+	if (fImageSizeWindow != NULL) {
+		fImageSizeWindow->Lock();
+		fImageSizeWindow->Quit();
+	}
 }
 
 
@@ -1614,6 +1619,11 @@ PaintWindow::AddImageView()
 	// Finally unlock the window.
 	_ResizeToImage();
 	Unlock();
+
+	if (fImageSizeWindow && fImageSizeWindow->Lock()) {
+		fImageSizeWindow->Hide();
+		fImageSizeWindow->Unlock();
+	}
 
 	// We can update ourselves to the layer-window.
 	LayerWindow::ActiveWindowChanged(this, fImageView->ReturnImage()->LayerList(),
