@@ -808,6 +808,7 @@ ImageView::MessageReceived(BMessage* message)
 					if (gui_manipulator == NULL) {
 						fManipulator->SetSelection(selection);
 						start_thread(MANIPULATOR_FINISHER_THREAD);
+						AddChange();
 					} else {
 						// The order is important, first set the preview-bitmap
 						// and only after that open the GUI for the manipulator.
