@@ -126,6 +126,14 @@ ToolSelectionWindow::~ToolSelectionWindow()
 			Frame());
 	}
 
+	fMatrixView->RemoveSelf();
+	while(fMatrixView->ChildAt(0) != NULL)
+		fMatrixView->RemoveChild(fMatrixView->ChildAt(0));
+
+	delete fMatrixView;
+
+	gToolMap.clear();
+
 	fSelectionWindow = NULL;
 	FloaterManager::RemoveFloater(this);
 }
