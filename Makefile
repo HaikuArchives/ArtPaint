@@ -61,7 +61,7 @@ artpaint/tools/ToolScript.cpp artpaint/tools/ToolSelectionWindow.cpp artpaint/to
 artpaint/viewmanipulators/CropManipulator.cpp artpaint/viewmanipulators/FlipManipulator.cpp \
 artpaint/viewmanipulators/FreeTransformManipulator.cpp artpaint/viewmanipulators/Manipulator.cpp \
 artpaint/viewmanipulators/ManipulatorInformer.cpp artpaint/viewmanipulators/ManipulatorServer.cpp \
-artpaint/viewmanipulators/Rotate90Manipulator.cpp artpaint/viewmanipulators/RotationManipulator.cpp \
+artpaint/viewmanipulators/RotationManipulator.cpp \
 artpaint/viewmanipulators/ScaleManipulator.cpp artpaint/viewmanipulators/TextManipulator.cpp \
 artpaint/viewmanipulators/TranslationManipulator.cpp artpaint/viewmanipulators/TransparencyManipulator.cpp \
 artpaint/viewmanipulators/WindowGUIManipulator.cpp \
