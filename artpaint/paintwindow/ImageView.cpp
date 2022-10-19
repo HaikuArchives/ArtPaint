@@ -833,36 +833,41 @@ ImageView::MessageReceived(BMessage* message)
 
 						window_gui_manipulator->SetSelection(selection);
 
-						((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),
-							HS_TOOL_HELP_MESSAGE);
-						if (window_gui_manipulator != NULL) {
-							char window_name[256];
-							sprintf(window_name, "%s: %s",
-								ReturnProjectName(),
-								window_gui_manipulator->ReturnName());
+						if (gui_manipulator->IsWindowEnabled() == false) {
+							start_thread(MANIPULATOR_FINISHER_THREAD);
+							AddChange();
+						} else {
+							((PaintWindow*)Window())->SetHelpString(gui_manipulator->ReturnHelpString(),
+								HS_TOOL_HELP_MESSAGE);
+							if (window_gui_manipulator != NULL) {
+								char window_name[256];
+								sprintf(window_name, "%s: %s",
+									ReturnProjectName(),
+									window_gui_manipulator->ReturnName());
 
-							BRect frame(100, 100, 200, 200);
-							if (SettingsServer* server = SettingsServer::Instance()) {
-								BMessage settings;
-								server->GetApplicationSettings(&settings);
-								settings.FindRect(skAddOnWindowFrame, &frame);
+								BRect frame(100, 100, 200, 200);
+								if (SettingsServer* server = SettingsServer::Instance()) {
+									BMessage settings;
+									server->GetApplicationSettings(&settings);
+									settings.FindRect(skAddOnWindowFrame, &frame);
+								}
+
+								frame = FitRectToScreen(frame);
+								manipulator_window = new ManipulatorWindow(frame,
+									window_gui_manipulator->MakeConfigurationView(this),
+										window_name, Window(), this);
 							}
 
-							frame = FitRectToScreen(frame);
-							manipulator_window = new ManipulatorWindow(frame,
-								window_gui_manipulator->MakeConfigurationView(this),
-									window_name, Window(), this);
+							cursor_mode = MANIPULATOR_CURSOR_MODE;
+							SetCursor();
+
+							// The manipulator might have updated the bitmap and
+							// might also want to draw some GUI. We send a
+							// HS_MANIPULATOR_ADJUSTING_FINISHED to this view
+							// to get the manipulator update the correct bitmap.
+							if (BWindow* window = Window())
+								window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED, this);
 						}
-
-						cursor_mode = MANIPULATOR_CURSOR_MODE;
-						SetCursor();
-
-						// The manipulator might have updated the bitmap and
-						// might also want to draw some GUI. We send a
-						// HS_MANIPULATOR_ADJUSTING_FINISHED to this view
-						// to get the manipulator update the correct bitmap.
-						if (BWindow* window = Window())
-							window->PostMessage(HS_MANIPULATOR_ADJUSTING_FINISHED, this);
 					}
 				}
 			} catch (std::bad_alloc) {
@@ -1878,7 +1883,8 @@ ImageView::ManipulatorFinisherThread()
 		ShowAlert(CANNOT_FINISH_MANIPULATOR_ALERT);
 		// The manipulator should be asked to reset the preview-bitmap, if it is
 		// a GUIManipulator.
-		if (gui_manipulator != NULL) {
+		if (gui_manipulator != NULL &&
+			gui_manipulator->IsWindowEnabled() == true) {
 			gui_manipulator->Reset();
 		}
 	}

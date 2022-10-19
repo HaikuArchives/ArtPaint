@@ -18,7 +18,6 @@
 #include "ManipulatorInformer.h"
 #include "PaintApplication.h"
 #include "RotationManipulator.h"
-#include "Rotate90Manipulator.h"
 #include "ScaleManipulator.h"
 #include "SettingsServer.h"
 #include "TextManipulator.h"
@@ -133,11 +132,21 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 		}	break;
 
 		case ROTATE_CW_MANIPULATOR: {
-			manipulator = new Rotate90ClockwiseManipulator();
+			manipulator = new RotationManipulator(NULL);
+			((RotationManipulator*)manipulator)->SetAngle(90.);
+			GUIManipulator *gui_manipulator
+					= dynamic_cast<GUIManipulator*> (manipulator);
+			if (gui_manipulator != NULL)
+				gui_manipulator->EnableWindow(false);
 		}	break;
 
 		case ROTATE_CCW_MANIPULATOR: {
-			manipulator = new Rotate90CounterclockwiseManipulator();
+			manipulator = new RotationManipulator(NULL);
+			((RotationManipulator*)manipulator)->SetAngle(-90.);
+			GUIManipulator *gui_manipulator
+					= dynamic_cast<GUIManipulator*> (manipulator);
+			if (gui_manipulator != NULL)
+				gui_manipulator->EnableWindow(false);
 		}	break;
 
 		case SCALE_MANIPULATOR: {

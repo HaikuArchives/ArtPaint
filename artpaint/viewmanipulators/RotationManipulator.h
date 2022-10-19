@@ -11,6 +11,7 @@
 
 #include "Cursors.h"
 #include "ManipulatorSettings.h"
+#include "Selection.h"
 #include "WindowGUIManipulator.h"
 
 #include <Messenger.h>
@@ -61,6 +62,7 @@ class RotationManipulator: public WindowGUIManipulator {
 	bool		move_origo;
 
 	Selection*	selection;
+	SelectionData*	orig_selection_data;
 
 public:
 	RotationManipulator(BBitmap*);

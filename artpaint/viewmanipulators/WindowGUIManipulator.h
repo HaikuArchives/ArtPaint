@@ -24,6 +24,7 @@ public:
 
 	virtual	BView*			MakeConfigurationView(const BMessenger& target) = 0;
 	virtual	void			SetSelection(Selection* new_selection) = 0;
+
 };
 
 

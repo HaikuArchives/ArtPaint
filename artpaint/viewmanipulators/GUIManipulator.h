@@ -39,7 +39,7 @@ protected:
 	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar*) { return b; }
 
 public:
-	GUIManipulator() : Manipulator() {}
+	GUIManipulator() : Manipulator() { fEnabled = true; }
 	virtual				~GUIManipulator() {}
 
 
@@ -60,6 +60,11 @@ public:
 
 	virtual status_t	Save(BMessage& settings) const { return B_OK; }
 	virtual status_t	Restore(const BMessage& settings) { return B_OK; }
+	
+			void			EnableWindow(bool enable) { fEnabled = enable; }
+			bool			IsWindowEnabled() { return fEnabled; }
+private:
+			bool			fEnabled;
 };
 
 #endif
