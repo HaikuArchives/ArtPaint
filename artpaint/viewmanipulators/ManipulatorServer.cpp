@@ -18,6 +18,7 @@
 #include "ManipulatorInformer.h"
 #include "PaintApplication.h"
 #include "RotationManipulator.h"
+#include "Rotate90Manipulator.h"
 #include "ScaleManipulator.h"
 #include "SettingsServer.h"
 #include "TextManipulator.h"
@@ -147,6 +148,14 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 					= dynamic_cast<GUIManipulator*> (manipulator);
 			if (gui_manipulator != NULL)
 				gui_manipulator->EnableWindow(false);
+		}	break;
+		
+		case ROTATE_CW_CANVAS_MANIPULATOR: {
+			manipulator = new Rotate90ClockwiseManipulator();
+		}	break;
+		
+		case ROTATE_CCW_CANVAS_MANIPULATOR: {
+			manipulator = new Rotate90CounterclockwiseManipulator();
 		}	break;
 
 		case SCALE_MANIPULATOR: {
