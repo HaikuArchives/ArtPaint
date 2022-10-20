@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	600935032
+1	English	application/x-vnd.artpaint	2999294554
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -17,9 +17,9 @@ Color dodge	PixelOperations		Color dodge
 None	PaintWindow		None
 Cursor	Windows		Cursor
 Normal	PixelOperations		Normal
-Clear	PaintWindow		Clear
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Crop…	PaintWindow		Crop…
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.
 Darken	PixelOperations		Darken
 Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
@@ -38,6 +38,7 @@ Not a color set file	ColorPalette		Not a color set file
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
+Rotates the current layer 90° counter-clockwise.	PaintWindow		Rotates the current layer 90° counter-clockwise.
 Next color set	ColorPalette	In Color Palette window	Next color set
 OK	PaintApplication		OK
 Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
@@ -60,7 +61,6 @@ Save project as…	PaintWindow		Save project as…
 File	PaintWindow		File
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
-Redo not available	UndoQueue		Redo not available
 Drawing a freehand line.	Tools		Drawing a freehand line.
 Erasing pixels.	Tools		Erasing pixels.
 Random	Tools		Random
@@ -95,13 +95,11 @@ Add-ons	Windows		Add-ons
 Zoom	MagnificationView		Zoom
 Tool setup	Tools		Tool setup
 Opens the tool selection window.	PaintWindow		Opens the tool selection window.
-Resize to fit	PaintWindow		Resize to fit
 Fill rectangle	Tools		Fill rectangle
 Difference	PixelOperations		Difference
 Text tool	Manipulators		Text tool
 Color model	ColorPalette		Color model
 File structure corrupted	ColorPalette		File structure corrupted
-Undo not available	PaintWindow		Undo not available
 Finishing	ImageView		Finishing
 Scale…	Manipulators		Scale…
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
@@ -109,7 +107,6 @@ Save project	PaintWindow		Save project
 Spray	Tools		Spray
 Colors:	Windows		Colors:
 None	Tools		None
-Clears all layers.	PaintWindow		Clears all layers.
 Save format:	FilePanels		Save format:
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Zoom in	PaintWindow		Zoom in
@@ -130,7 +127,6 @@ Adjustable width	Tools		Adjustable width
 Transparency:	Manipulators		Transparency:
 Shear:	Manipulators		Shear:
 Font:	Manipulators		Font:
-Redo not available	PaintWindow		Redo not available
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Opaque	Manipulators		Opaque
@@ -170,12 +166,15 @@ Undo	Windows		Undo
 Airbrush	Tools		Airbrush
 Merge with layer above	Image		Merge with layer above
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
+Select non-transparent	ImageView		Select non-transparent
 Layer transparency	LayerWindow		Layer transparency
 Height:	Manipulators		Height:
+Delete	Image		Delete
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Black	ColorSliders	For CMYK color slider	Black
 Reset brush	Tools		Reset brush
 Undo steps:	Windows		Undo steps:
+Scales all layers.	PaintWindow		Scales all layers.
 Magenta	ColorSliders	For CMYK color slider	Magenta
 OK	ColorPalette		OK
 Using the airbrush.	Tools		Using the airbrush.
@@ -200,7 +199,6 @@ Application	Windows		Application
 Standard sizes	PaintWindow		Standard sizes
 Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Options
-Clear canvas	Image		Clear canvas
 Rotates the active layer.	PaintWindow		Rotates the active layer.
 All layers	PaintWindow		All layers
 Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
@@ -221,6 +219,7 @@ Color burn	PixelOperations		Color burn
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
 Open image…	PaintWindow		Open image…
 Saves the project to disk.	PaintWindow		Saves the project to disk.
+Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
 Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
 Multiply	PixelOperations		Multiply
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
@@ -241,15 +240,18 @@ Cannot write to file	ColorPalette		Cannot write to file
 Hide borders	PaintWindow		Hide borders
 Delete current set	ColorPalette		Delete current set
 Linear light	PixelOperations		Linear light
+Redo	PaintWindow		Redo
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Closes the current window.	PaintWindow		Closes the current window.
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
+All non-transparent	PaintWindow		All non-transparent
 Vivid light	PixelOperations		Vivid light
 Error reading file	ColorPalette		Error reading file
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
+Undo	PaintWindow		Undo
 Recent projects	PaintWindow		Recent projects
 Brushes…	PaintWindow		Brushes…
 Color variance:	Tools		Color variance:
@@ -257,6 +259,7 @@ Dissolve	PixelOperations		Dissolve
 Rotates all layers.	PaintWindow		Rotates all layers.
 Select none	ImageView		Select none
 Deletes the selected layer.	PaintWindow		Deletes the selected layer.
+Clears the selection or layer.	PaintWindow		Clears the selection or layer.
 Painting with a brush.	Tools		Painting with a brush.
 Rectangle	Tools		Rectangle
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
@@ -280,13 +283,14 @@ Left:	Manipulators		Left:
 Crops the image.	PaintWindow		Crops the image.
 Size:	Tools		Size:
 Off	Windows		Off
+Scales the active layer.	PaintWindow		Scales the active layer.
 Tools	Windows		Tools
 Freehand line tool	Tools		Freehand line tool
 Duplicate	LayerWindow		Duplicate
 Angle:	Tools		Angle:
 Layer	LayerWindow		Layer
-Grow selection	ImageView		Grow selection
 Duplicate	PaintWindow		Duplicate
+Grow selection	ImageView		Grow selection
 Colors	ColorPalette		Colors
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
 Save	ImageView		Save
@@ -334,7 +338,6 @@ Selects entire layer	PaintWindow		Selects entire layer
 Delete	LayerWindow		Delete
 Settings…	PaintWindow		Settings…
 Delete	PaintWindow		Delete
-Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
@@ -342,8 +345,6 @@ Mode	Tools		Mode
 Flip horizontally	PaintWindow		Flip horizontally
 Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
 Overlay	PixelOperations		Overlay
-Clears the active layer.	PaintWindow		Clears the active layer.
-Clear layer	Image		Clear layer
 Quit	PaintWindow		Quit
 Rotate…	PaintWindow		Rotate…
 Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
@@ -352,14 +353,13 @@ No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
 Invert selection	ImageView		Invert selection
 Much	Tools		Much
+Rotates the current layer 90° clockwise.	PaintWindow		Rotates the current layer 90° clockwise.
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
 Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
-Resizes the window to fit image and screen.	PaintWindow		Resizes the window to fit image and screen.
 Text: Position text and set its appearance.	Manipulators		Text: Position text and set its appearance.
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Value
 Unsaved changes!	ImageView		Unsaved changes!
-Rotate: Left-drag to rotate, right-click to set rotation center.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center.
 Un-selects all	PaintWindow		Un-selects all
 Previous color set	ColorPalette	In Color Palette window	Previous color set
 Grow	PaintWindow		Grow
@@ -370,7 +370,6 @@ Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° an
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
-Undo not available	UndoQueue		Undo not available
 Green	ColorSliders	For RGB color sliders	Green
 Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
@@ -382,6 +381,5 @@ Tools…	PaintWindow		Tools…
 Add	PaintWindow		Add
 Hardness:	Tools		Hardness:
 Divide	PixelOperations		Divide
-Scales the image.	PaintWindow		Scales the image.
 Recent images	PaintWindow		Recent images
 Color picker tool	Tools		Color picker tool

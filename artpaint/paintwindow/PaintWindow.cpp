@@ -527,6 +527,9 @@ PaintWindow::MenusBeginning()
 		if (item) item->SetEnabled(false);
 	}
 
+	_DisableMenuItem("Undo");
+	_DisableMenuItem("Redo");
+
 	SetHelpString("",HS_TEMPORARY_HELP_MESSAGE);
 }
 
@@ -1107,10 +1110,10 @@ PaintWindow::openMenuBar()
 	fMenubar->AddItem(menu);
 
 	menu_item editMenu[] = {
-		{ B_TRANSLATE("Undo not available"), HS_UNDO,
+		{ B_TRANSLATE("Undo"), HS_UNDO,
 			'Z', 0, this,
 			B_TRANSLATE("Undos the previous action.") },
-		{ B_TRANSLATE("Redo not available"), HS_REDO,
+		{ B_TRANSLATE("Redo"), HS_REDO,
 			'Z', B_SHIFT_KEY, this,
 			B_TRANSLATE("Redos the action that was last undone.") },
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" }	// separator
@@ -1150,6 +1153,7 @@ PaintWindow::openMenuBar()
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
 		a_message, 'C', B_SHIFT_KEY, this,
 		B_TRANSLATE("Copies the selection of all layers.")));
+		
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Paste as a new layer"),
 		new BMessage(B_PASTE), 'V', 0, this,
 		B_TRANSLATE("Pastes previously copied selection as a new layer.")));
@@ -1163,6 +1167,127 @@ PaintWindow::openMenuBar()
 		new BMessage(HS_EDIT_DELETE), 0, 0, this,
 		B_TRANSLATE("Clears the selection or layer.")));
 
+	menu->AddSeparatorItem();
+	
+	subMenu = new BMenu(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS));
+	menu->AddItem(subMenu);
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, 'R', 0, this,
+		B_TRANSLATE("Rotates the active layer.")));
+		
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, 'R', B_SHIFT_KEY, this,
+		B_TRANSLATE("Rotates all layers.")));
+
+	subMenu = new BMenu(B_TRANSLATE("Rotate +90°"));
+	menu->AddItem(subMenu);
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATE_CW_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, 0, 0, this,
+		B_TRANSLATE("Rotates the current layer 90° clockwise.")));
+		
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATE_CW_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, 0, 0, this,
+		B_TRANSLATE("Rotates all layers 90° clockwise.")));
+
+	subMenu = new BMenu(B_TRANSLATE("Rotate -90°"));
+	menu->AddItem(subMenu);
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATE_CCW_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, 0, 0, this,
+		B_TRANSLATE("Rotates the current layer 90° counter-clockwise.")));
+		
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATE_CCW_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, 0, 0, this,
+		B_TRANSLATE("Rotates all layers 90° counter-clockwise.")));
+		
+	subMenu = new BMenu(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS));
+	menu->AddItem(subMenu);
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", TRANSLATION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, 'T', 0, this,
+		B_TRANSLATE("Moves the active layer.")));
+		
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", TRANSLATION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, 'T', B_SHIFT_KEY, this,
+		B_TRANSLATE("Moves all layers.")));
+
+	subMenu = new BMenu(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS));
+	menu->AddItem(subMenu);
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", SCALE_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, 'E', 0, this,
+		B_TRANSLATE("Scales the active layer.")));
+	
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", SCALE_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, 'E', B_SHIFT_KEY, this,
+		B_TRANSLATE("Scales all layers.")));
+			
+//	a_message = new BMessage(HS_START_MANIPULATOR);
+//	a_message->AddInt32("manipulator_type",FREE_TRANSFORM_MANIPULATOR);
+//	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
+//	menu->AddItem(new PaintWindowMenuItem("Free transform test",a_message,0,0,this,"Use left shift and control to rotate and scale."));
+
+	menu->AddSeparatorItem();
+
+	subMenu = new BMenu(B_TRANSLATE("Flip horizontally"));
+	menu->AddItem(subMenu);
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", HORIZ_FLIP_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, B_LEFT_ARROW, 0, this,
+		B_TRANSLATE("Flips the active layer horizontally.")));
+
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", HORIZ_FLIP_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, B_LEFT_ARROW, B_SHIFT_KEY, this,
+		B_TRANSLATE("Flips all layers horizontally.")));
+	
+	subMenu = new BMenu(B_TRANSLATE("Flip vertically"));
+	menu->AddItem(subMenu);	
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", VERT_FLIP_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Active layer"),
+		a_message, B_UP_ARROW, 0, this,
+		B_TRANSLATE("Flips the active layer vertically.")));
+		
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", VERT_FLIP_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"),
+		a_message, B_UP_ARROW, B_SHIFT_KEY, this,
+		B_TRANSLATE("Flips all layers vertically.")));
+		
 	menu = new BMenu(B_TRANSLATE("Selection"));
 	fMenubar->AddItem(menu);
 
@@ -1193,46 +1318,6 @@ PaintWindow::openMenuBar()
 	menu = new BMenu(B_TRANSLATE("Layer"));
 	fMenubar->AddItem(menu);
 
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",ROTATION_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
-		a_message, 'R', 0, this,
-		B_TRANSLATE("Rotates the active layer.")));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",TRANSLATION_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
-		a_message, 'T', 0, this,
-		B_TRANSLATE("Moves the active layer.")));
-
-//	a_message = new BMessage(HS_START_MANIPULATOR);
-//	a_message->AddInt32("manipulator_type",FREE_TRANSFORM_MANIPULATOR);
-//	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-//	menu->AddItem(new PaintWindowMenuItem("Free transform test",a_message,0,0,this,"Use left shift and control to rotate and scale."));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",HORIZ_FLIP_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip horizontally"),
-		a_message, B_LEFT_ARROW, 0, this,
-		B_TRANSLATE("Flips the active layer or selection horizontally.")));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",VERT_FLIP_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip vertically"),
-		a_message, B_UP_ARROW, 0, this,
-		B_TRANSLATE("Flips the active layer or selection vertically.")));
-		
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",SCALE_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
-		a_message, 'S', B_CONTROL_KEY | B_SHIFT_KEY, this,
-		B_TRANSLATE("Scales the active layer.")));
-
 /*
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",TRANSPARENCY_MANIPULATOR);
@@ -1241,8 +1326,6 @@ PaintWindow::openMenuBar()
 		a_message, 0, 0, this,
 		B_TRANSLATE("Changes the transparency of active layer.")));
 */
-
-	menu->AddSeparatorItem();
 
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Add"),
 		new BMessage(HS_ADD_LAYER_FRONT), 0, 0, this,
@@ -1260,63 +1343,30 @@ PaintWindow::openMenuBar()
 	// The Canvas menu.
 	menu = new BMenu(B_TRANSLATE("Canvas"));
 	fMenubar->AddItem(menu);
-
+		
 	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",ROTATION_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
-		a_message, 'R', B_SHIFT_KEY, this,
-		B_TRANSLATE("Rotates all layers.")));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",ROTATE_CW_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
+	a_message->AddInt32("manipulator_type", ROTATE_CW_CANVAS_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate +90°"),
 		a_message, 0, 0, this,
-		B_TRANSLATE("Rotates all layers 90° clockwise.")));
+		B_TRANSLATE("Rotates the canvas 90° clockwise.")));
 
 	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",ROTATE_CCW_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
+	a_message->AddInt32("manipulator_type", ROTATE_CCW_CANVAS_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate -90°"),
 		a_message, 0, 0, this,
-		B_TRANSLATE("Rotates all layers 90° counter-clockwise.")));
+		B_TRANSLATE("Rotates the canvas 90° counter-clockwise.")));
 
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",TRANSLATION_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
-		a_message, 'T', B_SHIFT_KEY, this,
-		B_TRANSLATE("Moves all layers.")));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",HORIZ_FLIP_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip horizontally"),
-		a_message, B_LEFT_ARROW, B_SHIFT_KEY, this,
-		B_TRANSLATE("Flips all layers horizontally.")));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",VERT_FLIP_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip vertically"),
-		a_message, B_UP_ARROW, B_SHIFT_KEY, this,
-		B_TRANSLATE("Flips all layers vertically.")));
-
+	menu->AddSeparatorItem();
+	
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",CROP_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS),
 		a_message, 'C', B_CONTROL_KEY, this,
-		B_TRANSLATE("Crops the image.")));
-
-	a_message = new BMessage(HS_START_MANIPULATOR);
-	a_message->AddInt32("manipulator_type",SCALE_MANIPULATOR);
-	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
-		a_message, 'S', B_CONTROL_KEY, this,
-		B_TRANSLATE("Scales the image.")));
-
+		B_TRANSLATE("Crops the canvas.")));
+		
 	// The Window menu,
 	menu = new BMenu(B_TRANSLATE("Window"));
 	fMenubar->AddItem(menu);
@@ -2177,12 +2227,12 @@ PaintWindow::_ChangeMenuMode(menu_modes newMode)
 
 		case MINIMAL_MENU: {
 			// In this case most of the items should be disabled.
-			_DisableMenuItem(B_TRANSLATE("Canvas"));
 			_DisableMenuItem(B_TRANSLATE("Layer"));
 			_DisableMenuItem(B_TRANSLATE("Save image as" B_UTF8_ELLIPSIS));
 			_DisableMenuItem(B_TRANSLATE("Save project as" B_UTF8_ELLIPSIS));
 			_DisableMenuItem(B_TRANSLATE("Edit"));
 			_DisableMenuItem(B_TRANSLATE("Selection"));
+			_DisableMenuItem(B_TRANSLATE("Canvas"));
 			_DisableMenuItem(B_TRANSLATE("Add-ons"));
 		}	// fall through
 

@@ -363,7 +363,7 @@ void UndoQueue::UpdateMenuItems()
 			undo_menu_item->SetEnabled(TRUE);
 		}
 		else {
-			undo_menu_item->SetLabel(B_TRANSLATE("Undo not available"));
+			undo_menu_item->SetLabel(B_TRANSLATE("Undo"));
 			undo_menu_item->SetEnabled(FALSE);
 		}
 	}
@@ -377,7 +377,7 @@ void UndoQueue::UpdateMenuItems()
 			redo_menu_item->SetEnabled(TRUE);
 		}
 		else {
-			redo_menu_item->SetLabel(B_TRANSLATE("Redo not available"));
+			redo_menu_item->SetLabel(B_TRANSLATE("Redo"));
 			redo_menu_item->SetEnabled(FALSE);
 		}
 	}
