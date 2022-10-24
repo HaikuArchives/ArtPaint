@@ -1155,22 +1155,22 @@ PaintWindow::openMenuBar()
 
 	menu = new BMenu(B_TRANSLATE("Selection"));
 	fMenubar->AddItem(menu);
-	
+
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All"),
 		new BMessage(HS_SELECT_ALL), 'A', 0, this,
-		B_TRANSLATE("Selects entire canvas")));
+		B_TRANSLATE("Selects entire layer")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("None"),
+		new BMessage(HS_CLEAR_SELECTION), 'D', 0, this,
+		B_TRANSLATE("Un-selects all")));
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Invert"),
+		new BMessage(HS_INVERT_SELECTION), 'I', 0, this,
+		B_TRANSLATE("Inverts the selection")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Grow"),
 		new BMessage(HS_GROW_SELECTION), 'G', 0, this,
 		B_TRANSLATE("Grows the selection in all directions.")));
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Shrink"),
 		new BMessage(HS_SHRINK_SELECTION), 'G', B_SHIFT_KEY, this,
 		B_TRANSLATE("Shrinks the selection in all directions.")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Invert"),
-		new BMessage(HS_INVERT_SELECTION), 'I', 0, this,
-		B_TRANSLATE("Inverts the selection")));
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear"),
-		new BMessage(HS_CLEAR_SELECTION), 'D', 0, this,
-		B_TRANSLATE("Un-selects all")));
 
 	// The Layer menu.
 	menu = new BMenu(B_TRANSLATE("Layer"));
@@ -1219,7 +1219,7 @@ PaintWindow::openMenuBar()
 		a_message, 0, 0, this,
 		B_TRANSLATE("Changes the transparency of active layer.")));
 */
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear layer"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear"),
 		new BMessage(HS_CLEAR_LAYER), 0, 0, this,
 		B_TRANSLATE("Clears the active layer.")));
 
@@ -1299,7 +1299,7 @@ PaintWindow::openMenuBar()
 		B_TRANSLATE("Scales the image.")));
 
 	menu->AddItem(new BSeparatorItem());
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear canvas"),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Clear"),
 		new BMessage(HS_CLEAR_CANVAS), 0, 0, this,
 		B_TRANSLATE("Clears all layers.")));
 

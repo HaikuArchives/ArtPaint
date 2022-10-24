@@ -612,7 +612,7 @@ ImageView::MessageReceived(BMessage* message)
 			}
 		} break;
 
-		// this comes from menubar->"Edit"->"Invert Selection", we should then invert the
+		// this comes from menubar->"Selection"->"Invert", we should then invert the
 		// selected area and redisplay it
 		case HS_INVERT_SELECTION: {
 			if (!fManipulator) {
@@ -632,7 +632,7 @@ ImageView::MessageReceived(BMessage* message)
 			}
 		} break;
 
-		// this comes from menubar->"Edit"->"Clear Selection", we should then clear the
+		// this comes from menubar->"Selection"->"None", we should then clear the
 		// selection and redisplay the image
 		case HS_CLEAR_SELECTION: {
 			if (!fManipulator) {
@@ -640,7 +640,7 @@ ImageView::MessageReceived(BMessage* message)
 				if (!(*undo_queue->ReturnSelectionData() ==
 					*selection->ReturnSelectionData())) {
 					UndoEvent* new_event =
-						undo_queue->AddUndoEvent(B_TRANSLATE("Clear selection"),
+						undo_queue->AddUndoEvent(B_TRANSLATE("Select none"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
 						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
