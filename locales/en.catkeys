@@ -1,8 +1,9 @@
-1	English	application/x-vnd.artpaint	2738454561
+1	English	application/x-vnd.artpaint	820030724
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
+Selection	PaintWindow		Selection
 Crop…	Manipulators		Crop…
 Opens an image from disk.	PaintWindow		Opens an image from disk.
 Drawing a rectangle.	Tools		Drawing a rectangle.
@@ -13,8 +14,10 @@ Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
 Width:	PaintWindow		Width:
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Color dodge	PixelOperations		Color dodge
+None	PaintWindow		None
 Cursor	Windows		Cursor
 Normal	PixelOperations		Normal
+Clear	PaintWindow		Clear
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Crop…	PaintWindow		Crop…
 Darken	PixelOperations		Darken
@@ -29,7 +32,6 @@ Ellipse: SHIFT for circle, ALT for centered	Tools		Ellipse: SHIFT for circle, AL
 Airbrush tool	Tools		Airbrush tool
 Rectangle tool	Tools		Rectangle tool
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
-Clear selection	PaintWindow		Clear selection
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Click to select a painting color.	ColorPalette		Click to select a painting color.
 Not a color set file	ColorPalette		Not a color set file
@@ -141,7 +143,6 @@ Making a fill.	Tools		Making a fill.
 Speed:	Tools		Speed:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
-Selects entire canvas	PaintWindow		Selects entire canvas
 Translate…	PaintWindow		Translate…
 Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
 Text tool	Tools		Text tool
@@ -175,7 +176,6 @@ Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Black	ColorSliders	For CMYK color slider	Black
 Reset brush	Tools		Reset brush
 Undo steps:	Windows		Undo steps:
-Clear canvas	PaintWindow		Clear canvas
 Magenta	ColorSliders	For CMYK color slider	Magenta
 OK	ColorPalette		OK
 Using the airbrush.	Tools		Using the airbrush.
@@ -223,7 +223,6 @@ Open image…	PaintWindow		Open image…
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
 Multiply	PixelOperations		Multiply
-Invert selection	PaintWindow		Invert selection
 Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Brush	Windows		Brush
@@ -233,7 +232,6 @@ Adjustable	Windows		Adjustable
 About ArtPaint	PaintWindow		About ArtPaint
 Linear dodge	PixelOperations		Linear dodge
 Don't save	ImageView		Don't save
-Select all	PaintWindow		Select all
 Tools	Tools		Tools
 Save image as…	PaintWindow		Save image as…
 Brushes	Windows		Brushes
@@ -246,9 +244,7 @@ Linear light	PixelOperations		Linear light
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Closes the current window.	PaintWindow		Closes the current window.
-Shrink selection	PaintWindow		Shrink selection
 Zooms out from the image.	PaintWindow		Zooms out from the image.
-Clear selection	ImageView		Clear selection
 Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 Vivid light	PixelOperations		Vivid light
@@ -258,8 +254,8 @@ Recent projects	PaintWindow		Recent projects
 Brushes…	PaintWindow		Brushes…
 Color variance:	Tools		Color variance:
 Dissolve	PixelOperations		Dissolve
-Clear layer	PaintWindow		Clear layer
 Rotates all layers.	PaintWindow		Rotates all layers.
+Select none	ImageView		Select none
 Deletes the selected layer.	PaintWindow		Deletes the selected layer.
 Painting with a brush.	Tools		Painting with a brush.
 Rectangle	Tools		Rectangle
@@ -305,7 +301,6 @@ Intelligent scissors	Tools		Intelligent scissors
 Freehand	Tools		Freehand
 Hairs:	Tools		Hairs:
 Saturation	ColorSliders	For HSV color slider	Saturation
-Grow selection	PaintWindow		Grow selection
 Select all	ImageView		Select all
 Flood fill	Tools		Flood fill
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
@@ -318,7 +313,9 @@ Set zoom level	PaintWindow		Set zoom level
 Enable rotation	Tools		Enable rotation
 Continuous	Tools		Continuous
 OK	PaintWindow		OK
+All	PaintWindow		All
 Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
+Shrink	PaintWindow		Shrink
 User manual…	PaintWindow		User manual…
 Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lightness
 Opens the layers window.	PaintWindow		Opens the layers window.
@@ -331,6 +328,7 @@ Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selec
 Quits ArtPaint.	PaintWindow		Quits ArtPaint.
 Transparency	Tools		Transparency
 Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
+Selects entire layer	PaintWindow		Selects entire layer
 Delete	LayerWindow		Delete
 Settings…	PaintWindow		Settings…
 Delete	PaintWindow		Delete
@@ -347,6 +345,7 @@ Clear layer	Image		Clear layer
 Quit	PaintWindow		Quit
 Rotate…	PaintWindow		Rotate…
 Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
+Invert	PaintWindow		Invert
 No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
 Invert selection	ImageView		Invert selection
@@ -361,6 +360,7 @@ Unsaved changes!	ImageView		Unsaved changes!
 Rotate: Left-drag to rotate, right-click to set rotation center.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center.
 Un-selects all	PaintWindow		Un-selects all
 Previous color set	ColorPalette	In Color Palette window	Previous color set
+Grow	PaintWindow		Grow
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
