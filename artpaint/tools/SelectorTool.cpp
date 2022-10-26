@@ -629,6 +629,7 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		fTolerance =
 			new NumberSliderControl(B_TRANSLATE("Tolerance:"),
 				"10", message, 0, 100, false);
+		fTolerance->SetEnabled(FALSE);
 
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
 
@@ -639,8 +640,13 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 				.Add(fEllipse)
 				.Add(fScissors)
 				.Add(fMagicWand)
-				.Add(toleranceLayout)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
+			.End()
+			.AddGroup(B_HORIZONTAL, 0)
+				.AddStrut(B_USE_DEFAULT_SPACING)
+				.Add(toleranceLayout)
+				.AddGlue()
+				.SetInsets(B_USE_ITEM_SPACING, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
@@ -654,11 +660,13 @@ SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_CIRCLE)
 			fEllipse->SetValue(B_CONTROL_ON);
 
-		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_MAGIC_WAND)
-			fMagicWand->SetValue(B_CONTROL_ON);
-
 		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_INTELLIGENT_SCISSORS)
 			fScissors->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(SHAPE_OPTION) == HS_MAGIC_WAND) {
+			fMagicWand->SetValue(B_CONTROL_ON);
+			fTolerance->SetEnabled(TRUE);
+		}
 	}
 }
 
@@ -676,3 +684,20 @@ SelectorToolConfigView::AttachedToWindow()
 	fTolerance->SetTarget(this);
 }
 
+
+void
+SelectorToolConfigView::MessageReceived(BMessage* message)
+{
+	DrawingToolConfigView::MessageReceived(message);
+
+	switch(message->what) {
+		case OPTION_CHANGED: {
+			if (message->FindInt32("option") == SHAPE_OPTION) {
+				if (fMagicWand->Value() == B_CONTROL_OFF)
+					fTolerance->SetEnabled(FALSE);
+				else
+					fTolerance->SetEnabled(TRUE);
+			}
+		} break;
+	}
+}

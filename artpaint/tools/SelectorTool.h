@@ -68,6 +68,7 @@ public:
 	virtual							~SelectorToolConfigView() {}
 
 	virtual	void					AttachedToWindow();
+	virtual void					MessageReceived(BMessage* message);
 
 private:
 			BRadioButton*			fAddArea;
