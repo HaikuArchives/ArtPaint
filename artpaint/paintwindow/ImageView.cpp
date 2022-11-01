@@ -2158,7 +2158,7 @@ ImageView::ShowAlert(int32 alert)
 	const char* text;
 	switch (alert) {
 		case CANNOT_ADD_LAYER_ALERT:
-			text = B_TRANSLATE("Not enough free memory to add a layer ."\
+			text = B_TRANSLATE("Not enough free memory to add a layer. " \
 				"You can free more memory by disabling the undo and closing " \
 				"other images. It is also a good idea to save the image now " \
 				"because running out of memory later on might make saving " \
