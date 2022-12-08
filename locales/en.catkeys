@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2999294554
+1	English	application/x-vnd.artpaint	2867090403
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -17,8 +17,8 @@ Color dodge	PixelOperations		Color dodge
 None	PaintWindow		None
 Cursor	Windows		Cursor
 Normal	PixelOperations		Normal
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Crop…	PaintWindow		Crop…
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.
 Darken	PixelOperations		Darken
 Bummer	UndoQueue		Bummer
@@ -132,6 +132,7 @@ Unlimited	Windows		Unlimited
 Opaque	Manipulators		Opaque
 Layers…	PaintWindow		Layers…
 Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Rotates the canvas 90° counter-clockwise.
 Hue	ColorSliders	For HSV color slider	Hue
 Moves all layers.	PaintWindow		Moves all layers.
 Windows	Windows		Windows
@@ -254,6 +255,7 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 Undo	PaintWindow		Undo
 Recent projects	PaintWindow		Recent projects
 Brushes…	PaintWindow		Brushes…
+Crops the canvas.	PaintWindow		Crops the canvas.
 Color variance:	Tools		Color variance:
 Dissolve	PixelOperations		Dissolve
 Rotates all layers.	PaintWindow		Rotates all layers.
@@ -269,6 +271,7 @@ OK	Image		OK
 Cyan	ColorSliders	For CMYK color slider	Cyan
 Red	ColorSliders	For RGB color sliders	Red
 Screen	PixelOperations		Screen
+Scale the canvas.	PaintWindow		Scale the canvas.
 Settings	Windows		Settings
 Colors	Windows		Colors
 Off	PaintWindow		Off
@@ -280,7 +283,6 @@ Create canvas	PaintWindow		Create canvas
 Replace pixels with	Tools		Replace pixels with
 Delete layer	Image		Delete layer
 Left:	Manipulators		Left:
-Crops the image.	PaintWindow		Crops the image.
 Size:	Tools		Size:
 Off	Windows		Off
 Scales the active layer.	PaintWindow		Scales the active layer.
@@ -289,8 +291,8 @@ Freehand line tool	Tools		Freehand line tool
 Duplicate	LayerWindow		Duplicate
 Angle:	Tools		Angle:
 Layer	LayerWindow		Layer
-Duplicate	PaintWindow		Duplicate
 Grow selection	ImageView		Grow selection
+Duplicate	PaintWindow		Duplicate
 Colors	ColorPalette		Colors
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
 Save	ImageView		Save
@@ -338,6 +340,7 @@ Selects entire layer	PaintWindow		Selects entire layer
 Delete	LayerWindow		Delete
 Settings…	PaintWindow		Settings…
 Delete	PaintWindow		Delete
+Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
 Choose format	FilePanels		Choose format
 Cancel	FilePanels		Cancel
@@ -351,6 +354,7 @@ Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square
 Invert	PaintWindow		Invert
 No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
+Rotates the canvas 90° clockwise.	PaintWindow		Rotates the canvas 90° clockwise.
 Invert selection	ImageView		Invert selection
 Much	Tools		Much
 Rotates the current layer 90° clockwise.	PaintWindow		Rotates the current layer 90° clockwise.
