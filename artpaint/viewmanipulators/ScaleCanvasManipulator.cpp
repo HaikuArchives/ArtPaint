@@ -10,7 +10,7 @@
  *
  */
 
-#include "ScaleManipulator.h"
+#include "ScaleCanvasManipulator.h"
 
 #include "MessageConstants.h"
 #include "NumberControl.h"
@@ -41,52 +41,44 @@
 using ArtPaint::Interface::NumberControl;
 
 
-ScaleManipulator::ScaleManipulator(BBitmap *bm)
+ScaleCanvasManipulator::ScaleCanvasManipulator(BBitmap *bm)
 	:	WindowGUIManipulator(),
-	selection(NULL),
-	orig_selection_data(NULL)
+	selection(NULL)
 {
 	configuration_view = NULL;
-	settings = new ScaleManipulatorSettings();
+	settings = new ScaleCanvasManipulatorSettings();
 
 	preview_bitmap = NULL;
 	copy_of_the_preview_bitmap = NULL;
 
 	SetPreviewBitmap(bm);
-	reject_mouse_input = false;
-	previous_point.x = 0;
-	previous_point.y = 0;
 }
 
 
 
-ScaleManipulator::~ScaleManipulator()
+ScaleCanvasManipulator::~ScaleCanvasManipulator()
 {
 	if (configuration_view != NULL) {
 		configuration_view->RemoveSelf();
 		delete configuration_view;
 	}
 
-	if (orig_selection_data != NULL)
-		delete orig_selection_data;
-
 	delete copy_of_the_preview_bitmap;
 }
 
 
 
-BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
+BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	BBitmap *original, BStatusBar *status_bar)
 {
-	ScaleManipulatorSettings *new_settings =
-			dynamic_cast<ScaleManipulatorSettings*> (set);
+	ScaleCanvasManipulatorSettings *new_settings =
+			dynamic_cast<ScaleCanvasManipulatorSettings*> (set);
 	if (new_settings == NULL)
 		return NULL;
 
 	BBitmap *final_bitmap = NULL;	
 	
 	BRect bounds = original->Bounds();
-	BRect orig_bounds = original->Bounds();
 	
 	if (bounds.IsValid() == FALSE)
 		return NULL;
@@ -105,52 +97,9 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	
 	uint32 *source_bits; 
 	uint32 *target_bits;
-	
-	if (selection != NULL && selection->IsEmpty() == FALSE) {
-		if (orig_selection_data != NULL) {
-			// get the selection before scaling
-			SelectionData new_selection_data = selection->ReturnSelectionData();
-			selection->SetSelectionData(orig_selection_data);
-			
-			// copy non-selected data to result bitmap
-			
-			final_bitmap = new BBitmap(BRect(0, 0, orig_bounds.Width(), 
-				orig_bounds.Height()), B_RGBA32);
-			target_bits = (uint32*)final_bitmap->Bits();
-			uint32 target_bpr = final_bitmap->BytesPerRow() / 4;
-			source_bits = (uint32*)original->Bits();
-			uint32 source_bpr = original->BytesPerRow() / 4;
-			for (int32 y = 0; y <= orig_bounds.bottom; y++) {
-				for (int32 x = 0; x < orig_bounds.right; x++) {
-					if (selection->ContainsPoint(x, y) == false) 
-						*(target_bits + x + y * target_bpr) = 
-							*(source_bits + x + y * source_bpr);
-					else
-						*(target_bits + x + y * target_bpr) = background.word;
-				}
-			}
-			
-			// set the "original" bounds to the size of the
-			// selection before scaling
-			orig_bounds = selection->GetBoundingRect();
-	
-			// and reset selection back to the new selection
-			selection->SetSelectionData(&new_selection_data);
-		}
 		
-		bounds = selection->GetBoundingRect();
-	} 
-	
-	if (bounds.IsValid() == FALSE || orig_bounds.IsValid() == FALSE)
-		return NULL;
-	
 	float starting_width = bounds.Width() + 1;
 	float starting_height = bounds.Height() + 1;
-
-	if (orig_bounds != bounds) {
-		starting_width = orig_bounds.Width() + 1;
-		starting_height = orig_bounds.Height() + 1;
-	}
 
 	float new_width = round(starting_width * new_settings->width_coefficient);
 	float new_height = round(starting_height * new_settings->height_coefficient);
@@ -362,64 +311,14 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			delete scale_x_bitmap;
 	}
 	
-	source_bits = NULL;
-	uint32 source_bpr;
-	BRect final_bounds(orig_bounds);
+	if (scale_y_bitmap != NULL)
+		return scale_y_bitmap;
 	
-	if (scale_y_bitmap != NULL) {
-		source_bits = (uint32*)scale_y_bitmap->Bits();
-		source_bpr = scale_y_bitmap->BytesPerRow() / 4;
-	} else if (scale_x_bitmap != NULL) {
-		source_bits = (uint32*)scale_x_bitmap->Bits();
-		source_bpr = scale_x_bitmap->BytesPerRow() / 4;
-	} 
-	
-	if (final_bitmap == NULL && final_bounds.IsValid()) {
-		final_bitmap = new BBitmap(final_bounds, B_RGBA32);
-		
-		target_bits = (uint32*)final_bitmap->Bits();
-		uint32 target_bpr = final_bitmap->BytesPerRow() / 4;	
-	
-		for (int32 y = 0; y < final_bitmap->Bounds().Height(); y++)
-			for (int32 x = 0; x < final_bitmap->Bounds().Width(); x++)
-				*(target_bits + x + y * target_bpr) = background.word;
-	}
-	
-	if (final_bitmap == NULL)
-		return NULL;
-		
-	target_bits = (uint32*)final_bitmap->Bits();
-	uint32 target_bpr = final_bitmap->BytesPerRow() / 4;	
-	
-	if (selection != NULL && selection->IsEmpty() == FALSE)
-		final_bounds = bounds;
-		
-	if (source_bits != NULL) {
-		for (int32 y = final_bounds.top; y <= final_bounds.bottom; y++) {
-			int32 src_y = y - final_bounds.top;
-			//if (src_y >= y * target_bpr)
-			//	break;
-			for (int32 x = final_bounds.left; x < final_bounds.right; x++) {
-				if (selection == NULL || selection->IsEmpty() == TRUE ||
-					selection->ContainsPoint(x, y)) {
-					int32 src_x = x - final_bounds.left;
-					if (src_x >= target_bpr)
-						break;
-					*(target_bits + x + y * target_bpr) = 
-						src_over_fixed(
-							*(target_bits + x + y * target_bpr),
-							*(source_bits + src_x + src_y * source_bpr)
-						);
-				}
-			}
-		}
-	} 
-	
-	return final_bitmap;	
+	return scale_x_bitmap;	
 }
 
 
-int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
+int32 ScaleCanvasManipulator::PreviewBitmap(bool, BRegion* region)
 {
 	if (preview_bitmap == NULL)
 		return 0;
@@ -446,97 +345,20 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 
 	int32 *source_x_table = new int32[width + 1];
 
-	if (selection == NULL || selection->IsEmpty() == true) {
-		for (int32 i = 0; i <= width; i++)
-			source_x_table[i] = (int32)floor(i * width_coeff);
+	for (int32 i = 0; i <= width; i++)
+		source_x_table[i] = (int32)floor(i * width_coeff);
 
-		for (int32 y = 0; y <= height; y++) {
-			int32 source_y = (int32)floor(y * height_coeff);
-			int32 y_times_bpr = y * bpr;
-			int32 source_y_times_bpr = source_y * bpr;
-			for (int32 x = 0; x <= width; x++) {
-				int32 source_x = source_x_table[x];
-				if (source_x > width || source_y > height)
-					*(target_bits + x + y_times_bpr) = white.word;
-				else
-					*(target_bits + x + y_times_bpr) =
-						*(source_bits + source_x + source_y_times_bpr);
-			}
-		}
-	} else {
-		float new_x = settings->width_coefficient * original_width;
-		float new_y = settings->height_coefficient * original_height;
-
-		if (reject_mouse_input == true)
-			return 1;
-			
-		BRect selection_bounds = selection->GetBoundingRect();
-		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
-		int32 sel_top = (int32)selection_bounds.top;
-		int32 sel_bottom = (int32)selection_bounds.bottom;
-		int32 sel_left = (int32)selection_bounds.left;
-		int32 sel_right = (int32)selection_bounds.right;
-
-		SelectionData temp_selection_data(selection->ReturnSelectionData());
-		selection->SetSelectionData(orig_selection_data);
-		for (int32 y = sel_top; y <= sel_bottom; ++y) {
-			for (int32 x = sel_left; x <= sel_right; ++x) {
-				uint32 clear_bits = *(source_bits + x + y * bpr);
-				if (selection->ContainsPoint(x, y))
-					clear_bits = white.word;
-
-				*(target_bits + x + y * bpr) = clear_bits;
-			}
-		}
-		
-		selection_bounds = selection->GetBoundingRect();
-		
-		selection->ScaleTo(selection_bounds.LeftTop(), new_x, new_y);
-		selection->Recalculate();
-		
-		selection_bounds = selection->GetBoundingRect();
-		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
-
-		if (selection_bounds.IsValid() == false) {
-			selection->SetSelectionData(orig_selection_data);
-			selection->Recalculate();		
-			selection_bounds = selection->GetBoundingRect();
-			selection->ScaleTo(selection_bounds.LeftTop(), previous_point.x, previous_point.y);
-			selection->Recalculate();
-		
-			reject_mouse_input = true;
-			delete[] source_x_table;
-			return 1;
-		} 
-		
-		previous_point.x = settings->width_coefficient * original_width;
-		previous_point.y = settings->height_coefficient * original_height;
-	
-		sel_top = (int32)selection_bounds.top;
-		sel_bottom = (int32)selection_bounds.bottom;
-		sel_left = (int32)selection_bounds.left;
-		sel_right = (int32)selection_bounds.right;	
-
-		for (int32 y = sel_top; y <= sel_bottom; y++) {
-			int32 source_y =
-				(int32)floor((y - sel_top) * height_coeff) + sel_top;
-			int32 y_times_bpr = y * bpr;
-			int32 source_y_times_bpr = source_y * bpr;
-			for (int32 x = sel_left; x <= sel_right; x++) {
-				if (selection->ContainsPoint(x, y)) {
-					int32 source_x =
-						(int32)floor((x - sel_left) * width_coeff) + sel_left;
-					if (source_x > width || source_y > height) {
-						*(target_bits + x + y_times_bpr) = white.word;
-					} else {
-						*(target_bits + x + y_times_bpr) = 
-							src_over_fixed(
-								*(target_bits + x + y_times_bpr),
-								*(source_bits + source_x + source_y_times_bpr)
-							);
-					}
-				}
-			}
+	for (int32 y = 0; y <= height; y++) {
+		int32 source_y = (int32)floor(y * height_coeff);
+		int32 y_times_bpr = y * bpr;
+		int32 source_y_times_bpr = source_y * bpr;
+		for (int32 x = 0; x <= width; x++) {
+			int32 source_x = source_x_table[x];
+			if (source_x > width || source_y > height)
+				*(target_bits + x + y_times_bpr) = white.word;
+			else
+				*(target_bits + x + y_times_bpr) =
+					*(source_bits + source_x + source_y_times_bpr);
 		}
 	}
 
@@ -548,34 +370,11 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 
 
 void
-ScaleManipulator::MouseDown(BPoint point, uint32 buttons, BView* image_view,
+ScaleCanvasManipulator::MouseDown(BPoint point, uint32 buttons, BView* image_view,
 	bool first_click)
 {
 	BPoint normPoint(point);
-
-	if (reject_mouse_input == true) {
-		if (normPoint.x >= previous_point.x && 
-			normPoint.y >= previous_point.y)
-		return;
-		
-		reject_mouse_input = false;
-	}
 	
-	if (selection != NULL && selection->IsEmpty() == false) {
-		BRect bounds = selection->GetBoundingRect();
-
-		if (bounds.IsValid() == false) {
-			normPoint.x = previous_point.x;
-			normPoint.y = previous_point.y;
-			selection->SetSelectionData(orig_selection_data);
-		} else {
-			if (bounds.left < point.x && bounds.top < point.y) {
-				normPoint.x = point.x - bounds.left;
-				normPoint.y = point.y - bounds.top;
-			} 
-		}
-	}
-
 	if (normPoint.x > 0.0 && normPoint.y > 0.0) {
 		settings->width_coefficient = normPoint.x / original_width;
 		settings->height_coefficient = normPoint.y / original_height;
@@ -600,7 +399,7 @@ ScaleManipulator::MouseDown(BPoint point, uint32 buttons, BView* image_view,
 
 
 void
-ScaleManipulator::SetValues(float width, float height)
+ScaleCanvasManipulator::SetValues(float width, float height)
 {
 	settings->width_coefficient = width / original_width;
 	settings->height_coefficient = height / original_height;
@@ -608,7 +407,7 @@ ScaleManipulator::SetValues(float width, float height)
 
 
 void
-ScaleManipulator::Reset()
+ScaleCanvasManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.
@@ -617,15 +416,11 @@ ScaleManipulator::Reset()
 		if (source != NULL)
 			memcpy(target, source, preview_bitmap->BitsLength());
 	}
-
-	if (orig_selection_data != NULL && selection != NULL)
-		selection->SetSelectionData(orig_selection_data);
-
 }
 
 
 void
-ScaleManipulator::SetPreviewBitmap(BBitmap *bitmap)
+ScaleCanvasManipulator::SetPreviewBitmap(BBitmap *bitmap)
 {
 	if (bitmap) {
 		original_width = bitmap->Bounds().Width() + 1.0;
@@ -666,32 +461,23 @@ ScaleManipulator::SetPreviewBitmap(BBitmap *bitmap)
 
 
 void
-ScaleManipulator::SetSelection(Selection* new_selection)
+ScaleCanvasManipulator::SetSelection(Selection* new_selection)
 {
 	selection = new_selection;
-
-	if (selection != NULL && selection->IsEmpty() == false) {
-		orig_selection_data = new SelectionData(selection->ReturnSelectionData());
-
-		BRect bounds = selection->GetBoundingRect();
-
-		original_width = bounds.IntegerWidth();
-		original_height = bounds.IntegerHeight();
-	}
 };
 
 
 ManipulatorSettings*
-ScaleManipulator::ReturnSettings()
+ScaleCanvasManipulator::ReturnSettings()
 {
-	return new (std::nothrow) ScaleManipulatorSettings(settings);
+	return new (std::nothrow) ScaleCanvasManipulatorSettings(settings);
 }
 
 
 BView*
-ScaleManipulator::MakeConfigurationView(const BMessenger& target)
+ScaleCanvasManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	configuration_view = new (std::nothrow) ScaleManipulatorView(this, target);
+	configuration_view = new (std::nothrow) ScaleCanvasManipulatorView(this, target);
 	if (configuration_view)
 		configuration_view->SetValues(original_width, original_height);
 	return configuration_view;
@@ -699,23 +485,23 @@ ScaleManipulator::MakeConfigurationView(const BMessenger& target)
 
 
 const char*
-ScaleManipulator::ReturnHelpString()
+ScaleCanvasManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Scale: Drag to resize or use number-fields.");
 }
 
 
 const char*
-ScaleManipulator::ReturnName()
+ScaleCanvasManipulator::ReturnName()
 {
 	return B_TRANSLATE("Scale" B_UTF8_ELLIPSIS);
 }
 
 
-// #pragma mark -- ScaleManipulatorView
+// #pragma mark -- ScaleCanvasManipulatorView
 
 
-ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
+ScaleCanvasManipulatorView::ScaleCanvasManipulatorView(ScaleCanvasManipulator* manipulator,
 		const BMessenger& target)
 	: WindowGUIManipulatorView()
 	, fTarget(target)
@@ -751,7 +537,7 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 
 
 void
-ScaleManipulatorView::AttachedToWindow()
+ScaleCanvasManipulatorView::AttachedToWindow()
 {
 	_SetTarget(this);
 
@@ -761,7 +547,7 @@ ScaleManipulatorView::AttachedToWindow()
 
 
 void
-ScaleManipulatorView::MessageReceived(BMessage* message)
+ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case WIDTH_CHANGED: {
@@ -854,7 +640,7 @@ ScaleManipulatorView::MessageReceived(BMessage* message)
 
 
 void
-ScaleManipulatorView::SetValues(float width, float height)
+ScaleCanvasManipulatorView::SetValues(float width, float height)
 {
 	current_width = round(width);
 	current_height = round(height);
@@ -875,7 +661,7 @@ ScaleManipulatorView::SetValues(float width, float height)
 
 
 void
-ScaleManipulatorView::_SetTarget(BView* view)
+ScaleCanvasManipulatorView::_SetTarget(BView* view)
 {
 	for (int32 i = 0; i < view->CountChildren(); ++i) {
 		BView* child = view->ChildAt(i);
@@ -888,7 +674,7 @@ ScaleManipulatorView::_SetTarget(BView* view)
 
 
 void
-ScaleManipulatorView::_SetValues(float width, float height)
+ScaleCanvasManipulatorView::_SetValues(float width, float height)
 {
 	// TODO: check why we cast to BControl here
 	BControl *text_control = dynamic_cast<BControl*> (width_control);
@@ -902,7 +688,7 @@ ScaleManipulatorView::_SetValues(float width, float height)
 
 
 BButton*
-ScaleManipulatorView::_MakeButton(const char* label, uint32 what,
+ScaleCanvasManipulatorView::_MakeButton(const char* label, uint32 what,
 	float coefficient)
 {
 	BMessage* message = new BMessage(what);

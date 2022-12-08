@@ -62,7 +62,8 @@ artpaint/viewmanipulators/CropManipulator.cpp artpaint/viewmanipulators/FlipMani
 artpaint/viewmanipulators/FreeTransformManipulator.cpp artpaint/viewmanipulators/Manipulator.cpp \
 artpaint/viewmanipulators/ManipulatorInformer.cpp artpaint/viewmanipulators/ManipulatorServer.cpp \
 artpaint/viewmanipulators/RotationManipulator.cpp artpaint/viewmanipulators/Rotate90Manipulator.cpp \
-artpaint/viewmanipulators/ScaleManipulator.cpp artpaint/viewmanipulators/TextManipulator.cpp \
+artpaint/viewmanipulators/ScaleManipulator.cpp artpaint/viewmanipulators/ScaleCanvasManipulator.cpp \
+artpaint/viewmanipulators/TextManipulator.cpp \
 artpaint/viewmanipulators/TranslationManipulator.cpp artpaint/viewmanipulators/TransparencyManipulator.cpp \
 artpaint/viewmanipulators/WindowGUIManipulator.cpp \
 artpaint/windows/BrushStoreWindow.cpp artpaint/windows/DatatypeSetupWindow.cpp artpaint/windows/GlobalSetupWindow.cpp \

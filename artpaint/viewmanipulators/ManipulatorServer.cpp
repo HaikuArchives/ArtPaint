@@ -19,6 +19,7 @@
 #include "PaintApplication.h"
 #include "RotationManipulator.h"
 #include "Rotate90Manipulator.h"
+#include "ScaleCanvasManipulator.h"
 #include "ScaleManipulator.h"
 #include "SettingsServer.h"
 #include "TextManipulator.h"
@@ -162,6 +163,10 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 			manipulator = new ScaleManipulator(NULL);
 		}	break;
 
+		case SCALE_CANVAS_MANIPULATOR: {
+			manipulator = new ScaleCanvasManipulator(NULL);
+		}	break;
+		
 		case CROP_MANIPULATOR: {
 			manipulator = new CropManipulator(NULL);
 		}	break;

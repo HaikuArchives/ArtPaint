@@ -1358,13 +1358,20 @@ PaintWindow::openMenuBar()
 		a_message, 0, 0, this,
 		B_TRANSLATE("Rotates the canvas 90° counter-clockwise.")));
 
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", SCALE_CANVAS_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
+		a_message, 0, 0, this,
+		B_TRANSLATE("Scale the canvas.")));
+
 	menu->AddSeparatorItem();
 	
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",CROP_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Crop" B_UTF8_ELLIPSIS),
-		a_message, 'C', B_CONTROL_KEY, this,
+		a_message, 0, 0, this,
 		B_TRANSLATE("Crops the canvas.")));
 		
 	// The Window menu,
