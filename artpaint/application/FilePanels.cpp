@@ -42,16 +42,13 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		Window()->SetTitle(title.String());
 
 		BView* textView = Window()->FindView("text view");
-		textView->MoveBy(0.0, 20.0);
 		float width = textView->Bounds().Width() + 10.0;
 
 		BView* root = Window()->ChildAt(0);
 		BView* tmp = root->FindView("default button");
-		tmp->MoveBy(0.0, 20.0);
 		width += tmp->Bounds().Width() + 10.0;
 
 		BView* cancelButton = root->FindView("cancel button");
-		cancelButton->MoveBy(0.0, 20.0);
 		width += cancelButton->Bounds().Width() + 10.0;
 
 		int32 count = root->CountChildren();
@@ -59,13 +56,14 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 			BView* child = root->ChildAt(i);
 			if ((child->ResizingMode() & B_FOLLOW_BOTTOM)
 				|| !(child->ResizingMode() & B_FOLLOW_TOP_BOTTOM))
-				child->MoveBy(0.0, -20.0);
+				child->MoveBy(0.0, -30.0);
 			else if (child->ResizingMode() & B_FOLLOW_TOP_BOTTOM)
-				child->ResizeBy(0.0, -20.0);
+				child->ResizeBy(0.0, -30.0);
 		}
 
+		BButton* settingsButton;
 		if (cancelButton) {
-			BButton* settingsButton = new BButton(cancelButton->Frame(),
+			settingsButton = new BButton(cancelButton->Frame(),
 				"settings button", B_TRANSLATE("Settings" B_UTF8_ELLIPSIS),
 				new BMessage(HS_SHOW_DATATYPE_SETTINGS), B_FOLLOW_RIGHT |
 				B_FOLLOW_BOTTOM);
@@ -78,7 +76,11 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 			width += settingsButton->Bounds().Width() + 10.0;
 		}
 		Window()->ResizeTo(width + 20.0, Window()->Bounds().Height());
-
+		
+		if (settingsButton != NULL) {
+			float textViewWidth = settingsButton->Frame().left - textView->Frame().left - 10.0;
+			textView->ResizeTo(textViewWidth, textView->Bounds().Height());
+		}
 		// this menu sends a message to the window that requested saving
 		// and tells it if the user changed the format to save the target
 		BPopUpMenu* formatMenu = new BPopUpMenu(B_TRANSLATE("Choose format"));
@@ -109,8 +111,8 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		formatMenu->SetTargetForItems(target);
 
 		const char* string = B_TRANSLATE("Save format:");
-		BMenuField* menuField = new BMenuField(BRect(textView->Frame().LeftTop() +
-			BPoint(0.0, -25.0), textView->Frame().RightTop() + BPoint(200, -5)),
+		BMenuField* menuField = new BMenuField(BRect(textView->Frame().LeftBottom() +
+			BPoint(0.0, 10.0), textView->Frame().RightBottom() + BPoint(200, 30.)),
 			"menu field", string, formatMenu, B_FOLLOW_LEFT | B_FOLLOW_BOTTOM);
 		root->AddChild(menuField);
 		menuField->SetDivider(menuField->StringWidth(string) + 5.0);
