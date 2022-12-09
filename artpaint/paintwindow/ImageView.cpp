@@ -262,6 +262,15 @@ ImageView::DrawManipulatorGUI(bool blit_image)
 			}
 		}
 
+		BView* parent = this->Parent();
+		BRect imgFrame = ConvertToParent(Bounds());
+		parent->Draw(parent->Bounds());
+		parent->Flush();
+		parent->PushState();
+		parent->SetOrigin(imgFrame.LeftTop());
+		region_drawn_by_manipulator = gui_manipulator->Draw(parent, getMagScale());
+		parent->PopState();
+
 		region_drawn_by_manipulator = gui_manipulator->Draw(this, getMagScale());
 	} else
 		region_drawn_by_manipulator = BRegion();
@@ -1211,6 +1220,7 @@ ImageView::setMagScale(float scale)
 		adjustScrollBars();
 		// we should here also draw the view
 		Invalidate(Bounds());
+		Parent()->Invalidate();
 	}
 
 	((PaintWindow*)Window())->displayMag(magnify_scale);
@@ -1777,14 +1787,14 @@ ImageView::ManipulatorFinisherThread()
 	UndoEvent* new_event = NULL;
 
 	try {
-		if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {	
+		if (manipulated_layers == HS_MANIPULATE_CURRENT_LAYER) {
 			Layer* the_layer = the_image->ReturnActiveLayer();
 			BBitmap* buffer = the_layer->Bitmap();
 			BBitmap* new_buffer = NULL;
 			if (gui_manipulator != NULL) {
 				ManipulatorSettings* settings =
 					gui_manipulator->ReturnSettings();
-				
+
 				new_buffer =
 					gui_manipulator->ManipulateBitmap(settings, buffer,
 						status_bar);
@@ -1793,7 +1803,7 @@ ImageView::ManipulatorFinisherThread()
 				new_buffer = fManipulator->ManipulateBitmap(buffer,
 					status_bar);
 
-			if (new_buffer && new_buffer != buffer) 
+			if (new_buffer && new_buffer != buffer)
 				the_layer->ChangeBitmap(new_buffer);
 
 			new_event = undo_queue->AddUndoEvent(fManipulator->ReturnName(),
@@ -1920,6 +1930,7 @@ ImageView::ManipulatorFinisherThread()
 	if (LockLooper() == true) {
 		((PaintWindow*)Window())->ReturnStatusView()->DisplayToolsAndColors();
 
+		Parent()->Invalidate();
 		Invalidate();
 		UnlockLooper();
 	}
