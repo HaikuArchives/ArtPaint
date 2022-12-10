@@ -993,6 +993,7 @@ TextManipulatorSettings::operator==(const TextManipulatorSettings& s)
 	same = same && (s.text_array_length == text_array_length);
 	same = same && (s.starting_point == starting_point);
 	same = same && (s.font == font);
+	same = same && (s.font.Flags() == font.Flags());
 
 	if (same == TRUE) {
 		for (int32 i=0;i<min_c(s.text_array_length,text_array_length);i++) {
