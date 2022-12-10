@@ -1329,9 +1329,9 @@ PaintWindow::openMenuBar()
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type", SCALE_CANVAS_MANIPULATOR);
 	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
-	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Resize" B_UTF8_ELLIPSIS),
 		a_message, 0, 0, this,
-		B_TRANSLATE("Scale the canvas.")));
+		B_TRANSLATE("Resizes the canvas.")));
 
 	menu->AddSeparatorItem();
 

@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2867090403
+1	English	application/x-vnd.artpaint	2092291547
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -38,7 +38,6 @@ Not a color set file	ColorPalette		Not a color set file
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
-Rotates the current layer 90° counter-clockwise.	PaintWindow		Rotates the current layer 90° counter-clockwise.
 Next color set	ColorPalette	In Color Palette window	Next color set
 OK	PaintApplication		OK
 Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
@@ -140,6 +139,7 @@ Making a fill.	Tools		Making a fill.
 Speed:	Tools		Speed:
 Close	PaintWindow		Close
 Click to place the text.	Tools		Click to place the text.
+Resizes the canvas.	PaintWindow		Resizes the canvas.
 Translate…	PaintWindow		Translate…
 Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
 Text tool	Tools		Text tool
@@ -210,6 +210,7 @@ Drag the text to correct position and set its appearance.	Tools		Drag the text t
 Layer %ld / %ld	ImageView		Layer %ld / %ld
 Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel a
 Active layer	PaintWindow		Active layer
+Resize…	PaintWindow		Resize…
 Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
@@ -221,7 +222,6 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 Open image…	PaintWindow		Open image…
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
-Rotates all layers 90° counter-clockwise.	PaintWindow		Rotates all layers 90° counter-clockwise.
 Multiply	PixelOperations		Multiply
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Brush	Windows		Brush
@@ -246,7 +246,6 @@ Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	To
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Closes the current window.	PaintWindow		Closes the current window.
 Zooms out from the image.	PaintWindow		Zooms out from the image.
-Rotates all layers 90° clockwise.	PaintWindow		Rotates all layers 90° clockwise.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 All non-transparent	PaintWindow		All non-transparent
 Vivid light	PixelOperations		Vivid light
@@ -271,7 +270,6 @@ OK	Image		OK
 Cyan	ColorSliders	For CMYK color slider	Cyan
 Red	ColorSliders	For RGB color sliders	Red
 Screen	PixelOperations		Screen
-Scale the canvas.	PaintWindow		Scale the canvas.
 Settings	Windows		Settings
 Colors	Windows		Colors
 Off	PaintWindow		Off
@@ -354,10 +352,9 @@ Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square
 Invert	PaintWindow		Invert
 No configuration options available.	Tools		No configuration options available.
 Open color set…	ColorPalette		Open color set…
-Rotates the canvas 90° clockwise.	PaintWindow		Rotates the canvas 90° clockwise.
 Invert selection	ImageView		Invert selection
+Rotates the canvas 90° clockwise.	PaintWindow		Rotates the canvas 90° clockwise.
 Much	Tools		Much
-Rotates the current layer 90° clockwise.	PaintWindow		Rotates the current layer 90° clockwise.
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
 Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
