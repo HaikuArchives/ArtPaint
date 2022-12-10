@@ -317,6 +317,9 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 		} else if (*bytes == B_DELETE) {
 			if (BWindow* window = Window())
 				window->PostMessage(HS_EDIT_DELETE, this);
+		} else if (*bytes == B_ESCAPE) {
+			if (fManipulator != NULL)
+				PostponeMessageAndFinishManipulator();
 		} else if (fManipulator == NULL) {
 			ToolManager::Instance().KeyDown(this, bytes, numBytes);
 		}
@@ -2517,6 +2520,9 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 							case B_SPACE:
 								if (view->space_down == TRUE)
 									filter_message = B_SKIP_MESSAGE;
+								break;
+							case B_ESCAPE:
+								view->PostponeMessageAndFinishManipulator();
 								break;
 						}
 					}
