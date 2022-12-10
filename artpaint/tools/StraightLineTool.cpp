@@ -330,7 +330,7 @@ StraightLineTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Drawing a straight line.")
-		: B_TRANSLATE("Straight line: SHIFT locks 45° angles"));
+		: B_TRANSLATE("Straight line: SHIFT locks 22.5° angles"));
 }
 
 

@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	2092291547
+1	English	application/x-vnd.artpaint	3290935729
 Angle:	Manipulators		Angle:
 Cancel	Windows		Cancel
 Lighten	PixelOperations		Lighten
@@ -337,6 +337,7 @@ Pastes previously copied selection as a new layer.	PaintWindow		Pastes previousl
 Selects entire layer	PaintWindow		Selects entire layer
 Delete	LayerWindow		Delete
 Settings…	PaintWindow		Settings…
+Straight line: SHIFT locks 22.5° angles	Tools		Straight line: SHIFT locks 22.5° angles
 Delete	PaintWindow		Delete
 Canvas	PaintWindow		Canvas
 Transparency tool	Tools		Transparency tool
@@ -367,7 +368,6 @@ Grow	PaintWindow		Grow
 Layers	LayerWindow		Layers
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
-Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
 Width:	Manipulators		Width:
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
