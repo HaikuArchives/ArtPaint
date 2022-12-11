@@ -19,8 +19,10 @@
 #include <Messenger.h>
 
 
-#define	WIDTH_CHANGED		'Wich'
-#define	HEIGHT_CHANGED		'Hech'
+#define LEFT_CHANGED		'Ltch'
+#define	TOP_CHANGED			'Tpch'
+#define WIDTH_CHANGED		'Wdch'
+#define HEIGHT_CHANGED		'Hgch'
 
 #define MULTIPLY_WIDTH		'mlWi'
 #define MULTIPLY_HEIGHT		'mlHe'
@@ -46,19 +48,22 @@ class ScaleCanvasManipulatorSettings : public ManipulatorSettings {
 public:
 	ScaleCanvasManipulatorSettings()
 		: ManipulatorSettings() {
-		width_coefficient = 1.0;
-		height_coefficient = 1.0;
+		left = right = 0;
+		top = bottom = 0;
 	}
 
-	ScaleCanvasManipulatorSettings(ScaleCanvasManipulatorSettings *s)
+	ScaleCanvasManipulatorSettings(ScaleCanvasManipulatorSettings* s)
 		: ManipulatorSettings() {
-		width_coefficient = s->width_coefficient;
-		height_coefficient = s->height_coefficient;
+		left = s->left;
+		right = s->right;
+		top = s->top;
+		bottom = s->bottom;
 	}
 
-
-	float	height_coefficient;
-	float	width_coefficient;
+	float	left;
+	float	right;
+	float	top;
+	float	bottom;
 };
 
 
@@ -73,10 +78,25 @@ class ScaleCanvasManipulator : public WindowGUIManipulator {
 	ScaleCanvasManipulatorView		*configuration_view;
 	ScaleCanvasManipulatorSettings	*settings;
 
-	float		original_width;
-	float		original_height;
+	float		original_left;
+	float		original_top;
+	float		original_right;
+	float		original_bottom;
+	
+	float		previous_left;
+	float		previous_right;
+	float		previous_top;
+	float 		previous_bottom;
+	
+	float 		last_x, last_y;
 
 	Selection*	selection;
+	
+	bool		move_left;
+	bool		move_right;
+	bool		move_top;
+	bool		move_bottom;
+	bool 		move_all;
 	
 public:
 	ScaleCanvasManipulator(BBitmap*);
@@ -87,7 +107,10 @@ public:
 	int32		PreviewBitmap(bool, BRegion* =NULL);
 
 	void		MouseDown(BPoint, uint32, BView*, bool);
-	void		SetValues(float, float);
+	
+	BRegion		Draw(BView*, float);
+	
+	void		SetValues(float, float, float, float);
 
 	BView*		MakeConfigurationView(const BMessenger& target);
 	void		Reset();
@@ -98,7 +121,6 @@ public:
 
 	ManipulatorSettings*	ReturnSettings();
 	void		SetSelection(Selection* new_selection);
-
 };
 
 
@@ -114,23 +136,29 @@ public:
 			bool				MaintainProportions() {
 									return maintain_proportions;
 								}
-			void				SetValues(float width, float height);
+			void				SetValues(float left, float top, float right, float bottom);
 
 private:
 			void				_SetTarget(BView* view);
-			void				_SetValues(float width, float height);
+			void				_SetValues(float left, float top, float right, float bottom);
 			BButton*			_MakeButton(const char* label,
 									uint32 what, float coefficient);
 
 private:
 			BMessenger			fTarget;
+			float				original_left;
+			float				original_top;
 			float				original_width;
 			float				original_height;
+			float				current_left;
+			float				current_top;
 			float				current_width;
 			float				current_height;
 			bool				maintain_proportions;
 
 			ScaleCanvasManipulator*	fManipulator;
+			NumberControl*		left_control;
+			NumberControl*		top_control;
 			NumberControl*		width_control;
 			NumberControl*		height_control;
 };

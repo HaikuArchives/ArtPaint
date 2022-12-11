@@ -917,6 +917,7 @@ ImageView::MessageReceived(BMessage* message)
 					fManipulator = NULL;
 					the_image->Render();
 					manipulated_layers = HS_MANIPULATE_NO_LAYER;
+					Parent()->Draw(Parent()->Bounds());
 					Invalidate();
 					start_thread(MANIPULATOR_FINISHER_THREAD);
 				}
