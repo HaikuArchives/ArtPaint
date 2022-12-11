@@ -23,8 +23,8 @@
 #include <Catalog.h>
 #include <CheckBox.h>
 #include <GridLayout.h>
-#include <GridLayoutBuilder.h>
 #include <GroupLayout.h>
+#include <LayoutBuilder.h>
 #include <SpaceLayoutItem.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -76,33 +76,35 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	if (new_settings == NULL)
 		return NULL;
 
-	BBitmap *final_bitmap = NULL;	
-	
+	BBitmap *final_bitmap = NULL;
+
 	BRect bounds = original->Bounds();
-	
+
 	if (bounds.IsValid() == FALSE)
 		return NULL;
-	
+
 	union color_conversion background;
 	// Transparent background.
 	background.bytes[0] = 0xFF;
 	background.bytes[1] = 0xFF;
 	background.bytes[2] = 0xFF;
 	background.bytes[3] = 0x00;
-	
+
 	if (original == preview_bitmap) {
 		final_bitmap = original;
 		original = copy_of_the_preview_bitmap;
 	}
-	
-	uint32 *source_bits; 
+
+	uint32 *source_bits;
 	uint32 *target_bits;
-		
+
 	float starting_width = bounds.Width() + 1;
 	float starting_height = bounds.Height() + 1;
 
-	float new_width = round(starting_width * new_settings->width_coefficient);
-	float new_height = round(starting_height * new_settings->height_coefficient);
+	//float new_width = round(starting_width * new_settings->width_coefficient);
+	//float new_height = round(starting_height * new_settings->height_coefficient);
+	float new_width = new_settings->right - new_settings->left;
+	float new_height = new_settings->bottom - new_settings->top;
 
 	// Create a new bitmap here and copy it applying scaling.
 	// But first create an intermediate bitmap for scaling in one direction only.
@@ -117,15 +119,15 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 
 	BBitmap *scale_x_bitmap = NULL;
 	BBitmap *scale_y_bitmap = NULL;
-	
+
 	if (new_width != starting_width) {
 		float bitmapWidth = new_width - 1;
 		float bitmapHeight = starting_height - 1;
-		scale_x_bitmap = new BBitmap(BRect(0, 0, bitmapWidth, bitmapHeight), 
+		scale_x_bitmap = new BBitmap(BRect(0, 0, bitmapWidth, bitmapHeight),
 			B_RGBA32);
 		if (scale_x_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
-			
+
 		target_bits = (uint32*)scale_x_bitmap->Bits();
 		int32 target_bpr = scale_x_bitmap->BytesPerRow() / 4;
 		source_bits = (uint32*)original->Bits();
@@ -139,29 +141,29 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 
 		for (int32 y = 0; y < starting_height; y++)
 			for (int32 x = 0; x < target_bpr; x++)
-				*(target_bits + x + y * target_bpr) = 
+				*(target_bits + x + y * target_bpr) =
 					background.word;
-					
+
 		if (diff < 1) {
 			// Enlarge in x direction.
 			for (int32 y = 0; y < starting_height; y++) {
 				accumulation = 0;
 				uint32* src_bits = source_bits + left + (y + top) * source_bpr;
-				
+
 				for (int32 x = 0; x < target_bpr; x++) {
 					// 'mix_2_pixels' doesn't work -- doesn't take rounding errors into account.
-					*(target_bits + x + y * target_bpr) = 
+					*(target_bits + x + y * target_bpr) =
 						src_over_fixed (*(target_bits + x + y * target_bpr),
 							mix_2_pixels_fixed(*(src_bits + (int32)floor(accumulation)),
 									*(src_bits + (int32)ceil(accumulation)),
 									(uint32)(32768 * (ceil(accumulation) - accumulation)))
 						);
 					accumulation += diff;
-					
-					if (accumulation > source_bpr - 1) 
+
+					if (accumulation > source_bpr - 1)
 						accumulation = source_bpr - 1;
 				}
-				
+
 				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
 					status_bar->Window()->PostMessage(&progress_message,status_bar);
@@ -180,7 +182,7 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 					float coeff = 1.0;
 					int32 x_diff = floor(fx + diff);
 					float coeff_diff = 0;
-					if (x_diff - x != 0) 
+					if (x_diff - x != 0)
 						coeff_diff = 1.0 / (float)(x_diff - x);
 					uint32 target_value = 0x00000000;
 					for (int32 i = (int32)floor(fx); i < x_diff; i++) {
@@ -188,7 +190,7 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 							target_value, (uint32)(32768 * coeff));
 						coeff -= coeff_diff;
 					}
-					
+
 					*(target_bits + x + y * target_bpr) = target_value;
 					fx += diff;
 				}
@@ -200,7 +202,7 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		} else {
 			for (int32 y = 0; y <= starting_height; y++) {
 				uint32* src_bits = source_bits + y * source_bpr;
-				
+
 				for (int32 x = 0; x < target_bpr; x++) {
 					// Just copy it straight
 					*(target_bits + x + y * target_bpr) = *(src_bits + x);
@@ -219,7 +221,7 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		float bitmapWidth = new_width - 1;
 		float bitmapHeight = new_height - 1;
 
-		scale_y_bitmap = new BBitmap(BRect(0, 0 , bitmapWidth, 
+		scale_y_bitmap = new BBitmap(BRect(0, 0 , bitmapWidth,
 			bitmapHeight), B_RGBA32);
 		if (scale_y_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
@@ -228,22 +230,22 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		int32 target_bpr = scale_y_bitmap->BytesPerRow() / 4;
 		source_bits = (uint32*)scale_x_bitmap->Bits();
 		int32 source_bpr = scale_x_bitmap->BytesPerRow() / 4;
-		
-		for (int32 y = 0; y < new_height; y++) 
-			for (int32 x = 0; x < new_width; x++) 
-				*(target_bits + x + y * target_bpr) = 
-					background.word;	
-						
+
+		for (int32 y = 0; y < new_height; y++)
+			for (int32 x = 0; x < new_width; x++)
+				*(target_bits + x + y * target_bpr) =
+					background.word;
+
 		int32 top = (int32)bounds.top;
 		int32 left = (int32)bounds.left;
-		int32 bottom = (int32)scale_y_bitmap->Bounds().bottom;	
+		int32 bottom = (int32)scale_y_bitmap->Bounds().bottom;
 		int32 right = (int32)scale_y_bitmap->Bounds().right;
-		
+
 		if (scale_x_bitmap != original) {
 			left = 0;
 			top = 0;
 		}
-		
+
 		float diff = (starting_height - 1) / new_height;
 		float accumulation = 0;
 		if (diff < 1) {
@@ -252,14 +254,14 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			for (int32 y = 0; y <= new_height - 1; y++) {
 				int32 y_diff = (int32)floor(fy + diff);
 				for (int32 x = 0; x < new_width - 1; x++) {
-					*(target_bits + x + y * target_bpr) = 
+					*(target_bits + x + y * target_bpr) =
 						mix_2_pixels_fixed(*(source_bits + x + left + (int32)floor(fy) * source_bpr),
 							*(source_bits + x + left + y_diff * source_bpr),
 							(uint32)(32768 * (ceil(accumulation) - accumulation)));
 				}
 				fy += diff;
 				accumulation += diff;
-				if (accumulation > source_bpr - 1) 
+				if (accumulation > source_bpr - 1)
 					accumulation = source_bpr - 1;
 				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
@@ -286,7 +288,7 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 							target_value, (uint32)(32768 * coeff));
 						coeff -= coeff_diff;
 					}
-					*(target_bits + x + y * target_bpr) = target_value;				
+					*(target_bits + x + y * target_bpr) = target_value;
 				}
 				fy += diff;
 				if ((y % 10 == 0) && (status_bar != NULL)) {
@@ -310,11 +312,11 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		if (scale_x_bitmap != original)
 			delete scale_x_bitmap;
 	}
-	
+
 	if (scale_y_bitmap != NULL)
 		return scale_y_bitmap;
-	
-	return scale_x_bitmap;	
+
+	return scale_x_bitmap;
 }
 
 
@@ -332,6 +334,8 @@ int32 ScaleCanvasManipulator::PreviewBitmap(bool, BRegion* region)
 	// Here do a DDA-scaling from copy_of_the_preview_bitmap to preview_bitmap.
 	uint32 width = preview_bitmap->Bounds().IntegerWidth();
 	uint32 height = preview_bitmap->Bounds().IntegerHeight();
+	uint32 source_width = copy_of_the_preview_bitmap->Bounds().IntegerWidth();
+	uint32 source_height = copy_of_the_preview_bitmap->Bounds().IntegerHeight();
 
 	if (width == 0 || height == 0)
 		return 0;
@@ -340,30 +344,57 @@ int32 ScaleCanvasManipulator::PreviewBitmap(bool, BRegion* region)
 	uint32 *target_bits = (uint32*)preview_bitmap->Bits();
 	int32 bpr = preview_bitmap->BytesPerRow()/4;
 
-	float width_coeff = 1.0 / settings->width_coefficient;
-	float height_coeff = 1.0 / settings->height_coefficient;
+	float new_width = settings->right - settings->left;
+	float new_height = settings->bottom - settings->top;
+	float old_width = original_right - original_left;
+	float old_height = original_bottom - original_top;
+	float width_coeff = old_width / new_width;
+	float height_coeff = old_height / new_height;
 
-	int32 *source_x_table = new int32[width + 1];
+	int32 preview_width = width;
+	int32 preview_height = height;
+	if (new_width > width)
+		preview_width = new_width;
+	if (new_height > height)
+		preview_height = new_height;
 
-	for (int32 i = 0; i <= width; i++)
+	int32 *source_x_table = new int32[preview_width + 1];
+
+	for (int32 i = 0; i <= preview_width; i++)
 		source_x_table[i] = (int32)floor(i * width_coeff);
 
-	for (int32 y = 0; y <= height; y++) {
+	for (int32 y = 0; y <= height; y++)
+		for (int32 x = 0; x <= width; x++)
+			*(target_bits + x + y * bpr) = white.word;
+
+	for (int32 y = 0; y <= preview_height; y++) {
+		int32 adj_y = y + settings->top;
 		int32 source_y = (int32)floor(y * height_coeff);
 		int32 y_times_bpr = y * bpr;
+		int32 y_adj_times_bpr = adj_y * bpr;
 		int32 source_y_times_bpr = source_y * bpr;
-		for (int32 x = 0; x <= width; x++) {
+		if (adj_y < 0)
+			continue;
+		if (adj_y > height)
+			break;
+		if (source_y > source_height)
+			break;
+		for (int32 x = 0; x <= preview_width; x++) {
+			int32 adj_x = x + settings->left;
+			if (adj_x < 0)
+				continue;
+			if (adj_x > width)
+				break;
 			int32 source_x = source_x_table[x];
-			if (source_x > width || source_y > height)
-				*(target_bits + x + y_times_bpr) = white.word;
-			else
-				*(target_bits + x + y_times_bpr) =
-					*(source_bits + source_x + source_y_times_bpr);
+			if (source_x > source_width)
+				break;
+			*(target_bits + adj_x + y_adj_times_bpr) =
+				*(source_bits + source_x + source_y_times_bpr);
 		}
 	}
 
 	region->Set(preview_bitmap->Bounds());
-	
+
 	delete[] source_x_table;
 	return 1;
 }
@@ -373,36 +404,194 @@ void
 ScaleCanvasManipulator::MouseDown(BPoint point, uint32 buttons, BView* image_view,
 	bool first_click)
 {
-	BPoint normPoint(point);
-	
-	if (normPoint.x > 0.0 && normPoint.y > 0.0) {
-		settings->width_coefficient = normPoint.x / original_width;
-		settings->height_coefficient = normPoint.y / original_height;
+	bool lock_aspect = configuration_view->MaintainProportions();
 
-		if (configuration_view) {
-			if (configuration_view->MaintainProportions()) {
-				settings->width_coefficient = max_c(settings->width_coefficient,
-					settings->height_coefficient);
-				settings->height_coefficient = settings->width_coefficient;
+	previous_left = settings->left;
+	previous_right = settings->right;
+	previous_top = settings->top;
+	previous_bottom = settings->bottom;
+
+	point.x = floor(point.x);
+	point.y = floor(point.y);
+
+	float aspect_ratio = (previous_right - previous_left) /
+		(previous_bottom - previous_top);
+
+	if (first_click == TRUE) {
+		// Here we select which grabbles to move
+		move_left = move_right = move_top = move_bottom = FALSE;
+		if (fabs(point.x - settings->left) < 50)
+			if (fabs(point.x - settings->left) <
+				fabs(point.x - (settings->left +
+				(settings->right - settings->left) / 2)))
+				move_left = TRUE;
+		if (fabs(point.x - settings->right) < 50)
+			if (fabs(point.x - settings->right) <
+				fabs(point.x - (settings->left +
+				(settings->right - settings->left) / 2)))
+				move_right = TRUE;
+		if ((move_left == TRUE) && (move_right == TRUE)) {
+			if (fabs(point.x - settings->left) >
+				fabs(point.x - settings->right))
+				move_left = FALSE;
+			else
+				move_right = FALSE;
+		}
+
+		if (fabs(point.y - settings->top) < 50)
+			if (fabs(point.y - settings->top) <
+				fabs(point.y - (settings->top +
+				(settings->bottom - settings->top) / 2)))
+				move_top = TRUE;
+		if (fabs(point.y - settings->bottom) < 50)
+			if (fabs(point.y - settings->bottom) <
+				fabs(point.y - (settings->top +
+				(settings->bottom - settings->top) / 2)))
+				move_bottom = TRUE;
+		if ((move_top == TRUE) && (move_bottom == TRUE)) {
+			if (fabs(point.y - settings->top) >
+				fabs(point.y - settings->bottom))
+				move_top = FALSE;
+			else
+				move_bottom = FALSE;
+		}
+
+		if (move_left == FALSE && move_top == FALSE &&
+			move_right == FALSE && move_bottom == FALSE)
+			move_all = TRUE;
+		else
+			move_all = FALSE;
+
+		last_x = point.x;
+		last_y = point.y;
+	} else {
+		if (move_all == TRUE) {
+			float width = settings->right - settings->left;
+			float height = settings->bottom - settings->top;
+
+			float delta_x = last_x - point.x;
+			float delta_y = last_y - point.y;
+
+			float new_left, new_top;
+
+			new_left = settings->left - delta_x;
+			new_top = settings->top - delta_y;
+
+			settings->left = new_left;
+			settings->top = new_top;
+			settings->right = new_left + width;
+			settings->bottom = new_top + height;
+
+			last_x = point.x;
+			last_y = point.y;
+		} else {
+			float old_width = settings->right - settings->left;
+			float old_height = settings->bottom - settings->top;
+
+			if (move_left == TRUE)
+				settings->left = min_c(point.x, settings->right);
+			if (move_right == TRUE)
+				settings->right = max_c(settings->left, point.x);
+
+			if (move_top == TRUE)
+				settings->top = min_c(point.y, settings->bottom);
+			if (move_bottom == TRUE)
+				settings->bottom = max_c(settings->top, point.y);
+
+			if (lock_aspect == TRUE || modifiers() & B_LEFT_SHIFT_KEY) {
+				float new_width = settings->right - settings->left;
+				float new_height = settings->bottom - settings->top;
+
+				if (new_height == 0)
+					new_height = 1;
+
+				float new_aspect = new_width / new_height;
+
+				if (move_right == FALSE && move_left == FALSE) {
+					if (new_aspect < aspect_ratio) {
+						if (new_height <= old_height)
+							new_height = new_width / aspect_ratio;
+						else
+							new_width = new_height * aspect_ratio;
+					} else {
+						if (new_width <= old_width)
+							new_width = new_height * aspect_ratio;
+						else
+							new_height = new_width / aspect_ratio;
+					}
+					if (move_top == TRUE)
+						settings->top = settings->bottom - new_height;
+					else
+						settings->bottom = settings->top + new_height;
+					settings->right = settings->left + new_width;
+				} else if (move_top == FALSE && move_bottom == FALSE) {
+					if (new_aspect < aspect_ratio) {
+						if (new_height <= old_height)
+							new_height = new_width / aspect_ratio;
+						else
+							new_width = new_height * aspect_ratio;
+					} else {
+						if (new_width <= old_width)
+							new_width = new_height * aspect_ratio;
+						else
+							new_height = new_width / aspect_ratio;
+					}
+					if (move_left == TRUE)
+						settings->left = settings->right - new_width;
+					else
+						settings->right = settings->left + new_width;
+					settings->bottom = settings->top + new_height;
+				} else if (move_top == TRUE) {
+					if (new_aspect < aspect_ratio) {
+						new_height = new_width / aspect_ratio;
+						settings->top = settings->bottom - new_height;
+					} else {
+						new_width = new_height * aspect_ratio;
+						if (move_left == TRUE)
+							settings->left = settings->right - new_width;
+						else
+							settings->right = settings->left + new_width;
+					}
+				} else if (move_bottom == TRUE) {
+					if (new_aspect < aspect_ratio) {
+						new_height = new_width / aspect_ratio;
+						settings->bottom = settings->top + new_height;
+					} else {
+						new_width = new_height * aspect_ratio;
+						if (move_left == TRUE)
+							settings->left = settings->right - new_width;
+						else
+							settings->right = settings->left + new_width;
+					}
+				}
 			}
-
-			configuration_view->SetValues(settings->width_coefficient
-				* original_width, settings->height_coefficient * original_height);
 		}
+	}
 
-		if (first_click == true) {
-			configuration_view->SetValues(settings->width_coefficient
-				* original_width, settings->height_coefficient * original_height);
-		}
+	if (settings->left >= settings->right)
+		settings->left = settings->right - 1;
+
+	if (settings->top >= settings->bottom)
+		settings->top = settings->bottom - 1;
+
+	if ((previous_left != settings->left) ||
+		(previous_right != settings->right) ||
+		(previous_top != settings->top) ||
+		(previous_bottom != settings->bottom)) {
+		if (configuration_view != NULL)
+			configuration_view->SetValues(settings->left, settings->top, settings->right - settings->left,
+				settings->bottom - settings->top);
 	}
 }
 
 
 void
-ScaleCanvasManipulator::SetValues(float width, float height)
+ScaleCanvasManipulator::SetValues(float left, float top, float right, float bottom)
 {
-	settings->width_coefficient = width / original_width;
-	settings->height_coefficient = height / original_height;
+	settings->left = left;
+	settings->top = top;
+	settings->bottom = bottom;
+	settings->right = right;
 }
 
 
@@ -416,6 +605,12 @@ ScaleCanvasManipulator::Reset()
 		if (source != NULL)
 			memcpy(target, source, preview_bitmap->BitsLength());
 	}
+
+	SetValues(original_left, original_top, original_right, original_bottom);
+	if (configuration_view != NULL)
+		configuration_view->SetValues(original_left, original_top, original_right,
+			original_bottom);
+
 }
 
 
@@ -423,11 +618,16 @@ void
 ScaleCanvasManipulator::SetPreviewBitmap(BBitmap *bitmap)
 {
 	if (bitmap) {
-		original_width = bitmap->Bounds().Width() + 1.0;
-		original_height = bitmap->Bounds().Height() + 1.0;
+		original_left = bitmap->Bounds().left;
+		original_top = bitmap->Bounds().top;
+		original_right = bitmap->Bounds().right;
+		original_bottom = bitmap->Bounds().bottom;
+
+		SetValues(original_left, original_top, original_right, original_bottom);
 
 		if (configuration_view)
-			configuration_view->SetValues(original_width, original_height);
+			configuration_view->SetValues(original_left, original_top,
+				original_right, original_bottom);
 	}
 
 	if (!bitmap || !preview_bitmap
@@ -479,7 +679,8 @@ ScaleCanvasManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	configuration_view = new (std::nothrow) ScaleCanvasManipulatorView(this, target);
 	if (configuration_view)
-		configuration_view->SetValues(original_width, original_height);
+		configuration_view->SetValues(original_left, original_top,
+			original_right, original_bottom);
 	return configuration_view;
 }
 
@@ -487,16 +688,103 @@ ScaleCanvasManipulator::MakeConfigurationView(const BMessenger& target)
 const char*
 ScaleCanvasManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Scale: Drag to resize or use number-fields.");
+	return B_TRANSLATE("Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect");
 }
 
 
 const char*
 ScaleCanvasManipulator::ReturnName()
 {
-	return B_TRANSLATE("Scale" B_UTF8_ELLIPSIS);
+	return B_TRANSLATE("Resize" B_UTF8_ELLIPSIS);
 }
 
+
+BRegion
+ScaleCanvasManipulator::Draw(BView* view, float mag_scale)
+{
+	int32 DRAGGER_SIZE = 10;
+	// Draw all the data that needs to be drawn
+	BRect bounds = BRect(mag_scale * settings->left,
+		mag_scale * settings->top,
+		mag_scale * (settings->right + 1) - 1,
+		mag_scale * (settings->bottom + 1) - 1);
+	bounds.left = floor(bounds.left);
+	bounds.top = floor(bounds.top);
+	bounds.right = ceil(bounds.right);
+	bounds.bottom = ceil(bounds.bottom);
+
+	bool draw_draggers = FALSE;
+	BRect dragger_rect = BRect(0, 0, DRAGGER_SIZE - 1, DRAGGER_SIZE - 1);
+	float f_bottom = bounds.bottom;
+	float f_top = bounds.top;
+	float f_left = bounds.left;
+	float f_right = bounds.right;
+
+	if ((f_bottom - f_top > 3 * DRAGGER_SIZE + 10) &&
+		(f_right - f_left > 3 * DRAGGER_SIZE + 10))
+		draw_draggers = TRUE;
+
+	rgb_color high = view->HighColor();
+	rgb_color low = view->LowColor();
+	view->SetHighColor(255, 255, 255, 255);
+	view->SetLowColor(0, 0, 0, 255);
+	view->StrokeRect(bounds.InsetByCopy(1, 1), B_SOLID_HIGH);
+	view->StrokeRect(bounds, B_SOLID_LOW);
+	if (draw_draggers == TRUE) {
+		float height = f_bottom - f_top;
+		float width = f_right - f_left;
+
+		dragger_rect.OffsetTo(bounds.LeftTop());
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.LeftTop() +
+			BPoint(width / 2 - DRAGGER_SIZE / 2, 0));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.LeftTop() +
+			BPoint(width - DRAGGER_SIZE + 1, 0));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.LeftTop() +
+			BPoint(0, height / 2 - DRAGGER_SIZE / 2));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.RightTop() +
+			BPoint(-DRAGGER_SIZE + 1, height / 2 - DRAGGER_SIZE / 2));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.LeftBottom() +
+			BPoint(0, -DRAGGER_SIZE + 1));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.LeftBottom() +
+			BPoint(width / 2 - DRAGGER_SIZE / 2, -DRAGGER_SIZE + 1));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+
+		dragger_rect.OffsetTo(bounds.LeftBottom() +
+			BPoint(width - DRAGGER_SIZE + 1, -DRAGGER_SIZE + 1));
+		view->FillRect(dragger_rect, B_SOLID_HIGH);
+		view->StrokeRect(dragger_rect, B_SOLID_LOW);
+	}
+	view->SetHighColor(high);
+	view->SetLowColor(low);
+
+	BRegion updated_region;
+
+	bounds.InsetBy(-1, -1);
+	updated_region.Set(bounds);
+	bounds.InsetBy(DRAGGER_SIZE + 2, DRAGGER_SIZE + 2);
+	updated_region.Exclude(bounds);
+
+	return updated_region;
+}
 
 // #pragma mark -- ScaleCanvasManipulatorView
 
@@ -507,9 +795,17 @@ ScaleCanvasManipulatorView::ScaleCanvasManipulatorView(ScaleCanvasManipulator* m
 	, fTarget(target)
 	, fManipulator(manipulator)
 {
+	original_left = -1;
+	original_top = -1;
 	original_width = -1;
 	original_height = -1;
 	maintain_proportions = true;
+
+	left_control = new NumberControl(B_TRANSLATE("Left:"),
+		"", new BMessage(LEFT_CHANGED), 5, true);
+
+	top_control = new NumberControl(B_TRANSLATE("Top:"),
+		"", new BMessage(TOP_CHANGED), 5, true);
 
 	width_control = new NumberControl(B_TRANSLATE("Width:"),
 		"", new BMessage(WIDTH_CHANGED), 5);
@@ -517,22 +813,59 @@ ScaleCanvasManipulatorView::ScaleCanvasManipulatorView(ScaleCanvasManipulator* m
 	height_control = new NumberControl(B_TRANSLATE("Height:"),
 		"", new BMessage(HEIGHT_CHANGED), 5);
 
-	SetLayout(new BGroupLayout(B_HORIZONTAL, 5.0));
-	AddChild(BGridLayoutBuilder(5.0, 5.0)
-		.Add(width_control, 0, 0)
-		.Add(_MakeButton("x2", MULTIPLY_WIDTH, 2.0), 1, 0)
-		.Add(_MakeButton("/2", MULTIPLY_WIDTH, 0.5), 2, 0)
-		.Add(new BButton(B_TRANSLATE("Restore"), new BMessage(RESTORE_WIDTH)), 3, 0)
-		.Add(height_control, 0, 2)
-		.Add(_MakeButton("x2", MULTIPLY_HEIGHT, 2.0), 1, 2)
-		.Add(_MakeButton("/2", MULTIPLY_HEIGHT, 0.5), 2, 2)
-		.Add(new BButton(B_TRANSLATE("Restore"), new BMessage(RESTORE_HEIGHT)), 3, 2)
-	);
+	BFont font;
+	font_height height;
+	font.GetHeight(&height);
+	float buttonHeight = (height.ascent + height.descent + height.leading) * 1.5;
+
+	BButton* restoreWidthButton = new BButton(B_TRANSLATE("Restore"), new BMessage(RESTORE_WIDTH));
+	restoreWidthButton->SetExplicitMinSize(BSize(B_SIZE_UNSET, buttonHeight));
+	restoreWidthButton->SetExplicitMaxSize(BSize(B_SIZE_UNSET, buttonHeight));
+
+	BButton* restoreHeightButton = new BButton(B_TRANSLATE("Restore"), new BMessage(RESTORE_HEIGHT));
+	restoreHeightButton->SetExplicitMinSize(BSize(B_SIZE_UNSET, buttonHeight));
+	restoreHeightButton->SetExplicitMaxSize(BSize(B_SIZE_UNSET, buttonHeight));
+
+	BButton* doubleWidthButton = _MakeButton("x2", MULTIPLY_WIDTH, 2.0);
+	doubleWidthButton->SetExplicitMinSize(BSize(buttonHeight, buttonHeight));
+	doubleWidthButton->SetExplicitMaxSize(BSize(buttonHeight, buttonHeight));
+
+	BButton* halveWidthButton = _MakeButton("/2", MULTIPLY_WIDTH, 0.5);
+	halveWidthButton->SetExplicitMinSize(BSize(buttonHeight, buttonHeight));
+	halveWidthButton->SetExplicitMaxSize(BSize(buttonHeight, buttonHeight));
+
+	BButton* doubleHeightButton = _MakeButton("x2", MULTIPLY_HEIGHT, 2.0);
+	doubleHeightButton->SetExplicitMinSize(BSize(buttonHeight, buttonHeight));
+	doubleHeightButton->SetExplicitMaxSize(BSize(buttonHeight, buttonHeight));
+
+	BButton* halveHeightButton = _MakeButton("/2", MULTIPLY_HEIGHT, 0.5);
+	halveHeightButton->SetExplicitMinSize(BSize(buttonHeight, buttonHeight));
+	halveHeightButton->SetExplicitMaxSize(BSize(buttonHeight, buttonHeight));
 
 	BCheckBox* proportion_box = new BCheckBox(B_TRANSLATE_COMMENT("Lock", "Keep the aspect ratio"),
 		new BMessage(PROPORTION_CHANGED));
 	proportion_box->SetValue(B_CONTROL_ON);
-	AddChild(proportion_box);
+
+	BGridLayout* mainLayout = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
+		.Add(left_control->CreateLabelLayoutItem(), 0, 0)
+		.Add(left_control->CreateTextViewLayoutItem(), 1, 0)
+		.Add(top_control->CreateLabelLayoutItem(), 0, 1)
+		.Add(top_control->CreateTextViewLayoutItem(), 1, 1)
+		.Add(width_control->CreateLabelLayoutItem(), 0, 2)
+		.Add(width_control->CreateTextViewLayoutItem(), 1, 2)
+		.Add(height_control->CreateLabelLayoutItem(), 0, 3)
+		.Add(height_control->CreateTextViewLayoutItem(), 1, 3)
+		.Add(proportion_box, 5, 2, 1, 2)
+		.Add(doubleWidthButton, 2, 2)
+		.Add(halveWidthButton, 3, 2)
+		.Add(restoreWidthButton, 4, 2)
+		.Add(doubleHeightButton, 2, 3)
+		.Add(halveHeightButton, 3, 3)
+		.Add(restoreHeightButton, 4, 3);
+
+	mainLayout->SetMaxColumnWidth(0, font.StringWidth("LABELLABELLABEL"));
+	mainLayout->SetMinColumnWidth(1, font.StringWidth("01234"));
+	//mainLayout->SetMaxColumnWidth(2, buttonWidth);
 }
 
 
@@ -541,7 +874,7 @@ ScaleCanvasManipulatorView::AttachedToWindow()
 {
 	_SetTarget(this);
 
-	width_control->MakeFocus(true);
+	left_control->MakeFocus(true);
 	WindowGUIManipulatorView::AttachedToWindow();
 }
 
@@ -550,32 +883,34 @@ void
 ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case WIDTH_CHANGED: {
-		case HEIGHT_CHANGED:
+		case LEFT_CHANGED:
+		case TOP_CHANGED:
+		case WIDTH_CHANGED:
+		case HEIGHT_CHANGED: {
 //			message->PrintToStream();
-			if (message->what == WIDTH_CHANGED) {
-				current_width = width_control->Value();
-				current_width = max_c(1.0, ceil(current_width));
+			if (message->what == LEFT_CHANGED) {
+				current_left = left_control->Value();
+			} else if (message->what == WIDTH_CHANGED) {
+				current_width = max_c(1.0, ceil(width_control->Value()));
 				// Need to round the height correctly to the nearest pixel
 				if (maintain_proportions) {
 					current_height = max_c(1.0, floor(original_height
 						* (current_width / original_width) + 0.5));
-					height_control->SetValue(int32(current_height));
 				}
-				width_control->SetValue(int32(current_width));
+			} else if (message->what == TOP_CHANGED) {
+				current_top = top_control->Value();
 			} else {
-				current_height = height_control->Value();
-				current_height = max_c(1.0, ceil(current_height));
+				current_height = max_c(1.0, ceil(height_control->Value()));
 				if (maintain_proportions) {
 					current_width = max_c(1.0, floor(original_width
 						* (current_height / original_height) + 0.5));
-					width_control->SetValue(int32(current_width));
 				}
-				height_control->SetValue(int32(current_height));
 			}
 
 			if (fManipulator)
-				fManipulator->SetValues(current_width, current_height);
+				fManipulator->SetValues(current_left, current_top,
+					current_left + current_width, current_top + current_height);
+			SetValues(current_left, current_top, current_width, current_height);
 			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 		}	break;
 
@@ -585,23 +920,25 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 //			message->PrintToStream();
 			if (message->FindFloat("coefficient", &coefficient) == B_OK) {
 				if (message->what == MULTIPLY_WIDTH) {
-					current_width = max_c(1.0, ceil(coefficient * current_width));
+					float current_width = max_c(1.0, ceil(width_control->Value() * coefficient));
 					if (maintain_proportions) {
-						current_height = max_c(1.0, floor(original_height
+						float current_height = max_c(1.0, floor(original_height
 							* (current_width / original_width) + 0.5));
 						height_control->SetValue(int32(current_height));
 					}
 					width_control->SetValue(int32(current_width));
+					Window()->PostMessage(HEIGHT_CHANGED, this);
 					Window()->PostMessage(WIDTH_CHANGED, this);
 				} else {
-					current_height = max_c(1.0, ceil(coefficient * current_height));
+					float current_height = max_c(1.0, ceil(height_control->Value() * coefficient));
 					if (maintain_proportions) {
-						current_width = max_c(1.0, floor(original_width
+						float current_width = max_c(1.0, floor(original_width
 							* (current_height / original_height) + 0.5));
 						width_control->SetValue(int32(current_width));
 					}
 					height_control->SetValue(int32(current_height));
 					Window()->PostMessage(HEIGHT_CHANGED, this);
+					Window()->PostMessage(WIDTH_CHANGED, this);
 				}
 			}
 		}	break;
@@ -610,21 +947,34 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 		case RESTORE_WIDTH:
 //			message->PrintToStream();
 			if (message->what == RESTORE_WIDTH) {
-				width_control->SetValue(int32(original_width));
-				Window()->PostMessage(WIDTH_CHANGED,this);
+				SetValues(original_left, current_top,
+					original_width - original_left, current_height - current_top);
+				if (fManipulator)
+					fManipulator->SetValues(original_left, current_top,
+						original_width - original_left, current_height - current_top);
+				fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			} else if (message->what == RESTORE_HEIGHT) {
-				height_control->SetValue(int32(original_height));
-				Window()->PostMessage(HEIGHT_CHANGED,this);
+				SetValues(current_left, original_top, current_width - current_left,
+					original_height - original_top);
+				if (fManipulator)
+					fManipulator->SetValues(current_left, original_top,
+						current_width - current_left, original_height - original_top);
+				fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			}
 		}	break;
 
 		case PROPORTION_CHANGED: {
 			maintain_proportions = !maintain_proportions;
 			if (maintain_proportions) {
-				current_height = max_c(1.0, floor(original_height
+				//float current_width = current_width;
+				float current_height = max_c(1.0, floor(original_height
 					* (current_width / original_width) + 0.5));
+
 				if (fManipulator) {
-					fManipulator->SetValues(current_width, current_height);
+					fManipulator->SetValues(current_left, current_top,
+						current_width - current_left, current_height - current_top);
+					left_control->SetValue(int32(current_left));
+					top_control->SetValue(int32(current_top));
 					width_control->SetValue(int32(current_width));
 					height_control->SetValue(int32(current_height));
 				}
@@ -640,22 +990,26 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 
 
 void
-ScaleCanvasManipulatorView::SetValues(float width, float height)
+ScaleCanvasManipulatorView::SetValues(float left, float top, float width, float height)
 {
+	current_left = round(left);
+	current_top = round(top);
 	current_width = round(width);
 	current_height = round(height);
 
 	if (original_width <= 0) {
+		original_left = current_left;
+		original_top = current_top;
 		original_width = current_width;
 		original_height = current_height;
 	}
 
 	// TODO: check why we try locking first and on error just access
 	if (LockLooper()) {
-		_SetValues(current_width, current_height);
+		_SetValues(current_left, current_top, current_width, current_height);
 		UnlockLooper();
 	} else {
-		_SetValues(current_width, current_height);
+		_SetValues(current_left, current_top, current_width, current_height);
 	}
 }
 
@@ -674,16 +1028,25 @@ ScaleCanvasManipulatorView::_SetTarget(BView* view)
 
 
 void
-ScaleCanvasManipulatorView::_SetValues(float width, float height)
+ScaleCanvasManipulatorView::_SetValues(float left, float top, float width, float height)
 {
 	// TODO: check why we cast to BControl here
-	BControl *text_control = dynamic_cast<BControl*> (width_control);
+	BControl *text_control = dynamic_cast<BControl*> (left_control);
 	if (text_control)
-		text_control->SetValue(int32(current_width));
+		text_control->SetValue(int32(left));
+
+	text_control = dynamic_cast<BControl*> (top_control);
+	if (text_control != NULL)
+		text_control->SetValue(int32(top));
+
+	text_control = dynamic_cast<BControl*> (width_control);
+	if (text_control)
+		text_control->SetValue(int32(width));
 
 	text_control = dynamic_cast<BControl*> (height_control);
 	if (text_control != NULL)
-		text_control->SetValue(int32(current_height));
+		text_control->SetValue(int32(height));
+
 }
 
 

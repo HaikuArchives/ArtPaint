@@ -244,7 +244,7 @@ CropManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 		settings->left = settings->right - 1;
 
 	if (settings->top >= settings->bottom)
-		settings->top - settings->bottom - 1;
+		settings->top = settings->bottom - 1;
 
 	if ((previous_left != settings->left) ||
 		(previous_right != settings->right) ||
