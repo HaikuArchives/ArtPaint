@@ -360,14 +360,51 @@ ImageView::MessageReceived(BMessage* message)
 				getCoords(&norm_point, &buttons, &point);
 
 				float magScale = getMagScale();
-				float f = magScale / 16.;
-				float scaleFactor = (pow(f, f) - 0.1) /
-					(pow(16., max_c(0.25, 1. - f)) - 0.1);
-				float scaleChange = scaleFactor * delta;
+				float scaleChange = 0;
+				if (magScale == 1.0 && mag_scale_array_index < 0)
+					mag_scale_array_index = 8;
+
+				if (magScale < 1.0 || (magScale == 1.0 && delta < 0)) {
+					if (delta < 0)
+						--mag_scale_array_index;
+					else
+						++mag_scale_array_index;
+
+					if (mag_scale_array_index < 0)
+						mag_scale_array_index = 0;
+					if (mag_scale_array_index > 14)
+						mag_scale_array_index = 14;
+					scaleChange = mag_scale_array[mag_scale_array_index] - magScale;
+				} else {
+					float f = magScale / 15.;
+					float scaleFactor = (pow(f, f) - 0.1) /
+						(pow(16., max_c(0.25, 1. - f)) - 0.1);
+					scaleChange = scaleFactor * delta;
+
+					if (scaleChange > 0) {
+						++mag_scale_array_index;
+						if (magScale + scaleChange < mag_scale_array[mag_scale_array_index])
+							--mag_scale_array_index;
+					} else {
+						--mag_scale_array_index;
+						if (magScale + scaleChange > mag_scale_array[mag_scale_array_index])
+							++mag_scale_array_index;
+					}
+
+					if (mag_scale_array_index < 0)
+						mag_scale_array_index = 0;
+					if (mag_scale_array_index > 14)
+						mag_scale_array_index = 14;
+				}
 
 				magScale += scaleChange;
+				if (magScale > 16.0) {
+					float over = magScale - 16.0;
+					scaleChange -= over;
+					magScale = 16.0;
+				}
 
-				if (magScale < 16.0) {
+				if (magScale <= 16.0) {
 					setMagScale(magScale);
 
 					float delta_x = norm_point.x * scaleChange;
