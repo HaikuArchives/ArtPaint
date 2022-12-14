@@ -419,7 +419,7 @@ Selection::Erode()
 		1	1	1
 
 		All 1s must be contained in the selection for every X, otherwise X is
-		not included in the new selection. The image edges are always eroded 
+		not included in the new selection. The image edges are always eroded
 		because they cannot satisfy this condition.
 	*/
 	selection_bounds = GetBoundingRect();
@@ -437,12 +437,12 @@ Selection::Erode()
 		int32 right = selection_bounds.right;
 		int32 top = selection_bounds.top;
 		int32 bottom = selection_bounds.bottom;
-		
+
 		for (int32 y = top; y <= bottom; ++y) {
 			for (int32 x = left; x <= right; ++x) {
 				if (ContainsPoint(x, y)) {
 					// edge pixels get eroded
-					if (x == 0 || y == 0 || 
+					if (x == 0 || y == 0 ||
 						x == width || y == height) {
 						*(new_bits + y * new_bpr + x) = 0x00;
 					} else {
@@ -456,8 +456,8 @@ Selection::Erode()
 								}
 							}
 						}
-						
-						if (all == false) 
+
+						if (all == false)
 							*(new_bits + y * new_bpr + x) = 0x00;
 					}
 				}
@@ -609,9 +609,6 @@ Selection::ScaleTo(BPoint origin, float x_scale, float y_scale)
 		HSPolygon* p = selection_data->ReturnSelectionAt(i);
 		p->ScaleBy(origin, dx, dy);
 	}
-
-	selection_bounds.right *= dx;
-	selection_bounds.bottom *= dy;
 
 	needs_recalculating = TRUE;
 	release_sem(selection_mutex);

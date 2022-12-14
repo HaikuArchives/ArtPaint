@@ -19,16 +19,19 @@
 #include <Messenger.h>
 
 
-#define	WIDTH_CHANGED		'Wich'
-#define	HEIGHT_CHANGED		'Hech'
+#define SCALE_LEFT_CHANGED			'SLch'
+#define SCALE_TOP_CHANGED			'STch'
+#define	SCALE_WIDTH_CHANGED			'SWch'
+#define	SCALE_HEIGHT_CHANGED		'SHch'
 
-#define MULTIPLY_WIDTH		'mlWi'
-#define MULTIPLY_HEIGHT		'mlHe'
+#define SCALE_MULTIPLY_WIDTH		'SmWi'
+#define SCALE_MULTIPLY_HEIGHT		'SmHe'
 
-#define RESTORE_WIDTH		'Rswd'
-#define RESTORE_HEIGHT		'Rshg'
+#define SCALE_RESTORE_WIDTH			'SRwd'
+#define SCALE_RESTORE_HEIGHT		'SRhg'
 
-#define	PROPORTION_CHANGED	'Prpc'
+#define	SCALE_PROPORTION_CHANGED	'SPpc'
+
 
 class BButton;
 class ScaleManipulatorView;
@@ -46,21 +49,23 @@ class ScaleManipulatorSettings : public ManipulatorSettings {
 public:
 	ScaleManipulatorSettings()
 		: ManipulatorSettings() {
-		width_coefficient = 1.0;
-		height_coefficient = 1.0;
+		left = right = 0;
+		top = bottom = 0;
 	}
 
 	ScaleManipulatorSettings(ScaleManipulatorSettings *s)
 		: ManipulatorSettings() {
-		width_coefficient = s->width_coefficient;
-		height_coefficient = s->height_coefficient;
+		left = s->left;
+		top = s->top;
+		right = s->right;
+		bottom = s->bottom;
 	}
 
-
-	float	height_coefficient;
-	float	width_coefficient;
+	float 	left;
+	float	top;
+	float	right;
+	float	bottom;
 };
-
 
 
 class ScaleManipulator : public WindowGUIManipulator {
@@ -73,14 +78,27 @@ class ScaleManipulator : public WindowGUIManipulator {
 	ScaleManipulatorView		*configuration_view;
 	ScaleManipulatorSettings	*settings;
 
-	float		original_width;
-	float		original_height;
+	float		original_left;
+	float		original_top;
+	float		original_right;
+	float		original_bottom;
+
+	float		previous_left;
+	float		previous_top;
+	float		previous_right;
+	float		previous_bottom;
 
 	Selection*	selection;
 	SelectionData*	orig_selection_data;
-	
+
 	BPoint		previous_point;
 	bool		reject_mouse_input;
+
+	bool		move_left;
+	bool		move_top;
+	bool		move_right;
+	bool		move_bottom;
+	bool		move_all;
 
 public:
 	ScaleManipulator(BBitmap*);
@@ -91,7 +109,10 @@ public:
 	int32		PreviewBitmap(bool, BRegion* =NULL);
 
 	void		MouseDown(BPoint, uint32, BView*, bool);
-	void		SetValues(float, float);
+
+	BRegion		Draw(BView*, float);
+
+	void		SetValues(float, float, float, float);
 
 	BView*		MakeConfigurationView(const BMessenger& target);
 	void		Reset();
@@ -118,23 +139,31 @@ public:
 			bool				MaintainProportions() {
 									return maintain_proportions;
 								}
-			void				SetValues(float width, float height);
+			void				SetValues(float left, float top,
+									float width, float height);
 
 private:
 			void				_SetTarget(BView* view);
-			void				_SetValues(float width, float height);
+			void				_SetValues(float left, float top,
+									float width, float height);
 			BButton*			_MakeButton(const char* label,
 									uint32 what, float coefficient);
 
 private:
 			BMessenger			fTarget;
+			float				original_left;
+			float				original_top;
 			float				original_width;
 			float				original_height;
+			float				current_left;
+			float				current_top;
 			float				current_width;
 			float				current_height;
 			bool				maintain_proportions;
 
 			ScaleManipulator*	fManipulator;
+			NumberControl*		left_control;
+			NumberControl*		top_control;
 			NumberControl*		width_control;
 			NumberControl*		height_control;
 };
