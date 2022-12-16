@@ -841,7 +841,10 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	for (int i = 0; i < fTabView->CountTabs(); i++)
 		width += fTabView->TabFrame(i).Width();
 
-	fTabView->SetExplicitMinSize(BSize(width + 2 * be_plain_font->Size(), B_SIZE_UNSET));
+	width += be_plain_font->StringWidth(B_TRANSLATE("Grid size:"));
+
+	fTabView->SetExplicitMinSize(BSize(width, B_SIZE_UNSET));
+
 }
 
 
