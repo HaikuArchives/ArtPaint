@@ -318,8 +318,11 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 			if (BWindow* window = Window())
 				window->PostMessage(HS_EDIT_DELETE, this);
 		} else if (*bytes == B_ESCAPE) {
-			if (fManipulator != NULL)
-				PostponeMessageAndFinishManipulator();
+			if (acquire_sem_etc(mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
+				if (fManipulator != NULL)
+					PostponeMessageAndFinishManipulator();
+				release_sem(mouse_mutex);
+			}
 		} else if (fManipulator == NULL) {
 			ToolManager::Instance().KeyDown(this, bytes, numBytes);
 		}
