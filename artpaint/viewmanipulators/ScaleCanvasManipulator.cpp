@@ -103,8 +103,8 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 
 	//float new_width = round(starting_width * new_settings->width_coefficient);
 	//float new_height = round(starting_height * new_settings->height_coefficient);
-	float new_width = new_settings->right - new_settings->left;
-	float new_height = new_settings->bottom - new_settings->top;
+	float new_width = round(new_settings->right - new_settings->left);
+	float new_height = round(new_settings->bottom - new_settings->top);
 
 	// Create a new bitmap here and copy it applying scaling.
 	// But first create an intermediate bitmap for scaling in one direction only.
@@ -144,62 +144,23 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 				*(target_bits + x + y * target_bpr) =
 					background.word;
 
-		if (diff < 1) {
-			// Enlarge in x direction.
+		if (diff != 1) {
 			for (int32 y = 0; y < starting_height; y++) {
-				accumulation = 0;
 				uint32* src_bits = source_bits + left + (y + top) * source_bpr;
 
 				for (int32 x = 0; x < target_bpr; x++) {
-					// 'mix_2_pixels' doesn't work -- doesn't take rounding errors into account.
+
+					int32 low = floor(diff * x);
+					int32 high = ceil(diff * x);
+					float weight = diff * x - low;
+
 					*(target_bits + x + y * target_bpr) =
-						src_over_fixed (*(target_bits + x + y * target_bpr),
-							mix_2_pixels_fixed(*(src_bits + (int32)floor(accumulation)),
-									*(src_bits + (int32)ceil(accumulation)),
-									(uint32)(32768 * (ceil(accumulation) - accumulation)))
-						);
-					accumulation += diff;
-
-					if (accumulation > source_bpr - 1)
-						accumulation = source_bpr - 1;
-				}
-
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
+						lerp(*(src_bits + low),
+							*(src_bits + high),
+							weight);
 				}
 			}
-		} else if (diff > 1) {
-			// Make smaller in x direction.
-			for (int32 y = 0; y <= starting_height - 1; y++) {
-				uint32* src_bits = source_bits + (y + top) * source_bpr;
-				float fx = left;
-				for (int32 x = 0; x < target_bpr; x++) {
-					// Here we average the original pixels between accumulation and accumulation+diff.
-					// The pixels at end get a little lower coefficients than the other pixels.
-					// But for now we just settle for averaging the pixels between floor(accumulation)
-					// and floor(accumulation+diff):
-					float coeff = 1.0;
-					int32 x_diff = floor(fx + diff);
-					float coeff_diff = 0;
-					if (x_diff - x != 0)
-						coeff_diff = 1.0 / (float)(x_diff - x);
-					uint32 target_value = 0x00000000;
-					for (int32 i = (int32)floor(fx); i < x_diff; i++) {
-						target_value = mix_2_pixels_fixed(*(src_bits + i),
-							target_value, (uint32)(32768 * coeff));
-						coeff -= coeff_diff;
-					}
-
-					*(target_bits + x + y * target_bpr) = target_value;
-					fx += diff;
-				}
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
-				}
-			}
-		} else {
+	 	} else {
 			for (int32 y = 0; y <= starting_height; y++) {
 				uint32* src_bits = source_bits + y * source_bpr;
 
@@ -247,56 +208,22 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		}
 
 		float diff = (starting_height - 1) / new_height;
-		float accumulation = 0;
-		if (diff < 1) {
-			// Make larger in y direction.
-			float fy = top;
-			for (int32 y = 0; y <= new_height - 1; y++) {
-				int32 y_diff = (int32)floor(fy + diff);
+		if (diff != 1) {
+			for (int32 y = 0; y < new_height; y++) {
+				int32 low = floor(diff * y);
+				int32 high = ceil(diff * y);
+				float weight = diff * y - low;
+				uint32* src_bits_low = source_bits + left + low * source_bpr;
+				uint32* src_bits_high = source_bits + left + high * source_bpr;
+
 				for (int32 x = 0; x < new_width - 1; x++) {
 					*(target_bits + x + y * target_bpr) =
-						mix_2_pixels_fixed(*(source_bits + x + left + (int32)floor(fy) * source_bpr),
-							*(source_bits + x + left + y_diff * source_bpr),
-							(uint32)(32768 * (ceil(accumulation) - accumulation)));
-				}
-				fy += diff;
-				accumulation += diff;
-				if (accumulation > source_bpr - 1)
-					accumulation = source_bpr - 1;
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
+						lerp(*(src_bits_low + x),
+							*(src_bits_high + x),
+							weight);
 				}
 			}
-		} else if (diff > 1) {
-			// Make smaller in y direction.
-			float fy = top;
-			for (int32 y = 0; y <= new_height - 1; y++) {
-				for (int32 x = 0; x < new_width - 1; x++) {
-					// Here we average the original pixels between accumulation and accumulation+diff.
-					// The pixels at end get a little lower coefficients than the other pixels.
-					// But for now we just settle for averaging the pixels between floor(accumulation)
-					// and floor(accumulation+diff):
-					uint32 target_value = 0x00000000;
-					float coeff = 1.0;
-					int32 y_diff = floor(fy + diff);
-					float coeff_diff = 0;
-					if (y_diff - y != 0)
-						coeff_diff = 1.0 / (y_diff - y);
-					for (int32 i = (int32)floor(fy); i < y_diff; i++) {
-						target_value = mix_2_pixels_fixed(*(source_bits + x + left + i * source_bpr),
-							target_value, (uint32)(32768 * coeff));
-						coeff -= coeff_diff;
-					}
-					*(target_bits + x + y * target_bpr) = target_value;
-				}
-				fy += diff;
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
-				}
-			}
-		} else {
+	 	} else {
 			for (int32 y = 0; y <= bottom; y++) {
 				for (int32 x = 0; x < target_bpr; x++) {
 					// Just copy it straight
