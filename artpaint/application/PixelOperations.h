@@ -748,4 +748,18 @@ inline bool compare_2_pixels_with_variance(uint32 p1, uint32 p2, uint32 var)
 			((p1&0xFF) <= ((p2&0xFF)+var) && ((p1&0xFF)+var) >= (p2&0xFF));
 }
 
+
+inline uint32 lerp(uint32 p1, uint32 p2, float t)
+{
+	union color_conversion one, two, result;
+
+	one.word = p1;
+	two.word = p2;
+
+	for (int i = 0; i < 4; ++i)
+		result.bytes[i] = (one.bytes[i] * (1.0 - t)) + (two.bytes[i] * t);
+
+	return result.word;
+}
+
 #endif
