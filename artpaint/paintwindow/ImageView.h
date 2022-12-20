@@ -221,6 +221,7 @@ public:
 		// the first also draws the view and resizes the window
 		void		setMagScale(float scale);
 inline	float		getMagScale() { return magnify_scale; }
+		int32		findClosestMagIndex(float scale);
 
 		void		UpdateImage(BRect bitmap_rect);
 
