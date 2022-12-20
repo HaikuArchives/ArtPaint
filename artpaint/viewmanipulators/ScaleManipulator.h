@@ -12,6 +12,7 @@
 #define SCALE_MANIPULATOR_H
 
 #include "ManipulatorSettings.h"
+#include "ScaleUtilities.h"
 #include "Selection.h"
 #include "WindowGUIManipulator.h"
 
@@ -34,6 +35,7 @@
 
 
 class BButton;
+class BPopUpMenu;
 class ScaleManipulatorView;
 
 
@@ -100,6 +102,8 @@ class ScaleManipulator : public WindowGUIManipulator {
 	bool		move_bottom;
 	bool		move_all;
 
+	interpolation_type	method;
+
 public:
 	ScaleManipulator(BBitmap*);
 	~ScaleManipulator();
@@ -124,6 +128,8 @@ public:
 	ManipulatorSettings*	ReturnSettings();
 	void		SetSelection(Selection* new_selection);
 
+	void		SetInterpolationMethod(interpolation_type newMethod)
+					{ method = newMethod; }
 };
 
 
@@ -160,12 +166,14 @@ private:
 			float				current_width;
 			float				current_height;
 			bool				maintain_proportions;
+			interpolation_type	method;
 
 			ScaleManipulator*	fManipulator;
 			NumberControl*		left_control;
 			NumberControl*		top_control;
 			NumberControl*		width_control;
 			NumberControl*		height_control;
+			BPopUpMenu*			sample_mode_menu;
 };
 
 #endif

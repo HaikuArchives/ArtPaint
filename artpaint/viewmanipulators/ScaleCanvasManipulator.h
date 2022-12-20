@@ -12,6 +12,7 @@
 #define SCALE_CANVAS_MANIPULATOR_H
 
 #include "ManipulatorSettings.h"
+#include "ScaleUtilities.h"
 #include "Selection.h"
 #include "WindowGUIManipulator.h"
 
@@ -33,6 +34,7 @@
 #define	PROPORTION_CHANGED	'Prpc'
 
 class BButton;
+class BPopUpMenu;
 class ScaleCanvasManipulatorView;
 
 
@@ -82,22 +84,24 @@ class ScaleCanvasManipulator : public WindowGUIManipulator {
 	float		original_top;
 	float		original_right;
 	float		original_bottom;
-	
+
 	float		previous_left;
 	float		previous_right;
 	float		previous_top;
 	float 		previous_bottom;
-	
-	float 		last_x, last_y;
+
+	BPoint 		previous_point;
 
 	Selection*	selection;
-	
+
 	bool		move_left;
 	bool		move_right;
 	bool		move_top;
 	bool		move_bottom;
 	bool 		move_all;
-	
+
+	interpolation_type	method;
+
 public:
 	ScaleCanvasManipulator(BBitmap*);
 	~ScaleCanvasManipulator();
@@ -107,9 +111,9 @@ public:
 	int32		PreviewBitmap(bool, BRegion* =NULL);
 
 	void		MouseDown(BPoint, uint32, BView*, bool);
-	
+
 	BRegion		Draw(BView*, float);
-	
+
 	void		SetValues(float, float, float, float);
 
 	BView*		MakeConfigurationView(const BMessenger& target);
@@ -121,6 +125,9 @@ public:
 
 	ManipulatorSettings*	ReturnSettings();
 	void		SetSelection(Selection* new_selection);
+
+	void		SetInterpolationMethod(interpolation_type newMethod)
+					{ method = newMethod; }
 };
 
 
@@ -155,12 +162,14 @@ private:
 			float				current_width;
 			float				current_height;
 			bool				maintain_proportions;
+			interpolation_type	method;
 
 			ScaleCanvasManipulator*	fManipulator;
 			NumberControl*		left_control;
 			NumberControl*		top_control;
 			NumberControl*		width_control;
 			NumberControl*		height_control;
+			BPopUpMenu*			sample_mode_menu;
 };
 
 #endif
