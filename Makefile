@@ -34,7 +34,8 @@ APP_MIME_SIG= 'application/x-vnd.artpaint'
 #	if two source files with the same name (source.c or source.cpp)
 #	are included from different directories.  Also note that spaces
 #	in folder names do not work well with this makefile.
-SRCS= artpaint/Utilities/BitmapUtilities.cpp artpaint/application/FilePanels.cpp artpaint/application/FloaterManager.cpp \
+SRCS= artpaint/Utilities/BitmapUtilities.cpp artpaint/Utilities/ScaleUtilities.cpp \
+artpaint/application/FilePanels.cpp artpaint/application/FloaterManager.cpp \
 artpaint/application/HSPolygon.cpp artpaint/application/IntelligentPathFinder.cpp artpaint/application/MatrixView.cpp \
 artpaint/application/MessageFilters.cpp artpaint/application/PaintApplication.cpp artpaint/application/ProjectFileFunctions.cpp \
 artpaint/application/RandomNumberGenerator.cpp artpaint/application/RefFilters.cpp artpaint/application/ResourceServer.cpp \

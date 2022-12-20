@@ -25,6 +25,7 @@
 #include <GridLayout.h>
 #include <GroupLayout.h>
 #include <LayoutBuilder.h>
+#include <PopUpMenu.h>
 #include <SpaceLayoutItem.h>
 #include <StatusBar.h>
 #include <Window.h>
@@ -33,6 +34,7 @@
 #include <new>
 #include <string.h>
 
+#include <stdio.h>
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "Manipulators"
@@ -56,6 +58,8 @@ ScaleManipulator::ScaleManipulator(BBitmap *bm)
 	reject_mouse_input = false;
 	previous_point.x = 0;
 	previous_point.y = 0;
+
+	method = BILINEAR;
 }
 
 
@@ -170,8 +174,8 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	BBitmap *scale_y_bitmap = NULL;
 
 	if (new_width != starting_width) {
-		float bitmapWidth = new_width - 1;
-		float bitmapHeight = starting_height - 1;
+		float bitmapWidth = new_width;
+		float bitmapHeight = starting_height;
 		scale_x_bitmap = new BBitmap(BRect(0, 0, bitmapWidth, bitmapHeight),
 			B_RGBA32);
 		if (scale_x_bitmap->IsValid() == FALSE)
@@ -185,7 +189,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		float accumulation = 0;
 		int32 left = (int32)bounds.left;
 		int32 top = (int32)bounds.top;
-		int32 right = left + new_width - 1;
+		int32 right = left + new_width;
 		int32 bottom = (int32)bounds.bottom;
 
 		for (int32 y = 0; y < starting_height; y++)
@@ -193,67 +197,15 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 				*(target_bits + x + y * target_bpr) =
 					background.word;
 
-		if (diff < 1) {
-			// Enlarge in x direction.
-			for (int32 y = 0; y < starting_height; y++) {
-				accumulation = 0;
-				uint32* src_bits = source_bits + (int32)original_left +
-					(y + (int32)original_top) * source_bpr;
-
-				for (int32 x = 0; x < target_bpr; x++) {
-					// 'mix_2_pixels' doesn't work -- doesn't take rounding errors into account.
-					*(target_bits + x + y * target_bpr) =
-						src_over_fixed (*(target_bits + x + y * target_bpr),
-							mix_2_pixels_fixed(*(src_bits + (int32)floor(accumulation)),
-									*(src_bits + (int32)ceil(accumulation)),
-									(uint32)(32768 * (ceil(accumulation) - accumulation)))
-						);
-					accumulation += diff;
-
-					if (accumulation > source_bpr - 1)
-						accumulation = source_bpr - 1;
-				}
-
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
-				}
-			}
-		} else if (diff > 1) {
-			// Make smaller in x direction.
-			for (int32 y = 0; y <= starting_height - 1; y++) {
-				uint32* src_bits = source_bits + (y + (int32)original_top) * source_bpr;
-				float fx = original_left;
-				for (int32 x = 0; x < target_bpr; x++) {
-					// Here we average the original pixels between accumulation and accumulation+diff.
-					// The pixels at end get a little lower coefficients than the other pixels.
-					// But for now we just settle for averaging the pixels between floor(accumulation)
-					// and floor(accumulation+diff):
-					float coeff = 1.0;
-					int32 x_diff = floor(fx + diff);
-					float coeff_diff = 0;
-					if (x_diff - x != 0)
-						coeff_diff = 1.0 / (float)(x_diff - x);
-					uint32 target_value = 0x00000000;
-					for (int32 i = (int32)floor(fx); i < x_diff; i++) {
-						target_value = mix_2_pixels_fixed(*(src_bits + i),
-							target_value, (uint32)(32768 * coeff));
-						coeff -= coeff_diff;
-					}
-
-					*(target_bits + x + y * target_bpr) = target_value;
-					fx += diff;
-				}
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
-				}
-			}
-		} else {
+		if (diff != 1) {
+			ScaleUtilities::ScaleHorizontally(target_bpr, starting_height,
+						BPoint(original_left, original_top),
+						original, scale_x_bitmap, diff, method);
+	 	} else {
 			for (int32 y = 0; y <= starting_height; y++) {
 				uint32* src_bits = source_bits + y * source_bpr;
 
-				for (int32 x = 0; x < target_bpr; x++) {
+				for (int32 x = 0; x <= target_bpr; x++) {
 					// Just copy it straight
 					*(target_bits + x + y * target_bpr) = *(src_bits + x);
 				}
@@ -268,8 +220,8 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	}
 
 	if (new_height != starting_height) {
-		float bitmapWidth = new_width - 1;
-		float bitmapHeight = new_height - 1;
+		float bitmapWidth = new_width;
+		float bitmapHeight = new_height;
 
 		scale_y_bitmap = new BBitmap(BRect(0, 0 , bitmapWidth,
 			bitmapHeight), B_RGBA32);
@@ -297,58 +249,12 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		}
 
 		float diff = (starting_height - 1) / new_height;
-		float accumulation = 0;
-		if (diff < 1) {
-			// Make larger in y direction.
-			float fy = top;
-			for (int32 y = 0; y <= new_height - 1; y++) {
-				int32 y_diff = (int32)floor(fy + diff);
-				for (int32 x = 0; x < new_width; x++) {
-					*(target_bits + x + y * target_bpr) =
-						mix_2_pixels_fixed(*(source_bits + x + left + (int32)floor(fy) * source_bpr),
-							*(source_bits + x + left + y_diff * source_bpr),
-							(uint32)(32768 * (ceil(accumulation) - accumulation)));
-				}
-				fy += diff;
-				accumulation += diff;
-				if (accumulation > source_bpr - 1)
-					accumulation = source_bpr - 1;
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
-				}
-			}
-		} else if (diff > 1) {
-			// Make smaller in y direction.
-			float fy = top;
-			for (int32 y = 0; y <= new_height - 1; y++) {
-				for (int32 x = 0; x < new_width; x++) {
-					// Here we average the original pixels between accumulation and accumulation+diff.
-					// The pixels at end get a little lower coefficients than the other pixels.
-					// But for now we just settle for averaging the pixels between floor(accumulation)
-					// and floor(accumulation+diff):
-					uint32 target_value = 0x00000000;
-					float coeff = 1.0;
-					int32 y_diff = floor(fy + diff);
-					float coeff_diff = 0;
-					if (y_diff - y != 0)
-						coeff_diff = 1.0 / (y_diff - y);
-					for (int32 i = (int32)floor(fy); i < y_diff; i++) {
-						target_value = mix_2_pixels_fixed(*(source_bits + x + left + i * source_bpr),
-							target_value, (uint32)(32768 * coeff));
-						coeff -= coeff_diff;
-					}
-					*(target_bits + x + y * target_bpr) = target_value;
-				}
-				fy += diff;
-				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta",(100.0)/bottom*10.0/2);
-					status_bar->Window()->PostMessage(&progress_message,status_bar);
-				}
-			}
-		} else {
-			for (int32 y = 0; y <= bottom; y++) {
-				for (int32 x = 0; x < target_bpr; x++) {
+		if (diff != 1) {
+			ScaleUtilities::ScaleVertically(new_width, new_height, BPoint(left, top),
+				scale_x_bitmap, scale_y_bitmap, diff, method);
+	 	} else {
+			for (int32 y = 0; y < bottom; y++) {
+				for (int32 x = 0; x <= target_bpr; x++) {
 					// Just copy it straight
 					*target_bits++ = *source_bits++;
 				}
@@ -419,7 +325,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			int32 src_y = y - final_bounds.top;
 			if (src_y >= source_bounds.bottom)
 				break;
-			for (int32 x = final_bounds.left; x < final_bounds.right; x++) {
+			for (int32 x = final_bounds.left; x <= final_bounds.right; x++) {
 				if (selection == NULL || selection->IsEmpty() == TRUE ||
 					selection->ContainsPoint(x, y)) {
 					int32 src_x = x - final_bounds.left;
@@ -651,162 +557,11 @@ ScaleManipulator::MouseDown(BPoint point, uint32 buttons, BView* image_view,
 	float aspect_ratio = (previous_right - previous_left) /
 		(previous_bottom - previous_top);
 
-	if (first_click == TRUE) {
-		// Here we select which grabbles to move
-		move_left = move_right = move_top = move_bottom = FALSE;
-		if (fabs(point.x - settings->left) < 50)
-			if (fabs(point.x - settings->left) <
-				fabs(point.x - (settings->left +
-				(settings->right - settings->left) / 2)))
-				move_left = TRUE;
-		if (fabs(point.x - settings->right) < 50)
-			if (fabs(point.x - settings->right) <
-				fabs(point.x - (settings->left +
-				(settings->right - settings->left) / 2)))
-				move_right = TRUE;
-		if ((move_left == TRUE) && (move_right == TRUE)) {
-			if (fabs(point.x - settings->left) >
-				fabs(point.x - settings->right))
-				move_left = FALSE;
-			else
-				move_right = FALSE;
-		}
-
-		if (fabs(point.y - settings->top) < 50)
-			if (fabs(point.y - settings->top) <
-				fabs(point.y - (settings->top +
-				(settings->bottom - settings->top) / 2)))
-				move_top = TRUE;
-		if (fabs(point.y - settings->bottom) < 50)
-			if (fabs(point.y - settings->bottom) <
-				fabs(point.y - (settings->top +
-				(settings->bottom - settings->top) / 2)))
-				move_bottom = TRUE;
-		if ((move_top == TRUE) && (move_bottom == TRUE)) {
-			if (fabs(point.y - settings->top) >
-				fabs(point.y - settings->bottom))
-				move_top = FALSE;
-			else
-				move_bottom = FALSE;
-		}
-
-		if (move_left == FALSE && move_top == FALSE &&
-			move_right == FALSE && move_bottom == FALSE)
-			move_all = TRUE;
-		else
-			move_all = FALSE;
-
-		previous_point.x = point.x;
-		previous_point.y = point.y;
-	} else {
-		if (move_all == TRUE) {
-			float width = settings->right - settings->left;
-			float height = settings->bottom - settings->top;
-
-			float delta_x = previous_point.x - point.x;
-			float delta_y = previous_point.y - point.y;
-
-			float new_left, new_top;
-
-			new_left = settings->left - delta_x;
-			new_top = settings->top - delta_y;
-
-			settings->left = new_left;
-			settings->top = new_top;
-			settings->right = new_left + width;
-			settings->bottom = new_top + height;
-
-			previous_point.x = point.x;
-			previous_point.y = point.y;
-		} else {
-			float old_width = settings->right - settings->left;
-			float old_height = settings->bottom - settings->top;
-
-			if (move_left == TRUE)
-				settings->left = min_c(point.x, settings->right);
-			if (move_right == TRUE)
-				settings->right = max_c(settings->left, point.x);
-
-			if (move_top == TRUE)
-				settings->top = min_c(point.y, settings->bottom);
-			if (move_bottom == TRUE)
-				settings->bottom = max_c(settings->top, point.y);
-
-			if (lock_aspect == TRUE || modifiers() & B_LEFT_SHIFT_KEY) {
-				float new_width = settings->right - settings->left;
-				float new_height = settings->bottom - settings->top;
-
-				if (new_height == 0)
-					new_height = 1;
-
-				float new_aspect = new_width / new_height;
-
-				if (move_right == FALSE && move_left == FALSE) {
-					if (new_aspect < aspect_ratio) {
-						if (new_height <= old_height)
-							new_height = new_width / aspect_ratio;
-						else
-							new_width = new_height * aspect_ratio;
-					} else {
-						if (new_width <= old_width)
-							new_width = new_height * aspect_ratio;
-						else
-							new_height = new_width / aspect_ratio;
-					}
-					if (move_top == TRUE)
-						settings->top = settings->bottom - new_height;
-					else
-						settings->bottom = settings->top + new_height;
-					settings->right = settings->left + new_width;
-				} else if (move_top == FALSE && move_bottom == FALSE) {
-					if (new_aspect < aspect_ratio) {
-						if (new_height <= old_height)
-							new_height = new_width / aspect_ratio;
-						else
-							new_width = new_height * aspect_ratio;
-					} else {
-						if (new_width <= old_width)
-							new_width = new_height * aspect_ratio;
-						else
-							new_height = new_width / aspect_ratio;
-					}
-					if (move_left == TRUE)
-						settings->left = settings->right - new_width;
-					else
-						settings->right = settings->left + new_width;
-					settings->bottom = settings->top + new_height;
-				} else if (move_top == TRUE) {
-					if (new_aspect < aspect_ratio) {
-						new_height = new_width / aspect_ratio;
-						settings->top = settings->bottom - new_height;
-					} else {
-						new_width = new_height * aspect_ratio;
-						if (move_left == TRUE)
-							settings->left = settings->right - new_width;
-						else
-							settings->right = settings->left + new_width;
-					}
-				} else if (move_bottom == TRUE) {
-					if (new_aspect < aspect_ratio) {
-						new_height = new_width / aspect_ratio;
-						settings->bottom = settings->top + new_height;
-					} else {
-						new_width = new_height * aspect_ratio;
-						if (move_left == TRUE)
-							settings->left = settings->right - new_width;
-						else
-							settings->right = settings->left + new_width;
-					}
-				}
-			}
-		}
-	}
-
-	if (settings->left >= settings->right)
-		settings->left = settings->right - 1;
-
-	if (settings->top >= settings->bottom)
-		settings->top = settings->bottom - 1;
+	ScaleUtilities::MoveGrabbers(point, previous_point,
+		settings->left, settings->top,
+		settings->right, settings->bottom, aspect_ratio,
+		move_left, move_top, move_right, move_bottom, move_all,
+		first_click, lock_aspect);
 
 	if ((previous_left != settings->left) ||
 		(previous_right != settings->right) ||
@@ -1108,6 +863,37 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 		"Keep the aspect ratio"), new BMessage(SCALE_PROPORTION_CHANGED));
 	proportion_box->SetValue(B_CONTROL_ON);
 
+	sample_mode_menu = new BPopUpMenu("blend_mode");
+
+	BMessage* sample_msg = new BMessage(SCALE_METHOD_CHANGED);
+	sample_msg->AddUInt8("sample_mode", NEAREST_NEIGHBOR);
+	sample_mode_menu->AddItem(new BMenuItem(interpolation_type_to_string(NEAREST_NEIGHBOR), sample_msg));
+
+	sample_msg = new BMessage(SCALE_METHOD_CHANGED);
+	sample_msg->AddUInt8("sample_mode", BILINEAR);
+	sample_mode_menu->AddItem(new BMenuItem(interpolation_type_to_string(BILINEAR), sample_msg));
+
+	sample_msg = new BMessage(SCALE_METHOD_CHANGED);
+	sample_msg->AddUInt8("sample_mode", BICUBIC);
+	sample_mode_menu->AddItem(new BMenuItem(interpolation_type_to_string(BICUBIC), sample_msg));
+
+	sample_msg = new BMessage(SCALE_METHOD_CHANGED);
+	sample_msg->AddUInt8("sample_mode", BICUBIC_BSPLINE);
+	sample_mode_menu->AddItem(new BMenuItem(interpolation_type_to_string(BICUBIC_BSPLINE), sample_msg));
+
+	sample_msg = new BMessage(SCALE_METHOD_CHANGED);
+	sample_msg->AddUInt8("sample_mode", BICUBIC_CATMULL_ROM);
+	sample_mode_menu->AddItem(new BMenuItem(interpolation_type_to_string(BICUBIC_CATMULL_ROM), sample_msg));
+
+	sample_msg = new BMessage(SCALE_METHOD_CHANGED);
+	sample_msg->AddUInt8("sample_mode", MITCHELL);
+	sample_mode_menu->AddItem(new BMenuItem(interpolation_type_to_string(MITCHELL), sample_msg));
+
+	sample_mode_menu->ItemAt(1)->SetMarked(TRUE);
+
+	BMenuField* sample_dropdown = new BMenuField("sample_dropdown",
+		B_TRANSLATE("Filter:"), sample_mode_menu);
+
 	BGridLayout* mainLayout = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
 		.Add(left_control->CreateLabelLayoutItem(), 0, 0)
 		.Add(left_control->CreateTextViewLayoutItem(), 1, 0)
@@ -1123,7 +909,9 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 		.Add(restoreWidthButton, 4, 2)
 		.Add(doubleHeightButton, 2, 3)
 		.Add(halveHeightButton, 3, 3)
-		.Add(restoreHeightButton, 4, 3);
+		.Add(restoreHeightButton, 4, 3)
+		.Add(sample_dropdown->CreateLabelLayoutItem(), 0, 4)
+		.Add(sample_dropdown->CreateMenuBarLayoutItem(), 1, 4, 4);
 
 	mainLayout->SetMaxColumnWidth(0, font.StringWidth("LABELLABELLABEL"));
 	mainLayout->SetMinColumnWidth(1, font.StringWidth("01234"));
@@ -1134,6 +922,7 @@ void
 ScaleManipulatorView::AttachedToWindow()
 {
 	_SetTarget(this);
+	sample_mode_menu->SetTargetForItems(this);
 
 	left_control->MakeFocus(true);
 	WindowGUIManipulatorView::AttachedToWindow();
@@ -1240,6 +1029,15 @@ ScaleManipulatorView::MessageReceived(BMessage* message)
 				}
 			}
 			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+		}	break;
+
+		case SCALE_METHOD_CHANGED: {
+			uint8 new_method;
+			if (message->FindUInt8("sample_mode", &new_method) == B_OK) {
+				method = (interpolation_type)new_method;
+				if (fManipulator)
+					fManipulator->SetInterpolationMethod(method);
+			}
 		}	break;
 
 		default: {

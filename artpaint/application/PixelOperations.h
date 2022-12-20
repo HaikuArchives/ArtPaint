@@ -749,7 +749,16 @@ inline bool compare_2_pixels_with_variance(uint32 p1, uint32 p2, uint32 var)
 }
 
 
-inline uint32 lerp(uint32 p1, uint32 p2, float t)
+inline uint32 nearest_neighbor(uint32 p1, uint32 p2, float t)
+{
+	if (t < 0.5)
+		return p1;
+
+	return p2;
+}
+
+
+inline uint32 linear_interpolation(uint32 p1, uint32 p2, float t)
 {
 	union color_conversion one, two, result;
 
@@ -758,6 +767,43 @@ inline uint32 lerp(uint32 p1, uint32 p2, float t)
 
 	for (int i = 0; i < 4; ++i)
 		result.bytes[i] = (one.bytes[i] * (1.0 - t)) + (two.bytes[i] * t);
+
+	return result.word;
+}
+
+
+inline uint32 mitchell_netravali(uint32 p0, uint32 p1, uint32 p2, uint32 p3,
+	float t, float B, float C)
+{
+	union color_conversion zero, one, two, three, result;
+
+	zero.word = p0;
+	one.word = p1;
+	two.word = p2;
+	three.word = p3;
+	float one6th = 1. / 6.;
+	float t2 = t * t;
+	float t3 = t * t * t;
+
+	for (int i = 0; i < 4; ++i) {
+		result.bytes[i] = (uint32)min_c(max_c(
+			(
+			(-one6th * B - C) * zero.bytes[i] + (-1.5 * B - C + 2.) * one.bytes[i] +
+			(1.5 * B + C - 2.) * two.bytes[i] + (one6th * B + C) * three.bytes[i]
+			) * t3 +
+			(
+			(0.5 * B + 2. * C) * zero.bytes[i] + (2. * B + C - 3.) * one.bytes[i] +
+			(-2.5 * B - 2. * C + 3.) * two.bytes[i] - C * three.bytes[i]
+			) * t2 +
+			(
+			(-0.5 * B - C) * zero.bytes[i] + (0.5 * B + C) * two.bytes[i]
+			) * t +
+			(
+			one6th * B * zero.bytes[i] + (-B / 3. + 1.) * one.bytes[i] + one6th * B * two.bytes[i]
+			),
+			0.0),
+			255);
+	}
 
 	return result.word;
 }
