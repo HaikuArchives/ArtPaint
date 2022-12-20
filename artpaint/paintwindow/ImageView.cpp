@@ -363,9 +363,10 @@ ImageView::MessageReceived(BMessage* message)
 				getCoords(&norm_point, &buttons, &point);
 
 				float magScale = getMagScale();
+				if (mag_scale_array_index < 0)
+					mag_scale_array_index = findClosestMagIndex(magScale);
+
 				float scaleChange = 0;
-				if (magScale == 1.0 && mag_scale_array_index < 0)
-					mag_scale_array_index = 8;
 
 				if (magScale < 1.0 || (magScale == 1.0 && delta < 0)) {
 					if (delta < 0)
@@ -1268,6 +1269,29 @@ ImageView::setMagScale(float scale)
 	}
 
 	((PaintWindow*)Window())->displayMag(magnify_scale);
+}
+
+
+int32
+ImageView::findClosestMagIndex(float scale)
+{
+	int32 index = 0;
+
+	for (int i = 1; i <= mag_scale_array_length; ++i) {
+		if (mag_scale_array[i] > scale) {
+			float prev_scale = mag_scale_array[i - 1];
+
+			float diff1 = scale - prev_scale;
+			float diff2 = mag_scale_array[i] - scale;
+
+			if (diff2 > diff1)
+				return i;
+			else
+				return i - 1;
+		}
+	}
+
+	return -1;
 }
 
 
