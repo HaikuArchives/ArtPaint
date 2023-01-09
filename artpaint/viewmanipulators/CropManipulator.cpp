@@ -140,7 +140,7 @@ CropManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 		if (move_all == TRUE) {
 			float width = settings->right - settings->left;
 			float height = settings->bottom - settings->top;
-			
+
 			float delta_x = last_x - point.x;
 			float delta_y = last_y - point.y;
 
@@ -359,14 +359,14 @@ CropManipulator::ManipulateBitmap(ManipulatorSettings* set,
 	float top = new_settings->top;
 	float bottom = new_settings->bottom;
 
-	float width = right - left;
-	float height = bottom - top;
+	float width = right - left - 1;
+	float height = bottom - top - 1;
 
 	if (width == original->Bounds().Width() &&
 		height == original->Bounds().Height() &&
 		top == original->Bounds().top &&
 		left == original->Bounds().left)
-		return NULL;
+		return original;
 
 	// Create a new bitmap here and copy the appropriate part from original.
 	// Return the new bitmap.
