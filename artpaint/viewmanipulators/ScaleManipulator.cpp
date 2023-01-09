@@ -156,8 +156,8 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		starting_height = orig_bounds.Height() + 1;
 	}
 
-	float new_width = new_settings->right - new_settings->left;
-	float new_height = new_settings->bottom - new_settings->top;
+	float new_width = new_settings->right - new_settings->left + 1;
+	float new_height = new_settings->bottom - new_settings->top + 1;
 
 	// Create a new bitmap here and copy it applying scaling.
 	// But first create an intermediate bitmap for scaling in one direction only.

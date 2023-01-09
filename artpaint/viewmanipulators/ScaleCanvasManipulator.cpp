@@ -106,8 +106,8 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 
 	//float new_width = round(starting_width * new_settings->width_coefficient);
 	//float new_height = round(starting_height * new_settings->height_coefficient);
-	float new_width = round(new_settings->right - new_settings->left);
-	float new_height = round(new_settings->bottom - new_settings->top);
+	float new_width = round(new_settings->right - new_settings->left) + 1;
+	float new_height = round(new_settings->bottom - new_settings->top) + 1;
 
 	// Create a new bitmap here and copy it applying scaling.
 	// But first create an intermediate bitmap for scaling in one direction only.
@@ -124,8 +124,8 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	BBitmap *scale_y_bitmap = NULL;
 
 	if (new_width != starting_width) {
-		float bitmapWidth = new_width - 1;
-		float bitmapHeight = starting_height - 1;
+		float bitmapWidth = new_width;
+		float bitmapHeight = starting_height;
 		scale_x_bitmap = new BBitmap(BRect(0, 0, bitmapWidth, bitmapHeight),
 			B_RGBA32);
 		if (scale_x_bitmap->IsValid() == FALSE)
@@ -169,8 +169,8 @@ BBitmap* ScaleCanvasManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	}
 
 	if (new_height != starting_height) {
-		float bitmapWidth = new_width - 1;
-		float bitmapHeight = new_height - 1;
+		float bitmapWidth = new_width;
+		float bitmapHeight = new_height;
 
 		scale_y_bitmap = new BBitmap(BRect(0, 0 , bitmapWidth,
 			bitmapHeight), B_RGBA32);
