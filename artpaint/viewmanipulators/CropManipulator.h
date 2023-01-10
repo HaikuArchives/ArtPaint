@@ -54,7 +54,7 @@ class CropManipulator : public WindowGUIManipulator {
 		float		previous_top;
 		float		previous_bottom;
 
-		float 		last_x, last_y;
+		BPoint		previous_point;
 
 		CropManipulatorSettings* 	settings;
 		CropManipulatorView*		config_view;
