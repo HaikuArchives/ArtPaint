@@ -15,6 +15,7 @@
 #include "MessageConstants.h"
 #include "NumberControl.h"
 #include "PixelOperations.h"
+#include "ScaleUtilities.h"
 #include "Selection.h"
 
 
@@ -51,6 +52,9 @@ CropManipulator::CropManipulator(BBitmap* bm)
 	max_x = 0;
 	min_y = 0;
 	max_y = 0;
+
+	previous_point.x = 0;
+	previous_point.y = 0;
 
 	if (bm != NULL) {
 		BRect rect = bm->Bounds();
@@ -89,162 +93,11 @@ CropManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 	float aspect_ratio = (previous_right - previous_left) /
 		(previous_bottom - previous_top);
 
-	if (first == TRUE) {
-		// Here we select which grabbles to move
-		move_left = move_right = move_top = move_bottom = FALSE;
-		if (fabs(point.x - settings->left) < 50)
-			if (fabs(point.x - settings->left) <
-				fabs(point.x - (settings->left +
-				(settings->right - settings->left) / 2)))
-				move_left = TRUE;
-		if (fabs(point.x - settings->right) < 50)
-			if (fabs(point.x - settings->right) <
-				fabs(point.x - (settings->left +
-				(settings->right - settings->left) / 2)))
-				move_right = TRUE;
-		if ((move_left == TRUE) && (move_right == TRUE)) {
-			if (fabs(point.x - settings->left) >
-				fabs(point.x - settings->right))
-				move_left = FALSE;
-			else
-				move_right = FALSE;
-		}
-
-		if (fabs(point.y - settings->top) < 50)
-			if (fabs(point.y - settings->top) <
-				fabs(point.y - (settings->top +
-				(settings->bottom - settings->top) / 2)))
-				move_top = TRUE;
-		if (fabs(point.y - settings->bottom) < 50)
-			if (fabs(point.y - settings->bottom) <
-				fabs(point.y - (settings->top +
-				(settings->bottom - settings->top) / 2)))
-				move_bottom = TRUE;
-		if ((move_top == TRUE) && (move_bottom == TRUE)) {
-			if (fabs(point.y - settings->top) >
-				fabs(point.y - settings->bottom))
-				move_top = FALSE;
-			else
-				move_bottom = FALSE;
-		}
-
-		if (move_left == FALSE && move_top == FALSE &&
-			move_right == FALSE && move_bottom == FALSE)
-			move_all = TRUE;
-		else
-			move_all = FALSE;
-
-		last_x = point.x;
-		last_y = point.y;
-	} else {
-		if (move_all == TRUE) {
-			float width = settings->right - settings->left;
-			float height = settings->bottom - settings->top;
-
-			float delta_x = last_x - point.x;
-			float delta_y = last_y - point.y;
-
-			float new_left, new_top;
-
-			new_left = settings->left - delta_x;
-			new_top = settings->top - delta_y;
-
-			settings->left = new_left;
-			settings->top = new_top;
-			settings->right = new_left + width;
-			settings->bottom = new_top + height;
-
-			last_x = point.x;
-			last_y = point.y;
-		} else {
-			float old_width = settings->right - settings->left;
-			float old_height = settings->bottom - settings->top;
-
-			if (move_left == TRUE)
-				settings->left = min_c(point.x, settings->right);
-			if (move_right == TRUE)
-				settings->right = max_c(settings->left, point.x);
-
-			if (move_top == TRUE)
-				settings->top = min_c(point.y, settings->bottom);
-			if (move_bottom == TRUE)
-				settings->bottom = max_c(settings->top, point.y);
-
-			if (lock_aspect == TRUE || modifiers() & B_LEFT_SHIFT_KEY) {
-				float new_width = settings->right - settings->left;
-				float new_height = settings->bottom - settings->top;
-
-				if (new_height == 0)
-					new_height = 1;
-
-				float new_aspect = new_width / new_height;
-
-				if (move_right == FALSE && move_left == FALSE) {
-					if (new_aspect < aspect_ratio) {
-						if (new_height <= old_height)
-							new_height = new_width / aspect_ratio;
-						else
-							new_width = new_height * aspect_ratio;
-					} else {
-						if (new_width <= old_width)
-							new_width = new_height * aspect_ratio;
-						else
-							new_height = new_width / aspect_ratio;
-					}
-					if (move_top == TRUE)
-						settings->top = settings->bottom - new_height;
-					else
-						settings->bottom = settings->top + new_height;
-					settings->right = settings->left + new_width;
-				} else if (move_top == FALSE && move_bottom == FALSE) {
-					if (new_aspect < aspect_ratio) {
-						if (new_height <= old_height)
-							new_height = new_width / aspect_ratio;
-						else
-							new_width = new_height * aspect_ratio;
-					} else {
-						if (new_width <= old_width)
-							new_width = new_height * aspect_ratio;
-						else
-							new_height = new_width / aspect_ratio;
-					}
-					if (move_left == TRUE)
-						settings->left = settings->right - new_width;
-					else
-						settings->right = settings->left + new_width;
-					settings->bottom = settings->top + new_height;
-				} else if (move_top == TRUE) {
-					if (new_aspect < aspect_ratio) {
-						new_height = new_width / aspect_ratio;
-						settings->top = settings->bottom - new_height;
-					} else {
-						new_width = new_height * aspect_ratio;
-						if (move_left == TRUE)
-							settings->left = settings->right - new_width;
-						else
-							settings->right = settings->left + new_width;
-					}
-				} else if (move_bottom == TRUE) {
-					if (new_aspect < aspect_ratio) {
-						new_height = new_width / aspect_ratio;
-						settings->bottom = settings->top + new_height;
-					} else {
-						new_width = new_height * aspect_ratio;
-						if (move_left == TRUE)
-							settings->left = settings->right - new_width;
-						else
-							settings->right = settings->left + new_width;
-					}
-				}
-			}
-		}
-	}
-
-	if (settings->left >= settings->right)
-		settings->left = settings->right - 1;
-
-	if (settings->top >= settings->bottom)
-		settings->top = settings->bottom - 1;
+	ScaleUtilities::MoveGrabbers(point, previous_point,
+		settings->left, settings->top,
+		settings->right, settings->bottom, aspect_ratio,
+		move_left, move_top, move_right, move_bottom, move_all,
+		first, lock_aspect);
 
 	if ((previous_left != settings->left) ||
 		(previous_right != settings->right) ||
