@@ -724,14 +724,37 @@ inline uint32 src_out_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		return 0;
 
-	// r-rgb * r-a = s-rgb * s-a * (1 - d-a)
+	// r-rgb * r-a = s-rgb * (1 - d-a)
 
-	result_rgba.bytes[0] = (src_rgba.bytes[0] * src_alpha * inv_dst_alpha) /
-		result_alpha;
-	result_rgba.bytes[1] = (src_rgba.bytes[1] * src_alpha * inv_dst_alpha) /
-		result_alpha;
-	result_rgba.bytes[2] = (src_rgba.bytes[2] * src_alpha * inv_dst_alpha) /
-		result_alpha;
+	result_rgba.bytes[0] = src_rgba.bytes[0];
+	result_rgba.bytes[1] = src_rgba.bytes[1];
+	result_rgba.bytes[2] = src_rgba.bytes[2];
+	result_rgba.bytes[3] = result_alpha;
+
+	return result_rgba.word;
+}
+
+
+inline uint32 dst_out_fixed(uint32 dst, uint32 src)
+{
+	union color_conversion src_rgba, dst_rgba, result_rgba;
+
+	src_rgba.word = src;
+	dst_rgba.word = dst;
+
+	uint8 src_alpha = src_rgba.bytes[3];
+	uint8 dst_alpha = dst_rgba.bytes[3];
+
+	uint32 inv_src_alpha = 255 - src_alpha;
+	uint32 result_alpha = (inv_src_alpha * dst_alpha) / 255;
+	if (result_alpha == 0)
+		return 0;
+
+	// r-rgb * r-a = s-rgb * (1 - d-a)
+
+	result_rgba.bytes[0] = dst_rgba.bytes[0];
+	result_rgba.bytes[1] = dst_rgba.bytes[1];
+	result_rgba.bytes[2] = dst_rgba.bytes[2];
 	result_rgba.bytes[3] = result_alpha;
 
 	return result_rgba.word;

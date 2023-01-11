@@ -61,7 +61,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	// here we first get the necessary data from view
 	// and then start drawing while mousebutton is held down
 
-	uint32 (*composite_func)(uint32, uint32) = src_out_fixed;
+	uint32 (*composite_func)(uint32, uint32) = dst_out_fixed;
 
 	// Wait for the last_updated_region to become empty
 	while (LastUpdatedRect().IsValid())
@@ -87,7 +87,7 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	background.bytes[0] = 0xFF;
 	background.bytes[1] = 0xFF;
 	background.bytes[2] = 0xFF;
-	background.bytes[3] = 0x00;
+	background.bytes[3] = 0xFF;
 
 
 	if (fToolSettings.mode == HS_ERASE_TO_BACKGROUND_MODE) {
