@@ -597,6 +597,22 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 		}
 	} break;
 
+	case B_MIME_DATA: {
+		if (message->WasDropped()) {
+			const char* colorr;
+			ssize_t color_size;
+			if (message->FindData("text/plain", B_MIME_TYPE,
+				(const void**)&colorr, &color_size) == B_OK) {
+				char colorStr[color_size+1];
+				for (int i = 0; i < color_size; ++i)
+					colorStr[i] = colorr[i];
+				colorStr[color_size] = '\0';
+				hexColorField->SetText(colorStr);
+				PostMessage(HEX_COLOR_EDITED);
+			}
+		}
+	}	break;
+
 	case HEX_COLOR_EDITED: {
 		BString hexColor = hexColorField->Text();
 		hexColor.ReplaceAll("#", "");
@@ -1242,7 +1258,13 @@ ColorContainer::MouseDown(BPoint point)
 			dragger_view->Sync();
 			dragged_map->Unlock();
 			BMessage dragger_message(B_PASTE);
-			dragger_message.AddData("RGBColor",B_RGB_COLOR_TYPE,&c,sizeof(rgb_color));
+			dragger_message.AddData("RGBColor", B_RGB_COLOR_TYPE, &c,
+				sizeof(rgb_color));
+			BString hexColor;
+			hexColor.SetToFormat("#%02x%02x%02x%02x",
+				c.red, c.green, c.blue, c.alpha);
+			dragger_message.AddData("text/plain", B_MIME_TYPE,
+				hexColor.String(), hexColor.Length());
 			DragMessage(&dragger_message,dragged_map,B_OP_ALPHA,BPoint(7,7));
 //			dragged = TRUE;
 			index = ColorSet::currentSet()->currentColorIndex();	// The active color did not change.
@@ -1831,5 +1853,10 @@ ColorChip::MouseDown(BPoint point)
 	BMessage dragger_message(B_PASTE);
 	dragger_message.AddData("RGBColor", B_RGB_COLOR_TYPE, &c,
 		sizeof(rgb_color));
+	BString hexColor;
+	hexColor.SetToFormat("#%02x%02x%02x%02x",
+		c.red, c.green, c.blue, c.alpha);
+	dragger_message.AddData("text/plain", B_MIME_TYPE,
+		hexColor.String(), hexColor.Length());
 	DragMessage(&dragger_message, dragged_map, BPoint(7,7));
 }
