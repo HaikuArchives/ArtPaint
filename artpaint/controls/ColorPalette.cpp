@@ -58,6 +58,65 @@ BList* ColorPaletteWindow::master_window_list = new BList();
 BList* ColorPaletteWindow::palette_window_clients = new BList();
 
 
+status_t
+HexStringToUInt32(BString hexColor, uint32& color_word)
+{
+	hexColor.ReplaceAll("#", "");
+	hexColor.ToLower();
+	union color_conversion color;
+	status_t valid_color = B_ERROR;
+
+	if (hexColor.Length() == 3 || hexColor.Length() == 4) {
+		BString byteStr;
+
+		for (int i = 0; i < 3; i++) {
+			char digit = hexColor.ByteAt(i);
+			uint32 byte = 0;
+			byteStr.SetToFormat("%c%c", digit, digit);
+			byteStr.ScanWithFormat("%X", &byte);
+			color.bytes[2 - i] = (uint8)byte;
+		}
+		if (hexColor.Length() == 4) {
+			char digit = hexColor.ByteAt(3);
+			uint32 byte = 0;
+			byteStr.SetToFormat("%c%c", digit, digit);
+			byteStr.ScanWithFormat("%X", &byte);
+			color.bytes[3] = (uint8)byte;
+		} else
+			color.bytes[3] = (uint8)0xFF;
+
+		valid_color = B_OK;
+		color_word = color.word;
+	} else if (hexColor.Length() == 6 || hexColor.Length() == 8) {
+		BString byteStr;
+
+		for (int i = 0; i < 3; ++i) {
+			int j = i * 2;
+			char digit1 = hexColor.ByteAt(j);
+			char digit2 = hexColor.ByteAt(j + 1);
+			uint32 byte = 0;
+			byteStr.SetToFormat("%c%c", digit1, digit2);
+			byteStr.ScanWithFormat("%X", &byte);
+			color.bytes[2 - i] = (uint8)byte;
+		}
+		if (hexColor.Length() == 8) {
+			char digit1 = hexColor.ByteAt(6);
+			char digit2 = hexColor.ByteAt(7);
+			uint32 byte = 0;
+			byteStr.SetToFormat("%c%c", digit1, digit2);
+			byteStr.ScanWithFormat("%X", &byte);
+			color.bytes[3] = (uint8)byte;
+		} else
+			color.bytes[3] = 0xFF;
+
+		valid_color = B_OK;
+		color_word = color.word;
+	}
+
+	return valid_color;
+}
+
+
 ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	: BWindow(frame, B_TRANSLATE("Colors"),
 		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_V_RESIZABLE |
@@ -597,6 +656,45 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 		}
 	} break;
 
+	case B_PASTE: {
+		if (message->WasDropped()) {
+			rgb_color* color;
+			ssize_t color_size;
+			if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,
+					(const void**)&color, &color_size) == B_OK) {
+
+				if (color_control != NULL)
+					color_control->SetValue(*color);
+				if (color_slider != NULL)
+					color_slider->SetValue(*color);
+
+				ColorSet::currentSet()->setCurrentColor(*color);
+				color_message = new BMessage(HS_COLOR_CHANGED);
+				color_message->AddInt32("index",
+					ColorSet::currentSet()->currentColorIndex());
+				int32 buttons;
+				if (message->FindInt32("buttons", &buttons) == B_OK)
+					color_message->ReplaceInt32("buttons", buttons);
+				else
+					color_message->ReplaceInt32("buttons", 0);
+
+				if (buttons > 1)
+					((PaintApplication*)be_app)->SetColor(*color, FALSE);
+				else
+					((PaintApplication*)be_app)->SetColor(*color, TRUE);
+
+				colorPreview->SetColor(RGBColorToBGRA(*color));
+
+				ColorContainer::sendMessageToAllContainers(color_message);
+				SelectedColorsView::sendMessageToAll(color_message);
+
+				InformClients(ColorSet::currentSet()->currentColor());
+				SetHexColor(*color);
+			}
+		}
+	}	break;
+
+	case B_SIMPLE_DATA:
 	case B_MIME_DATA: {
 		if (message->WasDropped()) {
 			const char* colorr;
@@ -608,81 +706,55 @@ void ColorPaletteWindow::MessageReceived(BMessage *message)
 					colorStr[i] = colorr[i];
 				colorStr[color_size] = '\0';
 				hexColorField->SetText(colorStr);
-				PostMessage(HEX_COLOR_EDITED);
+				color_message = new BMessage(HEX_COLOR_EDITED);
+				int32 buttons;
+				if (message->FindInt32("buttons", &buttons) == B_OK)
+					color_message->ReplaceInt32("buttons", buttons);
+				else
+					color_message->ReplaceInt32("buttons", 0);
+
+				PostMessage(color_message);
 			}
 		}
 	}	break;
 
 	case HEX_COLOR_EDITED: {
 		BString hexColor = hexColorField->Text();
-		hexColor.ReplaceAll("#", "");
-		hexColor.ToLower();
-		union color_conversion color;
-		bool valid_color = FALSE;
-		if (hexColor.Length() == 3 || hexColor.Length() == 4) {
-			BString byteStr;
-			uint8 byteVal;
 
-			for (int i = 0; i < 3; ++i) {
-				char digit = hexColor.ByteAt(i);
-				byteStr.SetToFormat("%c%c", digit, digit);
-				byteStr.ScanWithFormat("%X", &byteVal);
-				color.bytes[2 - i] = byteVal;
-			}
-			if (hexColor.Length() == 4) {
-				char digit = hexColor.ByteAt(3);
-				byteStr.SetToFormat("%c%c", digit, digit);
-				byteStr.ScanWithFormat("%X", &byteVal);
-				color.bytes[3] = byteVal;
-			} else
-				color.bytes[3] = 0xFF;
-
-			valid_color = TRUE;
-		} else if (hexColor.Length() == 6 || hexColor.Length() == 8) {
-			BString byteStr;
-			uint8 byteVal;
-
-			for (int i = 0; i < 3; ++i) {
-				int j = i * 2;
-				char digit1 = hexColor.ByteAt(j);
-				char digit2 = hexColor.ByteAt(j + 1);
-				byteStr.SetToFormat("%c%c", digit1, digit2);
-				byteStr.ScanWithFormat("%x", &byteVal);
-				color.bytes[2 - i] = byteVal;
-			}
-			if (hexColor.Length() == 8) {
-				char digit1 = hexColor.ByteAt(6);
-				char digit2 = hexColor.ByteAt(7);
-
-				byteStr.SetToFormat("%c%c", digit1, digit2);
-				byteStr.ScanWithFormat("%X", &byteVal);
-				color.bytes[3] = byteVal;
-			} else
-				color.bytes[3] = 0xFF;
-			valid_color = TRUE;
-		} else {
-			SetHexColor(ColorSet::currentSet()->currentColor());
-		}
-
-		if (valid_color == TRUE) {
-			rgb_color newColor = BGRAColorToRGB(color.word);
+		uint32 color_word;
+		if (HexStringToUInt32(hexColor, color_word) == B_OK) {
+			rgb_color newColor = BGRAColorToRGB(color_word);
 			if (color_control != NULL)
 				color_control->SetValue(newColor);
 			if (color_slider != NULL)
 				color_slider->SetValue(newColor);
 
-			colorPreview->SetColor(color.word);
-			((PaintApplication*)be_app)->SetColor(newColor, TRUE);
+			colorPreview->SetColor(color_word);
+			int32 index;
+			if (message->FindInt32("index", &index) != B_OK)
+				index = ColorSet::currentSet()->currentColorIndex();
 
 			ColorSet::currentSet()->setCurrentColor(newColor);
 			color_message = new BMessage(HS_COLOR_CHANGED);
-			color_message->AddInt32("index",
-				ColorSet::currentSet()->currentColorIndex());
+			color_message->AddInt32("index", index);
+			int32 buttons;
+			if (message->FindInt32("buttons", &buttons) == B_OK)
+				color_message->ReplaceInt32("buttons", buttons);
+			else
+				color_message->ReplaceInt32("buttons", 0);
+
+			if (buttons > 1)
+				((PaintApplication*)be_app)->SetColor(newColor, FALSE);
+			else
+				((PaintApplication*)be_app)->SetColor(newColor, TRUE);
+
 			ColorContainer::sendMessageToAllContainers(color_message);
 			SelectedColorsView::sendMessageToAll(color_message);
 
 			InformClients(ColorSet::currentSet()->currentColor());
 			SetHexColor(newColor);
+		} else {
+			SetHexColor(ColorSet::currentSet()->currentColor());
 		}
 	} break;
 
@@ -1362,6 +1434,44 @@ ColorContainer::MessageReceived(BMessage *message)
 		colorChanged(message->FindInt32("index"));
 	} break;
 
+	case B_SIMPLE_DATA:
+	case B_MIME_DATA: {
+		if (message->WasDropped()) {
+			const char* colorr;
+			ssize_t color_size;
+			if (message->FindData("text/plain", B_MIME_TYPE,
+				(const void**)&colorr, &color_size) == B_OK) {
+				char colorStr[color_size+1];
+				for (int i = 0; i < color_size; ++i)
+					colorStr[i] = colorr[i];
+				colorStr[color_size] = '\0';
+				uint32 color_word;
+				if (HexStringToUInt32(colorStr, color_word) == B_OK) {
+					BMessage color_message(HS_COLOR_CHANGED);
+
+					int32 buttons;
+					if (message->FindInt32("buttons", &buttons) == B_OK)
+						color_message.AddInt32("buttons", buttons);
+					else
+						color_message.AddInt32("buttons", 0);
+
+					BPoint drop_point = message->DropPoint();
+					drop_point = ConvertFromScreen(drop_point);
+					int32 index = pointIndex(drop_point);
+					if (index >= 0) {
+						color_message.AddInt32("index", index);
+						ColorSet::currentSet()->setCurrentColorIndex(index);
+						ColorSet::currentSet()->setCurrentColor(BGRAColorToRGB(color_word));
+						ColorContainer::sendMessageToAllContainers(&color_message);
+						color_message.what = HS_PALETTE_SELECTION_CHANGED;
+						ColorContainer::sendMessageToAllContainers(&color_message);
+						Window()->PostMessage(HS_PALETTE_SELECTION_CHANGED, Window());
+					}
+				}
+			}
+		}
+	} break;
+
 	case B_PASTE: {
 		if (message->WasDropped()) {
 			// Here we see on to which button it was dropped and then
@@ -1804,28 +1914,7 @@ ColorChip::Draw(BRect updateRect)
 
 void ColorChip::MessageReceived(BMessage* message)
 {
-	switch (message->what) {
-		case B_PASTE: {
-			if (message->WasDropped()) {
-				rgb_color* color;
-				ssize_t color_size;
-				if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,
-						(const void**)&color, &color_size) == B_OK) {
-					SetColor(RGBColorToBGRA(*color));
-					Message()->ReplaceData("RGBColor", B_RGB_COLOR_TYPE,
-						color, sizeof(rgb_color));
-					int32 buttons;
-					if (message->FindInt32("buttons", &buttons) == B_OK)
-						Message()->ReplaceInt32("buttons", buttons);
-					else
-						Message()->ReplaceInt32("buttons", 0);
-					Invoke();
-				}
-			}
-		}	break;
-		default:
-			BControl::MessageReceived(message);
-	}
+	BControl::MessageReceived(message);
 }
 
 
