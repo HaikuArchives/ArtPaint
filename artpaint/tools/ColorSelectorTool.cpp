@@ -13,6 +13,7 @@
 #include "ColorSelectorTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "ColorPalette.h"
 #include "Cursors.h"
 #include "Image.h"
@@ -20,6 +21,7 @@
 #include "MessageConstants.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
+#include "SettingsServer.h"
 #include "StatusView.h"
 #include "UtilityClasses.h"
 
@@ -146,8 +148,32 @@ ColorSelectorView::Draw(BRect area)
 	SetHighColor(120,120,0,255);
 	StrokeRect(color_rect,B_MIXED_COLORS);
 	color_rect.InsetBy(1,1);
-	SetHighColor(BGRAColorToRGB(selected_color));
-	FillRect(color_rect);
+
+	uint32 color1, color2;
+	rgb_color rgb1, rgb2;
+	rgb1.red = rgb1.green = rgb1.blue = 0xBB;
+	rgb2.red = rgb2.green = rgb2.blue = 0x99;
+	rgb1.alpha = rgb2.alpha = 0xFF;
+	color1 = RGBColorToBGRA(rgb1);
+	color2 = RGBColorToBGRA(rgb2);
+	color1 = RGBColorToBGRA(rgb1);
+	color2 = RGBColorToBGRA(rgb2);
+
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		color1 = settings.GetUInt32(skBgColor1, color1);
+		color2 = settings.GetUInt32(skBgColor2, color2);
+	}
+
+	BBitmap colorBitmap(BRect(0.0, 0.0, 15.0, 15.0), B_RGBA32);
+	BitmapUtilities::CheckerBitmap(&colorBitmap, color1, color2, 8);
+	BBitmap tmp(colorBitmap);
+	BitmapUtilities::ClearBitmap(&tmp, selected_color);
+	BitmapUtilities::CompositeBitmapOnSource(&colorBitmap, &colorBitmap, &tmp,
+		tmp.Bounds());
+	DrawTiledBitmap(&colorBitmap, color_rect, color_rect.LeftTop());
 }
 
 
