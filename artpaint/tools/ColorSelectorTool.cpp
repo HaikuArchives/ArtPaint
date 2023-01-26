@@ -308,50 +308,62 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		old_color = color - 1;
 		bool select_foreground = (buttons & B_PRIMARY_MOUSE_BUTTON) != 0x00;
 
-		// for the quick calculation of square-roots
-		int num_sqrt = 500;
-		float sqrt_table[num_sqrt];
-		for (int32 i = 0; i < num_sqrt; i++)
-			sqrt_table[i] = sqrt(i);
+		int32 half_size = fToolSettings.size / 2.;
+		BRect rc = BRect(point.x, point.y,
+			point.x + fToolSettings.size, point.y + fToolSettings.size);
+		rc.OffsetBySelf(-half_size, -half_size);
 
-		float half_size = fToolSettings.size/2;
-		BRect rc = BRect(point.x - half_size, point.y - half_size,
-			point.x + half_size, point.y + half_size);
+		float scale = view->getMagScale();
+
+		BRect view_rc = view->convertBitmapRectToView(rc);
+		view_rc.right -= scale;
+		view_rc.bottom -= scale;
+		BRect old_rc = view_rc;
 		BRect bounds = bitmap->Bounds();
 		rc = rc & bounds;
 
 		while (buttons) {
-			rc = BRect(point.x - half_size, point.y - half_size,
-				point.x + half_size, point.y + half_size);
+			rc = BRect(point.x, point.y,
+				point.x + fToolSettings.size, point.y + fToolSettings.size);
+			rc.OffsetBySelf(-half_size, -half_size);
 			rc = rc & bounds;
+
+			view_rc = view->convertBitmapRectToView(rc);
+			scale = view->getMagScale();
+			view_rc.right -= scale;
+			view_rc.bottom -= scale;
+
+			if (view->LockLooper() == true) {
+				if (old_rc != view_rc) {
+					old_rc.InsetBySelf(-2, -2);
+					view->Draw(old_rc);
+					view->StrokeRect(view_rc, B_SOLID_HIGH);
+					view->StrokeRect(view_rc.InsetByCopy(-1, -1), B_SOLID_LOW);
+					old_rc = view_rc;
+				}
+				view->UnlockLooper();
+			}
 			int32 x_dist,y_sqr;
 
 			int32 width = rc.IntegerWidth();
 			int32 height = rc.IntegerHeight();
-			float red=0;
-			float green=0;
-			float blue=0;
-			float alpha=0;
-			int32 number_of_pixels=0;
+			float red = 0;
+			float green = 0;
+			float blue = 0;
+			float alpha = 0;
+			int32 number_of_pixels = 0;
 
-			for (int32 y=0;y<height+1;y++) {
-				y_sqr = (int32)(point.y - rc.top - y);
-				y_sqr *= y_sqr;
+			for (int32 y = 0; y < height; y++) {
 				int32 real_y = (int32)(rc.top + y);
 				int32 real_x;
-				for (int32 x=0;x<width+1;x++) {
-					x_dist = (int32)(point.x-rc.left-x);
+				for (int32 x = 0; x < width; x++) {
 					real_x = (int32)(rc.left+x);
-					int32 index = x_dist * x_dist + y_sqr;
-					if (index < num_sqrt &&
-						sqrt_table[index] <= half_size) {
-						uint32 tmp_color = drawer->GetPixel(real_x,real_y);
-						red += (tmp_color >> 8) & 0xFF;
-						green += (tmp_color >> 16) & 0xFF;
-						blue += (tmp_color >> 24) & 0xFF;
-						alpha += (tmp_color) & 0xFF;
-						number_of_pixels++;
-					}
+					uint32 tmp_color = drawer->GetPixel(real_x,real_y);
+					red += (tmp_color >> 8) & 0xFF;
+					green += (tmp_color >> 16) & 0xFF;
+					blue += (tmp_color >> 24) & 0xFF;
+					alpha += (tmp_color) & 0xFF;
+					number_of_pixels++;
 				}
 			}
 			if (number_of_pixels > 0) {
@@ -390,6 +402,10 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 			snooze(20 * 1000);
 		}
 
+		if (view->LockLooper() == true) {
+			view->Draw(view_rc.InsetByCopy(-1, -1));
+			view->UnlockLooper();
+		}
 
 		// Close the color picker window
 		if (cs_window != NULL) {
