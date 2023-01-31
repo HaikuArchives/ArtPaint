@@ -130,6 +130,7 @@ public:
 
 	void		SetInterpolationMethod(interpolation_type newMethod)
 					{ method = newMethod; }
+	void		UpdateSettings();
 };
 
 
@@ -147,7 +148,8 @@ public:
 								}
 			void				SetValues(float left, float top,
 									float width, float height);
-
+			void				GetControlValues(float& left, float& top,
+									float& width, float& height);
 private:
 			void				_SetTarget(BView* view);
 			void				_SetValues(float left, float top,

@@ -98,6 +98,8 @@ const	char*		ReturnName();
 
 		void		SetSelection(Selection* new_selection)
 						{ selection = new_selection; };
+
+		void		UpdateSettings();
 };
 
 
@@ -134,7 +136,9 @@ virtual	void				AttachedToWindow();
 virtual	void				MessageReceived(BMessage* message);
 
 		void				SetValues(float left, float right, float top,
-									float bottom);
+								float bottom);
+		void				GetControlValues(float& left, float& right,
+								float& top, float& bottom);
 
 private:
 		float				left;

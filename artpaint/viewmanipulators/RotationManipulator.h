@@ -90,6 +90,8 @@ public:
 	void		SetAngle(float);
 
 	void		SetSelection(Selection* new_selection);
+
+	void		UpdateSettings();
 };
 
 
@@ -105,7 +107,7 @@ public:
 
 			void				SetAngle(float angle);
 			void				SetTarget(const BMessenger& target);
-
+			void				GetControlValues(float& angle);
 private:
 		BMessenger				fTarget;
 

@@ -540,6 +540,23 @@ ScaleCanvasManipulator::Draw(BView* view, float mag_scale)
 	return updated_region;
 }
 
+
+void
+ScaleCanvasManipulator::UpdateSettings()
+{
+	if (configuration_view != NULL) {
+		float left, top, width, height;
+		configuration_view->GetControlValues(left, top,
+			width, height);
+
+		settings->left = left;
+		settings->top = top;
+		settings->right = left + width;
+		settings->bottom = top + height;
+	}
+}
+
+
 // #pragma mark -- ScaleCanvasManipulatorView
 
 
@@ -808,6 +825,17 @@ ScaleCanvasManipulatorView::SetValues(float left, float top, float width, float 
 	} else {
 		_SetValues(current_left, current_top, current_width, current_height);
 	}
+}
+
+
+void
+ScaleCanvasManipulatorView::GetControlValues(float& left, float& top,
+	float& width, float& height)
+{
+	left = left_control->Value();
+	top = top_control->Value();
+	width = width_control->Value();
+	height = height_control->Value();
 }
 
 

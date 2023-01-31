@@ -128,6 +128,8 @@ public:
 
 	void		SetInterpolationMethod(interpolation_type newMethod)
 					{ method = newMethod; }
+
+	void		UpdateSettings();
 };
 
 
@@ -144,7 +146,8 @@ public:
 									return maintain_proportions;
 								}
 			void				SetValues(float left, float top, float right, float bottom);
-
+			void				GetControlValues(float& left, float& top,
+									float& right, float& bottom);
 private:
 			void				_SetTarget(BView* view);
 			void				_SetValues(float left, float top, float right, float bottom);

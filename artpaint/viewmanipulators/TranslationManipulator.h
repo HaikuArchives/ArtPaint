@@ -73,6 +73,8 @@ public:
 	void			SetValues(float, float);
 	void			SetSelection(Selection* new_selection)
 						{ selection = new_selection; };
+
+	void			UpdateSettings();
 };
 
 
@@ -107,8 +109,8 @@ public:
 	virtual	void						MessageReceived(BMessage* message);
 
 			void						SetValues(float x, float y);
+			void						GetControlValues(float& x, float& y);
 			void						SetTarget(const BMessenger& target);
-
 private:
 			BMessenger					fTarget;
 
