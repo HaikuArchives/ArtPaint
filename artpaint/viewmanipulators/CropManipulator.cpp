@@ -450,6 +450,22 @@ CropManipulator::ReturnHelpString()
 }
 
 
+void
+CropManipulator::UpdateSettings()
+{
+	if (config_view != NULL) {
+		float left, top, width, height;
+		config_view->GetControlValues(left, top,
+			width, height);
+
+		settings->left = left;
+		settings->top = top;
+		settings->right = left + width;
+		settings->bottom = top + height;
+	}
+}
+
+
 // #pragma mark -- CropManipulatorView
 
 
@@ -559,6 +575,17 @@ CropManipulatorView::SetValues(float x1, float x2, float y1, float y2)
 
 		window->Unlock();
 	}
+}
+
+
+void
+CropManipulatorView::GetControlValues(float& left, float& top,
+	float& width, float& height)
+{
+	left = fLeftCrop->Value();
+	top = fTopCrop->Value();
+	width = fRightCrop->Value();
+	height = fBottomCrop->Value();
 }
 
 

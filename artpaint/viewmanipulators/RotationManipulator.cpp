@@ -369,7 +369,7 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 						*(source_bits + x + y * source_bpr);
 			}
 		}
-	
+
 		// We must make a copy of the selection in order to be able to rotate it
 		selection->RotateTo(center, the_angle);
 		selection->Recalculate();
@@ -646,11 +646,22 @@ RotationManipulator::SetSelection(Selection* new_selection)
 	selection = new_selection;
 	if (selection != NULL && selection->IsEmpty() == false) {
 		orig_selection_data = new SelectionData(selection->ReturnSelectionData());
-		
+
 		BRect bounds = selection->GetBoundingRect();
 
 		settings->origo.x = (bounds.right + bounds.left) / 2;
 		settings->origo.y = (bounds.bottom + bounds.top) / 2;
+	}
+}
+
+
+void
+RotationManipulator::UpdateSettings()
+{
+	if (config_view) {
+		float angle = 0;
+		config_view->GetControlValues(angle);
+		SetAngle(angle);
 	}
 }
 
@@ -771,4 +782,34 @@ void
 RotationManipulatorConfigurationView::SetTarget(const BMessenger& target)
 {
 	fTarget = target;
+}
+
+
+void
+RotationManipulatorConfigurationView::GetControlValues(float& angle)
+{
+	BTextView *text_view = fTextControl->TextView();
+	char float_text[256];
+	const char *text = text_view->Text();
+	int	decimal_place = 0;
+	float sign = 1;
+
+	for (uint32 i = 0; i < strlen(text); i++) {
+		if (isdigit(text[i]) != 0) {
+			float new_number = text[i] - '0';
+			if (decimal_place <= 0)
+				angle = 10*angle + new_number;
+			else {
+				angle = angle + new_number / pow(10,decimal_place);
+				decimal_place++;
+			}
+		}
+		else if (((text[i] == '.') || (text[i] == ',')) && (decimal_place <= 0)) {
+			decimal_place = 1;
+		}
+		else if ((decimal_place <= 0) && (angle == 0) && (text[i] == '-'))
+			sign = -1;
+	}
+
+	angle = sign*angle;
 }

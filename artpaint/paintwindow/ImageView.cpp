@@ -939,6 +939,7 @@ ImageView::MessageReceived(BMessage* message)
 				if (WindowGUIManipulator* windowGuiManipulator =
 					dynamic_cast<WindowGUIManipulator*> (guiManipulator)) {
 					(void)windowGuiManipulator;	// suppress warning
+					windowGuiManipulator->UpdateSettings();
 					if (manipulator_window) {
 						manipulator_window->Lock();
 						manipulator_window->Quit();

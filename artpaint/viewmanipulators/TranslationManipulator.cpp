@@ -490,6 +490,15 @@ TranslationManipulator::ReturnHelpString()
 }
 
 
+void
+TranslationManipulator::UpdateSettings()
+{
+	if (config_view)
+		config_view->GetControlValues(settings->x_translation,
+			settings->y_translation);
+}
+
+
 // #pragma mark -- TranslationManipulatorView
 
 
@@ -572,4 +581,12 @@ void
 TranslationManipulatorView::SetTarget(const BMessenger& target)
 {
 	fTarget = target;
+}
+
+
+void
+TranslationManipulatorView::GetControlValues(float& x, float& y)
+{
+	x = fXControl->Value();
+	y = fYControl->Value();
 }
