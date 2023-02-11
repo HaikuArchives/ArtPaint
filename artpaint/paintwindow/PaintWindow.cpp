@@ -1333,8 +1333,6 @@ PaintWindow::openMenuBar()
 		a_message, 0, 0, this,
 		B_TRANSLATE("Resizes the canvas.")));
 
-	menu->AddSeparatorItem();
-
 	a_message = new BMessage(HS_START_MANIPULATOR);
 	a_message->AddInt32("manipulator_type",CROP_MANIPULATOR);
 	a_message->AddInt32("layers",HS_MANIPULATE_ALL_LAYERS);
