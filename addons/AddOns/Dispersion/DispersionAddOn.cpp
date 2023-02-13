@@ -14,11 +14,13 @@
 #include <string.h>
 #include <Window.h>
 
+
 #include "AddOns.h"
 #include "DispersionAddOn.h"
 #include "BitmapDrawer.h"
 #include "ManipulatorInformer.h"
 #include "Selection.h"
+
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "AddOns_Dispersion"
@@ -36,18 +38,16 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+Manipulator* instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 {
 	delete i;
 	return new DispersionManipulator(bm);
 }
 
 
-
-
 DispersionManipulator::DispersionManipulator(BBitmap*)
-		: Manipulator(),
-		selection(NULL)
+	: Manipulator(),
+	selection(NULL)
 {
 }
 
@@ -57,7 +57,9 @@ DispersionManipulator::~DispersionManipulator()
 
 }
 
-BBitmap* DispersionManipulator::ManipulateBitmap(BBitmap *original, BStatusBar *status_bar)
+
+BBitmap*
+DispersionManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	BWindow *status_bar_window = NULL;
 	if (status_bar != NULL)
@@ -74,34 +76,21 @@ BBitmap* DispersionManipulator::ManipulateBitmap(BBitmap *original, BStatusBar *
 
 	int32 dx,dy;
 
-	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {
-		for (int32 y=0;y<height;y++) {
-			for (int32 x=0;x<width;x++) {
-				moved_pixel = *spare_bits++;
-				dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);
-				dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);
-				target->SetPixel(BPoint(x+dx,y+dy),moved_pixel);
-			}
-			if (((y % 20) == 0) && (status_bar_window != NULL) && (status_bar != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
-				status_bar->Update(100.0/height*20);
-				status_bar_window->Unlock();
-			}
+	for (int32 y = 0; y < height; y++) {
+		for (int32 x = 0; x < width; x++) {
+			moved_pixel = *spare_bits++;
+			dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);
+			dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);
+			target->SetPixel(BPoint(x + dx, y + dy), moved_pixel, selection);
+		}
+		if (((y % 20) == 0) && (status_bar_window != NULL) &&
+			(status_bar != NULL) &&
+			(status_bar_window->LockWithTimeout(0) == B_OK)) {
+			status_bar->Update(100.0 / height * 20);
+			status_bar_window->Unlock();
 		}
 	}
-	else {
-		for (int32 y=0;y<height;y++) {
-			for (int32 x=0;x<width;x++) {
-				moved_pixel = *spare_bits++;
-				dx = (rand() % MAX_DISPERSION_X) * (rand() % 2 == 0 ? -1 : 1);
-				dy = (rand() % MAX_DISPERSION_Y) * (rand() % 2 == 0 ? -1 : 1);
-				target->SetPixel(BPoint(x+dx,y+dy),moved_pixel,selection);
-			}
-			if (((y % 20) == 0) && (status_bar_window != NULL) && (status_bar != NULL) && (status_bar_window->LockWithTimeout(0) == B_OK)) {
-				status_bar->Update(100.0/height*20);
-				status_bar_window->Unlock();
-			}
-		}
-	}
+
 	// we should also delete the spare-bitmap
 	delete spare_buffer;
 	delete target;
@@ -109,12 +98,16 @@ BBitmap* DispersionManipulator::ManipulateBitmap(BBitmap *original, BStatusBar *
 	return original;
 }
 
-const char* DispersionManipulator::ReturnHelpString()
+
+const char*
+DispersionManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Randomly moves pixels a bit.");
 }
 
-const char*	DispersionManipulator::ReturnName()
+
+const char*
+DispersionManipulator::ReturnName()
 {
 	return B_TRANSLATE("Dispersion");
 }
