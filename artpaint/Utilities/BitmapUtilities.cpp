@@ -149,8 +149,8 @@ BitmapUtilities::ConvertToMask(BBitmap *inBitmap, uint8 color)
 
 	out_map->LockBits();
 	uint32 pos = 0;
-	for (int32 y = 0; y < out_map->Bounds().IntegerHeight(); y++) {
-		for (int32 x = 0; x < out_map->Bounds().IntegerWidth(); x++) {
+	for (int32 y = 0; y < out_map->Bounds().IntegerHeight() + 1; y++) {
+		for (int32 x = 0; x < out_map->Bounds().IntegerWidth() + 1; x++) {
 			c.word = *(in_bits + x + y * in_bpr);
 			float alpha = (float)c.bytes[3] / 255.;
 
