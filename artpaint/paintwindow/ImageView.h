@@ -98,7 +98,7 @@ friend	filter_result	KeyFilterFunction(BMessage*,
 		BMessage*	manipulator_finishing_message;
 
 		// This returns true if the manipulator actually exists to be finished
-		bool		PostponeMessageAndFinishManipulator();
+		bool		PostponeMessageAndFinishManipulator(bool status = FALSE);
 
 		void		AddChange();
 		void		RemoveChange();
