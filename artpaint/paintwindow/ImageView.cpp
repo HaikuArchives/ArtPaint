@@ -323,6 +323,12 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 					PostponeMessageAndFinishManipulator();
 				release_sem(mouse_mutex);
 			}
+		} else if (*bytes == B_ENTER) {
+			if (acquire_sem_etc(mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
+				if (fManipulator != NULL)
+					PostponeMessageAndFinishManipulator(TRUE);
+				release_sem(mouse_mutex);
+			}
 		} else if (fManipulator == NULL) {
 			ToolManager::Instance().KeyDown(this, bytes, numBytes);
 		}
@@ -2471,13 +2477,13 @@ ImageView::ResetChangeStatistics(bool project, bool image)
 
 
 bool
-ImageView::PostponeMessageAndFinishManipulator()
+ImageView::PostponeMessageAndFinishManipulator(bool status)
 {
 	if (fManipulator) {
 		manipulator_finishing_message = Window()->DetachCurrentMessage();
 
 		BMessage message(HS_MANIPULATOR_FINISHED);
-		message.AddBool("status", false);
+		message.AddBool("status", status);
 		Window()->PostMessage(&message, this);
 
 		return true;
@@ -2589,6 +2595,9 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 								break;
 							case B_ESCAPE:
 								view->PostponeMessageAndFinishManipulator();
+								break;
+							case B_ENTER:
+								view->PostponeMessageAndFinishManipulator(TRUE);
 								break;
 						}
 					}
