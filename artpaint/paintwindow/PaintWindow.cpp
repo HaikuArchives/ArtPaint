@@ -2167,6 +2167,8 @@ PaintWindow::_AddRecentMenuItems(BMenu* menu, const StringList* list)
 				message, 0, 0, this, path.Path());
 			menu->AddItem(item);
 			item->SetTarget(be_app);
+			BEntry entry(&ref, true);
+			item->SetEnabled(entry.Exists());
 		}
 	}
 }
