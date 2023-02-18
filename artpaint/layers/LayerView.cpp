@@ -239,20 +239,14 @@ LayerView::ReorderViews()
 		if (parent_view != NULL) {
 			while (buttons) {
 				the_window->Lock();
+				BPoint thisPos = layout->GetViewPosition(this);
 				frame = this->ConvertToParent(Bounds());
-				frame.OffsetBy(0, -Bounds().Height());
-				if (frame.Contains(location) == TRUE) {
-					exchanged_view = the_window->FindView(
-							the_window->ConvertFromScreen(
-								parent_view->ConvertToScreen(location)));
+				frame.OffsetBy(0, -(Bounds().Height() + 5));
+				if (frame.Contains(location) == TRUE && thisPos.y > 1) {
+					exchanged_view = layout->ItemAt(0, thisPos.y - 1)->View();
+
 					if (exchanged_view != NULL) {
 		 				int32 exchangedIndex = layout->IndexOfView(exchanged_view);
-		 				// make sure the selected view is one of the layer views,
-		 				// not another control like the layer name
-						while (exchanged_view != NULL && exchangedIndex < 0) {
-							exchanged_view = exchanged_view->Parent();
-							exchangedIndex = layout->IndexOfView(exchanged_view);
-						}
 
 						if (exchanged_view != NULL &&
 							exchanged_view->Parent() == parent_view &&
@@ -265,21 +259,12 @@ LayerView::ReorderViews()
 							}
 						}
 					}
-				}
-				else {
-					frame.OffsetBy(0, 2 * Bounds().Height());
+				} else {
+					frame.OffsetBy(0, (2 * Bounds().Height()) + 5);
 					if (frame.Contains(location) == TRUE) {
-						exchanged_view = the_window->FindView(
-							the_window->ConvertFromScreen(
-								parent_view->ConvertToScreen(location)));
+						exchanged_view = layout->ItemAt(0, thisPos.y + 1)->View();
 						if (exchanged_view != NULL) {
 							int32 exchangedIndex = layout->IndexOfView(exchanged_view);
-							// make sure the selected view is one of the layer views,
-		 					// not another control like the layer name
-							while (exchanged_view != NULL && exchangedIndex < 0) {
-								exchanged_view = exchanged_view->Parent();
-								exchangedIndex = layout->IndexOfView(exchanged_view);
-							}
 
 							if (exchanged_view != NULL &&
 								exchanged_view->Parent() == parent_view &&
