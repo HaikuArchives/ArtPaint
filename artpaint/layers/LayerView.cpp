@@ -229,7 +229,7 @@ LayerView::ReorderViews()
 
 	if (the_window != NULL) {
 		the_window->Lock();
-		BView *parent_view = Parent();
+		BView *parent_view = the_window->GetListView();
 		BView *exchanged_view;
 		parent_view->GetMouse(&location, &buttons);
 		the_window->Unlock();
@@ -241,7 +241,8 @@ LayerView::ReorderViews()
 				the_window->Lock();
 				BPoint thisPos = layout->GetViewPosition(this);
 				frame = this->ConvertToParent(Bounds());
-				frame.OffsetBy(0, -(Bounds().Height() + 5));
+				frame.OffsetBy(0, -(Bounds().Height() + 1));
+
 				if (frame.Contains(location) == TRUE && thisPos.y > 1) {
 					exchanged_view = layout->ItemAt(0, thisPos.y - 1)->View();
 
@@ -254,13 +255,14 @@ LayerView::ReorderViews()
 							exchanged_view != this) {
 							layout->SwapViews(this, exchanged_view);
 							positions_moved++;
-							if (parent_view->Bounds().Contains(Frame().LeftTop()) == FALSE) {
-								parent_view->ScrollBy(0,Frame().top);
-							}
+							BRect pframe = parent_view->ConvertToParent(frame);
+							pframe.OffsetBy(0, -pframe.Height() * 0.95);
+							if (parent_view->Frame().Contains(pframe) == FALSE)
+								parent_view->ScrollBy(0, -pframe.Height() * .95);
 						}
 					}
 				} else {
-					frame.OffsetBy(0, (2 * Bounds().Height()) + 5);
+					frame.OffsetBy(0, (2 * Bounds().Height()) + 2);
 					if (frame.Contains(location) == TRUE) {
 						exchanged_view = layout->ItemAt(0, thisPos.y + 1)->View();
 						if (exchanged_view != NULL) {
@@ -272,9 +274,10 @@ LayerView::ReorderViews()
 								exchanged_view != this) {
 								layout->SwapViews(this, exchanged_view);
 								positions_moved--;
-								if (parent_view->Bounds().Contains(Frame().LeftBottom()) == FALSE) {
-									parent_view->ScrollBy(0,Frame().bottom-parent_view->Bounds().bottom);
-								}
+								BRect pframe = parent_view->ConvertToParent(frame);
+								pframe.OffsetBy(0, pframe.Height() * 0.95);
+								if (parent_view->Frame().Contains(pframe) == FALSE)
+									parent_view->ScrollBy(0, pframe.Height() * .95);
 							}
 						}
 					}
