@@ -323,14 +323,22 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	if (source_bits != NULL) {
 		for (int32 y = final_bounds.top; y <= final_bounds.bottom; y++) {
 			int32 src_y = y - final_bounds.top;
+
 			if (src_y >= source_bounds.bottom)
 				break;
+
+			if (y < 0)
+				continue;
+
 			for (int32 x = final_bounds.left; x <= final_bounds.right; x++) {
 				if (selection == NULL || selection->IsEmpty() == TRUE ||
 					selection->ContainsPoint(x, y)) {
 					int32 src_x = x - final_bounds.left;
 					if (src_x >= target_bpr || src_x >= source_bpr)
 						break;
+					if (x < 0)
+						continue;
+
 					*(target_bits + x + y * target_bpr) =
 						src_over_fixed(
 							*(target_bits + x + y * target_bpr),
