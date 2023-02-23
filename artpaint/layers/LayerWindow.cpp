@@ -332,6 +332,17 @@ LayerWindow::MessageReceived(BMessage *message)
 						image_window->PostMessage(message, image_view);
 				}
 			} break;
+		case B_KEY_DOWN:
+		case B_UNMAPPED_KEY_DOWN:
+			if (active_layer != NULL && active_layer->IsActive()) {
+				BView *image_view = (BView*)active_layer->GetImageView();
+				BWindow *image_window = image_view->Window();
+
+				if (image_window && active_layer->IsActive()) {
+					image_window->Activate();
+					image_window->PostMessage(message);
+				}
+			} break;
 		default:
 			BWindow::MessageReceived(message);
 			break;
