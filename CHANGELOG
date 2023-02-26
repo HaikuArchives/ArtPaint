@@ -1,3 +1,54 @@
+v2.5:
+
+* Selection tool:
+  - added ellipse mode
+  - use SHIFT for aspect lock
+  - ALT for center-to-corner mode
+  - OPT to substract
+  - simplified GUI
+* Rectangle/Ellipse tool:
+  - SHIFT to lock aspect ratio
+  - SHIFT when rotating rectangle locks to 22.5° angles
+  - ALT for center-to-corner mode
+  - simplified GUI
+* Eraser tool: Anti-alias edge
+* Color selector tool: show box of sampled pixels
+* Colors: support drag'n'drop of HTML text values
+* Improved cropping
+  - crop-to-selection
+  - lock aspect
+  - shaded crop area
+  - better visible handles
+* Added scaling of selected areas
+* Improved resizing
+  - use a resize-box with handles
+  - added filters (bilinear, bicubic, etc.)
+  - SHIFT to lock aspect ratio
+* New "Selection" menu
+  - added "Select all"
+  - added "Select non-transparent"
+  - added "Hide borders"
+* Moved all manipulating actions from "Layers" and "Canvas" to "Edit" menu
+  - use sub-menus for "Active/All layers" for all actions
+* Anti-Dither, Transparency tool, Flip manipulator: respect selections
+* DEL to delete a selection/layer
+* Pan when holding SPACE
+* Zoom with mouse wheel (without ALT, reversed in/out direction WRT v2.4)
+* Changed color dropper shortcut to CTRL
+* Close manipulator windows with ESC, apply with ENTER
+* Improved visibility of crosshair cursor mode
+* Improved layer re-ordering
+* Forward keyboard shortcuts from Layers to main window
+* More intelligent canvas-to-window fitting of opened images
+* Removed "Window | Resize to fit", there's the zoom button for that
+* Disable unavailable image/project files from "Open recent" menus
+* Fix drawing artefacts when moving a selection
+* Loads of bugfixes and polishing
+* Updated documentation
+* New translations:
+  - Australian English (jt15s),
+  - Latin American Spanish (victroniko)
+
 v2.4:
 
 * Overhauled the Layers window and handling:
