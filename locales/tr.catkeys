@@ -1,18 +1,20 @@
-1	Turkish	application/x-vnd.artpaint	3689499495
-{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Proje son kaydedildiğinden bu yana bir değişiklik yaptınız.\nDeğişikliği kaydetmek istiyor musunuz?}other{%project_name%: Proje son kaydedildiğinden bu yana # değişiklik yaptınız.\nDeğişiklikleri kaydetmek istiyor musunuz?}}
+1	Turkish	application/x-vnd.artpaint	3981580643
+{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Projeyi son kaydetmenizden bu yana bir değişiklik yaptınız.\nDeğişikliği kaydetmek istiyor musunuz?}other{%project_name%: Projeyi son kaydetmenizden bu yana # değişiklik yaptınız.\nDeğişiklikleri kaydetmek istiyor musunuz?}}
 Cancel	ImageView		İptal
-Clear selection	ImageView		Seçimi temizle
 Don't save	ImageView		Kaydetme
 Drop layer to copy it to this image.	ImageView		Bu görsele kopyalamak için katmanı üzerine bırakın.
 Finishing	ImageView		Kaplama
 Grow selection	ImageView		Seçimi büyüt
 Invert selection	ImageView		Seçimi ters çevir
 Layer %ld / %ld	ImageView		Katman %ld/%ld
-Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Bir katman eklemek için yeterli bellek yok. Geri al özelliğini devre dışı bırakarak ve diğer görselleri kapatarak bellek boşaltabilirsiniz. Ayrıca, görseli şimdi kaydetmek iyi bir fikir olabilir; çünkü düşük bellek miktarı daha sonra kaydetme işlemini zorlaştırabilir veya olanaksızlaştırabilir. Bu sıkıntı için özür dilerim.
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Bir katman eklemek için yeterli boş bellek yok. Geri al özelliğini devre dışı bırakarak ve diğer görselleri kapatarak daha fazla bellek boşaltabilirsiniz. Ayrıca, görseli şimdi kaydetmek iyi bir fikir olabilir; çünkü düşük bellek miktarı daha sonra kaydetme işlemini zorlaştırabilir veya olanaksızlaştırabilir. Bu sıkıntı için özür dilerim.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		İstediğiniz efekti tamamlamak için yeterli bellek yok. Diğer görselleri kapatıp yeniden deneyebilirsiniz. Geri al özelliğinin derinliğini kısaltmak veya geri al özelliğini devre dışı bırakmak da az bellek kullanmaya yardımcı olur. Ayrıca, görseli şimdi kaydetmek iyi bir fikir olabilir; çünkü düşük bellek miktarı daha sonra kaydetme işlemini zorlaştırabilir veya olanaksızlaştırabilir. Bu sıkıntı için özür dilerim.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		İstediğiniz efekti başlatmak için yeterli bellek yok. Diğer görselleri kapatıp yeniden deneyebilirsiniz. Geri al özelliğinin derinliğini kısaltmak veya geri al özelliğini devre dışı bırakmak da az bellek kullanmaya yardımcı olur. Ayrıca, görseli şimdi kaydetmek iyi bir fikir olabilir; çünkü düşük bellek miktarı daha sonra kaydetme işlemini zorlaştırabilir veya olanaksızlaştırabilir. Bu sıkıntı için özür dilerim.
 OK	ImageView		Tamam
 Save	ImageView		Kaydet
+Select all	ImageView		Tümünü seç
+Select non-transparent	ImageView		Saydam olmayanı seç
+Select none	ImageView		Hiçbirini seçme
 Shrink selection	ImageView		Seçimi küçült
 Unsaved changes!	ImageView		Kaydedilmemiş değişiklikler!
 About ArtPaint	PaintWindow		ArtPaint hakkında
@@ -20,14 +22,12 @@ Active layer	PaintWindow		Etkin katman
 Add	PaintWindow		Ekle
 Add-ons	PaintWindow		Eklentiler
 Adds a layer to the top of this image.	PaintWindow		Bu görselin üzerine bir katman ekler.
+All	PaintWindow		Tümü
 All layers	PaintWindow		Tüm katmanlar
+All non-transparent	PaintWindow		Tüm saydam olmayan
 Brushes…	PaintWindow		Fırçalar…
 Canvas	PaintWindow		Tuval
-Clear canvas	PaintWindow		Tuvali temizle
-Clear layer	PaintWindow		Katmanı temizle
-Clear selection	PaintWindow		Seçimi temizle
-Clears all layers.	PaintWindow		Tüm katmanları temizler.
-Clears the active layer.	PaintWindow		Etkin katmanı temizler.
+Clears the selection or layer.	PaintWindow		Seçimi veya katmanı temizler.
 Close	PaintWindow		Kapat
 Closes the current window.	PaintWindow		Geçerli pencereyi kapatır.
 Colors…	PaintWindow		Renkler…
@@ -37,7 +37,7 @@ Copy	PaintWindow		Kopyala
 Create canvas	PaintWindow		Tuval oluştur
 Creates a new empty canvas.	PaintWindow		Yeni bir boş tuval oluşturur.
 Crop…	PaintWindow		Kırp…
-Crops the image.	PaintWindow		Görseli kırpar.
+Crops the canvas.	PaintWindow		Tuvali kırpar.
 Cut	PaintWindow		Kes
 Cuts the selection from all layers to the clipboard.	PaintWindow		Tüm katmanlardaki seçimi panoya keser.
 Cuts the selection to the clipboard.	PaintWindow		Seçimi panoya keser.
@@ -54,10 +54,12 @@ Flips all layers horizontally.	PaintWindow		Tüm katmanları yatay yönde ters �
 Flips all layers vertically.	PaintWindow		Tüm katmanları dikey yönde ters çevirir.
 Flips the active layer horizontally.	PaintWindow		Etkin katmanı yatay yönde ters çevirir.
 Flips the active layer vertically.	PaintWindow		Etkin katmanı dikey yönde ters çevirir.
-Grow selection	PaintWindow		Seçimi büyüt
+Grow	PaintWindow		Büyüt
 Grows the selection in all directions.	PaintWindow		Seçimi her yönde büyütür.
 Height:	PaintWindow		Yükseklik:
-Invert selection	PaintWindow		Seçimi ters çevir
+Hide borders	PaintWindow		Kenarlıkları gizle
+Hides the selection borders.	PaintWindow		Seçim kenarlıklarını gizler.
+Invert	PaintWindow		Ters çevir
 Inverts the selection	PaintWindow		Seçimi ters çevirir.
 Layer	PaintWindow		Katman
 Layers…	PaintWindow		Katmanlar…
@@ -66,6 +68,7 @@ Merges selected layer with the layer below.	PaintWindow		Seçili katmanı, aşa�
 Moves all layers.	PaintWindow		Tüm katmanları taşır.
 Moves the active layer.	PaintWindow		Etkin katmanı taşır.
 New project…	PaintWindow		Yeni proje…
+None	PaintWindow		Hiçbiri
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Görseli oluşturmak için yeterli boş bellek yok. Lütfen daha küçük bir görsel boyutu ile yeniden deneyin.
 Off	PaintWindow		Kapalı
 OK	PaintWindow		Tamam
@@ -89,17 +92,17 @@ Quit	PaintWindow		Çık
 Quits ArtPaint.	PaintWindow		ArtPaint'ten çıkar.
 Recent images	PaintWindow		Son kullanılan görseller
 Recent projects	PaintWindow		Son kullanılan projeler
-Redo not available	PaintWindow		Yineleme kullanılamıyor
+Redo	PaintWindow		Yinele
 Redos the action that was last undone.	PaintWindow		Son geri alınan eylemi yeniden yapar.
-Resize to fit	PaintWindow		Sığacak biçimde boyutlandır
-Resizes the window to fit image and screen.	PaintWindow		Pencereyi, görsele ve ekrana sığacak biçimde yeniden boyutlandırır.
+Resize…	PaintWindow		Yeniden boyutlandır…
+Resizes the canvas.	PaintWindow		Tuvali yeniden boyutlandırır.
 Rotate -90°	PaintWindow		-90° döndür
 Rotate +90°	PaintWindow		+90° döndür
 Rotate…	PaintWindow		Döndür…
-Rotates all layers 90° clockwise.	PaintWindow		Tüm katmanları 90° saat yönünde döndürür.
-Rotates all layers 90° counter-clockwise.	PaintWindow		Tüm katmanları 90° saat yönünün tersine döndürür.
 Rotates all layers.	PaintWindow		Tüm katmanları döndürür.
 Rotates the active layer.	PaintWindow		Etkin katmanı döndürür.
+Rotates the canvas 90° clockwise.	PaintWindow		Tuvali saat yönünde 90° döndürür.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Tuvali saat yönünün tersine 90° döndürür.
 Save image	PaintWindow		Görseli kaydet
 Save image as…	PaintWindow		Görseli farklı kaydet…
 Save project	PaintWindow		Projeyi kaydet
@@ -109,7 +112,11 @@ Saves the image under its current name.	PaintWindow		Görseli, geçerli adı alt
 Saves the project to disk.	PaintWindow		Projeyi diske kaydeder.
 Saves the project under its current name.	PaintWindow		Projeyi, geçerli adı altında kaydeder.
 Scale…	PaintWindow		Ölçeklendir…
-Scales the image.	PaintWindow		Görseli ölçeklendirir.
+Scales all layers.	PaintWindow		Tüm katmanları ölçekler.
+Scales the active layer.	PaintWindow		Etkin katmanı ölçekler.
+Selection	PaintWindow		Seçim
+Selects all non-transparent layer pixels	PaintWindow		Tüm saydam olmayan katman piksellerini seçer.
+Selects entire layer	PaintWindow		Tüm katmanı seçer.
 Set grid	PaintWindow		Izgarayı ayarla
 Set zoom level	PaintWindow		Yakınlaştırma düzeyini ayarla
 Set/Select the canvas size.	PaintWindow		Tuval boyutunu ayarlar/seçer.
@@ -123,15 +130,15 @@ Sets the zoom level to 400%.	PaintWindow		Yakınlaştırma düzeyini %400 olarak
 Sets the zoom level to 50%.	PaintWindow		Yakınlaştırma düzeyini %50 olarak ayarlar.
 Sets the zoom level to 800%.	PaintWindow		Yakınlaştırma düzeyini %800 olarak ayarlar.
 Settings…	PaintWindow		Ayarlar…
-Shrink selection	PaintWindow		Seçimi küçült
+Shrink	PaintWindow		Küçült
 Shrinks the selection in all directions.	PaintWindow		Seçimi tüm yönlerde küçültür.
 Standard sizes	PaintWindow		Standart boyutlar
 Tool setup…	PaintWindow		Araç ayarları…
 Tools…	PaintWindow		Araçlar…
-Translate…	PaintWindow		Çevir…
+Translate…	PaintWindow		Taşı…
 Turns the grid off.	PaintWindow		Izgarayı kapatır.
 Un-selects all	PaintWindow		Tümünün seçimini kaldırır.
-Undo not available	PaintWindow		Geri alma kullanılamıyor
+Undo	PaintWindow		Geri al
 Undos the previous action.	PaintWindow		Bir önceki eylemi geri alır.
 Untitled	PaintWindow		Adsız
 User manual…	PaintWindow		Kullanıcı kılavuzu…
@@ -149,96 +156,9 @@ Layer transparency	LayerWindow		Katman saydamlığı
 Layers	LayerWindow		Katmanlar
 Merge down	LayerWindow		Aşağı birleştir
 Mode:	LayerWindow		Kip:
-Add area	Tools		Alan ekle
-Adjustable width	Tools		Ayarlanabilir genişlik
-Adjusting the layer's transparency.	Tools		Katmanın saydamlığı ayarlanıyor.
-Airbrush	Tools		Boya tabancası
-Airbrush tool	Tools		Boya tabancası aracı
-Alpha	Tools		Alfa
-Amount of paint:	Tools		Boya miktarı:
-Angle:	Tools		Açı:
-Aspect:	Tools		Açı:
-Background color	Tools		Arka plan rengi
-Behavior	Tools		Davranış
-Blue	Tools		Mavi
-Blur tool	Tools		Bulanıklaştırma aracı
-Blurring the image.	Tools		Görsel bulanıklaştırılıyor.
-Brush tool	Tools		Fırça aracı
-Center to corner	Tools		Merkezden köşeye
-Click to place the text.	Tools		Metni yerleştirmek için tıklayın.
-Click to use the tool.	Tools		Aracı kullanmak için tıklayın.
-Color picker tool	Tools		Renk seçici aracı
-Color variance:	Tools		Renk ayrımı:
-Continuous	Tools		Sürekli
-Corner to corner	Tools		Köşeden köşeye
-Drag the text to correct position and set its appearance.	Tools		Metni doğru konuma sürükle ve görünüşünü ayarla.
-Drawing a freehand line.	Tools		Serbest bir çizgi çiziliyor.
-Drawing a rectangle.	Tools		Bir dörtgen çiziliyor.
-Drawing a straight line.	Tools		Düz bir çizgi çiziliyor.
-Drawing an ellipse.	Tools		Bir elips çiziliyor.
-Ellipse	Tools		Elips
-Ellipse tool	Tools		Elips aracı
-Ellipse: SHIFT for circle	Tools		Elips: Çember için SHIFT düğmesini basılı tutun
-Enable antialiasing	Tools		Yumuşatmayı etkinleştir
-Enable gradient	Tools		Gradyanları etkinleştir
-Enable preview	Tools		Önizlemeyi etkinleştir
-Enable rotation	Tools		Döndürmeyi etkinleştir
-Eraser tool	Tools		Silgi aracı
-Erasing pixels.	Tools		Pikseller siliniyor.
-Fill ellipse	Tools		Elips dolgu
-Fill rectangle	Tools		Dörtgen dolgu
-Fill tool	Tools		Dolgu aracı
-Flood fill	Tools		Sel dolgu
-Flow:	Tools		Akış:
-Freehand	Tools		Serbest çizgi
-Freehand line tool	Tools		Serbest çizgi aracı
-Green	Tools		Yeşil
-Hairs:	Tools		İnce çizgiler:
-Hairy brush tool	Tools		İnce fırça aracı
-Hardness:	Tools		Sertlik:
-Hold shift key to snap to 45° angles	Tools		45° açılara yapıştırmak için Shift düğmesini basılı tutun
-Intelligent scissors	Tools		Akıllı makas
-Little	Tools		Az
-Magic wand	Tools		Sihirli değnek
-Making a fill.	Tools		Bir dolgu yapılıyor.
-Making a selection.	Tools		Bir seçim yapılıyor.
-Mode	Tools		Kip
-Much	Tools		Çok
-No configuration options available.	Tools		Kullanılabilir yapılandırma seçeneği yok.
-None	Tools		Hiçbiri
-Options	Tools		Seçenekler
-Painting with a brush.	Tools		Bir fırça ile boyanıyor.
-Painting with a hairy brush.	Tools		Bir ince kıllı fırça ile boyanıyor.
-Picking a color.	Tools		Bir renk seçiliyor.
-Random	Tools		Rastgele
-Rectangle	Tools		Dörtgen
-Rectangle tool	Tools		Dörtgen aracı
-Rectangle: SHIFT for square	Tools		Dörtgen: Kare için SHIFT düğmesini basılı tutun
-Red	Tools		Kırmızı
-Replace pixels with	Tools		Pikselleri şununla değiştir:
-Reset brush	Tools		Fırçayı sıfırla
-Selection tool	Tools		Seçim aracı
-Size:	Tools		Boyut:
-Speed:	Tools		Hız:
-Spray	Tools		Sprey
-Store brush	Tools		Fırçayı sakla
-Straight line tool	Tools		Düz çizgi aracı
-Straight line: SHIFT locks 45° angles	Tools		Düz çizgi: SHIFT düğmesini basılı tutmak, 45°lik açılar kilitler
-Subtract area	Tools		Alanı çıkar
-Text tool	Tools		Metin aracı
-Tolerance:	Tools		Tolerans:
-Tool setup	Tools		Araç ayarları
-Tools	Tools		Araçlar
-Transparency	Tools		Saydamlık
-Transparency tool	Tools		Saydamlık aracı
-Using the airbrush.	Tools		Boya tabancası kullanılıyor.
-Using the tool.	Tools		Araç kullanılıyor.
-Wand tolerance	Tools		Değnek toleransı
-Width:	Tools		Genişlik:
 Add layer	Image		Katman ekle
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Tek kalan katman silinemez. Yeniden başlamak için başka bir resim oluşturun.
-Clear canvas	Image		Tuvali temizle
-Clear layer	Image		Katmanı temizle
+Delete	Image		Sil
 Delete layer	Image		Katmanı sil
 Merge down	Image		Aşağı birleştir
 Merge with layer above	Image		Yukarıdaki katman ile birleştir
@@ -251,7 +171,6 @@ Brushes	Windows		Fırçalar
 Cancel	Windows		İptal
 Colors	Windows		Renkler
 Colors:	Windows		Renkler:
-Confirm quitting	Windows		Çıkarken onay iste
 Cross-hair cursor	Windows		Artı biçimli imleç
 Cursor	Windows		İmleç
 Datatype setup: %name%	Windows		Veri türü ayarı: %name%
@@ -272,9 +191,91 @@ Tool setup	Windows		Araç ayarları
 Tools	Windows		Araçlar
 Transparency	Windows		Saydamlık
 Undo	Windows		Geri al
-Undo steps:	Windows		Geri alma adımları:
+Undo steps:	Windows		Geri alma sayısı:
 Unlimited	Windows		Sınırsız
 Windows	Windows		Pencereler
+Adjustable width	Tools		Ayarlanabilir genişlik
+Adjusting the layer's transparency.	Tools		Katmanın saydamlığı ayarlanıyor.
+Airbrush	Tools		Boya tabancası
+Airbrush tool	Tools		Boya tabancası aracı
+Alpha	Tools		Alfa
+Amount of paint:	Tools		Boya miktarı:
+Angle:	Tools		Açı:
+Aspect:	Tools		Açı:
+Background color	Tools		Arka plan rengi
+Blue	Tools		Mavi
+Blur tool	Tools		Bulanıklaştırma aracı
+Blurring the image.	Tools		Görsel bulanıklaştırılıyor.
+Brush tool	Tools		Fırça aracı
+Click to place the text.	Tools		Metni yerleştirmek için tıklayın.
+Click to use the tool.	Tools		Aracı kullanmak için tıklayın.
+Color picker tool	Tools		Renk seçici aracı
+Color picker window	Tools		Renk seçici penceresi
+Color variance:	Tools		Renk ayrımı:
+Continuous	Tools		Sürekli
+Drag the text to correct position and set its appearance.	Tools		Metni doğru konuma sürükle ve görünüşünü ayarla.
+Drawing a freehand line.	Tools		Serbest bir çizgi çiziliyor.
+Drawing a rectangle.	Tools		Bir dörtgen çiziliyor.
+Drawing a straight line.	Tools		Düz bir çizgi çiziliyor.
+Drawing an ellipse.	Tools		Bir elips çiziliyor.
+Ellipse	Tools		Elips
+Ellipse tool	Tools		Elips aracı
+Ellipse: SHIFT for circle, ALT for centered	Tools		Elips: Çember için SHIFT, merkezi şekil için ALT düğmelerini basılı tutun.
+Enable antialiasing	Tools		Yumuşatmayı etkinleştir
+Enable gradient	Tools		Gradyanları etkinleştir
+Enable preview	Tools		Önizlemeyi etkinleştir
+Enable rotation	Tools		Döndürmeyi etkinleştir
+Eraser tool	Tools		Silgi aracı
+Erasing pixels.	Tools		Pikseller siliniyor.
+Fill ellipse	Tools		Elips dolgu
+Fill rectangle	Tools		Dörtgen dolgu
+Fill tool	Tools		Dolgu aracı
+Flood fill	Tools		Sel dolgu
+Flow:	Tools		Akış:
+Freehand	Tools		Serbest çizgi
+Freehand line tool	Tools		Serbest çizgi aracı
+Green	Tools		Yeşil
+Hairs:	Tools		İnce çizgiler:
+Hairy brush tool	Tools		İnce fırça aracı
+Hardness:	Tools		Sertlik:
+Hold SHIFT to snap to 45° angles	Tools		45°lik açılar kilitlemek için SHIFT düğmesini basılı tutun.
+Intelligent scissors	Tools		Akıllı makas
+Little	Tools		Az
+Magic wand	Tools		Sihirli değnek
+Making a fill.	Tools		Bir dolgu yapılıyor.
+Making a selection.	Tools		Bir seçim yapılıyor.
+Mode	Tools		Kip
+Much	Tools		Çok
+No configuration options available.	Tools		Kullanılabilir yapılandırma seçeneği yok.
+None	Tools		Hiçbiri
+Options	Tools		Seçenekler
+Painting with a brush.	Tools		Bir fırça ile boyanıyor.
+Painting with a hairy brush.	Tools		Bir ince kıllı fırça ile boyanıyor.
+Picking a color.	Tools		Bir renk seçiliyor.
+Random	Tools		Rastgele
+Rectangle	Tools		Dörtgen
+Rectangle tool	Tools		Dörtgen aracı
+Rectangle: SHIFT for square, ALT for centered	Tools		Dörtgen: Kare için SHIFT, merkezi şekil için ALT düğmelerini basılı tutun.
+Red	Tools		Kırmızı
+Replace pixels with	Tools		Pikselleri şununla değiştir:
+Reset brush	Tools		Fırçayı sıfırla
+Selection tool	Tools		Seçim aracı
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Seçim aracı: Kare/Çember için SHIFT, seçimi merkezileştirmek için ALT, çıkarmak için OPT düğmelerini basılı tutun.
+Size:	Tools		Boyut:
+Speed:	Tools		Hız:
+Spray	Tools		Sprey
+Store brush	Tools		Fırçayı sakla
+Straight line tool	Tools		Düz çizgi aracı
+Straight line: SHIFT locks 22.5° angles	Tools		Düz çizgi: SHIFT, 22.5°ilk açılar kilitler.
+Text tool	Tools		Metin aracı
+Tolerance:	Tools		Tolerans:
+Tool setup	Tools		Araç ayarları
+Tools	Tools		Araçlar
+Transparency	Tools		Saydamlık
+Transparency tool	Tools		Saydamlık aracı
+Using the airbrush.	Tools		Boya tabancası kullanılıyor.
+Using the tool.	Tools		Araç kullanılıyor.
+Width:	Tools		Genişlik:
 Alpha	ColorSliders	For color sliders	Alfa
 Black	ColorSliders	For CMYK color slider	Siyah
 Blue	ColorSliders	For RGB color sliders	Mavi
@@ -290,37 +291,41 @@ Saturation	ColorSliders	For HSV color slider	Doygunluk
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Değer
 Yellow	ColorSliders	For CMYK color slider	Sarı
 Angle:	Manipulators		Açı:
-Bottom:	Manipulators		Alt:
 Change the transparency with the slider.	Manipulators		Kaydırıcı ile saydamlığı değiştirin.
 Change transparency…	Manipulators		Saydamlığı değiştir…
-Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Yeni ölçeği ayarlamak için görselin üzerine tıklayın veya sayısal alanlar ile ayarlayın.
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Kırp: Yeni kenarlıkla ayarlamak için tutaçları veya sayı alanlarını kullanın. SHIFT, en-boy oranını kilitler.
 Crop…	Manipulators		Kırp…
-Drag the image to correct position.	Manipulators		Görseli doğru konuma sürükleyin.
-Drag the text to correct position and set its appearance.	Manipulators		Metni doğru konuma sürükleyin ve görünüşünü ayarlayın.
 Enable antialiasing	Manipulators		Yumuşatmayı etkinleştir
+Filter:	Manipulators		Süz:
 Flip horizontally	Manipulators		Yatay ters çevir
 Flip vertically	Manipulators		Dikey ters çevir
 Font:	Manipulators		Yazıtipi:
 Height:	Manipulators		Yükseklik:
 Left:	Manipulators		Sol:
 Lock	Manipulators	Keep the aspect ratio	Kilitle
+Lock	Manipulators		Kilitle
 Opaque	Manipulators		Mat
+Reset to canvas	Manipulators		Tuvale sıfırla
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Yeniden boyutlandır: Yeniden boyutlandırmak için sürükleyin veya sayı alanlarını kullanın. Yönü kilitlemek için SHIFT’i basılı tutun
+Resize…	Manipulators		Yeniden boyutlandır…
 Restore	Manipulators		Geri yükle
-Right:	Manipulators		Sağ:
 Rotate -90°	Manipulators		-90° döndür
 Rotate +90°	Manipulators		+90° döndür
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Döndür: Döndürmek için sol sürükleyin, döndürme merkezi ayarlamak için sol tıklayın, açıya tutturmak için SHIFT düğmesini basılı tutun.
 Rotate…	Manipulators		Döndür…
 Rotation:	Manipulators		Döndürme:
+Scale: Drag to resize or use number-fields.	Manipulators		Ölçekle: Yeniden boyutlandırmak için sürükleyin veya sayı alanlarını kullanın.
 Scale…	Manipulators		Ölçekle…
 Shear:	Manipulators		Yırt:
 Size:	Manipulators		Boyut:
 Text tool	Manipulators		Metin aracı
+Text: Position text and set its appearance.	Manipulators		Metin: Metni konumlandırın ve görünüşünü ayarlayın.
 Top:	Manipulators		Üst:
-Translate…	Manipulators		Çevir…
+Translate: Drag to move or use number-fields.	Manipulators		Taşı: Taşımak için sürükleyin veya sayı alanlarını kullanın.
+Translate…	Manipulators		Taşı…
 Transparency:	Manipulators		Saydamlık:
 Transparent	Manipulators		Saydam
-Use the handles or number-fields to set the new borders.	Manipulators		Yeni kenarlıklar ayarlamak için tutaçları veya sayı alanlarını kullanın.
-Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Döndürmek için birincil fare düğmesini, döndürme merkezini ayarlamak için diğer düğmeleri kullanın.
+Use selection	Manipulators		Seçimi kullan
 Width:	Manipulators		Genişlik:
 ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint, Haiku için bir boyama ve görsel işleme uygulamasıdır.
@@ -354,14 +359,16 @@ Open	FilePanels		Aç
 Save	FilePanels		Kaydet
 Save format:	FilePanels		Kaydetme biçimi:
 Settings…	FilePanels		Ayarlar…
+Bicubic	ScaleUtilities		Çift küpsel
+Bicubic (B-spline)	ScaleUtilities		Çift küpsel (B yivi)
+Bicubic (Catmull-Rom)	ScaleUtilities		Çift küpsel (Catmull-Rom)
+Bilinear	ScaleUtilities		Çift doğrusal
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		En yakın komşu
 Bummer	UndoQueue		Tüh
 Redo	UndoQueue		Yinele
-Redo not available	UndoQueue		Yineleme kullanılamıyor
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Geri alma mekanizması için yeterli bellek yok.\nGeri alma derinliği, son gerçekleştirilen eylemlerin bellekte tutulabilmesi için sınırlıdır. Bu noktada veri kaybını önlemek için çalışmanızı kaydetmeniz önerilir.\nAyarlar penceresinde geri alma derinliğini de değiştirmek isteyebilirsiniz.
 Undo	UndoQueue		Geri al
-Undo not available	UndoQueue		Geri alma kullanılamıyor
-Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Görseli döndürmek, taşımak veya germek için üzerine tıklayın.
-Free 2D transform	FreeTransformManipulator		Serbest 2B dönüşüm
 Color burn	PixelOperations		Renk yak
 Color dodge	PixelOperations		Renk atla
 Darken	PixelOperations		Koyulaştır
@@ -382,5 +389,7 @@ Pin light	PixelOperations		Işığı sabitle
 Screen	PixelOperations		Ekran
 Soft light	PixelOperations		Yumuşak ışık
 Vivid light	PixelOperations		Keskin ışık
+Free 2D transform	FreeTransformManipulator		Serbest 2B dönüşüm
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Dönüştür: Döndürmek, taşımak veya germek için sürükleyin.
 Left-click for color panel, right-click to switch colors.	StatusView		Renk paneli için sol, renkleri birbiriyle değiştirmek için sağ tıklayın.
 Zoom	MagnificationView		Yakınlaştır

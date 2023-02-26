@@ -1,6 +1,6 @@
 1	French	application/x-vnd.artpaint-addon	1667863556
-Anti-Dither	AddOns_AntiDither		Anti-Dither
-Anti-Dither…	AddOns_AntiDither		Anti-Dither…
-Attempts to reverse the effects of dithering.	AddOns_AntiDither		Essaie d'annuler les effets  du tramage.
-Block size:	AddOns_AntiDither		Taille de bloc:
+Anti-Dither	AddOns_AntiDither		Anti-Halo
+Anti-Dither…	AddOns_AntiDither		Anti-Halo…
+Attempts to reverse the effects of dithering.	AddOns_AntiDither		Essaie d’annuler les effets de halo.
+Block size:	AddOns_AntiDither		Taille de bloc :
 Reduce resolution	AddOns_AntiDither		Réduit la résolution

@@ -1,33 +1,33 @@
-1	Dutch	application/x-vnd.artpaint	3689499495
+1	Dutch	application/x-vnd.artpaint	3981580643
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Je hebt een aanpassing gedaan sinds de laatste keer je project was opgeslagen.\nWil je de aanpassing opslaan?}other{%project_name%: Je hebt # aanpassingen gedaan sinds de laatste keer je project was opgeslagen.\nWil je deze aanpassingen opslaan?}}
 Cancel	ImageView		Annuleren
-Clear selection	ImageView		Verwijder selectie
 Don't save	ImageView		Niet opslaan
 Drop layer to copy it to this image.	ImageView		Sleep een laag om deze te kopiëren naar deze afbeelding.
 Finishing	ImageView		Afronden
 Grow selection	ImageView		Selection laten groeien
 Invert selection	ImageView		Selectie omkeren
 Layer %ld / %ld	ImageView		Laag %ld / %ld
-Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Niet voldoende vrij geheugen om een laag toe te voegen. Je kan geheugen vrijmaken door het uitshakelen van ongedaan maken en sluiten van andere afbeeldingen. Het is ook een goed idee om de afbeelding op te slaan nu, onvoldoende geheugen later kan opslaan moeilijk maken of onmogelijk. We verontschuldigen ons voor dit ongemak.
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Niet voldoende vrij geheugen om een laag toe te voegen. Je kan geheugen vrijmaken door het uitshakelen van ongedaan maken en sluiten van andere afbeeldingen. Het is ook een goed idee om de afbeelding op te slaan nu, onvoldoende geheugen later kan opslaan moeilijk maken of onmogelijk. We verontschuldigen ons voor dit ongemak.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Niet voldoende geheugen op het effect af te ronden welke je wil gebruiken. Ja kan andere afbeeldingen sluiten en opnieuw proberen. Inkrimpen van de diepte van ongedaan maken of volledig uitschakelen hiervan helpt bij het vrijkomen van geheugen. Als je andere toepassingen open hebt, sluiten van deze geeft meer geheugen vrij. Het is een goed idee om je werk op de slaan nu, als het geheugen helemaal op raakt kan het opslaan onmogelijk worden, We verontschuldigen ons voor dit ongemak.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Niet voldoende geheugen op het effect te starten welke je wil gebruiken. Ja kan andere afbeeldingen sluiten en opnieuw proberen. Inkrimpen van de diepte van ongedaan maken of volledig uitschakelen hiervan helpt bij het vrijkomen van geheugen. Als je andere toepassingen open hebt, sluiten van deze geeft meer geheugen vrij. Het is een goed idee om je werk op de slaan nu, als het geheugen helemaal op raakt kan het opslaan onmogelijk worden, We verontschuldigen ons voor dit ongemak.
-OK	ImageView		OK
+OK	ImageView		Ok
 Save	ImageView		Opslaan
+Select all	ImageView		Selecteer alles
+Select non-transparent	ImageView		Select non-transparent
+Select none	ImageView		Selecteer niets
 Shrink selection	ImageView		Krimp selectie
 Unsaved changes!	ImageView		Niet opgeslagen aanpassingen!
 About ArtPaint	PaintWindow		Over ArtPaint
 Active layer	PaintWindow		Actieve laag
-Add	PaintWindow		Add
+Add	PaintWindow		Toevoegen
 Add-ons	PaintWindow		Add-ons
 Adds a layer to the top of this image.	PaintWindow		Voegt een laag toe boven deze afbeelding.
+All	PaintWindow		Alles
 All layers	PaintWindow		Alle lagen
+All non-transparent	PaintWindow		All non-transparent
 Brushes…	PaintWindow		Borstels…
 Canvas	PaintWindow		Canvas
-Clear canvas	PaintWindow		Canvas verwijderen
-Clear layer	PaintWindow		Verwijder laag
-Clear selection	PaintWindow		Verwijder selectie
-Clears all layers.	PaintWindow		Alle lagen verwijderen.
-Clears the active layer.	PaintWindow		Verwijderd de aktive laag.
+Clears the selection or layer.	PaintWindow		Clears the selection or layer.
 Close	PaintWindow		Sluiten
 Closes the current window.	PaintWindow		Sluit het huidige venster.
 Colors…	PaintWindow		Kleuren…
@@ -37,14 +37,14 @@ Copy	PaintWindow		Kopiëren
 Create canvas	PaintWindow		Canvan maken
 Creates a new empty canvas.	PaintWindow		Creëert een nieuwe lege canvas.
 Crop…	PaintWindow		Bijsnijden…
-Crops the image.	PaintWindow		Knipt de afbeelding.
+Crops the canvas.	PaintWindow		Crops the canvas.
 Cut	PaintWindow		Knip
 Cuts the selection from all layers to the clipboard.	PaintWindow		Snijd de selectie van alle lagen naar het klembord.
 Cuts the selection to the clipboard.	PaintWindow		Snijd de selectie naar het klembord.
-Delete	PaintWindow		Delete
-Deletes the selected layer.	PaintWindow		Deletes the selected layer.
-Duplicate	PaintWindow		Duplicate
-Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
+Delete	PaintWindow		Verwijderen
+Deletes the selected layer.	PaintWindow		Verwijderd geselecteerde laag
+Duplicate	PaintWindow		Dupliceer
+Duplicates the selected layer.	PaintWindow		Dupliceert de geselecteerde laag
 Edit	PaintWindow		Bewerken
 Empty paint window	PaintWindow		Leeg verfvenster
 File	PaintWindow		Bestand
@@ -54,21 +54,24 @@ Flips all layers horizontally.	PaintWindow		Draait alle actieve lagen horizontaa
 Flips all layers vertically.	PaintWindow		Draait alle actieve lagen verticaal.
 Flips the active layer horizontally.	PaintWindow		Draait de actieve laag horizontaal.
 Flips the active layer vertically.	PaintWindow		Draait de actieve laag verticaal.
-Grow selection	PaintWindow		Selection laten groeien
+Grow	PaintWindow		Groeien
 Grows the selection in all directions.	PaintWindow		Vergroot de selectie in alle richtingen.
 Height:	PaintWindow		Hoogte:
-Invert selection	PaintWindow		Selectie omkeren
+Hide borders	PaintWindow		Grenzen verbergen
+Hides the selection borders.	PaintWindow		Verbergt de geselecteerde grens
+Invert	PaintWindow		Inverteren
 Inverts the selection	PaintWindow		Keert de selectie om
 Layer	PaintWindow		Laag
 Layers…	PaintWindow		Lagen...
-Merge down	PaintWindow		Merge down
-Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
+Merge down	PaintWindow		Omlaag samenvoegen
+Merges selected layer with the layer below.	PaintWindow		Geselecteerde laag samenvoegen met de laag er onder.
 Moves all layers.	PaintWindow		Verplaatst alle lagen.
 Moves the active layer.	PaintWindow		Verplaatst de actieve laag.
 New project…	PaintWindow		Nieuw project…
+None	PaintWindow		Geen
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Niet voldoende geheugen vrij om de afbeelding te maken. Probeer opnieuw met een kleinere beeldgrootte.
 Off	PaintWindow		Uit
-OK	PaintWindow		OK
+OK	PaintWindow		Ok
 Open image…	PaintWindow		Open afbeelding…
 Open project…	PaintWindow		Open project…
 Opens a project from disk.	PaintWindow		Opent een project van de schijf.
@@ -89,17 +92,17 @@ Quit	PaintWindow		Afsluiten
 Quits ArtPaint.	PaintWindow		Sluit ArtPaint af.
 Recent images	PaintWindow		Recente afbeeldingen
 Recent projects	PaintWindow		Recente projecten
-Redo not available	PaintWindow		Opnieuw uitvoeren niet mogelijk
+Redo	PaintWindow		Redo
 Redos the action that was last undone.	PaintWindow		Voert de actie opnieuw uit die het laatst ongedaan is gemaakt.
-Resize to fit	PaintWindow		Optimale venstergrootte
-Resizes the window to fit image and screen.	PaintWindow		Strekt het venster zodat afbeelding en scherm passend zijn.
+Resize…	PaintWindow		Resize…
+Resizes the canvas.	PaintWindow		Resizes the canvas.
 Rotate -90°	PaintWindow		Draai -90°
 Rotate +90°	PaintWindow		Draai +90°
 Rotate…	PaintWindow		Draaien…
-Rotates all layers 90° clockwise.	PaintWindow		Draait alle lagen 90% met de klok mee.
-Rotates all layers 90° counter-clockwise.	PaintWindow		Draait alle lagen 90% tegen de klok in.
 Rotates all layers.	PaintWindow		Draait alle lagen.
 Rotates the active layer.	PaintWindow		Draait de actieve laag.
+Rotates the canvas 90° clockwise.	PaintWindow		Rotates the canvas 90° clockwise.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Rotates the canvas 90° counter-clockwise.
 Save image	PaintWindow		Afbeelding opslaan
 Save image as…	PaintWindow		Afbeelding opslaan als…
 Save project	PaintWindow		Project opslaan
@@ -109,7 +112,11 @@ Saves the image under its current name.	PaintWindow		Slaat de afbeelding op met 
 Saves the project to disk.	PaintWindow		Slaat het project op naar schijf.
 Saves the project under its current name.	PaintWindow		Slaat het project op met de huidige naam.
 Scale…	PaintWindow		Schalen…
-Scales the image.	PaintWindow		Schaalt de afbeelding.
+Scales all layers.	PaintWindow		Scales all layers.
+Scales the active layer.	PaintWindow		Scales the active layer.
+Selection	PaintWindow		Selectie
+Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
+Selects entire layer	PaintWindow		Selecteert volledige laag
 Set grid	PaintWindow		Raster instellen
 Set zoom level	PaintWindow		Zoom level instellen
 Set/Select the canvas size.	PaintWindow		Instellen/selecteer de canvas grootte.
@@ -123,7 +130,7 @@ Sets the zoom level to 400%.	PaintWindow		Stelt het zoomniveau in op 400%.
 Sets the zoom level to 50%.	PaintWindow		Stelt het zoomniveau in op 50%.
 Sets the zoom level to 800%.	PaintWindow		Stelt het zoomniveau in op 800%.
 Settings…	PaintWindow		Instellingen…
-Shrink selection	PaintWindow		Krimp selectie
+Shrink	PaintWindow		Krimpen
 Shrinks the selection in all directions.	PaintWindow		Krimpt de selectie in alle richtingen.
 Standard sizes	PaintWindow		Standaard groottes
 Tool setup…	PaintWindow		Werktuig instellingen...
@@ -131,7 +138,7 @@ Tools…	PaintWindow		Werktuigen...
 Translate…	PaintWindow		Vertaal…
 Turns the grid off.	PaintWindow		Schakelt het raster uit.
 Un-selects all	PaintWindow		Alles deselecteren.
-Undo not available	PaintWindow		Ongedaan maken niet beschikbaar
+Undo	PaintWindow		Undo
 Undos the previous action.	PaintWindow		Maakt vorig actie ongedaan.
 Untitled	PaintWindow		Ongetiteld
 User manual…	PaintWindow		Gebruikershandleiding…
@@ -149,7 +156,44 @@ Layer transparency	LayerWindow		Laag transparantie
 Layers	LayerWindow		Laagen
 Merge down	LayerWindow		Samensmelten naar onder
 Mode:	LayerWindow		Modus:
-Add area	Tools		Zone toevoegen
+Add layer	Image		Laag toevoegen
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Kan niet de enige laag verwijderen. Creëer een nieuwe afbeelding voor een verse start.
+Delete	Image		Delete
+Delete layer	Image		Verwijder laag
+Merge down	Image		Omlaag samenvoegen
+Merge with layer above	Image		Met laag boven samenvoegen
+OK	Image		OK
+Add-ons	Windows		Add-ons
+Adjustable	Windows		Instelbaar
+Application	Windows		Toepassing
+Brush	Windows		Penseel
+Brushes	Windows		Penselen
+Cancel	Windows		Annuleren
+Colors	Windows		Kleuren
+Colors:	Windows		Kleuren:
+Cross-hair cursor	Windows		Kruiscursor
+Cursor	Windows		Cursor
+Datatype setup: %name%	Windows		Datatype instellen: %name%
+Defaults	Windows		Standaards
+Delete selected brush	Windows		Verwijder geselecteerde penseel
+Drop a color from the Colors window	Windows		Sleep een kleur naar het kleur venster
+Grid size:	Windows		Raster grootte
+Keep in front	Windows		Op de voorgrond houden
+Layers	Windows		Lagen
+Miscellaneous	Windows		Diversen
+No data translator	Windows		Geen data vertaler
+No options	Windows		Geen opties
+Off	Windows		Uit
+OK	Windows		Ok
+Settings	Windows		Instellingen
+Tool cursor	Windows		Werktuig cursor
+Tool setup	Windows		Werktuig instellen
+Tools	Windows		Werktuigen
+Transparency	Windows		Transparantie
+Undo	Windows		Ongedaan maken
+Undo steps:	Windows		Ongedaan maken stappen
+Unlimited	Windows		Onbegrensd
+Windows	Windows		Vensters
 Adjustable width	Tools		Breedte instelbaar
 Adjusting the layer's transparency.	Tools		Aanpassen van de transparantie voor de laag.
 Airbrush	Tools		Luchtborstel
@@ -159,18 +203,16 @@ Amount of paint:	Tools		Hoeveelheid verf:
 Angle:	Tools		Hoek:
 Aspect:	Tools		Aspect:
 Background color	Tools		Achtergrond kleur
-Behavior	Tools		Gedrag
 Blue	Tools		Blauw
 Blur tool	Tools		Vervaag werktuig
 Blurring the image.	Tools		De afbeelding vervagen.
 Brush tool	Tools		Penseel werktuig
-Center to corner	Tools		Centreer naar hoek
 Click to place the text.	Tools		Klik om de tekst te plaatsen.
 Click to use the tool.	Tools		Klik om het werktuig te gebruiken.
 Color picker tool	Tools		Kleur pallet werktuig.
+Color picker window	Tools		Kleurkiezervenster
 Color variance:	Tools		Kleurvariatie:
 Continuous	Tools		Continu
-Corner to corner	Tools		Hoek tot hoek
 Drag the text to correct position and set its appearance.	Tools		Sleep de tekst naar de juiste positie en stel het uiterlijk in.
 Drawing a freehand line.	Tools		Teken een lijn uit vrije hand.
 Drawing a rectangle.	Tools		Teken een rechthoek.
@@ -178,7 +220,7 @@ Drawing a straight line.	Tools		Teken een rechte lijn
 Drawing an ellipse.	Tools		Teken een ellips.
 Ellipse	Tools		Ovaal
 Ellipse tool	Tools		Ovaal werktuig
-Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
+Ellipse: SHIFT for circle, ALT for centered	Tools		Ellips: SHIFT voor cirkel, ALT voor gecentreerd
 Enable antialiasing	Tools		Inschakelen anti-aliasing
 Enable gradient	Tools		Inschakelen verloop
 Enable preview	Tools		Inschakelen voorbeeld
@@ -196,7 +238,7 @@ Green	Tools		Groen
 Hairs:	Tools		Haren:
 Hairy brush tool	Tools		Kwast werktuig
 Hardness:	Tools		Hardheid:
-Hold shift key to snap to 45° angles	Tools		Houd de shift toets om 45° te draaien.
+Hold SHIFT to snap to 45° angles	Tools		Houd SHIFT ingedrukt om in hoeken van 45° te klikken
 Intelligent scissors	Tools		Intelligente scharen
 Little	Tools		Weinig
 Magic wand	Tools		Toverstaf
@@ -213,18 +255,18 @@ Picking a color.	Tools		Kleur kiezen.
 Random	Tools		Willekeurig
 Rectangle	Tools		Rechthoek
 Rectangle tool	Tools		Rechthoek werktuig
-Rectangle: SHIFT for square	Tools		Rectangle: SHIFT for square
+Rectangle: SHIFT for square, ALT for centered	Tools		Rechthoek: SHIFT voor vierkant, ALT voor gecentreerd
 Red	Tools		Rood
 Replace pixels with	Tools		Pixels vervangen met
 Reset brush	Tools		Penseel resetten
 Selection tool	Tools		Selectie werktuig
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selectietool: SHIFT voor vierkant/cirkel, ALT centreert selectie, OPT trekt af
 Size:	Tools		Grootte:
 Speed:	Tools		Snelheid:
 Spray	Tools		Verstuif
 Store brush	Tools		Penseel opslaan
 Straight line tool	Tools		Rechte lijn werktuig
-Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
-Subtract area	Tools		Gebied verwijderen
+Straight line: SHIFT locks 22.5° angles	Tools		Straight line: SHIFT locks 22.5° angles
 Text tool	Tools		Tekst werktuig
 Tolerance:	Tools		Tolerantie:
 Tool setup	Tools		Werktuigen instellingen
@@ -233,48 +275,7 @@ Transparency	Tools		Transparantie
 Transparency tool	Tools		Transparantie werktuig
 Using the airbrush.	Tools		Gebruiken van spuitbus.
 Using the tool.	Tools		Gebruiken van werktuig.
-Wand tolerance	Tools		Staf tolerantie
 Width:	Tools		Breedte:
-Add layer	Image		Laag toevoegen
-Cannot delete the only layer. Create another picture to get a fresh start.	Image		Kan niet de enige laag verwijderen. Creëer een nieuwe afbeelding voor een verse start.
-Clear canvas	Image		Canvas verwijderen
-Clear layer	Image		Verwijder laag
-Delete layer	Image		Verwijder laag
-Merge down	Image		Omlaag samenvoegen
-Merge with layer above	Image		Met laag boven samenvoegen
-OK	Image		OK
-Add-ons	Windows		Add-ons
-Adjustable	Windows		Instelbaar
-Application	Windows		Toepassing
-Brush	Windows		Penseel
-Brushes	Windows		Penselen
-Cancel	Windows		Annuleren
-Colors	Windows		Kleuren
-Colors:	Windows		Kleuren:
-Confirm quitting	Windows		Bevestig afsluiten
-Cross-hair cursor	Windows		Kruiscursor
-Cursor	Windows		Cursor
-Datatype setup: %name%	Windows		Datatype instellen: %name%
-Defaults	Windows		Standaards
-Delete selected brush	Windows		Verwijder geselecteerde penseel
-Drop a color from the Colors window	Windows		Sleep een kleur naar het kleur venster
-Grid size:	Windows		Raster grootte
-Keep in front	Windows		Op de voorgrond houden
-Layers	Windows		Lagen
-Miscellaneous	Windows		Diversen
-No data translator	Windows		Geen data vertaler
-No options	Windows		Geen opties
-Off	Windows		Uit
-OK	Windows		OK
-Settings	Windows		Instellingen
-Tool cursor	Windows		Werktuig cursor
-Tool setup	Windows		Werktuig instellen
-Tools	Windows		Werktuigen
-Transparency	Windows		Transparantie
-Undo	Windows		Ongedaan maken
-Undo steps:	Windows		Ongedaan maken stappen
-Unlimited	Windows		Onbegrensd
-Windows	Windows		Vensters
 Alpha	ColorSliders	For color sliders	Alpha
 Black	ColorSliders	For CMYK color slider	Zwart
 Blue	ColorSliders	For RGB color sliders	Blauw
@@ -290,37 +291,41 @@ Saturation	ColorSliders	For HSV color slider	Verzadiging
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Waarde
 Yellow	ColorSliders	For CMYK color slider	Geel
 Angle:	Manipulators		Hoek:
-Bottom:	Manipulators		Onder:
 Change the transparency with the slider.	Manipulators		Verander de transparantie met de schuifregelaar.
 Change transparency…	Manipulators		Transparantie aanpassen…
-Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Klik op de afbeelding om een nieuwe schaal in te stellen of stel deze in met de numerieke velden.
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Knip: Gebruik handvatten of genummerde velden om nieuwe grenzen in te stellen. SHIFT vergrendeld de beeldverhouding.
 Crop…	Manipulators		Bijsnijden…
-Drag the image to correct position.	Manipulators		Sleep de afbeelding naar de juiste positie.
-Drag the text to correct position and set its appearance.	Manipulators		Sleep de tekst naar de juiste positie en stel het uiterlijk in.
 Enable antialiasing	Manipulators		Inschakelen anti-aliasing
+Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Draai horizontaal
 Flip vertically	Manipulators		Draai verticaal
 Font:	Manipulators		Lettertype:
 Height:	Manipulators		Hoogte:
 Left:	Manipulators		Links:
 Lock	Manipulators	Keep the aspect ratio	Vergrendel
+Lock	Manipulators		Vergrendel
 Opaque	Manipulators		Ondoorzichtig
+Reset to canvas	Manipulators		Reset naar canvas
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
+Resize…	Manipulators		Resize…
 Restore	Manipulators		Herstellen
-Right:	Manipulators		Rechts:
 Rotate -90°	Manipulators		Draai -90°
 Rotate +90°	Manipulators		Draai +90°
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.
 Rotate…	Manipulators		Draaien…
 Rotation:	Manipulators		Draaiing:
+Scale: Drag to resize or use number-fields.	Manipulators		Schalen: Sleep om de grootte aan te passen of gebruik genummerde velden.
 Scale…	Manipulators		Schalen…
 Shear:	Manipulators		Neiging:
 Size:	Manipulators		Grootte:
 Text tool	Manipulators		Tekst werktuig
+Text: Position text and set its appearance.	Manipulators		Tekst: Positioneer tekst en stel het uiterlijk in.
 Top:	Manipulators		Boven:
+Translate: Drag to move or use number-fields.	Manipulators		Vertaal: Sleep voor het aanpassen van genummerde velden.
 Translate…	Manipulators		Vertaal…
 Transparency:	Manipulators		Transparantie:
 Transparent	Manipulators		Transparant
-Use the handles or number-fields to set the new borders.	Manipulators		Gebruik de handvatten of nummervelden om de nieuwe randen in te stellen.
-Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Gebruik de primaire muisknow om te draaien, andere knoppen om het draaicentrum in te stellen.
+Use selection	Manipulators		Gebruik selectie
 Width:	Manipulators		Breedte:
 ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is een teken en afbeelding verwerker programma Haiku.
@@ -328,7 +333,7 @@ ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project formaat bevat lagen etc.
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open afbeelding…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
-OK	PaintApplication		OK
+OK	PaintApplication		Ok
 The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Het bestandstype %file% is niet ondersteund. Je kan een vertaler installeren indien mogelijk.
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Open kleur set…
 Cannot delete the only color set.	ColorPalette		Kan niet de enige kleur set verwijderen.
@@ -354,33 +359,37 @@ Open	FilePanels		Open
 Save	FilePanels		Opslaan
 Save format:	FilePanels		Formaat opslaan
 Settings…	FilePanels		Instellingen…
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Nearest neighbor
 Bummer	UndoQueue		Jammer
 Redo	UndoQueue		Opnieuw uitvoeren
-Redo not available	UndoQueue		Opnieuw uitvoeren niet mogelijk
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Het ongedaan maken is zonder geheugen geraakt.\nDe diepte van ongedaan maken zal gelimiteerd worden zodat de meest recente aanpassingen in het geheugen kunnen blijven. Het is aangeraden om je werk op te slaan op dit punt om verlies van data te voorkomen als het geheugen helemaal vol zit.\nJe kan ook de diepte voor ongedaan maken instellen in het instellingen venster.
 Undo	UndoQueue		Ongedaan maken
-Undo not available	UndoQueue		Ongedaan maken niet beschikbaar
-Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Klik op de afbeelding om te draaien, verplaatsen of uit te rekken.
-Free 2D transform	FreeTransformManipulator		Vrije 2D transformatie
-Color burn	PixelOperations		Color burn
-Color dodge	PixelOperations		Color dodge
-Darken	PixelOperations		Darken
-Difference	PixelOperations		Difference
-Dissolve	PixelOperations		Dissolve
-Divide	PixelOperations		Divide
-Exclusion	PixelOperations		Exclusion
-Hard light	PixelOperations		Hard light
+Color burn	PixelOperations		Kleur branden
+Color dodge	PixelOperations		Kleur ontwijken
+Darken	PixelOperations		Donker maken
+Difference	PixelOperations		Verschil
+Dissolve	PixelOperations		Oplossen
+Divide	PixelOperations		Verdeling
+Exclusion	PixelOperations		Uitsluiten
+Hard light	PixelOperations		Hard licht
 Hard mix	PixelOperations		Hard mix
-Lighten	PixelOperations		Lighten
-Linear burn	PixelOperations		Linear burn
-Linear dodge	PixelOperations		Linear dodge
-Linear light	PixelOperations		Linear light
-Multiply	PixelOperations		Multiply
-Normal	PixelOperations		Normal
+Lighten	PixelOperations		Lichter maken
+Linear burn	PixelOperations		Lineaire verbranding
+Linear dodge	PixelOperations		Lineair ontwijken
+Linear light	PixelOperations		Lineair licht
+Multiply	PixelOperations		Vermeerderen
+Normal	PixelOperations		Normaal
 Overlay	PixelOperations		Overlay
-Pin light	PixelOperations		Pin light
-Screen	PixelOperations		Screen
-Soft light	PixelOperations		Soft light
-Vivid light	PixelOperations		Vivid light
-Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
-Zoom	MagnificationView		Zoom
+Pin light	PixelOperations		Pin licht
+Screen	PixelOperations		Scherm
+Soft light	PixelOperations		Soft licht
+Vivid light	PixelOperations		Levendig licht
+Free 2D transform	FreeTransformManipulator		Vrije 2D transformatie
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformeer: Sleep om te draaien, verplaatsen, of te strekken.
+Left-click for color panel, right-click to switch colors.	StatusView		Klik met de linkermuisknop voor het kleurenpaneel, klik met de rechtermuisknop om van kleur te wisselen.
+Zoom	MagnificationView		Inzoomen

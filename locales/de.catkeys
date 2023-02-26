@@ -1,4 +1,4 @@
-1	German	application/x-vnd.artpaint	3290935729
+1	German	application/x-vnd.artpaint	3981580643
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
 Cancel	ImageView		Abbrechen
 Don't save	ImageView		Verwerfen
@@ -265,7 +265,7 @@ Size:	Tools		Größe:
 Speed:	Tools		Stärke:
 Spray	Tools		Sprühdose
 Store brush	Tools		Stift speichern
-Straight line tool	Tools		Line
+Straight line tool	Tools		Linie
 Straight line: SHIFT locks 22.5° angles	Tools		Linie: SHIFT für 22,5° Winkel
 Text tool	Tools		Text
 Tolerance:	Tools		Toleranz:
@@ -296,6 +296,7 @@ Change transparency…	Manipulators		Transparenz ändern…
 Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Zuschneiden: Per Boxgriffe oder Zahlenfelder neue Größe bestimmen. SHIFT für festes Seitenverhältnis.
 Crop…	Manipulators		Zuschneiden…
 Enable antialiasing	Manipulators		Anti-Aliasing
+Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Horizontal spiegeln
 Flip vertically	Manipulators		Vertikal spiegeln
 Font:	Manipulators		Schriftart:
@@ -305,6 +306,8 @@ Lock	Manipulators	Keep the aspect ratio	Fest
 Lock	Manipulators		Fest
 Opaque	Manipulators		Deckend
 Reset to canvas	Manipulators		Ganzes Bild
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Größe ändern: Neue Größe durch Ziehen oder per Zahlenfelder. SHIFT für festes Seitenverhältnis.
+Resize…	Manipulators		Größe ändern…
 Restore	Manipulators		Reset
 Rotate -90°	Manipulators		Drehen -90°
 Rotate +90°	Manipulators		Drehen +90°
@@ -356,6 +359,12 @@ Open	FilePanels		Öffnen
 Save	FilePanels		Speichern
 Save format:	FilePanels		Format:
 Settings…	FilePanels		Einstellungen…
+Bicubic	ScaleUtilities		Bikubisch
+Bicubic (B-spline)	ScaleUtilities		Bikubisch (B-Spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bikubisch (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		ohne
 Bummer	UndoQueue		Mist
 Redo	UndoQueue		Wiederholen
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Der Rückgängig-Funktion ist der Speicher ausgegangen.\nDie Anzahl der Rückgängig-Schritte wird begrenzt, so dass nur die letzten Schritte im Speicher gehalten werden können. Es wird empfohlen, das Projekt jetzt zu speichern, um nichts zu verlieren, falls der Speicher komplett ausgeht.\nVielleicht sollte auch mal die Anzahl der rückgängig zu machenden Schritte in den Globalen Einstellungen angepasst werden...

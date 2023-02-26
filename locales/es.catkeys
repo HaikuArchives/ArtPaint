@@ -1,18 +1,20 @@
-1	Spanish	application/x-vnd.artpaint	3689499495
+1	Spanish	application/x-vnd.artpaint	3981580643
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Se ha hecho un cambio desde la última vez que se guardó el proyecto.\n¿Desea guardar el cambio?}other{%project_name%: Se han hecho # cambios desde la última vez que se guardó el proyecto.\n¿Desea guardar los cambios?}}
 Cancel	ImageView		Cancelar
-Clear selection	ImageView		Borrar selección
 Don't save	ImageView		No guardar
 Drop layer to copy it to this image.	ImageView		Soltar capa para copiarla en esta imagen.
 Finishing	ImageView		En progreso...
 Grow selection	ImageView		Expandir selección
 Invert selection	ImageView		Invertir selección
 Layer %ld / %ld	ImageView		Capa %ld / %ld
-Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para agregar una nueva capa. Puede liberar memoria desactivando la función de deshacer y cerrando otras imágenes abiertas. También debe guardar la imagen ahora porque no podrá hacerlo más tarde si no tiene memoria. Lo siento mucho por este problema.
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para agregar una nueva capa. Puede liberar memoria desactivando la función de deshacer y cerrando otras imágenes abiertas. También debe guardar la imagen ahora porque no podrá hacerlo más tarde si no tiene memoria. Lo siento mucho por este problema.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para terminar de aplicar este efecto. Puedes cerrar imágenes y volver a intentarlo. Reducir el nivel de cancelación o cancelar la cancelación puede restaurar la memoria. Si tiene otras aplicaciones abiertas, al cerrarlas se liberará de la memoria. También debe guardar su trabajo ahora, porque si la memoria está completamente usada, no podrá guardar. Lo siento mucho por este problema.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para aplicar este efecto. Puedes cerrar imágenes y volver a intentarlo. Reducir el nivel de cancelación o cancelar la cancelación puede restaurar la memoria. Si tiene otras aplicaciones abiertas, al cerrarlas se liberará de la memoria. También debe guardar su trabajo ahora, porque si la memoria está completamente usada, no podrá guardar. Lo siento mucho por este problema.
 OK	ImageView		Aceptar
 Save	ImageView		Guardar
+Select all	ImageView		Seleccionar todo
+Select non-transparent	ImageView		Seleccionar lo no transparente
+Select none	ImageView		Seleccionar ninguno
 Shrink selection	ImageView		Reducir selección
 Unsaved changes!	ImageView		¡Cambios sin guardar!
 About ArtPaint	PaintWindow		Acerca de ArtPaint
@@ -20,16 +22,14 @@ Active layer	PaintWindow		Capa activa
 Add	PaintWindow		Agregar
 Add-ons	PaintWindow		Plugins
 Adds a layer to the top of this image.	PaintWindow		Agrega una capa encima de las otras.
+All	PaintWindow		Todo
 All layers	PaintWindow		Todas las capas
+All non-transparent	PaintWindow		Todo lo no transparente
 Brushes…	PaintWindow		Pinceles…
 Canvas	PaintWindow		Imagen
-Clear canvas	PaintWindow		Borrar la imagen
-Clear layer	PaintWindow		Borrar la capa
-Clear selection	PaintWindow		Borrar selección
-Clears all layers.	PaintWindow		Borrar todas las capas.
-Clears the active layer.	PaintWindow		Borrar la capa activa.
+Clears the selection or layer.	PaintWindow		Limpia la selección o capa.
 Close	PaintWindow		Cerrar
-Closes the current window.	PaintWindow		Cerrar esta ventana.
+Closes the current window.	PaintWindow		Cierra esta ventana.
 Colors…	PaintWindow		Colores…
 Copies the selection of all layers.	PaintWindow		Copia la selección en todas las capas.
 Copies the selection.	PaintWindow		Copia lo seleccionado.
@@ -37,7 +37,7 @@ Copy	PaintWindow		Copiar
 Create canvas	PaintWindow		Crear lienzo
 Creates a new empty canvas.	PaintWindow		Crea un lienzo vacío nuevo.
 Crop…	PaintWindow		Recortar...
-Crops the image.	PaintWindow		Recorta la imagen.
+Crops the canvas.	PaintWindow		Recorta el lienzo.
 Cut	PaintWindow		Cortar
 Cuts the selection from all layers to the clipboard.	PaintWindow		Mueve la selección en todas las capas al portapapeles.
 Cuts the selection to the clipboard.	PaintWindow		Mueve la selección al portapapeles.
@@ -54,10 +54,12 @@ Flips all layers horizontally.	PaintWindow		Invertir horizontalmente todas las c
 Flips all layers vertically.	PaintWindow		Invertir verticalmente todas las capas.
 Flips the active layer horizontally.	PaintWindow		Invertir horizontalmente la capa activa.
 Flips the active layer vertically.	PaintWindow		Invertir verticalmente la capa activa.
-Grow selection	PaintWindow		Expandir la selección
+Grow	PaintWindow		Crecer
 Grows the selection in all directions.	PaintWindow		Extiende la selección en todas las direcciones.
 Height:	PaintWindow		Alto:
-Invert selection	PaintWindow		Invertir la selección
+Hide borders	PaintWindow		Ocultar bordes
+Hides the selection borders.	PaintWindow		Oculta los bordes de la selección.
+Invert	PaintWindow		Invertir
 Inverts the selection	PaintWindow		Invierte la selección
 Layer	PaintWindow		Capa
 Layers…	PaintWindow		Capas…
@@ -66,10 +68,11 @@ Merges selected layer with the layer below.	PaintWindow		Combina la capa selecci
 Moves all layers.	PaintWindow		Mueve todas las capas.
 Moves the active layer.	PaintWindow		Mueve la capa activa.
 New project…	PaintWindow		Proyecto nuevo...
+None	PaintWindow		Ninguno
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Memoria insuficiente para crear la imagen. Por favor intente con un tamaño de imagen más pequeño.
 Off	PaintWindow		Desactivar
 OK	PaintWindow		Aceptar
-Open image…	PaintWindow		Abre una imagen...
+Open image…	PaintWindow		Abrir imagen...
 Open project…	PaintWindow		Abrir proyecto...
 Opens a project from disk.	PaintWindow		Abre un proyecto desde el disco.
 Opens a window with information about ArtPaint.	PaintWindow		Abre una ventana con información sobre ArtPaint.
@@ -89,17 +92,17 @@ Quit	PaintWindow		Salir
 Quits ArtPaint.	PaintWindow		Cierra ArtPaint.
 Recent images	PaintWindow		Imágenes recientes
 Recent projects	PaintWindow		Proyectos recientes
-Redo not available	PaintWindow		Imposible rehacer
+Redo	PaintWindow		Rehacer
 Redos the action that was last undone.	PaintWindow		Restaura la acción que fue cancelada previamente.
-Resize to fit	PaintWindow		Redimensionar
-Resizes the window to fit image and screen.	PaintWindow		Redimensiona la ventana para ajustarse a la imagen y la pantalla.
+Resize…	PaintWindow		Redimensionar…
+Resizes the canvas.	PaintWindow		Rota el lienzo.
 Rotate -90°	PaintWindow		Rotación -90°
 Rotate +90°	PaintWindow		Rotación +90°
 Rotate…	PaintWindow		Rotación…
-Rotates all layers 90° clockwise.	PaintWindow		Rota todas las capas 90° en el sentido de las agujas del reloj.
-Rotates all layers 90° counter-clockwise.	PaintWindow		Rota todas las capas 90° en el sentido contrario a las agujas del reloj.
 Rotates all layers.	PaintWindow		Rota todas las capas.
 Rotates the active layer.	PaintWindow		Rota la capa activa.
+Rotates the canvas 90° clockwise.	PaintWindow		Rota el lienzo 90° en sentido horario.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Rota el lienzo 90° en sentido antihorario.
 Save image	PaintWindow		Guardar imagen
 Save image as…	PaintWindow		Guardar imagen como...
 Save project	PaintWindow		Guardar proyecto
@@ -109,7 +112,11 @@ Saves the image under its current name.	PaintWindow		Guarda la imagen bajo su no
 Saves the project to disk.	PaintWindow		Guarda el proyecto en disco.
 Saves the project under its current name.	PaintWindow		Guarda el proyecto bajo su nombre actual.
 Scale…	PaintWindow		Redimensionar...
-Scales the image.	PaintWindow		Redimensiona la imagen.
+Scales all layers.	PaintWindow		Escala todas las capas.
+Scales the active layer.	PaintWindow		Escala la capa activa.
+Selection	PaintWindow		Selección
+Selects all non-transparent layer pixels	PaintWindow		Selecciona todos pixeles no transparentes en la capa
+Selects entire layer	PaintWindow		Selecciona la capa entera
 Set grid	PaintWindow		Establecer la cuadrícula
 Set zoom level	PaintWindow		Establecer el nivel de ampliación
 Set/Select the canvas size.	PaintWindow		Establece o selecciona el tamaño del lienzo.
@@ -123,7 +130,7 @@ Sets the zoom level to 400%.	PaintWindow		Establecer la zoom para 400%.
 Sets the zoom level to 50%.	PaintWindow		Establecer la zoom para 50%.
 Sets the zoom level to 800%.	PaintWindow		Establecer la zoom para 800%.
 Settings…	PaintWindow		Preferencias...
-Shrink selection	PaintWindow		Reducir selección
+Shrink	PaintWindow		Encoger
 Shrinks the selection in all directions.	PaintWindow		Reduce la selección en todas las direcciones.
 Standard sizes	PaintWindow		Tamaños estandár
 Tool setup…	PaintWindow		Ajustes de herramienta…
@@ -131,7 +138,7 @@ Tools…	PaintWindow		Herramientas…
 Translate…	PaintWindow		Trasladar...
 Turns the grid off.	PaintWindow		Retire la cuadrícula.
 Un-selects all	PaintWindow		Seleccionar nada
-Undo not available	PaintWindow		Imposible deshacer
+Undo	PaintWindow		Deshacer
 Undos the previous action.	PaintWindow		Cancelar la acción anterior.
 Untitled	PaintWindow		Sin titulo
 User manual…	PaintWindow		Manual de usuario…
@@ -149,7 +156,44 @@ Layer transparency	LayerWindow		Transparencia de capa
 Layers	LayerWindow		Capas
 Merge down	LayerWindow		Combinar hacia abajo
 Mode:	LayerWindow		Modo:
-Add area	Tools		Añadir zona
+Add layer	Image		Añadir una capa
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		No se puede borrar la única capa. Cree otra imagen para comenzar de nuevo.
+Delete	Image		Borrar
+Delete layer	Image		Eliminar capa
+Merge down	Image		Combinar hacia abajo
+Merge with layer above	Image		Combinar hacia arriba
+OK	Image		Aceptar
+Add-ons	Windows		Complementos
+Adjustable	Windows		Ajustable
+Application	Windows		Aplicación
+Brush	Windows		Pincel
+Brushes	Windows		Pinceles
+Cancel	Windows		Cancelar
+Colors	Windows		Colores
+Colors:	Windows		Colores:
+Cross-hair cursor	Windows		Cursor en cruz
+Cursor	Windows		Cursor
+Datatype setup: %name%	Windows		Forma del tipo de datos: %name%
+Defaults	Windows		Predeterminados
+Delete selected brush	Windows		Eliminar pincel seleccionado
+Drop a color from the Colors window	Windows		Suelte un color de la ventana Colores
+Grid size:	Windows		Tamaño de cuadrícula:
+Keep in front	Windows		Mantener en primer plano
+Layers	Windows		Capas
+Miscellaneous	Windows		Otros
+No data translator	Windows		No hay traductor de datos
+No options	Windows		Sin opciones
+Off	Windows		Desactivar
+OK	Windows		Aceptar
+Settings	Windows		Preferencias
+Tool cursor	Windows		Cursor de herramienta
+Tool setup	Windows		Ajustes de herramienta
+Tools	Windows		Herramientas
+Transparency	Windows		Transparencia
+Undo	Windows		Deshacer
+Undo steps:	Windows		Pasos de deshacer:
+Unlimited	Windows		Sin límite
+Windows	Windows		Ventanas
 Adjustable width	Tools		Ancho ajustable
 Adjusting the layer's transparency.	Tools		Ajusta la transparencia de la capa.
 Airbrush	Tools		Aerógrafo
@@ -159,18 +203,16 @@ Amount of paint:	Tools		Cantidad de pintura:
 Angle:	Tools		Ángulo:
 Aspect:	Tools		Aspecto:
 Background color	Tools		Color de fondo
-Behavior	Tools		Comportamiento
 Blue	Tools		Azul
 Blur tool	Tools		Desenfoque
 Blurring the image.	Tools		Emborronar la imagen.
 Brush tool	Tools		Pincel
-Center to corner	Tools		Desde el centro hasta la esquina
 Click to place the text.	Tools		Hacer clic para colocar el texto.
 Click to use the tool.	Tools		Hacer clic para usar la herramienta.
 Color picker tool	Tools		Herramienta de recolección de color
+Color picker window	Tools		Ventana de selección de color
 Color variance:	Tools		Variación de color:
 Continuous	Tools		Continuar
-Corner to corner	Tools		De una esquina a otra
 Drag the text to correct position and set its appearance.	Tools		Arrastre el texto a la posición correcta y cambie su apariencia.
 Drawing a freehand line.	Tools		Dibujando una línea a mano alzada.
 Drawing a rectangle.	Tools		Dibujando un rectángulo.
@@ -178,7 +220,7 @@ Drawing a straight line.	Tools		Dibujando una línea recta.
 Drawing an ellipse.	Tools		Dibujando una elipse.
 Ellipse	Tools		Elipse
 Ellipse tool	Tools		Elipse
-Ellipse: SHIFT for circle	Tools		Elipse: MAYÚS. para círculos
+Ellipse: SHIFT for circle, ALT for centered	Tools		Elipse: presionar MAYÚS para un círculo, ALT para centrar
 Enable antialiasing	Tools		Habilitar anti-aliasing
 Enable gradient	Tools		Habilitar degradado
 Enable preview	Tools		Habilitar vista previa
@@ -196,7 +238,7 @@ Green	Tools		Verde
 Hairs:	Tools		Cerdas:
 Hairy brush tool	Tools		Brocha
 Hardness:	Tools		Dureza:
-Hold shift key to snap to 45° angles	Tools		Mantenga la tecla mayús. para dar saltos de 45º
+Hold SHIFT to snap to 45° angles	Tools		Presionar MAYÚS para ajustar en ángulos de 45°
 Intelligent scissors	Tools		Lazo magnético
 Little	Tools		Pequeño
 Magic wand	Tools		Varita mágica
@@ -213,18 +255,18 @@ Picking a color.	Tools		Escoger un color.
 Random	Tools		Aleatorio
 Rectangle	Tools		Rectángulo
 Rectangle tool	Tools		Rectángulo
-Rectangle: SHIFT for square	Tools		Rectángulo: MAYÚS. para cuadrados
+Rectangle: SHIFT for square, ALT for centered	Tools		Rectángulo: presionar MAYÚS para un cuadrado, ALT para centrar
 Red	Tools		Rojo
 Replace pixels with	Tools		Reemplazar píxeles con
 Reset brush	Tools		Reiniciar pincel
 Selection tool	Tools		Herramienta de selección
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Herramienta de selección: presionar MAYÚS para un cuadrado/círculo, ALT para centrar la selección, OPT para restarla
 Size:	Tools		Tamaño:
 Speed:	Tools		Velocidad:
 Spray	Tools		Aerosol
 Store brush	Tools		Guardar pincel
 Straight line tool	Tools		Herramienta de líneas rectas
-Straight line: SHIFT locks 45° angles	Tools		Línea recta: MAYÚS. bloquea en ángulos de 45º
-Subtract area	Tools		Restar zona
+Straight line: SHIFT locks 22.5° angles	Tools		Línea recta: la tecla MAYÚS la fija en cada ángulo de 22,5°
 Text tool	Tools		Texto
 Tolerance:	Tools		Tolerancia:
 Tool setup	Tools		Configuración de herramientas
@@ -233,48 +275,7 @@ Transparency	Tools		Transparencia
 Transparency tool	Tools		Transparencia
 Using the airbrush.	Tools		Usando el aerógrafo.
 Using the tool.	Tools		Usar la herramienta.
-Wand tolerance	Tools		Tolerancia de la varita
 Width:	Tools		Ancho:
-Add layer	Image		Añadir una capa
-Cannot delete the only layer. Create another picture to get a fresh start.	Image		No se puede borrar la única capa. Cree otra imagen para comenzar de nuevo.
-Clear canvas	Image		Borrar la imagen
-Clear layer	Image		Borrar capa
-Delete layer	Image		Eliminar capa
-Merge down	Image		Combinar hacia abajo
-Merge with layer above	Image		Combinar hacia arriba
-OK	Image		Aceptar
-Add-ons	Windows		Complementos
-Adjustable	Windows		Ajustable
-Application	Windows		Aplicación
-Brush	Windows		Pincel
-Brushes	Windows		Pinceles
-Cancel	Windows		Cancelar
-Colors	Windows		Colores
-Colors:	Windows		Colores:
-Confirm quitting	Windows		Confirmar el cierre del programa
-Cross-hair cursor	Windows		Cruz del cursor
-Cursor	Windows		Cursor
-Datatype setup: %name%	Windows		Forma del tipo de datos: %name%
-Defaults	Windows		Predeterminados
-Delete selected brush	Windows		Eliminar pincel seleccionado
-Drop a color from the Colors window	Windows		Suelte un color de la ventana Colores
-Grid size:	Windows		Tamaño de cuadrícula:
-Keep in front	Windows		Mantener en primer plano
-Layers	Windows		Capas
-Miscellaneous	Windows		Diverso
-No data translator	Windows		No hay traductor de datos
-No options	Windows		Sin opciones
-Off	Windows		Desactivar
-OK	Windows		Aceptar
-Settings	Windows		Preferencias
-Tool cursor	Windows		Cursor de herramienta
-Tool setup	Windows		Ajustes de herramienta
-Tools	Windows		Herramientas
-Transparency	Windows		Transparencia
-Undo	Windows		Deshacer
-Undo steps:	Windows		Pasos de deshacer:
-Unlimited	Windows		Sin límite
-Windows	Windows		Ventanas
 Alpha	ColorSliders	For color sliders	Alfa
 Black	ColorSliders	For CMYK color slider	Negro
 Blue	ColorSliders	For RGB color sliders	Azul
@@ -290,37 +291,41 @@ Saturation	ColorSliders	For HSV color slider	Saturación
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Valor
 Yellow	ColorSliders	For CMYK color slider	Amarillo
 Angle:	Manipulators		Ángulo:
-Bottom:	Manipulators		Inferior:
 Change the transparency with the slider.	Manipulators		Cambie la transparencia con el deslizador.
 Change transparency…	Manipulators		Cambiar transparencia...
-Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Haga clic en la imagen para ajustar el nuevo tamaño o ajústelo con los campos numéricos.
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Recortar: usar los manipuladores o los campos numéricos para establecer los bordes nuevos. MAYÚS fija la relación de aspecto.
 Crop…	Manipulators		Recorte...
-Drag the image to correct position.	Manipulators		Mueva la imagen a la posición deseada.
-Drag the text to correct position and set its appearance.	Manipulators		Coloque el texto en la posición correcta y ajuste su aspecto.
 Enable antialiasing	Manipulators		Habilitar anti-aliasing
+Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Voltear horizontalmente
 Flip vertically	Manipulators		Voltear verticalmente
 Font:	Manipulators		Fuente:
 Height:	Manipulators		Alto:
 Left:	Manipulators		Izquierda:
 Lock	Manipulators	Keep the aspect ratio	Bloquear
+Lock	Manipulators		Bloquear
 Opaque	Manipulators		Opaca
+Reset to canvas	Manipulators		Reestablecer al lienzo
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
+Resize…	Manipulators		Resize…
 Restore	Manipulators		Restablecer
-Right:	Manipulators		Derecha:
 Rotate -90°	Manipulators		Rotación -90°
 Rotate +90°	Manipulators		Rotación +90°
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotar: arrastrar con el clic izquierdo para rotar, clic derecho para establecer el centro de rotación, MAYÚS para ajustar el ángulo.
 Rotate…	Manipulators		Rotar…
 Rotation:	Manipulators		Rotación:
+Scale: Drag to resize or use number-fields.	Manipulators		Escalar: arrastrar para redimensionar o usar los campos numéricos.
 Scale…	Manipulators		Redimensionar...
 Shear:	Manipulators		Inclinación:
 Size:	Manipulators		Tamaño:
 Text tool	Manipulators		Texto
+Text: Position text and set its appearance.	Manipulators		Texto: coloca un texto y determina su apariencia.
 Top:	Manipulators		Encima:
+Translate: Drag to move or use number-fields.	Manipulators		Trasladar: arrastrar para mover o usar los campos numéricos.
 Translate…	Manipulators		Trasladar...
 Transparency:	Manipulators		Transparencia:
 Transparent	Manipulators		Transparente
-Use the handles or number-fields to set the new borders.	Manipulators		Utilice los controles o los campos numéricos para ajustar los nuevos bordes.
-Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Use el botón izquierdo del ratón para rotar, y el derecho para cambiar el centro de rotación.
+Use selection	Manipulators		Usar selección
 Width:	Manipulators		Ancho:
 ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint es un programa de pintura y de procesamiento de imágenes para Haiku.
@@ -354,14 +359,16 @@ Open	FilePanels		Abrir
 Save	FilePanels		Guardar
 Save format:	FilePanels		Formato:
 Settings…	FilePanels		Preferencias...
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Nearest neighbor
 Bummer	UndoQueue		Problema
 Redo	UndoQueue		Rehacer
-Redo not available	UndoQueue		Imposible rehacer
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		El mecanismo para rehacer se ha quedado sin memoria.\nSe limitará el tamaño del historial de acciones para que solo los eventos más recientes permanezcan en memoria. Se recomienda guardar cualquier modificación, para evitar pérdidas en caso de que se agote toda la memoria.\nProbablemente también debería ajustar el tamaño del historial en la ventana de Preferencias.
 Undo	UndoQueue		Deshacer
-Undo not available	UndoQueue		Imposible deshacer
-Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Pulse en la imagen para rotarla, moverla o estirarla.
-Free 2D transform	FreeTransformManipulator		Transformación libre 2D
 Color burn	PixelOperations		Subexponer color
 Color dodge	PixelOperations		Sobreexponer color
 Darken	PixelOperations		Oscurecer
@@ -382,5 +389,7 @@ Pin light	PixelOperations		Bloquear luz
 Screen	PixelOperations		Pantalla
 Soft light	PixelOperations		Luz suave
 Vivid light	PixelOperations		Luz intensa
+Free 2D transform	FreeTransformManipulator		Transformación libre 2D
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformar: arrastrar para rotar, mover o estirar.
 Left-click for color panel, right-click to switch colors.	StatusView		El botón izquierdo abre el panel de colores, y el derecho los intercambia.
 Zoom	MagnificationView		Ampliar

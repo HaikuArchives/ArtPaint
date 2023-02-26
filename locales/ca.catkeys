@@ -1,33 +1,33 @@
-1	Catalan	application/x-vnd.artpaint	3689499495
+1	Catalan	application/x-vnd.artpaint	3981580643
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Heu fet un canvi des de l'última vegada que s'ha desat el projecte.\nVoleu desar el canvi?}other{%project_name%: Heu fet # canvis des de l'última vegada el projecte s'ha desat.\nVoleu desar els canvis?}}
 Cancel	ImageView		Cancel·la
-Clear selection	ImageView		Neteja la selecció
 Don't save	ImageView		No ho desis
 Drop layer to copy it to this image.	ImageView		Deixeu anar la capa per copiar-la a aquesta imatge.
 Finishing	ImageView		S'acaba
 Grow selection	ImageView		Incrementa la selecció
 Invert selection	ImageView		Inverteix la selecció
 Layer %ld / %ld	ImageView		Capa %ld / %ld
-Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		No hi ha prou memòria lliure per afegir-hi una capa. Podeu alliberar més memòria desactivant la funció de desfer i tancant altres imatges. També és una bona idea desar la imatge ara perquè quedar-se sense memòria més endavant pot dificultar o fer impossible desar-la. Em sap molt greu aquest inconvenient.
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		No hi ha prou memòria lliure per afegir-hi una capa. Podeu alliberar més memòria desactivant la funció de desfer i tancant altres imatges. També és una bona idea desar la imatge ara perquè quedar-se sense memòria més endavant pot dificultar o fer impossible desar-la. Em sap molt greu aquest inconvenient.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No hi ha prou memòria lliure per acabar l'efecte que heu sol·licitat. Podeu tancar altres imatges i tornar-ho a provar. També escurçar la profunditat de l'acció de desfer o desactivar-la totalment ajuda a aconseguir més memòria. Si teniu altres aplicacions en execució, tancar-les ofereix més memòria lliure. També és una bona idea desar la feina en aquest punt, perquè si la memòria s'esgota completament, pot ser impossible desar-la. Em sap molt greu aquest inconvenient.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No hi ha prou memòria lliure per iniciar l'efecte que heu sol·licitat. Podeu tancar altres imatges i tornar-ho a provar. També escurçar la profunditat de l'acció de desfer o desactivar-la toalment ajuda a aconseguir més memòria. Si teniu altres aplicacions en execució, tancar-les ofereix més memòria lliure. També és una bona idea desar la feina en aquest punt, perquè si la memòria s'esgota completament, pot ser impossible desar-la. Em sap molt greu aquest inconvenient.
 OK	ImageView		D'acord
 Save	ImageView		Desa
+Select all	ImageView		Selecciona-ho tot
+Select non-transparent	ImageView		Selecciona no transparent
+Select none	ImageView		No en seleccionis cap
 Shrink selection	ImageView		Redueix la selecció
 Unsaved changes!	ImageView		Canvis no desats!
 About ArtPaint	PaintWindow		Sobre l'ArtPaint
 Active layer	PaintWindow		Capa activa
-Add	PaintWindow		Add
+Add	PaintWindow		Afegeix
 Add-ons	PaintWindow		Complements
 Adds a layer to the top of this image.	PaintWindow		Afegeix una capa sobre aquesta imatge.
+All	PaintWindow		Tot
 All layers	PaintWindow		Totes les capes
+All non-transparent	PaintWindow		Tot no transparent
 Brushes…	PaintWindow		Pinzells…
 Canvas	PaintWindow		Tela
-Clear canvas	PaintWindow		Neteja la tela
-Clear layer	PaintWindow		Neteja la capa
-Clear selection	PaintWindow		Neteja la selecció
-Clears all layers.	PaintWindow		Neteja totes les capes.
-Clears the active layer.	PaintWindow		Neteja la capa activa.
+Clears the selection or layer.	PaintWindow		Esborra la selecció o la capa.
 Close	PaintWindow		Tanca
 Closes the current window.	PaintWindow		Tanca la finestra actual.
 Colors…	PaintWindow		Colors…
@@ -37,14 +37,14 @@ Copy	PaintWindow		Copia
 Create canvas	PaintWindow		Crea una tela
 Creates a new empty canvas.	PaintWindow		Crea una tela nova buida.
 Crop…	PaintWindow		Escapça...
-Crops the image.	PaintWindow		Retalla la imatge.
+Crops the canvas.	PaintWindow		Retalla el llenç.
 Cut	PaintWindow		Retalla
 Cuts the selection from all layers to the clipboard.	PaintWindow		Retalla la selecció de totes les capes al porta-retalls.
 Cuts the selection to the clipboard.	PaintWindow		Retalla la selecció al porta-retalls.
-Delete	PaintWindow		Delete
-Deletes the selected layer.	PaintWindow		Deletes the selected layer.
-Duplicate	PaintWindow		Duplicate
-Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
+Delete	PaintWindow		Suprimeix
+Deletes the selected layer.	PaintWindow		Esborra la capa seleccionada.
+Duplicate	PaintWindow		Duplica
+Duplicates the selected layer.	PaintWindow		Duplica la capa seleccionada.
 Edit	PaintWindow		Edita
 Empty paint window	PaintWindow		Finestra de pintura buida
 File	PaintWindow		Fitxer
@@ -54,18 +54,21 @@ Flips all layers horizontally.	PaintWindow		Gira totes les capes horitzontalment
 Flips all layers vertically.	PaintWindow		Gira totes les capes verticalment.
 Flips the active layer horizontally.	PaintWindow		Gira la capa activa horitzontalment.
 Flips the active layer vertically.	PaintWindow		Gira la capa activa verticalment.
-Grow selection	PaintWindow		Incrementa la selecció
+Grow	PaintWindow		Creix
 Grows the selection in all directions.	PaintWindow		Augmenta la selecció en totes direccions.
 Height:	PaintWindow		Alçària:
-Invert selection	PaintWindow		Inverteix la selecció
+Hide borders	PaintWindow		Amaga les vores
+Hides the selection borders.	PaintWindow		Amaga les vores de la selecció.
+Invert	PaintWindow		Inverteix
 Inverts the selection	PaintWindow		Inverteix la selecció
 Layer	PaintWindow		Capa
 Layers…	PaintWindow		Capes…
-Merge down	PaintWindow		Merge down
-Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
+Merge down	PaintWindow		Fusió avall
+Merges selected layer with the layer below.	PaintWindow		Fusiona la capa seleccionada amb la capa de sota.
 Moves all layers.	PaintWindow		Mou totes les capes.
 Moves the active layer.	PaintWindow		Mou la capa activa.
 New project…	PaintWindow		Projecte nou...
+None	PaintWindow		Cap
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		No hi ha prou memòria lliure per crear la imatge. Si us plau, torneu-ho a provar amb una mida d'imatge més petita.
 Off	PaintWindow		INACTIU
 OK	PaintWindow		D'acord
@@ -89,17 +92,17 @@ Quit	PaintWindow		Surt
 Quits ArtPaint.	PaintWindow		Tanca l'ArtPaint.
 Recent images	PaintWindow		Imatges recents
 Recent projects	PaintWindow		Projectes recents
-Redo not available	PaintWindow		Acció de refer no disponible
+Redo	PaintWindow		Refés
 Redos the action that was last undone.	PaintWindow		Torna a fer l'acció que es va desfer per darrera vegada.
-Resize to fit	PaintWindow		Canvia'n la mida perquè s'adapti
-Resizes the window to fit image and screen.	PaintWindow		Canvia la mida de la finestra per adaptar-la a la imatge i la pantalla.
+Resize…	PaintWindow		Canvia'n la mida...
+Resizes the canvas.	PaintWindow		Canvia la mida del llenç.
 Rotate -90°	PaintWindow		Gira -90°
 Rotate +90°	PaintWindow		Gira +90°
 Rotate…	PaintWindow		Gira...
-Rotates all layers 90° clockwise.	PaintWindow		Gira totes les capes 90° en sentit horari.
-Rotates all layers 90° counter-clockwise.	PaintWindow		Gira totes les capes 90° en sentit contrari a les agulles del rellotge.
 Rotates all layers.	PaintWindow		Gira totes les capes.
 Rotates the active layer.	PaintWindow		Gira la capa activa.
+Rotates the canvas 90° clockwise.	PaintWindow		Gira el llenç 90° en sentit horari.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Gira el llenç 90° en sentit contrari a les agulles del rellotge.
 Save image	PaintWindow		Desa la imatge
 Save image as…	PaintWindow		Desa la imatge com a...
 Save project	PaintWindow		Desa el projecte
@@ -109,7 +112,11 @@ Saves the image under its current name.	PaintWindow		Desa la imatge amb el nom a
 Saves the project to disk.	PaintWindow		Desa el projecte al disc.
 Saves the project under its current name.	PaintWindow		Desa el projecte amb el nom actual.
 Scale…	PaintWindow		Escala...
-Scales the image.	PaintWindow		Escala la imatge.
+Scales all layers.	PaintWindow		Escala totes les capes.
+Scales the active layer.	PaintWindow		Escala la capa activa.
+Selection	PaintWindow		Selecció
+Selects all non-transparent layer pixels	PaintWindow		Selecciona tots els píxels de capa no transparents
+Selects entire layer	PaintWindow		Selecciona la capa sencera
 Set grid	PaintWindow		Estableix la graella
 Set zoom level	PaintWindow		Estableix el nivell d'apliació
 Set/Select the canvas size.	PaintWindow		Estableix / selecciona la mida de la tela.
@@ -123,7 +130,7 @@ Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400 %.
 Sets the zoom level to 50%.	PaintWindow		Estableix el nivell d'ampliació al 50 %.
 Sets the zoom level to 800%.	PaintWindow		Estableix el nivell d'ampliació al 800 %.
 Settings…	PaintWindow		Paràmetres...
-Shrink selection	PaintWindow		Encongeix la selecció
+Shrink	PaintWindow		Encongeix
 Shrinks the selection in all directions.	PaintWindow		Redueix la selecció en totes les direccions.
 Standard sizes	PaintWindow		Mides estàndards
 Tool setup…	PaintWindow		Configuració de l'eina...
@@ -131,7 +138,7 @@ Tools…	PaintWindow		Eines…
 Translate…	PaintWindow		Tradueix...
 Turns the grid off.	PaintWindow		Desactiva la graella.
 Un-selects all	PaintWindow		Desselecciona-ho tot
-Undo not available	PaintWindow		L'acció de desfer no està disponible.
+Undo	PaintWindow		Desfés
 Undos the previous action.	PaintWindow		Desfà l'acció anterior.
 Untitled	PaintWindow		Sense títol
 User manual…	PaintWindow		Manual de l'usuari...
@@ -141,107 +148,20 @@ Zoom in	PaintWindow		Amplia
 Zoom out	PaintWindow		Redueix
 Zooms into the image.	PaintWindow		Apropa la imatge
 Zooms out from the image.	PaintWindow		Allunya la imatge
-Add	LayerWindow		Add
-Delete	LayerWindow		Delete
-Duplicate	LayerWindow		Duplicate
-Layer	LayerWindow		Layer
+Add	LayerWindow		Afegeix
+Delete	LayerWindow		Suprimeix
+Duplicate	LayerWindow		Duplica
+Layer	LayerWindow		Capa
 Layer transparency	LayerWindow		Transparència de la capa
 Layers	LayerWindow		Capes
-Merge down	LayerWindow		Merge down
+Merge down	LayerWindow		Fusió avall
 Mode:	LayerWindow		Mode:
-Add area	Tools		Afegeix-hi una àrea
-Adjustable width	Tools		Amplada ajustable
-Adjusting the layer's transparency.	Tools		Ajust de la transparència de la capa.
-Airbrush	Tools		Aerògraf
-Airbrush tool	Tools		Eina d'aerògraf
-Alpha	Tools		Alfa
-Amount of paint:	Tools		Quantitat de pintura:
-Angle:	Tools		Angle:
-Aspect:	Tools		Aspecte:
-Background color	Tools		Color de fons
-Behavior	Tools		Comportament
-Blue	Tools		Blau
-Blur tool	Tools		Eina de desenfocament
-Blurring the image.	Tools		Desenfoca la imatge.
-Brush tool	Tools		Eina de pinzell
-Center to corner	Tools		Del centre al cantó
-Click to place the text.	Tools		Cliqueu per col·locar el text.
-Click to use the tool.	Tools		Cliqueu per usar l'eina.
-Color picker tool	Tools		Eina de selecció de colors
-Color variance:	Tools		Variància del color:
-Continuous	Tools		Contínua
-Corner to corner	Tools		De cantó a cantó
-Drag the text to correct position and set its appearance.	Tools		Arrossegueu el text a la posició correcta i definiu-ne l'aparença.
-Drawing a freehand line.	Tools		Es dibuixa una línia a mà.
-Drawing a rectangle.	Tools		Es dibuixa un rectangle.
-Drawing a straight line.	Tools		Es dibuixa una línia recta.
-Drawing an ellipse.	Tools		Es dibuixa una el·lipse.
-Ellipse	Tools		El·lipse
-Ellipse tool	Tools		Eina d'el·lipse
-Ellipse: SHIFT for circle	Tools		Ellipse: SHIFT for circle
-Enable antialiasing	Tools		Habilita l'antialiàsing
-Enable gradient	Tools		Habilita el gradient
-Enable preview	Tools		Habilita la previsualització
-Enable rotation	Tools		Habilita la rotació
-Eraser tool	Tools		Eina d'esborrardor
-Erasing pixels.	Tools		Esborrament de píxels
-Fill ellipse	Tools		Omple l'el·lipse
-Fill rectangle	Tools		Omple el rectangle
-Fill tool	Tools		Eina d'ompliment
-Flood fill	Tools		Ompliment d'inundació
-Flow:	Tools		Flux:
-Freehand	Tools		A mà alçada
-Freehand line tool	Tools		Eina de línia a mà alçada
-Green	Tools		Verd
-Hairs:	Tools		Pèls:
-Hairy brush tool	Tools		Eina de pinzell pelut
-Hardness:	Tools		Duresa:
-Hold shift key to snap to 45° angles	Tools		Manteniu premuda la tecla Maj per ajustar-lo a angles de 45°
-Intelligent scissors	Tools		Tisores intel·ligents
-Little	Tools		Poc
-Magic wand	Tools		Vareta màgica
-Making a fill.	Tools		S'omple.
-Making a selection.	Tools		Es fa una selecció.
-Mode	Tools		Mode
-Much	Tools		Molt
-No configuration options available.	Tools		No hi ha opcions de configuració disponibles.
-None	Tools		Cap
-Options	Tools		Opcions
-Painting with a brush.	Tools		Es pinta amb un pinzell.
-Painting with a hairy brush.	Tools		Es pinta amb un pinzell gruixut.
-Picking a color.	Tools		Es tria un color.
-Random	Tools		Aleatori
-Rectangle	Tools		Rectangle
-Rectangle tool	Tools		Eina de rectangle
-Rectangle: SHIFT for square	Tools		Rectangle: SHIFT for square
-Red	Tools		Vermell
-Replace pixels with	Tools		Substitueix els píxels per
-Reset brush	Tools		Restableix el pinzell
-Selection tool	Tools		Eina de selecció
-Size:	Tools		Mida:
-Speed:	Tools		Velocitat:
-Spray	Tools		Esprai
-Store brush	Tools		Desa el pinzell
-Straight line tool	Tools		Eina de línia recta
-Straight line: SHIFT locks 45° angles	Tools		Straight line: SHIFT locks 45° angles
-Subtract area	Tools		Resta l'àrea
-Text tool	Tools		Eina de text
-Tolerance:	Tools		Tolerància:
-Tool setup	Tools		Configuració de l'eina
-Tools	Tools		Eines
-Transparency	Tools		Transparència
-Transparency tool	Tools		Eina de transparència
-Using the airbrush.	Tools		S'usa l'aerògraf.
-Using the tool.	Tools		S'usa l'eina.
-Wand tolerance	Tools		Tolerància a la vareta
-Width:	Tools		Amplada:
 Add layer	Image		Afegeix-hi una capa
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		No es pot suprimir l'única capa. Creeu una altra imatge per començar de zero.
-Clear canvas	Image		Neteja la tela
-Clear layer	Image		Neteja la capa
+Delete	Image		Suprimeix
 Delete layer	Image		Suprimeix la capa
-Merge down	Image		Merge down
-Merge with layer above	Image		Merge with layer above
+Merge down	Image		Fusió avall
+Merge with layer above	Image		Fusió amb la capa superior
 OK	Image		D'acord
 Add-ons	Windows		Complements
 Adjustable	Windows		Ajustable
@@ -251,7 +171,6 @@ Brushes	Windows		Pinzells
 Cancel	Windows		Cancel·la
 Colors	Windows		Colors
 Colors:	Windows		Colors:
-Confirm quitting	Windows		Confirmeu-ne la sortida
 Cross-hair cursor	Windows		Cursor creuat
 Cursor	Windows		Cursor
 Datatype setup: %name%	Windows		Configuració del tipus de dades: %name%
@@ -275,52 +194,138 @@ Undo	Windows		Desfés
 Undo steps:	Windows		Passos de l'acció de desfer:
 Unlimited	Windows		Sense límit
 Windows	Windows		Finestres
-Alpha	ColorSliders	For color sliders	Alpha
-Black	ColorSliders	For CMYK color slider	Black
-Blue	ColorSliders	For RGB color sliders	Blue
-Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel a
-Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel b
-Cyan	ColorSliders	For CMYK color slider	Cyan
-Green	ColorSliders	For RGB color sliders	Green
-Hue	ColorSliders	For HSV color slider	Hue
-Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lightness
+Adjustable width	Tools		Amplada ajustable
+Adjusting the layer's transparency.	Tools		Ajust de la transparència de la capa.
+Airbrush	Tools		Aerògraf
+Airbrush tool	Tools		Eina d'aerògraf
+Alpha	Tools		Alfa
+Amount of paint:	Tools		Quantitat de pintura:
+Angle:	Tools		Angle:
+Aspect:	Tools		Aspecte:
+Background color	Tools		Color de fons
+Blue	Tools		Blau
+Blur tool	Tools		Eina de desenfocament
+Blurring the image.	Tools		Desenfoca la imatge.
+Brush tool	Tools		Eina de pinzell
+Click to place the text.	Tools		Cliqueu per col·locar el text.
+Click to use the tool.	Tools		Cliqueu per usar l'eina.
+Color picker tool	Tools		Eina de selecció de colors
+Color picker window	Tools		Finestra del selector de color
+Color variance:	Tools		Variància del color:
+Continuous	Tools		Contínua
+Drag the text to correct position and set its appearance.	Tools		Arrossegueu el text a la posició correcta i definiu-ne l'aparença.
+Drawing a freehand line.	Tools		Es dibuixa una línia a mà.
+Drawing a rectangle.	Tools		Es dibuixa un rectangle.
+Drawing a straight line.	Tools		Es dibuixa una línia recta.
+Drawing an ellipse.	Tools		Es dibuixa una el·lipse.
+Ellipse	Tools		El·lipse
+Ellipse tool	Tools		Eina d'el·lipse
+Ellipse: SHIFT for circle, ALT for centered	Tools		El·lipse: MAJ per al cercle, ALT per centrar-ho
+Enable antialiasing	Tools		Habilita l'antialiàsing
+Enable gradient	Tools		Habilita el gradient
+Enable preview	Tools		Habilita la previsualització
+Enable rotation	Tools		Habilita la rotació
+Eraser tool	Tools		Eina d'esborrardor
+Erasing pixels.	Tools		Esborrament de píxels
+Fill ellipse	Tools		Omple l'el·lipse
+Fill rectangle	Tools		Omple el rectangle
+Fill tool	Tools		Eina d'ompliment
+Flood fill	Tools		Ompliment d'inundació
+Flow:	Tools		Flux:
+Freehand	Tools		A mà alçada
+Freehand line tool	Tools		Eina de línia a mà alçada
+Green	Tools		Verd
+Hairs:	Tools		Pèls:
+Hairy brush tool	Tools		Eina de pinzell pelut
+Hardness:	Tools		Duresa:
+Hold SHIFT to snap to 45° angles	Tools		Manteniu premuda la tecla MAJ per ajustar-ho a angles de 45°.
+Intelligent scissors	Tools		Tisores intel·ligents
+Little	Tools		Poc
+Magic wand	Tools		Vareta màgica
+Making a fill.	Tools		S'omple.
+Making a selection.	Tools		Es fa una selecció.
+Mode	Tools		Mode
+Much	Tools		Molt
+No configuration options available.	Tools		No hi ha opcions de configuració disponibles.
+None	Tools		Cap
+Options	Tools		Opcions
+Painting with a brush.	Tools		Es pinta amb un pinzell.
+Painting with a hairy brush.	Tools		Es pinta amb un pinzell gruixut.
+Picking a color.	Tools		Es tria un color.
+Random	Tools		Aleatori
+Rectangle	Tools		Rectangle
+Rectangle tool	Tools		Eina de rectangle
+Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: MAJ per al quadrat, ALT per centrar-ho
+Red	Tools		Vermell
+Replace pixels with	Tools		Substitueix els píxels per
+Reset brush	Tools		Restableix el pinzell
+Selection tool	Tools		Eina de selecció
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Eina de selecció: MAJ per al quadrat / cercle, ALT per centrar la selecció, OPT resta
+Size:	Tools		Mida:
+Speed:	Tools		Velocitat:
+Spray	Tools		Esprai
+Store brush	Tools		Desa el pinzell
+Straight line tool	Tools		Eina de línia recta
+Straight line: SHIFT locks 22.5° angles	Tools		Línia recta: MAJ. bloqueja angles de 22,5°.
+Text tool	Tools		Eina de text
+Tolerance:	Tools		Tolerància:
+Tool setup	Tools		Configuració de l'eina
+Tools	Tools		Eines
+Transparency	Tools		Transparència
+Transparency tool	Tools		Eina de transparència
+Using the airbrush.	Tools		S'usa l'aerògraf.
+Using the tool.	Tools		S'usa l'eina.
+Width:	Tools		Amplada:
+Alpha	ColorSliders	For color sliders	Alfa
+Black	ColorSliders	For CMYK color slider	Negre
+Blue	ColorSliders	For RGB color sliders	Blau
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Canal a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Canal b
+Cyan	ColorSliders	For CMYK color slider	Cian
+Green	ColorSliders	For RGB color sliders	Verd
+Hue	ColorSliders	For HSV color slider	To
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lluminositat
 Magenta	ColorSliders	For CMYK color slider	Magenta
-Red	ColorSliders	For RGB color sliders	Red
-Saturation	ColorSliders	For HSV color slider	Saturation
-Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Value
-Yellow	ColorSliders	For CMYK color slider	Yellow
+Red	ColorSliders	For RGB color sliders	Vermell
+Saturation	ColorSliders	For HSV color slider	Saturació
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Valor
+Yellow	ColorSliders	For CMYK color slider	Groc
 Angle:	Manipulators		Angle:
-Bottom:	Manipulators		Fons:
 Change the transparency with the slider.	Manipulators		Canvieu-ne la transparència amb el control lliscant.
 Change transparency…	Manipulators		Canvia'n la transparència...
-Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Cliqueu a la imatge per establir-ne l'escala nova o establiu-la amb els camps numèrics.
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Retalla: useu manetes o camps numèrics per establir vores noves.La tecla MAJ bloca la relació d'aspecte.
 Crop…	Manipulators		Retalla…
-Drag the image to correct position.	Manipulators		Arrossegueu la imatge a la posició correcta.
-Drag the text to correct position and set its appearance.	Manipulators		Arrossegueu el text a la posició correcta i establiu-ne l'aparença.
 Enable antialiasing	Manipulators		Habilita l'antialiasing
+Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Gira horitzontalment
 Flip vertically	Manipulators		Gira verticalment
 Font:	Manipulators		Lletra:
 Height:	Manipulators		Alçària:
 Left:	Manipulators		Esquerra:
 Lock	Manipulators	Keep the aspect ratio	Bloca
+Lock	Manipulators		Bloca
 Opaque	Manipulators		Opac
+Reset to canvas	Manipulators		Restableix al llenç
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
+Resize…	Manipulators		Resize…
 Restore	Manipulators		Restaura
-Right:	Manipulators		Dreta:
 Rotate -90°	Manipulators		Gira -90°
 Rotate +90°	Manipulators		Gira +90°
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Girar: arrossegueu amb l'esquerra per girar, cliqueu amb el botó dret per establir el centre de rotació, MAJ. per ajustar-ne l'angle.
 Rotate…	Manipulators		Gira...
 Rotation:	Manipulators		Rotació:
+Scale: Drag to resize or use number-fields.	Manipulators		Escala: arrossegueu per canviar-ne la mida o useu camps numèrics.
 Scale…	Manipulators		Escala...
 Shear:	Manipulators		Esquila:
 Size:	Manipulators		Mida:
 Text tool	Manipulators		Eina de text
+Text: Position text and set its appearance.	Manipulators		Text: col·loqueu el text i definiu-ne l'aparença.
 Top:	Manipulators		A dalt:
+Translate: Drag to move or use number-fields.	Manipulators		Traduir: arrossegueu-ho per moure-ho o useu camps numèrics.
 Translate…	Manipulators		Tradueix...
 Transparency:	Manipulators		Transparència:
 Transparent	Manipulators		Transparent
-Use the handles or number-fields to set the new borders.	Manipulators		Useu les manetes o els camps numèrics per establir-ne les vores noves.
-Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Useu el botó principal del ratolí per girar i els altres botons per establir-ne el centre de la rotació.
+Use selection	Manipulators		Usa la selecció
 Width:	Manipulators		Amplada:
 ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		L'ArtPaint és un programa de pintura i processament d'imatges per al Haiku.
@@ -341,11 +346,11 @@ Delete current set	ColorPalette		Suprimeix-ne el conjunt actual.
 Error reading file	ColorPalette		Error en llegir el fitxer
 File structure corrupted	ColorPalette		Estructura del fitxer malmesa
 New color set	ColorPalette		Conjunt de colors nou
-Next color set	ColorPalette	In Color Palette window	Next color set
+Next color set	ColorPalette	In Color Palette window	Conjunt de colors següent
 Not a color set file	ColorPalette		No és un fitxer de conjunt de colors.
 OK	ColorPalette		D'acord
 Open color set…	ColorPalette		Obre el conjunt de colors...
-Previous color set	ColorPalette	In Color Palette window	Previous color set
+Previous color set	ColorPalette	In Color Palette window	Conjunt de colors anterior
 Save color set	ColorPalette		Desa el conjunt de colors
 ArtPaint: Save image	FilePanels		ArtPaint: Desa la imatge
 Cancel	FilePanels		Cancel·la
@@ -354,33 +359,37 @@ Open	FilePanels		Obre
 Save	FilePanels		Desa
 Save format:	FilePanels		Format per desar:
 Settings…	FilePanels		Paràmetres...
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Nearest neighbor
 Bummer	UndoQueue		Llàstima!
 Redo	UndoQueue		Refés
-Redo not available	UndoQueue		L'acció de refer no està disponible.
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		El mecanisme de desfer s'ha quedat sense memòria.\nLa profunditat de l'acció de desfer es limitarà perquè els esdeveniments més recents es puguin desar a la memòria. És recomanable desar la feina en aquest punt per evitar qualsevol pèrdua de dades en cas que la memòria s'esgoti completament.\nTambé podeu ajustar la profunditat de l'acció de desfer a la finestra de configuració.
 Undo	UndoQueue		Desfés
-Undo not available	UndoQueue		L'acció de desfer no està disponible.
-Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Cliqueu a la imatge per girar-la, moure-la o estirar-la.
-Free 2D transform	FreeTransformManipulator		Transformació a 2D lliure
-Color burn	PixelOperations		Color burn
-Color dodge	PixelOperations		Color dodge
-Darken	PixelOperations		Darken
-Difference	PixelOperations		Difference
-Dissolve	PixelOperations		Dissolve
-Divide	PixelOperations		Divide
-Exclusion	PixelOperations		Exclusion
-Hard light	PixelOperations		Hard light
-Hard mix	PixelOperations		Hard mix
-Lighten	PixelOperations		Lighten
-Linear burn	PixelOperations		Linear burn
-Linear dodge	PixelOperations		Linear dodge
-Linear light	PixelOperations		Linear light
-Multiply	PixelOperations		Multiply
+Color burn	PixelOperations		Color cremat
+Color dodge	PixelOperations		Color esquivat
+Darken	PixelOperations		Enfosquiment
+Difference	PixelOperations		Diferència
+Dissolve	PixelOperations		Dissol
+Divide	PixelOperations		Divideix
+Exclusion	PixelOperations		Exclusió
+Hard light	PixelOperations		Llum forta
+Hard mix	PixelOperations		Barreja forta
+Lighten	PixelOperations		Aclariment
+Linear burn	PixelOperations		Cremada lineal
+Linear dodge	PixelOperations		Esquivada lineal
+Linear light	PixelOperations		Llum lineal
+Multiply	PixelOperations		Multiplica
 Normal	PixelOperations		Normal
-Overlay	PixelOperations		Overlay
-Pin light	PixelOperations		Pin light
-Screen	PixelOperations		Screen
-Soft light	PixelOperations		Soft light
-Vivid light	PixelOperations		Vivid light
-Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
+Overlay	PixelOperations		Superposició
+Pin light	PixelOperations		Llum focal
+Screen	PixelOperations		Pantalla
+Soft light	PixelOperations		Llum tènue
+Vivid light	PixelOperations		Llum vívida
+Free 2D transform	FreeTransformManipulator		Transformació a 2D lliure
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformació: arrossegar per girar, moure o estirar.
+Left-click for color panel, right-click to switch colors.	StatusView		Cliqueu amb el botó esquerre per al tauler de color i amb el botó dret per canviar de color.
 Zoom	MagnificationView		Lupa

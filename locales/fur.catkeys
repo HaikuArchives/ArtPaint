@@ -1,18 +1,20 @@
-1	Friulian	application/x-vnd.artpaint	3689499495
+1	Friulian	application/x-vnd.artpaint	3981580643
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: De ultime volte che il progjet al è stât salvât e je stade fate une modifiche.\nDesideristu salvâ la modifiche?}other{%project_name%: De ultime volte che il progjet al è stât salvât a son stadis fatis # modifichis.\nDesideristu salvâ lis modifichis?}}
 Cancel	ImageView		Anule
-Clear selection	ImageView		Nete la selezion
 Don't save	ImageView		No sta salvâ
 Drop layer to copy it to this image.	ImageView		Mole il strât par copiâlu su cheste imagjin.
 Finishing	ImageView		Daûr a finî
 Grow selection	ImageView		Incrès selezion
 Invert selection	ImageView		Invertìs selezion
 Layer %ld / %ld	ImageView		Strât %ld / %ld
-Not enough free memory to add a layer .You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par zontâ un strât.Tu puedis liberâ plui memorie disabilitant la funzion disfe e sierant lis altris imagjins. No je une brute idee chê di salvâ cumo la imagjin, parcè che se si finìs la memorie plui indenant al sarà plui dificil, se no impussibil, fâ un salvament. Mi displâs par chest inconvenient.
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par zontâ un strât.Tu puedis liberâ plui memorie disabilitant la funzion disfe e sierant lis altris imagjins. No je une brute idee chê di salvâ cumo la imagjin, parcè che se si finìs la memorie plui indenant al sarà plui dificil, se no impussibil, fâ un salvament. Mi displâs par chest inconvenient.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par finî l'efiet domandât. Tu puedis sierâ lis altris imagjins e tornâ a provâ. Ancje scurtâ la profonditât de funzion disfe, o disabilitâ dal dut chê funzion, al jude a vê plui memorie. Se tu âs altris aplicazions in esecuzion, tu puedis otignî plui memorie libare sierantlis. E je ancje une buine idee chê di salvâ il lavôr in chest moment, par vie che se e finìs dal dut la memorie al podarès deventâ impussibil salvâ. Mi displâs par chest inconvenient.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par scomençâ l'efiet domandât. Tu puedis sierâ lis altris imagjins e tornâ a provâ. Ancje scurtâ la profonditât de funzion disfe, o disabilitâ dal dut chê funzion, al jude a vê plui memorie. Se tu âs altris aplicazions in esecuzion, tu puedis otignî plui memorie libare sierantlis. E je ancje une buine idee chê di salvâ il lavôr in chest moment, par vie che se e finìs dal dut la memorie al podarès deventâ impussibil salvâ. Mi displâs par chest inconvenient.
 OK	ImageView		Va ben
 Save	ImageView		Salve
+Select all	ImageView		Selezione dut
+Select non-transparent	ImageView		Selezione no-trasparent
+Select none	ImageView		Deselezion dut
 Shrink selection	ImageView		Ridûs la selezion
 Unsaved changes!	ImageView		Modifichis no salvadis!
 About ArtPaint	PaintWindow		Informazions su ArtPaint
@@ -20,14 +22,12 @@ Active layer	PaintWindow		Strât atîf
 Add	PaintWindow		Zonte
 Add-ons	PaintWindow		Components adizionâi
 Adds a layer to the top of this image.	PaintWindow		Al zonte un strât sore di cheste imagjin.
+All	PaintWindow		Dut
 All layers	PaintWindow		Ducj i strâts
+All non-transparent	PaintWindow		Dut il no-trasparent
 Brushes…	PaintWindow		Pinei…
 Canvas	PaintWindow		Tele
-Clear canvas	PaintWindow		Nete la tele
-Clear layer	PaintWindow		Nete il strât
-Clear selection	PaintWindow		Nete la selezion
-Clears all layers.	PaintWindow		Al nete ducj i strâts.
-Clears the active layer.	PaintWindow		Al nete il strât atîf.
+Clears the selection or layer.	PaintWindow		Al nete la selezion o il strât.
 Close	PaintWindow		Siere
 Closes the current window.	PaintWindow		Al siere chest barcon.
 Colors…	PaintWindow		Colôrs…
@@ -37,7 +37,7 @@ Copy	PaintWindow		Copie
 Create canvas	PaintWindow		Cree tele
 Creates a new empty canvas.	PaintWindow		Al cree une gnove tele vueide.
 Crop…	PaintWindow		Ritaie…
-Crops the image.	PaintWindow		Al ritaie la imagjin.
+Crops the canvas.	PaintWindow		Al ritaie la tele.
 Cut	PaintWindow		Taie
 Cuts the selection from all layers to the clipboard.	PaintWindow		Al taie la selezion di ducj i strâts e le met intes notis.
 Cuts the selection to the clipboard.	PaintWindow		Al taie la selezion e le met intes notis.
@@ -54,10 +54,12 @@ Flips all layers horizontally.	PaintWindow		Al ribalte ducj i strâts in orizont
 Flips all layers vertically.	PaintWindow		Al ribalte ducj i strâts in verticâl.
 Flips the active layer horizontally.	PaintWindow		Al ribalte il strât atîf in orizontâl.
 Flips the active layer vertically.	PaintWindow		Al ribalte il strât atîf in verticâl.
-Grow selection	PaintWindow		Incrès la selezion
+Grow	PaintWindow		Incrès
 Grows the selection in all directions.	PaintWindow		Al ingrandìs la selezion in dutis lis direzions.
 Height:	PaintWindow		Altece:
-Invert selection	PaintWindow		Invertìs selezion
+Hide borders	PaintWindow		Plate i ôrs
+Hides the selection borders.	PaintWindow		Al plate i ôrs de selezion.
+Invert	PaintWindow		Invertìs
 Inverts the selection	PaintWindow		Al invertìs la selezion
 Layer	PaintWindow		Strât
 Layers…	PaintWindow		Strâts…
@@ -66,6 +68,7 @@ Merges selected layer with the layer below.	PaintWindow		Al unìs il strât sele
 Moves all layers.	PaintWindow		Al sposte ducj i strâts.
 Moves the active layer.	PaintWindow		Al sposte il strât atîf.
 New project…	PaintWindow		Gnûf progjet…
+None	PaintWindow		Nissun
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		No vonde memorie libare par creâ la imagjin. Torne prove cuntune dimension di imagjin plui piçule.
 Off	PaintWindow		Disativât
 OK	PaintWindow		Va ben
@@ -89,17 +92,17 @@ Quit	PaintWindow		Jes
 Quits ArtPaint.	PaintWindow		Al jes di ArtPaint.
 Recent images	PaintWindow		Imagjins resintis
 Recent projects	PaintWindow		Progjets resints
-Redo not available	PaintWindow		“Torne fâs” no disponibil
+Redo	PaintWindow		Torne fâs
 Redos the action that was last undone.	PaintWindow		Al torne a fâ la azion che e je stade disfate.
-Resize to fit	PaintWindow		Ridimensione par adatâ
-Resizes the window to fit image and screen.	PaintWindow		Al ridimensione il barcon par adatâsi ae imagjin e al schermi.
+Resize…	PaintWindow		Ridimensione…
+Resizes the canvas.	PaintWindow		Al ridimensione la tele.
 Rotate -90°	PaintWindow		Volte di -90°
 Rotate +90°	PaintWindow		Volte di +90°
 Rotate…	PaintWindow		Volte…
-Rotates all layers 90° clockwise.	PaintWindow		Al volte ducj i strâts di 90° in sens orari.
-Rotates all layers 90° counter-clockwise.	PaintWindow		Al volte ducj i strâts di 90° in sens anti-orari.
 Rotates all layers.	PaintWindow		Al volte ducj i strâts.
 Rotates the active layer.	PaintWindow		Al volte il strât atîf.
+Rotates the canvas 90° clockwise.	PaintWindow		Al volte la tele di 90° in sens orari.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Al volte la tele di 90° in sens antiorari.
 Save image	PaintWindow		Salve imagjin
 Save image as…	PaintWindow		Salve imagjin come…
 Save project	PaintWindow		Salve progjet
@@ -109,7 +112,11 @@ Saves the image under its current name.	PaintWindow		Al salve la imagjin cul so 
 Saves the project to disk.	PaintWindow		Al salve il progjet su disc.
 Saves the project under its current name.	PaintWindow		Al salve il progjet cul so non atuâl.
 Scale…	PaintWindow		Scjale…
-Scales the image.	PaintWindow		Al scjale la imagjn.
+Scales all layers.	PaintWindow		Al scjale ducj i strâts.
+Scales the active layer.	PaintWindow		Al scjale il strât atîf.
+Selection	PaintWindow		Selezion
+Selects all non-transparent layer pixels	PaintWindow		Al selezione ducj i pixels no-trasparents dal strât
+Selects entire layer	PaintWindow		Al selezione dut il strât
 Set grid	PaintWindow		Stabilìs la gridele
 Set zoom level	PaintWindow		Stabilìs il nivel di zoom
 Set/Select the canvas size.	PaintWindow		Stabilìs/Selezione la dimension de tele.
@@ -123,7 +130,7 @@ Sets the zoom level to 400%.	PaintWindow		Al stabilìs il nivel di ingrandiment 
 Sets the zoom level to 50%.	PaintWindow		Al stabilìs il nivel di ingrandiment a 50%.
 Sets the zoom level to 800%.	PaintWindow		Al stabilìs il nivel di ingrandiment a 800%.
 Settings…	PaintWindow		Impostazions…
-Shrink selection	PaintWindow		Ridûs la selezion
+Shrink	PaintWindow		Strenç
 Shrinks the selection in all directions.	PaintWindow		Al ridûs la selezion in dutis lis direzions.
 Standard sizes	PaintWindow		Dimensions standard
 Tool setup…	PaintWindow		Configurazion imprescj…
@@ -131,7 +138,7 @@ Tools…	PaintWindow		Imprescj…
 Translate…	PaintWindow		Tradûs…
 Turns the grid off.	PaintWindow		Al disative la gridele.
 Un-selects all	PaintWindow		Al de-selezione dut
-Undo not available	PaintWindow		“Disfe” no disponibil
+Undo	PaintWindow		Disfe
 Undos the previous action.	PaintWindow		Al disfe la azion precedente.
 Untitled	PaintWindow		Cence titul
 User manual…	PaintWindow		Manuâl utent…
@@ -149,96 +156,9 @@ Layer transparency	LayerWindow		Trasparence dal strât
 Layers	LayerWindow		Strâts
 Merge down	LayerWindow		Unìs in jù
 Mode:	LayerWindow		Modalitât:
-Add area	Tools		Zonte aree
-Adjustable width	Tools		Largjece justabile
-Adjusting the layer's transparency.	Tools		Daûr a justâ la trasparence dal strât.
-Airbrush	Tools		Aerograf
-Airbrush tool	Tools		Imprest aerograf
-Alpha	Tools		Alpha
-Amount of paint:	Tools		Cuantitât di piture:
-Angle:	Tools		Angul:
-Aspect:	Tools		Aspiet:
-Background color	Tools		Colôr di fonts
-Behavior	Tools		Compuartament
-Blue	Tools		Blu
-Blur tool	Tools		Imprest par meti fûr di fûc
-Blurring the image.	Tools		Daûr a meti fûr di fûc la imagjin.
-Brush tool	Tools		Imprest pinel
-Center to corner	Tools		Dal mieç al cjanton
-Click to place the text.	Tools		Fâs clic par plaçâ il test.
-Click to use the tool.	Tools		Fâs clic par doprâ l'imprest.
-Color picker tool	Tools		Imprest par sielzi il colôr
-Color variance:	Tools		Variazion colôr:
-Continuous	Tools		Continue
-Corner to corner	Tools		Di cjanton a cjanton
-Drag the text to correct position and set its appearance.	Tools		Strissine il test par justâ la posizion e stabilî il so aspiet.
-Drawing a freehand line.	Tools		Daûr a dissegnâ une linie a man libare.
-Drawing a rectangle.	Tools		Daûr a dissegnâ un retangul.
-Drawing a straight line.	Tools		Daûr a dissegnâ une linie drete.
-Drawing an ellipse.	Tools		Daûr a dissegnâ un elìs.
-Ellipse	Tools		Elìs
-Ellipse tool	Tools		Imprest elìs
-Ellipse: SHIFT for circle	Tools		Elìs: MAIUSC pal cercli
-Enable antialiasing	Tools		Abilite antialiasing
-Enable gradient	Tools		Abilite gradient
-Enable preview	Tools		Abilite anteprime
-Enable rotation	Tools		Abilite rotazion
-Eraser tool	Tools		Imprest gome
-Erasing pixels.	Tools		Daûr a scancelâ pixels.
-Fill ellipse	Tools		Jemple elìs
-Fill rectangle	Tools		Jemple retangul
-Fill tool	Tools		Imprest par jemplâ
-Flood fill	Tools		Jemplament a inondazion
-Flow:	Tools		Flus:
-Freehand	Tools		A man libare
-Freehand line tool	Tools		Imprest linie a man libare
-Green	Tools		Vert
-Hairs:	Tools		Pei:
-Hairy brush tool	Tools		Imprest scovet pelôs
-Hardness:	Tools		Durece:
-Hold shift key to snap to 45° angles	Tools		Ten fracât il tast maiusc par judâ a regolâ i angui a 45°
-Intelligent scissors	Tools		Fuarpiis inteligjentis
-Little	Tools		Pôc
-Magic wand	Tools		Bachete magjiche
-Making a fill.	Tools		Daûr a jemplâ.
-Making a selection.	Tools		Daûr a creâ une selezion.
-Mode	Tools		Modalitât
-Much	Tools		Tant
-No configuration options available.	Tools		Nissune opzion di configurazion disponibile.
-None	Tools		Nissune
-Options	Tools		Opzions
-Painting with a brush.	Tools		Daûr a piturâ cuntun pinel.
-Painting with a hairy brush.	Tools		Daûr a piturâ cuntun scovet pelôs.
-Picking a color.	Tools		Daûr a sielzi un colôr.
-Random	Tools		Casuâl
-Rectangle	Tools		Retangul
-Rectangle tool	Tools		Imprest retangul
-Rectangle: SHIFT for square	Tools		Retangul: MAIUSC pal cuadrât
-Red	Tools		Ros
-Replace pixels with	Tools		Sostituìs i pixels cun
-Reset brush	Tools		Ripristine pinel
-Selection tool	Tools		Imprest selezion
-Size:	Tools		Dimension:
-Speed:	Tools		Velocitât:
-Spray	Tools		Spray
-Store brush	Tools		Archivie pinel
-Straight line tool	Tools		Imprest linie drete
-Straight line: SHIFT locks 45° angles	Tools		Linie drete: MAIUSC al bloche i angui a 45°
-Subtract area	Tools		Sotrai aree
-Text tool	Tools		Imprest test
-Tolerance:	Tools		Tolerance:
-Tool setup	Tools		Configurazion imprest
-Tools	Tools		Imprescj
-Transparency	Tools		Trasparence
-Transparency tool	Tools		Imprest trasparence
-Using the airbrush.	Tools		Daûr a doprâ l'aerograf.
-Using the tool.	Tools		Daûr a doprâ l'imprest.
-Wand tolerance	Tools		Tolerance de bachete
-Width:	Tools		Largjece:
 Add layer	Image		Zonte strât
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Impussibil eliminâ l'unic strât. Cree une altre figure par tornâ a scomençâ dal principi.
-Clear canvas	Image		Nete la tele
-Clear layer	Image		Nete il strât
+Delete	Image		Elimine
 Delete layer	Image		Elimine il strât
 Merge down	Image		Unìs in jù
 Merge with layer above	Image		Unìs cul strât parsore
@@ -251,7 +171,6 @@ Brushes	Windows		Pinei
 Cancel	Windows		Anule
 Colors	Windows		Colôrs
 Colors:	Windows		Colôrs:
-Confirm quitting	Windows		Conferme la jessude
 Cross-hair cursor	Windows		Cursôr a smire
 Cursor	Windows		Cursôr
 Datatype setup: %name%	Windows		Configurazion Datatype: %name%
@@ -275,6 +194,88 @@ Undo	Windows		Disfe
 Undo steps:	Windows		Passaçs disfe:
 Unlimited	Windows		Ilimitâts
 Windows	Windows		Barcons
+Adjustable width	Tools		Largjece justabile
+Adjusting the layer's transparency.	Tools		Daûr a justâ la trasparence dal strât.
+Airbrush	Tools		Aerograf
+Airbrush tool	Tools		Imprest aerograf
+Alpha	Tools		Alpha
+Amount of paint:	Tools		Cuantitât di piture:
+Angle:	Tools		Angul:
+Aspect:	Tools		Aspiet:
+Background color	Tools		Colôr di fonts
+Blue	Tools		Blu
+Blur tool	Tools		Imprest par meti fûr di fûc
+Blurring the image.	Tools		Daûr a meti fûr di fûc la imagjin.
+Brush tool	Tools		Imprest pinel
+Click to place the text.	Tools		Fâs clic par plaçâ il test.
+Click to use the tool.	Tools		Fâs clic par doprâ l'imprest.
+Color picker tool	Tools		Imprest par sielzi il colôr
+Color picker window	Tools		Barcon di selezion colôr
+Color variance:	Tools		Variazion colôr:
+Continuous	Tools		Continue
+Drag the text to correct position and set its appearance.	Tools		Strissine il test par justâ la posizion e stabilî il so aspiet.
+Drawing a freehand line.	Tools		Daûr a dissegnâ une linie a man libare.
+Drawing a rectangle.	Tools		Daûr a dissegnâ un retangul.
+Drawing a straight line.	Tools		Daûr a dissegnâ une linie drete.
+Drawing an ellipse.	Tools		Daûr a dissegnâ un elìs.
+Ellipse	Tools		Elìs
+Ellipse tool	Tools		Imprest elìs
+Ellipse: SHIFT for circle, ALT for centered	Tools		Elìs: MAIUSC pal cercli, ALT par centrât
+Enable antialiasing	Tools		Abilite antialiasing
+Enable gradient	Tools		Abilite gradient
+Enable preview	Tools		Abilite anteprime
+Enable rotation	Tools		Abilite rotazion
+Eraser tool	Tools		Imprest gome
+Erasing pixels.	Tools		Daûr a scancelâ pixels.
+Fill ellipse	Tools		Jemple elìs
+Fill rectangle	Tools		Jemple retangul
+Fill tool	Tools		Imprest par jemplâ
+Flood fill	Tools		Jemplament a inondazion
+Flow:	Tools		Flus:
+Freehand	Tools		A man libare
+Freehand line tool	Tools		Imprest linie a man libare
+Green	Tools		Vert
+Hairs:	Tools		Pei:
+Hairy brush tool	Tools		Imprest scovet pelôs
+Hardness:	Tools		Durece:
+Hold SHIFT to snap to 45° angles	Tools		Ten fracât MAIUSC par tacâsi ai angui di 45°
+Intelligent scissors	Tools		Fuarpiis inteligjentis
+Little	Tools		Pôc
+Magic wand	Tools		Bachete magjiche
+Making a fill.	Tools		Daûr a jemplâ.
+Making a selection.	Tools		Daûr a creâ une selezion.
+Mode	Tools		Modalitât
+Much	Tools		Tant
+No configuration options available.	Tools		Nissune opzion di configurazion disponibile.
+None	Tools		Nissune
+Options	Tools		Opzions
+Painting with a brush.	Tools		Daûr a piturâ cuntun pinel.
+Painting with a hairy brush.	Tools		Daûr a piturâ cuntun scovet pelôs.
+Picking a color.	Tools		Daûr a sielzi un colôr.
+Random	Tools		Casuâl
+Rectangle	Tools		Retangul
+Rectangle tool	Tools		Imprest retangul
+Rectangle: SHIFT for square, ALT for centered	Tools		Retangul: MAIUSC pal cuadrât, ALT par centrât
+Red	Tools		Ros
+Replace pixels with	Tools		Sostituìs i pixels cun
+Reset brush	Tools		Ripristine pinel
+Selection tool	Tools		Imprest selezion
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Imprest di selezion: MAIUSC par cuadrât/cercli, ALT selezion dai centris, OPZ sotrai
+Size:	Tools		Dimension:
+Speed:	Tools		Velocitât:
+Spray	Tools		Spray
+Store brush	Tools		Archivie pinel
+Straight line tool	Tools		Imprest linie drete
+Straight line: SHIFT locks 22.5° angles	Tools		Linie drete: MAIUSC si bloche ai angui di 22.5°
+Text tool	Tools		Imprest test
+Tolerance:	Tools		Tolerance:
+Tool setup	Tools		Configurazion imprest
+Tools	Tools		Imprescj
+Transparency	Tools		Trasparence
+Transparency tool	Tools		Imprest trasparence
+Using the airbrush.	Tools		Daûr a doprâ l'aerograf.
+Using the tool.	Tools		Daûr a doprâ l'imprest.
+Width:	Tools		Largjece:
 Alpha	ColorSliders	For color sliders	Alpha
 Black	ColorSliders	For CMYK color slider	Neri
 Blue	ColorSliders	For RGB color sliders	Blu
@@ -290,37 +291,41 @@ Saturation	ColorSliders	For HSV color slider	Saturazion
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Valôr
 Yellow	ColorSliders	For CMYK color slider	Zâl
 Angle:	Manipulators		Angul:
-Bottom:	Manipulators		Sot:
 Change the transparency with the slider.	Manipulators		Cambie la trasparence cul cursôr.
 Change transparency…	Manipulators		Cambie trasparence…
-Click on the image to set the new scale or set it with the numeric fields.	Manipulators		Fâs clic su la imagjin par stabilî la gnove scjale o metile cui cjamps numerics.
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Ritai: dopre lis mantiis o i cjamps dai numars par stabilî i gnûfs ôrs. MAIUSC al bloche lis proporzions.
 Crop…	Manipulators		Ritaie…
-Drag the image to correct position.	Manipulators		Strissine la imagjin par justâ la posizion.
-Drag the text to correct position and set its appearance.	Manipulators		Strissine il test par justâ la posizion e stabilî il so aspiet.
 Enable antialiasing	Manipulators		Abilite antialiasing
+Filter:	Manipulators		Filtri:
 Flip horizontally	Manipulators		Ribalte in orizontâl
 Flip vertically	Manipulators		Ribalte in verticâl
 Font:	Manipulators		Caratar:
 Height:	Manipulators		Altece:
 Left:	Manipulators		Çampe:
 Lock	Manipulators	Keep the aspect ratio	Bloche
+Lock	Manipulators		Bloche
 Opaque	Manipulators		Opac
+Reset to canvas	Manipulators		Ripristine ae tele
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Ridimensione: strissine par ridimensionâ o dopre i cjamps numerics. Ten fracât MAIUSC par blocâ lis proporzions
+Resize…	Manipulators		Ridimensione…
 Restore	Manipulators		Ripristine
-Right:	Manipulators		Diestre:
 Rotate -90°	Manipulators		Volte di -90°
 Rotate +90°	Manipulators		Volte di +90°
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Volte: strissine cul boton di çampe par voltâ, clic diestri par stabilî il centri di rotazion, MAIUSC par tacâsi al angul.
 Rotate…	Manipulators		Volte…
 Rotation:	Manipulators		Rotazion:
+Scale: Drag to resize or use number-fields.	Manipulators		Scjale: strissine par ridimensionâ o dopre i cjamps dai numars.
 Scale…	Manipulators		Scjale…
 Shear:	Manipulators		Rifile:
 Size:	Manipulators		Dimension:
 Text tool	Manipulators		Imprescj pal test
+Text: Position text and set its appearance.	Manipulators		Test: posizione il test e stabilìs il so aspiet.
 Top:	Manipulators		Sore:
-Translate…	Manipulators		Tradûs…
+Translate: Drag to move or use number-fields.	Manipulators		Traslazion: strissine par spostâ o dopre i cjamps dai numars.
+Translate…	Manipulators		Trasle…
 Transparency:	Manipulators		Trasparence:
 Transparent	Manipulators		Trasparent
-Use the handles or number-fields to set the new borders.	Manipulators		Dopre lis mantiis o i cjamps numerics par stabilî i gnûfs ôrs.
-Use the primary mouse-button to rotate, other buttons to set the rotation center.	Manipulators		Dopre il boton primari dal mouse par voltâ, i altris botons par stabilî il centri di rotazion.
+Use selection	Manipulators		Dopre la selezion
 Width:	Manipulators		Largjece:
 ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint al è un program pe piture e pe elaborazion di imagjins par Haiku.
@@ -354,14 +359,16 @@ Open	FilePanels		Vierç
 Save	FilePanels		Salve
 Save format:	FilePanels		Formât di salvament:
 Settings…	FilePanels		Impostazions…
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilineâr
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Vicin plui dongje
 Bummer	UndoQueue		Pecjât
 Redo	UndoQueue		Torne fâs
-Redo not available	UndoQueue		“Torne fâs” no disponibil
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Il mecanisim par disfâ al à finît la memorie.\nLa profonditât de funzion par disfâ e vignarà limitade in mût che i events plui resints a puedin jessi tignûts in memorie. Al è conseât salvâ cumò il propri lavôr cussì di evitâ ogni pierdite di dâts tal câs che la memorie e finedi dal dut.\nSalacor tu podaressis justâ la profonditât de funzion disfe intal barcon des impostazions.
 Undo	UndoQueue		Disfe
-Undo not available	UndoQueue		“Disfe” no disponibil
-Click on the image to rotate, move or stretch it.	FreeTransformManipulator		Fâs clic su la imagjin par voltâle, spostâle o distirâle.
-Free 2D transform	FreeTransformManipulator		Trasformazion 2D libare
 Color burn	PixelOperations		Brusadure colôr
 Color dodge	PixelOperations		Elusion colôr
 Darken	PixelOperations		Scurî
@@ -382,5 +389,7 @@ Pin light	PixelOperations		Lûs puntinade
 Screen	PixelOperations		Cuvierzidure
 Soft light	PixelOperations		Lûs fofe
 Vivid light	PixelOperations		Lûs vive
+Free 2D transform	FreeTransformManipulator		Trasformazion 2D libare
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Trasformazion: Strissine par voltâ, spostâ o distirâ.
 Left-click for color panel, right-click to switch colors.	StatusView		Clic di çampe pal panel colôrs, clic di diestre par cambiâ i colôrs.
 Zoom	MagnificationView		Ingrandiment

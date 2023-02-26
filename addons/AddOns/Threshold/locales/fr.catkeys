@@ -2,7 +2,7 @@
 Based on:	AddOns_Threshold		Basé sur :
 Blue	AddOns_Threshold		Le bleu
 Green	AddOns_Threshold		Le vert
-Intensity	AddOns_Threshold		L'intensité
+Intensity	AddOns_Threshold		L’intensité
 Red	AddOns_Threshold		Le rouge
 Shows only pixels of a specified threshold.	AddOns_Threshold		Affiche uniquement les pixels du niveau spécifié.
 Threshold	AddOns_Threshold		Seuil
