@@ -44,7 +44,8 @@
 RotationManipulator::RotationManipulator(BBitmap* bitmap)
 	:	WindowGUIManipulator(),
 	selection(NULL),
-	orig_selection_data(NULL)
+	orig_selection_data(NULL),
+	transform_selection_only(false)
 {
 	settings = new RotationManipulatorSettings();
 	config_view = NULL;
@@ -221,6 +222,10 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 	// rotated by s->angle around s->origin.
 	RotationManipulatorSettings* new_settings = cast_as(set,
 		RotationManipulatorSettings);
+
+	if (transform_selection_only == true)
+		return NULL;
+
 	if (new_settings == NULL)
 		return NULL;
 
@@ -466,6 +471,10 @@ int32
 RotationManipulator::PreviewBitmap(bool full_quality,
 	BRegion* updated_region)
 {
+	if (transform_selection_only == true &&
+		(selection == NULL || selection->IsEmpty() == true))
+		return 0;
+
 	// First decide the resolution of the bitmap
 	if ((previous_angle == settings->angle) && (full_quality == FALSE)) {
 		if (last_calculated_resolution <= highest_available_quality) {
@@ -512,7 +521,7 @@ RotationManipulator::PreviewBitmap(bool full_quality,
 	float source_x, source_y;
 	float y_times_sin = (-center_y) * sin_angle;
 	float y_times_cos = (-center_y) * cos_angle;
-	if (selection->IsEmpty()) {
+	if (selection == NULL || selection->IsEmpty()) {
 		for (int32 y = 0; y <= height; y += last_calculated_resolution) {
 			float x_times_sin = (-center_x) * sin_angle;
 			float x_times_cos = (-center_x) * cos_angle;
@@ -541,44 +550,47 @@ RotationManipulator::PreviewBitmap(bool full_quality,
 	} else {
 		// Rotate the selection also
 		selection->RotateTo(center, the_angle);
-		for (int32 y = 0; y <= height; y += last_calculated_resolution) {
-			float x_times_sin = (-center_x) * sin_angle;
-			float x_times_cos = (-center_x) * cos_angle;
-			for (int32 x = 0; x <= width; x += last_calculated_resolution) {
-				// rotete here around the origin
-				source_x = x_times_cos - y_times_sin;
-				source_y = x_times_sin + y_times_cos;
-				// translate back to correct position
-				source_x += center_x;
-				source_y += center_y;
-				if ((source_x <= right) && (source_y <= bottom) &&
-					(source_x >= left) && (source_y >= top)
-					&& selection->ContainsPoint(int32(source_x),
-						int32(source_y))) {
-						if (selection->ContainsPoint(x, y))
-							*(target_bits + x + y * target_bpr) =
-								src_over_fixed(background.word,
-									*(source_bits + (int32)source_x +
-									(int32)source_y * source_bpr));
-						else
-							*(target_bits + x + y * target_bpr) =
-								src_over_fixed(
-									*(source_bits + (int32)x + (int32)y * source_bpr),
-									*(source_bits + (int32)source_x +
-									(int32)source_y * source_bpr));
-				} else if (selection->ContainsPoint(BPoint(source_x, source_y)))
-					*(target_bits + x + y * target_bpr) = background.word;	// Transparent.
-				else if (selection->ContainsPoint(x,y))
-					*(target_bits + x + y * target_bpr) = background.word;
-				else // outside selection
-					*(target_bits + x + y * target_bpr) =
-						*(source_bits + (int32)x + (int32)y * source_bpr);
 
-				x_times_sin += last_calculated_resolution * sin_angle;
-				x_times_cos += last_calculated_resolution * cos_angle;
+		if (transform_selection_only == false) {
+			for (int32 y = 0; y <= height; y += last_calculated_resolution) {
+				float x_times_sin = (-center_x) * sin_angle;
+				float x_times_cos = (-center_x) * cos_angle;
+				for (int32 x = 0; x <= width; x += last_calculated_resolution) {
+					// rotete here around the origin
+					source_x = x_times_cos - y_times_sin;
+					source_y = x_times_sin + y_times_cos;
+					// translate back to correct position
+					source_x += center_x;
+					source_y += center_y;
+					if ((source_x <= right) && (source_y <= bottom) &&
+						(source_x >= left) && (source_y >= top)
+						&& selection->ContainsPoint(int32(source_x),
+							int32(source_y))) {
+							if (selection->ContainsPoint(x, y))
+								*(target_bits + x + y * target_bpr) =
+									src_over_fixed(background.word,
+										*(source_bits + (int32)source_x +
+										(int32)source_y * source_bpr));
+							else
+								*(target_bits + x + y * target_bpr) =
+									src_over_fixed(
+										*(source_bits + (int32)x + (int32)y * source_bpr),
+										*(source_bits + (int32)source_x +
+										(int32)source_y * source_bpr));
+					} else if (selection->ContainsPoint(BPoint(source_x, source_y)))
+						*(target_bits + x + y * target_bpr) = background.word;	// Transparent.
+					else if (selection->ContainsPoint(x,y))
+						*(target_bits + x + y * target_bpr) = background.word;
+					else // outside selection
+						*(target_bits + x + y * target_bpr) =
+							*(source_bits + (int32)x + (int32)y * source_bpr);
+
+					x_times_sin += last_calculated_resolution * sin_angle;
+					x_times_cos += last_calculated_resolution * cos_angle;
+				}
+				y_times_sin += last_calculated_resolution * sin_angle;
+				y_times_cos += last_calculated_resolution * cos_angle;
 			}
-			y_times_sin += last_calculated_resolution * sin_angle;
-			y_times_cos += last_calculated_resolution * cos_angle;
 		}
 	}
 
@@ -636,6 +648,9 @@ RotationManipulator::ReturnHelpString()
 const char*
 RotationManipulator::ReturnName()
 {
+	if (transform_selection_only == true)
+		return B_TRANSLATE("Rotate selection" B_UTF8_ELLIPSIS);
+
 	return B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS);
 }
 

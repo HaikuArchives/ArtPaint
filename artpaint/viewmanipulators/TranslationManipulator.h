@@ -49,7 +49,7 @@ class TranslationManipulator : public WindowGUIManipulator {
 	int32		highest_available_quality;
 
 	Selection*	selection;
-
+	bool		transform_selection_only;
 public:
 	TranslationManipulator(BBitmap*);
 	~TranslationManipulator();
@@ -73,6 +73,8 @@ public:
 	void			SetValues(float, float);
 	void			SetSelection(Selection* new_selection)
 						{ selection = new_selection; };
+	void			SetTransformSelectionOnly(bool select_only)
+						{ transform_selection_only = select_only; }
 
 	void			UpdateSettings();
 };

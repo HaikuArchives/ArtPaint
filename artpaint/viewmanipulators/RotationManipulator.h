@@ -63,6 +63,7 @@ class RotationManipulator: public WindowGUIManipulator {
 
 	Selection*	selection;
 	SelectionData*	orig_selection_data;
+	bool		transform_selection_only;
 
 public:
 	RotationManipulator(BBitmap*);
@@ -90,6 +91,8 @@ public:
 	void		SetAngle(float);
 
 	void		SetSelection(Selection* new_selection);
+	void		SetTransformSelectionOnly(bool select_only)
+					{ transform_selection_only = select_only; }
 
 	void		UpdateSettings();
 };

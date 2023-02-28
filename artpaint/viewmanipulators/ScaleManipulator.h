@@ -92,6 +92,7 @@ class ScaleManipulator : public WindowGUIManipulator {
 
 	Selection*	selection;
 	SelectionData*	orig_selection_data;
+	bool		transform_selection_only;
 
 	BPoint		previous_point;
 	bool		reject_mouse_input;
@@ -127,6 +128,10 @@ public:
 
 	ManipulatorSettings*	ReturnSettings();
 	void		SetSelection(Selection* new_selection);
+	void		SetTransformSelectionOnly(bool select_only)
+					{ transform_selection_only = select_only; }
+	bool		GetTransformSelectionOnly()
+					{ return transform_selection_only; }
 
 	void		SetInterpolationMethod(interpolation_type newMethod)
 					{ method = newMethod; }
