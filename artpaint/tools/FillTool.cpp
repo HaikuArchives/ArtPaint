@@ -193,23 +193,13 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 				binary_fill_map = NULL;
 			}
 		} else {	// Fill all the pixels that are within the tolerance.
-			if (sel == NULL || sel->IsEmpty() == true) {
-				for (int32 y = min_y; y <= max_y; y++) {
-					for (int32 x = min_x; x <= max_x; x++) {
-						if (compare_2_pixels_with_variance(old_color,
-								drawer->GetPixel(x, y), tolerance)) {
-							drawer->SetPixel(x, y, color);
-						}
-					}
-				}
-			} else {
-				for (int32 y = min_y; y <= max_y; y++) {
-					for (int32 x = min_x; x <= max_x; x++) {
-						if (sel->ContainsPoint(x, y) &&
-							compare_2_pixels_with_variance(old_color,
-								drawer->GetPixel(x, y), tolerance)) {
-							drawer->SetPixel(x, y, color);
-						}
+			for (int32 y = min_y; y <= max_y; y++) {
+				for (int32 x = min_x; x <= max_x; x++) {
+					if ((sel == NULL || sel->IsEmpty() == true ||
+						sel->ContainsPoint(x, y)) &&
+						compare_2_pixels_with_variance(old_color,
+							drawer->GetPixel(x, y), tolerance)) {
+						drawer->SetPixel(x, y, color);
 					}
 				}
 			}
@@ -354,79 +344,35 @@ FillTool::FillSpan(BPoint span_start, BitmapDrawer* drawer,
 	int32 y = (int32)span_start.y;
 	x = start_x = (int32)span_start.x;
 
-	if (sel == NULL || sel->IsEmpty() == TRUE) {
-		if (tolerance == 0 && binary_fill_map == NULL) {
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (drawer->GetPixel(x, y) == old_color) ) {
-				drawer->SetPixel(x, y, new_color);
-				x--;
-			}
+	uint32 binary_bpr = 0;
+	uchar* binary_bits = NULL;
 
-			// Then go from start_x+1 towards the right side of the bitmap.
-			x = start_x + 1;
-			while ( (x <= max_x) && (drawer->GetPixel(x, y) == old_color) ) {
-				drawer->SetPixel(x, y, new_color);
-				x++;
-			}
-		} else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
+	if (binary_fill_map != NULL) {
+		binary_bpr = binary_fill_map->BytesPerRow();
+		binary_bits = (uchar*)binary_fill_map->Bits();
+	}
 
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				x--;
-			}
+	// Then go from start towards the left side of the bitmap.
+	while ((sel == NULL || sel-> IsEmpty() || sel->ContainsPoint(x, y)) &&
+		(x >= min_x) &&
+		(compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)) ) {
+		drawer->SetPixel(x, y, new_color);
+		if (binary_bits != NULL)
+			*(binary_bits + y * binary_bpr + (x / 8)) =
+				*(binary_bits + y * binary_bpr + (x / 8)) | (0x01 << (7 - x % 8));
+		x--;
+	}
 
-			// Then go from start_x+1 towards the right side of the bitmap.
-			x = start_x + 1;
-			while ( (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				x++;
-			}
-
-		}
-	} else {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				x++;
-			}
-		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
-
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				x++;
-			}
-
-		}
+	// Then go from start_x+1 towards the right side of the bitmap.
+	x = start_x + 1;
+	while ((sel == NULL || sel-> IsEmpty() || sel->ContainsPoint(x, y)) &&
+		(x <= max_x) &&
+		(compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)) ) {
+		drawer->SetPixel(x, y, new_color);
+		if (binary_bits != NULL)
+			*(binary_bits + y * binary_bpr + (x / 8)) =
+				*(binary_bits + y * binary_bpr + (x / 8)) | (0x01 << (7 - x % 8));
+		x++;
 	}
 }
 
@@ -566,14 +512,15 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 }
 
 
-
 BBitmap*
-FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,int32 min_y,int32 max_y,uint32 old_color,Selection *sel)
+FillTool::MakeBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
+	int32 min_y, int32 max_y, uint32 old_color, Selection* sel)
 {
 	// This function makes a binary bitmap that has ones where the
 	// color of original bitmap is same as old_color, and zeroes elsewhere.
-	BBitmap *binary_map = new BBitmap(BRect(min_x,min_y,max_x,max_y), B_GRAY1);
-	uchar *binary_bits = (uchar*)binary_map->Bits();
+	BBitmap* binary_map = new BBitmap(BRect(min_x, min_y, max_x, max_y), B_GRAY1);
+
+	uchar* binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
 
 	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
@@ -701,25 +648,22 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x,
 
 	while (!stack.IsEmpty()) {
 		BPoint span_start = stack.Pop();
-		if ( (span_start.y == min_y) && (min_y != max_y) ) {
+		if ( (span_start.y == min_y) && (min_y != max_y) )
 			// Only check the spans below this line
 			CheckSpans(span_start, drawer, stack, min_x, max_x,
 				color, old_color, tolerance, sel, LOWER);
-		}
-		else if ( (span_start.y == max_y) && (min_y != max_y) ) {
+		else if ( (span_start.y == max_y) && (min_y != max_y) )
 			// Only check the spans above this line.
 			CheckSpans(span_start, drawer, stack, min_x, max_x,
 				color, old_color, tolerance, sel, UPPER);
-		}
-		else if (min_y != max_y) {
+		else if (min_y != max_y)
 			// Check the spans above and below this line.
 			CheckSpans(span_start, drawer, stack, min_x, max_x,
 				color, old_color, tolerance, sel, BOTH);
-		}
-		else {
+		else
 			// The image is only one pixel high. Fill the only span.
-			FillSpan(span_start,drawer,min_x,max_x,color,old_color,tolerance,sel);
-		}
+			FillSpan(span_start, drawer, min_x, max_x,
+				color, old_color, tolerance, sel);
 	}
 
 	// Remember to NULL the attribute binary_fill_map
