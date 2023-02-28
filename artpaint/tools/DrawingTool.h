@@ -32,6 +32,13 @@ class ImageView;
 class ToolScript;
 
 
+enum span_type {
+	BOTH = 0,
+	UPPER,
+	LOWER
+};
+
+
 const float kWidgetInset 	= 5.0;
 const float kWidgetSpacing 	= 5.0;
 

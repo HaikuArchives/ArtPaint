@@ -22,12 +22,6 @@ class ImageView;
 class PointStack;
 class ToolScript;
 
-enum spans {
-	BOTH = 0,
-	UPPER,
-	LOWER
-};
-
 
 namespace ArtPaint {
 	namespace Interface {
@@ -54,7 +48,7 @@ private:
 								// altered a little.
 			void				CheckSpans(BPoint, BitmapDrawer*,
 									PointStack&, int32, int32, uint32, int32,
-									BBitmap*, uint8 spans = BOTH);
+									BBitmap*, span_type spans = BOTH);
 			void				FillSpan(BPoint, BitmapDrawer*, int32, int32,
 									uint32, int32, BBitmap*);
 			BBitmap*			MakeFloodBinaryMap(BitmapDrawer*, int32, int32,
