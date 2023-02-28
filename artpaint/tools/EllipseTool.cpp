@@ -77,7 +77,11 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		window->Unlock();
-		rgb_color c = ((PaintApplication*)be_app)->Color(true);
+		bool use_fg_color = true;
+		if (buttons == B_SECONDARY_MOUSE_BUTTON)
+			use_fg_color = false;
+
+		rgb_color c = ((PaintApplication*)be_app)->Color(use_fg_color);
 		original_point = point;
 		bitmap_rect = BRect(point,point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
