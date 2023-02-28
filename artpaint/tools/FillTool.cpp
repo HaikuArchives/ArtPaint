@@ -519,6 +519,7 @@ FillTool::MakeBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 	// This function makes a binary bitmap that has ones where the
 	// color of original bitmap is same as old_color, and zeroes elsewhere.
 	BBitmap* binary_map = new BBitmap(BRect(min_x, min_y, max_x, max_y), B_GRAY1);
+	memset(binary_map->Bits(), 0x00, binary_map->BitsLength());
 
 	uchar* binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
@@ -627,6 +628,7 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x,
 	BBitmap* binary_map;
 	binary_map = binary_fill_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),
 		B_GRAY1);
+	memset(binary_map->Bits(), 0x00, binary_map->BitsLength());
 
 	// We can use the functions CheckLowerSpans, CheckUpperSpans and CheckBothSpans
 	// to calculate the binary_fill_map and then return it.
