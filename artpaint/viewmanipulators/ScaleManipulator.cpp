@@ -46,7 +46,8 @@ using ArtPaint::Interface::NumberControl;
 ScaleManipulator::ScaleManipulator(BBitmap *bm)
 	:	WindowGUIManipulator(),
 	selection(NULL),
-	orig_selection_data(NULL)
+	orig_selection_data(NULL),
+	transform_selection_only(false)
 {
 	configuration_view = NULL;
 	settings = new ScaleManipulatorSettings();
@@ -85,6 +86,9 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	ScaleManipulatorSettings *new_settings =
 			dynamic_cast<ScaleManipulatorSettings*> (set);
 	if (new_settings == NULL)
+		return NULL;
+
+	if (transform_selection_only == true)
 		return NULL;
 
 	BBitmap *final_bitmap = NULL;
@@ -358,6 +362,10 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 	if (preview_bitmap == NULL)
 		return 0;
 
+	if (transform_selection_only == true &&
+		(selection == NULL || selection->IsEmpty() == true))
+		return 0;
+
 	union color_conversion white;
 	white.bytes[0] = 0xFF;
 	white.bytes[1] = 0xFF;
@@ -442,18 +450,20 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 		int32 sel_left = (int32)selection_bounds.left;
 		int32 sel_right = (int32)selection_bounds.right;
 
+
 		SelectionData temp_selection_data(selection->ReturnSelectionData());
 		selection->SetSelectionData(orig_selection_data);
-		for (int32 y = sel_top; y <= sel_bottom; ++y) {
-			for (int32 x = sel_left; x <= sel_right; ++x) {
-				uint32 clear_bits = *(source_bits + x + y * bpr);
-				if (selection->ContainsPoint(x, y))
-					clear_bits = white.word;
+		if (transform_selection_only == false) {
+			for (int32 y = sel_top; y <= sel_bottom; ++y) {
+				for (int32 x = sel_left; x <= sel_right; ++x) {
+					uint32 clear_bits = *(source_bits + x + y * bpr);
+					if (selection->ContainsPoint(x, y))
+						clear_bits = white.word;
 
-				*(target_bits + x + y * bpr) = clear_bits;
+					*(target_bits + x + y * bpr) = clear_bits;
+				}
 			}
 		}
-
 		selection_bounds = selection->GetBoundingRect();
 
 		selection->ScaleTo(selection_bounds.LeftTop(), new_x, new_y);
@@ -472,48 +482,50 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 
 		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
 
-		if (selection_bounds.IsValid() == false ||
-			selection_bounds.Width() <= 1 ||
-			selection_bounds.Height() <= 1) {
-			selection->SetSelectionData(orig_selection_data);
-			selection->Recalculate();
-			selection->Translate(previous_left, previous_top);
-			selection->Recalculate();
-			selection_bounds = selection->GetBoundingRect();
-			selection->ScaleTo(selection_bounds.LeftTop(), previous_right - previous_left,
-				previous_bottom - previous_top);
-			selection->Recalculate();
+		if (transform_selection_only == false) {
+			if (selection_bounds.IsValid() == false ||
+				selection_bounds.Width() <= 1 ||
+				selection_bounds.Height() <= 1) {
+				selection->SetSelectionData(orig_selection_data);
+				selection->Recalculate();
+				selection->Translate(previous_left, previous_top);
+				selection->Recalculate();
+				selection_bounds = selection->GetBoundingRect();
+				selection->ScaleTo(selection_bounds.LeftTop(), previous_right - previous_left,
+					previous_bottom - previous_top);
+				selection->Recalculate();
 
-			reject_mouse_input = true;
-			return 1;
-		}
+				reject_mouse_input = true;
+				return 1;
+			}
 
-		sel_top = (int32)selection_bounds.top;
-		sel_bottom = (int32)selection_bounds.bottom;
-		sel_left = (int32)selection_bounds.left;
-		sel_right = (int32)selection_bounds.right;
-		if (settings->left < 0)
-			sel_left = settings->left;
-		if (settings->top < 0)
-			sel_top = settings->top;
+			sel_top = (int32)selection_bounds.top;
+			sel_bottom = (int32)selection_bounds.bottom;
+			sel_left = (int32)selection_bounds.left;
+			sel_right = (int32)selection_bounds.right;
+			if (settings->left < 0)
+				sel_left = settings->left;
+			if (settings->top < 0)
+				sel_top = settings->top;
 
-		for (int32 y = sel_top; y <= sel_bottom; y++) {
-			int32 source_y =
-				(int32)floor((y - sel_top) * height_coeff) + original_top;
-			int32 y_times_bpr = y * bpr;
-			int32 source_y_times_bpr = source_y * bpr;
-			for (int32 x = sel_left; x <= sel_right; x++) {
-				if (selection->ContainsPoint(x, y)) {
-					int32 source_x =
-						(int32)floor((x - sel_left) * width_coeff) + original_left;
-					if (source_x > width || source_y > height) {
-						*(target_bits + x + y_times_bpr) = white.word;
-					} else {
-						*(target_bits + x + y_times_bpr) =
-							src_over_fixed(
-								*(target_bits + x + y_times_bpr),
-								*(source_bits + source_x + source_y_times_bpr)
-							);
+			for (int32 y = sel_top; y <= sel_bottom; y++) {
+				int32 source_y =
+					(int32)floor((y - sel_top) * height_coeff) + original_top;
+				int32 y_times_bpr = y * bpr;
+				int32 source_y_times_bpr = source_y * bpr;
+				for (int32 x = sel_left; x <= sel_right; x++) {
+					if (selection->ContainsPoint(x, y)) {
+						int32 source_x =
+							(int32)floor((x - sel_left) * width_coeff) + original_left;
+						if (source_x > width || source_y > height) {
+							*(target_bits + x + y_times_bpr) = white.word;
+						} else {
+							*(target_bits + x + y_times_bpr) =
+								src_over_fixed(
+									*(target_bits + x + y_times_bpr),
+									*(source_bits + source_x + source_y_times_bpr)
+								);
+						}
 					}
 				}
 			}
@@ -589,13 +601,6 @@ ScaleManipulator::SetValues(float left, float top, float right, float bottom)
 	settings->top = top;
 	settings->bottom = bottom;
 	settings->right = right;
-
-	/*if (orig_selection_data != NULL && selection != NULL) {
-		selection->SetSelectionData(orig_selection_data);
-		selection->Recalculate();
-		BRect selection_bounds = selection->GetBoundingRect();
-		selection->ScaleTo(selection_bounds.LeftTop(), right - left, bottom - top);
-	}*/
 }
 
 
@@ -717,6 +722,9 @@ ScaleManipulator::ReturnHelpString()
 const char*
 ScaleManipulator::ReturnName()
 {
+	if (transform_selection_only == true)
+		return B_TRANSLATE("Scale selection" B_UTF8_ELLIPSIS);
+
 	return B_TRANSLATE("Scale" B_UTF8_ELLIPSIS);
 }
 
@@ -939,6 +947,9 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator,
 
 	mainLayout->SetMaxColumnWidth(0, font.StringWidth("LABELLABELLABEL"));
 	mainLayout->SetMinColumnWidth(1, font.StringWidth("01234"));
+
+	if (manipulator->GetTransformSelectionOnly() == true)
+		sample_dropdown->SetEnabled(false);
 }
 
 

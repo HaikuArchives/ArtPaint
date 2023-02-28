@@ -1278,6 +1278,25 @@ PaintWindow::openMenuBar()
 		new BMessage(HS_SHRINK_SELECTION), 'G', B_SHIFT_KEY, this,
 		B_TRANSLATE("Shrinks the selection in all directions.")));
 	menu->AddSeparatorItem();
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", ROTATE_SELECTION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS),
+		a_message, 'R', B_CONTROL_KEY, this,
+		B_TRANSLATE("Rotate the selection.")));
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", TRANSLATE_SELECTION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS),
+		a_message, 'T', B_CONTROL_KEY, this,
+		B_TRANSLATE("Move the selection.")));
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", SCALE_SELECTION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS),
+		a_message, 'E', B_CONTROL_KEY, this,
+		B_TRANSLATE("Scale the selection.")));
+	menu->AddSeparatorItem();
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Hide borders"),
 		new BMessage(HS_HIDE_SELECTION_BORDERS), 'H', 0, this,
 		B_TRANSLATE("Hides the selection borders.")));

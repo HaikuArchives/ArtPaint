@@ -121,8 +121,18 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 			manipulator = new TranslationManipulator(NULL);
 		}	break;
 
+		case TRANSLATE_SELECTION_MANIPULATOR: {
+			manipulator = new TranslationManipulator(NULL);
+			((TranslationManipulator*)manipulator)->SetTransformSelectionOnly(true);
+		} 	break;
+
 		case ROTATION_MANIPULATOR: {
 			manipulator = new RotationManipulator(NULL);
+		}	break;
+
+		case ROTATE_SELECTION_MANIPULATOR: {
+			manipulator = new RotationManipulator(NULL);
+			((RotationManipulator*)manipulator)->SetTransformSelectionOnly(true);
 		}	break;
 
 		case HORIZ_FLIP_MANIPULATOR: {
@@ -150,11 +160,11 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 			if (gui_manipulator != NULL)
 				gui_manipulator->EnableWindow(false);
 		}	break;
-		
+
 		case ROTATE_CW_CANVAS_MANIPULATOR: {
 			manipulator = new Rotate90ClockwiseManipulator();
 		}	break;
-		
+
 		case ROTATE_CCW_CANVAS_MANIPULATOR: {
 			manipulator = new Rotate90CounterclockwiseManipulator();
 		}	break;
@@ -166,7 +176,12 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 		case SCALE_CANVAS_MANIPULATOR: {
 			manipulator = new ScaleCanvasManipulator(NULL);
 		}	break;
-		
+
+		case SCALE_SELECTION_MANIPULATOR: {
+			manipulator = new ScaleManipulator(NULL);
+			((ScaleManipulator*)manipulator)->SetTransformSelectionOnly(true);
+		} 	break;
+
 		case CROP_MANIPULATOR: {
 			manipulator = new CropManipulator(NULL);
 		}	break;
