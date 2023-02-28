@@ -61,15 +61,10 @@ private:
 			status_t			NormalFill(ImageView*, uint32, BPoint,
 									Selection* = NULL);
 
-			void				CheckLowerSpans(BPoint, BitmapDrawer*,
+			void				CheckSpans(BPoint, BitmapDrawer*,
 									PointStack&, int32, int32, uint32, uint32,
-									int32, Selection* = NULL);
-			void				CheckUpperSpans(BPoint, BitmapDrawer*,
-									PointStack&, int32, int32, uint32, uint32,
-									int32, Selection* = NULL);
-			void				CheckBothSpans(BPoint, BitmapDrawer*,
-									PointStack&, int32, int32, uint32, uint32,
-									int32, Selection* = NULL);
+									int32, Selection* = NULL,
+									span_type spans = BOTH);
 			void				FillSpan(BPoint, BitmapDrawer*, int32, int32,
 									uint32, uint32, int32, Selection* = NULL);
 

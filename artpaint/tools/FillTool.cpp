@@ -74,7 +74,7 @@ FillTool::~FillTool()
 
 
 ToolScript*
-FillTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoint)
+FillTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
 	ToolScript* toolScript = new ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
@@ -114,11 +114,11 @@ status_t
 FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* sel)
 {
 	// Get the necessary parameters
-	BWindow *window = view->Window();
+	BWindow* window = view->Window();
 	if (window == NULL)
 		return B_ERROR;
 
-	uint32 tolerance = (uint32)((float)fToolSettings.tolerance/100.0 * 255);
+	uint32 tolerance = (uint32)((float)fToolSettings.tolerance / 100.0 * 255);
 
 	filled_bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer *drawer = new BitmapDrawer(filled_bitmap);
@@ -133,7 +133,7 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 	uint32 old_color = drawer->GetPixel(start);
 
 	// If the old color is the same as new and the tolerance is 0, we should do nothing.
-	if ( (old_color == color) && (tolerance == 0) ) {
+	if (old_color == color && tolerance == 0) {
 		delete drawer;
 		return B_OK;
 	}
@@ -156,7 +156,7 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 			if (tolerance != 0) {
 				binary_fill_map = new BBitmap(filled_bitmap->Bounds(), B_GRAY1);
 				// Clear the binary map.
-				uchar *binary_bits = (uchar*)binary_fill_map->Bits();
+				uchar* binary_bits = (uchar*)binary_fill_map->Bits();
 				uint32 binary_bitslength = binary_fill_map->BitsLength();
 				for (uint32 i = 0; i < binary_bitslength; i++)
 					*binary_bits++ = 0x00;
@@ -169,18 +169,18 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 				BPoint span_start = stack.Pop();
 				if ( (span_start.y == min_y) && (min_y != max_y) ) {
 					// Only check the spans below this line
-					CheckLowerSpans(span_start, drawer, stack, min_x, max_x,
-						color, old_color, tolerance, sel);
+					CheckSpans(span_start, drawer, stack, min_x, max_x,
+						color, old_color, tolerance, sel, LOWER);
 				}
 				else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 					// Only check the spans above this line.
-					CheckUpperSpans(span_start, drawer, stack, min_x, max_x,
-						color, old_color, tolerance, sel);
+					CheckSpans(span_start, drawer, stack, min_x, max_x,
+						color, old_color, tolerance, sel, UPPER);
 				}
 				else if (min_y != max_y) {
 					// Check the spans above and below this line.
-					CheckBothSpans(span_start, drawer, stack, min_x, max_x,
-						color, old_color, tolerance, sel);
+					CheckSpans(span_start, drawer, stack, min_x, max_x,
+						color, old_color, tolerance, sel, BOTH);
 				}
 				else {
 					// The image is only one pixel high. Fill the only span.
@@ -192,22 +192,23 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 				delete binary_fill_map;
 				binary_fill_map = NULL;
 			}
-		}
-		else {	// Fill all the pixels that are within the tolerance.
-			if ((sel == NULL) || (sel->IsEmpty() == true)) {
-				for (int32 y=min_y;y<=max_y;y++) {
-					for (int32 x=min_x;x<=max_x;x++) {
-						if (compare_2_pixels_with_variance(old_color,drawer->GetPixel(x,y),tolerance)) {
-							drawer->SetPixel(x,y,color);
+		} else {	// Fill all the pixels that are within the tolerance.
+			if (sel == NULL || sel->IsEmpty() == true) {
+				for (int32 y = min_y; y <= max_y; y++) {
+					for (int32 x = min_x; x <= max_x; x++) {
+						if (compare_2_pixels_with_variance(old_color,
+								drawer->GetPixel(x, y), tolerance)) {
+							drawer->SetPixel(x, y, color);
 						}
 					}
 				}
-			}
-			else {
-				for (int32 y=min_y;y<=max_y;y++) {
-					for (int32 x=min_x;x<=max_x;x++) {
-						if (sel->ContainsPoint(x,y) && compare_2_pixels_with_variance(old_color,drawer->GetPixel(x,y),tolerance)) {
-							drawer->SetPixel(x,y,color);
+			} else {
+				for (int32 y = min_y; y <= max_y; y++) {
+					for (int32 x = min_x; x <= max_x; x++) {
+						if (sel->ContainsPoint(x, y) &&
+							compare_2_pixels_with_variance(old_color,
+								drawer->GetPixel(x, y), tolerance)) {
+							drawer->SetPixel(x, y, color);
 						}
 					}
 				}
@@ -226,565 +227,148 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 
 
 void
-FillTool::CheckLowerSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
+FillTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
+	PointStack& stack, int32 min_x, int32 max_x, uint32 new_color, uint32 old_color,
+	int32 tolerance, Selection *sel, span_type spans)
 {
 	// First get the vital data.
-	int32 x,start_x;
-	int32 y = (int32)span_start.y;
-	x = start_x = (int32)span_start.x;
-	bool inside_lower_span = FALSE;
-
-	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (drawer->GetPixel(x,y+1) != old_color) ) {
-					inside_lower_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( drawer->GetPixel(start_x,y+1) == old_color );
-			x = start_x + 1;
-			while ( (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (drawer->GetPixel(x,y+1) != old_color) ) {
-					inside_lower_span = FALSE;
-				}
-				x++;
-			}
-		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-				drawer->SetPixel(x,y,new_color);
-	//			*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					inside_lower_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y+1),old_color,tolerance) );
-			x = start_x + 1;
-			while ( (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-				drawer->SetPixel(x,y,new_color);
-	//			*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					inside_lower_span = FALSE;
-				}
-				x++;
-			}
-		}
-	}
-	else {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) && sel->ContainsPoint(x,y+1)) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && ((drawer->GetPixel(x,y+1) != old_color) || !sel->ContainsPoint(x,y+1))) {
-					inside_lower_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( drawer->GetPixel(start_x,y+1) == old_color ) && sel->ContainsPoint(start_x,y+1);
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) && sel->ContainsPoint(x,y+1)) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && ((drawer->GetPixel(x,y+1) != old_color) || !sel->ContainsPoint(x,y+1))) {
-					inside_lower_span = FALSE;
-				}
-				x++;
-			}
-		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) && sel->ContainsPoint(x,y+1) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance) || !sel->ContainsPoint(x,y+1)) ) {
-					inside_lower_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y+1),old_color,tolerance) && sel->ContainsPoint(start_x,y+1));
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) && sel->ContainsPoint(x,y+1) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance) || !sel->ContainsPoint(x,y+1)) ) {
-					inside_lower_span = FALSE;
-				}
-				x++;
-			}
-		}
-	}
-}
-
-void FillTool::CheckUpperSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
-{
-	// First get the vital data.
-	int32 x,start_x;
-	int32 y = (int32)span_start.y;
-	x = start_x = (int32)span_start.x;
-	bool inside_upper_span = FALSE;
-
-	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (drawer->GetPixel(x,y-1) != old_color) ) {
-					inside_upper_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_upper_span = ( drawer->GetPixel(start_x,y-1) == old_color );
-			x = start_x + 1;
-			while ( (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (drawer->GetPixel(x,y-1) != old_color) ) {
-					inside_upper_span = FALSE;
-				}
-				x++;
-			}
-		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
-
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))  && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-				drawer->SetPixel(x,y,new_color);
-	//			*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) ) {
-					inside_upper_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1) , old_color,tolerance) );
-			x = start_x + 1;
-			while ( (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-				drawer->SetPixel(x,y,new_color);
-	//			*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
-					inside_upper_span = FALSE;
-				}
-				x++;
-			}
-		}
-	}
-	else {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) && sel->ContainsPoint(x,y-1) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && ((drawer->GetPixel(x,y-1) != old_color) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_upper_span = ( drawer->GetPixel(start_x,y-1) == old_color ) && sel->ContainsPoint(start_x,y-1);
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) && sel->ContainsPoint(x,y-1)) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && ((drawer->GetPixel(x,y-1) != old_color) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-				x++;
-			}
-		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
-
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))  && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) && sel->ContainsPoint(x,y-1) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1) , old_color,tolerance) && sel->ContainsPoint(start_x,y-1));
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) && sel->ContainsPoint(x,y-1) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-				x++;
-			}
-		}
-	}
-}
-
-void
-FillTool::CheckBothSpans(BPoint span_start,BitmapDrawer *drawer,PointStack &stack,int32 min_x,int32 max_x,uint32 new_color,uint32 old_color,int32 tolerance,Selection *sel)
-{
-	// First get the vital data.
-	int32 x,start_x;
+	int32 x, start_x;
 	int32 y = (int32)span_start.y;
 	x = start_x = (int32)span_start.x;
 	bool inside_lower_span = FALSE;
 	bool inside_upper_span = FALSE;
 
-	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
+	// This is the case that takes the variance into account. We must use a
+	// binary bitmap to see what parts have already been filled.
+	uint32 binary_bpr = 0;
+	uchar* binary_bits = NULL;
 
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (drawer->GetPixel(x,y+1) != old_color) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (drawer->GetPixel(x,y-1) != old_color) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( drawer->GetPixel(start_x,y+1) == old_color );
-			inside_upper_span = ( drawer->GetPixel(start_x,y-1) == old_color );
-			x = start_x + 1;
-			while ( (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (drawer->GetPixel(x,y+1) != old_color) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (drawer->GetPixel(x,y-1) != old_color) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x++;
-			}
-		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
-
-			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-				drawer->SetPixel(x,y,new_color);
-	//			*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x--;
-			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y+1),old_color,tolerance) );
-			inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1), old_color,tolerance) );
-			x = start_x + 1;
-			while ( (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))  && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-				drawer->SetPixel(x,y,new_color);
-	//			*(binary_bits + y*binary_bpr + (x/8)) = *(binary_bits + y*binary_bpr + (x/8)) | (0x01 << (7 - x%8));
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x++;
-			}
-		}
+	if (binary_fill_map != NULL) {
+		binary_bpr = binary_fill_map->BytesPerRow();
+		binary_bits = (uchar*)binary_fill_map->Bits();
 	}
-	else {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
 
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) && sel->ContainsPoint(x,y+1)) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && ((drawer->GetPixel(x,y+1) != old_color) || !sel->ContainsPoint(x,y+1)) ) {
-					inside_lower_span = FALSE;
-				}
+	// Then go from start towards the left side of the bitmap.
+	while ((sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x,y)) &&
+		(x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance))) {
+		if ((binary_bits != NULL) &&
+			((*(binary_bits + y * binary_bpr + (x / 8)) & (0x01 << (7 - x % 8))) != 0x00))  {
+			x--;
+			break;
+		} else if (binary_bits != NULL) {
+			*(binary_bits + y * binary_bpr + (x / 8)) |= (0x01 << (7 - x % 8));
+		}
 
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) && sel->ContainsPoint(x,y-1)) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && ((drawer->GetPixel(x,y-1) != old_color) || !sel->ContainsPoint(x,y-1))) {
-					inside_upper_span = FALSE;
-				}
+		drawer->SetPixel(x, y, new_color);
 
-				x--;
+		if (spans == BOTH || spans == LOWER) {
+			if ( (inside_lower_span == FALSE) &&
+				(compare_2_pixels_with_variance(drawer->GetPixel(x, y + 1), old_color, tolerance)) &&
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y + 1) == true )) {
+				stack.Push(BPoint(x, y + 1));
+				inside_lower_span = TRUE;
 			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( drawer->GetPixel(start_x,y+1) == old_color ) && sel->ContainsPoint(x,y+1);
-			inside_upper_span = ( drawer->GetPixel(start_x,y-1) == old_color ) && sel->ContainsPoint(x,y-1);
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
-
-				if ( (inside_lower_span == FALSE) && (drawer->GetPixel(x,y+1) == old_color) && sel->ContainsPoint(x,y+1)) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && ((drawer->GetPixel(x,y+1) != old_color) || !sel->ContainsPoint(x,y+1)) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (drawer->GetPixel(x,y-1) == old_color) && sel->ContainsPoint(x,y-1)) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && ((drawer->GetPixel(x,y-1) != old_color) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x++;
+			else if ( (inside_lower_span == TRUE) &&
+				(!compare_2_pixels_with_variance(drawer->GetPixel(x, y + 1), old_color, tolerance) ||
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y + 1) == false)) ) {
+				inside_lower_span = FALSE;
 			}
 		}
-		else {
-			// This is the case that takes the variance into account. We must use a
-			// binary bitmap to see what parts have already been filled.
-			uint32 binary_bpr = binary_fill_map->BytesPerRow();
-			uchar *binary_bits = (uchar*)binary_fill_map->Bits();
 
-			// Then go from start towards the left side of the bitmap.
-			while (sel->ContainsPoint(x,y) && (x >= min_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y), old_color,tolerance)) && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00)  ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) && sel->ContainsPoint(x,y+1) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance) || !sel->ContainsPoint(x,y+1)) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance)) && sel->ContainsPoint(x,y-1) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x--;
+		if (spans == BOTH || spans == UPPER) {
+			if ( (inside_upper_span == FALSE) &&
+				(compare_2_pixels_with_variance(drawer->GetPixel(x, y - 1), old_color, tolerance)) &&
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y - 1) == true)) {
+				stack.Push(BPoint(x, y - 1));
+				inside_upper_span = TRUE;
 			}
-
-			// Then go from start_x+1 towards the right side of the bitmap.
-			// We might already be inside a lower span
-			inside_lower_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y+1),old_color,tolerance) && sel->ContainsPoint(start_x,y+1));
-			inside_upper_span = ( compare_2_pixels_with_variance(drawer->GetPixel(start_x,y-1),old_color,tolerance) && sel->ContainsPoint(start_x,y-1));
-			x = start_x + 1;
-			while (sel->ContainsPoint(x,y) && (x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y),old_color,tolerance))  && ((*(binary_bits + y*binary_bpr + (x/8))&(0x01 << (7-x%8))) == 0x00) ) {
-				drawer->SetPixel(x,y,new_color);
-				*(binary_bits + y*binary_bpr + (x/8)) |= (0x01 << (7 - x%8));
-
-				if ( (inside_lower_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance)) && sel->ContainsPoint(x,y+1) ) {
-					stack.Push(BPoint(x,y+1));
-					inside_lower_span = TRUE;
-				}
-				else if ( (inside_lower_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y+1),old_color,tolerance) || !sel->ContainsPoint(x,y+1)) ) {
-					inside_lower_span = FALSE;
-				}
-
-				if ( (inside_upper_span == FALSE) && (compare_2_pixels_with_variance(drawer->GetPixel(x,y-1), old_color,tolerance)) && sel->ContainsPoint(x,y-1) ) {
-					stack.Push(BPoint(x,y-1));
-					inside_upper_span = TRUE;
-				}
-				else if ( (inside_upper_span == TRUE) && (!compare_2_pixels_with_variance(drawer->GetPixel(x,y-1),old_color,tolerance) || !sel->ContainsPoint(x,y-1)) ) {
-					inside_upper_span = FALSE;
-				}
-
-				x++;
+			else if ( (inside_upper_span == TRUE) &&
+				(!compare_2_pixels_with_variance(drawer->GetPixel(x, y - 1), old_color, tolerance) ||
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y - 1) == false)) ) {
+				inside_upper_span = FALSE;
 			}
 		}
+
+		x--;
+	}
+
+	// Then go from start_x+1 towards the right side of the bitmap.
+	// We might already be inside a lower span
+	inside_lower_span = compare_2_pixels_with_variance(drawer->GetPixel(start_x, y + 1), old_color, tolerance)
+	 	&& (sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(start_x, y + 1));
+	inside_upper_span = compare_2_pixels_with_variance(drawer->GetPixel(start_x, y - 1), old_color, tolerance)
+		&& (sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(start_x, y - 1));
+	x = start_x + 1;
+	while ((sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y)) &&
+		(x <= max_x) && (compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)) ) {
+		if ((binary_bits != NULL) &&
+			((*(binary_bits + y * binary_bpr + (x / 8)) & (0x01 << (7 - x % 8))) != 0x00))  {
+			x++;
+			break;
+		} else if (binary_bits != NULL) {
+			*(binary_bits + y * binary_bpr + (x / 8)) |= (0x01 << (7 - x % 8));
+		}
+
+		drawer->SetPixel(x, y, new_color);
+
+		if (spans == BOTH || spans == LOWER) {
+			if ( (inside_lower_span == FALSE) &&
+				(compare_2_pixels_with_variance(drawer->GetPixel(x, y + 1), old_color, tolerance)) &&
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y + 1) == true)) {
+				stack.Push(BPoint(x, y + 1));
+				inside_lower_span = TRUE;
+			}
+			else if ( (inside_lower_span == TRUE) &&
+				(!compare_2_pixels_with_variance(drawer->GetPixel(x, y + 1), old_color, tolerance) ||
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y + 1) == false)) ) {
+				inside_lower_span = FALSE;
+			}
+		}
+
+		if (spans == BOTH || spans == UPPER) {
+			if ( (inside_upper_span == FALSE) &&
+				(compare_2_pixels_with_variance(drawer->GetPixel(x, y - 1), old_color, tolerance)) &&
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y - 1) == true)) {
+				stack.Push(BPoint(x, y - 1));
+				inside_upper_span = TRUE;
+			}
+			else if ( (inside_upper_span == TRUE) &&
+				(!compare_2_pixels_with_variance(drawer->GetPixel(x, y - 1), old_color, tolerance) ||
+				(sel == NULL || sel->IsEmpty() == TRUE || sel->ContainsPoint(x, y - 1) == false)) ) {
+				inside_upper_span = FALSE;
+			}
+		}
+
+		x++;
 	}
 }
 
 
 void
-FillTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int32 max_x, uint32 new_color, uint32 old_color,int32 tolerance,Selection *sel)
+FillTool::FillSpan(BPoint span_start, BitmapDrawer* drawer,
+	int32 min_x, int32 max_x, uint32 new_color, uint32 old_color,
+	int32 tolerance, Selection* sel)
 {
 	// First get the vital data.
-	int32 x,start_x;
+	int32 x, start_x;
 	int32 y = (int32)span_start.y;
 	x = start_x = (int32)span_start.x;
 
-	if ((sel == NULL) || (sel->IsEmpty() == TRUE)) {
-		if ((tolerance == 0) && (binary_fill_map == NULL)) {
+	if (sel == NULL || sel->IsEmpty() == TRUE) {
+		if (tolerance == 0 && binary_fill_map == NULL) {
 			// Then go from start towards the left side of the bitmap.
-			while ( (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
+			while ( (x >= min_x) && (drawer->GetPixel(x, y) == old_color) ) {
+				drawer->SetPixel(x, y, new_color);
 				x--;
 			}
 
 			// Then go from start_x+1 towards the right side of the bitmap.
 			x = start_x + 1;
-			while ( (x <= max_x) && (drawer->GetPixel(x,y) == old_color) ) {
-				drawer->SetPixel(x,y,new_color);
+			while ( (x <= max_x) && (drawer->GetPixel(x, y) == old_color) ) {
+				drawer->SetPixel(x, y, new_color);
 				x++;
 			}
-		}
-		else {
+		} else {
 			// This is the case that takes the variance into account. We must use a
 			// binary bitmap to see what parts have already been filled.
 			uint32 binary_bpr = binary_fill_map->BytesPerRow();
@@ -806,8 +390,7 @@ FillTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int32 max
 			}
 
 		}
-	}
-	else {
+	} else {
 		if ((tolerance == 0) && (binary_fill_map == NULL)) {
 			// Then go from start towards the left side of the bitmap.
 			while (sel->ContainsPoint(x,y) && (x >= min_x) && (drawer->GetPixel(x,y) == old_color) ) {
@@ -849,7 +432,8 @@ FillTool::FillSpan(BPoint span_start,BitmapDrawer *drawer,int32 min_x, int32 max
 
 
 BPoint
-FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint orig_view_point,Selection *sel)
+FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
+	BPoint orig_view_point, Selection* sel)
 {
 	// First calculate points that are to be included in the fill to
 	// a separate binary mask. Then go through the filled areas bounds
@@ -864,11 +448,11 @@ FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint orig_v
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-	BWindow *window = view->Window();
+	BWindow* window = view->Window();
 	if (window == NULL)
 		return BPoint(-1,-1);
 
-	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
+	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 	BRect bitmap_bounds = bitmap->Bounds();
 	bitmap_bounds.OffsetTo(BPoint(0,0));
@@ -904,7 +488,7 @@ FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint orig_v
 		uint32 color = gradient_color2;
 
 		// Here calculate the binary bitmap for the purpose of doing the gradient.
-		BBitmap *binary_map;
+		BBitmap* binary_map;
 		if (fToolSettings.mode == B_CONTROL_OFF)	// Not flood-mode
 			binary_map = MakeBinaryMap(drawer,min_x,max_x,min_y,max_y,old_color,sel);
 		else	// Flood-mode
@@ -939,8 +523,7 @@ FillTool::GradientFill(ImageView *view,uint32 buttons,BPoint start,BPoint orig_v
 				window->Unlock();
 				snooze(20 * 1000);
 			}
-		}
-		else {
+		} else {
 			// Display also preview of the gradient
 			while (buttons) {
 				if (new_view_point != prev_view_point) {
@@ -1086,14 +669,15 @@ FillTool::MakeBinaryMap(BitmapDrawer *drawer,int32 min_x,int32 max_x,int32 min_y
 	return binary_map;
 }
 
+
 BBitmap*
-FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
+FillTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x,
 	int32 max_x, int32 min_y, int32 max_y, uint32 old_color, BPoint start,
 	Selection *sel)
 {
 	// This function makes a binary bitmap of the image. It contains ones where
 	// the flood fill should fill and zeroes elsewhere.
-	BBitmap *binary_map;
+	BBitmap* binary_map;
 	binary_map = binary_fill_map = new BBitmap(BRect(min_x,min_y,max_x,max_y),
 		B_GRAY1);
 
@@ -1110,7 +694,7 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 	// bitmap's bounds.
 	uint32 color = 0xFFFFFFFF;	// This is the temporary color that will be used
 								// to fill the bitmap.
-	uint32 tolerance = (uint32)((float)fToolSettings.tolerance/100.0 * 255);
+	uint32 tolerance = (uint32)((float)fToolSettings.tolerance / 100.0 * 255);
 
 	PointStack stack;
 	stack.Push(start);
@@ -1119,15 +703,18 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer *drawer, int32 min_x,
 		BPoint span_start = stack.Pop();
 		if ( (span_start.y == min_y) && (min_y != max_y) ) {
 			// Only check the spans below this line
-			CheckLowerSpans(span_start,drawer, stack,min_x,max_x,color,old_color,tolerance,sel);
+			CheckSpans(span_start, drawer, stack, min_x, max_x,
+				color, old_color, tolerance, sel, LOWER);
 		}
 		else if ( (span_start.y == max_y) && (min_y != max_y) ) {
 			// Only check the spans above this line.
-			CheckUpperSpans(span_start,drawer, stack,min_x,max_x,color,old_color,tolerance,sel);
+			CheckSpans(span_start, drawer, stack, min_x, max_x,
+				color, old_color, tolerance, sel, UPPER);
 		}
 		else if (min_y != max_y) {
 			// Check the spans above and below this line.
-			CheckBothSpans(span_start,drawer, stack,min_x,max_x,color,old_color,tolerance,sel);
+			CheckSpans(span_start, drawer, stack, min_x, max_x,
+				color, old_color, tolerance, sel, BOTH);
 		}
 		else {
 			// The image is only one pixel high. Fill the only span.
@@ -1264,7 +851,7 @@ FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
 
 
 void
-FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
+FillTool::FillGradientPreview(BitmapDrawer* drawer, BBitmap* binary_map,
 	int32 dx, int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
 	uint32 new_color, uint32 gradient_color)
 {
@@ -1421,7 +1008,7 @@ FillTool::FillGradientPreview(BitmapDrawer *drawer, BBitmap *binary_map,
 
 
 BRect
-FillTool::calcBinaryMapBounds(BBitmap *boolean_map)
+FillTool::calcBinaryMapBounds(BBitmap* boolean_map)
 {
 	// it seems like the monochrome-bitmap is aligned at 16-bit boundary instead
 	// of 32-bit as the BeBook claims
@@ -1456,7 +1043,7 @@ FillTool::calcBinaryMapBounds(BBitmap *boolean_map)
 
 
 status_t
-FillTool::readSettings(BFile &file,bool is_little_endian)
+FillTool::readSettings(BFile& file, bool is_little_endian)
 {
 	if (DrawingTool::readSettings(file,is_little_endian) != B_OK)
 		return B_ERROR;
@@ -1480,7 +1067,7 @@ FillTool::readSettings(BFile &file,bool is_little_endian)
 
 
 status_t
-FillTool::writeSettings(BFile &file)
+FillTool::writeSettings(BFile& file)
 {
 	if (DrawingTool::writeSettings(file) != B_OK)
 		return B_ERROR;
@@ -1492,7 +1079,6 @@ FillTool::writeSettings(BFile &file)
 		return B_ERROR;
 
 	return B_OK;
-
 }
 
 

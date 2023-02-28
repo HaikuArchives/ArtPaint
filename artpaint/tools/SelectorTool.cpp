@@ -100,7 +100,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			delete the_script;
 			return NULL;
 		}
-		
+
 		IntelligentPathFinder* path_finder =
 			new IntelligentPathFinder(view->ReturnImage()->ReturnActiveBitmap());
 		HSPolygon* the_polygon = new HSPolygon(&point, 1);
@@ -435,7 +435,7 @@ SelectorTool::HelpString(bool isInUse) const
 void
 SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 	PointStack& stack, int32 min_x, int32 max_x, uint32 old_color,
-	int32 tolerance, BBitmap* binary_fill_map, uint8 spans)
+	int32 tolerance, BBitmap* binary_fill_map, span_type spans)
 {
 	// First get the vital data.
 	int32 x, start_x;
