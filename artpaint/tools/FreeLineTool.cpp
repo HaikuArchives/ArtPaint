@@ -130,7 +130,11 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	if ((diameter%2) == 0)
 		diameter++;
 
-	new_color = ((PaintApplication*)be_app)->Color(true);
+	bool use_fg_color = true;
+	if (buttons == B_SECONDARY_MOUSE_BUTTON)
+		use_fg_color = false;
+
+	new_color = ((PaintApplication*)be_app)->Color(use_fg_color);
 	new_color_bgra = RGBColorToBGRA(new_color);
 	if (diameter != 1)
 		drawer->DrawCircle(prev_point, diameter / 2, new_color_bgra,
@@ -171,7 +175,11 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 //				set_mouse_speed(original_mouse_speed);
 //			}
 			// first set the color
-			new_color = ((PaintApplication*)be_app)->Color(true);
+			bool use_fg_color = true;
+			if (buttons == B_SECONDARY_MOUSE_BUTTON)
+				use_fg_color = false;
+
+			new_color = ((PaintApplication*)be_app)->Color(use_fg_color);
 			new_color_bgra = RGBColorToBGRA(new_color);
 
 			diameter = fToolSettings.size;

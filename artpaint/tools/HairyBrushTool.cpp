@@ -102,7 +102,11 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 	float color_randomnessx2 = color_randomness * 2.0;
 	float initial_color_amount = GetCurrentValue(CONTINUITY_OPTION) / 10.0;
 	float color_amount_randomness = 4;
-	rgb_color color =  ((PaintApplication*)be_app)->Color(true);
+	bool use_fg_color = true;
+	if (buttons == B_SECONDARY_MOUSE_BUTTON)
+		use_fg_color = false;
+
+	rgb_color color =  ((PaintApplication*)be_app)->Color(use_fg_color);
 	int32 hair_count = GetCurrentValue(SIZE_OPTION);
 
 	float *color_amount_array = new float[hair_count];
@@ -116,7 +120,11 @@ HairyBrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 			color_amount_randomness +
 			random() % 1000 / 1000.0 * color_amount_randomness * 2.0;
 
-		color_array[i] = ((PaintApplication*)be_app)->Color(true);
+		bool use_fg_color = true;
+		if (buttons == B_SECONDARY_MOUSE_BUTTON)
+			use_fg_color = false;
+
+		color_array[i] = ((PaintApplication*)be_app)->Color(use_fg_color);
 		red = color_array[i].red;
 		green = color_array[i].green;
 		blue = color_array[i].blue;

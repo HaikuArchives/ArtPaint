@@ -97,7 +97,11 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		rgb_color old_color = view->HighColor();
 		window->Unlock();
 		original_point = point;
-		rgb_color c = ((PaintApplication*)be_app)->Color(true);
+		bool use_fg_color = true;
+		if (buttons == B_SECONDARY_MOUSE_BUTTON)
+			use_fg_color = false;
+
+		rgb_color c = ((PaintApplication*)be_app)->Color(use_fg_color);
 
 		prev_view_point = original_view_point = view_point;
 		bitmap_rect = BRect(point.x, point.y -

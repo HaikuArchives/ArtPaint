@@ -126,7 +126,11 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 	bitmap_bounds.OffsetTo(BPoint(0,0));
 
 	// Get the color for the fill.
-	rgb_color c = ((PaintApplication*)be_app)->Color(TRUE);
+	bool use_fg_color = true;
+	if (buttons == B_SECONDARY_MOUSE_BUTTON)
+		use_fg_color = false;
+
+	rgb_color c = ((PaintApplication*)be_app)->Color(use_fg_color);
 	uint32 color = RGBColorToBGRA(c);
 
 	// Get the old color.

@@ -1046,17 +1046,7 @@ ImageView::MouseDown(BPoint view_point)
 			if (gui_manipulator != NULL)
 				start_thread(MANIPULATOR_MOUSE_THREAD);
 			else if (fManipulator == NULL) {
-				if (buttons & B_SECONDARY_MOUSE_BUTTON) {
-					BMenuItem* item =
-						ToolManager::Instance().
-							ToolPopUpMenu()->Go(ConvertToScreen(view_point));
-					if (item != NULL) {
-						ToolManager::Instance().ChangeTool(item->Command());
-						SetCursor();	// If the tool changes, the cursor should change too.
-					}
-					release_sem(mouse_mutex);
-				} else
-					start_thread(PAINTER_THREAD);
+				start_thread(PAINTER_THREAD);
 			} else
 				release_sem(mouse_mutex);
 		}

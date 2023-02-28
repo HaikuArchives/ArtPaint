@@ -119,8 +119,12 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 
 	union color_conversion new_color;
 
+	bool use_fg_color = true;
+	if (buttons == B_SECONDARY_MOUSE_BUTTON)
+		use_fg_color = false;
+
 	new_color.word =
-		RGBColorToBGRA(((PaintApplication*)be_app)->Color(true));
+		RGBColorToBGRA(((PaintApplication*)be_app)->Color(use_fg_color));
 
 	union color_conversion clear_color;
 	clear_color.word = new_color.word;
