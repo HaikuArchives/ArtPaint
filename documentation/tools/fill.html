@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
 <!--
- * Copyright 2022
+ * Copyright 2022-2023
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -32,9 +32,13 @@
 
 <p>The fill tool applies the foreground color to the the object you click on.<br />
 The <span class="menu">Tolerance</span> decides if pixels on the current layer are similar enough to the color of the pixel you clicked on to be changed to the new color. A very low tolerance dyes only pixels of the exact same color. A higher tolerance will also dye shades of that color.</p>
-<p><span class="menu">Flood fill</span> only colors objects that are connected, otherwise all similar pixels on the current layer get changed.</p>
+
+<p><span class="menu">Flood fill</span> only colors objects that are connected, sort of like a fill version of the magic wand selection tool.<br />
+Without <span class="menu">Flood fill</span>, all similar pixels on the current layer get changed, which is similar to other apps' "Replace color" tool.</p>
+
 <p>You can <span class="menu">Enable gradient</span> and drag and drop two colors to the left and right side of the gradient bar at the bottom.<br />
 The left color of the gradient begins where you click in the canvas, then you drag the mouse to where the gradient shall end with its right color, and release the mouse button.</p>
+
 <p>If you <span class="menu">Enable preview</span> you see the gradient live as you click and move the mouse.</p>
 
 <p>The quick key to choose the fill tool is <span class="key">I</span>.</p>

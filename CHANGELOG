@@ -1,3 +1,10 @@
+v2.6:
+
+* Instead of a context menu to choose a tool, use the current tool to
+  draw with the background color.
+
+* Fixes to gradient fill tool
+
 v2.5:
 
 * Selection tool:
