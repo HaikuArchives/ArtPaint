@@ -491,9 +491,9 @@ const char*
 TranslationManipulator::ReturnName()
 {
 	if (transform_selection_only == true)
-		return B_TRANSLATE("Translate selection" B_UTF8_ELLIPSIS);
+		return B_TRANSLATE("Translate selection");
 
-	return B_TRANSLATE("Translate" B_UTF8_ELLIPSIS);
+	return B_TRANSLATE("Translate");
 }
 
 

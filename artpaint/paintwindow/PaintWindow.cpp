@@ -507,6 +507,33 @@ PaintWindow::MenusBeginning()
 		else
 			item->SetEnabled(true);
 
+
+		item = fMenubar->FindItem(B_TRANSLATE("Selection"));
+		BMenu *selectionMenu = item->Submenu();
+
+		item = selectionMenu->FindItem(B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS));
+		if (item != NULL) {
+			if (fImageView->GetSelection()->IsEmpty())
+				item->SetEnabled(false);
+			else
+				item->SetEnabled(true);
+		}
+
+		item = selectionMenu->FindItem(B_TRANSLATE("Translate" B_UTF8_ELLIPSIS));
+		if (item != NULL) {
+			if (fImageView->GetSelection()->IsEmpty())
+				item->SetEnabled(false);
+			else
+				item->SetEnabled(true);
+		}
+
+		item = selectionMenu->FindItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS));
+		if (item != NULL) {
+			if (fImageView->GetSelection()->IsEmpty())
+				item->SetEnabled(false);
+			else
+				item->SetEnabled(true);
+		}
 	}
 
 	if ((fImageEntry.InitCheck() == B_OK) && (fCurrentHandler != 0)) {

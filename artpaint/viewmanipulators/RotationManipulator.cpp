@@ -649,9 +649,9 @@ const char*
 RotationManipulator::ReturnName()
 {
 	if (transform_selection_only == true)
-		return B_TRANSLATE("Rotate selection" B_UTF8_ELLIPSIS);
+		return B_TRANSLATE("Rotate selection");
 
-	return B_TRANSLATE("Rotate" B_UTF8_ELLIPSIS);
+	return B_TRANSLATE("Rotate");
 }
 
 

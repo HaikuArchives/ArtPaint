@@ -1853,9 +1853,9 @@ ImageView::ManipulatorFinisherThread()
 
 	try {
 		BString manipName = fManipulator->ReturnName();
-		if (manipName == B_TRANSLATE("Translate selection" B_UTF8_ELLIPSIS) ||
-			manipName == B_TRANSLATE("Rotate selection" B_UTF8_ELLIPSIS) ||
-			manipName == B_TRANSLATE("Scale selection" B_UTF8_ELLIPSIS)) {
+		if (manipName == B_TRANSLATE("Translate selection") ||
+			manipName == B_TRANSLATE("Rotate selection") ||
+			manipName == B_TRANSLATE("Scale selection")) {
 			// Add selection-change to the undo-queue.
 			if (!(*undo_queue->ReturnSelectionData() ==
 				*selection->ReturnSelectionData())) {
