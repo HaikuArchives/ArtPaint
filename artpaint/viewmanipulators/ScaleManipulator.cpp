@@ -723,9 +723,9 @@ const char*
 ScaleManipulator::ReturnName()
 {
 	if (transform_selection_only == true)
-		return B_TRANSLATE("Scale selection" B_UTF8_ELLIPSIS);
+		return B_TRANSLATE("Scale selection");
 
-	return B_TRANSLATE("Scale" B_UTF8_ELLIPSIS);
+	return B_TRANSLATE("Scale");
 }
 
 
