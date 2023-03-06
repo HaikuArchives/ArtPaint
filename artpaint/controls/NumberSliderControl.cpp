@@ -109,8 +109,7 @@ NumberSliderControl::MessageReceived(BMessage* message)
 			BString value;
 			value << numValue;
 			fNumberControl->SetText(value.String());
-			if (fContinuous)
-				_SendMessage(numValue, true);
+			_SendMessage(numValue, fContinuous);
 		}	break;
 
 		case kSliderModificationFinished: {

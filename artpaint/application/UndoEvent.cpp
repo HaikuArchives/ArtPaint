@@ -30,6 +30,7 @@ UndoEvent::UndoEvent(const BString& name, const BBitmap*)
 	previous_event = NULL;
 
 	selection_data = NULL;
+	layer_data = NULL;
 }
 
 
@@ -44,6 +45,8 @@ UndoEvent::~UndoEvent()
 	delete[] actions;
 
 	delete selection_data;
+
+	delete layer_data;
 }
 
 
@@ -101,4 +104,16 @@ void UndoEvent::SetSelectionData(const SelectionData *s)
 {
 	delete selection_data;
 	selection_data = new SelectionData(s);
+}
+
+
+void
+UndoEvent::SetLayerData(Layer* src_layer)
+{
+	layer_data = new Layer(BRect(0, 0, 1, 1), src_layer->Id(), NULL);
+
+	layer_data->SetName(src_layer->ReturnLayerName());
+	layer_data->SetVisibility(src_layer->IsVisible());
+	layer_data->SetTransparency(src_layer->GetOldTransparency());
+	layer_data->SetBlendMode(src_layer->GetBlendMode());
 }

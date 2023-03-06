@@ -196,7 +196,7 @@ LayerWindow::LayerWindow(BRect frame)
 
 	transparency_slider =
 		new NumberSliderControl("Alpha:", "0",
-		message, 0, 100, false);
+		message, 0, 100, false, false);
 
 	BFont font;
 
@@ -311,25 +311,40 @@ LayerWindow::MessageReceived(BMessage *message)
 		case HS_LAYER_TRANSPARENCY_CHANGED:
 			if (active_layer != NULL && active_layer->IsActive()) {
 				int32 value = transparency_slider->Value();
-				active_layer->SetTransparency((float)value / 100.0f);
+
+				BMessage layer_op_message;
+				layer_op_message.what = message->what;
+				layer_op_message.AddInt32("layer_id", active_layer->Id());
+				layer_op_message.AddPointer("layer_pointer",(void*)active_layer);
+				layer_op_message.AddInt32("transparency", value);
+				bool final = false;
+				layer_op_message.AddBool("final", final);
+				if (message->FindBool("final", &final) == B_OK)
+					layer_op_message.ReplaceBool("final", final);
+
+				//active_layer->SetTransparency((float)value / 100.0f);
 
 				BView *image_view = (BView*)active_layer->GetImageView();
 				BWindow *image_window = image_view->Window();
 
 				if (image_window && active_layer->IsActive())
-					image_window->PostMessage(message, image_view);
+					image_window->PostMessage(&layer_op_message, image_view);
 			} break;
 		case HS_LAYER_BLEND_MODE_CHANGED:
 			if (active_layer != NULL && active_layer->IsActive()) {
 				uint8 mode;
 				if(message->FindUInt8("blend_mode", &mode) == B_OK) {
-					active_layer->SetBlendMode(mode);
+					BMessage layer_op_message;
+					layer_op_message.what = message->what;
+					layer_op_message.AddInt32("layer_id", active_layer->Id());
+					layer_op_message.AddPointer("layer_pointer",(void*)active_layer);
+					layer_op_message.AddUInt8("blend_mode", mode);
 
 					BView *image_view = (BView*)active_layer->GetImageView();
 					BWindow *image_window = image_view->Window();
 
 					if (image_window && active_layer->IsActive())
-						image_window->PostMessage(message, image_view);
+						image_window->PostMessage(&layer_op_message, image_view);
 				}
 			} break;
 		case B_KEY_DOWN:
@@ -429,6 +444,33 @@ LayerWindow::setFeel(window_feel feel)
 		else
 			layer_window->SetLook(B_FLOATING_WINDOW_LOOK);
 
+		layer_window->Unlock();
+	}
+}
+
+
+void
+LayerWindow::SetTransparency(int32 transparency)
+{
+	if (layer_window) {
+		layer_window->Lock();
+		layer_window->GetTransparencySlider()->SetValue(transparency);
+		layer_window->Unlock();
+	}
+}
+
+
+void
+LayerWindow::SetBlendMode(uint8 mode)
+{
+	if (layer_window) {
+		layer_window->Lock();
+		BMenu* blend_mode_menu = layer_window->GetBlendModeMenu();
+		BMenuItem* blend_mode_item = blend_mode_menu->FindItem(mode_to_string((BlendModes)mode));
+		if (blend_mode_item != NULL) {
+			int32 index = blend_mode_menu->IndexOf(blend_mode_item);
+			blend_mode_menu->ItemAt(index)->SetMarked(true);
+		}
 		layer_window->Unlock();
 	}
 }

@@ -136,6 +136,7 @@ public:
 		Layer*		ReturnActiveLayer() {
 			return (Layer*)layer_list->ItemAt(current_layer_index);
 		}
+		Layer*		ReturnLayerById(int32 id);
 
 		int32		ReturnActiveLayerIndex() { return current_layer_index; }
 

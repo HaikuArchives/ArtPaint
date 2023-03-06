@@ -14,6 +14,8 @@
 
 
 #include "UndoAction.h"
+#include "Layer.h"
+
 
 class UndoQueue;
 class SelectionData;
@@ -35,6 +37,8 @@ friend 	class		UndoQueue;
 
 	SelectionData	*selection_data;
 
+		Layer*		layer_data;
+
 public:
 		UndoEvent(const BString& name, const BBitmap *thumbnail);
 		~UndoEvent();
@@ -48,12 +52,14 @@ int32			ActionCount();
 void			SetQueue(UndoQueue *q) { queue = q; }
 bool			IsEmpty();
 
-
 BString			ReturnName() { return event_name; }
 BBitmap*		ReturnThumbnail() { return thumbnail_image; }
 
 SelectionData*	ReturnSelectionData() { return selection_data; }
 void			SetSelectionData(const SelectionData*);
+
+void			SetLayerData(Layer*);
+Layer*			ReturnLayerData() { return layer_data; }
 };
 
 #endif

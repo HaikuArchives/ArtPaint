@@ -70,6 +70,8 @@ void		Activate(bool);
 void		SetVisibility(bool);
 
 Layer*		ReturnLayer() { return the_layer; }
+const char*	ReturnLayerName() { return layer_name_field->Text(); }
+void		SetName(const char* name);
 };
 
 

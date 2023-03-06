@@ -76,6 +76,11 @@ static	void	showLayerWindow();
 static	void	setFeel(window_feel);
 		void 	FrameResized(float, float);
 		LayerListView*	GetListView() { return list_view; }
+static	void	SetTransparency(int32 value);
+static	void	SetBlendMode(uint8 mode);
+
+		NumberSliderControl* GetTransparencySlider() { return transparency_slider; }
+		BMenu*	GetBlendModeMenu() { return blend_mode_menu; }
 };
 
 

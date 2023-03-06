@@ -115,7 +115,7 @@ Layer::AddToImage(Image* im)
 
 
 void
-Layer::SetTransparency(float coefficient)
+Layer::SetTransparency(float coefficient, bool update_old)
 {
 	transparency_coefficient = coefficient;
 	for (int i = 0; i < 256; ++i) {
@@ -125,6 +125,9 @@ Layer::SetTransparency(float coefficient)
 		a *= 32768;
 		fixed_alpha_table[i] = (uint32)a;
 	}
+
+	if (update_old == true)
+		old_transparency_coefficient = transparency_coefficient;
 }
 
 
@@ -294,6 +297,11 @@ Layer::SetVisibility(bool visible)
 {
 	fLayerVisible = visible;
 	fLayerView->SetVisibility(visible);
+	if (fLayerView->LockLooper() == true) {
+		fLayerView->Draw(fLayerView->Bounds());
+		fLayerView->Invalidate();
+		fLayerView->UnlockLooper();
+	}
 }
 
 
@@ -602,6 +610,14 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 	written_bytes += file.Write(&marker,sizeof(int32));
 
 	return written_bytes;
+}
+
+
+void
+Layer::SetName(const char* name)
+{
+	BString new_name(name);
+	fLayerName = new_name.String();
 }
 
 

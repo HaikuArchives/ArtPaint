@@ -108,16 +108,20 @@ public:
 									ImageView* imageView, int32 newId);
 			int64				writeLayer(BFile& file, int32 compressionMethod);
 
-			void				SetName(const char* c) { fLayerName = c; }
-			const char*			ReturnLayerName() const { return fLayerName; }
+			void				SetName(const char* name);
+			const char*			ReturnLayerName() const { return fLayerName.String(); }
 
 			const uint32*		ReturnFixedAlphaTable() const {
 									return fixed_alpha_table;
 								}
 
-			void				SetTransparency(float coefficient);
+			void				SetTransparency(float coefficient,
+									bool update_old = TRUE);
 			float				GetTransparency() const {
 									return transparency_coefficient;
+								}
+			float				GetOldTransparency() const {
+									return old_transparency_coefficient;
 								}
 
 			Layer*				ReturnUpperLayer();
@@ -169,6 +173,7 @@ private:
 			float				float_alpha_table[256];
 
 			float				transparency_coefficient;
+			float				old_transparency_coefficient;
 
 			// this function calculates the fLayerPreview
 			int32				calc_mini_image();

@@ -51,7 +51,8 @@ const	char*		ReturnUndoEventName();
 const	char*		ReturnRedoEventName();
 
 
-SelectionData		*selection_data;
+SelectionData*		selection_data;
+Layer*				layer_data;
 
 public:
 			UndoQueue(BMenuItem*,BMenuItem*,ImageView*);
@@ -91,6 +92,9 @@ SelectionData*	ReturnSelectionData() { return selection_data; }
 void	SetSelectionData(const SelectionData*);
 
 bool		IsEmpty() { return (ReturnUndoEventName() == NULL); }
+
+void			SetLayerData(Layer*);
+Layer*			ReturnLayerData() { return layer_data; }
 };
 
 #endif
