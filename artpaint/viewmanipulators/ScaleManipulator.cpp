@@ -168,8 +168,13 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	// Remember that the returned bitmap must accept views
 	// First scale the width.
 	// If the new size is the same as old return the original
-	if ((new_width == starting_width) && (new_height == starting_height))
+	if (new_width == starting_width && new_height == starting_height &&
+		new_settings->left == original_left &&
+		new_settings->top == original_top)
 		return NULL;
+
+	if (new_width == starting_width && new_height == starting_height)
+		return preview_bitmap;
 
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta",0.0);
