@@ -536,3 +536,15 @@ UndoQueue::SetSelectionData(const SelectionData *s)
 	delete selection_data;
 	selection_data = new SelectionData(s);
 }
+
+
+void
+UndoQueue::SetLayerData(Layer* src_layer)
+{
+	layer_data = new Layer(BRect(0, 0, 1, 1), src_layer->Id(), NULL);
+
+	layer_data->SetName(src_layer->ReturnLayerName());
+	layer_data->SetVisibility(src_layer->IsVisible());
+	layer_data->SetTransparency(src_layer->GetTransparency());
+	layer_data->SetBlendMode(src_layer->GetBlendMode());
+}

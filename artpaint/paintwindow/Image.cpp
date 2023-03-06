@@ -577,6 +577,7 @@ Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 				}
 				else if (layer->Id() == other->Id()) {
 					new_action = new UndoAction(layer->Id(),DELETE_LAYER_ACTION,layer->Bitmap()->Bounds());
+					new_event->SetLayerData(layer);
 				}
 				else
 					new_action = new UndoAction(layer->Id());
@@ -644,6 +645,7 @@ Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 					new_action = new UndoAction(layer->Id());
 				else {
 					new_action = new UndoAction(layer->Id(),DELETE_LAYER_ACTION,layer->Bitmap()->Bounds());
+					new_event->SetLayerData(layer);
 				}
 				new_event->AddAction(new_action);
 				new_action->StoreUndo(layer->Bitmap());
@@ -854,6 +856,19 @@ BBitmap*
 Image::ReturnActiveBitmap()
 {
 	return ((Layer*)layer_list->ItemAt(current_layer_index))->Bitmap();
+}
+
+
+Layer*
+Image::ReturnLayerById(int32 id)
+{
+	try {
+		Layer* layer = layer_id_list[id];
+
+		return layer;
+	} catch(...) {
+		return NULL;
+	}
 }
 
 

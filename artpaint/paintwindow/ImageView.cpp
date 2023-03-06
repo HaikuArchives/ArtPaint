@@ -15,6 +15,7 @@
 #include "ImageAdapter.h"
 #include "ImageView.h"
 #include "Layer.h"
+#include "LayerView.h"
 #include "LayerWindow.h"
 #include "Manipulator.h"
 #include "ManipulatorServer.h"
@@ -502,8 +503,65 @@ ImageView::MessageReceived(BMessage* message)
 			}
 		} break;
 
-		case HS_LAYER_TRANSPARENCY_CHANGED:
+		case HS_LAYER_NAME_CHANGED: {
+			int32 changed_layer_id;
+			Layer* changed_layer;
+			message->FindInt32("layer_id", &changed_layer_id);
+			message->FindPointer("layer_pointer", (void**)&changed_layer);
+			const char* name = changed_layer->GetView()->ReturnLayerName();
+
+			UndoEvent* new_event =
+				undo_queue->AddUndoEvent(B_TRANSLATE("Layer name"),
+					the_image->ReturnThumbnailImage());
+			if (new_event != NULL) {
+				new_event->SetLayerData(changed_layer);
+			}
+
+			changed_layer->SetName(name);
+			name = changed_layer->ReturnLayerName();
+
+			the_image->Render();
+			Invalidate();
+		} break;
+
+		case HS_LAYER_TRANSPARENCY_CHANGED: {
+			Layer* changed_layer;
+			message->FindPointer("layer_pointer", (void**)&changed_layer);
+
+			int32 value;
+			message->FindInt32("transparency", &value);
+			bool final;
+			if (message->FindBool("final", &final) == B_OK &&
+				final == true) {
+				UndoEvent* new_event =
+					undo_queue->AddUndoEvent(B_TRANSLATE("Layer transparency"),
+						the_image->ReturnThumbnailImage());
+				if (new_event != NULL) {
+					changed_layer->SetTransparency(changed_layer->GetOldTransparency(), true);
+					new_event->SetLayerData(changed_layer);
+				}
+			} else
+				final = false;
+
+			changed_layer->SetTransparency((float)value / 100.0f, final);
+			the_image->Render();
+			Invalidate();
+		} break;
+
 		case HS_LAYER_BLEND_MODE_CHANGED: {
+			Layer* changed_layer;
+			message->FindPointer("layer_pointer", (void**)&changed_layer);
+			uint8 mode;
+			message->FindUInt8("blend_mode", &mode);
+
+			UndoEvent* new_event =
+				undo_queue->AddUndoEvent(B_TRANSLATE("Blend mode"),
+					the_image->ReturnThumbnailImage());
+			if (new_event != NULL) {
+				new_event->SetLayerData(changed_layer);
+			}
+
+			changed_layer->SetBlendMode(mode);
 			the_image->Render();
 			Invalidate();
 		} break;
@@ -514,8 +572,18 @@ ImageView::MessageReceived(BMessage* message)
 			Layer* changed_layer;
 			message->FindInt32("layer_id", &changed_layer_id);
 			message->FindPointer("layer_pointer", (void**)&changed_layer);
+			bool visibility = changed_layer->IsVisible();
+
+			UndoEvent* new_event =
+				undo_queue->AddUndoEvent(B_TRANSLATE("Layer visibility"),
+					the_image->ReturnThumbnailImage());
+				if (new_event != NULL) {
+					new_event->SetLayerData(changed_layer);
+			}
+
 			if (the_image->ToggleLayerVisibility(changed_layer,
 				changed_layer_id) == TRUE) {
+
 				Invalidate();
 				AddChange();	// Is this really necessary?
 			}
@@ -2082,6 +2150,40 @@ ImageView::Undo()
 				delete data;
 			}
 
+			if (event->ReturnLayerData() != NULL) {
+				Layer* layer_data = event->ReturnLayerData();
+				Layer* active_layer = the_image->ReturnLayerById(layer_data->Id());
+				if (active_layer != NULL) {
+					active_layer->ActivateLayer(true);
+					the_image->ChangeActiveLayer(active_layer, 0);
+					BString new_name(layer_data->ReturnLayerName());
+					BString old_name(active_layer->ReturnLayerName());
+					active_layer->SetName(new_name);
+					active_layer->GetView()->SetName(new_name);
+					layer_data->SetName(old_name);
+					float new_transparency = layer_data->GetTransparency();
+					float old_transparency = active_layer->GetTransparency();
+					active_layer->SetTransparency(new_transparency);
+					layer_data->SetTransparency(old_transparency);
+					uint8 new_blend_mode = layer_data->GetBlendMode();
+					uint8 old_blend_mode = active_layer->GetBlendMode();
+					active_layer->SetBlendMode(new_blend_mode);
+					layer_data->SetBlendMode(old_blend_mode);
+					bool new_visibility = layer_data->IsVisible();
+					bool old_visibility = active_layer->IsVisible();
+					active_layer->SetVisibility(new_visibility);
+					layer_data->SetVisibility(old_visibility);
+					LayerWindow::SetTransparency(new_transparency * 100);
+					LayerWindow::SetBlendMode(new_blend_mode);
+					LayerWindow::ActiveWindowChanged(Window(),
+						the_image->LayerList(),
+						the_image->ReturnThumbnailImage());
+				}
+
+				undo_queue->SetLayerData(layer_data);
+			}
+
+			the_image->Render();
 			Invalidate();
 		}
 
@@ -2140,6 +2242,40 @@ ImageView::Redo()
 				delete data;
 			}
 
+			if (event->ReturnLayerData() != NULL) {
+				Layer* layer_data = event->ReturnLayerData();
+				Layer* active_layer = the_image->ReturnLayerById(layer_data->Id());
+				if (active_layer != NULL) {
+					active_layer->ActivateLayer(true);
+					the_image->ChangeActiveLayer(active_layer, 0);
+					BString new_name(layer_data->ReturnLayerName());
+					BString old_name(active_layer->ReturnLayerName());
+					active_layer->SetName(new_name);
+					active_layer->GetView()->SetName(new_name);
+					layer_data->SetName(old_name);
+					float new_transparency = layer_data->GetTransparency();
+					float old_transparency = active_layer->GetTransparency();
+					active_layer->SetTransparency(new_transparency);
+					layer_data->SetTransparency(old_transparency);
+					uint8 new_blend_mode = layer_data->GetBlendMode();
+					uint8 old_blend_mode = active_layer->GetBlendMode();
+					active_layer->SetBlendMode(new_blend_mode);
+					layer_data->SetBlendMode(old_blend_mode);
+					bool new_visibility = layer_data->IsVisible();
+					bool old_visibility = active_layer->IsVisible();
+					active_layer->SetVisibility(new_visibility);
+					layer_data->SetVisibility(old_visibility);
+					LayerWindow::SetTransparency(new_transparency * 100);
+					LayerWindow::SetBlendMode(new_blend_mode);
+					LayerWindow::ActiveWindowChanged(Window(),
+						the_image->LayerList(),
+						the_image->ReturnThumbnailImage());
+				}
+
+				undo_queue->SetLayerData(layer_data);
+			}
+
+			the_image->Render();
 			Invalidate();
 		}
 

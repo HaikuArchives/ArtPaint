@@ -48,8 +48,9 @@ LayerView::LayerView(BBitmap *image, Layer *layer)
 	thumbnail_view = new ThumbnailView(image);
 	thumbnail_view->SetEventMask(0);
 
+	a_message.what = HS_LAYER_NAME_CHANGED;
 	layer_name_field = new BTextControl("", "Layer",
-		new BMessage(HS_LAYER_NAME_CHANGED));
+		new BMessage(a_message));
 
 	BGroupLayout* layerLayout = BLayoutBuilder::Group<>(this,
 		B_HORIZONTAL, B_USE_SMALL_SPACING)
@@ -79,7 +80,7 @@ LayerView::AttachedToWindow()
 	if ((Parent() != NULL) && (is_active == FALSE))
 		SetViewColor(Parent()->ViewColor());
 
-	layer_name_field->SetTarget(this);
+	layer_name_field->SetTarget(the_layer->GetImageView());
 	layer_name_field->SetText(the_layer->ReturnLayerName());
 }
 
@@ -107,10 +108,6 @@ void
 LayerView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case HS_LAYER_NAME_CHANGED:
-			the_layer->SetName(layer_name_field->Text());
-			break;
-
 		default:
 			BBox::MessageReceived(message);
 			break;
@@ -207,6 +204,15 @@ LayerView::SetVisibility(bool visible)
 		a_window->Unlock();
 }
 
+
+void
+LayerView::SetName(const char* name)
+{
+	if (LockLooper() == true) {
+		layer_name_field->SetText(name);
+		UnlockLooper();
+	}
+}
 
 int32
 LayerView::reorder_thread(void *data)
