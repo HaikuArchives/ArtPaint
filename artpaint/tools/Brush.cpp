@@ -14,6 +14,11 @@
 #include <Point.h>
 
 
+#include "PixelOperations.h"
+#include "StatusView.h"
+#include "UtilityClasses.h"
+
+
 #include <math.h>
 #include <stdio.h>
 
@@ -117,6 +122,8 @@ Brush::ModifyBrush(brush_info &info)
 
 	maximum_width = max_c(height_, width_);
 	maximum_height = maximum_width;
+
+	CurrentBrushView::BrushChanged();
 }
 
 
@@ -626,4 +633,129 @@ Brush::print_brush(uint32 **b)
 		}
 		printf("\n");
 	}
+}
+
+
+void
+Brush::draw(BBitmap* buffer, BPoint point,
+	int32 dx, int32 dy, uint32 c, Selection* selection)
+{
+	BRect bitmap_bounds = buffer->Bounds();
+
+	int32 left_bound = (int32)bitmap_bounds.left;
+	int32 right_bound = (int32)bitmap_bounds.right;
+	int32 top_bound = (int32)bitmap_bounds.top;
+	int32 bottom_bound = (int32)bitmap_bounds.bottom;
+
+	span* spans;
+	int32 px = (int32)point.x;
+	int32 py = (int32)point.y;
+	uint32** brush_matrix = GetData(&spans, dx, dy);
+
+	if (brush_matrix == NULL)
+		return;
+
+	uint32* bits = (uint32*)buffer->Bits();
+	uint32 bpr = buffer->BytesPerRow()/4;
+	uint32* target_bits;
+	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
+		int32 left = max_c(px + spans->span_start, left_bound) ;
+		int32 right = min_c(px + spans->span_end, right_bound);
+		int32 y = spans->row;
+		if (y + py >= top_bound) {
+			// This works even if there are many spans in one row.
+			target_bits = bits + (y + py) * bpr + left;
+			for (int32 x = left; x <= right; ++x) {
+				if (selection->IsEmpty() || selection->ContainsPoint(x, y + py)) {
+
+					*target_bits = mix_2_pixels_fixed(c, *target_bits,
+						brush_matrix[y][x-px]);
+				}
+				target_bits++;
+			}
+		}
+		spans = spans->next;
+	}
+}
+
+
+BRect
+Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, uint32 color,
+	Selection* selection)
+{
+	int32 brush_width_per_2 = (int32)floor(this->Width()/2);
+	int32 brush_height_per_2 = (int32)floor(this->Height()/2);
+	BRect a_rect = MakeRectFromPoints(start, end);
+	a_rect.InsetBy(-brush_width_per_2 - 1, -brush_height_per_2 - 1);
+
+	// first check whether the line is longer in x direction than y
+	bool increase_x = fabs(start.x - end.x) >= fabs(start.y - end.y);
+
+	// check which direction the line is going
+	float sign_x;
+	float sign_y;
+	int32 number_of_points;
+	if ((end.x - start.x) != 0)
+		sign_x = (end.x - start.x) / fabs(start.x - end.x);
+	else
+		sign_x = 0;
+
+	if ((end.y-start.y) != 0)
+		sign_y = (end.y - start.y) / fabs(start.y - end.y);
+	else
+		sign_y = 0;
+
+	int32 dx, dy;
+	int32 last_x, last_y;
+	int32 new_x, new_y;
+	BPoint last_point;
+
+	if (increase_x) {
+		float y_add = ((float)fabs(start.y - end.y)) / ((float)fabs(start.x - end.x));
+		number_of_points = (int32)fabs(start.x - end.x);
+		for (int32 i = 0; i < number_of_points; i++) {
+			last_point = start;
+			start.x += sign_x;
+			start.y += sign_y * y_add;
+			new_x = (int32)round(start.x);
+			new_y = (int32)round(start.y);
+			last_x = (int32)round(last_point.x);
+			last_y = (int32)round(last_point.y);
+
+			dx = new_x - last_x;
+			dy = new_y - last_y;
+			this->draw(buffer, BPoint(new_x - brush_width_per_2, new_y -
+				brush_height_per_2), dx, dy, color, selection);
+
+//			view->Window()->Lock();
+//			view->Invalidate();
+//			view->Window()->Unlock();
+//			snooze(50 * 1000);
+		}
+	} else {
+		float x_add = ((float)fabs(start.x - end.x)) / ((float)fabs(start.y - end.y));
+		number_of_points = (int32)fabs(start.y-end.y);
+		for (int32 i = 0; i < number_of_points; i++) {
+			last_point = start;
+			start.y += sign_y;
+			start.x += sign_x * x_add;
+			new_x = (int32)round(start.x);
+			new_y = (int32)round(start.y);
+			last_x = (int32)round(last_point.x);
+			last_y = (int32)round(last_point.y);
+
+			dx = new_x - last_x;
+			dy = new_y - last_y;
+			this->draw(buffer, BPoint(new_x - brush_width_per_2,
+				new_y - brush_height_per_2), dx, dy, color,
+				selection);
+
+//			view->Window()->Lock();
+//			view->Invalidate();
+//			view->Window()->Unlock();
+//			snooze(50 * 1000);
+		}
+	}
+
+	return a_rect;
 }

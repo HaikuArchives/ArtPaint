@@ -24,10 +24,12 @@
 #ifndef BRUSH_H
 #define BRUSH_H
 
+#include <Bitmap.h>
+#include <Point.h>
 #include <SupportDefs.h>
 
 
-class BBitmap;
+#include "Selection.h"
 
 
 #define	BRUSH_PREVIEW_WIDTH		64
@@ -123,19 +125,25 @@ class Brush {
 
 
 public:
-		Brush(brush_info &info,bool create_diff_brushes=TRUE);
-		~Brush();
+					Brush(brush_info &info,
+						bool create_diff_brushes = TRUE);
+					~Brush();
 
-void	ModifyBrush(brush_info &info);
-void	CreateDiffBrushes();
+	void			ModifyBrush(brush_info &info);
+	void			CreateDiffBrushes();
 
-float	PreviewBrush(BBitmap*);
+	float			PreviewBrush(BBitmap*);
+	void			draw(BBitmap* buffer, BPoint point,
+						int32 dx, int32 dy, uint32 c,
+						Selection* selection);
+	BRect			draw_line(BBitmap* buffer, BPoint start,
+						BPoint end, uint32 color,
+						Selection* selection);
 
-
-uint32**	GetData(span**,int32,int32);
-float		Width() { return width_; }
-float		Height() { return height_; }
-brush_info	GetInfo();
+	uint32**		GetData(span**,int32,int32);
+	float			Width() { return width_; }
+	float			Height() { return height_; }
+	brush_info		GetInfo();
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "PaintApplication.h"
 #include "PixelOperations.h"
 #include "Selection.h"
+#include "ToolManager.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
@@ -44,21 +45,11 @@ BrushTool::BrushTool()
 	// Options will also have some brush-data options.
 	fOptions = 0;
 	fOptionsCount = 0;
-
-	brush_info info;
-	info.shape = HS_ELLIPTICAL_BRUSH;
-	info.width = 30;
-	info.height = 30;
-	info.angle = 0;
-	info.hardness = 2;
-
-	brush = new Brush(info);
 }
 
 
 BrushTool::~BrushTool()
 {
-	delete brush;
 }
 
 
@@ -71,6 +62,10 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	// Wait for the last_updated_region to become empty
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
+
+	Brush* brush = ToolManager::Instance().GetCurrentBrush();
+	if (brush == NULL)
+		return NULL;
 
 	CoordinateReader* coordinate_reader =
 		new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false);
@@ -94,14 +89,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 		return NULL;
 	}
 
-	bits = (uint32*)buffer->Bits();
-	bpr = buffer->BytesPerRow()/4;
 	BRect bitmap_bounds = buffer->Bounds();
-
-	left_bound = (int32)bitmap_bounds.left;
-	right_bound = (int32)bitmap_bounds.right;
-	top_bound = (int32)bitmap_bounds.top;
-	bottom_bound = (int32)bitmap_bounds.bottom;
 
 	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(bitmap_bounds,
 		buffer->ColorSpace());
@@ -138,8 +126,9 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	the_script->AddPoint(point);
 
 	if (coordinate_reader->GetPoint(point) == B_OK) {
-		draw_brush(tmpBuffer, BPoint(point.x - brush_width_per_2,
-			point.y - brush_height_per_2), 0, 0, new_color.word);
+		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
+			point.y - brush_height_per_2), 0, 0, new_color.word,
+			selection);
 	}
 
 	updated_rect = BRect(point.x - brush_width_per_2,
@@ -156,9 +145,10 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	imageUpdater->AddRect(updated_rect);
 
 	while (coordinate_reader->GetPoint(point) == B_OK) {
-		draw_brush(tmpBuffer, BPoint(point.x - brush_width_per_2,
+		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
 			point.y - brush_height_per_2), int32(point.x - prev_point.x),
-			int32(point.y - prev_point.y), new_color.word);
+			int32(point.y - prev_point.y), new_color.word,
+			selection);
 		updated_rect = BRect(point.x - brush_width_per_2,
 			point.y - brush_height_per_2, point.x + brush_width_per_2,
 			point.y + brush_height_per_2);
@@ -220,118 +210,7 @@ BrushTool::HelpString(bool isInUse) const
 }
 
 
-BRect
-BrushTool::draw_line(BBitmap* buffer, BPoint start,BPoint end,uint32 color)
-{
-	int32 brush_width_per_2 = (int32)floor(brush->Width()/2);
-	int32 brush_height_per_2 = (int32)floor(brush->Height()/2);
-	BRect a_rect = MakeRectFromPoints(start, end);
-	a_rect.InsetBy(-brush_width_per_2-1,-brush_height_per_2-1);
-	// first check whether the line is longer in x direction than y
-	bool increase_x = fabs(start.x - end.x) >= fabs(start.y - end.y);
-	// check which direction the line is going
-	float sign_x;
-	float sign_y;
-	int32 number_of_points;
-	if ((end.x-start.x) != 0) {
-		sign_x = (end.x-start.x)/fabs(start.x - end.x);
-	}
-	else {
-		sign_x = 0;
-	}
-	if ((end.y-start.y) != 0) {
-		sign_y = (end.y-start.y)/fabs(start.y - end.y);
-	}
-	else {
-		sign_y = 0;
-	}
-	int32 dx,dy;
-	int32 last_x,last_y;
-	int32 new_x,new_y;
 
-	if (increase_x) {
-		float y_add = ((float)fabs(start.y - end.y)) / ((float)fabs(start.x - end.x));
-		number_of_points = (int32)fabs(start.x-end.x);
-		for (int32 i=0;i<number_of_points;i++) {
-			last_point = start;
-			start.x += sign_x;
-			start.y += sign_y * y_add;
-			new_x = (int32)round(start.x);
-			new_y = (int32)round(start.y);
-			last_x = (int32)round(last_point.x);
-			last_y = (int32)round(last_point.y);
-
-			dx = new_x - last_x;
-			dy = new_y - last_y;
-			draw_brush(buffer, BPoint(new_x - brush_width_per_2, new_y -
-				brush_height_per_2), dx, dy, color);
-
-//			view->Window()->Lock();
-//			view->Invalidate();
-//			view->Window()->Unlock();
-//			snooze(50 * 1000);
-		}
-	}
-
-	else {
-		float x_add = ((float)fabs(start.x - end.x)) / ((float)fabs(start.y - end.y));
-		number_of_points = (int32)fabs(start.y-end.y);
-		for (int32 i=0;i<number_of_points;i++) {
-			last_point = start;
-			start.y += sign_y;
-			start.x += sign_x * x_add;
-			new_x = (int32)round(start.x);
-			new_y = (int32)round(start.y);
-			last_x = (int32)round(last_point.x);
-			last_y = (int32)round(last_point.y);
-
-			dx = new_x - last_x;
-			dy = new_y - last_y;
-			draw_brush(buffer, BPoint(new_x-brush_width_per_2,new_y-brush_height_per_2),dx,dy,color);
-
-//			view->Window()->Lock();
-//			view->Invalidate();
-//			view->Window()->Unlock();
-//			snooze(50 * 1000);
-		}
-	}
-	return a_rect;
-}
-
-
-void
-BrushTool::draw_brush(BBitmap* buffer, BPoint point,
-	int32 dx, int32 dy, uint32 c)
-{
-	span* spans;
-	int32 px = (int32)point.x;
-	int32 py = (int32)point.y;
-	uint32** brush_matrix = brush->GetData(&spans, dx, dy);
-
-	if (brush_matrix == NULL)
-		return;
-
-	bits = (uint32*)buffer->Bits();
-	uint32* target_bits;
-	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
-		int32 left = max_c(px + spans->span_start, left_bound) ;
-		int32 right = min_c(px + spans->span_end, right_bound);
-		int32 y = spans->row;
-		if (y + py >= top_bound) {
-			// This works even if there are many spans in one row.
-			target_bits = bits + (y + py) * bpr + left;
-			for (int32 x = left; x <= right; ++x) {
-				if (selection->IsEmpty() || selection->ContainsPoint(x, y + py)) {
-
-					*target_bits = mix_2_pixels_fixed(c, *target_bits,
-						brush_matrix[y][x-px]);
-				}
-				target_bits++;
-			}
-		}
-		spans = spans->next;
-	}
-}
 
 
 status_t
@@ -365,8 +244,8 @@ BrushTool::readSettings(BFile &file, bool isLittleEndian)
 	if (file.Read(&info, sizeof(struct brush_info)) != sizeof(struct brush_info))
 		return B_ERROR;
 
-	delete brush;
-	brush = new Brush(info);
+	//delete brush;
+	//brush = new Brush(info);
 
 	return B_OK;
 }
@@ -388,7 +267,7 @@ BrushTool::writeSettings(BFile &file)
 		return B_ERROR;
 
 	brush_info info;
-	info = brush->GetInfo();
+	//info = brush->GetInfo();
 	if (file.Write(&info,sizeof(struct brush_info)) != sizeof(struct brush_info))
 		return B_ERROR;
 
@@ -404,6 +283,8 @@ BrushToolConfigView::BrushToolConfigView(DrawingTool* tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BrushTool* brushTool = dynamic_cast<BrushTool*> (tool);
-		layout->AddView(BrushEditor::CreateBrushEditor(brushTool->GetBrush()));
+		Brush* brush = ToolManager::Instance().GetCurrentBrush();
+
+		layout->AddView(BrushEditor::CreateBrushEditor(brush));
 	}
 }

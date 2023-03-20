@@ -34,12 +34,14 @@ struct ToolManagerClient {
 							: fLastUpdatedRect(BRect())
 							, fClient(view)
 							, fActiveTool(NULL)
+							, fActiveBrush(NULL)
 							, fNextClient(NULL) {}
 
 	BRect				fLastUpdatedRect;
 
 	ImageView*			fClient;
 	DrawingTool*		fActiveTool;
+	Brush*				fActiveBrush;
 	ToolManagerClient*	fNextClient;
 };
 
@@ -61,11 +63,13 @@ ToolManager::Instance()
 	return *fToolManager;
 }
 
+
 status_t
 ToolManager::CreateToolManager()
 {
 	if (fToolManager == NULL) {
 		fToolManager = new ToolManager();
+		fToolManager->fActiveBrush = NULL;
 		return B_OK;
 	}
 	return B_ERROR;
@@ -250,15 +254,32 @@ status_t
 ToolManager::SetCurrentBrush(brush_info *binfo)
 {
 	// Set the new brush for all tools that use brushes.
-	BrushTool *brush_tool = dynamic_cast<BrushTool*>(ReturnTool(BRUSH_TOOL));
+	if (fActiveBrush == NULL)
+		fActiveBrush = new Brush(*binfo);
+	else
+		fActiveBrush->ModifyBrush(*binfo);
 
-	if (brush_tool != NULL) {
-		Brush *a_brush = brush_tool->GetBrush();
-		a_brush->ModifyBrush(*binfo);
-		BrushEditor::BrushModified();
-		a_brush->CreateDiffBrushes();
-	}
+	BrushEditor::BrushModified();
+	fActiveBrush->CreateDiffBrushes();
+
 	return B_OK;
+}
+
+
+Brush*
+ToolManager::GetCurrentBrush()
+{
+	if (fActiveBrush == NULL) {
+		brush_info info;
+		info.shape = HS_ELLIPTICAL_BRUSH;
+		info.width = 30;
+		info.height = 30;
+		info.angle = 0;
+		info.hardness = 2;
+		SetCurrentBrush(&info);
+	}
+
+	return fActiveBrush;
 }
 
 

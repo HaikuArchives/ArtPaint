@@ -12,6 +12,7 @@
 
 #include "StatusView.h"
 
+#include "BitmapUtilities.h"
 #include "ColorPalette.h"
 #include "PaintApplication.h"
 #include "MessageConstants.h"
@@ -19,6 +20,7 @@
 #include "Patterns.h"
 #include "MagnificationView.h"
 #include "ResourceServer.h"
+#include "ToolManager.h"
 
 
 #include <Catalog.h>
@@ -66,15 +68,19 @@ StatusView::StatusView()
 	selected_colors->SetExplicitMinSize(BSize(color_size + 2, color_size + 2));
 	selected_colors->SetExplicitMaxSize(BSize(color_size + 2, color_size + 2));
 
+	current_brush = CurrentBrushView::CreateCurrentBrushView(
+		BRect(0, 0, BRUSH_PREVIEW_WIDTH, BRUSH_PREVIEW_HEIGHT));
+
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	status_bar = new BStatusBar("progress indicator");
 
 	BGridLayout* toolsAndColorsCard = BLayoutBuilder::Grid<>(5.0, 0.0)
 		.AddGlue(0, 0)
-		.Add(selected_colors, 1, 0, 1, 2)
+		//.Add(current_brush, 1, 0, 1, 2)
+		.Add(selected_colors, 2, 0, 1, 2)
 		.SetInsets(0.0, 0.0, 0.0, 0.0);
-	toolsAndColorsCard->SetMaxColumnWidth(2, 52);
+	toolsAndColorsCard->SetMaxColumnWidth(3, 52);
 
 	BGroupLayout* progressBarCard = BLayoutBuilder::Group<>(B_VERTICAL, 5.0)
 		.Add(status_bar)
@@ -109,7 +115,11 @@ StatusView::~StatusView()
 
 	if (selected_colors->Parent() == NULL)
 		delete selected_colors;
+
+	if (current_brush->Parent() == NULL)
+		delete current_brush;
 }
+
 
 
 BStatusBar*
@@ -376,4 +386,99 @@ SelectedColorsView::IsPointOverForegroundColor(BPoint point)
 	if (rect.Contains(point))
 		return true;
 	return false;
+}
+
+
+CurrentBrushView* CurrentBrushView::fCurrentBrushView = NULL;
+
+
+CurrentBrushView::CurrentBrushView(BRect frame)
+	: BView(frame, "brush view", B_FOLLOW_NONE, B_WILL_DRAW)
+	, fBrush(NULL)
+	, fBrushPreview(NULL)
+{
+	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
+	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
+
+	SetToolTip(B_TRANSLATE("Brush"));
+
+	frame.InsetBy(1.0, 1.0);
+	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width(),
+		frame.Height()), B_RGBA32);
+	BitmapUtilities::ClearBitmap(fBrushPreview, 0xFFFFFFFF);
+}
+
+
+CurrentBrushView::~CurrentBrushView()
+{
+	delete fBrushPreview;
+	fCurrentBrushView = NULL;
+}
+
+
+CurrentBrushView*
+CurrentBrushView::CreateCurrentBrushView(BRect frame)
+{
+	if (fCurrentBrushView != NULL)
+		return fCurrentBrushView;
+
+	fCurrentBrushView = new CurrentBrushView(frame);
+	return fCurrentBrushView;
+}
+
+
+void
+CurrentBrushView::Draw(BRect)
+{
+	DrawBitmap(fBrushPreview, BPoint(1.0, 1.0));
+
+	SetPenSize(1);
+	SetHighColor(0, 0, 0, 255);
+	StrokeRect(Bounds());
+}
+
+
+void
+CurrentBrushView::SetBrush(Brush* new_brush)
+{
+	fBrush = new_brush;
+	if (fBrush != NULL)
+		fBrush->PreviewBrush(fBrushPreview);
+	Draw(Bounds());
+}
+
+void
+CurrentBrushView::MessageReceived(BMessage* message)
+{
+	switch (message->what) {
+		case HS_BRUSH_CHANGED: {
+			SetBrush(ToolManager::Instance().GetCurrentBrush());
+		} 	break;
+//		case HS_BRUSH_DRAGGED: {
+//			int32 size;
+//			brush_info* info;
+//			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
+//			if (size == sizeof(brush_info)) {
+//				fBrush->ModifyBrush(*info);
+//				fBrush->PreviewBrush(fBrushPreview);
+//				Invalidate();
+//				fBrush->CreateDiffBrushes();
+//				if (Window() && Parent())
+//					Window()->PostMessage(kBrushAltered, Parent());
+//			}
+//			break;
+//
+		default: {
+			BView::MessageReceived(message);
+		}	break;
+	}
+}
+
+
+void
+CurrentBrushView::BrushChanged()
+{
+	if (fCurrentBrushView != NULL)
+		fCurrentBrushView->Window()->PostMessage(HS_BRUSH_CHANGED, fCurrentBrushView);
+	//	fCurrentBrushView->Window()->PostMessage(HS_BRUSH_CHANGED);
 }
