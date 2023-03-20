@@ -10,12 +10,11 @@
 #define WAVE_H
 
 #include <stdio.h>
+#include <Slider.h>
+#include <Spinner.h>
 
 #include "ManipulatorSettings.h"
 #include "WindowGUIManipulator.h"
-
-
-class BSlider;
 
 
 #define	WAVE_LENGTH_ADJUSTING_STARTED	'Wlas'
@@ -24,6 +23,8 @@ class BSlider;
 #define	WAVE_AMOUNT_CHANGED				'Wamc'
 #define	WAVE_LENGTH_CHANGED				'Wlec'
 #define	WAVE_DAMPENING_CHANGED			'Wdch'
+#define	CENTER_X_CHANGED				'CXch'
+#define	CENTER_Y_CHANGED				'CYch'
 
 #define	MAX_WAVE_AMOUNT		100
 #define MIN_WAVE_AMOUNT		3
@@ -115,6 +116,8 @@ class WaveManipulatorView : public WindowGUIManipulatorView {
 		WaveManipulator			*manipulator;
 		BSlider					*wave_length_slider;
 		BSlider					*wave_amount_slider;
+		BSpinner*				centerX;
+		BSpinner*				centerY;
 		WaveManipulatorSettings	settings;
 
 		bool					preview_started;

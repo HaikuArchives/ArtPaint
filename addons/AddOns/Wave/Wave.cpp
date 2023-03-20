@@ -947,6 +947,7 @@ void WaveManipulator::Reset()
 	}
 }
 
+
 BView* WaveManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new WaveManipulatorView(BRect(0,0,0,0),this, target);
@@ -980,6 +981,13 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	target = new BMessenger(t);
 	preview_started = FALSE;
 
+	centerX = new BSpinner("centerX", "X:", new BMessage(CENTER_X_CHANGED));
+	centerX->SetMaxValue(9999);
+	centerX->SetMinValue(-9999);
+	centerY = new BSpinner("centerY", "Y:", new BMessage(CENTER_Y_CHANGED));
+	centerY->SetMaxValue(9999);
+	centerY->SetMinValue(-9999);
+
 	wave_length_slider = new BSlider("wave_length_slider",
 		B_TRANSLATE("Wavelength:"), new BMessage(WAVE_LENGTH_CHANGED), MIN_WAVE_LENGTH,
 		MAX_WAVE_LENGTH, B_HORIZONTAL, B_TRIANGLE_THUMB);
@@ -997,6 +1005,10 @@ WaveManipulatorView::WaveManipulatorView(BRect rect,WaveManipulator *manip,
 	wave_amount_slider->SetHashMarkCount(11);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_ITEM_SPACING)
+		.AddGroup(B_HORIZONTAL)
+			.Add(centerX)
+			.Add(centerY)
+			.End()
 		.Add(wave_length_slider)
 		.Add(wave_amount_slider)
 		.SetInsets(B_USE_SMALL_INSETS)
@@ -1014,6 +1026,8 @@ void WaveManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 
+	centerX->SetTarget(BMessenger(this));
+	centerY->SetTarget(BMessenger(this));
 	wave_length_slider->SetTarget(BMessenger(this));
 	wave_amount_slider->SetTarget(BMessenger(this));
 }
@@ -1021,6 +1035,8 @@ void WaveManipulatorView::AttachedToWindow()
 
 void WaveManipulatorView::AllAttached()
 {
+	centerX->SetValue(settings.center.x);
+	centerY->SetValue(settings.center.y);
 	wave_length_slider->SetValue(settings.wave_length);
 	wave_amount_slider->SetValue(settings.wave_amount);
 
@@ -1062,6 +1078,20 @@ void WaveManipulatorView::MessageReceived(BMessage *message)
 			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 			break;
 
+		case CENTER_X_CHANGED:
+			preview_started = FALSE;
+			settings.center.x = centerX->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
+		case CENTER_Y_CHANGED:
+			preview_started = FALSE;
+			settings.center.y = centerY->Value();
+			manipulator->ChangeSettings(&settings);
+			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
+			break;
+
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 			break;
@@ -1077,6 +1107,8 @@ void WaveManipulatorView::ChangeSettings(WaveManipulatorSettings *s)
 	if (window != NULL) {
 		window->Lock();
 
+		centerX->SetValue(settings.center.x);
+		centerY->SetValue(settings.center.y);
 		wave_length_slider->SetValue(settings.wave_length);
 		wave_amount_slider->SetValue(settings.wave_amount);
 
