@@ -14,6 +14,7 @@
 #include <Point.h>
 
 
+#include "MessageConstants.h"
 #include "PixelOperations.h"
 #include "StatusView.h"
 #include "UtilityClasses.h"
@@ -94,7 +95,7 @@ Brush::ModifyBrush(brush_info &info)
 	maximum_width = max_c(height_, width_);
 	maximum_height = maximum_width;
 
-	//CurrentBrushView::BrushChanged();
+	CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
 }
 
 
@@ -461,7 +462,7 @@ Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 
 
 BRect
-Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, uint32 color,
+Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 	Selection* selection)
 {
 	int32 brush_width_per_2 = (int32)floor(this->Width()/2);

@@ -14,19 +14,24 @@
 
 #include "BitmapDrawer.h"
 #include "BitmapUtilities.h"
+#include "Brush.h"
 #include "Cursors.h"
 #include "CoordinateQueue.h"
 #include "Image.h"
+#include "ImageUpdater.h"
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "PixelOperations.h"
+#include "ToolManager.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
 
 #include <Catalog.h>
+#include <CheckBox.h>
 #include <GridLayoutBuilder.h>
+#include <GroupLayoutBuilder.h>
 #include <Layout.h>
 #include <Window.h>
 
@@ -42,10 +47,11 @@ FreeLineTool::FreeLineTool()
 	: DrawingTool(B_TRANSLATE("Freehand line tool"),
 		FREE_LINE_TOOL)
 {
-	fOptions = SIZE_OPTION;
-	fOptionsCount = 1;
+	fOptions = SIZE_OPTION | USE_BRUSH_OPTION;
+	fOptionsCount = 2;
 
 	SetOption(SIZE_OPTION, 1);
+	SetOption(USE_BRUSH_OPTION, B_CONTROL_OFF);
 }
 
 
@@ -98,9 +104,10 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		delete srcBuffer;
 		return NULL;
 	}
-	union color_conversion clear_color;
+	union color_conversion clear_color, tmp_draw_color;
 	clear_color.word = 0xFFFFFFFF;
-	clear_color.bytes[3] = 0x01;
+	clear_color.bytes[3] = 0x00;
+	tmp_draw_color.word = 0xFFFFFFFF;
 
 	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 
@@ -126,9 +133,24 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	prev_point = point;
 	BRect updated_rect;
 	status_t status_of_read;
-	int diameter = fToolSettings.size;
-	if ((diameter%2) == 0)
-		diameter++;
+	Brush* brush;
+	bool delete_brush = false;
+
+	if (fToolSettings.use_current_brush == true)
+		brush = ToolManager::Instance().GetCurrentBrush();
+	else {
+		brush_info default_free_brush;
+		default_free_brush.shape = HS_ELLIPTICAL_BRUSH;
+		default_free_brush.width = fToolSettings.size;
+		default_free_brush.height = fToolSettings.size;
+		default_free_brush.angle = 0;
+		default_free_brush.hardness = 100;
+		brush = new Brush(default_free_brush);
+		delete_brush = true;
+	}
+
+	float brush_width_per_2 = floor(brush->Width()/2);
+	float brush_height_per_2 = floor(brush->Height()/2);
 
 	bool use_fg_color = true;
 	if (buttons == B_SECONDARY_MOUSE_BUTTON)
@@ -136,34 +158,30 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	new_color = ((PaintApplication*)be_app)->Color(use_fg_color);
 	new_color_bgra = RGBColorToBGRA(new_color);
-	if (diameter != 1)
-		drawer->DrawCircle(prev_point, diameter / 2, new_color_bgra,
-			true, false, selection, NULL);
-	else
-		drawer->DrawHairLine(prev_point, point, new_color_bgra,
-			false, selection, NULL);
+	brush->draw(tmpBuffer, BPoint(prev_point.x - brush_width_per_2,
+		prev_point.y - brush_height_per_2), selection);
 
 	// This makes sure that the view is updated even if just one point is drawn
-	updated_rect.left = min_c(point.x-diameter/2,prev_point.x-diameter/2);
-	updated_rect.top = min_c(point.y-diameter/2,prev_point.y-diameter/2);
-	updated_rect.right = max_c(point.x+diameter/2,prev_point.x+diameter/2);
-	updated_rect.bottom = max_c(point.y+diameter/2,prev_point.y+diameter/2);
+	updated_rect.left = min_c(point.x - brush_width_per_2,
+		prev_point.x - brush_width_per_2);
+	updated_rect.top = min_c(point.y - brush_height_per_2,
+		prev_point.y - brush_height_per_2);
+	updated_rect.right = max_c(point.x + brush_width_per_2,
+		prev_point.x + brush_width_per_2);
+	updated_rect.bottom = max_c(point.y + brush_height_per_2,
+		prev_point.y + brush_height_per_2);
 
-	// We should do the composite picture and re-draw the window in
-	// a separate thread.
-	view->ReturnImage()->Render(updated_rect);
-	view->Window()->Lock();
+	buffer->Lock();
 	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-		tmpBuffer, updated_rect);
-	// We have to use Draw, because Invalidate causes flickering by erasing
-	// the area before calling Draw.
-	view->Draw(view->convertBitmapRectToView(updated_rect));
-	view->UpdateImage(updated_rect);
-	view->Sync();
-	view->Window()->Unlock();
+		tmpBuffer, updated_rect, src_over_fixed, new_color_bgra);
+	buffer->Unlock();
 
 	SetLastUpdatedRect(updated_rect);
 	the_script->AddPoint(point);
+
+	ImageUpdater* imageUpdater = new ImageUpdater(view, 2000);
+	imageUpdater->AddRect(updated_rect);
+
 	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
 		|| (reading_coordinates == true)) {
 		if ( (status_of_read == B_OK) && (prev_point != point) ) {
@@ -174,54 +192,45 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 //			else {
 //				set_mouse_speed(original_mouse_speed);
 //			}
-			// first set the color
-			bool use_fg_color = true;
-			if (buttons == B_SECONDARY_MOUSE_BUTTON)
-				use_fg_color = false;
 
-			new_color = ((PaintApplication*)be_app)->Color(use_fg_color);
-			new_color_bgra = RGBColorToBGRA(new_color);
+			brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
+				point.y - brush_height_per_2), selection);
+			brush->draw_line(tmpBuffer, point, prev_point, selection);
 
-			diameter = fToolSettings.size;
-			if ((diameter%2) == 0)
-				diameter++;
+			updated_rect.left = min_c(point.x - brush_width_per_2 - 1,
+				prev_point.x - brush_width_per_2 - 1);
+			updated_rect.top = min_c(point.y - brush_height_per_2 - 1,
+				prev_point.y - brush_height_per_2 - 1);
+			updated_rect.right = max_c(point.x + brush_width_per_2 + 1,
+				prev_point.x + brush_width_per_2 + 1);
+			updated_rect.bottom = max_c(point.y + brush_height_per_2 + 1,
+				prev_point.y + brush_height_per_2 + 1);
 
-			if (diameter != 1) {
-				drawer->DrawCircle(point,diameter / 2, new_color_bgra,
-					true, false, selection, NULL);
-				drawer->DrawLine(prev_point,point, new_color_bgra, diameter,
-					false, selection, NULL);
-			}
-			else
-				drawer->DrawHairLine(prev_point, point, new_color_bgra,
-					false, selection);
-
-			updated_rect.left = min_c(point.x-diameter/2-1,prev_point.x-diameter/2-1);
-			updated_rect.top = min_c(point.y-diameter/2-1,prev_point.y-diameter/2-1);
-			updated_rect.right = max_c(point.x+diameter/2+1,prev_point.x+diameter/2+1);
-			updated_rect.bottom = max_c(point.y+diameter/2+1,prev_point.y+diameter/2+1);
+			imageUpdater->AddRect(updated_rect);
 
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
-			// We should do the composite picture and re-draw the window in
-			// a separate thread.
-			view->Window()->Lock();
+			buffer->Lock();
 			BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-				tmpBuffer, updated_rect);
-			view->UpdateImage(updated_rect);
-			view->Sync();
-			view->Window()->Unlock();
+				tmpBuffer, updated_rect, src_over_fixed, new_color_bgra);
+			buffer->Unlock();
+
 			prev_point = point;
 		}
-		else
-			snooze(20 * 1000);
 	}
+
+	imageUpdater->ForceUpdate();
+	delete imageUpdater;
 
 	delete srcBuffer;
 	delete tmpBuffer;
 
 	delete drawer;
 	delete coordinate_queue;
+
+	if (delete_brush == true)
+		delete brush;
+
 	return the_script;
 }
 
@@ -311,7 +320,19 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 
 		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);
 
-		layout->AddView(lineSizeLayout->View());
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", USE_BRUSH_OPTION);
+		message->AddInt32("value", 0x00000000);
+		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
+			message);
+
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(lineSizeLayout->View())
+			.Add(fUseBrush)
+			.TopView()
+		);
+
+		fUseBrush->SetValue(tool->GetCurrentValue(USE_BRUSH_OPTION));
 	}
 }
 
@@ -322,4 +343,5 @@ FreeLineToolConfigView::AttachedToWindow()
 	DrawingToolConfigView::AttachedToWindow();
 
 	fLineSize->SetTarget(this);
+	fUseBrush->SetTarget(this);
 }

@@ -115,8 +115,8 @@ public:
 	float			PreviewBrush(BBitmap*);
 	void			draw(BBitmap* buffer, BPoint point,
 						Selection* selection);
-	BRect			draw_line(BBitmap* buffer, BPoint start,
-						BPoint end, uint32 color,
+	BRect			draw_line(BBitmap* buffer,
+						BPoint start, BPoint end,
 						Selection* selection);
 
 	uint32**		GetData(span**);

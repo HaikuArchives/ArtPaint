@@ -117,6 +117,11 @@ ToolSetupWindow::ShowToolSetupWindow(int32 toolType)
 	if (toolType == 0)
 		toolType = FREE_LINE_TOOL;
 
+	if (ToolManager::Instance().ReturnTool(toolType) == NULL) {
+		toolType = FREE_LINE_TOOL;
+		ToolManager::Instance().ChangeTool(toolType);
+	}
+
 	if (sfToolSetupWindow->Lock()) {
 		sfToolSetupWindow->_UpdateConfigurationView(toolType);
 		sfToolSetupWindow->Unlock();

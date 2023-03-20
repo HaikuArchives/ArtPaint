@@ -286,9 +286,6 @@ BrushToolConfigView::BrushToolConfigView(DrawingTool* tool)
 	: DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
-		BrushTool* brushTool = dynamic_cast<BrushTool*> (tool);
-		Brush* brush = ToolManager::Instance().GetCurrentBrush();
-
-		layout->AddView(BrushEditor::CreateBrushEditor(brush));
+		//layout->AddView(BrushEditor::CreateBrushEditor(brush));
 	}
 }

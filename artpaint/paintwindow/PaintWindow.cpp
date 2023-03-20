@@ -365,6 +365,9 @@ PaintWindow::CreatePaintWindow(BBitmap* bitmap, const char* fileName,
 					paintWindow->AddImageView();
 				}
 			}
+
+			CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
+
 			return paintWindow;
 		}
 	}

@@ -13,6 +13,7 @@
 #include "StatusView.h"
 
 #include "BitmapUtilities.h"
+#include "BrushStoreWindow.h"
 #include "ColorPalette.h"
 #include "PaintApplication.h"
 #include "MessageConstants.h"
@@ -68,8 +69,8 @@ StatusView::StatusView()
 	selected_colors->SetExplicitMinSize(BSize(color_size + 2, color_size + 2));
 	selected_colors->SetExplicitMaxSize(BSize(color_size + 2, color_size + 2));
 
-	//current_brush = CurrentBrushView::CreateCurrentBrushView(
-	//	BRect(0, 0, BRUSH_PREVIEW_WIDTH, BRUSH_PREVIEW_HEIGHT));
+	current_brush = new CurrentBrushView(
+		BRect(0, 0, color_size - 2, color_size - 2));
 
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -77,7 +78,7 @@ StatusView::StatusView()
 
 	BGridLayout* toolsAndColorsCard = BLayoutBuilder::Grid<>(5.0, 0.0)
 		.AddGlue(0, 0)
-		//.Add(current_brush, 1, 0, 1, 2)
+		.Add(current_brush, 1, 0, 1, 2)
 		.Add(selected_colors, 2, 0, 1, 2)
 		.SetInsets(0.0, 0.0, 0.0, 0.0);
 	toolsAndColorsCard->SetMaxColumnWidth(3, 52);
@@ -389,7 +390,7 @@ SelectedColorsView::IsPointOverForegroundColor(BPoint point)
 }
 
 
-CurrentBrushView* CurrentBrushView::fCurrentBrushView = NULL;
+BList CurrentBrushView::list_of_views(10);
 
 
 CurrentBrushView::CurrentBrushView(BRect frame)
@@ -406,24 +407,15 @@ CurrentBrushView::CurrentBrushView(BRect frame)
 	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width(),
 		frame.Height()), B_RGBA32);
 	BitmapUtilities::ClearBitmap(fBrushPreview, 0xFFFFFFFF);
+
+	list_of_views.AddItem(this);
 }
 
 
 CurrentBrushView::~CurrentBrushView()
 {
+	list_of_views.RemoveItem(this);
 	delete fBrushPreview;
-	fCurrentBrushView = NULL;
-}
-
-
-CurrentBrushView*
-CurrentBrushView::CreateCurrentBrushView(BRect frame)
-{
-	if (fCurrentBrushView != NULL)
-		return fCurrentBrushView;
-
-	fCurrentBrushView = new CurrentBrushView(frame);
-	return fCurrentBrushView;
 }
 
 
@@ -476,9 +468,39 @@ CurrentBrushView::MessageReceived(BMessage* message)
 
 
 void
-CurrentBrushView::BrushChanged()
+CurrentBrushView::SendMessageToAll(uint32 what)
 {
-	if (fCurrentBrushView != NULL)
-		fCurrentBrushView->Window()->PostMessage(HS_BRUSH_CHANGED, fCurrentBrushView);
-	//	fCurrentBrushView->Window()->PostMessage(HS_BRUSH_CHANGED);
+	for (int32 i = 0; i < list_of_views.CountItems(); ++i) {
+		if (CurrentBrushView* view =
+			static_cast<CurrentBrushView*> (list_of_views.ItemAt(i))) {
+			view->Window()->PostMessage(what, view);
+		}
+	}
+}
+
+
+void
+CurrentBrushView::sendMessageToAll(BMessage *message)
+{
+	CurrentBrushView *help;
+
+	for (int32 i = 0; i < list_of_views.CountItems(); ++i) {
+		help = (CurrentBrushView*)list_of_views.ItemAt(i);
+		help->Window()->PostMessage(message, help);
+	}
+}
+
+
+void
+CurrentBrushView::MouseDown(BPoint point)
+{
+	// this function should do something appropriate with the color
+	// that is selected
+	uint32 buttons;
+	GetMouse(&point, &buttons);
+
+	// here check that the point is inside the view
+	if ((buttons & B_PRIMARY_MOUSE_BUTTON) && Bounds().Contains(point)) {
+		BrushStoreWindow::showWindow();
+	}
 }
