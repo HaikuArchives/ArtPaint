@@ -170,7 +170,7 @@ BitmapUtilities::ConvertToMask(BBitmap *inBitmap, uint8 color)
 
 void
 BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, BBitmap* fromBuffer,
-	BRect updated_rect, uint32 (*composite_func)(uint32, uint32))
+	BRect updated_rect, uint32 (*composite_func)(uint32, uint32), uint32 color)
 {
 	updated_rect = updated_rect & toBuffer->Bounds();
 
@@ -187,14 +187,21 @@ BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, 
 
 	uint32* src_bits = (uint32*)srcBuffer->Bits();
 	uint32* from_bits = (uint32*)fromBuffer->Bits();
-	src_bits += bpr*start_y + start_x;
-	from_bits += bpr*start_y + start_x;
+	src_bits += bpr * start_y + start_x;
+	from_bits += bpr * start_y + start_x;
 
-	for (int y=0;y<height;y++) {
+	for (int y = 0; y < height; y++) {
 		int32 ypos = y*bpr;
-		for (int x=0;x<width;x++) {
+		for (int x = 0; x < width; x++) {
+			union color_conversion from_color, mix_color;
+			from_color.word = *(from_bits + x + ypos);
+			mix_color.word = color;
+			for (int i = 0; i < 4; ++i)
+				from_color.bytes[i] = (uint8)((from_color.bytes[i] *
+					mix_color.bytes[i]) / 255);
+
 			*bits++ = (*composite_func)(*(src_bits + x + ypos),
-				*(from_bits + x + ypos));
+				from_color.word);
 		}
 		bits += bpr - width;
 	}

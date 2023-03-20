@@ -68,8 +68,8 @@ StatusView::StatusView()
 	selected_colors->SetExplicitMinSize(BSize(color_size + 2, color_size + 2));
 	selected_colors->SetExplicitMaxSize(BSize(color_size + 2, color_size + 2));
 
-	current_brush = CurrentBrushView::CreateCurrentBrushView(
-		BRect(0, 0, BRUSH_PREVIEW_WIDTH, BRUSH_PREVIEW_HEIGHT));
+	//current_brush = CurrentBrushView::CreateCurrentBrushView(
+	//	BRect(0, 0, BRUSH_PREVIEW_WIDTH, BRUSH_PREVIEW_HEIGHT));
 
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -116,8 +116,8 @@ StatusView::~StatusView()
 	if (selected_colors->Parent() == NULL)
 		delete selected_colors;
 
-	if (current_brush->Parent() == NULL)
-		delete current_brush;
+	//if (current_brush->Parent() == NULL)
+	//	delete current_brush;
 }
 
 

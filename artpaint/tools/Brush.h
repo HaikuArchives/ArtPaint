@@ -95,38 +95,18 @@ class Brush {
 	void			make_elliptical_brush();
 
 	uint32**		reserve_brush();
-	uint32**		make_diff_brush(uint32**,int32,int32);
 	span*			make_span_list(uint32**);
 
 	void			delete_all_data();
 
 	void			print_brush(uint32**);
 
-
 	uint32 			**brush;
-	uint32			**diff10;
-	uint32			**diff11;
-	uint32			**diff1_1;
-	uint32			**diff01;
-	uint32			**diff0_1;
-	uint32			**diff_10;
-	uint32			**diff_11;
-	uint32			**diff_1_1;
 
 	span			*brush_span;
-	span			*diff10_span;
-	span			*diff11_span;
-	span			*diff1_1_span;
-	span			*diff01_span;
-	span			*diff0_1_span;
-	span			*diff_10_span;
-	span			*diff_11_span;
-	span			*diff_1_1_span;
-
 
 public:
-					Brush(brush_info &info,
-						bool create_diff_brushes = TRUE);
+					Brush(brush_info &info);
 					~Brush();
 
 	void			ModifyBrush(brush_info &info);
@@ -134,13 +114,12 @@ public:
 
 	float			PreviewBrush(BBitmap*);
 	void			draw(BBitmap* buffer, BPoint point,
-						int32 dx, int32 dy, uint32 c,
 						Selection* selection);
 	BRect			draw_line(BBitmap* buffer, BPoint start,
 						BPoint end, uint32 color,
 						Selection* selection);
 
-	uint32**		GetData(span**,int32,int32);
+	uint32**		GetData(span**);
 	float			Width() { return width_; }
 	float			Height() { return height_; }
 	brush_info		GetInfo();

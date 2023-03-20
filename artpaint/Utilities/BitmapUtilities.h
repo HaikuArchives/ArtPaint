@@ -26,7 +26,8 @@ public:
 	static  void		CompositeBitmapOnSource(BBitmap* toBuffer,
 							BBitmap* srcBuffer, BBitmap* fromBuffer,
 							BRect updated_rect,
-							uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
+							uint32 (*composite_func)(uint32, uint32) = src_over_fixed,
+							uint32 color = 0xffffffff);
 	static  void		ClearBitmap(BBitmap* bitmap, uint32 color,
 							BRect* area = NULL);
 	static	void		CheckerBitmap(BBitmap* bitmap,

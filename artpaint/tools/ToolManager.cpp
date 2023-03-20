@@ -260,7 +260,6 @@ ToolManager::SetCurrentBrush(brush_info *binfo)
 		fActiveBrush->ModifyBrush(*binfo);
 
 	BrushEditor::BrushModified();
-	fActiveBrush->CreateDiffBrushes();
 
 	return B_OK;
 }

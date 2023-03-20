@@ -127,8 +127,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 
 	if (coordinate_reader->GetPoint(point) == B_OK) {
 		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
-			point.y - brush_height_per_2), 0, 0, new_color.word,
-			selection);
+			point.y - brush_height_per_2), selection);
 	}
 
 	updated_rect = BRect(point.x - brush_width_per_2,
@@ -137,7 +136,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	SetLastUpdatedRect(updated_rect);
 	buffer->Lock();
 	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-		tmpBuffer, updated_rect);
+		tmpBuffer, updated_rect, src_over_fixed, new_color.word);
 	buffer->Unlock();
 	prev_point = point;
 
@@ -146,9 +145,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 
 	while (coordinate_reader->GetPoint(point) == B_OK) {
 		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
-			point.y - brush_height_per_2), int32(point.x - prev_point.x),
-			int32(point.y - prev_point.y), new_color.word,
-			selection);
+			point.y - brush_height_per_2), selection);
 		updated_rect = BRect(point.x - brush_width_per_2,
 			point.y - brush_height_per_2, point.x + brush_width_per_2,
 			point.y + brush_height_per_2);
@@ -156,7 +153,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 		SetLastUpdatedRect(updated_rect | LastUpdatedRect());
 		buffer->Lock();
 		BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-			tmpBuffer, updated_rect);
+			tmpBuffer, updated_rect, src_over_fixed, new_color.word);
 		buffer->Unlock();
 		prev_point = point;
 	}
@@ -210,9 +207,6 @@ BrushTool::HelpString(bool isInUse) const
 }
 
 
-
-
-
 status_t
 BrushTool::readSettings(BFile &file, bool isLittleEndian)
 {
@@ -244,8 +238,18 @@ BrushTool::readSettings(BFile &file, bool isLittleEndian)
 	if (file.Read(&info, sizeof(struct brush_info)) != sizeof(struct brush_info))
 		return B_ERROR;
 
-	//delete brush;
-	//brush = new Brush(info);
+	if (info.width == 0 || info.width > 500 ||
+		info.height == 0 || info.height > 500 ||
+		info.shape > HS_IRREGULAR_BRUSH || info.hardness > 1.0 ||
+		info.angle > 180) {
+		info.width = 30;
+		info.height = 30;
+		info.angle = 0;
+		info.shape = HS_ELLIPTICAL_BRUSH;
+		info.hardness = 0;
+	}
+
+	ToolManager::Instance().SetCurrentBrush(&info);
 
 	return B_OK;
 }
@@ -267,8 +271,8 @@ BrushTool::writeSettings(BFile &file)
 		return B_ERROR;
 
 	brush_info info;
-	//info = brush->GetInfo();
-	if (file.Write(&info,sizeof(struct brush_info)) != sizeof(struct brush_info))
+	info = ToolManager::Instance().GetCurrentBrush()->GetInfo();
+	if (file.Write(&info, sizeof(struct brush_info)) != sizeof(struct brush_info))
 		return B_ERROR;
 
 	return B_OK;

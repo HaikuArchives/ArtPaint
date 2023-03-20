@@ -235,11 +235,11 @@ BrushEditor::MessageReceived(BMessage* message)
 
 				float realRatio = 1.0 / (0.9 * fabs(ratio) + 1.);
 
-				if (value < 0) {
+				if (ratio < 0) {
 					fBrushInfo.width = max_c(value, 1);
-					fBrushInfo.height = max_c(value / realRatio, 1);
+					fBrushInfo.height = max_c(value * realRatio, 1);
 				} else {
-					fBrushInfo.width = max_c(value / realRatio, 1);
+					fBrushInfo.width = max_c(value * realRatio, 1);
 					fBrushInfo.height = max_c(value, 1);
 				}
 
@@ -259,9 +259,9 @@ BrushEditor::MessageReceived(BMessage* message)
 
 				if (value < 0) {
 					fBrushInfo.width = max_c(fBrushSize->Value(), 1);
-					fBrushInfo.height = max_c(fBrushSize->Value() / realRatio, 1);
+					fBrushInfo.height = max_c(fBrushSize->Value() * realRatio, 1);
 				} else {
-					fBrushInfo.width = max_c(fBrushSize->Value() / realRatio, 1);
+					fBrushInfo.width = max_c(fBrushSize->Value() * realRatio, 1);
 					fBrushInfo.height = max_c(fBrushSize->Value(), 1);
 				}
 
