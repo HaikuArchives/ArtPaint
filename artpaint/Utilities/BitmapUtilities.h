@@ -14,6 +14,9 @@
 #include <Bitmap.h>
 
 
+#include "PixelOperations.h"
+
+
 class BitmapUtilities {
 public:
 	static	status_t	FixMissingAlpha(BBitmap *bitmap);
@@ -22,7 +25,8 @@ public:
 	static	BBitmap*	ConvertToMask(BBitmap *inBitmap, uint8 color);
 	static  void		CompositeBitmapOnSource(BBitmap* toBuffer,
 							BBitmap* srcBuffer, BBitmap* fromBuffer,
-							BRect updated_rect);
+							BRect updated_rect,
+							uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
 	static  void		ClearBitmap(BBitmap* bitmap, uint32 color,
 							BRect* area = NULL);
 	static	void		CheckerBitmap(BBitmap* bitmap,

@@ -36,14 +36,7 @@ public:
 			status_t			readSettings(BFile& file, bool isLittleEndian);
 			status_t			writeSettings(BFile& file);
 
-			Brush*				GetBrush() { return brush; }
-
 private:
-			BRect				draw_line(BBitmap*, BPoint, BPoint,
-									uint32);
-	inline	void				draw_brush(BBitmap*, BPoint,
-									int32, int32, uint32);
-
 //			int32				read_coordinates();
 //	static	int32				CoordinateReader(void*);
 
@@ -51,14 +44,6 @@ private:
 			BPoint				last_point;
 			bool				reading_coordinates;
 
-			int32				bpr;
-			int32				left_bound;
-			int32				right_bound;
-			int32				top_bound;
-			int32				bottom_bound;
-
-			uint32*				bits;
-			Brush*				brush;
 			Selection*			selection;
 			ImageView*			image_view;
 			CoordinateQueue*	coordinate_queue;

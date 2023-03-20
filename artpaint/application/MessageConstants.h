@@ -144,4 +144,6 @@
 
 #define	HS_MANIPULATOR_FINISHED			'MnFi'
 
+#define HS_BRUSH_CHANGED				'BrCh'
+
 #endif

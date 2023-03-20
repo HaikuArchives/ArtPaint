@@ -14,6 +14,9 @@
 #include <SupportDefs.h>
 
 
+#include "Brush.h"
+
+
 class BFile;
 class BPoint;
 class BPopUpMenu;
@@ -71,7 +74,7 @@ public:
 			int32					ReturnActiveToolType() const;
 			BView*					ConfigView(int32);
 			status_t				SetCurrentBrush(brush_info*);
-
+			Brush*					GetCurrentBrush();
 			BPopUpMenu*				ToolPopUpMenu();
 
 			// The next function can be used to notify the ToolManager about
@@ -92,6 +95,7 @@ private:
 private:
 			BPopUpMenu*				fToolPopUpMenu;
 			DrawingTool*			fActiveTool;
+			Brush*					fActiveBrush;
 			ToolManagerClient*		fClientListHead;
 
 	static	ToolManager*			fToolManager;

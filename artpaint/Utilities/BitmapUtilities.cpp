@@ -170,7 +170,7 @@ BitmapUtilities::ConvertToMask(BBitmap *inBitmap, uint8 color)
 
 void
 BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, BBitmap* fromBuffer,
-	BRect updated_rect)
+	BRect updated_rect, uint32 (*composite_func)(uint32, uint32))
 {
 	updated_rect = updated_rect & toBuffer->Bounds();
 
@@ -193,7 +193,7 @@ BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, 
 	for (int y=0;y<height;y++) {
 		int32 ypos = y*bpr;
 		for (int x=0;x<width;x++) {
-			*bits++ = src_over_fixed(*(src_bits + x + ypos),
+			*bits++ = (*composite_func)(*(src_bits + x + ypos),
 				*(from_bits + x + ypos));
 		}
 		bits += bpr - width;

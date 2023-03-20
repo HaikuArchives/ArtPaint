@@ -11,9 +11,13 @@
 #ifndef STATUS_VIEW_H
 #define	STATUS_VIEW_H
 
+#include <Bitmap.h>
 #include <Box.h>
 #include <StringView.h>
 #include <View.h>
+
+
+#include "Brush.h"
 
 
 class BCardLayout;
@@ -22,6 +26,7 @@ class BGroupLayout;
 class BStatusBar;
 class ColorContainer;
 class SelectedColorsView;
+class CurrentBrushView;
 class HSPictureButton;
 class MagnificationView;
 
@@ -54,6 +59,7 @@ private:
 			// and the current color-set.
 			ColorContainer*		color_container;
 			SelectedColorsView*	selected_colors;
+			CurrentBrushView*	current_brush;
 
 			BCardLayout*		fCardLayout;
 			BGridLayout*		fStatusView;
@@ -84,6 +90,25 @@ private:
 private:
 			float				foreground_color_percentage;
 	static	BList				list_of_views;
+};
+
+
+class CurrentBrushView : public BView {
+public:
+								CurrentBrushView(BRect frame);
+	virtual						~CurrentBrushView();
+
+	static	CurrentBrushView*	CreateCurrentBrushView(BRect frame);
+
+	virtual void				Draw(BRect updateRect);
+	virtual void				MessageReceived(BMessage* message);
+
+			void				SetBrush(Brush* new_brush);
+	static	void				BrushChanged();
+private:
+			Brush*				fBrush;
+			BBitmap*			fBrushPreview;
+	static	CurrentBrushView*	fCurrentBrushView;
 };
 
 #endif	// STATUS_VIEW_H
