@@ -136,18 +136,21 @@ BrushEditor::BrushEditor(Brush* brush)
 		.Add(fBrushFade->LabelLayoutItem(), 0, 3)
 		.Add(fBrushFade->TextViewLayoutItem(), 1, 3)
 		.Add(fBrushFade->Slider(), 2, 3);
+	gridLayout->SetColumnWeight(0, 0.2);
+	gridLayout->SetColumnWeight(1, 0.1);
+	gridLayout->SetColumnWeight(2, 0.7);
+	gridLayout->SetMaxColumnWidth(0, StringWidth("XXX"));
 	gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDERSLIDER"));
+	//gridLayout->SetMaxColumnWidth(2, StringWidth("SLIDERSLIDER"));
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 		.AddGroup(B_HORIZONTAL, 5.0)
-			.AddStrut(5.0)
 			.Add(fBrushView)
+			.AddStrut(5.0)
 			.AddGroup(B_VERTICAL, 5.0)
 				.Add(fEllipse)
 				.Add(fRectangle)
-				.AddGlue()
 			.End()
 			.AddGlue()
 		.End()
@@ -157,10 +160,10 @@ BrushEditor::BrushEditor(Brush* brush)
 		.Add(gridLayout->View())
 		.AddStrut(1.0)
 		.AddGroup(B_HORIZONTAL)
-			.Add(fResetBrush)
-			.AddGlue()
 			.Add(fStoreBrush)
+			.Add(fResetBrush)
 		.End()
+		.SetInsets(5.0, 5.0, 5.0, 5.0)
 	);
 }
 

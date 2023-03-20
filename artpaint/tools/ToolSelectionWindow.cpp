@@ -69,7 +69,7 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 
 	// Here we could add a separator to the tool window.
 
-	_AddTool(ToolManager::Instance().ReturnTool(BRUSH_TOOL));
+//	_AddTool(ToolManager::Instance().ReturnTool(BRUSH_TOOL));
 	_AddTool(ToolManager::Instance().ReturnTool(HAIRY_BRUSH_TOOL));
 	_AddTool(ToolManager::Instance().ReturnTool(AIR_BRUSH_TOOL));
 	_AddTool(ToolManager::Instance().ReturnTool(BLUR_TOOL));

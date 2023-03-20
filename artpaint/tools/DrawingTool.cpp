@@ -164,6 +164,12 @@ DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 				fToolSettings.transparency = value;
 			}	break;
 
+			case USE_BRUSH_OPTION: {
+				fToolSettings.use_current_brush = value;
+				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+					fToolSettings.use_current_brush = control->Value();
+			}	break;
+
 			default:	break;
 		}
 	}
@@ -201,6 +207,8 @@ DrawingTool::GetCurrentValue(int32 option)
 				return fToolSettings.tolerance;
 			case TRANSPARENCY_OPTION:
 				return fToolSettings.transparency;
+			case USE_BRUSH_OPTION:
+				return fToolSettings.use_current_brush;
 			default:
 				return 0;
 		}

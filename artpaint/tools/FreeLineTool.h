@@ -15,6 +15,7 @@
 
 
 class BBitmap;
+class BCheckBox;
 class BView;
 class CoordinateQueue;
 class ImageView;
@@ -62,6 +63,7 @@ public:
 
 private:
 			NumberSliderControl*	fLineSize;
+			BCheckBox*				fUseBrush;
 };
 
 #endif	// FREE_LINE_TOOL_H

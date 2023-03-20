@@ -98,17 +98,18 @@ public:
 								CurrentBrushView(BRect frame);
 	virtual						~CurrentBrushView();
 
-	static	CurrentBrushView*	CreateCurrentBrushView(BRect frame);
-
 	virtual void				Draw(BRect updateRect);
 	virtual void				MessageReceived(BMessage* message);
+	virtual	void				MouseDown(BPoint location);
 
 			void				SetBrush(Brush* new_brush);
-	static	void				BrushChanged();
+
+	static	void				SendMessageToAll(uint32 what);
+	static	void				sendMessageToAll(BMessage* message);
 private:
 			Brush*				fBrush;
 			BBitmap*			fBrushPreview;
-	static	CurrentBrushView*	fCurrentBrushView;
+	static	BList				list_of_views;
 };
 
 #endif	// STATUS_VIEW_H

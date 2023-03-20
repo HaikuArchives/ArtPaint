@@ -24,10 +24,13 @@
 #include <Bitmap.h>
 #include <Catalog.h>
 #include <File.h>
+#include <GroupLayout.h>
+#include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
 #include <ScrollBar.h>
+#include <ScrollView.h>
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -42,11 +45,11 @@ BList* BrushStoreWindow::brush_data = new BList();
 BrushStoreWindow* BrushStoreWindow::brush_window = NULL;
 
 BrushStoreWindow::BrushStoreWindow()
-	: BWindow(BRect(20,20,220,220), B_TRANSLATE("Brushes"),
-		B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE
+	: BWindow(BRect(20, 20, 220, 220), B_TRANSLATE("Brushes"),
+		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE
 		| B_WILL_ACCEPT_FIRST_CLICK)
 {
-	BRect frame(20,20,220,220);
+	BRect frame(20, 20, 220, 220);
 	window_feel feel = B_NORMAL_WINDOW_FEEL;
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BMessage settings;
@@ -59,39 +62,53 @@ BrushStoreWindow::BrushStoreWindow()
 	}
 	frame = FitRectToScreen(frame);
 	MoveTo(frame.LeftTop());
-	ResizeTo(frame.Width(),frame.Height());
+	ResizeTo(frame.Width(), frame.Height());
 
 	BMenuBar *menu_bar;
-	menu_bar = new BMenuBar(BRect(0,0,0,0),"brush window menu-bar");
+	menu_bar = new BMenuBar("brush window menu-bar");
 	BMenu *a_menu = new BMenu(B_TRANSLATE("Brush"));
 	menu_bar->AddItem(a_menu);
 	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Delete selected brush"),
 		new BMessage(HS_DELETE_SELECTED_BRUSH)));
-	AddChild(menu_bar);
 
-	BRect scroll_bar_frame = BRect(Bounds().right-B_V_SCROLL_BAR_WIDTH+1,menu_bar->Frame().bottom,Bounds().right+1,Bounds().bottom+1-B_H_SCROLL_BAR_HEIGHT);
+	store_view = new BrushStoreView();
+	BScrollView* scroll_view = new BScrollView("scroller", store_view,
+		B_FRAME_EVENTS, false, true, B_PLAIN_BORDER);
 
-	scroll_bar = new BScrollBar(scroll_bar_frame,"brush store scroll-bar",NULL,0,0,B_VERTICAL);
-	AddChild(scroll_bar);
-	scroll_bar->SetRange(0,0);
+	BView* brush_editor = BrushEditor::CreateBrushEditor(ToolManager::Instance().GetCurrentBrush());
 
-	store_view = new BrushStoreView(BRect(0,menu_bar->Frame().bottom + 1,scroll_bar->Frame().left-1,Bounds().bottom));
-	AddChild(store_view);
+	BGroupLayout* mainLayout = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.Add(menu_bar, 0.0)
+		.AddGroup(B_VERTICAL)
+			.Add(brush_editor)
+			.Add(scroll_view)
+		.End()
+		.SetInsets(0, 0, 0, 0);
 
 	a_menu->FindItem(HS_DELETE_SELECTED_BRUSH)->SetTarget(store_view);
 
 	store_view->MakeFocus(TRUE);
-	scroll_bar->SetTarget(store_view);
 
 	// The adding of brushes will be done in a separate thread.
-	thread_id adder_thread = spawn_thread(brush_adder,"brush_adder",B_NORMAL_PRIORITY,this);
+	thread_id adder_thread = spawn_thread(brush_adder, "brush_adder", B_NORMAL_PRIORITY, this);
 	resume_thread(adder_thread);
 
 	brush_window = this;
 
 	setFeel(feel);
 
-	SetSizeLimits(scroll_bar->Frame().Width()+BRUSH_VAULT_WIDTH,10000,menu_bar->Frame().Height() + 1 + BRUSH_VAULT_HEIGHT,10000);
+	float scroll_width = scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width();
+	scroll_view->SetExplicitMinSize(BSize(BRUSH_VAULT_WIDTH * 3 + scroll_width + 2, B_SIZE_UNSET));
+
+	BFont font;
+	float brush_editor_width = font.StringWidth(B_TRANSLATE("Reset Brush")) +
+		font.StringWidth(B_TRANSLATE("Store Brush")) + font.StringWidth(B_TRANSLATE("Rectangle"));
+	font_height fHeight;
+	font.GetHeight(&fHeight);
+	float brush_editor_height = (fHeight.ascent + fHeight.descent +
+		fHeight.leading) * 15;
+	SetSizeLimits(BRUSH_VAULT_WIDTH * 3 + scroll_width + 2, 1000,
+		brush_editor_height + BRUSH_VAULT_HEIGHT * 2.5 + 2, 1000);
 
 	// Add a filter that will be used to catch mouse-down-messages in order
 	// to activate this window when required
@@ -100,11 +117,6 @@ BrushStoreWindow::BrushStoreWindow()
 	AddCommonFilter(activation_filter);
 	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
 	Unlock();
-
-	// TODO: check what this is used for once Haiku implements this
-	SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, BRUSH_VAULT_WIDTH,
-		int32(B_V_SCROLL_BAR_WIDTH + 1), 0, 0, BRUSH_VAULT_HEIGHT,
-		int32(menu_bar->Bounds().Height() + 1));
 
 	FloaterManager::AddFloater(this);
 }
@@ -124,7 +136,8 @@ BrushStoreWindow::~BrushStoreWindow()
 }
 
 
-void BrushStoreWindow::MessageReceived(BMessage *message)
+void
+BrushStoreWindow::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		default:
@@ -133,7 +146,9 @@ void BrushStoreWindow::MessageReceived(BMessage *message)
 	}
 }
 
-void BrushStoreWindow::writeBrushes(BFile &file)
+
+void
+BrushStoreWindow::writeBrushes(BFile& file)
 {
 	int32 number_of_brushes = brush_data->CountItems();
 	file.Write(&number_of_brushes,sizeof(int32));
@@ -142,7 +157,9 @@ void BrushStoreWindow::writeBrushes(BFile &file)
 	}
 }
 
-void BrushStoreWindow::readBrushes(BFile &file)
+
+void
+BrushStoreWindow::readBrushes(BFile& file)
 {
 	int32 number_of_brushes;
 	brush_info info;
@@ -155,7 +172,9 @@ void BrushStoreWindow::readBrushes(BFile &file)
 	}
 }
 
-void BrushStoreWindow::AddBrush(Brush *brush)
+
+void
+BrushStoreWindow::AddBrush(Brush* brush)
 {
 	brush_data->AddItem(new brush_info(brush->GetInfo()));
 
@@ -167,14 +186,18 @@ void BrushStoreWindow::AddBrush(Brush *brush)
 	}
 }
 
-void BrushStoreWindow::DeleteBrush(int32 index)
+
+void
+BrushStoreWindow::DeleteBrush(int32 index)
 {
-	brush_info *data;
+	brush_info* data;
 	data = (brush_info*)brush_data->RemoveItem(index);
 	delete data;
 }
 
-void BrushStoreWindow::showWindow()
+
+void
+BrushStoreWindow::showWindow()
 {
 	if (brush_window == NULL) {
 		new BrushStoreWindow();
@@ -208,12 +231,9 @@ void BrushStoreWindow::setFeel(window_feel feel)
 		brush_window->SetFeel(feel);
 		float total_height = brush_window->store_view->Bounds().Height();
 		if (feel == B_NORMAL_WINDOW_FEEL) {
-			brush_window->SetLook(B_DOCUMENT_WINDOW_LOOK);
-			brush_window->scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,total_height-B_H_SCROLL_BAR_HEIGHT+2);
-		}
-		else {
+			brush_window->SetLook(B_TITLED_WINDOW_LOOK);
+		} else {
 			brush_window->SetLook(B_FLOATING_WINDOW_LOOK);
-			brush_window->scroll_bar->ResizeTo(B_V_SCROLL_BAR_WIDTH,total_height+2);
 		}
 		brush_window->Unlock();
 	}
@@ -244,8 +264,8 @@ int32 BrushStoreWindow::brush_adder(void *data)
 }
 
 
-BrushStoreView::BrushStoreView(BRect frame)
-	:	BView(frame,"brush store view",B_FOLLOW_ALL,B_WILL_DRAW|B_FRAME_EVENTS)
+BrushStoreView::BrushStoreView()
+	:	BView("brush store view", B_WILL_DRAW | B_FRAME_EVENTS)
 {
 	brush_images = new BList();
 	brush_data = new BList();
@@ -479,7 +499,6 @@ void BrushStoreView::MouseDown(BPoint point)
 //
 //			}
 			ToolManager::Instance().SetCurrentBrush(((brush_info*)brush_data->ItemAt(index)));
-			ToolManager::Instance().ChangeTool(BRUSH_TOOL);
 //		}
 		if (index != selected_brush_index) {
 			// If the selected brush changed, we must indicate it

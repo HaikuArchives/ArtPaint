@@ -15,7 +15,9 @@
 #include "Cursors.h"
 #include "DrawingTools.h"
 #include "ImageView.h"
+#include "MessageConstants.h"
 #include "SettingsServer.h"
+#include "StatusView.h"
 #include "ToolEventAdapter.h"
 #include "ToolSelectionWindow.h"
 #include "ToolSetupWindow.h"
@@ -259,7 +261,14 @@ ToolManager::SetCurrentBrush(brush_info *binfo)
 	else
 		fActiveBrush->ModifyBrush(*binfo);
 
+	if (fActiveBrush == NULL)
+		return B_ERROR;
+
 	BrushEditor::BrushModified();
+
+	fActiveBrush->CreateDiffBrushes();
+
+	CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
 
 	return B_OK;
 }
@@ -417,7 +426,7 @@ ToolManager::ToolManager()
 	_AddTool(new StraightLineTool());
 	_AddTool(new RectangleTool());
 	_AddTool(new EllipseTool());
-	_AddTool(new BrushTool());
+//	_AddTool(new BrushTool());
 	_AddTool(new HairyBrushTool());
 	_AddTool(new AirBrushTool());
 	_AddTool(new BlurTool());

@@ -30,7 +30,7 @@ class BrushStoreView : public BView {
 	int32	get_point_index(BPoint);
 
 public:
-	BrushStoreView(BRect);
+	BrushStoreView();
 	~BrushStoreView();
 
 	void	DetachedFromWindow();
