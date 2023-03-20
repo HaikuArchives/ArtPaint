@@ -26,7 +26,7 @@
 #define PI M_PI
 
 
-Brush::Brush(brush_info &info, bool create_diff_brushes)
+Brush::Brush(brush_info &info)
 {
 	// First record the data for the brush
 	shape_ = info.shape;
@@ -36,13 +36,9 @@ Brush::Brush(brush_info &info, bool create_diff_brushes)
 	actual_height = height_ = info.height;
 	angle_ = info.angle;
 
-	brush = diff10 = diff11 = diff1_1 = NULL;
-	diff01 = diff0_1 = NULL;
-	diff_11 = diff_10 = diff_1_1 = NULL;
+	brush = NULL;
 
-	brush_span = diff10_span = diff11_span = diff1_1_span = NULL;
-	diff01_span = diff0_1_span = NULL;
-	diff_11_span = diff_10_span = diff_1_1_span = NULL;
+	brush_span = NULL;
 
 	// Here call the function that makes the brush.
 	switch (shape_) {
@@ -56,28 +52,7 @@ Brush::Brush(brush_info &info, bool create_diff_brushes)
 			break;
 	}
 
-	if (create_diff_brushes) {
-		// Make the difference brushes here also.
-		diff10 = make_diff_brush(brush,1,0);
-		diff11 = make_diff_brush(brush,1,1);
-		diff1_1 = make_diff_brush(brush,1,-1);
-		diff01 = make_diff_brush(brush,0,1);
-		diff0_1 = make_diff_brush(brush,0,-1);
-		diff_10 = make_diff_brush(brush,-1,0);
-		diff_11 = make_diff_brush(brush,-1,1);
-		diff_1_1 = make_diff_brush(brush,-1,-1);
-
-		// Then make the span-lists for the brushes
-		brush_span = make_span_list(brush);
-		diff10_span = make_span_list(diff10);
-		diff11_span = make_span_list(diff11);
-		diff1_1_span = make_span_list(diff1_1);
-		diff01_span = make_span_list(diff01);
-		diff0_1_span = make_span_list(diff0_1);
-		diff_10_span = make_span_list(diff_10);
-		diff_11_span = make_span_list(diff_11);
-		diff_1_1_span = make_span_list(diff_1_1);
-	}
+	brush_span = make_span_list(brush);
 }
 
 
@@ -100,13 +75,9 @@ Brush::ModifyBrush(brush_info &info)
 	actual_height = height_ = info.height;
 	angle_ = info.angle;
 
-	brush = diff10 = diff11 = diff1_1 = NULL;
-	diff01 = diff0_1 = NULL;
-	diff_11 = diff_10 = diff_1_1 = NULL;
+	brush = NULL;
 
-	brush_span = diff10_span = diff11_span = diff1_1_span = NULL;
-	diff01_span = diff0_1_span = NULL;
-	diff_11_span = diff_10_span = diff_1_1_span = NULL;
+	brush_span = NULL;
 
 	// Here call the function that makes the brush.
 	switch (shape_) {
@@ -123,84 +94,22 @@ Brush::ModifyBrush(brush_info &info)
 	maximum_width = max_c(height_, width_);
 	maximum_height = maximum_width;
 
-	CurrentBrushView::BrushChanged();
+	//CurrentBrushView::BrushChanged();
 }
 
 
 void
 Brush::CreateDiffBrushes()
 {
-	// Make the difference brushes here.
-	diff10 = make_diff_brush(brush,1,0);
-	diff11 = make_diff_brush(brush,1,1);
-	diff1_1 = make_diff_brush(brush,1,-1);
-	diff01 = make_diff_brush(brush,0,1);
-	diff0_1 = make_diff_brush(brush,0,-1);
-	diff_10 = make_diff_brush(brush,-1,0);
-	diff_11 = make_diff_brush(brush,-1,1);
-	diff_1_1 = make_diff_brush(brush,-1,-1);
-
-	// Then make the span-lists for the brushes.
 	brush_span = make_span_list(brush);
-	diff10_span = make_span_list(diff10);
-	diff11_span = make_span_list(diff11);
-	diff1_1_span = make_span_list(diff1_1);
-	diff01_span = make_span_list(diff01);
-	diff0_1_span = make_span_list(diff0_1);
-	diff_10_span = make_span_list(diff_10);
-	diff_11_span = make_span_list(diff_11);
-	diff_1_1_span = make_span_list(diff_1_1);
 }
 
 
 uint32**
-Brush::GetData(span **sp,int32 dx,int32 dy)
+Brush::GetData(span **sp)
 {
-	if (dx == 0) {
-		if (dy == -1) {
-			*sp = diff0_1_span;
-			return diff0_1;
-		}
-		if (dy == 0) {
-			*sp = brush_span;
-			return brush;
-		}
-		if (dy == 1) {
-			*sp = diff01_span;
-			return diff01;
-		}
-	}
-	if (dx == 1) {
-		if (dy == -1) {
-			*sp = diff1_1_span;
-			return diff1_1;
-		}
-		if (dy == 0) {
-			*sp = diff10_span;
-			return diff10;
-		}
-		if (dy == 1) {
-			*sp = diff11_span;
-			return diff11;
-		}
-	}
-	if (dx == -1) {
-		if (dy == -1) {
-			*sp = diff_1_1_span;
-			return diff_1_1;
-		}
-		if (dy == 0) {
-			*sp = diff_10_span;
-			return diff_10;
-		}
-		if (dy == 1) {
-			*sp = diff_11_span;
-			return diff_11;
-		}
-	}
-
-	*sp = NULL;
-	return NULL;
+	*sp = brush_span;
+	return brush;
 }
 
 
@@ -347,7 +256,6 @@ Brush::make_elliptical_brush()
 }
 
 
-
 uint32**
 Brush::reserve_brush()
 {
@@ -361,40 +269,6 @@ Brush::reserve_brush()
 
 	}
 	return b;
-}
-
-
-uint32**
-Brush::make_diff_brush(uint32 **b,int32 dx, int32 dy)
-{
-	// How does this function work? Does it even work correctly.
-
-	uint32 **d;
-	d = reserve_brush();
-
-	int32 new_x;
-	int32 new_y;
-	for (int32 y=0;y<height_;y++) {
-		for (int32 x=0;x<width_;x++) {
-			new_x = x+dx;
-			new_y = y+dy;
-			if ((new_x<width_) && (new_x>=0) && (new_y < height_) && (new_y >= 0)) {
-				float new_value;
-				if (b[new_y][new_x] != 1) {
-					new_value = (((float)b[y][x]-(float)b[new_y][new_x])/32768.0)/(((float)32768-(float)b[new_y][new_x])/32768.0);
-					new_value = max_c(new_value,0.0);
-					new_value = min_c(new_value,1.0);
-				}
-				else
-					new_value = 0;
-				d[y][x] = (uint32)(new_value*32768);
-			}
-			else
-				d[y][x] = b[y][x];
-		}
-	}
-
-	return d;
 }
 
 
@@ -444,108 +318,12 @@ Brush::delete_all_data()
 	span *c;
 	span *help;
 	if (brush != NULL) {
-		for (int32 y=0;y<height_;y++)
+		for (int32 y = 0; y < height_; y++)
 			delete[] brush[y];
 
 		delete[] brush;
 		c = brush_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff10 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff10[y];
-
-		delete[] diff10;
-		c = diff10_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff11 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff11[y];
-
-		delete[] diff11;
-		c = diff11_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff1_1 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff1_1[y];
-
-		delete[] diff1_1;
-		c = diff1_1_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff01 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff01[y];
-
-		delete[] diff01;
-		c = diff01_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff0_1 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff0_1[y];
-
-		delete[] diff0_1;
-		c = diff0_1_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff_10 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff_10[y];
-
-		delete[] diff_10;
-		c = diff_10_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff_11 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff_11[y];
-
-		delete[] diff_11;
-		c = diff_11_span;
-		while (c!=NULL) {
-			help = c->next;
-			delete c;
-			c = help;
-		}
-	}
-	if (diff_1_1 != NULL) {
-		for (int32 y=0;y<height_;y++)
-			delete[] diff_1_1[y];
-
-		delete[] diff_1_1;
-		c = diff_1_1_span;
-		while (c!=NULL) {
+		while (c != NULL) {
 			help = c->next;
 			delete c;
 			c = help;
@@ -576,10 +354,7 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 	int32 bpr = preview_bitmap->BytesPerRow()/4;
 	int32 bits_length = preview_bitmap->BitsLength()/4;
 	// Here we clear the bitmap.
-	union {
-		char bytes[4];
-		uint32 word;
-	} color;
+	union color_conversion color;
 
 	color.bytes[0] = 0xFF;
 	color.bytes[1] = 0xFF;
@@ -627,8 +402,8 @@ void
 Brush::print_brush(uint32 **b)
 {
 	printf("Brush:\n");
-	for (int32 y=0;y<height_;y++) {
-		for (int32 x=0;x<width_;x++) {
+	for (int32 y = 0; y < height_; y++) {
+		for (int32 x = 0 ; x < width_; x++) {
 			printf("%ld ",b[y][x]);
 		}
 		printf("\n");
@@ -637,8 +412,7 @@ Brush::print_brush(uint32 **b)
 
 
 void
-Brush::draw(BBitmap* buffer, BPoint point,
-	int32 dx, int32 dy, uint32 c, Selection* selection)
+Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 {
 	BRect bitmap_bounds = buffer->Bounds();
 
@@ -647,16 +421,15 @@ Brush::draw(BBitmap* buffer, BPoint point,
 	int32 top_bound = (int32)bitmap_bounds.top;
 	int32 bottom_bound = (int32)bitmap_bounds.bottom;
 
-	span* spans;
+	span* spans = brush_span;
 	int32 px = (int32)point.x;
 	int32 py = (int32)point.y;
-	uint32** brush_matrix = GetData(&spans, dx, dy);
 
-	if (brush_matrix == NULL)
+	if (brush == NULL)
 		return;
 
 	uint32* bits = (uint32*)buffer->Bits();
-	uint32 bpr = buffer->BytesPerRow()/4;
+	uint32 bpr = buffer->BytesPerRow() / 4;
 	uint32* target_bits;
 	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
 		int32 left = max_c(px + spans->span_start, left_bound) ;
@@ -667,9 +440,17 @@ Brush::draw(BBitmap* buffer, BPoint point,
 			target_bits = bits + (y + py) * bpr + left;
 			for (int32 x = left; x <= right; ++x) {
 				if (selection->IsEmpty() || selection->ContainsPoint(x, y + py)) {
+					union color_conversion brush_color, target_color, result;
+					brush_color.word = 0xffffffff;
+					float brush_alpha = brush[y][x - px] / 32768.;
 
-					*target_bits = mix_2_pixels_fixed(c, *target_bits,
-						brush_matrix[y][x-px]);
+					brush_color.bytes[3] = brush_alpha * 255.;
+					target_color.word = *target_bits;
+
+					for (int i = 0; i < 4; ++i)
+						result.bytes[i] = max_c(target_color.bytes[i], brush_color.bytes[i]);
+
+					*target_bits = result.word;
 				}
 				target_bits++;
 			}
@@ -705,7 +486,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, uint32 color,
 	else
 		sign_y = 0;
 
-	int32 dx, dy;
 	int32 last_x, last_y;
 	int32 new_x, new_y;
 	BPoint last_point;
@@ -722,10 +502,8 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, uint32 color,
 			last_x = (int32)round(last_point.x);
 			last_y = (int32)round(last_point.y);
 
-			dx = new_x - last_x;
-			dy = new_y - last_y;
 			this->draw(buffer, BPoint(new_x - brush_width_per_2, new_y -
-				brush_height_per_2), dx, dy, color, selection);
+				brush_height_per_2), selection);
 
 //			view->Window()->Lock();
 //			view->Invalidate();
@@ -744,11 +522,8 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, uint32 color,
 			last_x = (int32)round(last_point.x);
 			last_y = (int32)round(last_point.y);
 
-			dx = new_x - last_x;
-			dy = new_y - last_y;
 			this->draw(buffer, BPoint(new_x - brush_width_per_2,
-				new_y - brush_height_per_2), dx, dy, color,
-				selection);
+				new_y - brush_height_per_2), selection);
 
 //			view->Window()->Lock();
 //			view->Invalidate();
