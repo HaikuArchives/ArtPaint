@@ -54,6 +54,7 @@ private:
 			NumberSliderControl*	fLineSize;
 			BCheckBox*				fAntiAliasing;
 			BCheckBox*				fAdjustableWidth;
+			BCheckBox*				fUseBrush;
 };
 
 #endif	// STRAIGHT_LINE_TOOL_H

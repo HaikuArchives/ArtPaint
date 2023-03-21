@@ -13,13 +13,17 @@
 #include "StraightLineTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
+#include "Brush.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
+#include "ImageUpdater.h"
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Selection.h"
+#include "ToolManager.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
 
@@ -47,12 +51,14 @@ StraightLineTool::StraightLineTool()
 	: DrawingTool(B_TRANSLATE("Straight line tool"),
 		STRAIGHT_LINE_TOOL)
 {
-	fOptions = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION;
-	fOptionsCount = 3;
+	fOptions = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION |
+		USE_BRUSH_OPTION;
+	fOptionsCount = 4;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(MODE_OPTION, B_CONTROL_ON);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION, B_CONTROL_OFF);
+	SetOption(USE_BRUSH_OPTION, B_CONTROL_OFF);
 }
 
 
@@ -75,62 +81,123 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 
 	BWindow *window = view->Window();
 	drawing_mode old_mode;
-	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
+
 //	BView *bitmap_view = view->getBufferView();
+	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	if (buffer == NULL)
+		return NULL;
+
+	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
+	if (srcBuffer == NULL)
+		return NULL;
+
+	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
+	if (tmpBuffer == NULL) {
+		delete srcBuffer;
+		return NULL;
+	}
+
+	union color_conversion clear_color, tmp_draw_color, draw_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x00;
+	tmp_draw_color.word = 0xFFFFFFFF;
+
+	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 
 	Selection *selection = view->GetSelection();
+
+	bool anti_alias = true;
+	if (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_OFF)
+		anti_alias = false;
+
+	float wid = tmpBuffer->Bounds().Width();
+	float hgt = tmpBuffer->Bounds().Height();
 
 	if (window != NULL) {
 		ToolScript* the_script = new ToolScript(Type(), fToolSettings,
 			((PaintApplication*)be_app)->Color(true));
 
-		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
+		BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
+		if (drawer == NULL) {
+			delete the_script;
 
-		BPoint original_point,original_view_point,prev_view_point;
-		BRect bitmap_rect,old_rect,new_rect;
+			return NULL;
+		}
+
+		BPoint original_point, original_view_point, prev_view_point;
+		BPoint prev_point;
+		BRect bitmap_rect, old_rect, new_rect;
 		HSPolygon *view_polygon = NULL;
 		BPoint point_list[4];
 
-		window->Lock();
-		old_mode = view->DrawingMode();
-		view->SetDrawingMode(B_OP_INVERT);
-		rgb_color old_color = view->HighColor();
-		window->Unlock();
 		original_point = point;
 		bool use_fg_color = true;
 		if (buttons == B_SECONDARY_MOUSE_BUTTON)
 			use_fg_color = false;
 
 		rgb_color c = ((PaintApplication*)be_app)->Color(use_fg_color);
+		draw_color.bytes[0] = c.blue;
+		draw_color.bytes[1] = c.green;
+		draw_color.bytes[2] = c.red;
+		draw_color.bytes[3] = c.alpha;
 
 		prev_view_point = original_view_point = view_point;
-		bitmap_rect = BRect(point.x, point.y -
-			floor(((float)GetCurrentValue(SIZE_OPTION) - 1.0) / 2.0), point.x,
-			point.y + ceil(((float)GetCurrentValue(SIZE_OPTION) - 1.0) / 2.0));
-		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
-		point_list[0] = new_rect.LeftTop();
-		point_list[1] = new_rect.RightTop();
-		point_list[2] = new_rect.RightBottom();
-		point_list[3] = new_rect.LeftBottom();
+		prev_point = point;
 
-		window->Lock();
-		view->SetHighColor(c);
-		if ((GetCurrentValue(SIZE_OPTION) > 2) &&
-			(fToolSettings.mode == B_CONTROL_OFF)) {
-			view_polygon = new HSPolygon(point_list,4);
-			BPolygon *bpoly = view_polygon->GetBPolygon();
-			view->StrokePolygon(bpoly);
-			delete bpoly;
+		Brush* brush;
+		float brush_width_per_2;
+		float brush_height_per_2;
+		int diameter = fToolSettings.size;
+		if ((diameter % 2) == 0)
+			diameter++;
+
+		if (fToolSettings.use_current_brush == true) {
+			brush = ToolManager::Instance().GetCurrentBrush();
+			brush_width_per_2 = floor(brush->Width() / 2);
+			brush_height_per_2 = floor(brush->Height() / 2);
+
+			brush->draw(tmpBuffer, BPoint(prev_point.x - brush_width_per_2,
+				prev_point.y - brush_height_per_2), selection);
+		} else {
+			brush_width_per_2 = floor(fToolSettings.size / 2);
+			brush_height_per_2 = brush_width_per_2;
+
+			if (diameter != 1)
+				drawer->DrawLine(original_point, point, tmp_draw_color.word,
+					diameter, anti_alias, selection, src_over_fixed);
+			else
+				drawer->DrawHairLine(original_point, point, tmp_draw_color.word,
+					anti_alias, selection, src_over_fixed);
 		}
-		else
-			view->StrokeLine(original_view_point, view_point);
-		window->Unlock();
+
+		BRect updated_rect;
+		updated_rect.left = min_c(point.x - brush_width_per_2,
+			prev_point.x - brush_width_per_2);
+		updated_rect.top = min_c(point.y - brush_height_per_2,
+			prev_point.y - brush_height_per_2);
+		updated_rect.right = max_c(point.x + brush_width_per_2,
+			prev_point.x + brush_width_per_2);
+		updated_rect.bottom = max_c(point.y + brush_height_per_2,
+			prev_point.y + brush_height_per_2);
+
+		buffer->Lock();
+		BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+			tmpBuffer, updated_rect, src_over_fixed, draw_color.word);
+		buffer->Unlock();
+
+		SetLastUpdatedRect(updated_rect);
+		the_script->AddPoint(point);
+
+		ImageUpdater* imageUpdater = new ImageUpdater(view, 2000);
+		imageUpdater->AddRect(updated_rect);
 
 		float angle = 0;
+
 		while (buttons) {
 			window->Lock();
-			view->getCoords(&point,&buttons,&view_point);
+			view->getCoords(&point, &buttons, &view_point);
 			float scale = view->getMagScale();
+			window->Unlock();
 
 			if (modifiers() & B_SHIFT_KEY) {
 				// Make the new point be so that the angle is a multiple of 22.5°.
@@ -162,57 +229,64 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				}
 			}
 
+			updated_rect.left = max_c(0, min_c(prev_point.x - brush_width_per_2 - 1,
+				original_point.x - brush_width_per_2 - 1));
+			updated_rect.top = max_c(0, min_c(prev_point.y - brush_height_per_2 - 1,
+				original_point.y - brush_height_per_2 - 1));
+			updated_rect.right = min_c(wid, max_c(prev_point.x + brush_width_per_2 + 1,
+				original_point.x + brush_width_per_2 + 1));
+			updated_rect.bottom = min_c(hgt, max_c(prev_point.y + brush_height_per_2 + 1,
+				original_point.y + brush_height_per_2 + 1));
+
+			BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word, &updated_rect);
+
+			if (fToolSettings.use_current_brush == true) {
+				brush->draw_line(tmpBuffer, original_point, point, selection);
+			} else {
+				if (diameter != 1 && fToolSettings.mode == B_CONTROL_OFF) {
+					drawer->DrawLine(original_point, point, tmp_draw_color.word,
+						diameter, anti_alias, selection, src_over_fixed);
+				} else
+					drawer->DrawHairLine(original_point, point, tmp_draw_color.word,
+						anti_alias, selection, src_over_fixed);
+			}
+
+			imageUpdater->AddRect(updated_rect);
+
+			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
+
+			buffer->Lock();
+			BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+				tmpBuffer, updated_rect, src_over_fixed, draw_color.word);
+			buffer->Unlock();
+
+			prev_point = point;
+		}
+
+		angle = atan2((point.y-original_point.y),
+			(point.x - original_point.x)) * 180 / M_PI;
+
+		int32 size = GetCurrentValue(SIZE_OPTION);
+		bool draw_line = true;
+		BRect old_bbox;
+
+		if (fToolSettings.mode == B_CONTROL_ON &&
+			fToolSettings.use_current_brush == B_CONTROL_OFF) { // Adjust the width of the line.
 			bitmap_rect = BRect(original_point.x,
 				original_point.y - floor(((float)GetCurrentValue(SIZE_OPTION) - 1.0) / 2.0),
 				original_point.x + sqrt(pow(original_point.x - point.x, 2) +
 				pow(original_point.y - point.y, 2)), original_point.y +
 				ceil(((float)GetCurrentValue(SIZE_OPTION) - 1.0) / 2.0));
 
-			new_rect = view->convertBitmapRectToView(bitmap_rect);
-			if (old_rect != new_rect) {
-				if ((GetCurrentValue(SIZE_OPTION) > 2) &&
-					(fToolSettings.mode == B_CONTROL_OFF)) {
-					if (view_polygon != NULL) {
-						BRect bbox = view_polygon->BoundingBox();
-						view->Draw(bbox);
-					}
-					point_list[0] = new_rect.LeftTop();
-					point_list[1] = new_rect.RightTop();
-					point_list[2] = new_rect.RightBottom();
-					point_list[3] = new_rect.LeftBottom();
-					view_polygon = new HSPolygon(point_list,4);
-					angle = atan2((view_point.y-original_view_point.y),
-						(view_point.x - original_view_point.x)) * 180 / M_PI;
-					view_polygon->Rotate(original_view_point,angle);
-					BPolygon *bpoly = view_polygon->GetBPolygon();
-					view->StrokePolygon(bpoly);
-					delete bpoly;
-				}
-				else {
-					float left = min_c(point.x,
-						min_c(original_view_point.x, prev_view_point.x));
-					float top = min_c(point.y,
-						min_c(original_view_point.y, prev_view_point.y));
-					float right = max_c(point.x,
-						max_c(original_view_point.x, prev_view_point.x));
-					float bottom = max_c(point.y,
-						max_c(original_view_point.y, prev_view_point.y));
-					BRect bbox(left, top, right, bottom);
-					view->Draw(bbox);
-					view->StrokeLine(original_view_point, view_point);
-					angle = atan2((view_point.y-original_view_point.y),
-						(view_point.x - original_view_point.x)) * 180 / M_PI;
-					prev_view_point = view_point;
-				}
-				old_rect = new_rect;
-			}
-			window->Unlock();
-			snooze(20 * 1000);
-		}
-		int32 size = GetCurrentValue(SIZE_OPTION);
-		bool draw_line = true;
-		new_rect = old_rect;
-		if (fToolSettings.mode == B_CONTROL_ON) { // Adjust the width of the line.
+			new_rect = old_rect = view->convertBitmapRectToView(bitmap_rect);
+			point_list[0] = new_rect.LeftTop();
+			point_list[1] = new_rect.RightTop();
+			point_list[2] = new_rect.RightBottom();
+			point_list[3] = new_rect.LeftBottom();
+			view_polygon = new HSPolygon(point_list, 4);
+			view_polygon->Rotate(original_view_point, angle);
+			old_bbox = view_polygon->BoundingBox();
+
 			bool continue_adjusting_width = true;
 			BPoint p1 = original_point;
 			BPoint width_point;
@@ -226,25 +300,27 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				if (is_clicks_data_valid) {
 					continue_adjusting_width = false;
 					is_clicks_data_valid = false;
-				}
-				else if (is_keys_data_valid) {
+				} else if (is_keys_data_valid) {
 					if (last_key_event_bytes[0] == B_ESCAPE) {
 						continue_adjusting_width = false;
 						draw_line = false;
 					}
 					is_keys_data_valid = false;
-				}
-				else {
+				} else {
 					if (view->LockLooper()) {
 						new_rect = orig_rect;
 						new_rect.bottom += size/2;
 						new_rect.top -= size/2;
 						new_rect = view->convertBitmapRectToView(new_rect);
 						if (new_rect != old_rect) {
+							float size_diff = fabs(old_rect.Height() - new_rect.Height());
 							if (size > 0) {
 								float scale = view->getMagScale();
 								BRect bbox = view_polygon->BoundingBox();
-								view->Draw(bbox);
+								bbox = view->convertViewRectToBitmap(bbox);
+								bbox.InsetBy(-size, -size);
+								BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word, &bbox);
+
 								point_list[0] = new_rect.LeftTop();
 								point_list[1] = new_rect.RightTop();
 								point_list[2] = new_rect.RightBottom();
@@ -257,8 +333,26 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 								view_polygon->Rotate(pivot, angle);
 
 								BPolygon* bpoly = view_polygon->GetBPolygon();
-								view->StrokePolygon(bpoly);
+								if (size > 2)
+									drawer->DrawLine(original_point, point, tmp_draw_color.word,
+										size, anti_alias, selection, src_over_fixed);
+								else
+									drawer->DrawHairLine(original_point, point, tmp_draw_color.word,
+										anti_alias, selection, src_over_fixed);
+
 								delete bpoly;
+
+								updated_rect = view->convertViewRectToBitmap(view_polygon->BoundingBox());
+
+								updated_rect.InsetBy(-size_diff, -size_diff);
+
+								buffer->Lock();
+								BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+									tmpBuffer, updated_rect, src_over_fixed, draw_color.word);
+								buffer->Unlock();
+
+								SetLastUpdatedRect(updated_rect);
+								imageUpdater->AddRect(updated_rect);
 							}
 							old_rect = new_rect;
 						}
@@ -276,18 +370,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 				}
 			}
 		}
-		delete view_polygon;
-
-		bool anti_alias = true;
-		if (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_OFF)
-			anti_alias = false;
-
-		if (size > 1)
-			drawer->DrawLine(original_point,point,RGBColorToBGRA(c),size,anti_alias,selection);
-		else
-			drawer->DrawHairLine(original_point,point,RGBColorToBGRA(c),anti_alias,selection);
-
-		BRect updated_rect = MakeRectFromPoints(original_point, point);
+		updated_rect = MakeRectFromPoints(original_point, point);
 
 		// This extension might actually be too little.
 		updated_rect.left -= size/2;
@@ -295,13 +378,21 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		updated_rect.right += size/2;
 		updated_rect.bottom += size/2;
 
+		if (updated_rect.Contains(old_bbox) == FALSE)
+			updated_rect = old_bbox;
+
+		delete view_polygon;
+
+		buffer->Lock();
+		BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
+			tmpBuffer, updated_rect, src_over_fixed, draw_color.word);
+		buffer->Unlock();
+
 		SetLastUpdatedRect(updated_rect);
-		window->Lock();
-		view->SetDrawingMode(old_mode);
-		view->SetHighColor(old_color);
-		view->UpdateImage(updated_rect);
-		view->Sync();
-		window->Unlock();
+		imageUpdater->AddRect(updated_rect);
+
+		imageUpdater->ForceUpdate();
+		delete imageUpdater;
 
 		delete drawer;
 
@@ -383,8 +474,15 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 
 		BGridLayout* lineSizeLayout = LayoutSliderGrid(fLineSize);
 
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", USE_BRUSH_OPTION);
+		message->AddInt32("value", 0x00000000);
+		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
+			message);
+
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(lineSizeLayout)
+			.Add(fUseBrush)
 			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
@@ -394,6 +492,17 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 			.End()
 			.TopView()
 		);
+
+		fUseBrush->SetValue(tool->GetCurrentValue(USE_BRUSH_OPTION));
+		if (fUseBrush->Value() == B_CONTROL_ON) {
+			fLineSize->SetEnabled(FALSE);
+			fAdjustableWidth->SetEnabled(FALSE);
+			fAntiAliasing->SetEnabled(FALSE);
+		} else {
+			fLineSize->SetEnabled(TRUE);
+			fAdjustableWidth->SetEnabled(TRUE);
+			fAntiAliasing->SetEnabled(TRUE);
+		}
 	}
 }
 
@@ -406,6 +515,7 @@ StraightLineToolConfigView::AttachedToWindow()
 	fLineSize->SetTarget(this);
 	fAntiAliasing->SetTarget(this);
 	fAdjustableWidth->SetTarget(this);
+	fUseBrush->SetTarget(this);
 }
 
 
@@ -421,6 +531,16 @@ StraightLineToolConfigView::MessageReceived(BMessage* message)
 					fLineSize->SetEnabled(TRUE);
 				else
 					fLineSize->SetEnabled(FALSE);
+			} else if (message->FindInt32("option") == USE_BRUSH_OPTION) {
+				if (fUseBrush->Value() == B_CONTROL_ON) {
+					fLineSize->SetEnabled(FALSE);
+					fAdjustableWidth->SetEnabled(FALSE);
+					fAntiAliasing->SetEnabled(FALSE);
+				} else {
+					fLineSize->SetEnabled(TRUE);
+					fAdjustableWidth->SetEnabled(TRUE);
+					fAntiAliasing->SetEnabled(TRUE);
+				}
 			}
 		} break;
 	}

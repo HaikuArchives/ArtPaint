@@ -219,10 +219,16 @@ BitmapUtilities::ClearBitmap(BBitmap* bitmap, uint32 color, BRect* area)
 	int32 start_y = 0;
 
 	if (area) {
-		width = area->IntegerWidth()+1;
-		height = area->IntegerHeight()+1;
-		start_x = (int32)area->left;
-		start_y = (int32)area->top;
+		BRect tmpArea = *area & bitmap->Bounds();
+
+		start_x = tmpArea.left;
+		start_y = tmpArea.top;
+
+		if (start_x > width || start_y > height)
+			return;
+
+		width = min_c(width, tmpArea.IntegerWidth()+1);
+		height = min_c(height, tmpArea.IntegerHeight()+1);
 	}
 
 	uint32* bits = (uint32*)bitmap->Bits();
