@@ -242,6 +242,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 						new_rect = view->convertBitmapRectToView(new_rect);
 						if (new_rect != old_rect) {
 							if (size > 0) {
+								float scale = view->getMagScale();
 								BRect bbox = view_polygon->BoundingBox();
 								view->Draw(bbox);
 								point_list[0] = new_rect.LeftTop();
@@ -249,7 +250,12 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 								point_list[2] = new_rect.RightBottom();
 								point_list[3] = new_rect.LeftBottom();
 								view_polygon = new HSPolygon(point_list,4);
-								view_polygon->Rotate(original_view_point,angle);
+
+								BPoint pivot = original_point;
+								pivot.x *= scale;
+								pivot.y *= scale;
+								view_polygon->Rotate(pivot, angle);
+
 								BPolygon* bpoly = view_polygon->GetBPolygon();
 								view->StrokePolygon(bpoly);
 								delete bpoly;
