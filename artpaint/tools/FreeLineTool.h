@@ -60,6 +60,7 @@ public:
 	virtual							~FreeLineToolConfigView() {}
 
 	virtual	void					AttachedToWindow();
+	virtual void					MessageReceived(BMessage* message);
 
 private:
 			NumberSliderControl*	fLineSize;

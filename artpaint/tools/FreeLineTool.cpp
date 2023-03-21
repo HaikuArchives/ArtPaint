@@ -76,6 +76,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		"read coordinates", B_NORMAL_PRIORITY, this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
+
 	ToolScript *the_script = new (std::nothrow) ToolScript(Type(), fToolSettings,
 		((PaintApplication*)be_app)->Color(true));
 	if (the_script == NULL) {
@@ -333,6 +334,9 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 		);
 
 		fUseBrush->SetValue(tool->GetCurrentValue(USE_BRUSH_OPTION));
+		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF) {
+			fLineSize->SetEnabled(FALSE);
+		}
 	}
 }
 
@@ -344,4 +348,22 @@ FreeLineToolConfigView::AttachedToWindow()
 
 	fLineSize->SetTarget(this);
 	fUseBrush->SetTarget(this);
+}
+
+
+void
+FreeLineToolConfigView::MessageReceived(BMessage* message)
+{
+	DrawingToolConfigView::MessageReceived(message);
+
+	switch(message->what) {
+		case OPTION_CHANGED: {
+			if (message->FindInt32("option") == USE_BRUSH_OPTION) {
+				if (fUseBrush->Value() == B_CONTROL_OFF)
+					fLineSize->SetEnabled(TRUE);
+				else
+					fLineSize->SetEnabled(FALSE);
+			}
+		} break;
+	}
 }
