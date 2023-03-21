@@ -14,6 +14,7 @@
 #include "DrawingTool.h"
 
 
+class BCheckBox;
 class BRadioButton;
 class CoordinateQueue;
 class ImageView;
@@ -59,11 +60,13 @@ public:
 	virtual							~EraserToolConfigView() {}
 
 	virtual	void					AttachedToWindow();
+	virtual void					MessageReceived(BMessage* message);
 
 private:
 			NumberSliderControl*	fSizeSlider;
 			BRadioButton*			fBackground;
 			BRadioButton*			fTransparent;
+			BCheckBox*				fUseBrush;
 };
 
 #endif	// ERASER_TOOL_H
