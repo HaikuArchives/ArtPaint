@@ -47,11 +47,12 @@ FreeLineTool::FreeLineTool()
 	: DrawingTool(B_TRANSLATE("Freehand line tool"),
 		FREE_LINE_TOOL)
 {
-	fOptions = SIZE_OPTION | USE_BRUSH_OPTION;
-	fOptionsCount = 2;
+	fOptions = SIZE_OPTION | USE_BRUSH_OPTION | PRESSURE_OPTION;
+	fOptionsCount = 3;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(USE_BRUSH_OPTION, B_CONTROL_OFF);
+	SetOption(PRESSURE_OPTION, 100);
 }
 
 
@@ -125,7 +126,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	}
 
 	rgb_color new_color;
-	uint32 new_color_bgra;
+	union color_conversion new_color_bgra;
 //	int32 original_mouse_speed;
 //	get_mouse_speed(&original_mouse_speed);
 
@@ -157,8 +158,13 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	if (buttons == B_SECONDARY_MOUSE_BUTTON)
 		use_fg_color = false;
 
+	float pressure = (float)fToolSettings.pressure / 100.;
+
 	new_color = ((PaintApplication*)be_app)->Color(use_fg_color);
-	new_color_bgra = RGBColorToBGRA(new_color);
+	new_color_bgra.word = RGBColorToBGRA(new_color);
+
+	new_color_bgra.bytes[3] *= pressure;
+
 	brush->draw(tmpBuffer, BPoint(prev_point.x - brush_width_per_2,
 		prev_point.y - brush_height_per_2), selection);
 
@@ -174,7 +180,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	buffer->Lock();
 	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-		tmpBuffer, updated_rect, src_over_fixed, new_color_bgra);
+		tmpBuffer, updated_rect, src_over_fixed, new_color_bgra.word);
 	buffer->Unlock();
 
 	SetLastUpdatedRect(updated_rect);
@@ -213,7 +219,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 			buffer->Lock();
 			BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-				tmpBuffer, updated_rect, src_over_fixed, new_color_bgra);
+				tmpBuffer, updated_rect, src_over_fixed, new_color_bgra.word);
 			buffer->Unlock();
 
 			prev_point = point;
@@ -327,8 +333,19 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
 			message);
 
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PRESSURE_OPTION);
+		message->AddInt32("value", 100);
+
+		fPressureSlider =
+			new NumberSliderControl(B_TRANSLATE("Pressure:"),
+			"100", message, 1, 100, false);
+
+		BGridLayout* pressureLayout = LayoutSliderGrid(fPressureSlider);
+
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
-			.Add(lineSizeLayout->View())
+			.Add(lineSizeLayout)
+			.Add(pressureLayout)
 			.Add(fUseBrush)
 			.TopView()
 		);
@@ -337,6 +354,8 @@ FreeLineToolConfigView::FreeLineToolConfigView(DrawingTool* tool)
 		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF) {
 			fLineSize->SetEnabled(FALSE);
 		}
+
+		fPressureSlider->SetValue(tool->GetCurrentValue(PRESSURE_OPTION));
 	}
 }
 
@@ -348,6 +367,7 @@ FreeLineToolConfigView::AttachedToWindow()
 
 	fLineSize->SetTarget(this);
 	fUseBrush->SetTarget(this);
+	fPressureSlider->SetTarget(this);
 }
 
 
