@@ -40,7 +40,7 @@ public:
 	void	KeyDown(const char *bytes,int32);
 	void	MouseDown(BPoint);
 
-	void	AddBrush(Brush*);
+	bool	AddBrush(Brush*);
 };
 
 

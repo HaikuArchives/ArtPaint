@@ -118,6 +118,7 @@ public:
 	BRect			draw_line(BBitmap* buffer,
 						BPoint start, BPoint end,
 						Selection* selection);
+	static bool		compare_brushes(brush_info one, brush_info two);
 
 	uint32**		GetData(span**);
 	float			Width() { return width_; }
