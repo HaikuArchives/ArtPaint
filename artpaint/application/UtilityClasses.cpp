@@ -70,6 +70,86 @@ BitmapView::SetBitmap(BBitmap* bitmap)
 }
 
 
+// primes 1021,2311
+PointContainer::PointContainer()
+	: hash_table_size(2311)
+{
+	hash_table = new BPoint*[hash_table_size];
+	list_length_table = new int32[hash_table_size];
+	for (int32 i = 0; i < hash_table_size; i++) {
+		hash_table[i] = NULL;
+		list_length_table[i] = 0;
+	}
+}
+
+
+PointContainer::~PointContainer()
+{
+	int32 slots = 0;
+	int32 hits = 0;
+	for (int32 i = 0; i < hash_table_size; i++) {
+		if (list_length_table[i] > 0) {
+			slots++;
+			hits += list_length_table[i];
+		}
+	}
+
+	for (int32 i = 0; i < hash_table_size; i++) {
+		delete[] hash_table[i];
+		hash_table[i] = NULL;
+	}
+	delete[] hash_table;
+	delete[] list_length_table;
+}
+
+
+void
+PointContainer::InsertPoint(int32 x, int32 y)
+{
+	int32 key = hash_value(x, y);
+
+	if (list_length_table[key] == 0) {
+		hash_table[key] = new BPoint[1];
+		list_length_table[key] = 1;
+		hash_table[key][0] = BPoint(x, y);
+	} else {
+		BPoint* new_array = new BPoint[list_length_table[key] + 1];
+
+		for (int32 i = 0; i < list_length_table[key]; i++) {
+			new_array[i] = hash_table[key][i];
+		}
+
+		delete[] hash_table[key];
+		hash_table[key] = new_array;
+		hash_table[key][list_length_table[key]] = BPoint(x, y);
+		list_length_table[key] += 1;
+	}
+}
+
+
+bool
+PointContainer::HasPoint(int32 x, int32 y)
+{
+	int32 key = hash_value(x, y);
+	bool has = FALSE;
+	BPoint point(x, y);
+	for (int32 i = 0; i < list_length_table[key] && has == FALSE; i++) {
+		if (hash_table[key][i] == point)
+			has = TRUE;
+	}
+
+	return has;
+}
+
+
+int32
+PointContainer::hash_value(int32 x, int32 y)
+{
+	int32 value;
+	value = (x + (y << 8)) % hash_table_size;
+	return value;
+}
+
 
 BRect
 FitRectToScreen(BRect source)

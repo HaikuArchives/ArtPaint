@@ -46,6 +46,22 @@ public:
 };
 
 
+class PointContainer {
+		BPoint**	hash_table;
+		int32*		list_length_table;
+
+		int32		hash_value(int32 x, int32 y);
+const	int32		hash_table_size;
+
+public:
+					PointContainer();
+					~PointContainer();
+
+		void		InsertPoint(int32 x, int32 y);
+		bool		HasPoint(int32 x, int32 y);
+};
+
+
 BRect FitRectToScreen(BRect source);
 BRect CenterRectOnScreen(BRect source);
 BRect MakeRectFromPoints(const BPoint& point1, const BPoint& point2);
