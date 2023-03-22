@@ -245,10 +245,10 @@ LayerWindow::LayerWindow(BRect frame)
 			true);
 	}
 	setFeel(feel);
-	float min_width = font.StringWidth("W") * 20;
+	float min_width = font.StringWidth("W") * 20 +
+		scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width();
 
-	scroll_view->SetExplicitMinSize(BSize(min_width -
-		scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width(),
+	scroll_view->SetExplicitMinSize(BSize(min_width,
 		LAYER_VIEW_HEIGHT));
 
 	if (Lock()) {
