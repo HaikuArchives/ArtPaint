@@ -37,9 +37,9 @@
 #define B_TRANSLATION_CONTEXT "Windows"
 
 
-#define	BRUSH_INSET	2
-#define	BRUSH_VAULT_WIDTH	(BRUSH_PREVIEW_WIDTH+2*BRUSH_INSET)
-#define	BRUSH_VAULT_HEIGHT	(BRUSH_PREVIEW_WIDTH+2*BRUSH_INSET)
+#define	BRUSH_INSET	3
+#define	BRUSH_VAULT_WIDTH	(BRUSH_PREVIEW_WIDTH + 2 * BRUSH_INSET)
+#define	BRUSH_VAULT_HEIGHT	(BRUSH_PREVIEW_WIDTH + 2 * BRUSH_INSET)
 
 BList* BrushStoreWindow::brush_data = new BList();
 BrushStoreWindow* BrushStoreWindow::brush_window = NULL;
@@ -83,7 +83,7 @@ BrushStoreWindow::BrushStoreWindow()
 			.Add(brush_editor)
 			.Add(scroll_view)
 		.End()
-		.SetInsets(0, 0, 0, 0);
+		.SetInsets(-1, 0, -1, -1);
 
 	a_menu->FindItem(HS_DELETE_SELECTED_BRUSH)->SetTarget(store_view);
 
@@ -321,9 +321,9 @@ void BrushStoreView::Draw(BRect area)
 		outer_frame.InsetBy(-1,-1);
 		StrokeRect(outer_frame);
 
-		SetHighColor(0,0,255,255);
+		SetHighColor(ui_color(B_NAVIGATION_BASE_COLOR));
 		outer_frame = get_bitmap_frame(selected_brush_index);
-		outer_frame.InsetBy(-1,-1);
+		SetPenSize(1.5);
 		StrokeRect(outer_frame);
 	}
 	Sync();
@@ -426,12 +426,12 @@ void BrushStoreView::KeyDown(const char *bytes,int32 numBytes)
 					selected_brush_index = brush_data->CountItems() - 1;
 				else
 					selected_brush_index = (selected_brush_index - 1) % brush_data->CountItems();
-				Draw(BRect(BPoint(0,0),BPoint(-1,-1)));
+				Draw(Bounds());
 				break;
 			case B_RIGHT_ARROW:
 				previous_brush_index = selected_brush_index;
 				selected_brush_index = (selected_brush_index + 1) % brush_data->CountItems();
-				Draw(BRect(BPoint(0,0),BPoint(-1,-1)));
+				Draw(Bounds());
 				break;
 			case B_UP_ARROW:
 //				previous_brush_index = selected_brush_index;
@@ -505,7 +505,7 @@ void BrushStoreView::MouseDown(BPoint point)
 			// by drawing the view.
 			previous_brush_index = selected_brush_index;
 			selected_brush_index = index;
-			Draw(BRect(BPoint(0,0),BPoint(-1,-1)));
+			Draw(Bounds());
 		}
 	}
 }
@@ -528,11 +528,14 @@ BRect BrushStoreView::get_bitmap_frame(int32 index)
 {
 	// First we get the info, how many brushes can be in a row.
 	int32 width = Bounds().IntegerWidth();
-	in_a_row = max_c(width/BRUSH_VAULT_WIDTH,1);
-	int32 row_number = index/in_a_row;
-	int32 column_number = index-row_number*in_a_row;
+	in_a_row = max_c(width / BRUSH_VAULT_WIDTH, 1);
+	int32 row_number = index / in_a_row;
+	int32 column_number = index - row_number * in_a_row;
 
-	BRect frame = BRect(column_number*BRUSH_VAULT_WIDTH+BRUSH_INSET,row_number*BRUSH_VAULT_HEIGHT+BRUSH_INSET,(column_number+1)*BRUSH_VAULT_WIDTH-1-BRUSH_INSET,(row_number+1)*BRUSH_VAULT_HEIGHT-1-BRUSH_INSET);
+	BRect frame = BRect(column_number * BRUSH_VAULT_WIDTH + BRUSH_INSET,
+		row_number * BRUSH_VAULT_HEIGHT + BRUSH_INSET,
+		(column_number + 1) * BRUSH_VAULT_WIDTH - BRUSH_INSET,
+		(row_number + 1) * BRUSH_VAULT_HEIGHT - BRUSH_INSET);
 	return frame;
 }
 
