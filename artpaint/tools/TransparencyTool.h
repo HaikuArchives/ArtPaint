@@ -14,6 +14,7 @@
 #include "DrawingTool.h"
 
 
+class BCheckBox;
 class ImageView;
 class ToolScript;
 
@@ -47,11 +48,13 @@ public:
 	virtual						~TransparencyToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
+	virtual void				MessageReceived(BMessage* message);
 
 private:
 		NumberSliderControl*	fSizeSlider;
 		NumberSliderControl*	fSpeedSlider;
 		NumberSliderControl*	fTransparencySlider;
+		BCheckBox*				fUseBrush;
 };
 
 #endif	// TRANSPARENCY_TOOL_H
