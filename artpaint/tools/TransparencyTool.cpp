@@ -39,11 +39,12 @@ TransparencyTool::TransparencyTool()
 		TRANSPARENCY_TOOL)
 {
 	// The pressure option controls the speed of transparency change.
-	fOptions = SIZE_OPTION | PRESSURE_OPTION;
-	fOptionsCount = 2;
+	fOptions = SIZE_OPTION | PRESSURE_OPTION | TRANSPARENCY_OPTION;
+	fOptionsCount = 3;
 
-	SetOption(SIZE_OPTION,1);
-	SetOption(PRESSURE_OPTION,1);
+	SetOption(SIZE_OPTION, 1);
+	SetOption(PRESSURE_OPTION, 1);
+	SetOption(TRANSPARENCY_OPTION, 1);
 }
 
 
@@ -92,9 +93,10 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		uint32 word;
 	} color;
 
-	uint32 transparency_value =
-		((PaintApplication*)be_app)->Color(true).alpha;
+	float pressure = (float)fToolSettings.pressure / 100.;
 
+	uint8 transparency_value =
+		((100. - (float)fToolSettings.transparency) / 100.) * 255;
 
 	while (buttons) {
 		if (selection == NULL || selection->IsEmpty() == true ||
@@ -119,15 +121,18 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 						if (selection == NULL ||
 							selection->IsEmpty() == true ||
 							selection->ContainsPoint(real_x, real_y)) {
+							uint8 diff = fabs(color.bytes[3] - transparency_value);
+							uint8 step = (uint8)(ceil(diff * pressure / 2));
+
 							if (color.bytes[3] < transparency_value) {
 								color.bytes[3] = (uint8)min_c(color.bytes[3] +
-									GetCurrentValue(PRESSURE_OPTION)/4.0,
+									step,
 									transparency_value);
 								*(bits_origin + real_y*bpr + real_x) =
 									color.word;
 							} else if (color.bytes[3] > transparency_value) {
 								color.bytes[3] = (uint8)max_c(color.bytes[3] -
-									GetCurrentValue(PRESSURE_OPTION)/4.0,
+									step,
 									transparency_value);
 								*(bits_origin + real_y*bpr + real_x) =
 									color.word;
@@ -219,11 +224,19 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 			"1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", TRANSPARENCY_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(TRANSPARENCY_OPTION));
+
+		fTransparencySlider =
+			new NumberSliderControl(B_TRANSLATE("Transparency:"),
+			"1", message, 0, 100, false);
+
+		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", PRESSURE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
 		fSpeedSlider =
-			new NumberSliderControl(B_TRANSLATE("Speed:"),
+			new NumberSliderControl(B_TRANSLATE("Pressure:"),
 			"1", message, 1, 100, false);
 
 		BGridLayout* gridLayout = BGridLayoutBuilder(5.0, 5.0)
@@ -231,10 +244,16 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 			.Add(fSizeSlider->LabelLayoutItem(), 0, 0)
 			.Add(fSizeSlider->TextViewLayoutItem(), 1, 0)
 			.Add(fSizeSlider->Slider(), 2, 0)
-			.Add(fSpeedSlider, 0, 1, 0, 0)
-			.Add(fSpeedSlider->LabelLayoutItem(), 0, 1)
-			.Add(fSpeedSlider->TextViewLayoutItem(), 1, 1)
-			.Add(fSpeedSlider->Slider(), 2, 1)
+
+			.Add(fTransparencySlider, 0, 1, 0, 0)
+			.Add(fTransparencySlider->LabelLayoutItem(), 0, 1)
+			.Add(fTransparencySlider->TextViewLayoutItem(), 1, 1)
+			.Add(fTransparencySlider->Slider(), 2, 1)
+
+			.Add(fSpeedSlider, 0, 2, 0, 0)
+			.Add(fSpeedSlider->LabelLayoutItem(), 0, 2)
+			.Add(fSpeedSlider->TextViewLayoutItem(), 1, 2)
+			.Add(fSpeedSlider->Slider(), 2, 2)
 			.SetInsets(kWidgetInset, 0.0, 0.0, 0.0);
 		gridLayout->SetMinColumnWidth(0, StringWidth("LABELSIZE"));
 		gridLayout->SetMaxColumnWidth(1, StringWidth("100"));
@@ -252,4 +271,5 @@ TransparencyToolConfigView::AttachedToWindow()
 
 	fSizeSlider->SetTarget(this);
 	fSpeedSlider->SetTarget(this);
+	fTransparencySlider->SetTarget(this);
 }

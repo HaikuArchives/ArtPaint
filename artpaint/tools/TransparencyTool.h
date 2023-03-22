@@ -51,6 +51,7 @@ public:
 private:
 		NumberSliderControl*	fSizeSlider;
 		NumberSliderControl*	fSpeedSlider;
+		NumberSliderControl*	fTransparencySlider;
 };
 
 #endif	// TRANSPARENCY_TOOL_H
