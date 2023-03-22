@@ -64,6 +64,7 @@ public:
 
 private:
 			NumberSliderControl*	fSizeSlider;
+			NumberSliderControl*	fPressureSlider;
 			BRadioButton*			fBackground;
 			BRadioButton*			fTransparent;
 			BCheckBox*				fUseBrush;
