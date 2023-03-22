@@ -52,13 +52,14 @@ StraightLineTool::StraightLineTool()
 		STRAIGHT_LINE_TOOL)
 {
 	fOptions = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION |
-		USE_BRUSH_OPTION;
-	fOptionsCount = 4;
+		USE_BRUSH_OPTION | PRESSURE_OPTION;
+	fOptionsCount = 5;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(MODE_OPTION, B_CONTROL_ON);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION, B_CONTROL_OFF);
 	SetOption(USE_BRUSH_OPTION, B_CONTROL_OFF);
+	SetOption(PRESSURE_OPTION, 100);
 }
 
 
@@ -130,6 +131,8 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		HSPolygon *view_polygon = NULL;
 		BPoint point_list[4];
 
+		float pressure = (float)fToolSettings.pressure / 100.;
+
 		original_point = point;
 		bool use_fg_color = true;
 		if (buttons == B_SECONDARY_MOUSE_BUTTON)
@@ -139,7 +142,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		draw_color.bytes[0] = c.blue;
 		draw_color.bytes[1] = c.green;
 		draw_color.bytes[2] = c.red;
-		draw_color.bytes[3] = c.alpha;
+		draw_color.bytes[3] = c.alpha * pressure;
 
 		prev_view_point = original_view_point = view_point;
 		prev_point = point;
@@ -480,8 +483,19 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
 			message);
 
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PRESSURE_OPTION);
+		message->AddInt32("value", 100);
+
+		fPressureSlider =
+			new NumberSliderControl(B_TRANSLATE("Pressure:"),
+			"100", message, 1, 100, false);
+
+		BGridLayout* pressureLayout = LayoutSliderGrid(fPressureSlider);
+
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(lineSizeLayout)
+			.Add(pressureLayout)
 			.Add(fUseBrush)
 			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Options")))
@@ -503,6 +517,8 @@ StraightLineToolConfigView::StraightLineToolConfigView(DrawingTool* tool)
 			fAdjustableWidth->SetEnabled(TRUE);
 			fAntiAliasing->SetEnabled(TRUE);
 		}
+
+		fPressureSlider->SetValue(tool->GetCurrentValue(PRESSURE_OPTION));
 	}
 }
 
@@ -516,6 +532,7 @@ StraightLineToolConfigView::AttachedToWindow()
 	fAntiAliasing->SetTarget(this);
 	fAdjustableWidth->SetTarget(this);
 	fUseBrush->SetTarget(this);
+	fPressureSlider->SetTarget(this);
 }
 
 

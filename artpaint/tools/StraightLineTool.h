@@ -52,6 +52,7 @@ public:
 
 private:
 			NumberSliderControl*	fLineSize;
+			NumberSliderControl*	fPressureSlider;
 			BCheckBox*				fAntiAliasing;
 			BCheckBox*				fAdjustableWidth;
 			BCheckBox*				fUseBrush;
