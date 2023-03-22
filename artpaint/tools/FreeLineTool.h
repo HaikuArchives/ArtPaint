@@ -65,6 +65,7 @@ public:
 private:
 			NumberSliderControl*	fLineSize;
 			BCheckBox*				fUseBrush;
+			NumberSliderControl*	fPressureSlider;
 };
 
 #endif	// FREE_LINE_TOOL_H
