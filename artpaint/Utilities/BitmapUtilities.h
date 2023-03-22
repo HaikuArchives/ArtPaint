@@ -33,6 +33,8 @@ public:
 	static	void		CheckerBitmap(BBitmap* bitmap,
 							uint32 color1, uint32 color2,
 							uint32 grid_size, BRect* area = NULL);
+	static	uint32		GetPixel(BBitmap* bitmap, int32 x, int32 y);
+	static	uint32		GetPixel(BBitmap* bitmap, BPoint location);
 };
 
 

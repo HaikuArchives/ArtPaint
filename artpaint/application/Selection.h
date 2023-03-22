@@ -100,6 +100,8 @@ static	int32			thread_entry_func(void*);
 		int32			thread_func();
 
 		void			SimplifySelection();
+		void		 	RasterToPolygonsMoore(BBitmap* map, BRect bounds,
+							BList* polygons);
 
 public:
 						Selection(BRect);
@@ -204,22 +206,6 @@ Selection::ContainsPoint(int32 x, int32 y)
 		(image_bounds.Contains(BPoint(x, y)) &&
 		((*(selection_bits + y * selection_bpr + x)) != 0x00)));
 }
-
-
-class PointContainer {
-		BPoint**	hash_table;
-		int32*		list_length_table;
-
-		int32		hash_value(int32 x, int32 y);
-const	int32		hash_table_size;
-
-public:
-					PointContainer();
-					~PointContainer();
-
-		void		InsertPoint(int32 x, int32 y);
-		bool		HasPoint(int32 x, int32 y);
-};
 
 
 // This class contains the vital data that describe selection. A selection

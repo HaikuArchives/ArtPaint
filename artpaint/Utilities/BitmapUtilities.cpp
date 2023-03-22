@@ -288,3 +288,36 @@ BitmapUtilities::CheckerBitmap(BBitmap* bitmap,
 		bits += row_size;
 	}
 }
+
+
+uint32
+BitmapUtilities::GetPixel(BBitmap* bitmap, int32 x, int32 y)
+{
+	uint32 bpr;
+	uint32 value;
+
+	if (bitmap->Bounds().Contains(BPoint(x, y)) == false)
+		return 0;
+
+	if (bitmap->ColorSpace() == B_GRAY8) {
+		bpr = bitmap->BytesPerRow();
+		uint8* bits = (uint8*)bitmap->Bits();
+
+		return (uint32)*(bits + x + y * bpr);
+
+	} else if (bitmap->ColorSpace() == B_RGBA32) {
+		bpr = bitmap->BytesPerRow() / 4;
+		uint32* bits = (uint32*)bitmap->Bits();
+
+		return (uint32)*(bits + x + y * bpr);
+	}
+
+	return 0;
+}
+
+
+uint32
+BitmapUtilities::GetPixel(BBitmap* bitmap, BPoint location)
+{
+	return GetPixel(bitmap, (int32)location.x, (int32)location.y);
+}
