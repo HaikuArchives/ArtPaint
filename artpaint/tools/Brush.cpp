@@ -375,7 +375,6 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 			color.bytes[1] = value;
 			color.bytes[2] = value;
 			color.bytes[3] = 0xFF;
-//			value = value << 24 | value << 16 | value << 8 | 0xFF;
 			*(bits + (top+y)*bpr + left+x) = color.word;
 		}
 	}
@@ -386,10 +385,10 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 	color.bytes[2] = 0xFF;
 	color.bytes[3] = 0xFF;
 	bits = (uint32*)preview_bitmap->Bits();
-	bits += bpr * (int32)(bmap_height-3)+1;
+	bits += bpr * (int32)(bmap_height - 5) + 1;
 	*(bits - bpr) = color.word;
 	*(bits + bpr) = color.word;
-	for (int32 i=0;i<bmap_width*(preview_width/width_)-1;i++)
+	for (int32 i = 0; i < bmap_width * (preview_width / width_) - 3; i++)
 		*bits++ = color.word;
 	bits--;
 	*(bits - bpr) = color.word;

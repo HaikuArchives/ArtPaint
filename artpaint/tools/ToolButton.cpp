@@ -108,7 +108,7 @@ ToolButton::Draw(BRect updateRect)
 		}
 
 		if (Value() & B_CONTROL_ON) {
-			SetHighColor(ui_color(B_KEYBOARD_NAVIGATION_COLOR));
+			SetHighColor(ui_color(B_NAVIGATION_BASE_COLOR));
 			BRect buttonFrame = Bounds();
 			StrokeRect(buttonFrame);
 			buttonFrame.InsetBy(1, 1);
