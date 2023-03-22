@@ -176,14 +176,17 @@ BrushStoreWindow::readBrushes(BFile& file)
 void
 BrushStoreWindow::AddBrush(Brush* brush)
 {
-	brush_data->AddItem(new brush_info(brush->GetInfo()));
+	bool added = false;
 
 	if (brush_window != NULL) {
 		brush_window->Lock();
 		if (((BrushStoreWindow*)brush_window)->store_view != NULL)
-			((BrushStoreWindow*)brush_window)->store_view->AddBrush(brush);
+			added = ((BrushStoreWindow*)brush_window)->store_view->AddBrush(brush);
 		brush_window->Unlock();
 	}
+
+	if (added == true)
+		brush_data->AddItem(new brush_info(brush->GetInfo()));
 }
 
 
@@ -294,7 +297,9 @@ BrushStoreView::~BrushStoreView()
 	delete brush_data;
 }
 
-void BrushStoreView::DetachedFromWindow()
+
+void
+BrushStoreView::DetachedFromWindow()
 {
 	BView *view = ScrollBar(B_VERTICAL);
 	if (view != NULL) {
@@ -304,11 +309,12 @@ void BrushStoreView::DetachedFromWindow()
 }
 
 
-void BrushStoreView::Draw(BRect area)
+void
+BrushStoreView::Draw(BRect area)
 {
 	SetHighColor(0,0,0,255);
 	SetPenSize(1.0);
-	for (int32 i=0;i<brush_images->CountItems();i++) {
+	for (int32 i = 0; i < brush_images->CountItems(); i++) {
 		if ((area & get_bitmap_frame(i)).IsValid() == TRUE) {
 			DrawBitmapAsync((BBitmap*)brush_images->ItemAt(i),get_bitmap_frame(i));
 			BRect outer_frame = get_bitmap_frame(i);
@@ -317,19 +323,17 @@ void BrushStoreView::Draw(BRect area)
 		}
 	}
 	if (IsFocus() && (brush_data->CountItems() > 0)) {
-		BRect outer_frame = get_bitmap_frame(previous_brush_index);
-		outer_frame.InsetBy(-1,-1);
-		StrokeRect(outer_frame);
-
 		SetHighColor(ui_color(B_NAVIGATION_BASE_COLOR));
-		outer_frame = get_bitmap_frame(selected_brush_index);
+		BRect outer_frame = get_bitmap_frame(selected_brush_index);
 		SetPenSize(1.5);
 		StrokeRect(outer_frame);
 	}
 	Sync();
 }
 
-void BrushStoreView::FrameResized(float width,float height)
+
+void
+BrushStoreView::FrameResized(float width, float height)
 {
 	if (((int32)width/BRUSH_VAULT_WIDTH) != in_a_row) {
 		Invalidate();
@@ -355,7 +359,9 @@ void BrushStoreView::FrameResized(float width,float height)
 //		Window()->ResizeBy(needed_width-width,0);
 }
 
-void BrushStoreView::MessageReceived(BMessage *message)
+
+void
+BrushStoreView::MessageReceived(BMessage* message)
 {
 	brush_info *info;
 	Brush *a_brush;
@@ -390,6 +396,11 @@ void BrushStoreView::MessageReceived(BMessage *message)
 				ResizeBy(-1,0);
 				ResizeBy(1,0);
 				Invalidate();
+				if (selected_brush_index >= 0)
+					ToolManager::Instance().SetCurrentBrush(
+						((brush_info*)brush_data->ItemAt(selected_brush_index)));
+
+				Draw(Bounds());
 				break;
 			}
 		default:
@@ -418,6 +429,9 @@ void BrushStoreView::KeyDown(const char *bytes,int32 numBytes)
 					ResizeBy(-1,0);
 					ResizeBy(1,0);
 					Invalidate();
+					ToolManager::Instance().SetCurrentBrush(
+						((brush_info*)brush_data->ItemAt(selected_brush_index)));
+					Draw(Bounds());
 					break;
 				}
 			case B_LEFT_ARROW:
@@ -426,11 +440,15 @@ void BrushStoreView::KeyDown(const char *bytes,int32 numBytes)
 					selected_brush_index = brush_data->CountItems() - 1;
 				else
 					selected_brush_index = (selected_brush_index - 1) % brush_data->CountItems();
+				ToolManager::Instance().SetCurrentBrush(
+					((brush_info*)brush_data->ItemAt(selected_brush_index)));
 				Draw(Bounds());
 				break;
 			case B_RIGHT_ARROW:
 				previous_brush_index = selected_brush_index;
 				selected_brush_index = (selected_brush_index + 1) % brush_data->CountItems();
+				ToolManager::Instance().SetCurrentBrush(
+					((brush_info*)brush_data->ItemAt(selected_brush_index)));
 				Draw(Bounds());
 				break;
 			case B_UP_ARROW:
@@ -498,7 +516,8 @@ void BrushStoreView::MouseDown(BPoint point)
 ////				ToolSetupWindow::updateTool(BRUSH_TOOL);
 //
 //			}
-			ToolManager::Instance().SetCurrentBrush(((brush_info*)brush_data->ItemAt(index)));
+			ToolManager::Instance().SetCurrentBrush(
+				((brush_info*)brush_data->ItemAt(index)));
 //		}
 		if (index != selected_brush_index) {
 			// If the selected brush changed, we must indicate it
@@ -511,20 +530,54 @@ void BrushStoreView::MouseDown(BPoint point)
 }
 
 
-void BrushStoreView::AddBrush(Brush *brush)
+bool
+BrushStoreView::AddBrush(Brush* brush)
 {
-	BBitmap *a_bitmap = new BBitmap(BRect(0,0,BRUSH_PREVIEW_WIDTH-1,BRUSH_PREVIEW_HEIGHT-1),B_RGB_32_BIT);
+	bool added = false;
 
-	brush->PreviewBrush(a_bitmap);
-	brush_images->AddItem(a_bitmap);
-	brush_data->AddItem(new brush_info(brush->GetInfo()));
+	BBitmap *a_bitmap = new BBitmap(BRect(0, 0, BRUSH_PREVIEW_WIDTH - 1,
+		BRUSH_PREVIEW_HEIGHT - 1), B_RGB_32_BIT);
+
+	brush_info new_brush_info = brush->GetInfo();
+
+	int32 index = -1;
+
+	for (int i = 0; i < brush_data->CountItems(); ++i) {
+		brush_info item = *(brush_info*)brush_data->ItemAt(i);
+		if (Brush::compare_brushes(item, new_brush_info) == true) {
+			index = i;
+			break;
+		}
+	}
+
+	if (index < 0) {
+		index = brush_data->CountItems();
+		previous_brush_index = selected_brush_index;
+		selected_brush_index = index;
+		brush->PreviewBrush(a_bitmap);
+		brush_images->AddItem(a_bitmap);
+		brush_data->AddItem(new brush_info(new_brush_info));
+		added = true;
+	} else {
+		delete a_bitmap;
+		previous_brush_index = selected_brush_index;
+		selected_brush_index = index;
+		Draw(Bounds());
+	}
+
+	ToolManager::Instance().SetCurrentBrush(
+		((brush_info*)brush_data->ItemAt(index)));
 
 	ResizeBy(-1,0);
 	ResizeBy(1,0);
 	Invalidate();
+
+	return added;
 }
 
-BRect BrushStoreView::get_bitmap_frame(int32 index)
+
+BRect
+BrushStoreView::get_bitmap_frame(int32 index)
 {
 	// First we get the info, how many brushes can be in a row.
 	int32 width = Bounds().IntegerWidth();

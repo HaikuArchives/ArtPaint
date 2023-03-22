@@ -27,6 +27,19 @@
 #define PI M_PI
 
 
+bool Brush::compare_brushes(brush_info one, brush_info two)
+{
+	if (one.shape == two.shape &&
+		one.width == two.width &&
+		one.height == two.height &&
+		one.angle == two.angle &&
+		one.hardness == two.hardness)
+		return true;
+
+	return false;
+}
+
+
 Brush::Brush(brush_info &info)
 {
 	// First record the data for the brush
