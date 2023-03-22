@@ -47,12 +47,13 @@ EraserTool::EraserTool()
 	: DrawingTool(B_TRANSLATE("Eraser tool"),
 		ERASER_TOOL)
 {
-	fOptions = SIZE_OPTION | MODE_OPTION | USE_BRUSH_OPTION;
-	fOptionsCount = 3;
+	fOptions = SIZE_OPTION | MODE_OPTION | USE_BRUSH_OPTION | PRESSURE_OPTION;
+	fOptionsCount = 4;
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(MODE_OPTION, HS_ERASE_TO_BACKGROUND_MODE);
 	SetOption(USE_BRUSH_OPTION, B_CONTROL_OFF);
+	SetOption(PRESSURE_OPTION, 100);
 }
 
 
@@ -124,6 +125,8 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		return NULL;
 	}
 
+	float pressure = (float)fToolSettings.pressure / 100.;
+
 	union color_conversion background;
 	background.word = 0xFFFFFFFF;
 
@@ -132,8 +135,10 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		background.bytes[0] = c.blue;
 		background.bytes[1] = c.green;
 		background.bytes[2] = c.red;
-		background.bytes[3] = c.alpha;
+		background.bytes[3] = c.alpha * pressure;
 		composite_func = src_over_fixed;
+	} else {
+		background.bytes[3] *= pressure;
 	}
 
 	BPoint prev_point;
@@ -361,8 +366,19 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
 			message);
 
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", PRESSURE_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
+
+		fPressureSlider =
+			new NumberSliderControl(B_TRANSLATE("Pressure:"),
+			"100", message, 1, 100, false);
+
+		BGridLayout* pressureLayout = LayoutSliderGrid(fPressureSlider);
+
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(sizeLayout)
+			.Add(pressureLayout)
 			.Add(fUseBrush)
 			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Replace pixels with")))
@@ -384,6 +400,8 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF) {
 			fSizeSlider->SetEnabled(FALSE);
 		}
+
+		fPressureSlider->SetValue(tool->GetCurrentValue(PRESSURE_OPTION));
 	}
 }
 
@@ -397,6 +415,7 @@ EraserToolConfigView::AttachedToWindow()
 	fBackground->SetTarget(this);
 	fTransparent->SetTarget(this);
 	fUseBrush->SetTarget(this);
+	fPressureSlider->SetTarget(this);
 }
 
 
