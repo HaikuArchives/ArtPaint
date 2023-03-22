@@ -58,10 +58,10 @@ BrushEditor::BrushEditor(Brush* brush)
 	, fBrush(brush)
 	, fBrushInfo(fBrush->GetInfo())
 {
-	float height = BRUSH_PREVIEW_HEIGHT - kExtraEdge;
-	float width = BRUSH_PREVIEW_WIDTH - kExtraEdge;
+	float height = BRUSH_PREVIEW_HEIGHT + 2;
+	float width = BRUSH_PREVIEW_WIDTH + 2;
 
-	fBrushView = new BrushView(BRect(kExtraEdge, kExtraEdge, width, height),
+	fBrushView = new BrushView(BRect(0, 0, width, height),
 		fBrush);
 
 	BMessage* message = new BMessage(kBrushShapeChanged);
@@ -149,6 +149,7 @@ BrushEditor::BrushEditor(Brush* brush)
 			.Add(fBrushView)
 			.AddStrut(5.0)
 			.AddGroup(B_VERTICAL, 5.0)
+				.AddGlue()
 				.Add(fEllipse)
 				.Add(fRectangle)
 			.End()
