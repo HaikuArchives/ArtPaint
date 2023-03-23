@@ -463,7 +463,16 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 			while (buttons) {
 				if (new_view_point != prev_view_point) {
 					window->Lock();
+					BRect clear_rect;
+					clear_rect.left = min_c(orig_view_point.x, prev_view_point.x);
+					clear_rect.top = min_c(orig_view_point.y, prev_view_point.y);
+					clear_rect.right = max_c(orig_view_point.x, prev_view_point.x);
+					clear_rect.bottom = max_c(orig_view_point.y, prev_view_point.y);
+					BPoint delta = prev_view_point - new_view_point;
+					clear_rect.InsetBy(-abs(delta.x), -abs(delta.y));
+					view->Draw(clear_rect);
 					view->StrokeEllipse(ellipse_rect);
+					view->StrokeLine(orig_view_point, new_view_point);
 					window->Unlock();
 					prev_view_point = new_view_point;
 				}
@@ -500,6 +509,7 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 					view->Sync();
 					view->SetDrawingMode(B_OP_INVERT);
 					view->StrokeEllipse(ellipse_rect);
+					view->StrokeLine(orig_view_point, new_view_point);
 					window->Unlock();
 					prev_view_point = new_view_point;
 				}
