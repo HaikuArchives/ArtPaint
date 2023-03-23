@@ -13,6 +13,7 @@
 #include "FillTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "ColorPalette.h"
 #include "ColorView.h"
 #include "Cursors.h"
@@ -32,6 +33,7 @@
 #include <File.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
+#include <RadioButton.h>
 #include <SeparatorView.h>
 
 
@@ -52,16 +54,17 @@ FillTool::FillTool()
 	// Set options here. The MODE_OPTION is used for determining if we do flood
 	// fill or some other type of fill.
 	fOptions = GRADIENT_ENABLED_OPTION | PREVIEW_ENABLED_OPTION
-		| TOLERANCE_OPTION | MODE_OPTION;
-	fOptionsCount = 4;
+		| TOLERANCE_OPTION | MODE_OPTION | SHAPE_OPTION;
+	fOptionsCount = 5;
 	binary_fill_map = NULL;
 
 	// Initially disable the gradient.
 	SetOption(GRADIENT_ENABLED_OPTION, B_CONTROL_OFF);
 	// Initially enable the preview.
-	SetOption(PREVIEW_ENABLED_OPTION,B_CONTROL_ON);
-	SetOption(TOLERANCE_OPTION,0);
-	SetOption(MODE_OPTION,B_CONTROL_ON);
+	SetOption(PREVIEW_ENABLED_OPTION, B_CONTROL_ON);
+	SetOption(TOLERANCE_OPTION, 0);
+	SetOption(MODE_OPTION, B_CONTROL_ON);
+	SetOption(SHAPE_OPTION, GRADIENT_LINEAR);
 
 	gradient_color1 = 0x00000000;
 	gradient_color2 = 0xFFFFFFFF;
@@ -403,9 +406,16 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 		return BPoint(-1,-1);
 
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
-	BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 	BRect bitmap_bounds = bitmap->Bounds();
 	bitmap_bounds.OffsetTo(BPoint(0,0));
+
+	BBitmap* srcBuffer = new BBitmap(bitmap);
+
+	BBitmap* tmpBuffer = new BBitmap(bitmap);
+	BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
+	union color_conversion clear_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x00;
 
 	window->Lock();
 	drawing_mode old_mode = view->DrawingMode();
@@ -425,12 +435,6 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 
 		// At this point we should take some action if min_x == max_x or min_y == max_y
 
-		// Get the color for the fill.
-//		rgb_color c = ((PaintApplication*)be_app)->Color(buttons);
-//		uint32 color = RGBColorToBGRA(c);
-
-//		// Get the gradient color.
-//		uint32 gradient_color = settings.gradient_color;
 		// Get the old color.
 		uint32 old_color = drawer->GetPixel(start);
 
@@ -444,14 +448,9 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 		else	// Flood-mode
 			binary_map = MakeFloodBinaryMap(drawer,min_x,max_x,min_y,max_y,old_color,start,sel);
 
-
 		// Here calculate the bounding rectangle of the filled area and
 		// change the min and max coordinates to those edges of the rect.
 		BRect filled_area_bounds = calcBinaryMapBounds(binary_map);
-//		min_x = filled_area_bounds.left;
-//		max_x = filled_area_bounds.right;
-//		min_y = filled_area_bounds.top;
-//		max_y = filled_area_bounds.bottom;
 
 		BRect ellipse_rect = BRect(orig_view_point-BPoint(3,3),orig_view_point+BPoint(3,3));
 		BPoint new_view_point = orig_view_point;
@@ -477,15 +476,29 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 			// Display also preview of the gradient
 			while (buttons) {
 				if (new_view_point != prev_view_point) {
-					int32 dx = (int32)(start.x - new_point.x);
-					int32 dy = (int32)(start.y - new_point.y);
 					// There should actually be a separate function (and maybe even a thread) that calculates
 					// the preview in real time for some bitmap that is quite small (about 200x200 pixels maximum).
 					// Then the gradient would be copied to bitmap using some specialized function.
-					FillGradientPreview(drawer,binary_map,dx,dy,min_x,max_x,min_y,max_y,color,gradient_color);
-					view->ReturnImage()->RenderPreview(bitmap->Bounds(),2);
+					BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
+					if (fToolSettings.shape == GRADIENT_RADIAL)
+						FillGradientRadial(drawer, binary_map, start, new_point,
+							min_x, max_x, min_y, max_y, color, gradient_color, 2);
+					else
+						FillGradientLinear(drawer, binary_map, start, new_point,
+							min_x, max_x, min_y, max_y, color, gradient_color, 2);
+
+					bitmap->Lock();
+					BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer, tmpBuffer,
+						bitmap_bounds, src_over_fixed);
+					bitmap->Unlock();
+
+
 					window->Lock();
-					view->Draw(view->convertBitmapRectToView(filled_area_bounds));
+					view->SetDrawingMode(old_mode);
+					view->UpdateImage(bitmap_bounds);
+					view->Sync();
+					view->SetDrawingMode(B_OP_INVERT);
 					view->StrokeEllipse(ellipse_rect);
 					window->Unlock();
 					prev_view_point = new_view_point;
@@ -496,20 +509,30 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 				snooze(20 * 1000);
 			}
 		}
-		// Here calculate the final gradient.
-		int32 dx = (int32)(start.x - new_point.x);
-		int32 dy = (int32)(start.y - new_point.y);
 
-		FillGradient(drawer,binary_map,dx,dy,min_x,max_x,min_y,max_y,color,gradient_color);
+		BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
+		// Here calculate the final gradient.
+		if (fToolSettings.shape == GRADIENT_RADIAL)
+			FillGradientRadial(drawer, binary_map, start, new_point,
+				min_x, max_x, min_y, max_y, color, gradient_color);
+		else
+			FillGradientLinear(drawer, binary_map, start, new_point,
+				min_x, max_x, min_y, max_y, color, gradient_color);
 
 		// Update the image-view.
-		view->ReturnImage()->Render();
-		window->Lock();
-		view->SetDrawingMode(old_mode);
-		view->Draw(view->convertBitmapRectToView(filled_area_bounds) | ellipse_rect);
-		window->Unlock();
+		bitmap->Lock();
+		BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer, tmpBuffer,
+			bitmap_bounds, src_over_fixed);
+		bitmap->Unlock();
+
 		delete binary_map;
 		SetLastUpdatedRect(filled_area_bounds);
+		window->Lock();
+		view->SetDrawingMode(old_mode);
+		view->UpdateImage(LastUpdatedRect());
+		view->Sync();
+		window->Unlock();
 	}
 	delete drawer;
 	return new_point;
@@ -645,8 +668,12 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x,
 	// The SetPixel and GetPixel functions are versions that
 	// do not check bounds so we have to be careful not to exceed
 	// bitmap's bounds.
-	uint32 color = 0xFFFFFFFF;	// This is the temporary color that will be used
-								// to fill the bitmap.
+	union color_conversion bg;
+	bg.word = 0xFFFFFFFF;
+	bg.bytes[3] = 0;
+
+	uint32 color = bg.word;	// This is the temporary color that will be used
+							// to fill the bitmap.
 	uint32 tolerance = (uint32)((float)fToolSettings.tolerance / 100.0 * 255);
 
 	PointStack stack;
@@ -679,280 +706,137 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x,
 
 
 void
-FillTool::FillGradient(BitmapDrawer *drawer, BBitmap *binary_map, int32 dx,
-	int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
-	uint32 new_color, uint32 gradient_color)
+FillTool::FillGradientLinear(BitmapDrawer *drawer, BBitmap *binary_map,
+	BPoint start, BPoint end, int32 min_x, int32 max_x,
+	int32 min_y, int32 max_y, uint32 new_color, uint32 gradient_color,
+	uint8 skip)
 {
 	uchar *binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
 
-	uint32 x_source,x_target;
-	uint32 y_source,y_target;
+	float dx = (end.x - start.x);
+	float dy = (end.y - start.y);
 
-	if (dy<0) {
-		y_target = gradient_color;
-		y_source = new_color;
-	} else {
-		y_target = new_color;
-		y_source = gradient_color;
-	}
-	uint32 y_gradient;
-	uint32 x_gradient;
+	float total_dist = sqrt(pow(dx, 2) + pow(dy, 2));
+	float perp_angle = M_PI / 2; //0;
+	if (dy != 0)
+		perp_angle = atan(-dx / dy);
+	float cos_angle = cos(perp_angle);
+	float sin_angle = sin(perp_angle);
 
-	// These might also be negative
-	int16 x_red_diff,x_green_diff,x_blue_diff,x_alpha_diff;
-	int16 y_red_diff,y_green_diff,y_blue_diff,y_alpha_diff;
+	union color_conversion source, dest, begin, temp;
 
-	float x_accumulation;
-	float y_accumulation = 0;
+	source.word = new_color;
+	dest.word = gradient_color;
 
-	y_gradient = y_source;
-	uchar next_value = 0;
+	int16 red_diff = (dest.bytes[2] - source.bytes[2]);
+	int16 green_diff = (dest.bytes[1] - source.bytes[1]);
+	int16 blue_diff = (dest.bytes[0] - source.bytes[0]);
+	int16 alpha_diff = (dest.bytes[3] - source.bytes[3]);
 
-	y_red_diff = (int16)((y_target>>8) & 0xFF) - (int16)((y_source>>8) & 0xFF);
-	y_green_diff = (int16)((y_target>>16) & 0xFF) - (int16)((y_source>>16) & 0xFF);
-	y_blue_diff = (int16)((y_target>>24) & 0xFF) - (int16)((y_source>>24) & 0xFF);
-	y_alpha_diff = (int16)((y_target) & 0xFF) - (int16)((y_source) & 0xFF);
+	for (int32 y = min_y; y < max_y; y += skip) {
+		for (int32 x = min_x; x < max_x; x += skip) {
+			uint8 bits = *(binary_bits + (x / 8) + y * binary_bpr);
+			if (bits & (0x01 << (7 - ( x % 8)))) {
+				float dist = (cos_angle * (start.y - y) - sin_angle * (start.x - x));
 
-	for (int32 y = min_y; y <=max_y; ++y) {
-		int32 bytes_advanced = 0;
-		// Here we should move y-gradient 1 step closer to y-target
-		// and put x-source to y-gradient. We should also recalculate
-		// the x-gradient step.
-		if (dy<0) {
-			y_accumulation = (float)(abs(dy))/50.0*(float)(max_y-y)/(float)(max_y - min_y);
-			if (y_accumulation < 1.0) {
-				y_gradient = y_source
-					+ (((int32)(y_blue_diff * (1.0-y_accumulation))) << 24)
-					+ (((int32)(y_green_diff * (1.0-y_accumulation))) << 16)
-					+ (((int32)(y_red_diff * (1.0-y_accumulation))) << 8)
-					+ (((int32)(y_alpha_diff * (1.0-y_accumulation))));
-			} else {
-				y_gradient = y_source;
-			}
-		} else {
-			y_accumulation = (float)dy/50.0*(float)y/(float)(max_y - min_y);
-			if (y_accumulation < 1.0) {
-				y_gradient = y_source
-					+ (((int32)(y_blue_diff * y_accumulation)) << 24)
-					+ (((int32)(y_green_diff * y_accumulation)) << 16)
-					+ (((int32)(y_red_diff * y_accumulation)) << 8)
-					+ (((int32)(y_alpha_diff * y_accumulation)));
-			} else {
-				y_gradient = y_target;
-			}
-		}
+				union color_conversion out_color;
 
-		if (dx < 0) {
-			x_source = new_color;
-			x_target = y_gradient;
-		} else {
-			x_source = y_gradient;
-			x_target = new_color;
-		}
+				if (dy > 0)
+					dist = -dist;
 
-		x_red_diff = (int16)((x_target>>8) & 0xFF) - (int16)((x_source>>8) & 0xFF);
-		x_green_diff = (int16)((x_target>>16) & 0xFF) - (int16)((x_source>>16) & 0xFF);
-		x_blue_diff = (int16)((x_target>>24) & 0xFF) - (int16)((x_source>>24) & 0xFF);
-		x_alpha_diff = (int16)((x_target) & 0xFF) - (int16)((x_source) & 0xFF);
-
-		x_accumulation = 0;
-		for (int32 x=min_x;x<=max_x;x++) {
-			// This might crash if max_x == min_x
-			if (dx < 0)
-				x_accumulation = (float)abs(dx)/50.0*(float)(max_x-x)/(float)(max_x - min_x);
-			else
-				x_accumulation = (float)dx/50.0*(float)x/(float)(max_x - min_x);
-
-			if ( (x % 8) == 0 ) {
-				next_value = *binary_bits++;
-				bytes_advanced++;
-			}
-			if ( next_value & (0x01 << (7-(x%8))) ) {
-				// Here we should put a new value into position x,y
-				if (dx<0) {
-					if (x_accumulation < 1.0) {
-						x_gradient = x_source
-							+ (((int32)(x_blue_diff * (1.0-x_accumulation))) << 24)
-							+ (((int32)(x_green_diff * (1.0-x_accumulation))) << 16)
-							+ (((int32)(x_red_diff * (1.0-x_accumulation))) << 8)
-							+ (((int32)(x_alpha_diff * (1.0-x_accumulation))));
-						drawer->SetPixel(x,y,x_gradient);
-					} else {
-						drawer->SetPixel(x, y, x_source);
-					}
+				if (dist >= total_dist) {
+					out_color.word = source.word;
+				} else if (dist <= 0) {
+					out_color.word = dest.word;
 				} else {
-					if (x_accumulation < 1.0) {
-						x_gradient = x_source
-							+ (((int32)(x_blue_diff * x_accumulation)) << 24)
-							+ (((int32)(x_green_diff * x_accumulation)) << 16)
-							+ (((int32)(x_red_diff * x_accumulation)) << 8)
-							+ (((int32)(x_alpha_diff * x_accumulation)));
-						drawer->SetPixel(x,y,x_gradient);
-					} else {
-						drawer->SetPixel(x,y,x_target);
-					}
+					float ratio = 1. - abs(dist / total_dist);
+
+					out_color.word = source.word;
+					float r = out_color.bytes[2];
+					float g = out_color.bytes[1];
+					float b = out_color.bytes[0];
+					float a = out_color.bytes[3];
+
+					r += (float)red_diff * ratio;
+					g += (float)green_diff * ratio;
+					b += (float)blue_diff * ratio;
+					a += (float)alpha_diff * ratio;
+
+					out_color.bytes[0] = (uint8)b;
+					out_color.bytes[1] = (uint8)g;
+					out_color.bytes[2] = (uint8)r;
+					out_color.bytes[3] = (uint8)a;
 				}
+
+				for (int dy = 0; dy < skip; ++dy)
+					for (int dx = 0; dx < skip; ++dx)
+						drawer->SetPixel(x + dx, y + dy, out_color.word);
 			}
 		}
-		binary_bits += binary_bpr - bytes_advanced;
 	}
 }
 
 
 void
-FillTool::FillGradientPreview(BitmapDrawer* drawer, BBitmap* binary_map,
-	int32 dx, int32 dy, int32 min_x, int32 max_x, int32 min_y, int32 max_y,
-	uint32 new_color, uint32 gradient_color)
+FillTool::FillGradientRadial(BitmapDrawer *drawer, BBitmap *binary_map,
+	BPoint start, BPoint end, int32 min_x, int32 max_x,
+	int32 min_y, int32 max_y, uint32 new_color, uint32 gradient_color,
+	uint8 skip)
 {
-	// This preview fill calculates only every other pixel.
 	uchar *binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
 
-	uint32 x_source,x_target;
-	uint32 y_source,y_target;
+	float dx = (end.x - start.x);
+	float dy = (end.y - start.y);
 
-	if (dy<0) {
-		y_target = gradient_color;
-		y_source = new_color;
-	} else {
-		y_target = new_color;
-		y_source = gradient_color;
-	}
-	uint32 y_gradient;
-	uint32 x_gradient;
+	float total_dist = sqrt(pow(dx, 2) + pow(dy, 2));
 
-	// These might also be negative
-	int16 x_red_diff,x_green_diff,x_blue_diff,x_alpha_diff;
-	int16 y_red_diff,y_green_diff,y_blue_diff,y_alpha_diff;
+	union color_conversion source, dest, begin, temp;
 
-	float x_accumulation;
-	float y_accumulation = 0;
+	source.word = new_color;
+	dest.word = gradient_color;
 
-	uchar next_value = 0;
-	uchar next_rows_value = 0;
+	int16 red_diff = (dest.bytes[2] - source.bytes[2]);
+	int16 green_diff = (dest.bytes[1] - source.bytes[1]);
+	int16 blue_diff = (dest.bytes[0] - source.bytes[0]);
+	int16 alpha_diff = (dest.bytes[3] - source.bytes[3]);
 
-	y_red_diff = (int16)((y_target>>8) & 0xFF) - (int16)((y_source>>8) & 0xFF);
-	y_green_diff = (int16)((y_target>>16) & 0xFF) - (int16)((y_source>>16) & 0xFF);
-	y_blue_diff = (int16)((y_target>>24) & 0xFF) - (int16)((y_source>>24) & 0xFF);
-	y_alpha_diff = (int16)((y_target) & 0xFF) - (int16)((y_source) & 0xFF);
+	for (int32 y = min_y; y < max_y; y += skip) {
+		for (int32 x = min_x; x < max_x; x += skip) {
+			uint8 bits = *(binary_bits + (x / 8) + y * binary_bpr);
+			if (bits & (0x01 << (7 - ( x % 8)))) {
+				float dist = sqrt(pow(start.y - y, 2) + pow(start.x - x, 2));
 
-	for (int32 y = min_y; y <= max_y - 1; y+=2) {
-		int32 bytes_advanced = 0;
-		// Here we should move y-gradient 1 step closer to y-target
-		// and put x-source to y-gradient. We should also recalculate
-		// the x-gradient step.
-		if (dy<0) {
-			y_accumulation = (float)(abs(dy))/50.0*(float)(max_y-y)/(float)(max_y - min_y);
-			if (y_accumulation < 1.0) {
-				y_gradient = y_source
-					+ (((int32)(y_blue_diff * (1.0-y_accumulation))) << 24)
-					+ (((int32)(y_green_diff * (1.0-y_accumulation))) << 16)
-					+ (((int32)(y_red_diff * (1.0-y_accumulation))) << 8)
-					+ (((int32)(y_alpha_diff * (1.0-y_accumulation))));
-			} else {
-				y_gradient = y_source;
-			}
-		} else {
-			y_accumulation = (float)dy/50.0*(float)y/(float)(max_y - min_y);
-			if (y_accumulation < 1.0) {
-				y_gradient = y_source
-					+ (((int32)(y_blue_diff * y_accumulation)) << 24)
-					+ (((int32)(y_green_diff * y_accumulation)) << 16)
-					+ (((int32)(y_red_diff * y_accumulation)) << 8)
-					+ (((int32)(y_alpha_diff * y_accumulation)));
-			} else {
-				y_gradient = y_target;
-			}
-		}
+				union color_conversion out_color;
 
-		if (dx<0) {
-			x_source = new_color;
-			x_target = y_gradient;
-		} else {
-			x_source = y_gradient;
-			x_target = new_color;
-		}
-
-		x_red_diff = (int16)((x_target>>8) & 0xFF) - (int16)((x_source>>8) & 0xFF);
-		x_green_diff = (int16)((x_target>>16) & 0xFF) - (int16)((x_source>>16) & 0xFF);
-		x_blue_diff = (int16)((x_target>>24) & 0xFF) - (int16)((x_source>>24) & 0xFF);
-		x_alpha_diff = (int16)((x_target) & 0xFF) - (int16)((x_source) & 0xFF);
-
-		for (int32 x=min_x;x<=max_x-1;x+=2) {
-			// This might crash if max_x == min_x
-			if (dx < 0)
-				x_accumulation = (float)abs(dx)/50.0*(float)(max_x-x)/(float)(max_x - min_x);
-			else
-				x_accumulation = (float)dx/50.0*(float)x/(float)(max_x - min_x);
-
-			if ( (x % 8) == 0 ) {
-				next_rows_value = *(binary_bits+binary_bpr);
-				next_value = *binary_bits++;
-				bytes_advanced++;
-			}
-			if ( next_value & (0x01 << (7-(x%8))) ) {
-				// Here we should put a new value into position x,y
-				if (dx < 0) {
-					if (x_accumulation < 1.0) {
-						x_gradient = x_source
-							+ (((int32)(x_blue_diff * (1.0-x_accumulation))) << 24)
-							+ (((int32)(x_green_diff * (1.0-x_accumulation))) << 16)
-							+ (((int32)(x_red_diff * (1.0-x_accumulation))) << 8)
-							+ (((int32)(x_alpha_diff * (1.0-x_accumulation))));
-						drawer->SetPixel(x,y,x_gradient);
-
-						if (next_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y,x_gradient);
-
-						if (next_rows_value & (0x01 << (7-(x%8))))
-							drawer->SetPixel(x,y+1,x_gradient);
-
-						if (next_rows_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y+1,x_gradient);
-					} else {
-						drawer->SetPixel(x,y,x_source);
-						if (next_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y,x_source);
-
-						if (next_rows_value & (0x01 << (7-(x%8))))
-							drawer->SetPixel(x,y+1,x_source);
-
-						if (next_rows_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y+1,x_source);
-					}
+				if (dist >= total_dist) {
+					out_color.word = source.word;
 				} else {
-					if (x_accumulation < 1.0) {
-						x_gradient = x_source
-							+ (((int32)(x_blue_diff * x_accumulation)) << 24)
-							+ (((int32)(x_green_diff * x_accumulation)) << 16)
-							+ (((int32)(x_red_diff * x_accumulation)) << 8)
-							+ (((int32)(x_alpha_diff * x_accumulation)));
-						drawer->SetPixel(x,y,x_gradient);
+					float ratio = 1. - abs(dist / total_dist);
 
-						if (next_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y,x_gradient);
+					out_color.word = source.word;
+					float r = out_color.bytes[2];
+					float g = out_color.bytes[1];
+					float b = out_color.bytes[0];
+					float a = out_color.bytes[3];
 
-						if (next_rows_value & (0x01 << (7-(x%8))))
-							drawer->SetPixel(x,y+1,x_gradient);
+					r += (float)red_diff * ratio;
+					g += (float)green_diff * ratio;
+					b += (float)blue_diff * ratio;
+					a += (float)alpha_diff * ratio;
 
-						if (next_rows_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y+1,x_gradient);
-					} else {
-						drawer->SetPixel(x,y,x_target);
-						if (next_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y,x_target);
-
-						if (next_rows_value & (0x01 << (7-(x%8))))
-							drawer->SetPixel(x,y+1,x_target);
-
-						if (next_rows_value & (0x01 << (7-((x+1)%8))))
-							drawer->SetPixel(x+1,y+1,x_target);
-					}
+					out_color.bytes[0] = (uint8)b;
+					out_color.bytes[1] = (uint8)g;
+					out_color.bytes[2] = (uint8)r;
+					out_color.bytes[3] = (uint8)a;
 				}
+
+				for (int dy = 0; dy < skip; ++dy)
+					for (int dx = 0; dx < skip; ++dx)
+						drawer->SetPixel(x + dx, y + dy, out_color.word);
 			}
 		}
-		binary_bits += binary_bpr - bytes_advanced+binary_bpr;
 	}
 }
 
@@ -1255,6 +1139,20 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 				message);
 
 		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", GRADIENT_LINEAR);
+
+		fLinearGradient = new BRadioButton(B_TRANSLATE("Linear"),
+			message);
+
+		message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", SHAPE_OPTION);
+		message->AddInt32("value", GRADIENT_RADIAL);
+
+		fRadialGradient = new BRadioButton(B_TRANSLATE("Radial"),
+			message);
+
+		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", PREVIEW_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
 		fPreview = new BCheckBox(B_TRANSLATE("Enable preview"),
@@ -1284,6 +1182,11 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fGradient)
+				.AddGroup(B_VERTICAL, kWidgetSpacing)
+					.Add(fLinearGradient)
+					.Add(fRadialGradient)
+					.SetInsets(kWidgetInset * 2, 0.0, 0.0, 0.0)
+				.End()
 				.Add(fPreview)
 				.Add(fGradientView)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
@@ -1298,6 +1201,11 @@ FillToolConfigView::FillToolConfigView(DrawingTool* tool,uint32 c1, uint32 c2)
 
 		if (tool->GetCurrentValue(PREVIEW_ENABLED_OPTION) != B_CONTROL_OFF)
 			fPreview->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(SHAPE_OPTION) == GRADIENT_RADIAL)
+			fRadialGradient->SetValue(B_CONTROL_ON);
+		else
+			fLinearGradient->SetValue(B_CONTROL_ON);
 	}
 }
 
@@ -1312,6 +1220,8 @@ FillToolConfigView::AttachedToWindow()
 	fPreview->SetTarget(this);
 	fGradientView->SetTarget(this);
 	fTolerance->SetTarget(this);
+	fLinearGradient->SetTarget(this);
+	fRadialGradient->SetTarget(this);
 }
 
 
