@@ -16,6 +16,7 @@
 
 class BCheckBox;
 class BitmapDrawer;
+class BRadioButton;
 class BSeparatorView;
 class ImageView;
 class PointStack;
@@ -29,6 +30,10 @@ namespace ArtPaint {
 	}
 }
 using ArtPaint::Interface::NumberSliderControl;
+
+
+#define GRADIENT_LINEAR		1
+#define GRADIENT_RADIAL		2
 
 
 class FillTool : public DrawingTool {
@@ -76,12 +81,13 @@ private:
 			BBitmap*			MakeFloodBinaryMap(BitmapDrawer*, int32, int32,
 									int32, int32, uint32, BPoint,
 									Selection* = NULL);
-			void				FillGradient(BitmapDrawer*, BBitmap*, int32,
-									int32, int32, int32, int32, int32, uint32,
-									uint32);
-			void				FillGradientPreview(BitmapDrawer*, BBitmap*,
-									int32, int32, int32, int32, int32, int32,
-									uint32, uint32);
+			void				FillGradientLinear(BitmapDrawer*, BBitmap*, BPoint,
+									BPoint, int32, int32, int32, int32, uint32,
+									uint32, uint8 skip = 1);
+			void				FillGradientRadial(BitmapDrawer*, BBitmap*, BPoint,
+									BPoint, int32, int32, int32, int32, uint32,
+									uint32, uint8 skip = 1);
+
 			BRect				calcBinaryMapBounds(BBitmap *boolean_map);
 };
 
@@ -103,6 +109,9 @@ private:
 	class	GradientView;
 			GradientView*			fGradientView;
 			NumberSliderControl*	fTolerance;
+
+			BRadioButton*			fLinearGradient;
+			BRadioButton*			fRadialGradient;
 };
 
 #endif	// FILL_TOOL_H
