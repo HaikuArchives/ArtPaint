@@ -141,7 +141,8 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 						brush_val = (float)brush_data[y][x] / 32768.;
 
 					if ((fToolSettings.use_current_brush == true && brush_val > 0.0) ||
-						(sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
+						(fToolSettings.use_current_brush == false &&
+						sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
 						color.word = *(bits_origin + real_y * bpr + real_x);
 						if (selection == NULL ||
 							selection->IsEmpty() == true ||
