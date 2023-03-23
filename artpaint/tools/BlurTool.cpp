@@ -90,8 +90,8 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	float width = fToolSettings.size;
 	float height = fToolSettings.size;
-	float half_width = width / 2;
-	float half_height = height / 2;
+	float half_width = (int32)width / 2;
+	float half_height = (int32)height / 2;
 	int32 previous_width = fToolSettings.size;
 	int32 previous_height = fToolSettings.size;
 
@@ -138,8 +138,8 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				delete blurred;
 				width = fToolSettings.size;
 				height = fToolSettings.size;
-				half_width = width / 2;
-				half_height = height / 2;
+				half_width = (int32)width / 2;
+				half_height = (int32)height / 2;
 				if (fToolSettings.use_current_brush == true) {
 					brush = ToolManager::Instance().GetCurrentBrush();
 					brush_data = brush->GetData(&spans);
@@ -179,7 +179,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				y_sqr = (int32)(point.y - rc.top - y);
 				y_sqr *= y_sqr;
 				for (int32 x = 0; x < rc_width + 1; x++) {
-					x_dist = (int32)(point.x - rc.left - x);
+		 			x_dist = (int32)(point.x - rc.left - x);
 					float brush_val = 1.0;
 					if (fToolSettings.use_current_brush == true)
 						brush_val = (float)brush_data[y][x] / 32768.;
