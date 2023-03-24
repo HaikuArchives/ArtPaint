@@ -15,6 +15,7 @@
 
 
 class BRadioButton;
+class CoordinateQueue;
 class ImageView;
 
 
@@ -40,6 +41,13 @@ public:
 			const char*			HelpString(bool isInUse) const;
 
 private:
+			int32				read_coordinates();
+	static	int32				CoordinateReader(void*);
+
+			bool				reading_coordinates;
+
+			ImageView*			image_view;
+			CoordinateQueue*	coordinate_queue;
 			int32*				sqrt_table;
 };
 

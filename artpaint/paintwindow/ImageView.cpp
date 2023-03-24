@@ -1143,6 +1143,26 @@ ImageView::MouseDown(BPoint view_point)
 
 
 void
+ImageView::MouseUp(BPoint where)
+{
+	if (fManipulator == NULL) {
+		where.x = floor(where.x / getMagScale());
+		where.y = floor(where.y / getMagScale());
+
+		int32 mode = B_CONTROL_ON;
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+			settings.FindInt32(skDrawBrushSizeMode, &mode);
+		}
+
+		if (mode == B_CONTROL_ON)
+			DrawBrush(where);
+	}
+}
+
+
+void
 ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage* message)
 {
 	// here we will display the coordinates
@@ -1249,10 +1269,10 @@ ImageView::DrawBrush(BPoint where)
 		float half_height = height / 2;
 
 		BRect clear_rect;
-		clear_rect.left = min_c(previous_point.x, where.x) - width;
-		clear_rect.top = min_c(previous_point.y, where.y) - height;
-		clear_rect.right = max_c(previous_point.x, where.x) + width;
-		clear_rect.bottom = max_c(previous_point.y, where.y) + height;
+		clear_rect.left = min_c(previous_point.x, where.x) - width - 5;
+		clear_rect.top = min_c(previous_point.y, where.y) - height - 5;
+		clear_rect.right = max_c(previous_point.x, where.x) + width + 5;
+		clear_rect.bottom = max_c(previous_point.y, where.y) + height + 5;
 
 		clear_rect = convertBitmapRectToView(clear_rect);
 
@@ -2767,73 +2787,89 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 							case 'b':
 								ToolManager::Instance().ChangeTool(BRUSH_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'a':
 								ToolManager::Instance().ChangeTool(AIR_BRUSH_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'e':
 								ToolManager::Instance().ChangeTool(ERASER_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'f':
 								ToolManager::Instance().ChangeTool(FREE_LINE_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 's':
 								ToolManager::Instance().ChangeTool(SELECTOR_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'r':
 								ToolManager::Instance().ChangeTool(RECTANGLE_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'l':
 								ToolManager::Instance().ChangeTool(STRAIGHT_LINE_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'h':
 								ToolManager::Instance().ChangeTool(HAIRY_BRUSH_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'u':
 								ToolManager::Instance().ChangeTool(BLUR_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'i':
 								ToolManager::Instance().ChangeTool(FILL_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 't':
 								ToolManager::Instance().ChangeTool(TEXT_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'n':
 								ToolManager::Instance().ChangeTool(TRANSPARENCY_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'c':
 								ToolManager::Instance().ChangeTool(COLOR_SELECTOR_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 
 							case 'p':
 								ToolManager::Instance().ChangeTool(ELLIPSE_TOOL);
 								view->SetCursor();
+								view->Invalidate();
 								break;
 						}
+
+						view->Flush();
 					}
 				} else {
 					if (message->FindString("bytes", &bytes) == B_OK) {
