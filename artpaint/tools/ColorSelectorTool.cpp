@@ -391,7 +391,6 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 					cs_window->ChangeValue(color);
 					old_color = color;
 					rgb_color c = BGRAColorToRGB(color);
-					ColorPaletteWindow::ChangePaletteColor(c);
 				}
 				if (cs_window->Frame().Contains(view->ConvertToScreen(view_point))) {
 					cs_window->Move(view->ConvertToScreen(view_point));
@@ -418,6 +417,7 @@ ColorSelectorTool::UseTool(ImageView *view, uint32 buttons, BPoint point,
 		}
 		rgb_color new_color = BGRAColorToRGB(color);
 		((PaintApplication*)be_app)->SetColor(new_color, select_foreground);
+		ColorPaletteWindow::ChangePaletteColor(new_color);
 
 		// Inform all the selected color views about change in colors.
 		SelectedColorsView::SendMessageToAll(HS_COLOR_CHANGED);
