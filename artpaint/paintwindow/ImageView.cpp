@@ -783,6 +783,14 @@ ImageView::MessageReceived(BMessage* message)
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
 					}
 				}
+
+				BMenuItem* showBorders =
+					Window()->KeyMenuBar()->FindItem(HS_HIDE_SELECTION_BORDERS);
+
+				show_selection = TRUE;
+				selection->StartDrawing(this, magnify_scale);
+				showBorders->SetMarked(FALSE);
+
 				Invalidate();
 			}
 		} break;
