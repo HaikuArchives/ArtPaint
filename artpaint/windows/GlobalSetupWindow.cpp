@@ -700,9 +700,11 @@ public:
 private:
 		int32			fCursorMode;
 		int32			fShutdownMode;
+		int32			fDrawBrushSizeMode;
 
 		BRadioButton*	fToolCursor;
 		BRadioButton*	fCrossHairCursor;
+		BCheckBox*		fDrawBrushSize;
 };
 
 
@@ -717,6 +719,8 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 	BStringView* labelApp = new BStringView("labelApp", B_TRANSLATE("Application"));
 	labelApp->SetFont(be_bold_font);
 
+	fDrawBrushSize = new BCheckBox(B_TRANSLATE("Show brush size"));
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(labelCursor)
 		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
@@ -726,6 +730,7 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 			.Add(fCrossHairCursor =
 				new BRadioButton(B_TRANSLATE("Cross-hair cursor"),
 				new BMessage(kCrossHairCursorMode)))
+			.Add(fDrawBrushSize)
 			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
 		.End()
 		.AddGlue()
@@ -738,10 +743,14 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
 		settings.FindInt32(skCursorMode, &fCursorMode);
+		settings.FindInt32(skDrawBrushSizeMode, &fDrawBrushSizeMode);
 	}
 
 	if (fCursorMode == CROSS_HAIR_CURSOR_MODE)
 		fCrossHairCursor->SetValue(B_CONTROL_ON);
+
+	if (fDrawBrushSizeMode == B_CONTROL_ON)
+		fDrawBrushSize->SetValue(B_CONTROL_ON);
 }
 
 
@@ -753,6 +762,7 @@ GlobalSetupWindow::MiscControlView::AttachedToWindow()
 
 	fToolCursor->SetTarget(this);
 	fCrossHairCursor->SetTarget(this);
+	fDrawBrushSize->SetTarget(this);
 }
 
 
@@ -778,10 +788,14 @@ GlobalSetupWindow::MiscControlView::MessageReceived(BMessage* message)
 void
 GlobalSetupWindow::MiscControlView::ApplyChanges()
 {
+	fDrawBrushSizeMode = fDrawBrushSize->Value();
+
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		server->SetValue(SettingsServer::Application, skQuitConfirmMode,
 			fShutdownMode);
 		server->SetValue(SettingsServer::Application, skCursorMode, fCursorMode);
+		server->SetValue(SettingsServer::Application, skDrawBrushSizeMode,
+			fDrawBrushSizeMode);
 	}
 }
 

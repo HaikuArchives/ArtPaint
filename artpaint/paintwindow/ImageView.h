@@ -150,6 +150,8 @@ friend	filter_result	KeyFilterFunction(BMessage*,
 
 		bool		space_down;
 
+		BPoint		previous_point;
+
 		// this function rounds a point to nearest grid-unit
 		BPoint		roundToGrid(BPoint point);
 
@@ -187,6 +189,8 @@ static	int32		enter_thread(void*);
 		void		SetReferencePoint(BPoint, bool);
 
 		bool		show_selection;
+
+		void		DrawBrush(BPoint where);
 public:
 					ImageView(BRect frame, float width, float height);
 					~ImageView();

@@ -450,6 +450,7 @@ SettingsServer::_GetDefaultAppSettings(BMessage* message)
 {
 	message->AddInt32(skTool, FREE_LINE_TOOL);
 	message->AddInt32(skCursorMode, TOOL_CURSOR_MODE);
+	message->AddInt32(skDrawBrushSizeMode, B_CONTROL_ON);
 	message->AddInt32(skSettingsWindowTab, 0);
 	message->AddInt32(skQuitConfirmMode, B_CONTROL_ON);
 	message->AddInt32(skUndoQueueDepth, 20);

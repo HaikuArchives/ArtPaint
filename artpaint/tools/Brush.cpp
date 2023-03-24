@@ -14,6 +14,8 @@
 #include <Point.h>
 
 
+#include "BitmapUtilities.h"
+#include "HSPolygon.h"
 #include "MessageConstants.h"
 #include "PixelOperations.h"
 #include "StatusView.h"
@@ -67,6 +69,22 @@ Brush::Brush(brush_info &info)
 	}
 
 	brush_span = make_span_list(brush);
+
+	BBitmap* brush_bmap = new BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
+	BrushToBitmap(brush_bmap);
+
+	BList polygons;
+	BitmapUtilities::RasterToPolygonsMoore(brush_bmap, brush_bmap->Bounds(), &polygons);
+
+	num_shapes = polygons.CountItems();
+	shapes = new HSPolygon*[num_shapes];
+
+	for (uint32 i = 0; i < polygons.CountItems(); ++i) {
+		HSPolygon* new_polygon = (HSPolygon*)polygons.ItemAt(i);
+		shapes[i] = new_polygon;
+	}
+
+	delete brush_bmap;
 }
 
 
@@ -107,6 +125,24 @@ Brush::ModifyBrush(brush_info &info)
 
 	maximum_width = max_c(height_, width_);
 	maximum_height = maximum_width;
+
+	BBitmap* brush_bmap = new BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
+	BrushToBitmap(brush_bmap);
+
+	BList polygons;
+	BitmapUtilities::RasterToPolygonsMoore(brush_bmap, brush_bmap->Bounds(), &polygons);
+
+	if (shapes != NULL)
+		delete[] shapes;
+	num_shapes = polygons.CountItems();
+	shapes = new HSPolygon*[num_shapes];
+
+	for (uint32 i = 0; i < polygons.CountItems(); ++i) {
+		HSPolygon* new_polygon = (HSPolygon*)polygons.ItemAt(i);
+		shapes[i] = new_polygon;
+	}
+
+	delete brush_bmap;
 
 	CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
 }
@@ -412,6 +448,40 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 
 
 void
+Brush::BrushToBitmap(BBitmap* brush_bitmap)
+{
+	if (brush == NULL)
+		return;
+
+	if (brush_bitmap == NULL)
+		return;
+
+	BitmapUtilities::ClearBitmap(brush_bitmap, 0);
+	BRect bounds = brush_bitmap->Bounds();
+	if (bounds.Width() < width_ || bounds.Height() < height_) {
+		delete brush_bitmap;
+		brush_bitmap = new BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
+	}
+
+	uint32* bits = (uint32*)brush_bitmap->Bits();
+	uint32 bpr = brush_bitmap->BytesPerRow() / 4;
+
+	for (int32 y = 0; y < height_; y++) {
+		for (int32 x = 0 ; x < width_; x++) {
+			union color_conversion color;
+			color.word = brush[y][x];
+
+			//color.bytes[0] = 255 - color.bytes[0];
+			//color.bytes[1] = 255 - color.bytes[1];
+			//color.bytes[2] = 255 - color.bytes[2];
+
+			*(bits + x + y * bpr) = color.word;
+		}
+	}
+}
+
+
+void
 Brush::print_brush(uint32 **b)
 {
 	printf("Brush:\n");
@@ -546,4 +616,19 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 	}
 
 	return a_rect;
+}
+
+
+int
+Brush::GetShapes(BPolygon** poly_shapes)
+{
+	//if (poly_shapes != NULL)
+	//	delete[] poly_shapes;
+
+	//poly_shapes = new BPolygon*[num_shapes];
+
+	for (int i = 0; i < num_shapes; ++i)
+		poly_shapes[i] = shapes[i]->GetBPolygon();
+
+	return num_shapes;
 }

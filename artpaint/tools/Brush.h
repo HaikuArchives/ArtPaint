@@ -104,6 +104,8 @@ class Brush {
 	uint32 			**brush;
 
 	span			*brush_span;
+	HSPolygon**		shapes;
+	int32			num_shapes;
 
 public:
 					Brush(brush_info &info);
@@ -124,6 +126,9 @@ public:
 	float			Width() { return width_; }
 	float			Height() { return height_; }
 	brush_info		GetInfo();
+	void			BrushToBitmap(BBitmap* brush_bitmap);
+	int				GetShapes(BPolygon** shapes);
+	int 			GetNumShapes() { return num_shapes; }
 };
 
 #endif

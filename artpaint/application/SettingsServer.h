@@ -64,6 +64,7 @@ static const char skImageSavePath[]				= "image_save_path";
 static const char skProjectOpenPath[]			= "project_open_path";
 static const char skProjectSavePath[]			= "project_save_path";
 
+static const char skDrawBrushSizeMode[]			= "draw_brush_size_mode";
 
 // paintwindow
 static const char skZoom[]						= "zoom";
