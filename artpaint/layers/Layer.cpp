@@ -28,6 +28,7 @@
 
 #include <new>
 #include <stdio.h>
+#include "zlib.h"
 
 
 Layer::Layer(BRect frame, int32 id, ImageView* imageView, layer_type type,
@@ -391,10 +392,26 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 	Layer* layer = new Layer(BRect(0, 0, width - 1, height - 1), new_id,
 		imageView, layerType);
 	layer->SetVisibility((uint32(layer_visibility) == 0xFFFFFFFF));
+
 	int8* bits = (int8*)layer->Bitmap()->Bits();
-	if (file.Read(bits,length) != length) {
-		delete layer;
-		return NULL;
+
+	uint8* compressedBits = NULL;
+
+	uint64 old_length = length;
+
+	if (compression_method == ZLIB_COMPRESSION) {
+		compressedBits = (uint8*)malloc(length);
+
+		if (file.Read(compressedBits, length) != length) {
+			free(compressedBits);
+			delete layer;
+			return NULL;
+		}
+	} else {
+		if (file.Read(bits, length) != length) {
+			delete layer;
+			return NULL;
+		}
 	}
 
 	// Read the end-marker.
@@ -465,6 +482,33 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 					length -= sizeof(uint8);
 					layer->SetBlendMode(blend_mode);
 				}
+			}
+
+			if (compression_method == ZLIB_COMPRESSION) {
+				uint64 actual_length;
+				if (file.Read(&actual_length, sizeof(int64)) != sizeof(int64))
+					return NULL;
+
+				uint8* uncompressedBits = (uint8*)malloc(actual_length);
+
+				int z_result = uncompress(
+					uncompressedBits,
+					&actual_length,
+					compressedBits,
+					old_length
+				);
+
+				free(compressedBits);
+				if (z_result == Z_OK) {
+					memcpy(bits, uncompressedBits, actual_length);
+					free(uncompressedBits);
+				} else {
+					delete layer;
+					free(uncompressedBits);
+					return NULL;
+				}
+
+				length -= sizeof(int64);
 			}
 
 			file.Seek(length, SEEK_CUR);
@@ -564,7 +608,7 @@ Layer::readLayerOldStyle(BFile& file, ImageView* imageView, int32 new_id)
 
 
 int64
-Layer::writeLayer(BFile& file, int32 compressionMethod)
+Layer::writeLayer(BFile& file, int32 compression_method)
 {
 	int64 written_bytes = 0;
 	int32 marker = PROJECT_FILE_LAYER_START_MARKER;
@@ -584,9 +628,32 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 	written_bytes += file.Write(&visi,sizeof(int32));
 
 	int64 data_length = fLayerData->BitsLength();
-	written_bytes += file.Write(&data_length,sizeof(int64));
+	int z_result = Z_OK;
 
-	written_bytes += file.Write(fLayerData->Bits(), data_length);
+	if (compression_method == ZLIB_COMPRESSION) {
+		uint64 dataLengthCompressed = (data_length * 1.1) + 12;
+
+		uint8* dataCompressed = (uint8*)malloc(dataLengthCompressed);
+		z_result = compress(
+			dataCompressed,
+			&dataLengthCompressed,
+			(uint8*)fLayerData->Bits(),
+			data_length
+		);
+
+		if (z_result == Z_OK) {
+			written_bytes += file.Write(&dataLengthCompressed, sizeof(int64));
+			written_bytes += file.Write(dataCompressed, dataLengthCompressed);
+		} else {
+			written_bytes += file.Write(&data_length, sizeof(int64));
+			written_bytes += file.Write(fLayerData->Bits(), data_length);
+		}
+
+		free(dataCompressed);
+	} else {
+		written_bytes += file.Write(&data_length, sizeof(int64));
+		written_bytes += file.Write(fLayerData->Bits(), data_length);
+	}
 
 	marker = PROJECT_FILE_LAYER_END_MARKER;
 	written_bytes += file.Write(&marker,sizeof(int32));
@@ -597,7 +664,8 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 
 	int32 nameLen = fLayerName.Length();
 	// this is the length of the extra data
-	marker = sizeof(float) + sizeof(int32) + nameLen + sizeof(uint8);
+	marker = sizeof(float) + sizeof(int32) + nameLen + sizeof(uint8) +
+		sizeof(int64);
 	written_bytes += file.Write(&marker,sizeof(int32));
 	written_bytes += file.Write(&transparency_coefficient,sizeof(float));
 	written_bytes += file.Write(&nameLen, sizeof(int32));
@@ -605,6 +673,9 @@ Layer::writeLayer(BFile& file, int32 compressionMethod)
 
 	uint8 blend_mode = GetBlendMode();
 	written_bytes += file.Write(&blend_mode, sizeof(uint8));
+
+	if (compression_method == ZLIB_COMPRESSION && z_result == Z_OK)
+		written_bytes += file.Write(&data_length, sizeof(int64));
 
 	marker = PROJECT_FILE_LAYER_EXTRA_DATA_END_MARKER;
 	written_bytes += file.Write(&marker,sizeof(int32));

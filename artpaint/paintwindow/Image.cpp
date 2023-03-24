@@ -975,7 +975,7 @@ Image::WriteLayers(BFile &file)
 
 	written_bytes += sizeof(int32);
 
-	int32 compression_method = NO_COMPRESSION;
+	int32 compression_method = ZLIB_COMPRESSION;
 
 	if (file.Write(&compression_method,sizeof(int32)) != sizeof(int32))
 		return written_bytes;
