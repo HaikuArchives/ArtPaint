@@ -486,14 +486,17 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id,
 
 			if (compression_method == ZLIB_COMPRESSION) {
 				uint64 actual_length;
-				if (file.Read(&actual_length, sizeof(int64)) != sizeof(int64))
+				if (file.Read(&actual_length, sizeof(int64))
+					!= sizeof(int64))
 					return NULL;
 
 				uint8* uncompressedBits = (uint8*)malloc(actual_length);
+				unsigned long uncompressedLength =
+					static_cast<unsigned long>(actual_length);
 
 				int z_result = uncompress(
 					uncompressedBits,
-					&actual_length,
+					&uncompressedLength,
 					compressedBits,
 					old_length
 				);
@@ -631,17 +634,20 @@ Layer::writeLayer(BFile& file, int32 compression_method)
 	int z_result = Z_OK;
 
 	if (compression_method == ZLIB_COMPRESSION) {
-		uint64 dataLengthCompressed = (data_length * 1.1) + 12;
+		unsigned long dataLengthCompressedULong =
+			(data_length * 1.1) + 12;
 
-		uint8* dataCompressed = (uint8*)malloc(dataLengthCompressed);
+		uint8* dataCompressed = (uint8*)malloc(dataLengthCompressedULong);
 		z_result = compress(
 			dataCompressed,
-			&dataLengthCompressed,
+			&dataLengthCompressedULong,
 			(uint8*)fLayerData->Bits(),
-			data_length
+			static_cast<unsigned long>(data_length)
 		);
 
 		if (z_result == Z_OK) {
+			int64 dataLengthCompressed = static_cast<int64>(dataLengthCompressedULong);
+
 			written_bytes += file.Write(&dataLengthCompressed, sizeof(int64));
 			written_bytes += file.Write(dataCompressed, dataLengthCompressed);
 		} else {
