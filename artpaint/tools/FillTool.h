@@ -34,6 +34,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 #define GRADIENT_LINEAR		1
 #define GRADIENT_RADIAL		2
+#define GRADIENT_SQUARE		3
 
 
 class FillTool : public DrawingTool {
@@ -87,6 +88,9 @@ private:
 			void				FillGradientRadial(BitmapDrawer*, BBitmap*, BPoint,
 									BPoint, int32, int32, int32, int32, uint32,
 									uint32, uint8 skip = 1);
+			void				FillGradientSquare(BitmapDrawer*, BBitmap*, BPoint,
+									BPoint, int32, int32, int32, int32, uint32,
+									uint32, uint8 skip = 1);
 
 			BRect				calcBinaryMapBounds(BBitmap *boolean_map);
 };
@@ -112,6 +116,7 @@ private:
 
 			BRadioButton*			fLinearGradient;
 			BRadioButton*			fRadialGradient;
+			BRadioButton*			fSquareGradient;
 };
 
 #endif	// FILL_TOOL_H
