@@ -199,7 +199,8 @@ public:
 		void		KeyDown(const char*, int32);
 		void		KeyUp(const char*, int32);
 		void		MessageReceived(BMessage* message);
-		void		MouseDown(BPoint point);
+		void		MouseDown(BPoint where);
+		void		MouseUp(BPoint where);
 		void		MouseMoved(BPoint where, uint32 transit, const BMessage*);
 		bool		Quit();
 
