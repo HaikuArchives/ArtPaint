@@ -10,7 +10,9 @@
 #include "BitmapUtilities.h"
 
 
+#include "HSPolygon.h"
 #include "PixelOperations.h"
+#include "UtilityClasses.h"
 
 
 #include <Screen.h>
@@ -320,4 +322,243 @@ uint32
 BitmapUtilities::GetPixel(BBitmap* bitmap, BPoint location)
 {
 	return GetPixel(bitmap, (int32)location.x, (int32)location.y);
+}
+
+
+void
+BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds,
+	BList* polygons)
+{
+	// This function uses the selection_map to make
+	// a new set of polygons that make up the selection.
+	// The selection_map is searched for the edges of selections
+	// and then those edges are traced to form the polygons
+	// using the Moore's neighborhood walk algorithm
+	int32 leftb = (int32)max_c(bounds.left - 1, 0);
+	int32 rightb = (int32)min_c(bounds.right + 1, bitmap->Bounds().IntegerWidth());
+	int32 topb = (int32)max_c(bounds.top - 1, 0);
+	int32 bottomb = (int32)min_c(bounds.bottom + 1, bitmap->Bounds().IntegerHeight());
+
+	BPoint neighbors[8] = {
+		BPoint( -1,  0),
+		BPoint( -1, -1),
+		BPoint(  0, -1),
+		BPoint(  1, -1),
+		BPoint(  1,  0),
+		BPoint(  1,  1),
+		BPoint(  0,  1),
+		BPoint( -1,  1)
+	};
+
+	int next[8] = {7, 7, 1, 1, 3, 3, 5, 5};
+
+	PointContainer* included_points = new PointContainer();
+
+	bool inside = false;
+	BPoint pos;
+
+	for (int32 y = topb; y <= bottomb; y++) {
+		for (int32 x = leftb; x <= rightb; x++) {
+			// We start a new polygon if point at x,y is at the edge and
+			// has not been included in previous polygons.
+
+			// if black pixel found and previous is white, then trace
+			// clockwise with moore
+			// if black pixel found and following pixel is white then trace
+			// counterclockwise with moore as it should be a hole
+
+			pos = BPoint(x, y);
+
+			bool containsPoint = (BitmapUtilities::GetPixel(bitmap, (int32)x, (int32)y) != 0x00);
+
+			if (included_points->HasPoint(x, y) && inside == false)
+				inside = true;
+			else if (containsPoint == true && inside == true)
+				continue;
+			else if (containsPoint == false && inside == true)
+				inside = false;
+			else if (containsPoint && inside == false) {
+				included_points->InsertPoint(x - 0.5, y - 0.5);
+
+				int32 max_point_count = 1024;
+				// set B to be empty
+				BPoint* point_list = new BPoint[max_point_count];
+				int32 point_count = 0;
+
+				// insert s in B - s = (x, y)
+				point_list[point_count++] = BPoint(x - 0.5, y - 0.5);
+
+				int checkLocation = 1;
+				int newCheckLocation = 0;
+				BPoint startPos = BPoint(pos);
+				int end_counter = 0;
+				int point_counter = 0;
+
+				while(true) {
+					BPoint check = pos + neighbors[checkLocation - 1];
+					int newCheckLocation = next[checkLocation - 1];
+
+					bool containsPoint = (GetPixel(bitmap,
+						(int32)check.x, (int32)check.y) != 0x00);
+					if (containsPoint) {
+						int prevCheckLocation = checkLocation;
+						checkLocation = newCheckLocation;
+						pos = check;
+						point_counter = 0;
+
+						if (prevCheckLocation == 5) {
+							if (included_points->HasPoint(check.x - 0.5, check.y - 0.5) == false) {
+								included_points->InsertPoint(check.x - 0.5, check.y - 0.5);
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y - 0.5);
+							}
+							if (included_points->HasPoint(check.x + 0.5, check.y - 0.5) == false) {
+								included_points->InsertPoint(check.x + 0.5, check.y - 0.5);
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y - 0.5);
+							}
+						} else if (prevCheckLocation == 7) {
+							if (included_points->HasPoint(check.x + 0.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y - 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y - 0.5);
+							}
+							if (included_points->HasPoint(check.x + 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y + 0.5);
+							}
+						} else if (prevCheckLocation == 3) {
+							if (included_points->HasPoint(check.x - 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y + 0.5);
+							}
+							if (included_points->HasPoint(check.x - 0.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y - 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y - 0.5);
+							}
+						} else if (prevCheckLocation == 1) {
+							if (included_points->HasPoint(check.x + 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y + 0.5);
+							}
+							if (included_points->HasPoint(check.x - 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y + 0.5);
+							}
+						} else if (prevCheckLocation == 6) {
+							if (included_points->HasPoint(check.x - 0.5, check.y - 1.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y - 1.5);
+								included_points->InsertPoint(check.x - 0.5, check.y - 1.5);
+							}
+							if (included_points->HasPoint(check.x - 0.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y - 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y - 0.5);
+							}
+							if (included_points->HasPoint(check.x + 0.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y - 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y - 0.5);
+							}
+						} else if (prevCheckLocation == 8) {
+							if (included_points->HasPoint(check.x + 1.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 1.5, check.y - 0.5);
+								included_points->InsertPoint(check.x + 1.5, check.y - 0.5);
+							}
+							if (included_points->HasPoint(check.x + 0.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y - 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y - 0.5);
+							}
+							if (included_points->HasPoint(check.x + 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y + 0.5);
+							}
+						} else if (prevCheckLocation == 2) {
+							if (included_points->HasPoint(check.x + 0.5, check.y + 1.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y + 1.5);
+								included_points->InsertPoint(check.x + 0.5, check.y + 1.5);
+							}
+							if (included_points->HasPoint(check.x + 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x + 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x + 0.5, check.y + 0.5);
+							}
+							if (included_points->HasPoint(check.x - 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y + 0.5);
+							}
+						} else if (prevCheckLocation == 4) {
+							if (included_points->HasPoint(check.x - 1.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 1.5, check.y + 0.5);
+								included_points->InsertPoint(check.x - 1.5, check.y + 0.5);
+							}
+							if (included_points->HasPoint(check.x - 0.5, check.y + 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y + 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y + 0.5);
+							}
+							if (included_points->HasPoint(check.x - 0.5, check.y - 0.5) == false) {
+								point_list[point_count++] = BPoint(check.x - 0.5, check.y - 0.5);
+								included_points->InsertPoint(check.x - 0.5, check.y - 0.5);
+							}
+						}
+
+						if (check == startPos) {
+							++end_counter;
+
+							if (newCheckLocation == 1 ||
+								end_counter >= 3) {
+								inside = true;
+								break;
+							}
+						}
+					} else {
+						checkLocation = 1 + (checkLocation % 8);
+						if (point_counter > 8) {
+							point_counter = 0;
+							break;
+						} else
+							++point_counter;
+					}
+
+					if (point_count + 5 >= max_point_count) {
+						max_point_count *= 2;
+						BPoint* new_points = new BPoint[max_point_count];
+						for (int32 i = 0; i < point_count; i++)
+							new_points[i] = point_list[i];
+
+						delete[] point_list;
+						point_list = new_points;
+					}
+				}
+
+				if (point_count > 1) {
+					HSPolygon* new_polygon = NULL;
+					if (inside == true)
+						new_polygon = new HSPolygon(point_list, point_count,
+							HS_POLYGON_CLOCKWISE);
+					else
+						new_polygon = new HSPolygon(point_list, point_count,
+							HS_POLYGON_COUNTERCLOCKWISE);
+
+					// algorithm makes the polygon 0.5 pixels
+					// too large in both dimensions, so scale it
+					// down by 1 pixel
+					BPoint centroid = BPoint(0,0);
+					for (int32 i=0;i<point_count;i++) {
+						centroid += point_list[i];
+					}
+					centroid.x /= point_count;
+					centroid.y /= point_count;
+					BRect bounds = new_polygon->BoundingBox();
+
+					float xscale = (bounds.Width() - 1) / (bounds.Width());
+					float yscale = (bounds.Height() - 1) / (bounds.Height());
+
+					new_polygon->ScaleBy(centroid, xscale, yscale);
+
+					if (new_polygon != NULL) {
+						polygons->AddItem(new_polygon);
+					}
+				}
+
+				delete[] point_list;
+			}
+		}
+	}
+
+	delete included_points;
 }

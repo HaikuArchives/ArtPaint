@@ -45,6 +45,7 @@
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
+#include <Polygon.h>
 #include <PopUpMenu.h>
 #include <Screen.h>
 #include <ScrollBar.h>
@@ -1186,12 +1187,109 @@ ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage* message)
 		// Here we set the window to display coordinates.
 		((PaintWindow*)Window())->DisplayCoordinates(where, reference_point,
 			use_reference_point);
+
+		if (fManipulator == NULL) {
+			int32 mode = B_CONTROL_ON;
+			if (SettingsServer* server = SettingsServer::Instance()) {
+				BMessage settings;
+				server->GetApplicationSettings(&settings);
+				settings.FindInt32(skDrawBrushSizeMode, &mode);
+			}
+
+			if (mode == B_CONTROL_ON) {
+				uint32 buttons = 0;
+				BMessage* move_message = Window()->CurrentMessage();
+
+				if (move_message != NULL)
+					buttons = move_message->FindInt32("buttons");
+
+				if (buttons == 0)
+					DrawBrush(where);
+			}
+		}
 	} else {
 		where.x = the_image->Width();
 		where.y = the_image->Height();
 
 		((PaintWindow*)Window())->DisplayCoordinates(where,
 			BPoint(0, 0), false);
+
+		Draw(Bounds());
+	}
+
+	previous_point = where;
+}
+
+
+void
+ImageView::DrawBrush(BPoint where)
+{
+	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
+
+	if (tool_type == FREE_LINE_TOOL ||
+		tool_type == AIR_BRUSH_TOOL ||
+		tool_type == ERASER_TOOL ||
+		tool_type == BLUR_TOOL ||
+		tool_type == TRANSPARENCY_TOOL) {
+		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
+		float width = tool->GetCurrentValue(SIZE_OPTION);
+		float height = width;
+
+		drawing_mode old_mode = DrawingMode();
+
+		Brush* brush;
+		if (tool->GetCurrentValue(USE_BRUSH_OPTION)) {
+			brush = ToolManager::Instance().GetCurrentBrush();
+			width = brush->Width();
+			height = brush->Height();
+		} else
+			brush = NULL;
+
+		float half_width = width / 2;
+		float half_height = height / 2;
+
+		BRect clear_rect;
+		clear_rect.left = min_c(previous_point.x, where.x) - width;
+		clear_rect.top = min_c(previous_point.y, where.y) - height;
+		clear_rect.right = max_c(previous_point.x, where.x) + width;
+		clear_rect.bottom = max_c(previous_point.y, where.y) + height;
+
+		clear_rect = convertBitmapRectToView(clear_rect);
+
+		Draw(clear_rect);
+
+		SetDrawingMode(B_OP_INVERT);
+		BRect brush_rect;
+
+		if (brush == NULL) {
+			brush_rect.left = where.x - half_width;
+			brush_rect.top = where.y - half_height;
+			brush_rect.right = where.x + half_width;
+			brush_rect.bottom = where.y + half_height;
+
+			brush_rect = convertBitmapRectToView(brush_rect);
+			StrokeEllipse(brush_rect);
+		} else {
+			int num_shapes = brush->GetNumShapes();
+			BPolygon** shapes = new BPolygon*[num_shapes];
+			brush->GetShapes(shapes);
+
+			if (num_shapes > 0 && shapes != NULL) {
+				for (int i = 0; i < num_shapes; ++i) {
+
+					BPolygon poly(shapes[i]);
+					brush_rect = poly.Frame();
+					brush_rect.OffsetBy(BPoint(where.x - half_width, where.y - half_height));
+					brush_rect = convertBitmapRectToView(brush_rect);
+
+					poly.MapTo(poly.Frame(), brush_rect);
+					StrokePolygon(&poly);
+				}
+
+				delete shapes;
+			}
+		}
+		SetDrawingMode(old_mode);
 	}
 }
 

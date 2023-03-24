@@ -12,7 +12,7 @@
 
 
 #include <Bitmap.h>
-
+#include <List.h>
 
 #include "PixelOperations.h"
 
@@ -35,6 +35,8 @@ public:
 							uint32 grid_size, BRect* area = NULL);
 	static	uint32		GetPixel(BBitmap* bitmap, int32 x, int32 y);
 	static	uint32		GetPixel(BBitmap* bitmap, BPoint location);
+	static 	void		RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds,
+							BList* polygons);
 };
 
 

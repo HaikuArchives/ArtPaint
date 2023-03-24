@@ -100,8 +100,7 @@ static	int32			thread_entry_func(void*);
 		int32			thread_func();
 
 		void			SimplifySelection();
-		void		 	RasterToPolygonsMoore(BBitmap* map, BRect bounds,
-							BList* polygons);
+
 
 public:
 						Selection(BRect);

@@ -71,6 +71,7 @@ public:
 			status_t				ChangeTool(int32);
 			const void*				ReturnCursor() const;
 			DrawingTool*			ReturnTool(int32) const;
+			DrawingTool*			ReturnActiveTool() const { return fActiveTool; }
 			int32					ReturnActiveToolType() const;
 			BView*					ConfigView(int32);
 			status_t				SetCurrentBrush(brush_info*);
