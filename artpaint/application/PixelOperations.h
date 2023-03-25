@@ -51,55 +51,6 @@ enum BlendModes {
 };
 
 
-inline const char* mode_to_string(BlendModes mode)
-{
-	switch(mode) {
-		case BLEND_NORMAL:
-			return B_TRANSLATE("Normal");
-		case BLEND_MULTIPLY:
-			return B_TRANSLATE("Multiply");
-		case BLEND_DIVIDE:
-			return B_TRANSLATE("Divide");
-		case BLEND_SCREEN:
-			return B_TRANSLATE("Screen");
-		case BLEND_OVERLAY:
-			return B_TRANSLATE("Overlay");
-		case BLEND_DARKEN:
-			return B_TRANSLATE("Darken");
-		case BLEND_LIGHTEN:
-			return B_TRANSLATE("Lighten");
-		case BLEND_DODGE:
-			return B_TRANSLATE("Color dodge");
-		case BLEND_BURN:
-			return B_TRANSLATE("Color burn");
-		case BLEND_LINEAR_DODGE:
-			return B_TRANSLATE("Linear dodge");
-		case BLEND_LINEAR_BURN:
-			return B_TRANSLATE("Linear burn");
-		case BLEND_HARD_LIGHT:
-			return B_TRANSLATE("Hard light");
-		case BLEND_SOFT_LIGHT:
-			return B_TRANSLATE("Soft light");
-		case BLEND_VIVID_LIGHT:
-			return B_TRANSLATE("Vivid light");
-		case BLEND_LINEAR_LIGHT:
-			return B_TRANSLATE("Linear light");
-		case BLEND_PIN_LIGHT:
-			return B_TRANSLATE("Pin light");
-		case BLEND_HARD_MIX:
-			return B_TRANSLATE("Hard mix");
-		case BLEND_DIFFERENCE:
-			return B_TRANSLATE("Difference");
-		case BLEND_EXCLUSION:
-			return B_TRANSLATE("Exclusion");
-		case BLEND_DISSOLVE:
-			return B_TRANSLATE("Dissolve");
-	}
-
-	return "";
-}
-
-
 // This function combines four pixels p1-p4 with weights c1-c4.
 // It accumulates the rounding error for each component and
 // then adds it to the final values. It does not check if the values
