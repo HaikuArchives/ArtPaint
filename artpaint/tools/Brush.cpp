@@ -411,8 +411,10 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 
 	BitmapUtilities::ClearBitmap(preview_bitmap, color.word);
 
+	brush_bmap->Lock();
 	uint32* brush_bits = (uint32*)brush_bmap->Bits();
 	uint32 brush_bpr = brush_bmap->BytesPerRow() / 4;
+	brush_bmap->Unlock();
 
 	// Here we draw the brush to the bitmap.
 	for (int32 y = 0; y < preview_height; ++y) {
