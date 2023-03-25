@@ -166,7 +166,7 @@ NumberSliderControl::Value() const
 
 	float norm = (pow(fExp, fSlider->Position()) - 1.) / (fExp - 1.);
 
-	return (norm * range) + fMinRange;
+	return (norm * range) + fMinRange + 1.;
 }
 
 
@@ -299,7 +299,7 @@ NumberSliderControl::_ValueForPosition(float position)
 
 	float norm = (pow(fExp, position) - 1.) / (fExp - 1.);
 
-	return (norm * range) + fMinRange;
+	return (norm * range) + fMinRange + 1;
 
 }
 
