@@ -94,14 +94,14 @@ class Brush {
 	void			make_rectangular_brush();
 	void			make_elliptical_brush();
 
-	uint32**		reserve_brush();
-	span*			make_span_list(uint32**);
+	void			reserve_brush();
+	span*			make_span_list();
 
 	void			delete_all_data();
 
 	void			print_brush(uint32**);
 
-	uint32 			**brush;
+	BBitmap			*brush_bmap;
 
 	span			*brush_span;
 	HSPolygon**		shapes;
@@ -122,11 +122,11 @@ public:
 						Selection* selection);
 	static bool		compare_brushes(brush_info one, brush_info two);
 
-	uint32**		GetData(span**);
+	uint32*			GetData(span**);
 	float			Width() { return width_; }
 	float			Height() { return height_; }
 	brush_info		GetInfo();
-	void			BrushToBitmap(BBitmap* brush_bitmap);
+	BBitmap*		GetBitmap() { return brush_bmap; }
 	int				GetShapes(BPolygon** shapes);
 	int 			GetNumShapes() { return num_shapes; }
 };

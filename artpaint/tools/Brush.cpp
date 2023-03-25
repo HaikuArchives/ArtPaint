@@ -52,8 +52,6 @@ Brush::Brush(brush_info &info)
 	actual_height = height_ = info.height;
 	angle_ = info.angle;
 
-	brush = NULL;
-
 	brush_span = NULL;
 
 	// Here call the function that makes the brush.
@@ -68,10 +66,7 @@ Brush::Brush(brush_info &info)
 			break;
 	}
 
-	brush_span = make_span_list(brush);
-
-	BBitmap* brush_bmap = new BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
-	BrushToBitmap(brush_bmap);
+	brush_span = make_span_list();
 
 	BList polygons;
 	BitmapUtilities::RasterToPolygonsMoore(brush_bmap, brush_bmap->Bounds(), &polygons);
@@ -83,8 +78,6 @@ Brush::Brush(brush_info &info)
 		HSPolygon* new_polygon = (HSPolygon*)polygons.ItemAt(i);
 		shapes[i] = new_polygon;
 	}
-
-	delete brush_bmap;
 }
 
 
@@ -107,8 +100,7 @@ Brush::ModifyBrush(brush_info &info)
 	actual_height = height_ = info.height;
 	angle_ = info.angle;
 
-	brush = NULL;
-
+	brush_bmap = NULL;
 	brush_span = NULL;
 
 	// Here call the function that makes the brush.
@@ -126,9 +118,6 @@ Brush::ModifyBrush(brush_info &info)
 	maximum_width = max_c(height_, width_);
 	maximum_height = maximum_width;
 
-	BBitmap* brush_bmap = new BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
-	BrushToBitmap(brush_bmap);
-
 	BList polygons;
 	BitmapUtilities::RasterToPolygonsMoore(brush_bmap, brush_bmap->Bounds(), &polygons);
 
@@ -142,8 +131,6 @@ Brush::ModifyBrush(brush_info &info)
 		shapes[i] = new_polygon;
 	}
 
-	delete brush_bmap;
-
 	CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
 }
 
@@ -151,15 +138,15 @@ Brush::ModifyBrush(brush_info &info)
 void
 Brush::CreateDiffBrushes()
 {
-	brush_span = make_span_list(brush);
+	brush_span = make_span_list();
 }
 
 
-uint32**
+uint32*
 Brush::GetData(span **sp)
 {
 	*sp = brush_span;
-	return brush;
+	return (uint32*)brush_bmap->Bits();
 }
 
 
@@ -203,7 +190,7 @@ Brush::make_rectangular_brush()
 
 	float diff = 1.0 / fade_pixels;
 
-	brush = reserve_brush();
+	reserve_brush();
 	BPoint p1;
 	BPoint c = BPoint(floor(width_ / 2),floor(height_ / 2));
 	float x_distance, y_distance;
@@ -212,6 +199,9 @@ Brush::make_rectangular_brush()
 	float cos_minus_angle = cos(-angle_rad);
 	float sin_minus_angle = sin(-angle_rad);
 
+	BitmapUtilities::ClearBitmap(brush_bmap, 0);
+	uint32* bits = (uint32*)brush_bmap->Bits();
+	uint32 bpr = brush_bmap->BytesPerRow() / 4;
 	for (int32 y = 0;y < height_;y++) {
 		for (int32 x = 0;x < width_;x++) {
 			p1.x = cos_minus_angle * (x - c.x) - sin_minus_angle * (y - c.y);
@@ -232,10 +222,16 @@ Brush::make_rectangular_brush()
 			}
 
 			value = min_c(x_value, y_value);
-			if (value >= 0)
-				brush[y][x] = (uint32)(value * 32768);
-			else
-				brush[y][x] = 0;
+			if (value >= 0) {
+				union color_conversion color;
+				color.bytes[0] = value * 255;
+				color.bytes[1] = value * 255;
+				color.bytes[2] = value * 255;
+				color.bytes[3] = value * 255;
+
+				*(bits + x + y * bpr) = color.word;
+			} else
+				*(bits + x + y * bpr) = 0;
 		}
 	}
 }
@@ -266,7 +262,7 @@ Brush::make_elliptical_brush()
 	float new_angle = -angle_ * PI / 180.;
 
 	// Then we reserve the space for brush and calculate the entries.
-	brush = reserve_brush();
+	reserve_brush();
 
 	float diff = 1.0;
 	if (hardness_ > 0)
@@ -278,6 +274,10 @@ Brush::make_elliptical_brush()
 
 	float cos_val = cos(new_angle);
 	float sin_val = sin(new_angle);
+
+	BitmapUtilities::ClearBitmap(brush_bmap, 0);
+	uint32* bits = (uint32*)brush_bmap->Bits();
+	uint32 bpr = brush_bmap->BytesPerRow() / 4;
 
 	for (int32 y = 0;y < height_;y++) {
 		float sinY = sin_val * (y - dimension);
@@ -300,30 +300,27 @@ Brush::make_elliptical_brush()
 			value = max_c(value, 0);
 			value = min_c(value, 1.0);
 
-			brush[y][x] = (uint32)(value * 32768);
+			union color_conversion color;
+			color.bytes[0] = value * 255;
+			color.bytes[1] = value * 255;
+			color.bytes[2] = value * 255;
+			color.bytes[3] = value * 255;
+
+			*(bits + x + y * bpr) = color.word;
 		}
 	}
 }
 
 
-uint32**
+void
 Brush::reserve_brush()
 {
-	uint32 **b = NULL;
-	try {
-		b = new uint32*[(int32)height_];
-		for (int32 y=0;y<height_;y++)
-			b[y] = new uint32[(int32)width_];
-	}
-	catch (...) {
-
-	}
-	return b;
+	brush_bmap = new (std::nothrow) BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
 }
 
 
 span*
-Brush::make_span_list(uint32 **b)
+Brush::make_span_list()
 {
 	// Spans are not optimal solution, because the brush might have just one
 	// pixel at both ends. In that case checking the span would mean a lot of
@@ -332,10 +329,14 @@ Brush::make_span_list(uint32 **b)
 	span *first = NULL;
 	span *current = NULL;
 
+	uint32 *bits = (uint32*)brush_bmap->Bits();
+	uint32 bpr = brush_bmap->BytesPerRow() / 4;
 	for (int32 y=0;y<height_;y++) {
 		inside_span = FALSE;
 		for (int32 x=0;x<width_;x++) {
-			if (b[y][x] != 0) {
+			union color_conversion color;
+			color.word = *(bits + x + y * bpr);
+			if (color.bytes[3] != 0) {
 				if (inside_span == FALSE) {
 					if (first == NULL) {
 						first = new span(y,x,x);
@@ -367,11 +368,8 @@ Brush::delete_all_data()
 {
 	span *c;
 	span *help;
-	if (brush != NULL) {
-		for (int32 y = 0; y < height_; y++)
-			delete[] brush[y];
-
-		delete[] brush;
+	if (brush_bmap != NULL) {
+		delete brush_bmap;
 		c = brush_span;
 		while (c != NULL) {
 			help = c->next;
@@ -411,18 +409,20 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 	color.bytes[2] = 0xFF;
 	color.bytes[3] = 0x00;
 
-	for (int32 i=0;i<bits_length;i++) {
-		*bits++ = color.word;
-	}
-	bits = (uint32*)preview_bitmap->Bits();
+	BitmapUtilities::ClearBitmap(preview_bitmap, color.word);
+
+	uint32* brush_bits = (uint32*)brush_bmap->Bits();
+	uint32 brush_bpr = brush_bmap->BytesPerRow() / 4;
 
 	// Here we draw the brush to the bitmap.
 	for (int32 y = 0; y < preview_height; ++y) {
 		for (int32 x = 0; x < preview_width; ++x) {
-			uchar value = (255 - ((brush[y * scale][x * scale] * 255) >> 15)) & 0xFF;
-			color.bytes[0] = value;
-			color.bytes[1] = value;
-			color.bytes[2] = value;
+			union color_conversion color;
+			color.word = *(brush_bits + (x * scale) + (y * scale * brush_bpr));
+			color.bytes[0] = 255 - color.bytes[0];
+			color.bytes[1] = 255 - color.bytes[1];
+			color.bytes[2] = 255 - color.bytes[2];
+
 			color.bytes[3] = 0xFF;
 			*(bits + (top+y)*bpr + left+x) = color.word;
 		}
@@ -444,40 +444,6 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 	*(bits + bpr) = color.word;
 
 	return preview_width/width_;
-}
-
-
-void
-Brush::BrushToBitmap(BBitmap* brush_bitmap)
-{
-	if (brush == NULL)
-		return;
-
-	if (brush_bitmap == NULL)
-		return;
-
-	BitmapUtilities::ClearBitmap(brush_bitmap, 0);
-	BRect bounds = brush_bitmap->Bounds();
-	if (bounds.Width() < width_ || bounds.Height() < height_) {
-		delete brush_bitmap;
-		brush_bitmap = new BBitmap(BRect(0, 0, width_ + 1, height_ + 1), B_RGBA32);
-	}
-
-	uint32* bits = (uint32*)brush_bitmap->Bits();
-	uint32 bpr = brush_bitmap->BytesPerRow() / 4;
-
-	for (int32 y = 0; y < height_; y++) {
-		for (int32 x = 0 ; x < width_; x++) {
-			union color_conversion color;
-			color.word = brush[y][x];
-
-			//color.bytes[0] = 255 - color.bytes[0];
-			//color.bytes[1] = 255 - color.bytes[1];
-			//color.bytes[2] = 255 - color.bytes[2];
-
-			*(bits + x + y * bpr) = color.word;
-		}
-	}
 }
 
 
@@ -508,9 +474,11 @@ Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 	int32 px = (int32)point.x;
 	int32 py = (int32)point.y;
 
-	if (brush == NULL)
+	if (brush_bmap == NULL)
 		return;
 
+	uint32* brush_bits = (uint32*)brush_bmap->Bits();
+	uint32 brush_bpr = brush_bmap->BytesPerRow() / 4;
 	uint32* bits = (uint32*)buffer->Bits();
 	uint32 bpr = buffer->BytesPerRow() / 4;
 	uint32* target_bits;
@@ -524,10 +492,11 @@ Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 			for (int32 x = left; x <= right; ++x) {
 				if (selection->IsEmpty() || selection->ContainsPoint(x, y + py)) {
 					union color_conversion brush_color, target_color, result;
-					brush_color.word = 0xffffffff;
-					float brush_alpha = brush[y][x - px] / 32768.;
+					brush_color.word = *(brush_bits + (x - px) + y * brush_bpr);
+					brush_color.bytes[0] = 0xFF;
+					brush_color.bytes[1] = 0xFF;
+					brush_color.bytes[2] = 0xFF;
 
-					brush_color.bytes[3] = brush_alpha * 255.;
 					target_color.word = *target_bits;
 
 					for (int i = 0; i < 4; ++i)
@@ -622,11 +591,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 int
 Brush::GetShapes(BPolygon** poly_shapes)
 {
-	//if (poly_shapes != NULL)
-	//	delete[] poly_shapes;
-
-	//poly_shapes = new BPolygon*[num_shapes];
-
 	for (int i = 0; i < num_shapes; ++i)
 		poly_shapes[i] = shapes[i]->GetBPolygon();
 
