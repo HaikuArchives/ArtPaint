@@ -98,12 +98,15 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	float half_width = fToolSettings.size / 2;
 	float half_height = fToolSettings.size / 2;
 	Brush* brush;
-	span* spans;
-	uint32** brush_data;
+	BBitmap* brush_bmap;
+	uint32* brush_bits;
+	uint32 brush_bpr;
 
 	if (fToolSettings.use_current_brush == true) {
 		brush = ToolManager::Instance().GetCurrentBrush();
-		brush_data = brush->GetData(&spans);
+		brush_bmap = brush->GetBitmap();
+		brush_bits = (uint32*)brush_bmap->Bits();
+		brush_bpr = brush_bmap->BytesPerRow() / 4;
 		half_width = (brush->Width() - 1) / 2;
 		half_height = (brush->Height() - 1) / 2;
 	}
@@ -160,9 +163,11 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 						x_dist = (int32)(point.x - rc.left - x);
 						real_x = (int32)(rc.left + x);
 						float brush_val = 1.0;
-						if (fToolSettings.use_current_brush == true)
-							brush_val = (float)brush_data[y][x] / 32768.;
-
+						if (fToolSettings.use_current_brush == true) {
+							union color_conversion brush_color;
+							brush_color.word = *(brush_bits + x + y * brush_bpr);
+							brush_val = brush_color.bytes[3];
+						}
 						if ((fToolSettings.use_current_brush == true && brush_val > 0.0) ||
 							(fToolSettings.use_current_brush == false &&
 							sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
