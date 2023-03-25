@@ -59,9 +59,9 @@ CropManipulator::CropManipulator(BBitmap* bm)
 	if (bm != NULL) {
 		BRect rect = bm->Bounds();
 		settings->left = min_x = rect.left;
-		settings->right = max_x = rect.right + 1;
+		settings->right = max_x = rect.right;
 		settings->top = min_y = rect.top;
-		settings->bottom = max_y = rect.bottom + 1;
+		settings->bottom = max_y = rect.bottom;
 	}
 
 	SetPreviewBitmap(bm);
@@ -325,9 +325,9 @@ CropManipulator::SetPreviewBitmap(BBitmap* bm)
 	if (bm != NULL) {
 		BRect rect = bm->Bounds();
 		settings->left = min_x = rect.left;
-		settings->right = max_x = rect.right + 1;
+		settings->right = max_x = rect.right;
 		settings->top = min_y = rect.top;
-		settings->bottom = max_y = rect.bottom + 1;
+		settings->bottom = max_y = rect.bottom;
 	} else {
 		settings->left = min_x = 0;
 		settings->right = max_x = 0;
@@ -377,9 +377,9 @@ CropManipulator::Reset()
 	BRect bounds = preview_bitmap->Bounds();
 
 	settings->left = bounds.left;
-	settings->right = bounds.right + 1;
+	settings->right = bounds.right;
 	settings->top = bounds.top;
-	settings->bottom = bounds.bottom + 1;
+	settings->bottom = bounds.bottom;
 
 	previous_left = settings->left;
 	previous_right = settings->right;
