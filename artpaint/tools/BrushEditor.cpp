@@ -318,18 +318,18 @@ BrushEditor::MessageReceived(BMessage* message)
 			// Here something has altered the brush and we should reflect it
 			// in our controls and such things.
 			fBrushInfo = fBrush->GetInfo();
-			float ratio = (float)(fBrushInfo.width / fBrushInfo.height);
+			float ratio = (float)(fBrushInfo.height / fBrushInfo.width);
+
+			float realRatio = (ratio - 1.0) / 0.9;
 
 			if (ratio < 1.0) {
-				ratio = -1.0 / ratio;
-				fBrushSize->SetValue((int32)fBrushInfo.height);
-			} else
+				realRatio = 1.0 / ratio;
+				realRatio = -(realRatio - 1.0) / 0.9;
 				fBrushSize->SetValue((int32)fBrushInfo.width);
+			} else
+				fBrushSize->SetValue((int32)fBrushInfo.height);
 
-			if (ratio == 1.0)
-				ratio = 0;
-
-			fBrushRatio->SetValue((int32)ratio);
+			fBrushRatio->SetValue(realRatio);
 
 			fBrushAngle->SetValue(int32(fBrushInfo.angle));
 			fBrushFade->SetValue(int32(fBrushInfo.hardness));
