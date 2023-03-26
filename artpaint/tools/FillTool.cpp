@@ -395,7 +395,7 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 	// rectangle and fill only those pixels that the mask tells to.
 	// The color of pixel is to be calculated from the original mousedown point
 	// and the last mousedown point and from color values for mouse-button
-	// and gradien color. If preview is enabled we should also update in real time
+	// and gradient color. If preview is enabled we should also update in real time
 	// whenever possible.
 
 	// Get the necessary parameters
@@ -460,10 +460,45 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 		window->Lock();
 		view->StrokeEllipse(ellipse_rect);
 		window->Unlock();
-		if (fToolSettings.preview_enabled == B_CONTROL_OFF) {
-			// Do not do the preview. Just read the coordinates.
-			while (buttons) {
-				if (new_view_point != prev_view_point) {
+
+		// Do not do the preview. Just read the coordinates.
+		while (buttons) {
+			float scale = view->getMagScale();
+
+			window->Lock();
+			view->getCoords(&new_point, &buttons, &new_view_point);
+			window->Unlock();
+
+			if (modifiers() & B_SHIFT_KEY) {
+				// Make the new point be so that the angle is a multiple of 22.5°.
+				float x_diff, y_diff;
+				x_diff = fabs(orig_view_point.x - new_view_point.x);
+				y_diff = fabs(orig_view_point.y - new_view_point.y);
+				float len = sqrt(x_diff * x_diff + y_diff * y_diff);
+				float angle = atan(y_diff / x_diff) * 180 / M_PI;
+
+				angle = SnapToAngle(22.5, angle);
+
+				y_diff = len * sin(angle * M_PI / 180.);
+				x_diff = len * cos(angle * M_PI / 180.);
+
+				float signed_x_diff = (new_view_point.x - orig_view_point.x);
+				float signed_y_diff = (new_view_point.y - orig_view_point.y);
+				if (signed_x_diff != 0) {
+					new_view_point.x = orig_view_point.x +
+						x_diff * signed_x_diff / fabs(signed_x_diff);
+					new_point.x = new_view_point.x * scale;
+				}
+
+				if (signed_y_diff != 0) {
+					new_view_point.y = orig_view_point.y +
+						y_diff * signed_y_diff / fabs(signed_y_diff);
+					new_point.y = new_view_point.y * scale;
+				}
+			}
+
+			if (new_view_point != prev_view_point) {
+				if (fToolSettings.preview_enabled == B_CONTROL_OFF) {
 					window->Lock();
 					BRect clear_rect;
 					clear_rect.left = min_c(orig_view_point.x, prev_view_point.x);
@@ -476,17 +511,7 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 					view->StrokeEllipse(ellipse_rect);
 					view->StrokeLine(orig_view_point, new_view_point);
 					window->Unlock();
-					prev_view_point = new_view_point;
-				}
-				window->Lock();
-				view->getCoords(&new_point,&buttons,&new_view_point);
-				window->Unlock();
-				snooze(20 * 1000);
-			}
-		} else {
-			// Display also preview of the gradient
-			while (buttons) {
-				if (new_view_point != prev_view_point) {
+				} else {
 					// There should actually be a separate function (and maybe even a thread) that calculates
 					// the preview in real time for some bitmap that is quite small (about 200x200 pixels maximum).
 					// Then the gradient would be copied to bitmap using some specialized function.
@@ -518,13 +543,11 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 					view->StrokeEllipse(ellipse_rect);
 					view->StrokeLine(orig_view_point, new_view_point);
 					window->Unlock();
-					prev_view_point = new_view_point;
 				}
-				window->Lock();
-				view->getCoords(&new_point,&buttons,&new_view_point);
-				window->Unlock();
-				snooze(20 * 1000);
+				prev_view_point = new_view_point;
 			}
+
+			snooze(20 * 1000);
 		}
 
 		BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
@@ -744,6 +767,9 @@ FillTool::FillGradientLinear(BitmapDrawer *drawer, BBitmap *binary_map,
 	float perp_angle = M_PI / 2; //0;
 	if (dy != 0)
 		perp_angle = atan(-dx / dy);
+	else if (dx < 0 and dy == 0)
+		perp_angle = -perp_angle;
+
 	float cos_angle = cos(perp_angle);
 	float sin_angle = sin(perp_angle);
 
@@ -948,9 +974,11 @@ FillTool::FillGradientConic(BitmapDrawer *drawer, BBitmap *binary_map,
 
 	float total_dist = sqrt(pow(dx, 2) + pow(dy, 2));
 	float perp_angle = M_PI / 2;
-	if (dx != 0) {
+	if (dx != 0)
 		perp_angle = atan(-dy / dx);
-	}
+	else if (dy < 0 && dx == 0)
+		perp_angle = -perp_angle;
+
 	float cos_angle = cos(perp_angle);
 	float sin_angle = sin(perp_angle);
 
