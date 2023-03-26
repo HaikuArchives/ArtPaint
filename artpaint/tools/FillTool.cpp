@@ -423,6 +423,7 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 	drawing_mode old_mode = view->DrawingMode();
 	view->SetDrawingMode(B_OP_INVERT);
 	window->Unlock();
+	BPoint original_point = start;
 	BPoint new_point = start;
 
 	if (bitmap_bounds.Contains(start) == TRUE) {
@@ -472,8 +473,8 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 			if (modifiers() & B_SHIFT_KEY) {
 				// Make the new point be so that the angle is a multiple of 22.5°.
 				float x_diff, y_diff;
-				x_diff = fabs(orig_view_point.x - new_view_point.x);
-				y_diff = fabs(orig_view_point.y - new_view_point.y);
+				x_diff = fabs(original_point.x - new_point.x);
+				y_diff = fabs(original_point.y - new_point.y);
 				float len = sqrt(x_diff * x_diff + y_diff * y_diff);
 				float angle = atan(y_diff / x_diff) * 180 / M_PI;
 
@@ -486,14 +487,16 @@ FillTool::GradientFill(ImageView* view, uint32 buttons, BPoint start,
 				float signed_y_diff = (new_view_point.y - orig_view_point.y);
 				if (signed_x_diff != 0) {
 					new_view_point.x = orig_view_point.x +
+						x_diff * signed_x_diff * scale / fabs(signed_x_diff);
+					new_point.x = original_point.x +
 						x_diff * signed_x_diff / fabs(signed_x_diff);
-					new_point.x = new_view_point.x * scale;
 				}
 
 				if (signed_y_diff != 0) {
 					new_view_point.y = orig_view_point.y +
+						y_diff * signed_y_diff * scale / fabs(signed_y_diff);
+					new_point.y = original_point.y +
 						y_diff * signed_y_diff / fabs(signed_y_diff);
-					new_point.y = new_view_point.y * scale;
 				}
 			}
 
