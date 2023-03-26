@@ -411,22 +411,25 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 
 	BitmapUtilities::ClearBitmap(preview_bitmap, color.word);
 
-	brush_bmap->Lock();
-	uint32* brush_bits = (uint32*)brush_bmap->Bits();
-	uint32 brush_bpr = brush_bmap->BytesPerRow() / 4;
-	brush_bmap->Unlock();
+	if (brush_bmap != NULL) {
+		brush_bmap->Lock();
+		uint32* brush_bits = (uint32*)brush_bmap->Bits();
+		uint32 brush_bpr = brush_bmap->BytesPerRow() / 4;
+		brush_bmap->Unlock();
 
-	// Here we draw the brush to the bitmap.
-	for (int32 y = 0; y < preview_height; ++y) {
-		for (int32 x = 0; x < preview_width; ++x) {
-			union color_conversion color;
-			color.word = *(brush_bits + (x * scale) + (y * scale * brush_bpr));
-			color.bytes[0] = 255 - color.bytes[0];
-			color.bytes[1] = 255 - color.bytes[1];
-			color.bytes[2] = 255 - color.bytes[2];
+		// Here we draw the brush to the bitmap.
+		for (int32 y = 0; y < preview_height; ++y) {
+			for (int32 x = 0; x < preview_width; ++x) {
+				union color_conversion color;
+				color.word = *(brush_bits + (x * scale) +
+					(y * scale * brush_bpr));
+				color.bytes[0] = 255 - color.bytes[0];
+				color.bytes[1] = 255 - color.bytes[1];
+				color.bytes[2] = 255 - color.bytes[2];
 
-			color.bytes[3] = 0xFF;
-			*(bits + (top+y)*bpr + left+x) = color.word;
+				color.bytes[3] = 0xFF;
+				*(bits + (top+y)*bpr + left+x) = color.word;
+			}
 		}
 	}
 
