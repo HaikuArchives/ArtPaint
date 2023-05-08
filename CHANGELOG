@@ -3,7 +3,56 @@ v2.6:
 * Instead of a context menu to choose a tool, use the current tool to
   draw with the background color.
 
-* Fixes to gradient fill tool
+* New misc. setting: show brush size around mouse pointer
+
+* Added translation, rotation and scaling of selections
+
+* Added undo/redo to layer rename, alpha, blend mode, visibility, delete, merge
+
+* Use zlib to compress image data for each layer, resulting in massively smaller
+  project files, esp. with many rather empty layers.
+
+* Brushes:
+  - moved brush configuration into stored Brushes window
+  - added current brush preview to status bar
+  - removed Brush tool (use Freehand instead)
+  - switch brushes in stored Brushes window with cursor keys
+
+* Blur tool:
+  - added "Use current brush" option
+
+* Eraser Tool:
+  - added "Use current brush" option
+  - added "Pressure" slider to control opacity of erasure
+
+* Fill tool:
+  - a more intuitive usage
+  - show line from start to end point
+  - added modes: radial, square, cone
+
+* Freehand tool:
+  - added "Use current brush" option
+  - added "Pressure" slider to control opacity
+
+* Straight line tool:
+  - added "Use current brush" option
+  - add "Pressure" slider for opacity control
+
+* Transparency tool:
+  - added "Use current brush" option
+  - use slider instead of alpha from current color
+  - changed "Speed" to "Pressure"
+  - made "Pressure" a percentage of the way to the chosen value
+
+* Wave add-on:
+  - Add X and Y spinners for position
+
+* Many bug fixes and improvements
+
+* Updated documentation
+
+* Updated translations
+
 
 v2.5:
 

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
 <!--
- * Copyright 2022
+ * Copyright 2022-2023
  * Distributed under the terms of the MIT License.
  *
  * Authors:
@@ -30,16 +30,22 @@
 <table summary="layout">
 <tr><td style="vertical-align: top"><img src="./images/transparency.png" style="border:none;padding-right:15px;float:right" alt="Setup: Transparency tool" /></td><td style="vertical-align: top">
 
-<p>This tool changes the transparency of the touched pixels by applying the "alpha" value of the current foreground color.</p>
+<p>This tool changes the transparency of the touched pixels.<br />
+You can either set the <span class="menu">Size</span> of the transparency brush or opt to <span class="menu">Use current brush</span> with the currently configured tip in the <a href="../other_windows.html#brushes">Brushes</a> window.</p>
 
-<p>Say you have one image in layer 1 and another in layer 2 above it. If you set the transparency (=alpha) of the foreground color to 50% (the actual color doesn't matter), and start painting in layer 2, the touched pixels become max. 50% transparent and the image of layer 1 shines through.</p>
+<p><span class="menu">Transparency</span> sets the maximal percentage the touched pixels will reach.</p>
 
-<p>If you then set a color with alpha 100%, i.e. fully opaque, you can restore the original image when painting over the same areas you reduced the alpha values before.</p>
+<p><span class="menu">Pressure</span> controls how firmly the brush touches the canvas, the lighter the touch the longer it takes until the configured transparency is reached.</p>
 
-<p>You can set the <span class="menu">Size</span> of your transparency brush.<br />
-<span class="menu">Speed</span> controls how fast the alpha value is applied: the lower the speed, the longer it takes for the pixels to become transparent/opaque.</p>
+<p>For example, if you set <span class="menu">Transparency</span> to 50 and <span class="menu">Pressure</span> to 100, all touched pixels will immediately turn 50% transparent (= alpha value of 128).</p>
 
 <p>The quick key to choose the transparency tool is <span class="key">N</span>.</p>
+
+<div class="box-info">
+The transparency tool only touches the alpha value of a pixel, not the color part (r, g, b).<br />
+What happes if you work with images with transparent areas? Well, if you increase their alpha values from 0 (= fully transparent) to something >0, the formerly invisible color part appears. Many applications use either white (255,255,255,0) or black (0,0,0,0).<br />
+If you don't want to change those transparent areas, create a selection first, quickest with <span class="menu">Selection</span> | <span class="menu">All non-transparent</span>. 
+</div>
 
 </td></tr>
 </table>

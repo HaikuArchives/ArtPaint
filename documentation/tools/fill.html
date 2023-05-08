@@ -30,14 +30,17 @@
 <table summary="layout">
 <tr><td style="vertical-align: top"><img src="./images/fill.png" style="border:none;padding-right:15px;float:right" alt="Setup: Fill tool" /></td><td style="vertical-align: top">
 
-<p>The fill tool applies the foreground color to the the object you click on.<br />
+<p>The fill tool applies the foreground color to the the object you left-click, and the background color if right-clicked.<br />
 The <span class="menu">Tolerance</span> decides if pixels on the current layer are similar enough to the color of the pixel you clicked on to be changed to the new color. A very low tolerance dyes only pixels of the exact same color. A higher tolerance will also dye shades of that color.</p>
 
 <p><span class="menu">Flood fill</span> only colors objects that are connected, sort of like a fill version of the magic wand selection tool.<br />
 Without <span class="menu">Flood fill</span>, all similar pixels on the current layer get changed, which is similar to other apps' "Replace color" tool.</p>
 
 <p>You can <span class="menu">Enable gradient</span> and drag and drop two colors to the left and right side of the gradient bar at the bottom.<br />
-The left color of the gradient begins where you click in the canvas, then you drag the mouse to where the gradient shall end with its right color, and release the mouse button.</p>
+The gradient can be applied <span class="menu">Linear</span>, <span class="menu">Radial</span>, <span class="menu">Square</span> or <span class="menu">Cone</span>.</p>
+<p>For <span class="menu">Radial</span>, <span class="menu">Square</span> and <span class="menu">Cone</span>, a click in the canvas sets the center where the gradient begins with the left color.<br />
+For <span class="menu">Linear</span> the left-click sets the 'flipping point' between the left and right color. If you simply clicked once without moving the mouse, you'd get a hard switch from one color to the other.<br />
+By click and dragging the mouse, you set the width and direction of the gradient.</p>
 
 <p>If you <span class="menu">Enable preview</span> you see the gradient live as you click and move the mouse.</p>
 
