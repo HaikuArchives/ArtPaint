@@ -50,10 +50,12 @@ public:
 	virtual							~BlurToolConfigView() {}
 
 	virtual	void					AttachedToWindow();
+	virtual void					MessageReceived(BMessage* message);
 
 private:
 			NumberSliderControl*	fBlurSize;
 			BCheckBox*				fContinuity;
+			BCheckBox*				fUseBrush;
 };
 
 #endif	// BLUR_TOOL_H
