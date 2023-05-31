@@ -3,20 +3,30 @@ on: [push, pull_request]
 
 jobs:
   build-haiku:
-    name: 'Build on Haiku'
-    runs-on: 'ubuntu-latest'
-    container: 'docker.io/hectorm/qemu-haiku:latest'
+    timeout-minutes: 30
+    runs-on: ${{ matrix.config.runner }}
+    name: build-${{ matrix.config.os }}-${{ matrix.config.version }}-${{ matrix.config.architecture }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # The OS versions supported are specific to the version of the action
+          # https://github.com/cross-platform-actions/action/blob/master/changelog.md
+          - { os: haiku, version: 'r1beta4', runner: 'ubuntu-latest', architecture: 'x86-64' }
+          - { os: haiku, version: 'r1beta4',  runner: 'ubuntu-latest', architecture: 'x86' }
+
     steps:
-      - name: 'Wait until the VM is ready'
-        run: 'container-init & timeout 600 vmshell exit 0'
-      - name: 'Install packages'
-        run: 'vmshell pkgman install -y haiku_devel makefile_engine cmd:gcc cmd:make'
-#      - name: 'Reboot and wait until the VM is ready'
-#        run: 'vmshell shutdown -r & timeout 600 vmshell exit 0'
-      - name: 'Checkout project'
-        uses: 'actions/checkout@main'
-      - name: 'Copy project to VM'
-        run: 'vmshell mkdir ./src/; tar -cf - ./ | vmshell tar -xf - -C ./src/'
-      - name: build
-        run: |
-          vmshell 'cd src; ./build.sh'
+      - uses: actions/checkout@v2
+
+      - uses: korli/action@v0.14.0-haiku
+        with:
+          operating_system: ${{ matrix.config.os }}
+          version: ${{ matrix.config.version }}
+          architecture: ${{ matrix.config.architecture }}
+          run: |
+            if [[ `uname -m` == BePC ]]; then
+              setarch x86 ./build.sh
+            else
+              ./build.sh
+            fi
