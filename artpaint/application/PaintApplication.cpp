@@ -430,12 +430,14 @@ PaintApplication::RefsReceived(BMessage* message)
 					window->Show();
 				}
 			} else {
-				BString text = B_TRANSLATE("The file %file% is of unsupported type. You could try installing a translator for it if possible.");
+				BString text = B_TRANSLATE("The file '%file%' is of unsupported type. "
+					"You could try installing a translator for it if possible.");
 				text.ReplaceAll("%file%", ref.name);
 				_ShowAlert(text);
 			}
 		} else {
-			BString text = B_TRANSLATE("The file %file% is of unsupported type. You could try installing a translator for it if possible.");
+			BString text = B_TRANSLATE("The file '%file%' is of unsupported type. "
+				"You could try installing a translator for it if possible.");
 			text.ReplaceAll("%file%", ref.name);
 			_ShowAlert(text);
 		}
@@ -742,7 +744,7 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 	// We can assume that the project_file is a valid file.
 
 	char text[B_FILE_NAME_LENGTH];
-	sprintf(text, "Project file %s structure corrupted.", ref.name);
+	sprintf(text, "Project file '%s' structure corrupted.", ref.name);
 
 	char fileId[B_FILE_NAME_LENGTH];
 	ssize_t size = file.Read(fileId, strlen(HS_PROJECT_ID_STRING));
