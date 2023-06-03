@@ -37,9 +37,10 @@
 #define B_TRANSLATION_CONTEXT "Tools"
 
 
-DrawingTool::DrawingTool(const BString& name, int32 type)
+DrawingTool::DrawingTool(const BString& name, const BString& shortcut, int32 type)
 	: fIcon(NULL)
 	, fName(name)
+	, fShortcut(shortcut)
 	, fType(type)
 	, fLastUpdatedRect(BRect())
 {

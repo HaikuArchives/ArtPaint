@@ -35,7 +35,7 @@
 
 
 EllipseTool::EllipseTool()
-	: DrawingTool(B_TRANSLATE("Ellipse tool"),
+	: DrawingTool(B_TRANSLATE("Ellipse tool"), "p",
 		ELLIPSE_TOOL)
 {
 	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION |

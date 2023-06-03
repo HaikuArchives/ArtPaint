@@ -49,7 +49,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 FillTool::FillTool()
-	: DrawingTool(B_TRANSLATE("Fill tool"), FILL_TOOL)
+	: DrawingTool(B_TRANSLATE("Fill tool"), "i",
+		FILL_TOOL)
 {
 	// Set options here. The MODE_OPTION is used for determining if we do flood
 	// fill or some other type of fill.

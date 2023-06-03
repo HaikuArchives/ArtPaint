@@ -40,7 +40,8 @@
 
 
 BrushTool::BrushTool()
-	: DrawingTool(B_TRANSLATE("Brush tool"), BRUSH_TOOL)
+	: DrawingTool(B_TRANSLATE("Brush tool"), "b",
+		BRUSH_TOOL)
 {
 	// Options will also have some brush-data options.
 	fOptions = 0;

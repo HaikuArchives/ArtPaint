@@ -243,7 +243,7 @@ ToolSelectionWindow::_AddTool(const DrawingTool* tool)
 	message->AddUInt32("buttons", 0);
 	message->AddInt32(skTool, tool->Type());
 
-	ToolButton* button = new ToolButton(tool->Name(), message, tool->Icon());
+	ToolButton* button = new ToolButton(tool->Name(), tool->Shortcut(), message, tool->Icon());
 	button->ResizeToPreferred();
 	fMatrixView->AddSubView(button);
 

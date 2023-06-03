@@ -21,7 +21,8 @@
 
 
 TextTool::TextTool()
-	: DrawingTool(B_TRANSLATE("Text tool"), TEXT_TOOL)
+	: DrawingTool(B_TRANSLATE("Text tool"), "t",
+		TEXT_TOOL)
 {
 }
 

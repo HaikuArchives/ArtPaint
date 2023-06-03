@@ -44,7 +44,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 EraserTool::EraserTool()
-	: DrawingTool(B_TRANSLATE("Eraser tool"),
+	: DrawingTool(B_TRANSLATE("Eraser tool"), "e",
 		ERASER_TOOL)
 {
 	fOptions = SIZE_OPTION | MODE_OPTION | USE_BRUSH_OPTION | PRESSURE_OPTION;

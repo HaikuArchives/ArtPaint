@@ -40,7 +40,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 BlurTool::BlurTool()
-	: DrawingTool(B_TRANSLATE("Blur tool"), BLUR_TOOL)
+	: DrawingTool(B_TRANSLATE("Blur tool"), "u",
+		BLUR_TOOL)
 {
 	fOptions = SIZE_OPTION | CONTINUITY_OPTION | USE_BRUSH_OPTION;
 	fOptionsCount = 3;

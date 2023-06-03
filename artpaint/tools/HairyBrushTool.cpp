@@ -47,7 +47,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 HairyBrushTool::HairyBrushTool()
-	: DrawingTool(B_TRANSLATE("Hairy brush tool"),
+	: DrawingTool(B_TRANSLATE("Hairy brush tool"), "h",
 		HAIRY_BRUSH_TOOL)
 {
 	fOptions = SIZE_OPTION | PRESSURE_OPTION | TOLERANCE_OPTION
