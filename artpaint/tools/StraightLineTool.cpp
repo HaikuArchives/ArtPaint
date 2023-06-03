@@ -48,7 +48,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 StraightLineTool::StraightLineTool()
-	: DrawingTool(B_TRANSLATE("Straight line tool"),
+	: DrawingTool(B_TRANSLATE("Straight line tool"), "l",
 		STRAIGHT_LINE_TOOL)
 {
 	fOptions = SIZE_OPTION | ANTI_ALIASING_LEVEL_OPTION | MODE_OPTION |

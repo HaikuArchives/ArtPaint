@@ -23,13 +23,16 @@
 const float gInset = 2.0;
 
 
-ToolButton::ToolButton(const char* name, BMessage* message, BBitmap* icon)
+ToolButton::ToolButton(const char* name, const char* shortcut, BMessage* message, BBitmap* icon)
 	: BControl(name, "?", message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS)
 	, fInside(false)
 	, fMouseButton(0)
 	, fIcon(icon)
 {
-	SetToolTip(name);
+	BString toolShort(shortcut);
+	BString toolName(name);
+	toolName << " – " << toolShort.ToUpper();
+	SetToolTip(toolName);
 }
 
 

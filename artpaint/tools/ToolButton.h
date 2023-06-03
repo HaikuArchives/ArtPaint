@@ -15,8 +15,8 @@
 
 class ToolButton : public BControl {
 public:
-								ToolButton(const char* name, BMessage* message,
-									BBitmap* icon = NULL);
+								ToolButton(const char* name, const char* shortcuts,
+									BMessage* message, BBitmap* icon = NULL);
 								~ToolButton();
 
 	virtual	void				SetValue(int32 value);

@@ -39,7 +39,7 @@
 
 
 RectangleTool::RectangleTool()
-	: DrawingTool(B_TRANSLATE("Rectangle tool"),
+	: DrawingTool(B_TRANSLATE("Rectangle tool"), "r",
 		RECTANGLE_TOOL)
 {
 	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION

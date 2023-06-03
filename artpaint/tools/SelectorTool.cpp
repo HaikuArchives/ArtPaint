@@ -45,7 +45,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 SelectorTool::SelectorTool()
-	: DrawingTool(B_TRANSLATE("Selection tool"),
+	: DrawingTool(B_TRANSLATE("Selection tool"), "s",
 		SELECTOR_TOOL),
 	ToolEventAdapter()
 {

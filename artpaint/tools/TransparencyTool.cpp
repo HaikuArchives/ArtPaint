@@ -40,7 +40,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 TransparencyTool::TransparencyTool()
-	: DrawingTool(B_TRANSLATE("Transparency tool"),
+	: DrawingTool(B_TRANSLATE("Transparency tool"), "n",
 		TRANSPARENCY_TOOL)
 {
 	// The pressure option controls the speed of transparency change.

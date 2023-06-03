@@ -45,7 +45,7 @@ const float kWidgetSpacing 	= 5.0;
 
 class DrawingTool {
 public:
-							DrawingTool(const BString& name, int32 type);
+							DrawingTool(const BString& name, const BString& shortcut, int32 type);
 	virtual					~DrawingTool();
 
 	virtual	int32			UseToolWithScript(ToolScript*, BBitmap*);
@@ -63,6 +63,7 @@ public:
 
 			BBitmap*		Icon() const;
 			BString			Name() const { return fName; }
+			BString			Shortcut() const { return fShortcut; }
 			int32			Type() const { return fType; }
 
 
@@ -86,6 +87,7 @@ protected:
 private:
 			BBitmap*		fIcon;
 			BString			fName;
+			BString			fShortcut;
 			int32			fType;
 
 			// The UseTool-function should set this region. Before starting the

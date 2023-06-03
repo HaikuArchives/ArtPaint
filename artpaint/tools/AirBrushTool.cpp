@@ -44,7 +44,7 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 AirBrushTool::AirBrushTool()
-	: DrawingTool(B_TRANSLATE("Airbrush tool"),
+	: DrawingTool(B_TRANSLATE("Airbrush tool"), "a",
 		AIR_BRUSH_TOOL)
 {
 	fOptions = SIZE_OPTION | PRESSURE_OPTION | MODE_OPTION;
