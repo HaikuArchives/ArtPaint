@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build-haiku:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ${{ matrix.config.runner }}
     name: build-${{ matrix.config.os }}-${{ matrix.config.version }}-${{ matrix.config.architecture }}
 
