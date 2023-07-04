@@ -97,6 +97,8 @@ void	FrameResized(float,float);
 };
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "PixelOperations"
 
 
 inline const char* mode_to_string(BlendModes mode)
