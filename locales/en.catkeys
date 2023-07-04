@@ -1,15 +1,14 @@
-1	English	application/x-vnd.artpaint	1978815158
+1	English	application/x-vnd.artpaint	442534110
 Angle:	Manipulators		Angle:
-Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
 Crop…	Manipulators		Crop…
 Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
 Drawing a rectangle.	Tools		Drawing a rectangle.
 Width:	PaintWindow		Width:
-Normal	PixelOperations		Normal
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.
 Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
+Hard mix	FilePanels		Hard mix
 ArtPaint	System name		ArtPaint
 Ellipse: SHIFT for circle, ALT for centered	Tools		Ellipse: SHIFT for circle, ALT for centered
 Airbrush tool	Tools		Airbrush tool
@@ -18,6 +17,7 @@ Not a color set file	ColorPalette		Not a color set file
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
 OK	PaintApplication		OK
 Cancel	ImageView		Cancel
+Pin light	FilePanels		Pin light
 Color picker window	Tools		Color picker window
 Save	FilePanels		Save
 Lock	Manipulators		Lock
@@ -33,18 +33,18 @@ New color set	ColorPalette		New color set
 Change transparency…	Manipulators		Change transparency…
 Cut	PaintWindow		Cut
 OK	Windows		OK
+Color burn	FilePanels		Color burn
 Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
 Drawing a straight line.	Tools		Drawing a straight line.
 Brush tool	Tools		Brush tool
 Redo	UndoQueue		Redo
+Dissolve	FilePanels		Dissolve
 Delete selected brush	Windows		Delete selected brush
-Hard light	PixelOperations		Hard light
 Saves the image to disk.	PaintWindow		Saves the image to disk.
 Add-ons	PaintWindow		Add-ons
 Blurring the image.	Tools		Blurring the image.
 Rotate +90°	Manipulators		Rotate +90°
 Add-ons	Windows		Add-ons
-Difference	PixelOperations		Difference
 Fill rectangle	Tools		Fill rectangle
 Text tool	Manipulators		Text tool
 Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
@@ -79,11 +79,12 @@ Drop a color from the Colors window	Windows		Drop a color from the Colors window
 Nearest neighbor	ScaleUtilities		Nearest neighbor
 Layer name	ImageView		Layer name
 Drawing an ellipse.	Tools		Drawing an ellipse.
-Hard mix	PixelOperations		Hard mix
+Overlay	FilePanels		Overlay
 Background color	Tools		Background color
 Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
 Airbrush	Tools		Airbrush
+Exclusion	FilePanels		Exclusion
 Layer transparency	LayerWindow		Layer transparency
 Select non-transparent	ImageView		Select non-transparent
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
@@ -91,13 +92,13 @@ Undo steps:	Windows		Undo steps:
 Scales all layers.	PaintWindow		Scales all layers.
 OK	ColorPalette		OK
 Tool setup…	PaintWindow		Tool setup…
-Linear burn	PixelOperations		Linear burn
 Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Copies the selection.	PaintWindow		Copies the selection.
 Colors…	PaintWindow		Colors…
 Tool setup	Windows		Tool setup
 Copy	PaintWindow		Copy
 Reset to canvas	Manipulators		Reset to canvas
+Linear burn	FilePanels		Linear burn
 Rotates the active layer.	PaintWindow		Rotates the active layer.
 All layers	PaintWindow		All layers
 No data translator	Windows		No data translator
@@ -107,6 +108,7 @@ Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
 Use current brush	Tools		Use current brush
+Multiply	FilePanels		Multiply
 Open image…	PaintWindow		Open image…
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Adjustable	Windows		Adjustable
@@ -123,7 +125,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 Crops the canvas.	PaintWindow		Crops the canvas.
 Color variance:	Tools		Color variance:
 Blend mode	ImageView		Blend mode
-Dissolve	PixelOperations		Dissolve
 Select none	ImageView		Select none
 Deletes the selected layer.	PaintWindow		Deletes the selected layer.
 Rectangle	Windows		Rectangle
@@ -161,6 +162,7 @@ Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Light
 Selection tool	Tools		Selection tool
 Enable gradient	Tools		Enable gradient
 Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
+Lighten	FilePanels		Lighten
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
 Selects entire layer	PaintWindow		Selects entire layer
@@ -188,7 +190,6 @@ New project…	PaintWindow		New project…
 Add	LayerWindow		Add
 Using the tool.	Tools		Using the tool.
 Tools…	PaintWindow		Tools…
-Divide	PixelOperations		Divide
 Hardness:	Tools		Hardness:
 Recent images	PaintWindow		Recent images
 Color picker tool	Tools		Color picker tool
@@ -200,22 +201,25 @@ Layers	Windows		Layers
 Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 None	PaintWindow		None
-Color dodge	PixelOperations		Color dodge
 Cursor	Windows		Cursor
 Crop…	PaintWindow		Crop…
 Bummer	UndoQueue		Bummer
-Darken	PixelOperations		Darken
 Cross-hair cursor	Windows		Cross-hair cursor
+Divide	FilePanels		Divide
 Brush	StatusView		Brush
 Alpha	Tools		Alpha
 Width:	Tools		Width:
 Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel b
+Linear light	FilePanels		Linear light
+Screen	FilePanels		Screen
 Pressure:	Tools		Pressure:
 Rectangle tool	Tools		Rectangle tool
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Click to select a painting color.	ColorPalette		Click to select a painting color.
+Darken	FilePanels		Darken
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
+Linear dodge	FilePanels		Linear dodge
 Linear	Tools		Linear
 Next color set	ColorPalette	In Color Palette window	Next color set
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
@@ -228,8 +232,8 @@ Settings…	FilePanels		Settings…
 Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Use selection	Manipulators		Use selection
 Alpha	ColorSliders	For color sliders	Alpha
-Exclusion	PixelOperations		Exclusion
 Undo	UndoQueue		Undo
+Vivid light	FilePanels		Vivid light
 File	PaintWindow		File
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
 Scale the selection.	PaintWindow		Scale the selection.
@@ -240,6 +244,7 @@ Flip horizontally	Manipulators		Flip horizontally
 Flow:	Tools		Flow:
 Picking a color.	Tools		Picking a color.
 Opens a project from disk.	PaintWindow		Opens a project from disk.
+Hard light	FilePanels		Hard light
 Flip vertically	PaintWindow		Flip vertically
 Yellow	ColorSliders	For CMYK color slider	Yellow
 Zoom out	PaintWindow		Zoom out
@@ -254,6 +259,7 @@ File structure corrupted	ColorPalette		File structure corrupted
 Finishing	ImageView		Finishing
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Save project	PaintWindow		Save project
+Conic	Tools		Conic
 Save format:	FilePanels		Save format:
 None	Tools		None
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
@@ -264,7 +270,6 @@ Size:	Manipulators		Size:
 Color set	ColorPalette		Color set
 Fill ellipse	Tools		Fill ellipse
 Transparent	Manipulators		Transparent
-Soft light	PixelOperations		Soft light
 Ellipse	Tools		Ellipse
 Adjustable width	Tools		Adjustable width
 Transparency:	Manipulators		Transparency:
@@ -313,7 +318,6 @@ Options	Tools		Options
 Translate selection	ImageView		Translate selection
 Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
-Pin light	PixelOperations		Pin light
 Eraser tool	Tools		Eraser tool
 Layer %ld / %ld	ImageView		Layer %ld / %ld
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
@@ -323,18 +327,15 @@ Rotate	Manipulators		Rotate
 Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
 Click to use the tool.	Tools		Click to use the tool.
 Merge down	Image		Merge down
-Color burn	PixelOperations		Color burn
 Window	PaintWindow		Window
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
 Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
-Multiply	PixelOperations		Multiply
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Brush	Windows		Brush
 Blur tool	Tools		Blur tool
 Hairy brush tool	Tools		Hairy brush tool
 About ArtPaint	PaintWindow		About ArtPaint
 Layer visibility	ImageView		Layer visibility
-Linear dodge	PixelOperations		Linear dodge
 Tools	Tools		Tools
 Transparency:	Tools		Transparency:
 Save image as…	PaintWindow		Save image as…
@@ -343,13 +344,11 @@ Blue	ColorSliders	For RGB color sliders	Blue
 Pastes previously copied selection as a new project.	PaintWindow		Pastes previously copied selection as a new project.
 Hide borders	PaintWindow		Hide borders
 Delete current set	ColorPalette		Delete current set
-Linear light	PixelOperations		Linear light
 Redo	PaintWindow		Redo
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 Scale	Manipulators		Scale
 All non-transparent	PaintWindow		All non-transparent
-Vivid light	PixelOperations		Vivid light
 Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Recent projects
 Brushes…	PaintWindow		Brushes…
@@ -357,9 +356,9 @@ Rotates all layers.	PaintWindow		Rotates all layers.
 Clears the selection or layer.	PaintWindow		Clears the selection or layer.
 Restore	Manipulators		Restore
 Keep in front	Windows		Keep in front
+Color dodge	FilePanels		Color dodge
 OK	Image		OK
 Red	ColorSliders	For RGB color sliders	Red
-Screen	PixelOperations		Screen
 Colors	Windows		Colors
 Off	PaintWindow		Off
 Delete layer	Image		Delete layer
@@ -392,10 +391,11 @@ Add layer	Image		Add layer
 Opens the colors window.	PaintWindow		Opens the colors window.
 Quits ArtPaint.	PaintWindow		Quits ArtPaint.
 Transparency	Tools		Transparency
+Normal	FilePanels		Normal
 Layer transparency	ImageView		Layer transparency
+Difference	FilePanels		Difference
 Delete	PaintWindow		Delete
 Choose format	FilePanels		Choose format
-Overlay	PixelOperations		Overlay
 Rotate…	PaintWindow		Rotate…
 Invert	PaintWindow		Invert
 Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
@@ -411,6 +411,7 @@ Layers	LayerWindow		Layers
 Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
 Green	ColorSliders	For RGB color sliders	Green
+Soft light	FilePanels		Soft light
 Move the selection.	PaintWindow		Move the selection.
 Scale selection	ImageView		Scale selection
 Tolerance:	Tools		Tolerance:
