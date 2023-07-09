@@ -1123,7 +1123,7 @@ FillTool::HelpString(bool isInUse) const
 {
 	return (isInUse
 		? B_TRANSLATE("Making a fill.")
-		: B_TRANSLATE("Fill tool: SHIFT locks 22.5° angles."));
+		: B_TRANSLATE("Fill tool: SHIFT locks 22.5° angles"));
 }
 
 

@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1096657440
+1	English	application/x-vnd.artpaint	3098087890
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -50,6 +50,7 @@ Text tool	Manipulators		Text tool
 Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
 Spray	Tools		Spray
 Colors:	Windows		Colors:
+Fill tool: SHIFT locks 22.5° angles	Tools		Fill tool: SHIFT locks 22.5° angles
 Zoom in	PaintWindow		Zoom in
 Rotate +90°	PaintWindow		Rotate +90°
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
@@ -89,7 +90,6 @@ Select non-transparent	ImageView		Select non-transparent
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Undo steps:	Windows		Undo steps:
 Scales all layers.	PaintWindow		Scales all layers.
-Fill tool: SHIFT locks 22.5° angles.	Tools		Fill tool: SHIFT locks 22.5° angles.
 OK	ColorPalette		OK
 Tool setup…	PaintWindow		Tool setup…
 Linear burn	PixelOperations		Linear burn
