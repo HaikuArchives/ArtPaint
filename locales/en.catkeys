@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3601114434
+1	English	application/x-vnd.artpaint	3098087890
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -50,6 +50,7 @@ Text tool	Manipulators		Text tool
 Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
 Spray	Tools		Spray
 Colors:	Windows		Colors:
+Fill tool: SHIFT locks 22.5° angles	Tools		Fill tool: SHIFT locks 22.5° angles
 Zoom in	PaintWindow		Zoom in
 Rotate +90°	PaintWindow		Rotate +90°
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
