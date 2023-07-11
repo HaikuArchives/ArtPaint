@@ -1,5 +1,6 @@
-1	Swedish	application/x-vnd.artpaint	3981580643
+1	Swedish	application/x-vnd.artpaint	3098087890
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Du har gjort en ändring sedan senast projektet sparades.\nVill du spara ändringen?}other{%project_name%: Du har gjort # ändringar sedan senast projektet sparades.\nVill du spara ändringarna?}}
+Blend mode	ImageView		Blend mode
 Cancel	ImageView		Avbryt
 Don't save	ImageView		Spara inte
 Drop layer to copy it to this image.	ImageView		Släpp lager för att kopiera det till den här bilden.
@@ -7,15 +8,21 @@ Finishing	ImageView		Efterbehandling
 Grow selection	ImageView		Öka urvalet
 Invert selection	ImageView		Invertera urval
 Layer %ld / %ld	ImageView		Lager %ld / %ld
+Layer name	ImageView		Layer name
+Layer transparency	ImageView		Layer transparency
+Layer visibility	ImageView		Layer visibility
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att lägga till ett lager. Du kan frigöra mer minne genom att inaktivera ångra och stänga andra bilder. Det är också en bra idé att spara bilden nu eftersom att ta slut på minnet senare kan göra det svårt eller omöjligt att spara. Ursäkta besväret.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att avsluta effekten du begärde. Du kan stänga andra bilder och försöka igen. Att förkorta djupet av ångra eller inaktivera ångra helt och hållet hjälper till att uppnå mer minne. Om du har andra program igång, får du mer ledigt minne om du stänger dem. Det är också en bra idé att spara ditt arbete vid det här laget, för om minnet tar slut helt kan det bli omöjligt att spara.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att starta effekten du begärde. Du kan stänga andra bilder och försöka igen. Att förkorta djupet av ångra eller inaktivera ångra helt och hållet hjälper till att uppnå mer minne. Om du har andra program igång, får du mer ledigt minne om du stänger dem. Det är också en bra idé att spara ditt arbete vid det här laget, för om minnet tar slut helt kan det bli omöjligt att spara.
 OK	ImageView		OK
+Rotate selection	ImageView		Rotate selection
 Save	ImageView		Spara
+Scale selection	ImageView		Scale selection
 Select all	ImageView		Välj alla
 Select non-transparent	ImageView		Välj icke-transparent
 Select none	ImageView		Välj ingen
 Shrink selection	ImageView		Krymp urval
+Translate selection	ImageView		Translate selection
 Unsaved changes!	ImageView		Osparade ändringar!
 About ArtPaint	PaintWindow		Om ArtPaint
 Active layer	PaintWindow		Aktivt lager
@@ -65,6 +72,7 @@ Layer	PaintWindow		Lager
 Layers…	PaintWindow		Skikten…
 Merge down	PaintWindow		Slå ihop
 Merges selected layer with the layer below.	PaintWindow		Slår ihop det valda lagret med lagret nedan.
+Move the selection.	PaintWindow		Move the selection.
 Moves all layers.	PaintWindow		Flyttar alla lager.
 Moves the active layer.	PaintWindow		Flyttar det aktiva lagret.
 New project…	PaintWindow		Nytt projekt…
@@ -98,6 +106,7 @@ Resize…	PaintWindow		Ändra storlek...
 Resizes the canvas.	PaintWindow		Ändrar storleken på duken.
 Rotate -90°	PaintWindow		Rotera -90 °
 Rotate +90°	PaintWindow		Rotera +90 °
+Rotate the selection.	PaintWindow		Rotate the selection.
 Rotate…	PaintWindow		Rotera…
 Rotates all layers.	PaintWindow		Roterar alla lager.
 Rotates the active layer.	PaintWindow		Roterar det aktiva skiktet.
@@ -111,6 +120,7 @@ Saves the image to disk.	PaintWindow		Sparar bilden på disken.
 Saves the image under its current name.	PaintWindow		Sparar bilden under dess nuvarande namn.
 Saves the project to disk.	PaintWindow		Sparar projektet på disken.
 Saves the project under its current name.	PaintWindow		Sparar projektet under sitt nuvarande namn.
+Scale the selection.	PaintWindow		Scale the selection.
 Scale…	PaintWindow		Skala…
 Scales all layers.	PaintWindow		Skalar alla lager.
 Scales the active layer.	PaintWindow		Skalar det aktiva lagret.
@@ -185,7 +195,11 @@ No data translator	Windows		Ingen datatraskare
 No options	Windows		Inga alternativ
 Off	Windows		Av
 OK	Windows		OK
+Rectangle	Windows		Rectangle
+Reset Brush	Windows		Reset Brush
 Settings	Windows		inställningar
+Show brush size	Windows		Show brush size
+Store Brush	Windows		Store Brush
 Tool cursor	Windows		Verktygsmarkör
 Tool setup	Windows		Verktygsinställning
 Tools	Windows		Verktyg
@@ -212,6 +226,7 @@ Click to use the tool.	Tools		Klicka för att använda verktyget.
 Color picker tool	Tools		Färgväljarverktyg
 Color picker window	Tools		Fönster för färgväljare
 Color variance:	Tools		Färgvarians:
+Conic	Tools		Conic
 Continuous	Tools		Kontinuerlig
 Drag the text to correct position and set its appearance.	Tools		Dra texten för att korrigera position och ställa in utseendet.
 Drawing a freehand line.	Tools		Rita en frihandslinje.
@@ -230,6 +245,7 @@ Erasing pixels.	Tools		Radera pixlar.
 Fill ellipse	Tools		Fylla ellips
 Fill rectangle	Tools		Fyllrektangel
 Fill tool	Tools		Fyllverktyg
+Fill tool: SHIFT locks 22.5° angles	Tools		Fyllverktyg: SHIFT låser 22,5° vinklar
 Flood fill	Tools		Flödningsfyllning
 Flow:	Tools		Flöde:
 Freehand	Tools		Frihand
@@ -240,6 +256,7 @@ Hairy brush tool	Tools		Hårigt penselverktyg
 Hardness:	Tools		Hårdhet:
 Hold SHIFT to snap to 45° angles	Tools		Håll ned SHIFT för att snäppa till 45° vinklar
 Intelligent scissors	Tools		Intelligent sax
+Linear	Tools		Linear
 Little	Tools		Liten
 Magic wand	Tools		Trollspö
 Making a fill.	Tools		Gör en fyllning.
@@ -252,6 +269,8 @@ Options	Tools		alternativ
 Painting with a brush.	Tools		Måla med en borste.
 Painting with a hairy brush.	Tools		Måla med en hårig borste.
 Picking a color.	Tools		Plocka en färg.
+Pressure:	Tools		Pressure:
+Radial	Tools		Radial
 Random	Tools		Slumpmässig
 Rectangle	Tools		Rektangel
 Rectangle tool	Tools		Rektangelverktyg
@@ -262,8 +281,8 @@ Reset brush	Tools		Återställningsborste
 Selection tool	Tools		Urvalsverktyg
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Markeringsverktyg: SHIFT för kvadrat/cirkel, ALT centrerar val, OPT subtraherar
 Size:	Tools		Storlek:
-Speed:	Tools		Fart:
 Spray	Tools		Spray
+Square	Tools		Square
 Store brush	Tools		Butiksborste
 Straight line tool	Tools		Rak linjeverktyg
 Straight line: SHIFT locks 22.5° angles	Tools		Rak linje: SHIFT låser 22,5° vinklar
@@ -273,6 +292,8 @@ Tool setup	Tools		Verktygsinställning
 Tools	Tools		Verktyg
 Transparency	Tools		Genomskinlighet
 Transparency tool	Tools		Transparensverktyg
+Transparency:	Tools		Transparency:
+Use current brush	Tools		Use current brush
 Using the airbrush.	Tools		Med hjälp av luftborsten.
 Using the tool.	Tools		Använda verktyget.
 Width:	Tools		Bredd:
@@ -302,27 +323,30 @@ Flip vertically	Manipulators		Vända vertikalt
 Font:	Manipulators		Font:
 Height:	Manipulators		Höjd:
 Left:	Manipulators		Vänster:
-Lock	Manipulators	Keep the aspect ratio	Låsa
+Lock	Manipulators	Keep the aspect ratio	Lås
 Lock	Manipulators		Lås
 Opaque	Manipulators		Ogenomskinlig
 Reset to canvas	Manipulators		Återställ till canvas
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
 Resize…	Manipulators		Resize…
 Restore	Manipulators		Återställ
+Rotate	Manipulators		Rotate
 Rotate -90°	Manipulators		Rotera -90 °
 Rotate +90°	Manipulators		Rotera +90 °
+Rotate selection	Manipulators		Rotate selection
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotera: Vänster-dra för att rotera, högerklicka för att ställa in rotationscentrum, SKIFT för att fästa vinkeln.
-Rotate…	Manipulators		Rotera…
 Rotation:	Manipulators		Rotation:
+Scale	Manipulators		Scale
+Scale selection	Manipulators		Scale selection
 Scale: Drag to resize or use number-fields.	Manipulators		Skala: Dra för att ändra storlek eller använda nummerfält.
-Scale…	Manipulators		Skala…
 Shear:	Manipulators		Klippa:
 Size:	Manipulators		Storlek:
 Text tool	Manipulators		Textverktyg
 Text: Position text and set its appearance.	Manipulators		Text: Placera text och ställ in dess utseende.
 Top:	Manipulators		Topp:
+Translate	Manipulators		Translate
+Translate selection	Manipulators		Translate selection
 Translate: Drag to move or use number-fields.	Manipulators		Översätt: Dra för att flytta eller använda nummerfält.
-Translate…	Manipulators		Översätt…
 Transparency:	Manipulators		Genomskinlighet:
 Transparent	Manipulators		Transparent
 Use selection	Manipulators		Använd urval
@@ -334,7 +358,7 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 ArtPaint: Open image…	PaintApplication		Artpaint: Open Image ...
 ArtPaint: Open project…	PaintApplication		Artpaint: Open Project ...
 OK	PaintApplication		OK
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Fil % -fil % är av typen som inte stöds. Du kan försöka installera en översättare för det om möjligt.
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Fil '%file%' är av typen som inte stöds. Du kan försöka installera en översättare för det om möjligt.
 ArtPaint: Open color set…	ColorPalette		Artpaint: Öppen färguppsättning ...
 Cannot delete the only color set.	ColorPalette		Det går inte att ta bort den enda färguppsättningen.
 Cannot write to file	ColorPalette		Kan inte skriva till filen
@@ -365,6 +389,8 @@ Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
 Bilinear	ScaleUtilities		Bilinear
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
 Nearest neighbor	ScaleUtilities		Nearest neighbor
+Brush	StatusView		Brush
+Left-click for color panel, right-click to switch colors.	StatusView		Vänsterklicka för färgpanel, högerklicka för att byta färg.
 Bummer	UndoQueue		Besvikelse
 Redo	UndoQueue		Göra om
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Undo-mekanismen har slut på minnet. \ Det djupet av ångra kommer att begränsas så att de senaste händelserna kan hållas i minnet. Det är tillrådligt att spara ditt arbete vid denna tidpunkt för att undvika eventuell förlust av data om minnet går helt ut. \ Nyou kanske också vill justera ångan i inställningarna.
@@ -391,5 +417,4 @@ Soft light	PixelOperations		Mjukt ljus
 Vivid light	PixelOperations		Levande ljus
 Free 2D transform	FreeTransformManipulator		Gratis 2D-transformation
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformera: Dra för att rotera, flytta eller sträcka.
-Left-click for color panel, right-click to switch colors.	StatusView		Vänsterklicka för färgpanel, högerklicka för att byta färg.
 Zoom	MagnificationView		Zoom

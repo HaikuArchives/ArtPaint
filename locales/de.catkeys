@@ -1,5 +1,6 @@
-1	German	application/x-vnd.artpaint	3981580643
+1	German	application/x-vnd.artpaint	3098087890
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
+Blend mode	ImageView		Misch-Modus
 Cancel	ImageView		Abbrechen
 Don't save	ImageView		Verwerfen
 Drop layer to copy it to this image.	ImageView		Ebene fallen lassen, um sie in dieses Bild zu kopieren.
@@ -7,15 +8,21 @@ Finishing	ImageView		In Arbeit
 Grow selection	ImageView		Auswahl vergrößern
 Invert selection	ImageView		Auswahl invertieren
 Layer %ld / %ld	ImageView		Ebene %ld / %ld
+Layer name	ImageView		Ebenenname
+Layer transparency	ImageView		Ebenen-Transparenz
+Layer visibility	ImageView		Ebenen-Sichtbarkeit
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Der freie Speicher reicht leider. um eine weitere Ebene hinzuzufügen. Durch Ausschalten der Rückgängig-Option oder das Schließen anderer Bilder wird Speicher wieder frei. Das Bild sollte jetzt auch gespeichert werden, denn Speichermangel kann dazu führen, dass späteres Speichern schwierig oder unmöglich wird.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Es steht nicht genügen Speicher zur Verfügung, um den gewünschten Effekt zu beenden. Andere offene Bilder sollten geschlossen werden, um es dann nochmals zu versuchen. Auch kann es helfen, die mögliche Schritte zu reduzieren, etwas rückgängig machen zu können, oder die Rückgängig-Funktion ganz abzuschalten. Das Schließen anderer laufender Programme kann den freien Speicher ebenfalls erhöhen. Das Bild sollte jetzt auch gespeichert werden, denn Speichermangel kann dazu führen, dass späteres Speichern schwierig oder unmöglich wird.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Für den gewünschten Effekt steht nicht genügen Speicher zur Verfügung. Andere offene Bilder sollten geschlossen werden, um es dann nochmals zu versuchen. Auch kann es helfen, die mögliche Schritte zu reduzieren, etwas rückgängig machen zu können, oder die Rückgängig-Funktion ganz abzuschalten. Das Schließen anderer laufender Programme kann den freien Speicher ebenfalls erhöhen. Das Bild sollte jetzt auch gespeichert werden, denn Speichermangel kann dazu führen, dass späteres Speichern schwierig oder unmöglich wird.
 OK	ImageView		OK
+Rotate selection	ImageView		Auswahl drehen
 Save	ImageView		Speichern
+Scale selection	ImageView		Auswahl skalieren
 Select all	ImageView		Alles auswählen
 Select non-transparent	ImageView		Nicht-transparentes auswählen
 Select none	ImageView		Auswahl aufheben
 Shrink selection	ImageView		Auswahl verkleinern
+Translate selection	ImageView		Auswahl verschieben
 Unsaved changes!	ImageView		Ungespeicherte Änderungen!
 About ArtPaint	PaintWindow		Über ArtPaint…
 Active layer	PaintWindow		Aktive Ebene
@@ -65,6 +72,7 @@ Layer	PaintWindow		Ebene
 Layers…	PaintWindow		Ebenen…
 Merge down	PaintWindow		Nach unten vereinigen
 Merges selected layer with the layer below.	PaintWindow		Vereinigt die ausgewählte Ebene mit der darunter.
+Move the selection.	PaintWindow		Auswahl verschieben.
 Moves all layers.	PaintWindow		Alle Ebenen verschieben.
 Moves the active layer.	PaintWindow		Aktuelle Ebene verschieben.
 New project…	PaintWindow		Neues Projekt…
@@ -98,6 +106,7 @@ Resize…	PaintWindow		Größe ändern…
 Resizes the canvas.	PaintWindow		Ändert die Bildgröße.
 Rotate -90°	PaintWindow		Drehen -90°
 Rotate +90°	PaintWindow		Drehen +90°
+Rotate the selection.	PaintWindow		Auswahl drehen.
 Rotate…	PaintWindow		Drehen…
 Rotates all layers.	PaintWindow		Alle Ebenen drehen.
 Rotates the active layer.	PaintWindow		Aktuelle Ebene drehen.
@@ -111,6 +120,7 @@ Saves the image to disk.	PaintWindow		Speichert das Bild auf Festplatte.
 Saves the image under its current name.	PaintWindow		Speichert das Bild unter seinem aktuellen Namen.
 Saves the project to disk.	PaintWindow		Speichert das Projekt.
 Saves the project under its current name.	PaintWindow		Speichert das Projekt unter seinem aktuellen Namen.
+Scale the selection.	PaintWindow		Auswahl skalieren.
 Scale…	PaintWindow		Skalieren…
 Scales all layers.	PaintWindow		Skaliert alle Ebenen.
 Scales the active layer.	PaintWindow		Skaliert die aktive Ebene.
@@ -185,7 +195,11 @@ No data translator	Windows		Kein DatenTranslator
 No options	Windows		Keine Optionen
 Off	Windows		Aus
 OK	Windows		OK
+Rectangle	Windows		Rechteck
+Reset Brush	Windows		Stift zurücksetzen
 Settings	Windows		Einstellungen
+Show brush size	Windows		Stiftgröße anzeigen
+Store Brush	Windows		Stift speichern
 Tool cursor	Windows		mit Werkzeugsymbol
 Tool setup	Windows		Werkzeugeinstellungen
 Tools	Windows		Werkzeuge
@@ -212,6 +226,7 @@ Click to use the tool.	Tools		Klicken um das Werkzeug zu benutzen.
 Color picker tool	Tools		Farbselektion
 Color picker window	Tools		Farbselektion
 Color variance:	Tools		Farbvarianz:
+Conic	Tools		Konisch
 Continuous	Tools		Kontinuierlich
 Drag the text to correct position and set its appearance.	Tools		Text mit der Maus plazieren und Einstellungen vornehmen.
 Drawing a freehand line.	Tools		Freihandlinie zeichnen.
@@ -230,6 +245,7 @@ Erasing pixels.	Tools		Pixel entfernen.
 Fill ellipse	Tools		Ellipse füllen
 Fill rectangle	Tools		Rechteck füllen
 Fill tool	Tools		Füllen
+Fill tool: SHIFT locks 22.5° angles	Tools		Füllen: SHIFT für 22,5° Winkel
 Flood fill	Tools		Begrenzt füllen
 Flow:	Tools		Fluss:
 Freehand	Tools		Freihand
@@ -240,6 +256,7 @@ Hairy brush tool	Tools		Pinsel
 Hardness:	Tools		Härte:
 Hold SHIFT to snap to 45° angles	Tools		SHIFT für 45° Winkel
 Intelligent scissors	Tools		Intelligente Schere
+Linear	Tools		Linear
 Little	Tools		Wenig
 Magic wand	Tools		Zauberstab
 Making a fill.	Tools		Füllen.
@@ -252,6 +269,8 @@ Options	Tools		Optionen
 Painting with a brush.	Tools		Mit Stift zeichnen.
 Painting with a hairy brush.	Tools		Mit Pinsel zeichnen.
 Picking a color.	Tools		Farbe aufnehmen.
+Pressure:	Tools		Druck:
+Radial	Tools		Radial
 Random	Tools		Zufall
 Rectangle	Tools		Rechteck
 Rectangle tool	Tools		Rechteck
@@ -262,8 +281,8 @@ Reset brush	Tools		Stift zurücksetzen
 Selection tool	Tools		Auswahl
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Auswahl: SHIFT für Quadrat/Kreis, ALT für zentriert, OPT subtrahiert
 Size:	Tools		Größe:
-Speed:	Tools		Stärke:
 Spray	Tools		Sprühdose
+Square	Tools		Quadratisch
 Store brush	Tools		Stift speichern
 Straight line tool	Tools		Linie
 Straight line: SHIFT locks 22.5° angles	Tools		Linie: SHIFT für 22,5° Winkel
@@ -273,6 +292,8 @@ Tool setup	Tools		Werkzeugeinstellungen
 Tools	Tools		Werkzeuge
 Transparency	Tools		Transparenz
 Transparency tool	Tools		Transparenz
+Transparency:	Tools		Transparenz:
+Use current brush	Tools		Aktuellen Stift benutzen
 Using the airbrush.	Tools		Mit Airbrush zeichnen.
 Using the tool.	Tools		Werkzeug benutzen.
 Width:	Tools		Breite:
@@ -309,20 +330,23 @@ Reset to canvas	Manipulators		Ganzes Bild
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Größe ändern: Neue Größe durch Ziehen oder per Zahlenfelder. SHIFT für festes Seitenverhältnis.
 Resize…	Manipulators		Größe ändern…
 Restore	Manipulators		Reset
+Rotate	Manipulators		Drehen
 Rotate -90°	Manipulators		Drehen -90°
 Rotate +90°	Manipulators		Drehen +90°
+Rotate selection	Manipulators		Auswahl drehen
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Drehen: Links-ziehen für Drehung, Rechtsklick setzt Drehpunkt, SHIFT für 22,5° Winkel
-Rotate…	Manipulators		Drehen…
 Rotation:	Manipulators		Drehung:
+Scale	Manipulators		Skalieren
+Scale selection	Manipulators		Auswahl skalieren
 Scale: Drag to resize or use number-fields.	Manipulators		Skalieren: Neue Größe durch Ziehen oder per Zahlenfelder.
-Scale…	Manipulators		Skalieren…
 Shear:	Manipulators		Neigung:
 Size:	Manipulators		Größe:
 Text tool	Manipulators		Text
 Text: Position text and set its appearance.	Manipulators		Text: Text plazieren und Einstellungen vornehmen.
 Top:	Manipulators		Oben:
+Translate	Manipulators		Verschieben
+Translate selection	Manipulators		Auswahl verschieben
 Translate: Drag to move or use number-fields.	Manipulators		Verschieben: Ziehen oder per Zahlenfelder bewegen
-Translate…	Manipulators		Verschieben…
 Transparency:	Manipulators		Transparenz:
 Transparent	Manipulators		Transparent
 Use selection	Manipulators		Auswahl benutzen
@@ -334,7 +358,7 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 ArtPaint: Open image…	PaintApplication		ArtPaint: Bild öffnen…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Projekt öffnen…
 OK	PaintApplication		OK
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Die Datei %file% hat ein nicht unterstützes Format. Wenn möglich sollten ein Translator dafür installiert werden.
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Die Datei '%file%' hat ein nicht unterstützes Format. Wenn möglich sollten ein Translator dafür installiert werden.
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Farbsatz öffnen…
 Cannot delete the only color set.	ColorPalette		Der einzig vorhandene Farbsatz kann nicht entfernt werden.
 Cannot write to file	ColorPalette		Datei kann nicht geschrieben werden
@@ -365,6 +389,8 @@ Bicubic (Catmull-Rom)	ScaleUtilities		Bikubisch (Catmull-Rom)
 Bilinear	ScaleUtilities		Bilinear
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
 Nearest neighbor	ScaleUtilities		ohne
+Brush	StatusView		Stift
+Left-click for color panel, right-click to switch colors.	StatusView		Linksklick für Farbpalette, Rechtsklick um Farben zu tauschen
 Bummer	UndoQueue		Mist
 Redo	UndoQueue		Wiederholen
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Der Rückgängig-Funktion ist der Speicher ausgegangen.\nDie Anzahl der Rückgängig-Schritte wird begrenzt, so dass nur die letzten Schritte im Speicher gehalten werden können. Es wird empfohlen, das Projekt jetzt zu speichern, um nichts zu verlieren, falls der Speicher komplett ausgeht.\nVielleicht sollte auch mal die Anzahl der rückgängig zu machenden Schritte in den Globalen Einstellungen angepasst werden...
@@ -391,5 +417,4 @@ Soft light	PixelOperations		Weiches Licht
 Vivid light	PixelOperations		Strahlendes Licht
 Free 2D transform	FreeTransformManipulator		Freie 2D Transformation
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformieren: Ziehen um zu drehen, bewegen, dehnen.
-Left-click for color panel, right-click to switch colors.	StatusView		Linksklick für Farbpalette, Rechtsklick um Farben zu tauschen
 Zoom	MagnificationView		Zoom

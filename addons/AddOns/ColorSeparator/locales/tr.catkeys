@@ -5,5 +5,5 @@ Color separator…	AddOns_ColorSeparator		Renk ayırıcı…
 Cyan	AddOns_ColorSeparator		Camgöbeği
 Extracts the color components for printing.	AddOns_ColorSeparator		Yazdırma için renk bileşenlerini çıkarır.
 Magenta	AddOns_ColorSeparator		Mor
-Select C-M-Y-K:	AddOns_ColorSeparator		C-M-Y-K seçin:
+Select C-M-Y-K:	AddOns_ColorSeparator		C-M-Y-K seç:
 Yellow	AddOns_ColorSeparator		Sarı

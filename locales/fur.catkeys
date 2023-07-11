@@ -1,5 +1,6 @@
-1	Friulian	application/x-vnd.artpaint	3981580643
+1	Friulian	application/x-vnd.artpaint	3098087890
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: De ultime volte che il progjet al è stât salvât e je stade fate une modifiche.\nDesideristu salvâ la modifiche?}other{%project_name%: De ultime volte che il progjet al è stât salvât a son stadis fatis # modifichis.\nDesideristu salvâ lis modifichis?}}
+Blend mode	ImageView		Blend mode
 Cancel	ImageView		Anule
 Don't save	ImageView		No sta salvâ
 Drop layer to copy it to this image.	ImageView		Mole il strât par copiâlu su cheste imagjin.
@@ -7,15 +8,21 @@ Finishing	ImageView		Daûr a finî
 Grow selection	ImageView		Incrès selezion
 Invert selection	ImageView		Invertìs selezion
 Layer %ld / %ld	ImageView		Strât %ld / %ld
+Layer name	ImageView		Layer name
+Layer transparency	ImageView		Layer transparency
+Layer visibility	ImageView		Layer visibility
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par zontâ un strât.Tu puedis liberâ plui memorie disabilitant la funzion disfe e sierant lis altris imagjins. No je une brute idee chê di salvâ cumo la imagjin, parcè che se si finìs la memorie plui indenant al sarà plui dificil, se no impussibil, fâ un salvament. Mi displâs par chest inconvenient.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par finî l'efiet domandât. Tu puedis sierâ lis altris imagjins e tornâ a provâ. Ancje scurtâ la profonditât de funzion disfe, o disabilitâ dal dut chê funzion, al jude a vê plui memorie. Se tu âs altris aplicazions in esecuzion, tu puedis otignî plui memorie libare sierantlis. E je ancje une buine idee chê di salvâ il lavôr in chest moment, par vie che se e finìs dal dut la memorie al podarès deventâ impussibil salvâ. Mi displâs par chest inconvenient.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No je vonde memorie libare par scomençâ l'efiet domandât. Tu puedis sierâ lis altris imagjins e tornâ a provâ. Ancje scurtâ la profonditât de funzion disfe, o disabilitâ dal dut chê funzion, al jude a vê plui memorie. Se tu âs altris aplicazions in esecuzion, tu puedis otignî plui memorie libare sierantlis. E je ancje une buine idee chê di salvâ il lavôr in chest moment, par vie che se e finìs dal dut la memorie al podarès deventâ impussibil salvâ. Mi displâs par chest inconvenient.
 OK	ImageView		Va ben
+Rotate selection	ImageView		Rotate selection
 Save	ImageView		Salve
+Scale selection	ImageView		Scale selection
 Select all	ImageView		Selezione dut
 Select non-transparent	ImageView		Selezione no-trasparent
 Select none	ImageView		Deselezion dut
 Shrink selection	ImageView		Ridûs la selezion
+Translate selection	ImageView		Translate selection
 Unsaved changes!	ImageView		Modifichis no salvadis!
 About ArtPaint	PaintWindow		Informazions su ArtPaint
 Active layer	PaintWindow		Strât atîf
@@ -65,6 +72,7 @@ Layer	PaintWindow		Strât
 Layers…	PaintWindow		Strâts…
 Merge down	PaintWindow		Unìs in jù
 Merges selected layer with the layer below.	PaintWindow		Al unìs il strât selezionât cun chel sot.
+Move the selection.	PaintWindow		Move the selection.
 Moves all layers.	PaintWindow		Al sposte ducj i strâts.
 Moves the active layer.	PaintWindow		Al sposte il strât atîf.
 New project…	PaintWindow		Gnûf progjet…
@@ -98,6 +106,7 @@ Resize…	PaintWindow		Ridimensione…
 Resizes the canvas.	PaintWindow		Al ridimensione la tele.
 Rotate -90°	PaintWindow		Volte di -90°
 Rotate +90°	PaintWindow		Volte di +90°
+Rotate the selection.	PaintWindow		Rotate the selection.
 Rotate…	PaintWindow		Volte…
 Rotates all layers.	PaintWindow		Al volte ducj i strâts.
 Rotates the active layer.	PaintWindow		Al volte il strât atîf.
@@ -111,6 +120,7 @@ Saves the image to disk.	PaintWindow		Al salve la imagjin su disc.
 Saves the image under its current name.	PaintWindow		Al salve la imagjin cul so non atuâl.
 Saves the project to disk.	PaintWindow		Al salve il progjet su disc.
 Saves the project under its current name.	PaintWindow		Al salve il progjet cul so non atuâl.
+Scale the selection.	PaintWindow		Scale the selection.
 Scale…	PaintWindow		Scjale…
 Scales all layers.	PaintWindow		Al scjale ducj i strâts.
 Scales the active layer.	PaintWindow		Al scjale il strât atîf.
@@ -185,7 +195,11 @@ No data translator	Windows		Nissun tradutôr di dâts
 No options	Windows		Nissune opzion
 Off	Windows		Disativât
 OK	Windows		Va ben
+Rectangle	Windows		Rectangle
+Reset Brush	Windows		Reset Brush
 Settings	Windows		Impostazions
+Show brush size	Windows		Show brush size
+Store Brush	Windows		Store Brush
 Tool cursor	Windows		Cursôr imprest
 Tool setup	Windows		Configurazion imprest
 Tools	Windows		Imprescj
@@ -212,6 +226,7 @@ Click to use the tool.	Tools		Fâs clic par doprâ l'imprest.
 Color picker tool	Tools		Imprest par sielzi il colôr
 Color picker window	Tools		Barcon di selezion colôr
 Color variance:	Tools		Variazion colôr:
+Conic	Tools		Conic
 Continuous	Tools		Continue
 Drag the text to correct position and set its appearance.	Tools		Strissine il test par justâ la posizion e stabilî il so aspiet.
 Drawing a freehand line.	Tools		Daûr a dissegnâ une linie a man libare.
@@ -230,6 +245,7 @@ Erasing pixels.	Tools		Daûr a scancelâ pixels.
 Fill ellipse	Tools		Jemple elìs
 Fill rectangle	Tools		Jemple retangul
 Fill tool	Tools		Imprest par jemplâ
+Fill tool: SHIFT locks 22.5° angles	Tools		Imprest par jemplâ: MAIUSC si bloche ai angui di 22.5°
 Flood fill	Tools		Jemplament a inondazion
 Flow:	Tools		Flus:
 Freehand	Tools		A man libare
@@ -240,6 +256,7 @@ Hairy brush tool	Tools		Imprest scovet pelôs
 Hardness:	Tools		Durece:
 Hold SHIFT to snap to 45° angles	Tools		Ten fracât MAIUSC par tacâsi ai angui di 45°
 Intelligent scissors	Tools		Fuarpiis inteligjentis
+Linear	Tools		Linear
 Little	Tools		Pôc
 Magic wand	Tools		Bachete magjiche
 Making a fill.	Tools		Daûr a jemplâ.
@@ -252,6 +269,8 @@ Options	Tools		Opzions
 Painting with a brush.	Tools		Daûr a piturâ cuntun pinel.
 Painting with a hairy brush.	Tools		Daûr a piturâ cuntun scovet pelôs.
 Picking a color.	Tools		Daûr a sielzi un colôr.
+Pressure:	Tools		Pressure:
+Radial	Tools		Radial
 Random	Tools		Casuâl
 Rectangle	Tools		Retangul
 Rectangle tool	Tools		Imprest retangul
@@ -262,8 +281,8 @@ Reset brush	Tools		Ripristine pinel
 Selection tool	Tools		Imprest selezion
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Imprest di selezion: MAIUSC par cuadrât/cercli, ALT selezion dai centris, OPZ sotrai
 Size:	Tools		Dimension:
-Speed:	Tools		Velocitât:
 Spray	Tools		Spray
+Square	Tools		Square
 Store brush	Tools		Archivie pinel
 Straight line tool	Tools		Imprest linie drete
 Straight line: SHIFT locks 22.5° angles	Tools		Linie drete: MAIUSC si bloche ai angui di 22.5°
@@ -273,6 +292,8 @@ Tool setup	Tools		Configurazion imprest
 Tools	Tools		Imprescj
 Transparency	Tools		Trasparence
 Transparency tool	Tools		Imprest trasparence
+Transparency:	Tools		Transparency:
+Use current brush	Tools		Use current brush
 Using the airbrush.	Tools		Daûr a doprâ l'aerograf.
 Using the tool.	Tools		Daûr a doprâ l'imprest.
 Width:	Tools		Largjece:
@@ -309,20 +330,23 @@ Reset to canvas	Manipulators		Ripristine ae tele
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Ridimensione: strissine par ridimensionâ o dopre i cjamps numerics. Ten fracât MAIUSC par blocâ lis proporzions
 Resize…	Manipulators		Ridimensione…
 Restore	Manipulators		Ripristine
+Rotate	Manipulators		Rotate
 Rotate -90°	Manipulators		Volte di -90°
 Rotate +90°	Manipulators		Volte di +90°
+Rotate selection	Manipulators		Rotate selection
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Volte: strissine cul boton di çampe par voltâ, clic diestri par stabilî il centri di rotazion, MAIUSC par tacâsi al angul.
-Rotate…	Manipulators		Volte…
 Rotation:	Manipulators		Rotazion:
+Scale	Manipulators		Scale
+Scale selection	Manipulators		Scale selection
 Scale: Drag to resize or use number-fields.	Manipulators		Scjale: strissine par ridimensionâ o dopre i cjamps dai numars.
-Scale…	Manipulators		Scjale…
 Shear:	Manipulators		Rifile:
 Size:	Manipulators		Dimension:
 Text tool	Manipulators		Imprescj pal test
 Text: Position text and set its appearance.	Manipulators		Test: posizione il test e stabilìs il so aspiet.
 Top:	Manipulators		Sore:
+Translate	Manipulators		Translate
+Translate selection	Manipulators		Translate selection
 Translate: Drag to move or use number-fields.	Manipulators		Traslazion: strissine par spostâ o dopre i cjamps dai numars.
-Translate…	Manipulators		Trasle…
 Transparency:	Manipulators		Trasparence:
 Transparent	Manipulators		Trasparent
 Use selection	Manipulators		Dopre la selezion
@@ -334,7 +358,7 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 ArtPaint: Open image…	PaintApplication		ArtPaint: Vierç imagjin…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Vierç progjet…
 OK	PaintApplication		Va ben
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Il file %file% al è di un gjenar no supuartât. Se pussibil, tu puedis provâ a instalâ un tradutôr par chel gjenar.
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Il file %file% al è di un gjenar no supuartât. Se pussibil, tu puedis provâ a instalâ un tradutôr par chel gjenar.
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Vierç cumbinazion colôrs…
 Cannot delete the only color set.	ColorPalette		Impussibil eliminâ la uniche cumbinazion di colôrs.
 Cannot write to file	ColorPalette		Impussibil scrivi sul file
@@ -365,6 +389,8 @@ Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
 Bilinear	ScaleUtilities		Bilineâr
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
 Nearest neighbor	ScaleUtilities		Vicin plui dongje
+Brush	StatusView		Brush
+Left-click for color panel, right-click to switch colors.	StatusView		Clic di çampe pal panel colôrs, clic di diestre par cambiâ i colôrs.
 Bummer	UndoQueue		Pecjât
 Redo	UndoQueue		Torne fâs
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Il mecanisim par disfâ al à finît la memorie.\nLa profonditât de funzion par disfâ e vignarà limitade in mût che i events plui resints a puedin jessi tignûts in memorie. Al è conseât salvâ cumò il propri lavôr cussì di evitâ ogni pierdite di dâts tal câs che la memorie e finedi dal dut.\nSalacor tu podaressis justâ la profonditât de funzion disfe intal barcon des impostazions.
@@ -391,5 +417,4 @@ Soft light	PixelOperations		Lûs fofe
 Vivid light	PixelOperations		Lûs vive
 Free 2D transform	FreeTransformManipulator		Trasformazion 2D libare
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Trasformazion: Strissine par voltâ, spostâ o distirâ.
-Left-click for color panel, right-click to switch colors.	StatusView		Clic di çampe pal panel colôrs, clic di diestre par cambiâ i colôrs.
 Zoom	MagnificationView		Ingrandiment

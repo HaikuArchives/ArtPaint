@@ -1,5 +1,6 @@
-1	English (British)	application/x-vnd.artpaint	3981580643
+1	English (British)	application/x-vnd.artpaint	3098087890
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
+Blend mode	ImageView		Blend mode
 Cancel	ImageView		Cancel
 Don't save	ImageView		Don't save
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
@@ -7,15 +8,21 @@ Finishing	ImageView		Finishing
 Grow selection	ImageView		Grow selection
 Invert selection	ImageView		Invert selection
 Layer %ld / %ld	ImageView		Layer %ld / %ld
+Layer name	ImageView		Layer name
+Layer transparency	ImageView		Layer transparency
+Layer visibility	ImageView		Layer visibility
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 OK	ImageView		Alright
+Rotate selection	ImageView		Rotate selection
 Save	ImageView		Save
+Scale selection	ImageView		Scale selection
 Select all	ImageView		Select all
 Select non-transparent	ImageView		Select non-transparent
 Select none	ImageView		Select none
 Shrink selection	ImageView		Shrink selection
+Translate selection	ImageView		Translate selection
 Unsaved changes!	ImageView		Unsaved changes!
 About ArtPaint	PaintWindow		About ArtPaint
 Active layer	PaintWindow		Active layer
@@ -65,6 +72,7 @@ Layer	PaintWindow		Layer
 Layers…	PaintWindow		Layers…
 Merge down	PaintWindow		Merge down
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
+Move the selection.	PaintWindow		Move the selection.
 Moves all layers.	PaintWindow		Moves all layers.
 Moves the active layer.	PaintWindow		Moves the active layer.
 New project…	PaintWindow		New project…
@@ -98,6 +106,7 @@ Resize…	PaintWindow		Resize…
 Resizes the canvas.	PaintWindow		Resizes the canvas.
 Rotate -90°	PaintWindow		Rotate -90°
 Rotate +90°	PaintWindow		Rotate +90°
+Rotate the selection.	PaintWindow		Rotate the selection.
 Rotate…	PaintWindow		Rotate…
 Rotates all layers.	PaintWindow		Rotates all layers.
 Rotates the active layer.	PaintWindow		Rotates the active layer.
@@ -111,6 +120,7 @@ Saves the image to disk.	PaintWindow		Saves the image to disk.
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
+Scale the selection.	PaintWindow		Scale the selection.
 Scale…	PaintWindow		Scale…
 Scales all layers.	PaintWindow		Scales all layers.
 Scales the active layer.	PaintWindow		Scales the active layer.
@@ -185,7 +195,11 @@ No data translator	Windows		No data translator
 No options	Windows		No options
 Off	Windows		Off
 OK	Windows		Alright
+Rectangle	Windows		Rectangle
+Reset Brush	Windows		Reset Brush
 Settings	Windows		Settings
+Show brush size	Windows		Show brush size
+Store Brush	Windows		Store Brush
 Tool cursor	Windows		Tool cursor
 Tool setup	Windows		Tool setup
 Tools	Windows		Tools
@@ -212,6 +226,7 @@ Click to use the tool.	Tools		Click to use the tool.
 Color picker tool	Tools		Colour picker tool
 Color picker window	Tools		Colour picker window
 Color variance:	Tools		Colour variance:
+Conic	Tools		Conic
 Continuous	Tools		Continuous
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Drawing a freehand line.	Tools		Drawing a freehand line.
@@ -230,6 +245,7 @@ Erasing pixels.	Tools		Erasing pixels.
 Fill ellipse	Tools		Fill ellipse
 Fill rectangle	Tools		Fill rectangle
 Fill tool	Tools		Fill tool
+Fill tool: SHIFT locks 22.5° angles	Tools		Fill tool: SHIFT locks 22.5° angles
 Flood fill	Tools		Flood fill
 Flow:	Tools		Flow:
 Freehand	Tools		Freehand
@@ -240,6 +256,7 @@ Hairy brush tool	Tools		Hairy brush tool
 Hardness:	Tools		Hardness:
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Intelligent scissors	Tools		Intelligent scissors
+Linear	Tools		Linear
 Little	Tools		Little
 Magic wand	Tools		Magic wand
 Making a fill.	Tools		Making a fill.
@@ -252,6 +269,8 @@ Options	Tools		Options
 Painting with a brush.	Tools		Painting with a brush.
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Picking a color.	Tools		Picking a colour.
+Pressure:	Tools		Pressure:
+Radial	Tools		Radial
 Random	Tools		Random
 Rectangle	Tools		Rectangle
 Rectangle tool	Tools		Rectangle tool
@@ -262,8 +281,8 @@ Reset brush	Tools		Reset brush
 Selection tool	Tools		Selection tool
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centres selection, OPT subtracts
 Size:	Tools		Size:
-Speed:	Tools		Speed:
 Spray	Tools		Spray
+Square	Tools		Square
 Store brush	Tools		Store brush
 Straight line tool	Tools		Straight line tool
 Straight line: SHIFT locks 22.5° angles	Tools		Straight line: SHIFT locks 22.5° angles
@@ -273,6 +292,8 @@ Tool setup	Tools		Tool setup
 Tools	Tools		Tools
 Transparency	Tools		Transparency
 Transparency tool	Tools		Transparency tool
+Transparency:	Tools		Transparency:
+Use current brush	Tools		Use current brush
 Using the airbrush.	Tools		Using the airbrush.
 Using the tool.	Tools		Using the tool.
 Width:	Tools		Width:
@@ -309,20 +330,23 @@ Reset to canvas	Manipulators		Reset to canvas
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
 Resize…	Manipulators		Resize…
 Restore	Manipulators		Restore
+Rotate	Manipulators		Rotate
 Rotate -90°	Manipulators		Rotate -90°
 Rotate +90°	Manipulators		Rotate +90°
+Rotate selection	Manipulators		Rotate selection
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation centre, SHIFT to snap angle.
-Rotate…	Manipulators		Rotate…
 Rotation:	Manipulators		Rotation:
+Scale	Manipulators		Scale
+Scale selection	Manipulators		Scale selection
 Scale: Drag to resize or use number-fields.	Manipulators		Scale: Drag to resize or use number-fields.
-Scale…	Manipulators		Scale…
 Shear:	Manipulators		Shear:
 Size:	Manipulators		Size:
 Text tool	Manipulators		Text tool
 Text: Position text and set its appearance.	Manipulators		Text: Position text and set its appearance.
 Top:	Manipulators		Top:
+Translate	Manipulators		Translate
+Translate selection	Manipulators		Translate selection
 Translate: Drag to move or use number-fields.	Manipulators		Translate: Drag to move or use number-fields.
-Translate…	Manipulators		Translate…
 Transparency:	Manipulators		Transparency:
 Transparent	Manipulators		Transparent
 Use selection	Manipulators		Use selection
@@ -334,7 +358,7 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 OK	PaintApplication		Alright
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file %file% is of unsupported type. You could try installing a translator for it if possible.
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file '%file%' is of unsupported type. You could try installing a translator for it if possible.
 ArtPaint: Open color set…	ColorPalette		ArtPaint: Open colour set…
 Cannot delete the only color set.	ColorPalette		Cannot delete the only colour set.
 Cannot write to file	ColorPalette		Cannot write to file
@@ -365,6 +389,8 @@ Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
 Bilinear	ScaleUtilities		Bilinear
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
 Nearest neighbor	ScaleUtilities		Nearest neighbour
+Brush	StatusView		Brush
+Left-click for color panel, right-click to switch colors.	StatusView		Left-click for colour panel, right-click to switch colours.
 Bummer	UndoQueue		Bummer
 Redo	UndoQueue		Redo
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
@@ -391,5 +417,4 @@ Soft light	PixelOperations		Soft light
 Vivid light	PixelOperations		Vivid light
 Free 2D transform	FreeTransformManipulator		Free 2D transform
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
-Left-click for color panel, right-click to switch colors.	StatusView		Left-click for colour panel, right-click to switch colours.
 Zoom	MagnificationView		Zoom
