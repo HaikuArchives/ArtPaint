@@ -25,7 +25,7 @@ v2.6:
   - added "Use current brush" option
   - added "Pressure" slider to control opacity of erasure
 
-* Fill tool:
+* Fill tool (gradient):
   - a more intuitive usage
   - show line from start to end point
   - added modes: radial, square, cone
