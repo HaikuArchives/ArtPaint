@@ -317,6 +317,11 @@ ImageView::KeyDown(const char* bytes, int32 numBytes)
 				delta = bitmap_rect.bottom - bounds.bottom;
 			ScrollBy(0, delta);
 		} else if (*bytes == B_DELETE) {
+			if (acquire_sem_etc(mouse_mutex, 1, B_RELATIVE_TIMEOUT, 0) == B_OK) {
+				if (fManipulator != NULL)
+					PostponeMessageAndFinishManipulator(TRUE);
+				release_sem(mouse_mutex);
+			}
 			if (BWindow* window = Window())
 				window->PostMessage(HS_EDIT_DELETE, this);
 		} else if (*bytes == B_ESCAPE) {
