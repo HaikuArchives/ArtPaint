@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3098087890
+1	English	application/x-vnd.artpaint	3330519304
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -347,6 +347,7 @@ Hide borders	PaintWindow		Hide borders
 Delete current set	ColorPalette		Delete current set
 Linear light	PixelOperations		Linear light
 Redo	PaintWindow		Redo
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d colors
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
 Scale	Manipulators		Scale

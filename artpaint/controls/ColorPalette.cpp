@@ -837,10 +837,11 @@ ColorPaletteWindow::openMenuBar()
 
 	// in this loop we add possible palette sizes to menu
 	BMessage *msg;
-	char item_title[20] = "";
+	BString item_title;
 	for (int32 i = 3; i <= 6; i++) {
-		sprintf(item_title, "%ld %s",((int32)pow(2, i)),
-			B_TRANSLATE("Colors"));
+		item_title.SetToFormat(B_TRANSLATE_COMMENT("%" B_PRId32" colors",
+			"The number of colors in the palette, only translate 'colors'."),
+			((int32)pow(2, i)));
 		msg = new BMessage(HS_NEW_PALETTE_CREATED);
 		msg->AddInt32("colors", ((int32)pow(2, i)));
 		menu_item = new BMenuItem(item_title, msg);
