@@ -88,15 +88,17 @@ MagnificationView::MagnificationView()
 	B_PLAIN_BORDER)
 {
 	BFont font;
+	double percentValue = 1600.0;
 
-	char string[256];
-	sprintf(string,"%s: %.0f%%", B_TRANSLATE("Zoom"), 1600.0);
+	if (fNumberFormat.FormatPercent(fPercentData, percentValue) != B_OK)
+		fPercentData.SetToFormat("%.0f%%", percentValue);
 
-	fMagStringView = new MagStringView("magStringView", string);
+	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"),
+		fPercentData.String());
 
+	fMagStringView = new MagStringView("magStringView", fPercentString);
 	fMinusButton = new BButton("minusButton", "-",
 		new BMessage(HS_ZOOM_IMAGE_OUT));
-
 	fPlusButton = new BButton("plusButton", "+",
 		new BMessage(HS_ZOOM_IMAGE_IN));
 
@@ -112,7 +114,7 @@ MagnificationView::MagnificationView()
 		.Add(fMinusButton, 1, 0)
 		.Add(fPlusButton, 2, 0)
 		.SetInsets(3.0, 2.0, 3.0, 2.0);
-	mainLayout->SetMinColumnWidth(0, StringWidth(string));
+	mainLayout->SetMinColumnWidth(0, StringWidth(fPercentString));
 	mainLayout->SetMaxColumnWidth(1, 25);
 	mainLayout->SetMaxColumnWidth(2, 25);
 }
@@ -138,10 +140,14 @@ MagnificationView::Draw(BRect updateRect)
 void
 MagnificationView::SetMagnificationLevel(float magLevel)
 {
-	char string[256];
-	sprintf(string, "%s: %.0f%%", B_TRANSLATE("Zoom"),
-		100.0 * magLevel);
-	fMagStringView->SetText(string);
+	double percentValue = magLevel;
+
+	if (fNumberFormat.FormatPercent(fPercentData, percentValue) != B_OK)
+		fPercentData.SetToFormat("%.0f%%", percentValue);
+
+	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"),
+		fPercentData.String());
+	fMagStringView->SetText(fPercentString);
 }
 
 
