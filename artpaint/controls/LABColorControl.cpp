@@ -10,6 +10,7 @@
 #include "LABColorControl.h"
 
 
+#include "ColorUtilities.h"
 #include "UtilityClasses.h"
 
 

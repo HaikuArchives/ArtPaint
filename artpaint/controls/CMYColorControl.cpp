@@ -10,6 +10,7 @@
 #include "CMYColorControl.h"
 
 
+#include "ColorUtilities.h"
 #include "UtilityClasses.h"
 
 

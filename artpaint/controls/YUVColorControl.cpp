@@ -10,6 +10,9 @@
  #include "YUVColorControl.h"
 
 
+ #include "ColorUtilities.h"
+
+
  YUVColorControl::YUVColorControl(rgb_color c)
  	: MultichannelColorControl(c, "Y", "U", "V", "A")
  {
