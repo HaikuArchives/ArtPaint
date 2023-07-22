@@ -34,8 +34,9 @@ private:
 			BButton*			fMinusButton;
 			BString				fPercentData;
 			BString				fPercentString;
-			BNumberFormat			fNumberFormat;
-			MagStringView*			fMagStringView;
+			BString				fSeparator;
+			BNumberFormat		fNumberFormat;
+			MagStringView*		fMagStringView;
 };
 
 
