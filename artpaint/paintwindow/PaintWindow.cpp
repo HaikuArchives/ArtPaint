@@ -253,7 +253,7 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
 
 		fImageSizeWindow = new BWindow(BRect(0, 0, 175, 125), "Canvas Size",
 			B_MODAL_WINDOW_LOOK, B_FLOATING_SUBSET_WINDOW_FEEL, B_NOT_MOVABLE |
-			B_NOT_RESIZABLE | B_NOT_ZOOMABLE);
+			B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_NOT_CLOSABLE);
 
 		fImageSizeWindow->AddToSubset(this);
 
