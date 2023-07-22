@@ -51,6 +51,7 @@
 #include <Entry.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
+#include <NumberFormat.h>
 #include <NodeInfo.h>
 #include <Path.h>
 #include <Roster.h>
@@ -1403,36 +1404,33 @@ PaintWindow::openMenuBar()
 
 	subMenu = new BMenu(B_TRANSLATE("Set zoom level"));
 	menu->AddItem(subMenu);
-	a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
-	a_message->AddFloat("magnifying_scale",0.25);
-	subMenu->AddItem(new PaintWindowMenuItem("25%",
-		a_message, 0, 0, this,
-		B_TRANSLATE("Sets the zoom level to 25%.")));
-	a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
-	a_message->AddFloat("magnifying_scale",0.50);
-	subMenu->AddItem(new PaintWindowMenuItem("50%",
-		a_message, 0, 0, this,
-		B_TRANSLATE("Sets the zoom level to 50%.")));
-	a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
-	a_message->AddFloat("magnifying_scale",1.0);
-	subMenu->AddItem(new PaintWindowMenuItem("100%",
-		a_message, 0, 0, this,
-		B_TRANSLATE("Sets the zoom level to 100%.")));
-	a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
-	a_message->AddFloat("magnifying_scale",2.0);
-	subMenu->AddItem(new PaintWindowMenuItem("200%",
-		a_message, 0, 0, this,
-		B_TRANSLATE("Sets the zoom level to 200%.")));
-	a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
-	a_message->AddFloat("magnifying_scale",4.0);
-	subMenu->AddItem(new PaintWindowMenuItem("400%",
-		a_message, 0, 0, this,
-		B_TRANSLATE("Sets the zoom level to 400%.")));
-	a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
-	a_message->AddFloat("magnifying_scale",8.0);
-	subMenu->AddItem(new PaintWindowMenuItem("800%",
-		a_message, 0, 0, this,
-		B_TRANSLATE("Sets the zoom level to 800%.")));
+
+	float zoomLevels[] = {0.25, 0.50, 1.0, 2.0, 4.0, 8.0, 16.0};
+
+	for (int i = 0; i < sizeof(zoomLevels) / sizeof(float); ++i) {
+		a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
+		a_message->AddFloat("magnifying_scale", zoomLevels[i]);
+
+		BNumberFormat numberFormat;
+		BString data;
+		BString label;
+		BString labelToolTip;
+
+		if (numberFormat.FormatPercent(data, zoomLevels[i]) != B_OK)
+			data.SetToFormat("%.0f%%", zoomLevels[i]);
+
+		if (zoomLevels[i] >= 10.0) {
+			BString separator(numberFormat.GetSeparator(B_GROUPING_SEPARATOR));
+			data.RemoveFirst(separator);
+		}
+
+		label.SetToFormat("%s", data.String());
+		labelToolTip.SetToFormat(B_TRANSLATE("Sets the zoom level to %s."),
+			label.String());
+
+		subMenu->AddItem(new PaintWindowMenuItem(label, a_message, 0, 0, this,
+			labelToolTip));
+	}
 
 	subMenu = new BMenu(B_TRANSLATE("Set grid"));
 	menu->AddItem(subMenu);

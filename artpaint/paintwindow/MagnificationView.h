@@ -13,7 +13,7 @@
 
 
 #include <Box.h>
-
+#include <NumberFormat.h>
 
 class BButton;
 class MagStringView;
@@ -32,6 +32,10 @@ public:
 private:
 			BButton*			fPlusButton;
 			BButton*			fMinusButton;
+			BString				fPercentData;
+			BString				fPercentString;
+			BString				fSeparator;
+			BNumberFormat		fNumberFormat;
 			MagStringView*		fMagStringView;
 };
 
