@@ -195,6 +195,9 @@ ColorFloatSlider::SetMinMax(float min, float max)
 {
 	fSlider->SetLimits((int32)min * fMult,
 		(int32)max * fMult);
+
+	fMinRange = min;
+	fMaxRange = max;
 }
 
 
