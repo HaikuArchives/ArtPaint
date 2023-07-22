@@ -93,6 +93,9 @@ MagnificationView::MagnificationView()
 	if (fNumberFormat.FormatPercent(fPercentData, percentValue) != B_OK)
 		fPercentData.SetToFormat("%.0f%%", percentValue);
 
+	fSeparator = fNumberFormat.GetSeparator(B_GROUPING_SEPARATOR);
+	fPercentData.RemoveFirst(fSeparator);
+
 	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"),
 		fPercentData.String());
 
@@ -145,6 +148,9 @@ MagnificationView::SetMagnificationLevel(float magLevel)
 	if (fNumberFormat.FormatPercent(fPercentData, percentValue) != B_OK)
 		fPercentData.SetToFormat("%.0f%%", percentValue);
 
+	if (magLevel >= 10.0)
+		fPercentData.RemoveFirst(fSeparator);
+	
 	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"),
 		fPercentData.String());
 	fMagStringView->SetText(fPercentString);
