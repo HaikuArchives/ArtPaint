@@ -10,6 +10,7 @@
 #include "HSVColorControl.h"
 
 
+#include "ColorUtilities.h"
 #include "UtilityClasses.h"
 
 
