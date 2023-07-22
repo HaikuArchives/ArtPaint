@@ -9,6 +9,8 @@
 #ifndef COLOR_UTILITIES_H
 #define COLOR_UTILITIES_H
 
+#include <math.h>
+
 
 inline void
 lab2rgb(float l, float a, float bb,
@@ -287,6 +289,97 @@ rgb2hsv(float r, float g, float b,
  	if (h < 0.0)
  		h += 360.0;
 }
+
+
+inline float hue2rgb(float v1, float v2, float h)
+{
+	if (h < 0)
+		h += 1;
+	if (h > 1)
+		h -= 1;
+
+	if (h * 6 < 1)
+		return v1 + (v2 - v1) * 6 * h;
+	if (h * 2 < 1)
+		return v2;
+	if (h * 3 < 2)
+		return v1 + (v2 - v1) * ((2. / 3.) - h) * 6;
+
+	return v1;
+}
+
+
+inline void
+hsl2rgb(float h, float s, float l,
+	float& r, float &g, float &b)
+{
+	if (s <= 0) {
+		r = l;
+		g = l;
+		b = l;
+	} else {
+		h /= 360.;
+
+		float v1, v2;
+
+		if (l < 0.5)
+			v2 = l * (1. + s);
+		else
+			v2 = (l + s) - (s * l);
+
+		v1 = 2 * l - v2;
+
+		r = hue2rgb(v1, v2, h + (1. / 3.));
+		g = hue2rgb(v1, v2, h);
+		b = hue2rgb(v1, v2, h - (1. / 3.));
+	}
+
+	r *= 255;
+	g *= 255;
+	b *= 255;
+}
+
+
+
+inline void
+rgb2hsl(float r, float g, float b,
+	float& h, float& s, float& l)
+{
+	r /= 255.;
+	g /= 255.;
+	b /= 255.;
+
+	float min = min_c(b, min_c(r, g));
+	float max = max_c(b, max_c(r, g));
+
+	l = (max + min) / 2.;
+	float delta = max - min;
+	if (delta == 0) {
+		h = 0;
+		s = 0;
+	} else {
+		if (l < 0.5)
+			s = delta / (max + min);
+		else
+			s = delta / (2 - max - min);
+
+		float r_dist = (((max - r) / 6.) + (delta / 2.)) / delta;
+		float g_dist = (((max - g) / 6.) + (delta / 2.)) / delta;
+		float b_dist = (((max - b) / 6.) + (delta / 2.)) / delta;
+
+		if (r == max)
+			h = b_dist - g_dist;
+		else if (g == max)
+			h = (1. / 3.) + r_dist - b_dist;
+		else
+			h = (2. / 3.) + g_dist - r_dist;
+	}
+
+	h = h * 360;
+	if (h < 0.0)
+		h += 360.0;
+}
+
 
 
 #endif
