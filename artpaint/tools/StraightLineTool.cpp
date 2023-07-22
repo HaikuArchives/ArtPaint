@@ -354,7 +354,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 									tmpBuffer, updated_rect, src_over_fixed, draw_color.word);
 								buffer->Unlock();
 
-								SetLastUpdatedRect(updated_rect);
+								SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 								imageUpdater->AddRect(updated_rect);
 							}
 							old_rect = new_rect;
@@ -391,7 +391,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			tmpBuffer, updated_rect, src_over_fixed, draw_color.word);
 		buffer->Unlock();
 
-		SetLastUpdatedRect(updated_rect);
+		SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 		imageUpdater->AddRect(updated_rect);
 
 		imageUpdater->ForceUpdate();
