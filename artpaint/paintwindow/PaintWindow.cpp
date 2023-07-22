@@ -1419,6 +1419,11 @@ PaintWindow::openMenuBar()
 		if (numberFormat.FormatPercent(data, zoomLevels[i]) != B_OK)
 			data.SetToFormat("%.0f%%", zoomLevels[i]);
 
+		if (zoomLevels[i] >= 10.0) {
+			BString separator(numberFormat.GetSeparator(B_GROUPING_SEPARATOR));
+			data.RemoveFirst(separator);
+		}
+
 		label.SetToFormat("%s", data.String());
 		labelToolTip.SetToFormat(B_TRANSLATE("Sets the zoom level to %s."),
 			label.String());
