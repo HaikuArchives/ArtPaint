@@ -812,6 +812,11 @@ ImageView::MessageReceived(BMessage* message)
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
 					}
 				}
+
+				// Tell the selection to start drawing itself.
+				if (show_selection == TRUE)
+					selection->StartDrawing(this, magnify_scale);
+
 				Invalidate();
 			}
 		} break;
@@ -832,6 +837,11 @@ ImageView::MessageReceived(BMessage* message)
 						undo_queue->SetSelectionData(selection->ReturnSelectionData());
 					}
 				}
+
+				// Tell the selection to start drawing itself.
+				if (show_selection == TRUE)
+					selection->StartDrawing(this, magnify_scale);
+
 				Invalidate();
 			}
 		} break;
