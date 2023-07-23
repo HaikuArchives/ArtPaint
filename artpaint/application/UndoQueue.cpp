@@ -352,14 +352,14 @@ const char* UndoQueue::ReturnRedoEventName()
 
 void UndoQueue::UpdateMenuItems()
 {
-	const char *event_name;
+	BString event_name;
 	event_name = ReturnUndoEventName();
 
 	if (undo_menu_item != NULL) {
 		if (event_name != NULL) {
-			char menu_text[256];
-			sprintf(menu_text,"%s %s",B_TRANSLATE("Undo"),event_name);
-			undo_menu_item->SetLabel(menu_text);
+			BString menu_text(B_TRANSLATE("Undo: %eventName%"));
+			menu_text.ReplaceFirst("%eventName%", event_name);
+			undo_menu_item->SetLabel(menu_text.String());
 			undo_menu_item->SetEnabled(TRUE);
 		}
 		else {
@@ -371,9 +371,9 @@ void UndoQueue::UpdateMenuItems()
 	event_name = ReturnRedoEventName();
 	if (redo_menu_item != NULL) {
 		if (event_name != NULL) {
-			char menu_text[256];
-			sprintf(menu_text,"%s %s",B_TRANSLATE("Redo"),event_name);
-			redo_menu_item->SetLabel(menu_text);
+			BString menu_text(B_TRANSLATE("Redo: %eventName%"));
+			menu_text.ReplaceFirst("%eventName%", event_name);
+			redo_menu_item->SetLabel(menu_text.String());
 			redo_menu_item->SetEnabled(TRUE);
 		}
 		else {
