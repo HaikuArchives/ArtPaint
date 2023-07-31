@@ -144,6 +144,14 @@ inline const char* mode_to_string(BlendModes mode)
 			return B_TRANSLATE("Exclusion");
 		case BLEND_DISSOLVE:
 			return B_TRANSLATE("Dissolve");
+		case BLEND_HUE:
+			return B_TRANSLATE("Hue");
+		case BLEND_SATURATION:
+			return B_TRANSLATE("Saturation");
+		case BLEND_LIGHTNESS:
+			return B_TRANSLATE("Lightness");
+		case BLEND_COLOR:
+			return B_TRANSLATE("Color");
 	}
 
 	return "";

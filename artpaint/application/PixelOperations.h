@@ -14,7 +14,11 @@
 #include <Catalog.h>
 
 
+#include "ColorUtilities.h"
+
+
 #include <math.h>
+#include <stdio.h>
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -47,7 +51,11 @@ enum BlendModes {
 	BLEND_HARD_MIX,
 	BLEND_DIFFERENCE,
 	BLEND_EXCLUSION,
-	BLEND_DISSOLVE
+	BLEND_DISSOLVE,
+	BLEND_HUE,
+	BLEND_SATURATION,
+	BLEND_LIGHTNESS,
+	BLEND_COLOR
 };
 
 
@@ -463,6 +471,41 @@ inline uint32 dissolve(uint32 dst, uint32 src)
 }
 
 
+inline uint32 colorblend(uint32 dst, uint32 src, uint32 mode)
+{
+	union color_conversion dest_rgb, src_rgb, target_rgb;
+
+	dest_rgb.word = dst;
+	src_rgb.word = src;
+
+	float dh, ds, dl;
+	float sh, ss, sl;
+	float tr, tg, tb;
+
+	rgb2hsl(dest_rgb.bytes[2], dest_rgb.bytes[1], dest_rgb.bytes[0],
+		dh, ds, dl);
+	rgb2hsl(src_rgb.bytes[2], src_rgb.bytes[1], src_rgb.bytes[0],
+		sh, ss, sl);
+
+	if (mode == BLEND_HUE)
+		hsl2rgb(sh, ds, dl, tr, tg, tb);
+	else if (mode == BLEND_SATURATION)
+		hsl2rgb(dh, ss, dl, tr, tg, tb);
+	else if (mode == BLEND_LIGHTNESS)
+		hsl2rgb(dh, ds, sl, tr, tg, tb);
+	else if (mode == BLEND_COLOR)
+		hsl2rgb(sh, ss, dl, tr, tg, tb);
+
+	target_rgb.bytes[0] = (uint8)max_c(0, min_c(255, tb));
+	target_rgb.bytes[1] = (uint8)max_c(0, min_c(255, tg));
+	target_rgb.bytes[2] = (uint8)max_c(0, min_c(255, tr));
+
+	target_rgb.bytes[3] = dest_rgb.bytes[3];
+
+	return target_rgb.word;
+}
+
+
 inline uint32 blend(uint32 dst, uint32 src, uint32 mode)
 {
 	union color_conversion blend_color, src_color, dst_color;
@@ -582,6 +625,12 @@ inline uint32 blend(uint32 dst, uint32 src, uint32 mode)
 		} break;
 		case (BLEND_DISSOLVE): {
 			 blend_color.word = dissolve(dst_color.word, src_color.word);
+		} break;
+		case (BLEND_HUE):
+		case (BLEND_SATURATION):
+		case (BLEND_LIGHTNESS):
+		case (BLEND_COLOR): {
+			 blend_color.word = colorblend(dst_color.word, src_color.word, mode);
 		} break;
 	}
 
