@@ -41,8 +41,10 @@
 #define	BRUSH_VAULT_WIDTH	(BRUSH_PREVIEW_WIDTH + 2 * BRUSH_INSET)
 #define	BRUSH_VAULT_HEIGHT	(BRUSH_PREVIEW_WIDTH + 2 * BRUSH_INSET)
 
+
 BList* BrushStoreWindow::brush_data = new BList();
 BrushStoreWindow* BrushStoreWindow::brush_window = NULL;
+
 
 BrushStoreWindow::BrushStoreWindow()
 	: BWindow(BRect(20, 20, 220, 220), B_TRANSLATE("Brushes"),
@@ -64,9 +66,9 @@ BrushStoreWindow::BrushStoreWindow()
 	MoveTo(frame.LeftTop());
 	ResizeTo(frame.Width(), frame.Height());
 
-	BMenuBar *menu_bar;
+	BMenuBar* menu_bar;
 	menu_bar = new BMenuBar("brush window menu-bar");
-	BMenu *a_menu = new BMenu(B_TRANSLATE("Brush"));
+	BMenu* a_menu = new BMenu(B_TRANSLATE("Brush"));
 	menu_bar->AddItem(a_menu);
 	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Delete selected brush"),
 		new BMessage(HS_DELETE_SELECTED_BRUSH)));
@@ -151,9 +153,9 @@ void
 BrushStoreWindow::writeBrushes(BFile& file)
 {
 	int32 number_of_brushes = brush_data->CountItems();
-	file.Write(&number_of_brushes,sizeof(int32));
-	for (int32 i=0;i<brush_data->CountItems();i++) {
-		file.Write((brush_data->ItemAt(i)),sizeof(brush_info));
+	file.Write(&number_of_brushes, sizeof(int32));
+	for (int32 i = 0; i < brush_data->CountItems(); i++) {
+		file.Write((brush_data->ItemAt(i)), sizeof(brush_info));
 	}
 }
 
@@ -163,9 +165,9 @@ BrushStoreWindow::readBrushes(BFile& file)
 {
 	int32 number_of_brushes;
 	brush_info info;
-	if (file.Read(&number_of_brushes,sizeof(int32)) == sizeof(int32)) {
-		for (int32 i=0;i<number_of_brushes;i++) {
-			if (file.Read(&info,sizeof(brush_info)) == sizeof(brush_info)) {
+	if (file.Read(&number_of_brushes, sizeof(int32)) == sizeof(int32)) {
+		for (int32 i = 0; i < number_of_brushes; i++) {
+			if (file.Read(&info, sizeof(brush_info)) == sizeof(brush_info)) {
 				brush_data->AddItem(new brush_info(info));
 			}
 		}
@@ -222,7 +224,9 @@ BrushStoreWindow::showWindow()
 	brush_window->MoveTo(new_rect.LeftTop());
 }
 
-void BrushStoreWindow::setFeel(window_feel feel)
+
+void
+BrushStoreWindow::setFeel(window_feel feel)
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		server->SetValue(SettingsServer::Application, skBrushWindowFeel,
@@ -243,16 +247,17 @@ void BrushStoreWindow::setFeel(window_feel feel)
 }
 
 
-int32 BrushStoreWindow::brush_adder(void *data)
+int32
+BrushStoreWindow::brush_adder(void* data)
 {
 	BrushStoreWindow *this_pointer = (BrushStoreWindow*)data;
 
 	if (this_pointer != NULL) {
 		BList temp_list(*brush_data);
-		if (temp_list.CountItems()> 0) {
-			Brush *a_brush = new Brush(*(brush_info*)(temp_list.ItemAt(0)));
+		if (temp_list.CountItems() > 0) {
+			Brush* a_brush = new Brush(*(brush_info*)(temp_list.ItemAt(0)));
 
-			for (int32 i=0;i<temp_list.CountItems();i++) {
+			for (int32 i = 0; i < temp_list.CountItems(); i++) {
 				a_brush->ModifyBrush(*(brush_info*)(temp_list.ItemAt(i)));
 				this_pointer->Lock();
 				this_pointer->store_view->AddBrush(a_brush);
@@ -312,13 +317,13 @@ BrushStoreView::DetachedFromWindow()
 void
 BrushStoreView::Draw(BRect area)
 {
-	SetHighColor(0,0,0,255);
+	SetHighColor(0, 0, 0, 255);
 	SetPenSize(1.0);
 	for (int32 i = 0; i < brush_images->CountItems(); i++) {
 		if ((area & get_bitmap_frame(i)).IsValid() == TRUE) {
-			DrawBitmapAsync((BBitmap*)brush_images->ItemAt(i),get_bitmap_frame(i));
+			DrawBitmapAsync((BBitmap*)brush_images->ItemAt(i), get_bitmap_frame(i));
 			BRect outer_frame = get_bitmap_frame(i);
-			outer_frame.InsetBy(-1,-1);
+			outer_frame.InsetBy(-1, -1);
 			StrokeRect(outer_frame);
 		}
 	}
@@ -337,42 +342,39 @@ BrushStoreView::FrameResized(float width, float height)
 {
 	if (((int32)width/BRUSH_VAULT_WIDTH) != in_a_row) {
 		Invalidate();
-		in_a_row = (int32)width/BRUSH_VAULT_WIDTH;
+		in_a_row = (int32)width / BRUSH_VAULT_WIDTH;
 	}
 	// At least one clumn, no matter how small the window is.
-	in_a_row = max_c(in_a_row,1);
+	in_a_row = max_c(in_a_row, 1);
 
 	int32 rows = (brush_data->CountItems() - 1) / in_a_row + 1;
 
-	BScrollBar *vertical_scrollbar = ScrollBar(B_VERTICAL);
+	BScrollBar* vertical_scrollbar = ScrollBar(B_VERTICAL);
 
 	if (vertical_scrollbar != NULL) {
-		if (rows*BRUSH_VAULT_HEIGHT>(height+1)) {
-			vertical_scrollbar->SetRange(0,rows*BRUSH_VAULT_HEIGHT-height);
-			vertical_scrollbar->SetProportion(height/(float)(rows*BRUSH_VAULT_HEIGHT));
+		if (rows * BRUSH_VAULT_HEIGHT > (height + 1)) {
+			vertical_scrollbar->SetRange(0, rows * BRUSH_VAULT_HEIGHT - height);
+			vertical_scrollbar->SetProportion(height / (float)(rows * BRUSH_VAULT_HEIGHT));
 		}
 		else
-			vertical_scrollbar->SetRange(0,0);
+			vertical_scrollbar->SetRange(0, 0);
 	}
-//	float needed_width = in_a_row * BRUSH_VAULT_WIDTH;
-//	if (needed_width != width)
-//		Window()->ResizeBy(needed_width-width,0);
 }
 
 
 void
 BrushStoreView::MessageReceived(BMessage* message)
 {
-	brush_info *info;
-	Brush *a_brush;
+	brush_info* info;
+	Brush* a_brush;
 	ssize_t size;
 	switch (message->what) {
 		case HS_BRUSH_DRAGGED:
 			if ((message->ReturnAddress() == BMessenger(this)) == FALSE) {
-				message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
+				message->FindData("brush data", B_ANY_TYPE,
+					(const void**)&info, &size);
 				if (size == sizeof(brush_info)) {
 					a_brush = new Brush(*info);
-//					AddBrush(a_brush);
 					BrushStoreWindow::AddBrush(a_brush);
 					delete a_brush;
 				}
@@ -384,17 +386,17 @@ BrushStoreView::MessageReceived(BMessage* message)
 			{
 				// In this case we delete the currently selected brush
 				// from the brush-list.
-				BBitmap *bitmap = (BBitmap*)brush_images->RemoveItem(selected_brush_index);
+				BBitmap* bitmap = (BBitmap*)brush_images->RemoveItem(selected_brush_index);
 				delete bitmap;
-				brush_info *data = (brush_info*)brush_data->RemoveItem(selected_brush_index);
+				brush_info* data = (brush_info*)brush_data->RemoveItem(selected_brush_index);
 				delete data;
 
 				BrushStoreWindow::DeleteBrush(selected_brush_index);
 				if (brush_data->CountItems() <= selected_brush_index)
 					selected_brush_index--;
 
-				ResizeBy(-1,0);
-				ResizeBy(1,0);
+				ResizeBy(-1, 0);
+				ResizeBy(1, 0);
 				Invalidate();
 				if (selected_brush_index >= 0)
 					ToolManager::Instance().SetCurrentBrush(
@@ -409,7 +411,9 @@ BrushStoreView::MessageReceived(BMessage* message)
 	}
 }
 
-void BrushStoreView::KeyDown(const char *bytes,int32 numBytes)
+
+void
+BrushStoreView::KeyDown(const char* bytes, int32 numBytes)
 {
 	if (numBytes == 1) {
 		switch (bytes[0]) {
@@ -417,17 +421,17 @@ void BrushStoreView::KeyDown(const char *bytes,int32 numBytes)
 				{
 					// In this case we delete the currently selected brush
 					// from the brush-list.
-					BBitmap *bitmap = (BBitmap*)brush_images->RemoveItem(selected_brush_index);
+					BBitmap* bitmap = (BBitmap*)brush_images->RemoveItem(selected_brush_index);
 					delete bitmap;
-					brush_info *data = (brush_info*)brush_data->RemoveItem(selected_brush_index);
+					brush_info* data = (brush_info*)brush_data->RemoveItem(selected_brush_index);
 					delete data;
 
 					BrushStoreWindow::DeleteBrush(selected_brush_index);
 					if (brush_data->CountItems() <= selected_brush_index)
 						selected_brush_index--;
 
-					ResizeBy(-1,0);
-					ResizeBy(1,0);
+					ResizeBy(-1, 0);
+					ResizeBy(1, 0);
 					Invalidate();
 					ToolManager::Instance().SetCurrentBrush(
 						((brush_info*)brush_data->ItemAt(selected_brush_index)));
@@ -452,73 +456,33 @@ void BrushStoreView::KeyDown(const char *bytes,int32 numBytes)
 				Draw(Bounds());
 				break;
 			case B_UP_ARROW:
-//				previous_brush_index = selected_brush_index;
-//				selected_brush_index = (selected_brush_index - in_a_row);
-//				if (selected_brush_index < 0)
-//					selected_brush_index = brush_data->CountItems() + selected_brush_index;
-//				 % brush_data->CountItems();
-//				Draw(BRect(BPoint(0,0),BPoint(-1,-1)));
 				break;
 			case B_DOWN_ARROW:
-//				previous_brush_index = selected_brush_index;
-//				selected_brush_index = (selected_brush_index + in_a_row) % brush_data->CountItems();
-//				Draw(BRect(BPoint(0,0),BPoint(-1,-1)));
 				break;
 
 			default:
-				BView::KeyDown(bytes,numBytes);
+				BView::KeyDown(bytes, numBytes);
 				break;
 		}
 	}
 }
 
-void BrushStoreView::MouseDown(BPoint point)
+
+void
+BrushStoreView::MouseDown(BPoint point)
 {
 	if (!IsFocus())
 		MakeFocus(TRUE);
 
 	uint32 buttons;
-	GetMouse(&point,&buttons);
+	GetMouse(&point, &buttons);
 	BPoint original_point = point;
 
-	// Loop here until the button is released or user moves mouse enough to
-	// start a drag.
-//	while (buttons && cont) {
-//		GetMouse(&point,&buttons);
-//		snooze(20.0 * 1000.0);
-//		if (sqrt(pow(original_point.x-point.x,2)+pow(original_point.y-point.y,2)) > 6)
-//			cont = FALSE;
-//	}
 	int32 index = get_point_index(original_point);
 
 	if (index >= 0) {
-//		if (sqrt(pow(original_point.x-point.x,2)+pow(original_point.y-point.y,2)) > 6) {
-//			// In this case we drag a message.
-//			BMessage *a_message = new BMessage(HS_BRUSH_DRAGGED);
-//			a_message->AddData("brush data",B_ANY_TYPE,brush_data->ItemAt(index),sizeof(brush_info));
-//			DragMessage(a_message,get_bitmap_frame(index));
-//			delete a_message;
-//		}
-//		else {
-			// In this case we select the brush to be used with the brush tool.
-			// As we only have one brush tool, we should select the brush to be
-			// used no matter what button was pressed.
-//			uint32 tool_type = ((PaintApplication*)be_app)->getTool(original_button);
-//			DrawingTool *a_tool = ((PaintApplication*)be_app)->getDrawingTool(tool_type);
-//			const DrawingTool *a_tool = tool_manager->ReturnTool(BRUSH_TOOL);
-//			const BrushTool *brush_tool = cast_as(a_tool,const BrushTool);
-//			if (brush_tool) {
-//				Brush *a_brush = brush_tool->GetBrush();
-//				a_brush->ModifyBrush(*((brush_info*)brush_data->ItemAt(index)));
-//				BrushEditor::BrushModified();
-//				a_brush->CreateDiffBrushes();
-//				ToolSetupWindow::changeToolForTheSetupWindow(BRUSH_TOOL);
-////				ToolSetupWindow::updateTool(BRUSH_TOOL);
-//
-//			}
-			ToolManager::Instance().SetCurrentBrush(
-				((brush_info*)brush_data->ItemAt(index)));
-//		}
+		ToolManager::Instance().SetCurrentBrush(
+			((brush_info*)brush_data->ItemAt(index)));
 		if (index != selected_brush_index) {
 			// If the selected brush changed, we must indicate it
 			// by drawing the view.
@@ -535,7 +499,7 @@ BrushStoreView::AddBrush(Brush* brush)
 {
 	bool added = false;
 
-	BBitmap *a_bitmap = new BBitmap(BRect(0, 0, BRUSH_PREVIEW_WIDTH - 1,
+	BBitmap* a_bitmap = new BBitmap(BRect(0, 0, BRUSH_PREVIEW_WIDTH - 1,
 		BRUSH_PREVIEW_HEIGHT - 1), B_RGB_32_BIT);
 
 	brush_info new_brush_info = brush->GetInfo();
@@ -568,8 +532,8 @@ BrushStoreView::AddBrush(Brush* brush)
 	ToolManager::Instance().SetCurrentBrush(
 		((brush_info*)brush_data->ItemAt(index)));
 
-	ResizeBy(-1,0);
-	ResizeBy(1,0);
+	ResizeBy(-1, 0);
+	ResizeBy(1, 0);
 	Invalidate();
 
 	return added;
@@ -593,21 +557,22 @@ BrushStoreView::get_bitmap_frame(int32 index)
 }
 
 
-int32 BrushStoreView::get_point_index(BPoint point)
+int32
+BrushStoreView::get_point_index(BPoint point)
 {
 	// First we get the info, how many brushes can be in a row.
 	int32 width = Bounds().IntegerWidth();
-	in_a_row = width/BRUSH_VAULT_WIDTH;
+	in_a_row = width / BRUSH_VAULT_WIDTH;
 
 	// Then we check the row-number
-	int32 row_number = ((int32)point.y)/BRUSH_VAULT_HEIGHT;
+	int32 row_number = ((int32)point.y) / BRUSH_VAULT_HEIGHT;
 
 	int32 index = -1;
 	if (point.y >= 0) {
-		index = row_number*in_a_row;
-		if (point.x >=0) {
+		index = row_number * in_a_row;
+		if (point.x >= 0) {
 			index += (int32)point.x / BRUSH_VAULT_WIDTH;
-			if (index > brush_images->CountItems()-1) {
+			if (index > brush_images->CountItems() - 1) {
 				index = -1;
 			}
 		}
