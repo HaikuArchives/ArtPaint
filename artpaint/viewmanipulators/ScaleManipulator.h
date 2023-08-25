@@ -91,7 +91,7 @@ class ScaleManipulator : public WindowGUIManipulator {
 	float		previous_bottom;
 
 	Selection*	selection;
-	SelectionData*	orig_selection_data;
+	BBitmap*	orig_selection_map;
 	bool		transform_selection_only;
 
 	BPoint		previous_point;

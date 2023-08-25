@@ -121,6 +121,8 @@ public:
 		// This function adds a binary bitmap to the selection.
 		void			AddSelection(BBitmap*, bool add_to_selection);
 
+		void			ReplaceSelection(BBitmap*);
+
 		// This function clears the selection.
 		void			Clear();
 
@@ -177,6 +179,8 @@ public:
 		void			ImageSizeChanged(BRect);
 
 const	SelectionData*	ReturnSelectionData() { return selection_data; }
+
+BBitmap*		ReturnSelectionMap() { return selection_map; }
 
 		// These functions return true if the point in parameter belongs to the
 		// selection (i.e. is not DEselected). The BPoint version will also

@@ -44,7 +44,7 @@
 RotationManipulator::RotationManipulator(BBitmap* bitmap)
 	:	WindowGUIManipulator(),
 	selection(NULL),
-	orig_selection_data(NULL),
+	orig_selection_map(NULL),
 	transform_selection_only(false)
 {
 	settings = new RotationManipulatorSettings();
@@ -78,6 +78,11 @@ RotationManipulator::~RotationManipulator()
 	if (config_view != NULL) {
 		config_view->RemoveSelf();
 		delete config_view;
+	}
+
+	if (orig_selection_map != NULL) {
+		delete orig_selection_map;
+		orig_selection_map = NULL;
 	}
 }
 
@@ -357,10 +362,9 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 			}
 		}
 	} else {
-		if (orig_selection_data != NULL) {
-			selection->SetSelectionData(orig_selection_data);
-			selection->Recalculate();
-		}
+		if (orig_selection_map != NULL)
+			selection->ReplaceSelection(orig_selection_map);
+
 		// This should be done by first rotating the selection and then looking up what pixels
 		// of original image correspond to the pixels in the rotated selection. The only problem
 		// with this approach is if we want to clear the selection first so we must clear it before
@@ -615,6 +619,9 @@ RotationManipulator::Reset()
 
 		memcpy(target, source, bits_length);
 	}
+
+	if (orig_selection_map != NULL && selection != NULL)
+		selection->ReplaceSelection(orig_selection_map);
 }
 
 
@@ -660,7 +667,7 @@ RotationManipulator::SetSelection(Selection* new_selection)
 {
 	selection = new_selection;
 	if (selection != NULL && selection->IsEmpty() == false) {
-		orig_selection_data = new SelectionData(selection->ReturnSelectionData());
+		orig_selection_map = new BBitmap(selection->ReturnSelectionMap());
 
 		BRect bounds = selection->GetBoundingRect();
 

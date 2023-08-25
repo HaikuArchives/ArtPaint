@@ -62,7 +62,7 @@ class RotationManipulator: public WindowGUIManipulator {
 	bool		move_origo;
 
 	Selection*	selection;
-	SelectionData*	orig_selection_data;
+	BBitmap*	orig_selection_map;
 	bool		transform_selection_only;
 
 public:

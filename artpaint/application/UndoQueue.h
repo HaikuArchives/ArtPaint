@@ -52,6 +52,7 @@ const	char*		ReturnRedoEventName();
 
 
 SelectionData*		selection_data;
+BBitmap*			selection_map;
 Layer*				layer_data;
 
 public:
@@ -90,6 +91,9 @@ void		RegisterLayer(int32 layer_id,BBitmap *layer_bitmap);
 
 SelectionData*	ReturnSelectionData() { return selection_data; }
 void	SetSelectionData(const SelectionData*);
+
+BBitmap*		ReturnSelectionMap() { return selection_map; }
+void			SetSelectionMap(const BBitmap* new_map);
 
 bool		IsEmpty() { return (ReturnUndoEventName() == NULL); }
 

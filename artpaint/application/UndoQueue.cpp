@@ -48,6 +48,7 @@ UndoQueue::UndoQueue(BMenuItem *undo_item,BMenuItem *redo_item,ImageView *iv)
 	queue_list->AddItem(this);
 
 	selection_data = new SelectionData();
+	selection_map = NULL;
 
 	UpdateMenuItems();
 }
@@ -76,6 +77,8 @@ UndoQueue::~UndoQueue()
 	delete[] layer_bitmaps;
 
 	delete selection_data;
+	delete selection_map;
+
 }
 
 
@@ -535,6 +538,14 @@ UndoQueue::SetSelectionData(const SelectionData *s)
 {
 	delete selection_data;
 	selection_data = new SelectionData(s);
+}
+
+
+void
+UndoQueue::SetSelectionMap(const BBitmap* new_map)
+{
+	delete selection_map;
+	selection_map = new BBitmap(new_map);
 }
 
 

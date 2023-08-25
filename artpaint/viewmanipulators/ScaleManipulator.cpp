@@ -46,7 +46,7 @@ using ArtPaint::Interface::NumberControl;
 ScaleManipulator::ScaleManipulator(BBitmap *bm)
 	:	WindowGUIManipulator(),
 	selection(NULL),
-	orig_selection_data(NULL),
+	orig_selection_map(NULL),
 	transform_selection_only(false)
 {
 	configuration_view = NULL;
@@ -72,8 +72,8 @@ ScaleManipulator::~ScaleManipulator()
 		delete configuration_view;
 	}
 
-	if (orig_selection_data != NULL)
-		delete orig_selection_data;
+	if (orig_selection_map != NULL)
+		delete orig_selection_map;
 
 	delete copy_of_the_preview_bitmap;
 }
@@ -115,10 +115,10 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	uint32 *target_bits;
 
 	if (selection != NULL && selection->IsEmpty() == FALSE) {
-		if (orig_selection_data != NULL) {
+		if (orig_selection_map != NULL) {
 			// get the selection before scaling
-			SelectionData new_selection_data = selection->ReturnSelectionData();
-			selection->SetSelectionData(orig_selection_data);
+			BBitmap new_selection_map(selection->ReturnSelectionMap());
+			selection->ReplaceSelection(orig_selection_map);
 
 			// copy non-selected data to result bitmap
 
@@ -143,7 +143,7 @@ BBitmap* ScaleManipulator::ManipulateBitmap(ManipulatorSettings *set,
 			orig_bounds = selection->GetBoundingRect();
 
 			// and reset selection back to the new selection
-			selection->SetSelectionData(&new_selection_data);
+			selection->ReplaceSelection(&new_selection_map);
 		}
 
 		bounds = selection->GetBoundingRect();
@@ -456,8 +456,8 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 		int32 sel_right = (int32)selection_bounds.right;
 
 
-		SelectionData temp_selection_data(selection->ReturnSelectionData());
-		selection->SetSelectionData(orig_selection_data);
+		BBitmap* temp_selection_map = new BBitmap(selection->ReturnSelectionMap());
+		selection->ReplaceSelection(orig_selection_map);
 		if (transform_selection_only == false) {
 			for (int32 y = sel_top; y <= sel_bottom; ++y) {
 				for (int32 x = sel_left; x <= sel_right; ++x) {
@@ -491,8 +491,7 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 			if (selection_bounds.IsValid() == false ||
 				selection_bounds.Width() <= 1 ||
 				selection_bounds.Height() <= 1) {
-				selection->SetSelectionData(orig_selection_data);
-				selection->Recalculate();
+				selection->ReplaceSelection(orig_selection_map);
 				selection->Translate(previous_left, previous_top);
 				selection->Recalculate();
 				selection_bounds = selection->GetBoundingRect();
@@ -620,8 +619,8 @@ ScaleManipulator::Reset()
 			memcpy(target, source, preview_bitmap->BitsLength());
 	}
 
-	if (orig_selection_data != NULL && selection != NULL)
-		selection->SetSelectionData(orig_selection_data);
+	if (orig_selection_map != NULL && selection != NULL)
+		selection->ReplaceSelection(orig_selection_map);
 
 	SetValues(original_left, original_top, original_right, original_bottom);
 	if (configuration_view != NULL)
@@ -682,7 +681,7 @@ ScaleManipulator::SetSelection(Selection* new_selection)
 	selection = new_selection;
 
 	if (selection != NULL && selection->IsEmpty() == false) {
-		orig_selection_data = new SelectionData(selection->ReturnSelectionData());
+		orig_selection_map = new BBitmap(selection->ReturnSelectionMap());
 
 		BRect bounds = selection->GetBoundingRect();
 

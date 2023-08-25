@@ -36,6 +36,7 @@ friend 	class		UndoQueue;
 		UndoEvent	*previous_event;
 
 	SelectionData	*selection_data;
+		BBitmap*	selection_map;
 
 		Layer*		layer_data;
 
@@ -57,6 +58,9 @@ BBitmap*		ReturnThumbnail() { return thumbnail_image; }
 
 SelectionData*	ReturnSelectionData() { return selection_data; }
 void			SetSelectionData(const SelectionData*);
+
+BBitmap*		ReturnSelectionMap() { return selection_map; }
+void			SetSelectionMap(const BBitmap* new_map);
 
 void			SetLayerData(Layer*);
 Layer*			ReturnLayerData() { return layer_data; }
