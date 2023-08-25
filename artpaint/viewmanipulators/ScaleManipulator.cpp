@@ -488,9 +488,9 @@ int32 ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
 
 		if (transform_selection_only == false) {
-			if (selection_bounds.IsValid() == false ||
-				selection_bounds.Width() <= 1 ||
-				selection_bounds.Height() <= 1) {
+			if (selection_bounds.IsValid() == false
+				|| selection_bounds.Width() <= 1
+				|| selection_bounds.Height() <= 1) {
 				selection->ReplaceSelection(orig_selection_map);
 				selection->Translate(previous_left, previous_top);
 				selection->Recalculate();
