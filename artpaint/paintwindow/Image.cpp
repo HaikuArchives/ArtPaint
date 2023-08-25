@@ -416,6 +416,7 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 						new_action = new UndoAction(layer->Id());
 					else {
 						new_action = new UndoAction(layer->Id(),ADD_LAYER_ACTION,layer->Bitmap()->Bounds());
+						new_event->SetLayerData(layer);
 					}
 					new_event->AddAction(new_action);
 					new_action->StoreUndo(layer->Bitmap());
@@ -756,6 +757,8 @@ Image::UpdateImageStructure(UndoEvent *event)
 	}
 	UndoAction **actions = event->ReturnActions();
 	BRect updated_rect(1000000,1000000,-1000000,-1000000);
+	Layer* layer_data = event->ReturnLayerData();
+
 	for (int32 i=0;i<event->ActionCount();i++) {
 		int32 layer_id = actions[i]->LayerId();
 		Layer *layer = layer_id_list[layer_id];
@@ -795,6 +798,14 @@ Image::UpdateImageStructure(UndoEvent *event)
 					"create mini picture", B_LOW_PRIORITY,
 					layer_id_list[layer_id]);
 				resume_thread(a_thread);
+				BString new_name(layer_data->ReturnLayerName());
+				float new_transparency = layer_data->GetTransparency();
+				uint8 new_blend_mode = layer_data->GetBlendMode();
+				bool new_visibility = layer_data->IsVisible();
+				layer_id_list[layer_id]->SetName(new_name);
+				layer_id_list[layer_id]->SetTransparency(new_transparency);
+				layer_id_list[layer_id]->SetBlendMode(new_blend_mode);
+				layer_id_list[layer_id]->SetVisibility(new_visibility);
 			}
 			delete bitmap;
 		}
