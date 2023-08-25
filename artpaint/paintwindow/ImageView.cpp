@@ -2294,25 +2294,22 @@ ImageView::Undo()
 			if (event->ReturnLayerData() != NULL) {
 				Layer* layer_data = event->ReturnLayerData();
 				Layer* active_layer = the_image->ReturnLayerById(layer_data->Id());
+
 				if (active_layer != NULL) {
+					BString new_name(layer_data->ReturnLayerName());
+					float new_transparency = layer_data->GetTransparency();
+					uint8 new_blend_mode = layer_data->GetBlendMode();
+					bool new_visibility = layer_data->IsVisible();
+
 					active_layer->ActivateLayer(true);
 					the_image->ChangeActiveLayer(active_layer, 0);
-					BString new_name(layer_data->ReturnLayerName());
 					BString old_name(active_layer->ReturnLayerName());
-					active_layer->SetName(new_name);
-					active_layer->GetView()->SetName(new_name);
 					layer_data->SetName(old_name);
-					float new_transparency = layer_data->GetTransparency();
 					float old_transparency = active_layer->GetTransparency();
-					active_layer->SetTransparency(new_transparency);
 					layer_data->SetTransparency(old_transparency);
-					uint8 new_blend_mode = layer_data->GetBlendMode();
 					uint8 old_blend_mode = active_layer->GetBlendMode();
-					active_layer->SetBlendMode(new_blend_mode);
 					layer_data->SetBlendMode(old_blend_mode);
-					bool new_visibility = layer_data->IsVisible();
 					bool old_visibility = active_layer->IsVisible();
-					active_layer->SetVisibility(new_visibility);
 					layer_data->SetVisibility(old_visibility);
 					LayerWindow::SetTransparency(new_transparency * 100);
 					LayerWindow::SetBlendMode(new_blend_mode);
@@ -2386,25 +2383,22 @@ ImageView::Redo()
 			if (event->ReturnLayerData() != NULL) {
 				Layer* layer_data = event->ReturnLayerData();
 				Layer* active_layer = the_image->ReturnLayerById(layer_data->Id());
+
 				if (active_layer != NULL) {
+					BString new_name(layer_data->ReturnLayerName());
+					float new_transparency = layer_data->GetTransparency();
+					uint8 new_blend_mode = layer_data->GetBlendMode();
+					bool new_visibility = layer_data->IsVisible();
+
 					active_layer->ActivateLayer(true);
 					the_image->ChangeActiveLayer(active_layer, 0);
-					BString new_name(layer_data->ReturnLayerName());
 					BString old_name(active_layer->ReturnLayerName());
-					active_layer->SetName(new_name);
-					active_layer->GetView()->SetName(new_name);
 					layer_data->SetName(old_name);
-					float new_transparency = layer_data->GetTransparency();
 					float old_transparency = active_layer->GetTransparency();
-					active_layer->SetTransparency(new_transparency);
 					layer_data->SetTransparency(old_transparency);
-					uint8 new_blend_mode = layer_data->GetBlendMode();
 					uint8 old_blend_mode = active_layer->GetBlendMode();
-					active_layer->SetBlendMode(new_blend_mode);
 					layer_data->SetBlendMode(old_blend_mode);
-					bool new_visibility = layer_data->IsVisible();
 					bool old_visibility = active_layer->IsVisible();
-					active_layer->SetVisibility(new_visibility);
 					layer_data->SetVisibility(old_visibility);
 					LayerWindow::SetTransparency(new_transparency * 100);
 					LayerWindow::SetBlendMode(new_blend_mode);
