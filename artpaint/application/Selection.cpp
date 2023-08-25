@@ -301,6 +301,50 @@ Selection::AddSelection(BBitmap* bitmap, bool add_to_selection)
 
 
 void
+Selection::ReplaceSelection(BBitmap* bitmap)
+{
+	if (!bitmap)
+		return;
+
+	acquire_sem(selection_mutex);
+
+	if (original_selections) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
+			delete original_selections[i];
+		delete [] original_selections;
+		original_selections = NULL;
+	}
+
+	selection_bounds = BRect();
+
+	delete selection_map;
+	selection_map = new BBitmap(image_bounds, B_GRAY8, true);
+	selection_view = new BView(image_bounds, "", B_FOLLOW_NONE,
+		B_WILL_DRAW);
+	selection_map->AddChild(selection_view);
+	selection_bits = (uint8*)selection_map->Bits();
+	selection_bpr = selection_map->BytesPerRow();
+
+	uint32 new_bpr = bitmap->BytesPerRow();
+	uint8* new_bits = (uint8*)bitmap->Bits();
+
+	int32 width = min_c(selection_bpr, new_bpr);
+	int32 height
+		= min_c(image_bounds.IntegerHeight(), bitmap->Bounds().IntegerHeight());
+	for (int32 y = 0; y <= height; ++y) {
+		for (int32 x = 0; x < width; ++x) {
+			uint8* ptr = selection_bits + x + y * selection_bpr;
+			*ptr = *(new_bits + x + y * new_bpr);
+		}
+	}
+
+	SimplifySelection();
+
+	release_sem(selection_mutex);
+}
+
+
+void
 Selection::SelectAll()
 {
 	BPoint* corners = new BPoint[4];

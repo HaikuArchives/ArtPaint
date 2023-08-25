@@ -759,14 +759,15 @@ ImageView::MessageReceived(BMessage* message)
 		case HS_INVERT_SELECTION: {
 			if (!fManipulator) {
 				selection->Invert();
-				if (!(*undo_queue->ReturnSelectionData() ==
-					*selection->ReturnSelectionData())) {
+
+				if (!(undo_queue->ReturnSelectionMap() ==
+					selection->ReturnSelectionMap())) {
 					UndoEvent* new_event =
 						undo_queue->AddUndoEvent(B_TRANSLATE("Invert selection"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
 
@@ -779,14 +780,14 @@ ImageView::MessageReceived(BMessage* message)
 		case HS_CLEAR_SELECTION: {
 			if (!fManipulator) {
 				selection->Clear();
-				if (!(*undo_queue->ReturnSelectionData() ==
-					*selection->ReturnSelectionData())) {
+				if (!(undo_queue->ReturnSelectionMap() ==
+					selection->ReturnSelectionMap())) {
 					UndoEvent* new_event =
 						undo_queue->AddUndoEvent(B_TRANSLATE("Select none"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
 
@@ -804,12 +805,12 @@ ImageView::MessageReceived(BMessage* message)
 		case HS_SELECT_ALL: {
 			if (!fManipulator) {
 				selection->SelectAll();
-				if (!(*undo_queue->ReturnSelectionData() == *selection->ReturnSelectionData())) {
+				if (!(undo_queue->ReturnSelectionMap() == selection->ReturnSelectionMap())) {
 					UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Select all"),
 						the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
 
@@ -827,16 +828,17 @@ ImageView::MessageReceived(BMessage* message)
 				BBitmap* selection_map =
 					BitmapUtilities::ConvertToMask(layerBitmap, 0xFF);
 				selection->AddSelection(selection_map, true);
-				if (!(*undo_queue->ReturnSelectionData() ==
-					*selection->ReturnSelectionData())) {
+				if (!(undo_queue->ReturnSelectionMap() ==
+					selection->ReturnSelectionMap())) {
 					UndoEvent* new_event =
 						undo_queue->AddUndoEvent(B_TRANSLATE("Select non-transparent"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
+
 
 				// Tell the selection to start drawing itself.
 				if (show_selection == TRUE)
@@ -849,14 +851,14 @@ ImageView::MessageReceived(BMessage* message)
 		case HS_GROW_SELECTION: {
 			if (!fManipulator) {
 				selection->Dilate();
-				if (!(*undo_queue->ReturnSelectionData() ==
-					*selection->ReturnSelectionData())) {
+				if (!(undo_queue->ReturnSelectionMap() ==
+					selection->ReturnSelectionMap())) {
 					UndoEvent* new_event =
 						undo_queue->AddUndoEvent(B_TRANSLATE("Grow selection"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
 				Invalidate();
@@ -866,14 +868,14 @@ ImageView::MessageReceived(BMessage* message)
 		case HS_SHRINK_SELECTION: {
 			if (!fManipulator) {
 				selection->Erode();
-				if (!(*undo_queue->ReturnSelectionData() ==
-					*selection->ReturnSelectionData())) {
+				if (!(undo_queue->ReturnSelectionMap() ==
+					selection->ReturnSelectionMap())) {
 					UndoEvent* new_event =
 						undo_queue->AddUndoEvent(B_TRANSLATE("Shrink selection"),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
 				Invalidate();
@@ -1785,16 +1787,16 @@ ImageView::PaintToolThread()
 				}
 			} else if (tool_type == SELECTOR_TOOL) {
 				// Add selection-change to the undo-queue.
-				if (!(*undo_queue->ReturnSelectionData() ==
-					*selection->ReturnSelectionData())) {
+				if (!(undo_queue->ReturnSelectionMap() ==
+					selection->ReturnSelectionMap())) {
 					const DrawingTool* used_tool =
 						ToolManager::Instance().ReturnTool(tool_type);
 					UndoEvent* new_event =
 						undo_queue->AddUndoEvent(used_tool->Name(),
 							the_image->ReturnThumbnailImage());
 					if (new_event != NULL) {
-						new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-						undo_queue->SetSelectionData(selection->ReturnSelectionData());
+						new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+						undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 					}
 				}
 
@@ -2066,14 +2068,14 @@ ImageView::ManipulatorFinisherThread()
 			manipName == B_TRANSLATE("Rotate selection") ||
 			manipName == B_TRANSLATE("Scale selection")) {
 			// Add selection-change to the undo-queue.
-			if (!(*undo_queue->ReturnSelectionData() ==
-				*selection->ReturnSelectionData())) {
+			if (!(undo_queue->ReturnSelectionMap() ==
+				selection->ReturnSelectionMap())) {
 				UndoEvent* new_event =
 					undo_queue->AddUndoEvent(manipName,
 						the_image->ReturnThumbnailImage());
 				if (new_event != NULL) {
-					new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-					undo_queue->SetSelectionData(selection->ReturnSelectionData());
+					new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+					undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 				}
 			}
 		} else {
@@ -2207,10 +2209,10 @@ ImageView::ManipulatorFinisherThread()
 
 	// Change the selection for the undo-queue if necessary.
 	if ((new_event != NULL) &&
-		!(*undo_queue->ReturnSelectionData() ==
-			*selection->ReturnSelectionData())) {
-		new_event->SetSelectionData(undo_queue->ReturnSelectionData());
-		undo_queue->SetSelectionData(selection->ReturnSelectionData());
+		!(undo_queue->ReturnSelectionMap() ==
+			selection->ReturnSelectionMap())) {
+		new_event->SetSelectionMap(undo_queue->ReturnSelectionMap());
+		undo_queue->SetSelectionMap(selection->ReturnSelectionMap());
 	}
 
 	// Store the manipulator settings.
@@ -2281,14 +2283,14 @@ ImageView::Undo()
 				RemoveChange();
 			}
 
-			if (event->ReturnSelectionData() != NULL) {
-				SelectionData* data = new SelectionData(
-					event->ReturnSelectionData());
-				event->SetSelectionData(selection->ReturnSelectionData());
-				selection->SetSelectionData(data);
+			if (event->ReturnSelectionMap() != NULL) {
+				BBitmap* selection_map = new BBitmap(
+					event->ReturnSelectionMap());
+				event->SetSelectionMap(selection->ReturnSelectionMap());
+				selection->ReplaceSelection(selection_map);
 
-				undo_queue->SetSelectionData(data);
-				delete data;
+				undo_queue->SetSelectionMap(selection_map);
+				delete selection_map;
 			}
 
 			if (event->ReturnLayerData() != NULL) {
@@ -2370,14 +2372,14 @@ ImageView::Redo()
 					the_image->LayerList(), the_image->ReturnThumbnailImage());
 				AddChange();
 			}
-			if (event->ReturnSelectionData() != NULL) {
-				SelectionData* data = new SelectionData(
-					event->ReturnSelectionData());
-				event->SetSelectionData(selection->ReturnSelectionData());
-				selection->SetSelectionData(data);
+			if (event->ReturnSelectionMap() != NULL) {
+				BBitmap* selection_map = new BBitmap(
+					event->ReturnSelectionMap());
+				event->SetSelectionMap(selection->ReturnSelectionMap());
+				selection->ReplaceSelection(selection_map);
 
-				undo_queue->SetSelectionData(data);
-				delete data;
+				undo_queue->SetSelectionMap(selection_map);
+				delete selection_map;
 			}
 
 			if (event->ReturnLayerData() != NULL) {

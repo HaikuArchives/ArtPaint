@@ -30,6 +30,7 @@ UndoEvent::UndoEvent(const BString& name, const BBitmap*)
 	previous_event = NULL;
 
 	selection_data = NULL;
+	selection_map = NULL;
 	layer_data = NULL;
 }
 
@@ -45,6 +46,7 @@ UndoEvent::~UndoEvent()
 	delete[] actions;
 
 	delete selection_data;
+	delete selection_map;
 
 	delete layer_data;
 }
@@ -100,10 +102,19 @@ bool UndoEvent::IsEmpty()
 }
 
 
-void UndoEvent::SetSelectionData(const SelectionData *s)
+void
+UndoEvent::SetSelectionData(const SelectionData *s)
 {
 	delete selection_data;
 	selection_data = new SelectionData(s);
+}
+
+
+void
+UndoEvent::SetSelectionMap(const BBitmap* new_map)
+{
+	delete selection_map;
+	selection_map = new BBitmap(new_map);
 }
 
 
