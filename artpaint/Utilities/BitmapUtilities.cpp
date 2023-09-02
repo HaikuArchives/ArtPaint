@@ -355,6 +355,7 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds,
 	PointContainer* included_points = new PointContainer();
 
 	bool inside = false;
+	bool border = true;
 	BPoint pos;
 
 	for (int32 y = topb; y <= bottomb; y++) {
@@ -375,9 +376,13 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds,
 				inside = true;
 			else if (containsPoint == true && inside == true)
 				continue;
-			else if (containsPoint == false && inside == true)
+			else if (containsPoint == false && inside == true) {
 				inside = false;
-			else if (containsPoint && inside == false) {
+				if ((x - 1) >= 0 && included_points->HasPoint(x - 1, y))
+					border = true;
+				else
+					border = !border;
+			} else if (containsPoint == true && inside == false) {
 				included_points->InsertPoint(x - 0.5, y - 0.5);
 
 				int32 max_point_count = 1024;
@@ -527,7 +532,7 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds,
 
 				if (point_count > 1) {
 					HSPolygon* new_polygon = NULL;
-					if (inside == true)
+					if (border == true)
 						new_polygon = new HSPolygon(point_list, point_count,
 							HS_POLYGON_CLOCKWISE);
 					else
