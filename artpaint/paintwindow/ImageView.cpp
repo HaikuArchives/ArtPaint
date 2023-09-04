@@ -2277,6 +2277,9 @@ ImageView::Undo()
 
 				undo_queue->SetSelectionMap(selection_map);
 				delete selection_map;
+
+				if (show_selection == true)
+					selection->StartDrawing(this, magnify_scale);
 			}
 
 			if (event->ReturnLayerData() != NULL) {
@@ -2365,6 +2368,9 @@ ImageView::Redo()
 				selection->ReplaceSelection(selection_map);
 				undo_queue->SetSelectionMap(selection_map);
 				delete selection_map;
+
+				if (show_selection == true)
+					selection->StartDrawing(this, magnify_scale);
 			}
 
 			if (event->ReturnLayerData() != NULL) {
