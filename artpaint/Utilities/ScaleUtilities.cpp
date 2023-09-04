@@ -125,10 +125,10 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 					if (y == height)
 						high2 = high;
 
-					uint32* src_bits_low0 =
-						source_bits + (int32)offset.x + (low0 + (int32)ceil(offset.y + 0.5)) * source_bpr;
-					uint32* src_bits_high2 =
-						source_bits + (int32)offset.x + (high2 + (int32)ceil(offset.y + 0.5)) * source_bpr;
+					uint32* src_bits_low0 = source_bits + (int32)offset.x
+						+ (low0 + (int32)ceil(offset.y + 0.5)) * source_bpr;
+					uint32* src_bits_high2 = source_bits + (int32)offset.x
+						+ (high2 + (int32)ceil(offset.y + 0.5)) * source_bpr;
 
 					// default MITCHELL
 					float B = 1. / 3.;
