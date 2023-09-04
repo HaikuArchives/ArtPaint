@@ -110,7 +110,7 @@ public:
 	virtual	void					MessageReceived(BMessage* message);
 
 private:
-			BCheckBox*				fFlodFill;
+			BCheckBox*				fFloodFill;
 			BCheckBox*				fGradient;
 			BCheckBox*				fPreview;
 

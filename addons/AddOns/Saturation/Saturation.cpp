@@ -11,8 +11,8 @@
 #include <LayoutBuilder.h>
 #include <Slider.h>
 #include <StatusBar.h>
-#include <string.h>
 #include <Window.h>
+#include <string.h>
 
 #include "AddOns.h"
 #include "ManipulatorInformer.h"
@@ -24,7 +24,8 @@
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 	char name[255] = B_TRANSLATE_MARK("Saturation" B_UTF8_ELLIPSIS);
 	char menu_help_string[255] = B_TRANSLATE_MARK("Adjusts color saturation.");
@@ -35,17 +36,18 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 {
 	delete i;
 	return new SaturationManipulator(bm);
 }
 
 
-
-SaturationManipulator::SaturationManipulator(BBitmap *bm)
-		: WindowGUIManipulator(),
-		selection(NULL)
+SaturationManipulator::SaturationManipulator(BBitmap* bm)
+	:
+	WindowGUIManipulator(),
+	selection(NULL)
 {
 	preview_bitmap = NULL;
 	config_view = NULL;
@@ -66,8 +68,9 @@ SaturationManipulator::~SaturationManipulator()
 }
 
 
-BBitmap* SaturationManipulator::ManipulateBitmap(ManipulatorSettings* set,
-	BBitmap* original, BStatusBar* status_bar)
+BBitmap*
+SaturationManipulator::ManipulateBitmap(
+	ManipulatorSettings* set, BBitmap* original, BStatusBar* status_bar)
 {
 	SaturationManipulatorSettings* new_settings = dynamic_cast<SaturationManipulatorSettings*>(set);
 
@@ -83,10 +86,9 @@ BBitmap* SaturationManipulator::ManipulateBitmap(ManipulatorSettings* set,
 
 		source_bitmap = copy_of_the_preview_bitmap;
 		target_bitmap = original;
-	}
-	else {
+	} else {
 		source_bitmap = original;
-		target_bitmap = new BBitmap(original->Bounds(),B_RGB32,FALSE);
+		target_bitmap = new BBitmap(original->Bounds(), B_RGB32, FALSE);
 	}
 
 	current_resolution = 1;
@@ -94,7 +96,7 @@ BBitmap* SaturationManipulator::ManipulateBitmap(ManipulatorSettings* set,
 	progress_bar = status_bar;
 
 	delete luminance_image;
-	luminance_image = new BBitmap(source_bitmap->Bounds(),B_CMAP8);
+	luminance_image = new BBitmap(source_bitmap->Bounds(), B_CMAP8);
 	CalculateLuminanceImage(source_bitmap);
 
 	start_threads();
@@ -103,13 +105,14 @@ BBitmap* SaturationManipulator::ManipulateBitmap(ManipulatorSettings* set,
 }
 
 
-void SaturationManipulator::CalculateLuminanceImage(BBitmap *bitmap)
+void
+SaturationManipulator::CalculateLuminanceImage(BBitmap* bitmap)
 {
-	uint8 *luminance_bits = (uint8*)luminance_image->Bits();
+	uint8* luminance_bits = (uint8*)luminance_image->Bits();
 	uint32 luminance_bpr = luminance_image->BytesPerRow();
 
-	uint32 *bits = (uint32*)bitmap->Bits();
-	uint32 bpr = bitmap->BytesPerRow()/4;
+	uint32* bits = (uint32*)bitmap->Bits();
+	uint32 bpr = bitmap->BytesPerRow() / 4;
 
 	int32 width = bitmap->Bounds().Width();
 	int32 height = bitmap->Bounds().Height();
@@ -119,34 +122,37 @@ void SaturationManipulator::CalculateLuminanceImage(BBitmap *bitmap)
 		uint32 word;
 	} color;
 
-	for (int32 y=0;y<=height;y++) {
-		int32 y_times_bpr = y*bpr;
-		int32 y_times_luminance_bpr = y*luminance_bpr;
-		for (int32 x=0;x<=width;x++) {
+	for (int32 y = 0; y <= height; y++) {
+		int32 y_times_bpr = y * bpr;
+		int32 y_times_luminance_bpr = y * luminance_bpr;
+		for (int32 x = 0; x <= width; x++) {
 			color.word = *(bits + x + y_times_bpr);
 			uint8 luminance;
-			luminance = min_c(255,max_c(0,0.144 * color.bytes[0] + 0.587 * color.bytes[1] + 0.299 * color.bytes[2]));
+			luminance = min_c(255,
+				max_c(0, 0.144 * color.bytes[0] + 0.587 * color.bytes[1] + 0.299 * color.bytes[2]));
 			*(luminance_bits + x + y_times_luminance_bpr) = luminance;
 		}
 	}
 }
 
-int32 SaturationManipulator::PreviewBitmap(bool full_quality,
-	BRegion* updated_region)
+
+int32
+SaturationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
 	progress_bar = NULL;
-	if (settings == previous_settings ) {
-		if ((last_calculated_resolution != highest_available_quality) && (last_calculated_resolution > 0))
-			last_calculated_resolution = max_c(highest_available_quality,floor(last_calculated_resolution/2.0));
+	if (settings == previous_settings) {
+		if ((last_calculated_resolution != highest_available_quality)
+			&& (last_calculated_resolution > 0))
+			last_calculated_resolution
+				= max_c(highest_available_quality, floor(last_calculated_resolution / 2.0));
 		else
 			last_calculated_resolution = 0;
-	}
-	else
+	} else
 		last_calculated_resolution = lowest_available_quality;
 
-	if (full_quality) {
-		last_calculated_resolution = min_c(1,last_calculated_resolution);
-	}
+	if (full_quality)
+		last_calculated_resolution = min_c(1, last_calculated_resolution);
+
 	previous_settings = settings;
 
 	if (last_calculated_resolution > 0) {
@@ -164,38 +170,42 @@ int32 SaturationManipulator::PreviewBitmap(bool full_quality,
 }
 
 
-void SaturationManipulator::start_threads()
+void
+SaturationManipulator::start_threads()
 {
 	number_of_threads = GetSystemCpuCount();
 
-	thread_id *threads = new thread_id[number_of_threads];
+	thread_id* threads = new thread_id[number_of_threads];
 
-	for (int32 i=0;i<number_of_threads;i++) {
-		threads[i] = spawn_thread(thread_entry,"saturation_thread",B_NORMAL_PRIORITY,this);
+	for (int32 i = 0; i < number_of_threads; i++) {
+		threads[i] = spawn_thread(thread_entry, "saturation_thread", B_NORMAL_PRIORITY, this);
 		resume_thread(threads[i]);
-		send_data(threads[i],i,NULL,0);
+		send_data(threads[i], i, NULL, 0);
 	}
 
-	for (int32 i=0;i<number_of_threads;i++) {
+	for (int32 i = 0; i < number_of_threads; i++) {
 		int32 return_value;
-		wait_for_thread(threads[i],&return_value);
+		wait_for_thread(threads[i], &return_value);
 	}
 
 	delete[] threads;
 }
 
-int32 SaturationManipulator::thread_entry(void *data)
+
+int32
+SaturationManipulator::thread_entry(void* data)
 {
 	int32 thread_number;
-	thread_number = receive_data(NULL,NULL,0);
+	thread_number = receive_data(NULL, NULL, 0);
 
-	SaturationManipulator *this_pointer = (SaturationManipulator*)data;
+	SaturationManipulator* this_pointer = (SaturationManipulator*)data;
 
 	return this_pointer->thread_function(thread_number);
 }
 
 
-int32 SaturationManipulator::thread_function(int32 thread_number)
+int32
+SaturationManipulator::thread_function(int32 thread_number)
 {
 	// This function interpolates the image with a degenerate version,
 	// which in this case is the luminance image. The luminance image
@@ -204,16 +214,16 @@ int32 SaturationManipulator::thread_function(int32 thread_number)
 	int32 step = current_resolution;
 	uint32 saturation = settings.saturation;
 
-	BWindow *progress_bar_window = NULL;
+	BWindow* progress_bar_window = NULL;
 	if (progress_bar != NULL)
 		progress_bar_window = progress_bar->Window();
 
 
-	uint32 *source_bits = (uint32*)source_bitmap->Bits();
-	uint32 *target_bits = (uint32*)target_bitmap->Bits();
-	int32 source_bpr = source_bitmap->BytesPerRow()/4;
-	int32 target_bpr = target_bitmap->BytesPerRow()/4;
-	uint8 *luminance_bits = (uint8*)luminance_image->Bits();
+	uint32* source_bits = (uint32*)source_bitmap->Bits();
+	uint32* target_bits = (uint32*)target_bitmap->Bits();
+	int32 source_bpr = source_bitmap->BytesPerRow() / 4;
+	int32 target_bpr = target_bitmap->BytesPerRow() / 4;
+	uint8* luminance_bits = (uint8*)luminance_image->Bits();
 	uint32 luminance_bpr = luminance_image->BytesPerRow();
 
 	// This union must be used to guarantee endianness compatibility.
@@ -233,43 +243,44 @@ int32 SaturationManipulator::thread_function(int32 thread_number)
 		int32 bottom = target_bitmap->Bounds().bottom;
 
 		float height = bottom - top;
-		top = height/number_of_threads*thread_number;
-		top = ceil(top/(float)step);
+		top = height / number_of_threads * thread_number;
+		top = ceil(top / (float)step);
 		top *= step;
-		bottom = min_c(bottom,top + (height+1)/number_of_threads);
+		bottom = min_c(bottom, top + (height + 1) / number_of_threads);
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)number_of_threads;
+		float update_amount = 100.0 / (bottom - top) * update_interval / (float)number_of_threads;
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
 		uint32 sum;
 		saturation *= 3;
-		for (int32 y=top;y<=bottom;y+=step) {
-			int32 y_times_source_bpr = y*source_bpr;
-			int32 y_times_target_bpr = y*target_bpr;
-			int32 y_times_luminance_bpr = y*luminance_bpr;
+		for (int32 y = top; y <= bottom; y += step) {
+			int32 y_times_source_bpr = y * source_bpr;
+			int32 y_times_target_bpr = y * target_bpr;
+			int32 y_times_luminance_bpr = y * luminance_bpr;
 			uint8 luminance;
-			for (int32 x=left;x<=right;x+=step) {
+			for (int32 x = left; x <= right; x += step) {
 				color.word = *(source_bits + x + y_times_source_bpr);
 				luminance = *(luminance_bits + x + y_times_luminance_bpr);
-				color.bytes[0] = max_c(0,min_c(255,color.bytes[0] * coeff + luminance*one_minus_coeff));
-				color.bytes[1] = max_c(0,min_c(255,color.bytes[1] * coeff + luminance*one_minus_coeff));
-				color.bytes[2] = max_c(0,min_c(255,color.bytes[2] * coeff + luminance*one_minus_coeff));
+				color.bytes[0]
+					= max_c(0, min_c(255, color.bytes[0] * coeff + luminance * one_minus_coeff));
+				color.bytes[1]
+					= max_c(0, min_c(255, color.bytes[1] * coeff + luminance * one_minus_coeff));
+				color.bytes[2]
+					= max_c(0, min_c(255, color.bytes[2] * coeff + luminance * one_minus_coeff));
 				*(target_bits + x + y_times_target_bpr) = color.word;
 			}
 
 			// Update the status-bar
-			if ( ((y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
-				progress_bar->Update(update_amount+missed_update);
+			if (((y % update_interval) == 0) && (progress_bar_window != NULL)
+				&& (progress_bar_window->LockWithTimeout(0) == B_OK)) {
+				progress_bar->Update(update_amount + missed_update);
 				progress_bar_window->Unlock();
 				missed_update = 0;
-			}
-			else if ((y % update_interval) == 0) {
+			} else if ((y % update_interval) == 0)
 				missed_update += update_amount;
-			}
 		}
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
 		BRect rect = selection->GetBoundingRect();
 
@@ -279,34 +290,38 @@ int32 SaturationManipulator::thread_function(int32 thread_number)
 		int32 bottom = rect.bottom;
 
 		float height = bottom - top;
-		top += height/number_of_threads*thread_number;
+		top += height / number_of_threads * thread_number;
 		top *= step;
 		top /= step;
 
-		bottom = min_c(bottom,top + (height+1)/number_of_threads);
+		bottom = min_c(bottom, top + (height + 1) / number_of_threads);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)number_of_threads;
+		float update_amount = 100.0 / (bottom - top) * update_interval / (float)number_of_threads;
 
 		// Loop through all pixels in original.
-		for (int32 y=top;y<=bottom;y+=step) {
-			int32 y_times_source_bpr = y*source_bpr;
-			int32 y_times_target_bpr = y*target_bpr;
-			int32 y_times_luminance_bpr = y*luminance_bpr;
+		for (int32 y = top; y <= bottom; y += step) {
+			int32 y_times_source_bpr = y * source_bpr;
+			int32 y_times_target_bpr = y * target_bpr;
+			int32 y_times_luminance_bpr = y * luminance_bpr;
 			uint8 luminance;
-			for (int32 x=left;x<=right;x+=step) {
-				if (selection->ContainsPoint(x,y)) {
+			for (int32 x = left; x <= right; x += step) {
+				if (selection->ContainsPoint(x, y)) {
 					color.word = *(source_bits + x + y_times_source_bpr);
 					luminance = *(luminance_bits + x + y_times_luminance_bpr);
-					color.bytes[0] = max_c(0,min_c(255,color.bytes[0] * coeff + luminance*one_minus_coeff));
-					color.bytes[1] = max_c(0,min_c(255,color.bytes[1] * coeff + luminance*one_minus_coeff));
-					color.bytes[2] = max_c(0,min_c(255,color.bytes[2] * coeff + luminance*one_minus_coeff));
+					color.bytes[0] = max_c(
+						0, min_c(255, color.bytes[0] * coeff + luminance * one_minus_coeff));
+					color.bytes[1] = max_c(
+						0, min_c(255, color.bytes[1] * coeff + luminance * one_minus_coeff));
+					color.bytes[2] = max_c(
+						0, min_c(255, color.bytes[2] * coeff + luminance * one_minus_coeff));
 					*(target_bits + x + y_times_target_bpr) = color.word;
 				}
 			}
 
 			// Update the status-bar
-			if ( ((y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
+			if (((y % update_interval) == 0) && (progress_bar_window != NULL)
+				&& (progress_bar_window->LockWithTimeout(0) == B_OK)) {
 				progress_bar->Update(update_amount);
 				progress_bar_window->Unlock();
 			}
@@ -317,13 +332,15 @@ int32 SaturationManipulator::thread_function(int32 thread_number)
 }
 
 
-void SaturationManipulator::MouseDown(BPoint point,uint32,BView*,bool first_click)
+void
+SaturationManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
 {
 	// This function does nothing in SaturationManipulator.
 }
 
 
-void SaturationManipulator::SetPreviewBitmap(BBitmap *bm)
+void
+SaturationManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {
 		delete copy_of_the_preview_bitmap;
@@ -331,11 +348,10 @@ void SaturationManipulator::SetPreviewBitmap(BBitmap *bm)
 
 		if (bm != NULL) {
 			preview_bitmap = bm;
-			copy_of_the_preview_bitmap = DuplicateBitmap(bm,0);
-			luminance_image = new BBitmap(preview_bitmap->Bounds(),B_CMAP8);
+			copy_of_the_preview_bitmap = DuplicateBitmap(bm, 0);
+			luminance_image = new BBitmap(preview_bitmap->Bounds(), B_CMAP8);
 			CalculateLuminanceImage(preview_bitmap);
-		}
-		else {
+		} else {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 			luminance_image = NULL;
@@ -346,17 +362,16 @@ void SaturationManipulator::SetPreviewBitmap(BBitmap *bm)
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
 		// about 50 CPU cycles.
-		double speed = GetSystemClockSpeed() / (10*50);
+		double speed = GetSystemClockSpeed() / (10 * 50);
 		BRect bounds = preview_bitmap->Bounds();
-		float num_pixels = (bounds.Width()+1) * (bounds.Height() + 1);
+		float num_pixels = (bounds.Width() + 1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
-		while ((num_pixels/lowest_available_quality/lowest_available_quality) > speed)
+		while ((num_pixels / lowest_available_quality / lowest_available_quality) > speed)
 			lowest_available_quality *= 2;
 
-		lowest_available_quality = min_c(lowest_available_quality,16);
-		highest_available_quality = max_c(lowest_available_quality/2,1);
-	}
-	else {
+		lowest_available_quality = min_c(lowest_available_quality, 16);
+		highest_available_quality = max_c(lowest_available_quality / 2, 1);
+	} else {
 		lowest_available_quality = 1;
 		highest_available_quality = 1;
 	}
@@ -364,22 +379,25 @@ void SaturationManipulator::SetPreviewBitmap(BBitmap *bm)
 }
 
 
-void SaturationManipulator::Reset()
+void
+SaturationManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with a loop.
-		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
-		uint32 *target = (uint32*)preview_bitmap->Bits();
+		uint32* source = (uint32*)copy_of_the_preview_bitmap->Bits();
+		uint32* target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
 
-		memcpy(target,source,bits_length);
+		memcpy(target, source, bits_length);
 	}
 }
 
-BView* SaturationManipulator::MakeConfigurationView(const BMessenger& target)
+
+BView*
+SaturationManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	if (config_view == NULL) {
-		config_view = new SaturationManipulatorView(this,target);
+		config_view = new SaturationManipulatorView(this, target);
 		config_view->ChangeSettings(&settings);
 	}
 
@@ -387,14 +405,17 @@ BView* SaturationManipulator::MakeConfigurationView(const BMessenger& target)
 }
 
 
-ManipulatorSettings* SaturationManipulator::ReturnSettings()
+ManipulatorSettings*
+SaturationManipulator::ReturnSettings()
 {
 	return new SaturationManipulatorSettings(settings);
 }
 
-void SaturationManipulator::ChangeSettings(ManipulatorSettings *s)
+
+void
+SaturationManipulator::ChangeSettings(ManipulatorSettings* s)
 {
-	SaturationManipulatorSettings *new_settings;
+	SaturationManipulatorSettings* new_settings;
 	new_settings = dynamic_cast<SaturationManipulatorSettings*>(s);
 
 	if (new_settings != NULL) {
@@ -402,31 +423,32 @@ void SaturationManipulator::ChangeSettings(ManipulatorSettings *s)
 	}
 }
 
-const char* SaturationManipulator::ReturnName()
+
+const char*
+SaturationManipulator::ReturnName()
 {
 	return B_TRANSLATE("Saturation");
 }
 
-const char* SaturationManipulator::ReturnHelpString()
+
+const char*
+SaturationManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Adjusts color saturation.");
 }
 
 
-
-
-// -------------------------------------
-SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *manip,
-		const BMessenger& t)
-	: WindowGUIManipulatorView()
+SaturationManipulatorView::SaturationManipulatorView(
+	SaturationManipulator* manip, const BMessenger& t)
+	:
+	WindowGUIManipulatorView()
 {
 	target = t;
 	manipulator = manip;
 	started_adjusting = FALSE;
 
-	saturation_slider = new BSlider("saturation_slider",
-		B_TRANSLATE("Saturation:"), new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255,
-		B_HORIZONTAL, B_TRIANGLE_THUMB);
+	saturation_slider = new BSlider("saturation_slider", B_TRANSLATE("Saturation:"),
+		new BMessage(SATURATION_ADJUSTING_FINISHED), 0, 255, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	saturation_slider->SetModificationMessage(new BMessage(SATURATION_ADJUSTED));
 	saturation_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	saturation_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
@@ -435,57 +457,65 @@ SaturationManipulatorView::SaturationManipulatorView(SaturationManipulator *mani
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(saturation_slider)
 		.SetInsets(B_USE_SMALL_INSETS)
-		.End();
+	.End();
 }
+
 
 SaturationManipulatorView::~SaturationManipulatorView()
 {
 }
 
-void SaturationManipulatorView::AttachedToWindow()
+
+void
+SaturationManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 	saturation_slider->SetTarget(BMessenger(this));
 }
 
-void SaturationManipulatorView::AllAttached()
+
+void
+SaturationManipulatorView::AllAttached()
 {
 	saturation_slider->SetValue(settings.saturation);
 }
 
-void SaturationManipulatorView::MessageReceived(BMessage *message)
+
+void
+SaturationManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case SATURATION_ADJUSTED:
+		{
 			settings.saturation = saturation_slider->Value();
 			manipulator->ChangeSettings(&settings);
 			if (!started_adjusting) {
 				target.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 				started_adjusting = TRUE;
 			}
-			break;
-
+		} break;
 		case SATURATION_ADJUSTING_FINISHED:
+		{
 			started_adjusting = FALSE;
 			settings.saturation = saturation_slider->Value();
 			manipulator->ChangeSettings(&settings);
 			target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-			break;
-
+		} break;
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
-			break;
 	}
 }
 
-void SaturationManipulatorView::ChangeSettings(ManipulatorSettings *set)
+
+void
+SaturationManipulatorView::ChangeSettings(ManipulatorSettings* set)
 {
-	SaturationManipulatorSettings *new_settings = dynamic_cast<SaturationManipulatorSettings*>(set);
+	SaturationManipulatorSettings* new_settings = dynamic_cast<SaturationManipulatorSettings*>(set);
 
 	if (set != NULL) {
 		settings = *new_settings;
 
-		BWindow *window = Window();
+		BWindow* window = Window();
 		if (window != NULL) {
 			window->Lock();
 			saturation_slider->SetValue(settings.saturation);

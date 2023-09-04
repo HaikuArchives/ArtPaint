@@ -9,15 +9,15 @@
  */
 
 #include "FreeTransformManipulator.h"
-#include "PixelOperations.h"
 #include "MessageConstants.h"
+#include "PixelOperations.h"
 
 
+#include <Bitmap.h>
+#include <Button.h>
 #include <Catalog.h>
 #include <CheckBox.h>
 #include <ClassInfo.h>
-#include <Bitmap.h>
-#include <Button.h>
 #include <StatusBar.h>
 #include <Window.h>
 
@@ -35,8 +35,9 @@
 #define B_TRANSLATION_CONTEXT "FreeTransformManipulator"
 
 
-FreeTransformManipulator::FreeTransformManipulator(BBitmap *bm)
-	:	WindowGUIManipulator(),
+FreeTransformManipulator::FreeTransformManipulator(BBitmap* bm)
+	:
+	WindowGUIManipulator(),
 	selection(NULL)
 {
 	configuration_view = NULL;
@@ -62,19 +63,20 @@ FreeTransformManipulator::~FreeTransformManipulator()
 
 
 BBitmap*
-FreeTransformManipulator::ManipulateBitmap(ManipulatorSettings *set,
-	BBitmap *original, BStatusBar *status_bar)
+FreeTransformManipulator::ManipulateBitmap(
+	ManipulatorSettings* set, BBitmap* original, BStatusBar* status_bar)
 {
 	// TODO: check what's the idea behind this
 
 //	FreeTransformManipulatorSettings *new_settings =
 //		cast_as(set,FreeTransformManipulatorSettings);
 //	if (new_settings == NULL)
-		return NULL;
+	return NULL;
 }
 
 
-int32 FreeTransformManipulator::PreviewBitmap(bool, BRegion *region)
+int32
+FreeTransformManipulator::PreviewBitmap(bool, BRegion* region)
 {
 	if (preview_bitmap == NULL)
 		return 0;
@@ -93,14 +95,14 @@ int32 FreeTransformManipulator::PreviewBitmap(bool, BRegion *region)
 	white.bytes[2] = 0xFF;
 	white.bytes[3] = 0x00;
 
-	//int32 width = preview_bitmap->Bounds().IntegerWidth();
-	//int32 height = preview_bitmap->Bounds().IntegerHeight();
+// int32 width = preview_bitmap->Bounds().IntegerWidth();
+// int32 height = preview_bitmap->Bounds().IntegerHeight();
 
-	//uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
-	//uint32 *target_bits = (uint32*)preview_bitmap->Bits();
-	//int32 bpr = preview_bitmap->BytesPerRow()/4;
+// uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
+// uint32 *target_bits = (uint32*)preview_bitmap->Bits();
+// int32 bpr = preview_bitmap->BytesPerRow()/4;
 
-	//float rad_angle = current_settings.rotation/180.0*PI;
+// float rad_angle = current_settings.rotation/180.0*PI;
 
 	// 1. Translate by -width/2, -height/2
 	// 2. Rotate by rad_angle
@@ -111,7 +113,8 @@ int32 FreeTransformManipulator::PreviewBitmap(bool, BRegion *region)
 }
 
 
-void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
+void
+FreeTransformManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_click)
 {
 	if (first_click == TRUE) {
 		// Select the transformation-mode and record the starting-point.
@@ -125,28 +128,31 @@ void FreeTransformManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool
 		else
 			transformation_mode = TRANSLATING_MODE;
 
-	}
-	else {
+	} else {
 		// Do the appropriate transformation.
 		switch (transformation_mode) {
 			case RESIZING_MODE:
-				settings.x_scale_factor = point.x/preview_bitmap->Bounds().Width();
-				settings.y_scale_factor = point.y/preview_bitmap->Bounds().Height();
-				break;
+			{
+				settings.x_scale_factor = point.x / preview_bitmap->Bounds().Width();
+				settings.y_scale_factor = point.y / preview_bitmap->Bounds().Height();
+			} break;
 			case TRANSLATING_MODE:
+			{
 				settings.x_translation += (starting_point.x - point.x);
 				settings.y_translation += (starting_point.y - point.y);
 				starting_point = point;
-				break;
+			} break;
 			case ROTATING_MODE:
+			{
 				settings.rotation = starting_point.x - point.x;
-				break;
+			} break;
 		}
 	}
 }
 
 
-void FreeTransformManipulator::ChangeSettings(ManipulatorSettings *s)
+void
+FreeTransformManipulator::ChangeSettings(ManipulatorSettings* s)
 {
 	// change the values for controls whose values have changed
 	FreeTransformManipulatorSettings* newSettings = cast_as(s, FreeTransformManipulatorSettings);
@@ -155,20 +161,22 @@ void FreeTransformManipulator::ChangeSettings(ManipulatorSettings *s)
 }
 
 
-void FreeTransformManipulator::Reset()
+void
+FreeTransformManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap != NULL) {
 		// memcpy seems to be about 10-15% faster that copying with loop.
-		uint32 *source = (uint32*)copy_of_the_preview_bitmap->Bits();
-		uint32 *target = (uint32*)preview_bitmap->Bits();
+		uint32* source = (uint32*)copy_of_the_preview_bitmap->Bits();
+		uint32* target = (uint32*)preview_bitmap->Bits();
 		uint32 bits_length = preview_bitmap->BitsLength();
 
-		memcpy(target,source,bits_length);
+		memcpy(target, source, bits_length);
 	}
 }
 
 
-void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
+void
+FreeTransformManipulator::SetPreviewBitmap(BBitmap* bitmap)
 {
 	if ((bitmap == NULL) || (preview_bitmap == NULL)
 		|| (bitmap->Bounds() != preview_bitmap->Bounds())) {
@@ -183,44 +191,49 @@ void FreeTransformManipulator::SetPreviewBitmap(BBitmap *bitmap)
 				preview_bitmap = bitmap;
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
 			}
-		} catch (std::bad_alloc e) {
+		}
+		catch (std::bad_alloc e) {
 			preview_bitmap = NULL;
-			copy_of_the_preview_bitmap=NULL;
+			copy_of_the_preview_bitmap = NULL;
 			throw e;
 		}
 	} else {
 		// Just update the copy_of_the_preview_bitmap
 		preview_bitmap = bitmap;
-		uint32 *source = (uint32*)preview_bitmap->Bits();
-		uint32 *target = (uint32*)copy_of_the_preview_bitmap->Bits();
-		int32 bitslength = min_c(preview_bitmap->BitsLength(),
-			copy_of_the_preview_bitmap->BitsLength());
+		uint32* source = (uint32*)preview_bitmap->Bits();
+		uint32* target = (uint32*)copy_of_the_preview_bitmap->Bits();
+		int32 bitslength
+			= min_c(preview_bitmap->BitsLength(), copy_of_the_preview_bitmap->BitsLength());
 		memcpy(target, source, bitslength);
 	}
 }
 
 
-const char* FreeTransformManipulator::ReturnHelpString()
+const char*
+FreeTransformManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Transform: Drag to rotate, move or stretch.");
 }
 
 
-const char* FreeTransformManipulator::ReturnName()
+const char*
+FreeTransformManipulator::ReturnName()
 {
 	return B_TRANSLATE("Free 2D transform");
 }
 
 
-ManipulatorSettings* FreeTransformManipulator::ReturnSettings()
+ManipulatorSettings*
+FreeTransformManipulator::ReturnSettings()
 {
 	return new FreeTransformManipulatorSettings(settings);
 }
 
-BView* FreeTransformManipulator::MakeConfigurationView(const BMessenger& target)
+
+BView*
+FreeTransformManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	configuration_view = new (std::nothrow) FreeTransformManipulatorView(this,
-		target);
+	configuration_view = new (std::nothrow) FreeTransformManipulatorView(this, target);
 	if (configuration_view)
 		configuration_view->ChangeSettings(&settings);
 	return configuration_view;
@@ -231,8 +244,9 @@ BView* FreeTransformManipulator::MakeConfigurationView(const BMessenger& target)
 
 
 FreeTransformManipulatorView::FreeTransformManipulatorView(
-		FreeTransformManipulator* manipulator, const BMessenger& target)
-	: WindowGUIManipulatorView()
+	FreeTransformManipulator* manipulator, const BMessenger& target)
+	:
+	WindowGUIManipulatorView()
 {
 }
 
@@ -249,7 +263,7 @@ FreeTransformManipulatorView::AttachedToWindow()
 
 
 void
-FreeTransformManipulatorView::MessageReceived(BMessage *message)
+FreeTransformManipulatorView::MessageReceived(BMessage* message)
 {
 	WindowGUIManipulatorView::MessageReceived(message);
 }
@@ -289,11 +303,11 @@ FreeTransformManipulatorView::SetValues(float width, float height)
 
 
 void
-FreeTransformManipulatorView::ChangeSettings(ManipulatorSettings *s)
+FreeTransformManipulatorView::ChangeSettings(ManipulatorSettings* s)
 {
 	// change the values for controls whose values have changed
-	FreeTransformManipulatorSettings* newSettings =
-		dynamic_cast<FreeTransformManipulatorSettings*> (s);
+	FreeTransformManipulatorSettings* newSettings
+		= dynamic_cast<FreeTransformManipulatorSettings*>(s);
 	if (newSettings && *newSettings != settings)
 		settings = *newSettings;
 }

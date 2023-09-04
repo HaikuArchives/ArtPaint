@@ -20,7 +20,7 @@
 filter_result
 window_activation_filter(BMessage* msg, BHandler** handler, BMessageFilter* filter)
 {
-	if (BWindow* window = dynamic_cast<BWindow*> (filter->Looper()))
+	if (BWindow* window = dynamic_cast<BWindow*>(filter->Looper()))
 		window->Activate(true);
 
 	return B_DISPATCH_MESSAGE;

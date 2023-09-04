@@ -11,29 +11,30 @@
 #include <stdio.h>
 
 
-#include "palette_generator.h"
-#include "color_mapper.h"
 #include "ColorDistanceMetric.h"
 #include "RandomNumberGenerator.h"
 #include "Selection.h"
+#include "color_mapper.h"
+#include "palette_generator.h"
 
 
 /* 'Generalized Lloyd's Algorithm' Palette Generation */
 
-rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
+rgb_color*
+gla_palette(BBitmap* inBitmap, int paletteSize)
 {
-	ColorDistanceMetric *color_metric = new (std::nothrow) ColorDistanceMetric();
+	ColorDistanceMetric* color_metric = new (std::nothrow) ColorDistanceMetric();
 	if (color_metric == NULL)
-		 return NULL;
+		return NULL;
 
-	rgb_color *palette = new (std::nothrow) rgb_color[paletteSize];
+	rgb_color* palette = new (std::nothrow) rgb_color[paletteSize];
 	if (palette == NULL) {
 		delete color_metric;
 
 		return NULL;
 	}
 
-	rgb_color *previous_palette = new (std::nothrow) rgb_color[paletteSize];
+	rgb_color* previous_palette = new (std::nothrow) rgb_color[paletteSize];
 	if (previous_palette == NULL) {
 		delete color_metric;
 
@@ -41,11 +42,11 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 	}
 
 	struct color_chain {
-		color_chain *next;
+		color_chain* next;
 		rgb_color color;
 	};
 
-	color_chain **selected_colors = new (std::nothrow) color_chain*[paletteSize];
+	color_chain** selected_colors = new (std::nothrow) color_chain*[paletteSize];
 	if (selected_colors == NULL) {
 		delete color_metric;
 		delete[] previous_palette;
@@ -53,7 +54,7 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 		return palette;
 	}
 
-	color_chain **input_colors = new (std::nothrow) color_chain*[32768];
+	color_chain** input_colors = new (std::nothrow) color_chain*[32768];
 	if (input_colors == NULL) {
 		delete color_metric;
 		delete[] selected_colors;
@@ -62,27 +63,27 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 		return palette;
 	}
 
-	for (int32 i=0;i<32768;i++) {
+	for (int32 i = 0; i < 32768; i++)
 		input_colors[i] = NULL;
-	}
 
-	uint32 *bits = (uint32*)inBitmap->Bits();
-	int32 bits_length = inBitmap->BitsLength()/4;
+	uint32* bits = (uint32*)inBitmap->Bits();
+	int32 bits_length = inBitmap->BitsLength() / 4;
 
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color;
-	color.word = 0x00000000;	// Silence the warnings
+	color.word = 0x00000000; // Silence the warnings
 
 	int32 color_count = 0;
-	for (int32 i=0;i<bits_length;i++) {
+	for (int32 i = 0; i < bits_length; i++) {
 		color.word = *bits++;
-		uint16 hash_value =  ((color.bytes[2] & 0x1f) << 10) |
-                  				((color.bytes[1] & 0x1f) << 5) |
-                  				((color.bytes[0] & 0x1f ) >> 0);
+		uint16 hash_value
+			= ((color.bytes[2] & 0x1f) << 10)
+			| ((color.bytes[1] & 0x1f) << 5)
+			| ((color.bytes[0] & 0x1f) >> 0);
 
-		color_chain *test_entry = input_colors[hash_value];
+		color_chain* test_entry = input_colors[hash_value];
 		bool found = false;
 		rgb_color c;
 		c.red = color.bytes[2];
@@ -92,17 +93,15 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 
 		while ((test_entry != NULL) && !found) {
 			rgb_color old_color = test_entry->color;
-			if ((c.red == old_color.red) &&
-				(c.green == old_color.green) &&
-				(c.blue == old_color.blue)) {
+			if ((c.red == old_color.red) && (c.green == old_color.green)
+				&& (c.blue == old_color.blue))
 				found = true;
-			}
 
 			test_entry = test_entry->next;
 		}
 
 		if (!found) {
-			color_chain *entry = new color_chain();
+			color_chain* entry = new color_chain();
 			entry->next = input_colors[hash_value];
 			input_colors[hash_value] = entry;
 			entry->color = c;
@@ -111,9 +110,9 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 	}
 	int32 total_length = 0;
 	int32 list_count = 0;
-	for (int32 i=0;i<32768;i++) {
+	for (int32 i = 0; i < 32768; i++) {
 		int32 length = 0;
-		color_chain *entry = input_colors[i];
+		color_chain* entry = input_colors[i];
 		while (entry != NULL) {
 			length++;
 			entry = entry->next;
@@ -123,15 +122,16 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 			list_count++;
 		}
 	}
-	printf("Number of lists is %d, average length %f\n",list_count,total_length/(float)list_count);
+	printf("Number of lists is %d, average length %f\n", list_count,
+		total_length / (float)list_count);
 
 	// Initialize the palette.
-	RandomNumberGenerator generator(123071,25000);
-	for (int32 i=0;i<paletteSize;i++) {
+	RandomNumberGenerator generator(123071, 25000);
+	for (int32 i = 0; i < paletteSize; i++) {
 		// Choose a random input color
-		int32 index = generator.IntegerUniformDistribution(0,32767);
+		int32 index = generator.IntegerUniformDistribution(0, 32767);
 		while (input_colors[index] == NULL)
-			index = (index+1)%32768;
+			index = (index + 1) % 32768;
 
 		palette[i] = input_colors[index]->color;
 
@@ -146,16 +146,16 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 		number_of_iterations++;
 		printf("Still improving\n");
 		// Map all of the input colors
-		for (uint16 i=0;i<32768;i++) {
-			color_chain *input_entry = input_colors[i];
+		for (uint16 i = 0; i < 32768; i++) {
+			color_chain* input_entry = input_colors[i];
 			while (input_entry != NULL) {
 				color.bytes[0] = input_entry->color.blue;
 				color.bytes[1] = input_entry->color.green;
 				color.bytes[2] = input_entry->color.red;
 				color.bytes[3] = 255;
 
-				int32 index = color_metric->find_palette_index(color.word,palette,paletteSize);
-				color_chain *entry = new color_chain();
+				int32 index = color_metric->find_palette_index(color.word, palette, paletteSize);
+				color_chain* entry = new color_chain();
 				entry->next = selected_colors[index];
 				selected_colors[index] = entry;
 				entry->color.red = color.bytes[2];
@@ -168,13 +168,12 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 		}
 
 		// Store the current palette
-		for (int32 i=0;i<paletteSize;i++) {
+		for (int32 i = 0; i < paletteSize; i++)
 			previous_palette[i] = palette[i];
-		}
 
 		// Take the average of mappings as the new palette
-		for (int32 i=0;i<paletteSize;i++) {
-			color_chain *entry = selected_colors[i];
+		for (int32 i = 0; i < paletteSize; i++) {
+			color_chain* entry = selected_colors[i];
 			float entry_count = 0;
 			float red = 0;
 			float green = 0;
@@ -196,15 +195,13 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 				palette[i].green = (uint8)green;
 				palette[i].blue = (uint8)blue;
 			}
-			else {
-			}
 		}
 
 		// Here we destroy the linked list
-		for (int32 i=0;i<paletteSize;i++) {
-			color_chain *entry = selected_colors[i];
+		for (int32 i = 0; i < paletteSize; i++) {
+			color_chain* entry = selected_colors[i];
 			while (entry != NULL) {
-				color_chain *spare_entry = entry->next;
+				color_chain* spare_entry = entry->next;
 				delete entry;
 				entry = spare_entry;
 			}
@@ -214,19 +211,19 @@ rgb_color* gla_palette(BBitmap *inBitmap,int paletteSize)
 		// Here compare if the palette actually improved
 		palette_still_improving = false;
 		float error_amount = 0;
-		for (int32 i=0;i<paletteSize;i++) {
+		for (int32 i = 0; i < paletteSize; i++) {
 //			if ((palette[i].red != previous_palette[i].red) ||
 //				(palette[i].green != previous_palette[i].green) ||
 //				(palette[i].blue != previous_palette[i].blue)) {
 //				palette_still_improving = true;
 //			}
-			error_amount += color_metric->color_distance(palette[i],previous_palette[i]);
+			error_amount += color_metric->color_distance(palette[i], previous_palette[i]);
 		}
 		if (error_amount > 0)
 			palette_still_improving = true;
 	}
 
-	printf("Number of iterations %d\n",number_of_iterations);
+	printf("Number of iterations %d\n", number_of_iterations);
 
 	delete[] previous_palette;
 	delete color_metric;

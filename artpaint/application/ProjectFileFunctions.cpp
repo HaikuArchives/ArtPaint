@@ -14,27 +14,27 @@
 #include "ProjectFileFunctions.h"
 
 
-
 // This function moves the file to the start of asked section in the
 // file. IT returns the length of that section. If the section is not
 // found it returns just 0. The file is left at the start of the
 // actual section data.
-int64 FindProjectFileSection(BFile &file,int32 section_id)
+int64
+FindProjectFileSection(BFile& file, int32 section_id)
 {
-	file.Seek(0,SEEK_SET);
+	file.Seek(0, SEEK_SET);
 
 	// Check the endianness
 	int32 lendian;
-	if (file.Read(&lendian,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&lendian, sizeof(int32)) != sizeof(int32))
 		return 0;
 
 	// Skip the file type (presume it is correct)
-	file.Seek(sizeof(int32),SEEK_CUR);
+	file.Seek(sizeof(int32), SEEK_CUR);
 
 
 	// Find the number of sections.
 	int32 number_of_sections;
-	if (file.Read(&number_of_sections,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&number_of_sections, sizeof(int32)) != sizeof(int32))
 		return 0;
 
 	if (lendian == 0x00000000)
@@ -52,7 +52,7 @@ int64 FindProjectFileSection(BFile &file,int32 section_id)
 
 	while (number_of_sections > 0) {
 		// Read the section beginning mark
-		if (file.Read(&marker,sizeof(int32)) != sizeof(int32))
+		if (file.Read(&marker, sizeof(int32)) != sizeof(int32))
 			return 0;
 
 		if (lendian == 0x00000000)
@@ -64,7 +64,7 @@ int64 FindProjectFileSection(BFile &file,int32 section_id)
 			return 0;
 
 		// Read the section type
-		if (file.Read(&type,sizeof(int32)) != sizeof(int32))
+		if (file.Read(&type, sizeof(int32)) != sizeof(int32))
 			return 0;
 
 		if (lendian == 0x00000000)
@@ -73,7 +73,7 @@ int64 FindProjectFileSection(BFile &file,int32 section_id)
 			type = B_LENDIAN_TO_HOST_INT32(type);
 
 		// Read the section length
-		if (file.Read(&length,sizeof(int64)) != sizeof(int64))
+		if (file.Read(&length, sizeof(int64)) != sizeof(int64))
 			return 0;
 
 		if (lendian == 0x00000000)
@@ -85,10 +85,10 @@ int64 FindProjectFileSection(BFile &file,int32 section_id)
 		// If the type is not right skip this section.
 		if (type != section_id) {
 			// Skip the section data
-			file.Seek(length,SEEK_CUR);
+			file.Seek(length, SEEK_CUR);
 
 			// Then get the end marker.
-			if (file.Read(&marker,sizeof(int32)) != sizeof(int32))
+			if (file.Read(&marker, sizeof(int32)) != sizeof(int32))
 				return 0;
 
 			if (lendian == 0x00000000)
@@ -97,12 +97,9 @@ int64 FindProjectFileSection(BFile &file,int32 section_id)
 				marker = B_LENDIAN_TO_HOST_INT32(marker);
 			if (marker != PROJECT_FILE_SECTION_END)
 				return 0;
-		}
-		else {
+		} else
 			return length;
-		}
 	}
-
 
 	// If we get here we did not find the section.
 	return 0;

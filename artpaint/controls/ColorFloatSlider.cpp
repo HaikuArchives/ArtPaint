@@ -26,17 +26,17 @@ namespace ArtPaint {
 	namespace Interface {
 
 enum {
-	kNumberControlFinished		= 'kncf',
-	kSliderValueModified		= 'ksvm',
-	kSliderModificationFinished	= 'ksmf'
+	kNumberControlFinished = 'kncf',
+	kSliderValueModified = 'ksvm',
+	kSliderModificationFinished = 'ksmf'
 };
 
 
-ColorFloatSlider::ColorFloatSlider(const char* label, const char* text,
-		BMessage* message, float minRange, float maxRange, bool layout,
-		bool continuous, border_style borderStyle, thumb_style thumbStyle,
-		uint8 resolution)
-	: BBox(borderStyle, NULL),
+ColorFloatSlider::ColorFloatSlider(const char* label, const char* text, BMessage* message,
+	float minRange, float maxRange, bool layout, bool continuous, border_style borderStyle,
+	thumb_style thumbStyle, uint8 resolution)
+	:
+	BBox(borderStyle, NULL),
 	fMinRange(minRange),
 	fMaxRange(maxRange),
 	fContinuous(continuous),
@@ -65,8 +65,7 @@ ColorFloatSlider::ColorFloatSlider(const char* label, const char* text,
 			.Add(fSlider)
 		);
 
-		SetExplicitMinSize(BSize(fFloatControl->PreferredSize().Width() * 2.5,
-			MinSize().Height()));
+		SetExplicitMinSize(BSize(fFloatControl->PreferredSize().Width() * 2.5, MinSize().Height()));
 	}
 
 	if (fSlider != NULL)
@@ -95,12 +94,14 @@ void
 ColorFloatSlider::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kNumberControlFinished: {
+		case kNumberControlFinished:
+		{
 			SetValue(atof(fFloatControl->Text()));
 			_SendMessage(atof(fFloatControl->Text()));
-		} break;
-
-		case kSliderValueModified: {
+		break;
+		}
+		case kSliderValueModified:
+		{
 			BString value;
 			value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
 			fFloatControl->SetText(value.String());
@@ -112,8 +113,8 @@ ColorFloatSlider::MessageReceived(BMessage* message)
 			if (fContinuous)
 				_SendMessage((float)(fSlider->Value() / fMult), false);
 		} break;
-
-		case kSliderModificationFinished: {
+		case kSliderModificationFinished:
+		{
 			BString value;
 			value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
 			fFloatControl->SetText(value.String());
@@ -124,10 +125,8 @@ ColorFloatSlider::MessageReceived(BMessage* message)
 
 			_SendMessage((float)(fSlider->Value() / fMult), true);
 		} break;
-
-		default: {
+		default:
 			BBox::MessageReceived(message);
-		} break;
 	}
 }
 
@@ -193,8 +192,7 @@ ColorFloatSlider::SetMessage(BMessage* message)
 void
 ColorFloatSlider::SetMinMax(float min, float max)
 {
-	fSlider->SetLimits((int32)min * fMult,
-		(int32)max * fMult);
+	fSlider->SetLimits((int32)min * fMult, (int32)max * fMult);
 
 	fMinRange = min;
 	fMaxRange = max;
@@ -210,7 +208,8 @@ ColorFloatSlider::SetResolution(uint8 resolution)
 	float minRange = (float)min / fMult;
 	float maxRange = (float)max / fMult;
 
-	fMult = pow(10, resolution);;
+	fMult = pow(10, resolution);
+	;
 	fFormat.SetToFormat("%%0.%df", resolution);
 	BString value;
 	value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));
@@ -273,7 +272,7 @@ ColorFloatSlider::_InitMessage()
 		fMessage = new BMessage;
 
 	if (fMessage != NULL) {
-		if (!fMessage->HasFloat("value"))	// may have been set by creator
+		if (!fMessage->HasFloat("value")) // may have been set by creator
 			fMessage->AddFloat("value", 0.0);
 
 		fMessage->AddBool("final", true);
@@ -311,5 +310,5 @@ ColorFloatSlider::_SendMessage(float value, bool final)
 	}
 }
 
-	}	// namespace Interface
-}	// namespace ArtPaint
+} // namespace Interface
+} // namespace ArtPaint

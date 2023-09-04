@@ -22,23 +22,20 @@
 
 
 HSVColorControl::HSVColorControl(rgb_color c)
- 	: MultichannelColorControl(c, "H", "S", "V", "A")
+	: MultichannelColorControl(c, "H", "S", "V", "A")
 {
 	slider1->SetMinMax(0, 359);
-	slider1->SetToolTip(B_TRANSLATE_COMMENT("Hue",
-		"For HSV color slider"));
+	slider1->SetToolTip(B_TRANSLATE_COMMENT("Hue", "For HSV color slider"));
 	slider1->SetResolution(0);
 	slider2->SetMinMax(0, 1);
-	slider2->SetToolTip(B_TRANSLATE_COMMENT("Saturation",
-		"For HSV color slider"));
+	slider2->SetToolTip(B_TRANSLATE_COMMENT("Saturation", "For HSV color slider"));
 	slider2->SetResolution(2);
 	slider3->SetMinMax(0, 1);
-	slider3->SetToolTip(B_TRANSLATE_COMMENT("Value",
-		"For HSV color slider - 'value' as 'color value', also called 'lightness'"));
- 	slider3->SetResolution(2);
- 	slider4->SetResolution(0);
- 	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha",
- 		"For color sliders"));
+	slider3->SetToolTip(B_TRANSLATE_COMMENT(
+		"Value", "For HSV color slider - 'value' as 'color value', also called 'lightness'"));
+	slider3->SetResolution(2);
+	slider4->SetResolution(0);
+	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha", "For color sliders"));
 }
 
 
@@ -50,10 +47,10 @@ HSVColorControl::SetValue(rgb_color c)
 	rgb2hsv((float)c.red, (float)c.green, (float)c.blue,
 		h, s, v);
 
- 	slider1->SetValue(h);
- 	slider2->SetValue(s);
- 	slider3->SetValue(v);
- 	slider4->SetValue(c.alpha);
+	slider1->SetValue(h);
+	slider2->SetValue(s);
+	slider3->SetValue(v);
+	slider4->SetValue(c.alpha);
 	SetSliderColors(c);
 }
 
@@ -61,7 +58,7 @@ HSVColorControl::SetValue(rgb_color c)
 void
 HSVColorControl::SetSliderColors(rgb_color c)
 {
- 	BList colorList;
+	BList colorList;
 
 	float h, s, v;
 
@@ -83,19 +80,19 @@ HSVColorControl::SetSliderColors(rgb_color c)
 		colorList.AddItem(hue_word);
 	}
 
- 	uint32* hue_word = new uint32;
- 	*hue_word = *((uint32 *)colorList.ItemAt(0));
- 	colorList.AddItem(hue_word);
+	uint32* hue_word = new uint32;
+	*hue_word = *((uint32*)colorList.ItemAt(0));
+	colorList.AddItem(hue_word);
 
- 	slider1->Slider()->SetColors(&colorList);
+	slider1->Slider()->SetColors(&colorList);
 
- 	while (colorList.CountItems() > 0) {
- 		uint32* hue_word = (uint32*)(colorList.RemoveItem((int32)0));
- 		delete hue_word;
- 	}
+	while (colorList.CountItems() > 0) {
+		uint32* hue_word = (uint32*)(colorList.RemoveItem((int32)0));
+		delete hue_word;
+	}
 
 	rgb_color color2s, color2e;
- 	rgb_color color3s, color3e;
+	rgb_color color3s, color3e;
 	rgb_color color4s, color4e;
 
 	hsv2rgb(h, 0, v, r, g, b);
@@ -122,16 +119,15 @@ HSVColorControl::SetSliderColors(rgb_color c)
 
 
 void
-HSVColorControl::SetValue(float one, float two,
- 	float three, float four)
+HSVColorControl::SetValue(float one, float two, float three, float four)
 {
- 	float r, g, b;
+	float r, g, b;
 
 	hsv2rgb(one, two, three, r, g, b);
 
- 	value.bytes[0] = (uint8)b;
- 	value.bytes[1] = (uint8)g;
- 	value.bytes[2] = (uint8)r;
- 	value.bytes[3] = (uint8)four;
- 	SetSliderColors(BGRAColorToRGB(value.word));
+	value.bytes[0] = (uint8)b;
+	value.bytes[1] = (uint8)g;
+	value.bytes[2] = (uint8)r;
+	value.bytes[3] = (uint8)four;
+	SetSliderColors(BGRAColorToRGB(value.word));
 }

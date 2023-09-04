@@ -6,12 +6,13 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include "AddOnTypes.h"
 #include "$HEADER_NAME"
+#include "AddOnTypes.h"
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 	char name[255] = "$MENU_NAME";
 	char menu_help_string[255] = "$MENU_HELP_TEXT";
@@ -24,15 +25,16 @@ extern "C" {
 #endif
 
 
-Manipulator* manipulator_creator(BBitmap *bm)
+Manipulator*
+manipulator_creator(BBitmap* bm)
 {
 	return new $MANIPULATOR_NAME(bm);
 }
 
 
-
-$MANIPULATOR_NAME::$MANIPULATOR_NAME(BBitmap *bm)
-		: WindowGUIManipulator()
+$MANIPULATOR_NAME::$MANIPULATOR_NAME(BBitmap* bm)
+	:
+	WindowGUIManipulator()
 {
 	SetPreviewBitmap(bm);
 }
@@ -43,49 +45,65 @@ $MANIPULATOR_NAME::~$MANIPULATOR_NAME()
 }
 
 
-BBitmap* $MANIPULATOR_NAME::ManipulateBitmap(ManipulatorSettings *set,BBitmap *original,Selection *selection,BStatusBar *status_bar)
-{
-}
-
-int32 $MANIPULATOR_NAME::PreviewBitmap(Selection *selection,bool full_quality,BRegion *updated_region)
-{
-}
-
-
-void $MANIPULATOR_NAME::MouseDown(BPoint point,uint32,BView*,bool first_click)
+BBitmap*
+$MANIPULATOR_NAME::ManipulateBitmap(
+	ManipulatorSettings* set, BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 }
 
 
-void $MANIPULATOR_NAME::SetPreviewBitmap(BBitmap *bm)
+int32
+$MANIPULATOR_NAME::PreviewBitmap(Selection* selection, bool full_quality, BRegion* updated_region)
 {
 }
 
 
-void $MANIPULATOR_NAME::Reset(Selection*)
+void
+$MANIPULATOR_NAME::MouseDown(BPoint point, uint32, BView*, bool first_click)
 {
 }
 
-BView* $MANIPULATOR_NAME::MakeConfigurationView(const BMessenger& target)
+
+void
+$MANIPULATOR_NAME::SetPreviewBitmap(BBitmap* bm)
 {
 }
 
 
-ManipulatorSettings* $MANIPULATOR_NAME::ReturnSettings()
+void
+$MANIPULATOR_NAME::Reset(Selection*)
 {
 }
 
-void $MANIPULATOR_NAME::ChangeSettings(ManipulatorSettings *s)
+
+BView*
+$MANIPULATOR_NAME::MakeConfigurationView(const BMessenger& target)
 {
 }
 
-const char* $MANIPULATOR_NAME::ReturnName()
+
+ManipulatorSettings*
+$MANIPULATOR_NAME::ReturnSettings()
+{
+}
+
+
+void
+$MANIPULATOR_NAME::ChangeSettings(ManipulatorSettings* s)
+{
+}
+
+
+const char*
+$MANIPULATOR_NAME::ReturnName()
 {
 	return "A WindowGUIManipulator Name";
 }
 
-const char* $MANIPULATOR_NAME::ReturnHelpString()
+
+const char*
+$MANIPULATOR_NAME::ReturnHelpString()
 {
 	return "A string that is displayed in the status-bar while the manipulator"
-		" is active. Should not be this long though.";
+		   " is active. Should not be this long though.";
 }

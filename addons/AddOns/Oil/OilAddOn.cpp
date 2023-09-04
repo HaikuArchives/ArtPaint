@@ -10,13 +10,13 @@
 #include <Catalog.h>
 #include <Message.h>
 #include <StatusBar.h>
-#include <stdlib.h>
 #include <Window.h>
+#include <stdlib.h>
 
 #include "AddOns.h"
-#include "OilAddOn.h"
 #include "BitmapDrawer.h"
 #include "ManipulatorInformer.h"
+#include "OilAddOn.h"
 #include "Selection.h"
 
 #undef B_TRANSLATION_CONTEXT
@@ -24,7 +24,8 @@
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 	char name[255] = B_TRANSLATE_MARK("Oil");
 	char menu_help_string[255] = B_TRANSLATE_MARK("Creates an \"oil\" effect.");
@@ -44,7 +45,8 @@ instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 
 
 OilManipulator::OilManipulator(BBitmap*)
-	: Manipulator(),
+	:
+	Manipulator(),
 	selection(NULL)
 {
 }
@@ -56,8 +58,7 @@ OilManipulator::~OilManipulator()
 
 
 BBitmap*
-OilManipulator::ManipulateBitmap(BBitmap* original,
-	BStatusBar* status_bar)
+OilManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	BWindow* status_bar_window = NULL;
 	if (status_bar != NULL)
@@ -72,7 +73,7 @@ OilManipulator::ManipulateBitmap(BBitmap* original,
 	int32 width = original->Bounds().Width() + 1;
 	int32 height = original->Bounds().Height() + 1;
 
-	float status_bar_update_step = 100.0 / (width*height) * 1000.0;
+	float status_bar_update_step = 100.0 / (width * height) * 1000.0;
 
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta", 0.0);
@@ -102,9 +103,8 @@ OilManipulator::ManipulateBitmap(BBitmap* original,
 
 	int32 random_array_size = 32;
 	int32* random_array = new int32[random_array_size];
-	for (int32 i = 0; i < random_array_size; i++) {
+	for (int32 i = 0; i < random_array_size; i++)
 		random_array[i] = random() % 10 * (random() % 2 == 0 ? -1 : 1);
-	}
 
 	while (size_of_area > 0) {
 		// Select one pixel at random
@@ -114,17 +114,14 @@ OilManipulator::ManipulateBitmap(BBitmap* original,
 		size_of_area--;
 		int32 x = spare % width;
 		int32 y = spare / width;
-		color.word = source->GetPixel(BPoint(x,y));
+		color.word = source->GetPixel(BPoint(x, y));
 		// randomize the color a bit
-		color.bytes[0] = min_c(255,
-			max_c(0, (int32)color.bytes[0] +
-				random_array[size_of_area % random_array_size]));
-		color.bytes[1] = min_c(255,
-			max_c(0, (int32)color.bytes[1] +
-				random_array[size_of_area % random_array_size]));
-		color.bytes[2] = min_c(255,
-			max_c(0, (int32)color.bytes[2] +
-				random_array[size_of_area%random_array_size]));
+		color.bytes[0] = min_c(
+			255, max_c(0, (int32)color.bytes[0] + random_array[size_of_area % random_array_size]));
+		color.bytes[1] = min_c(
+			255, max_c(0, (int32)color.bytes[1] + random_array[size_of_area % random_array_size]));
+		color.bytes[2] = min_c(
+			255, max_c(0, (int32)color.bytes[2] + random_array[size_of_area % random_array_size]));
 
 		moved_pixel = color.word;
 
@@ -137,9 +134,8 @@ OilManipulator::ManipulateBitmap(BBitmap* original,
 		target->SetPixel(BPoint(x + 1, y), moved_pixel, selection);
 		target->SetPixel(BPoint(x + 2, y), moved_pixel, selection);
 		target->SetPixel(BPoint(x, y + 1), moved_pixel, selection);
-		if (((size_of_area % 1000) == 0) && (status_bar != NULL) &&
-			(status_bar_window != NULL) &&
-			(status_bar_window->LockWithTimeout(0) == B_OK)) {
+		if (((size_of_area % 1000) == 0) && (status_bar != NULL) && (status_bar_window != NULL)
+			&& (status_bar_window->LockWithTimeout(0) == B_OK)) {
 			status_bar->Update(status_bar_update_step);
 			status_bar_window->Unlock();
 		}

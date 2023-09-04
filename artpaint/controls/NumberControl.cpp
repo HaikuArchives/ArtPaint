@@ -21,9 +21,11 @@
 namespace ArtPaint {
 	namespace Interface {
 
-NumberControl::NumberControl(const char* label, const char* text,
-		BMessage* message, int32 maxBytes, bool allowNegative, bool continuos)
-	: BTextControl(label, text, message)
+
+NumberControl::NumberControl(const char* label, const char* text, BMessage* message, int32 maxBytes,
+	bool allowNegative, bool continuos)
+	:
+	BTextControl(label, text, message)
 {
 	_InitControl(maxBytes, allowNegative, continuos);
 }
@@ -90,5 +92,5 @@ NumberControl::SetWidthInBytes(uint32 bytes)
 	TextView()->SetExplicitMaxSize(BSize(font.StringWidth("D") * bytes, B_SIZE_UNSET));
 }
 
-	}	// namespace Interface
-}	// namespace ArtPaint
+	} // namespace Interface
+} // namespace ArtPaint

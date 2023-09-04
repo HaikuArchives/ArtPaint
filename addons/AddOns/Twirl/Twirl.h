@@ -196,7 +196,7 @@ init_sqrt_tab()
 {
         int           i;
         double        f;
-        unsigned int  *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
+        unsigned int  *fi = (unsigned int *)&f + MOST_SIG_OFFSET;
 
         for (i = 0; i < SQRT_TAB_SIZE/2; i++)
         {
@@ -216,7 +216,7 @@ double
 fsqrt(double f)
 {
         unsigned int e;
-        unsigned int   *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
+        unsigned int   *fi = (unsigned int *)&f + MOST_SIG_OFFSET;
 
         if (f == 0.0) return(0.0);
         e = (*fi >> EXP_SHIFTS) - EXP_BIAS;

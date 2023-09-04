@@ -6,15 +6,16 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <stdio.h>
-#include <Window.h>
 #include <Debug.h>
+#include <Window.h>
+#include <stdio.h>
 
 #include "CoordinateReader.h"
 #include "ImageView.h"
 
 
-CoordinateReader::CoordinateReader(ImageView *v,interpolation_styles s,bool trace_path, bool duplicates,double delay)
+CoordinateReader::CoordinateReader(
+	ImageView* v, interpolation_styles s, bool trace_path, bool duplicates, double delay)
 {
 	view = v;
 	style = s;
@@ -32,12 +33,12 @@ CoordinateReader::CoordinateReader(ImageView *v,interpolation_styles s,bool trac
 	interpolation_started = FALSE;
 
 	benaphore_count = 0;
-	benaphore_mutex = create_sem(0,"benaphore_mutex");
+	benaphore_mutex = create_sem(0, "benaphore_mutex");
 	benaphore_debug_variable = 0;
 
 	continue_reading = TRUE;
 
-	reader_thread = spawn_thread(thread_entry,"coordinate_reader",B_NORMAL_PRIORITY,this);
+	reader_thread = spawn_thread(thread_entry, "coordinate_reader", B_NORMAL_PRIORITY, this);
 	resume_thread(reader_thread);
 }
 
@@ -47,7 +48,7 @@ CoordinateReader::~CoordinateReader()
 	continue_reading = FALSE;
 
 	int32 return_value;
-	wait_for_thread(reader_thread,&return_value);
+	wait_for_thread(reader_thread, &return_value);
 
 
 	delete_sem(benaphore_mutex);
@@ -55,7 +56,7 @@ CoordinateReader::~CoordinateReader()
 
 
 status_t
-CoordinateReader::GetPoint(BPoint &point)
+CoordinateReader::GetPoint(BPoint& point)
 {
 	switch (style) {
 		case NO_INTERPOLATION:
@@ -69,10 +70,11 @@ CoordinateReader::GetPoint(BPoint &point)
 	}
 }
 
+
 int32
-CoordinateReader::thread_entry(void *data)
+CoordinateReader::thread_entry(void* data)
 {
-	CoordinateReader *this_pointer = (CoordinateReader*)data;
+	CoordinateReader* this_pointer = (CoordinateReader*)data;
 
 	return this_pointer->reader_function();
 }
@@ -81,30 +83,29 @@ CoordinateReader::thread_entry(void *data)
 int32
 CoordinateReader::reader_function()
 {
-	BWindow *window = view->Window();
+	BWindow* window = view->Window();
 	if (window == NULL)
 		return B_ERROR;
 
 	BPoint point;
-	BPoint prev_point(-50000,-50000);
+	BPoint prev_point(-50000, -50000);
 	uint32 buttons;
 
 	while (continue_reading == TRUE) {
 		window->Lock();
-		view->getCoords(&point,&buttons);
+		view->getCoords(&point, &buttons);
 		window->Unlock();
 
 		if (buttons != 0) {
 			if ((point != prev_point) || (allow_duplicates == TRUE)) {
 				EnterCS();
-				queue_entry *entry = new queue_entry();
+				queue_entry* entry = new queue_entry();
 				entry->next_entry = NULL;
 				entry->point = point;
 				if (point_queue_length == 0) {
 					point_queue_head = entry;
 					point_queue_tail = entry;
-				}
-				else {
+				} else {
 					point_queue_tail->next_entry = entry;
 					point_queue_tail = entry;
 				}
@@ -113,11 +114,9 @@ CoordinateReader::reader_function()
 				ExitCS();
 				prev_point = point;
 			}
-			snooze((bigtime_t)reader_delay);
-		}
-		else {
+			snooze((bigtime_t) reader_delay);
+		} else
 			continue_reading = FALSE;
-		}
 	}
 
 	return B_OK;
@@ -125,14 +124,14 @@ CoordinateReader::reader_function()
 
 
 status_t
-CoordinateReader::NextPointNoInterpolation(BPoint &point)
+CoordinateReader::NextPointNoInterpolation(BPoint& point)
 {
 	while ((point_queue_length == 0) && (continue_reading))
 		snooze(50 * 1000);
 
 	if (point_queue_head != NULL) {
 		EnterCS();
-		queue_entry *entry = point_queue_head;
+		queue_entry* entry = point_queue_head;
 		point_queue_head = entry->next_entry;
 
 		point = entry->point;
@@ -149,16 +148,16 @@ CoordinateReader::NextPointNoInterpolation(BPoint &point)
 
 
 status_t
-CoordinateReader::NextPointLinearInterpolation(BPoint &point)
+CoordinateReader::NextPointLinearInterpolation(BPoint& point)
 {
 	if (!interpolation_started) {
 		// Take the two first interpolation points.
-		while ((point_queue_length < 1) && (continue_reading)) {
+		while ((point_queue_length < 1) && (continue_reading))
 			snooze(20 * 1000);
-		}
+
 		if (point_queue_length >= 1) {
 			EnterCS();
-			queue_entry *entry = point_queue_head;
+			queue_entry* entry = point_queue_head;
 			point_queue_head = point_queue_head->next_entry;
 			point_queue_length--;
 			if (entry == point_queue_tail)
@@ -167,10 +166,9 @@ CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 			ExitCS();
 			p1 = entry->point;
 			delete entry;
-		}
-		else {
+		} else
 			return B_ERROR;
-		}
+
 		interpolation_started = TRUE;
 		interpolation_parameter = 1.0;
 
@@ -181,13 +179,13 @@ CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 	}
 
 	if (interpolation_parameter >= 1.0) {
-		while ((point_queue_length < 1) && (continue_reading)) {
+		while ((point_queue_length < 1) && (continue_reading))
 			snooze(20 * 1000);
-		}
+
 		if (point_queue_length >= 1) {
 			p0 = p1;
 			EnterCS();
-			queue_entry *entry = point_queue_head;
+			queue_entry* entry = point_queue_head;
 			point_queue_head = point_queue_head->next_entry;
 			point_queue_length--;
 			if (entry == point_queue_tail)
@@ -195,18 +193,16 @@ CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 			ExitCS();
 			p1 = entry->point;
 			delete entry;
-		}
-		else {
+		} else
 			return B_ERROR;
-		}
+
 		interpolation_parameter = 0.0;
 		interpolation_step = 1.0;
-		if (fabs(p0.x-p1.x) > 0)
-			interpolation_step = 1.0/fabs(p0.x-p1.x);
-		if (fabs(p0.y-p1.y) > 0)
-			interpolation_step = min_c(interpolation_step,1.0/fabs(p0.y-p1.y));
+		if (fabs(p0.x - p1.x) > 0)
+			interpolation_step = 1.0 / fabs(p0.x - p1.x);
+		if (fabs(p0.y - p1.y) > 0)
+			interpolation_step = min_c(interpolation_step, 1.0 / fabs(p0.y - p1.y));
 	}
-
 
 
 	int32 new_y;
@@ -214,8 +210,10 @@ CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 
 	do {
 		interpolation_parameter += interpolation_step;
-		new_x = (int32)round(p0.x*(1.0-interpolation_parameter)+p1.x*interpolation_parameter);
-		new_y = (int32)round(p0.y*(1.0-interpolation_parameter)+p1.y*interpolation_parameter);
+		new_x = (int32)round(
+			p0.x * (1.0 - interpolation_parameter) + p1.x * interpolation_parameter);
+		new_y = (int32)round(
+			p0.y * (1.0 - interpolation_parameter) + p1.y * interpolation_parameter);
 	} while ((interpolation_parameter < 1.0) && (prev_x == new_x) && (prev_y == new_y));
 
 	if ((prev_x == new_x) && (prev_y == new_y))
@@ -233,16 +231,16 @@ CoordinateReader::NextPointLinearInterpolation(BPoint &point)
 
 
 status_t
-CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
+CoordinateReader::NextPointCardinalSplineInterpolation(BPoint& point)
 {
 	if (!interpolation_started) {
 		// Take the four first interpolation points.
-		while ((point_queue_length < 4) && (continue_reading)) {
+		while ((point_queue_length < 4) && (continue_reading))
 			snooze(20 * 1000);
-		}
+
 		if (point_queue_length >= 4) {
 			EnterCS();
-			queue_entry *entry = point_queue_head;
+			queue_entry* entry = point_queue_head;
 			point_queue_head = point_queue_head->next_entry;
 			point_queue_length--;
 			p0 = entry->point;
@@ -269,15 +267,14 @@ CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 			if (entry == point_queue_tail)
 				point_queue_tail = NULL;
 			ExitCS();
-		}
-		else {
+		} else
 			return B_ERROR;
-		}
+
 		interpolation_started = TRUE;
 		interpolation_parameter = 0.0;
 		interpolation_step = 1.0;
-		if ((fabs(p1.x-p2.x) > 0) || (fabs(p1.y-p2.y) > 0))
-			interpolation_step = 1.0/(fabs(p1.x-p2.x)+fabs(p1.y-p2.y));
+		if ((fabs(p1.x - p2.x) > 0) || (fabs(p1.y - p2.y) > 0))
+			interpolation_step = 1.0 / (fabs(p1.x - p2.x) + fabs(p1.y - p2.y));
 
 		interpolation_step /= 10.0;
 
@@ -292,15 +289,15 @@ CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 
 	while ((prev_x == new_x) && (prev_y == new_y)) {
 		if (interpolation_parameter >= 1.0) {
-			while ((point_queue_length < 1) && (continue_reading)) {
+			while ((point_queue_length < 1) && (continue_reading))
 				snooze(20 * 1000);
-			}
+
 			if (point_queue_length >= 1) {
 				p0 = p1;
 				p1 = p2;
 				p2 = p3;
 				EnterCS();
-				queue_entry *entry = point_queue_head;
+				queue_entry* entry = point_queue_head;
 				point_queue_head = point_queue_head->next_entry;
 				point_queue_length--;
 				if (entry == point_queue_tail)
@@ -308,25 +305,25 @@ CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 				ExitCS();
 				p3 = entry->point;
 				delete entry;
-			}
-			else {
+			} else
 				return B_ERROR;
-			}
+
 			interpolation_parameter = 0.0;
 			interpolation_step = 1.0;
-			if ((fabs(p1.x-p2.x) > 0) || (fabs(p1.y-p2.y) > 0))
-				interpolation_step = 1.0/(fabs(p1.x-p2.x)+fabs(p1.y-p2.y));
+			if ((fabs(p1.x - p2.x) > 0) || (fabs(p1.y - p2.y) > 0))
+				interpolation_step = 1.0 / (fabs(p1.x - p2.x) + fabs(p1.y - p2.y));
 
 			interpolation_step /= 10.0;
 		}
 
 		float u = interpolation_parameter;
 
-
 		do {
-			u = min_c(u+interpolation_step,1);
-			new_x = (int32)round(p0.x*car0(u) + p1.x*car1(u) + p2.x*car2(u) + p3.x*car3(u));
-			new_y = (int32)round(p0.y*car0(u) + p1.y*car1(u) + p2.y*car2(u) + p3.y*car3(u));
+			u = min_c(u + interpolation_step, 1);
+			new_x
+				= (int32)round(p0.x * car0(u) + p1.x * car1(u) + p2.x * car2(u) + p3.x * car3(u));
+			new_y
+				= (int32)round(p0.y * car0(u) + p1.y * car1(u) + p2.y * car2(u) + p3.y * car3(u));
 		} while ((u < 1.0) && (prev_x == new_x) && (prev_y == new_y));
 
 		interpolation_parameter = u;
@@ -344,15 +341,14 @@ CoordinateReader::NextPointCardinalSplineInterpolation(BPoint &point)
 }
 
 
-
 bool
 CoordinateReader::EnterCS()
 {
 	int32 previous = atomic_add(&benaphore_count, 1);
-	if (previous >= 1)
+	if (previous >= 1) {
 		if (acquire_sem(benaphore_mutex) != B_OK)
 			return FALSE;
-
+	}
 	return TRUE;
 }
 
@@ -361,7 +357,7 @@ bool
 CoordinateReader::ExitCS()
 {
 	int32 previous = atomic_add(&benaphore_count, -1);
-	if (previous > 1)  {
+	if (previous > 1) {
 		release_sem(benaphore_mutex);
 		benaphore_debug_variable++;
 	}

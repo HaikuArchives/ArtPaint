@@ -44,8 +44,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 EraserTool::EraserTool()
-	: DrawingTool(B_TRANSLATE("Eraser tool"), "e",
-		ERASER_TOOL)
+	:
+	DrawingTool(B_TRANSLATE("Eraser tool"), "e", ERASER_TOOL)
 {
 	fOptions = SIZE_OPTION | MODE_OPTION | USE_BRUSH_OPTION | PRESSURE_OPTION;
 	fOptionsCount = 4;
@@ -63,7 +63,7 @@ EraserTool::~EraserTool()
 
 
 ToolScript*
-EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
+EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {
 	// here we first get the necessary data from view
 	// and then start drawing while mousebutton is held down
@@ -76,13 +76,13 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 	coordinate_queue = new CoordinateQueue();
 	image_view = view;
-	thread_id coordinate_reader = spawn_thread(CoordinateReader,
-		"read coordinates", B_NORMAL_PRIORITY, this);
+	thread_id coordinate_reader
+		= spawn_thread(CoordinateReader, "read coordinates", B_NORMAL_PRIORITY, this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
 
-	ToolScript *the_script = new ToolScript(Type(), fToolSettings,
-		((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script
+		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
 	if (the_script == NULL) {
 		delete coordinate_queue;
 
@@ -116,8 +116,8 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 
-	Selection *selection = view->GetSelection();
-	BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
+	Selection* selection = view->GetSelection();
+	BitmapDrawer* drawer = new BitmapDrawer(tmpBuffer);
 	if (drawer == NULL) {
 		delete coordinate_queue;
 		delete the_script;
@@ -137,9 +137,8 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		background.bytes[2] = c.red;
 		background.bytes[3] = c.alpha * pressure;
 		composite_func = src_over_fixed;
-	} else {
+	} else
 		background.bytes[3] *= pressure;
-	}
 
 	BPoint prev_point;
 
@@ -159,35 +158,32 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		brush_width_per_2 = floor(brush->Width() / 2);
 		brush_height_per_2 = floor(brush->Height() / 2);
 
-		brush->draw(tmpBuffer, BPoint(prev_point.x - brush_width_per_2,
-			prev_point.y - brush_height_per_2), selection);
+		brush->draw(tmpBuffer,
+			BPoint(prev_point.x - brush_width_per_2, prev_point.y - brush_height_per_2), selection);
 	} else {
 		brush_width_per_2 = floor(fToolSettings.size / 2);
 		brush_height_per_2 = brush_width_per_2;
 
-		if (diameter != 1)
-			drawer->DrawCircle(prev_point, diameter / 2, tmp_draw_color.word,
-				true, true, selection, src_over_fixed);
-		else
-			drawer->DrawHairLine(prev_point, point, tmp_draw_color.word,
-				true, selection, src_over_fixed);
+		if (diameter != 1) {
+			drawer->DrawCircle(prev_point, diameter / 2, tmp_draw_color.word, true, true, selection,
+				src_over_fixed);
+		} else {
+			drawer->DrawHairLine(
+				prev_point, point, tmp_draw_color.word, true, selection, src_over_fixed);
+		}
 	}
 
 	// This makes sure that the view is updated even if just one point is drawn
-	updated_rect.left = min_c(point.x - brush_width_per_2,
-		prev_point.x - brush_width_per_2);
-	updated_rect.top = min_c(point.y - brush_height_per_2,
-		prev_point.y - brush_height_per_2);
-	updated_rect.right = max_c(point.x + brush_width_per_2,
-		prev_point.x + brush_width_per_2);
-	updated_rect.bottom = max_c(point.y + brush_height_per_2,
-		prev_point.y + brush_height_per_2);
+	updated_rect.left = min_c(point.x - brush_width_per_2, prev_point.x - brush_width_per_2);
+	updated_rect.top = min_c(point.y - brush_height_per_2, prev_point.y - brush_height_per_2);
+	updated_rect.right = max_c(point.x + brush_width_per_2, prev_point.x + brush_width_per_2);
+	updated_rect.bottom = max_c(point.y + brush_height_per_2, prev_point.y + brush_height_per_2);
 
 	// We should do the composite picture and re-draw the window in
 	// a separate thread.
 	buffer->Lock();
-	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-		tmpBuffer, updated_rect, composite_func, background.word);
+	BitmapUtilities::CompositeBitmapOnSource(
+		buffer, srcBuffer, tmpBuffer, updated_rect, composite_func, background.word);
 	buffer->Unlock();
 
 	SetLastUpdatedRect(updated_rect);
@@ -198,46 +194,43 @@ EraserTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
 		|| (reading_coordinates == true)) {
-		if ( (status_of_read == B_OK) && (prev_point != point) ) {
+		if ((status_of_read == B_OK) && (prev_point != point)) {
 			the_script->AddPoint(point);
-//			if (modifiers() & B_LEFT_CONTROL_KEY) {
+//			if (modifiers() & B_LEFT_CONTROL_KEY)
 //				set_mouse_speed(0);
-//			}
-//			else {
+//			else
 //				set_mouse_speed(original_mouse_speed);
-//			}
 			if (fToolSettings.use_current_brush == true) {
-				brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
-					point.y - brush_height_per_2), selection);
+				brush->draw(tmpBuffer,
+					BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2), selection);
 				brush->draw_line(tmpBuffer, point, prev_point, selection);
 			} else {
 				if (diameter != 1) {
-					drawer->DrawCircle(point, diameter/2, tmp_draw_color.word,
-						true, true, selection, src_over_fixed);
-					drawer->DrawLine(prev_point, point, tmp_draw_color.word,
-						diameter, true, selection, src_over_fixed);
-				}
-				else
-					drawer->DrawHairLine(prev_point, point, background.word,
-						true, selection, composite_func);
+					drawer->DrawCircle(point, diameter / 2, tmp_draw_color.word, true, true,
+						selection, src_over_fixed);
+					drawer->DrawLine(prev_point, point, tmp_draw_color.word, diameter, true,
+						selection, src_over_fixed);
+				} else
+					drawer->DrawHairLine(
+						prev_point, point, background.word, true, selection, composite_func);
 			}
 
-			updated_rect.left = min_c(point.x - brush_width_per_2 - 1,
-				prev_point.x - brush_width_per_2 - 1);
-			updated_rect.top = min_c(point.y - brush_height_per_2 - 1,
-				prev_point.y - brush_height_per_2 - 1);
-			updated_rect.right = max_c(point.x + brush_width_per_2 + 1,
-				prev_point.x + brush_width_per_2 + 1);
-			updated_rect.bottom = max_c(point.y + brush_height_per_2 + 1,
-				prev_point.y + brush_height_per_2 + 1);
+			updated_rect.left
+				= min_c(point.x - brush_width_per_2 - 1, prev_point.x - brush_width_per_2 - 1);
+			updated_rect.top
+				= min_c(point.y - brush_height_per_2 - 1, prev_point.y - brush_height_per_2 - 1);
+			updated_rect.right
+				= max_c(point.x + brush_width_per_2 + 1, prev_point.x + brush_width_per_2 + 1);
+			updated_rect.bottom
+				= max_c(point.y + brush_height_per_2 + 1, prev_point.y + brush_height_per_2 + 1);
 
 			imageUpdater->AddRect(updated_rect);
 
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
 			buffer->Lock();
-			BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-				tmpBuffer, updated_rect, composite_func, background.word);
+			BitmapUtilities::CompositeBitmapOnSource(
+				buffer, srcBuffer, tmpBuffer, updated_rect, composite_func, background.word);
 			buffer->Unlock();
 
 			prev_point = point;
@@ -286,16 +279,14 @@ EraserTool::ToolCursor() const
 const char*
 EraserTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Erasing pixels.")
-		: B_TRANSLATE("Eraser tool"));
+	return (isInUse ? B_TRANSLATE("Erasing pixels.") : B_TRANSLATE("Eraser tool"));
 }
 
 
 int32
-EraserTool::CoordinateReader(void *data)
+EraserTool::CoordinateReader(void* data)
 {
-	EraserTool *this_pointer = (EraserTool*)data;
+	EraserTool* this_pointer = (EraserTool*)data;
 	return this_pointer->read_coordinates();
 }
 
@@ -305,13 +296,13 @@ EraserTool::read_coordinates()
 {
 	reading_coordinates = true;
 	uint32 buttons;
-	BPoint point,prev_point;
+	BPoint point, prev_point;
 	BPoint view_point;
 	image_view->Window()->Lock();
-	image_view->getCoords(&point,&buttons,&view_point);
+	image_view->getCoords(&point, &buttons, &view_point);
 	image_view->MovePenTo(view_point);
 	image_view->Window()->Unlock();
-	prev_point = point + BPoint(1,1);
+	prev_point = point + BPoint(1, 1);
 
 	while (buttons) {
 		image_view->Window()->Lock();
@@ -320,7 +311,7 @@ EraserTool::read_coordinates()
 			image_view->StrokeLine(view_point);
 			prev_point = point;
 		}
-		image_view->getCoords(&point,&buttons,&view_point);
+		image_view->getCoords(&point, &buttons, &view_point);
 		image_view->Window()->Unlock();
 		snooze(20 * 1000);
 	}
@@ -334,45 +325,38 @@ EraserTool::read_coordinates()
 
 
 EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SIZE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-		fSizeSlider =
-			new NumberSliderControl(B_TRANSLATE("Size:"),
-			"1", message, 1, 100, false);
+		fSizeSlider = new NumberSliderControl(B_TRANSLATE("Size:"), "1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", MODE_OPTION);
 		message->AddInt32("value", HS_ERASE_TO_BACKGROUND_MODE);
 
-		fBackground =
-			new BRadioButton(B_TRANSLATE("Background color"),
-			new BMessage(*message));
+		fBackground = new BRadioButton(B_TRANSLATE("Background color"), new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_ERASE_TO_TRANSPARENT_MODE);
-		fTransparent =
-			new BRadioButton(B_TRANSLATE("Transparency"),
-			message);
+		fTransparent = new BRadioButton(B_TRANSLATE("Transparency"), message);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", USE_BRUSH_OPTION);
 		message->AddInt32("value", 0x00000000);
-		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
-			message);
+		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"), message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", PRESSURE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
-		fPressureSlider =
-			new NumberSliderControl(B_TRANSLATE("Pressure:"),
-			"100", message, 1, 100, false);
+		fPressureSlider
+			= new NumberSliderControl(B_TRANSLATE("Pressure:"), "100", message, 1, 100, false);
 
 		BGridLayout* pressureLayout = LayoutSliderGrid(fPressureSlider);
 
@@ -383,9 +367,9 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Replace pixels with")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
-				.Add(fBackground)
-				.Add(fTransparent)
-				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
+			.Add(fBackground)
+			.Add(fTransparent)
+			.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
 			.TopView()
 		);
@@ -397,9 +381,8 @@ EraserToolConfigView::EraserToolConfigView(DrawingTool* tool)
 			fTransparent->SetValue(B_CONTROL_ON);
 
 		fUseBrush->SetValue(tool->GetCurrentValue(USE_BRUSH_OPTION));
-		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF) {
+		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF)
 			fSizeSlider->SetEnabled(FALSE);
-		}
 
 		fPressureSlider->SetValue(tool->GetCurrentValue(PRESSURE_OPTION));
 	}
@@ -424,8 +407,9 @@ EraserToolConfigView::MessageReceived(BMessage* message)
 {
 	DrawingToolConfigView::MessageReceived(message);
 
-	switch(message->what) {
-		case OPTION_CHANGED: {
+	switch (message->what) {
+		case OPTION_CHANGED:
+		{
 			if (message->FindInt32("option") == USE_BRUSH_OPTION) {
 				if (fUseBrush->Value() == B_CONTROL_OFF)
 					fSizeSlider->SetEnabled(TRUE);

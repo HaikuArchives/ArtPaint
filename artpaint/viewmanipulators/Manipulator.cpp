@@ -38,6 +38,7 @@ Manipulator::Manipulator()
 	}
 }
 
+
 BBitmap*
 Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 {
@@ -48,8 +49,7 @@ Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 	BRect targetBounds = sourceBounds;
 	targetBounds.InsetBy(inset, inset);
 
-	BBitmap* target = new (std::nothrow) BBitmap(targetBounds, B_RGB32,
-		acceptViews);
+	BBitmap* target = new (std::nothrow) BBitmap(targetBounds, B_RGB32, acceptViews);
 	if (!target || !target->IsValid()) {
 		delete target;
 		return NULL;
@@ -64,10 +64,8 @@ Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 		int32 width = targetBounds.IntegerWidth();
 		int32 height = targetBounds.IntegerHeight();
 		for (int32 y = 0; y <= height; ++y) {
-			for (int32 x = 0; x <= width; ++x) {
-				*targetBits++ =
-					*(sourceBits + inset + x + (inset + y) * sourceBpr);
-			}
+			for (int32 x = 0; x <= width; ++x)
+				*targetBits++ = *(sourceBits + inset + x + (inset + y) * sourceBpr);
 		}
 	} else if (inset < 0) {
 		// This is the hardest case where we have to duplicate the edges.
@@ -131,5 +129,3 @@ Manipulator::DuplicateBitmap(BBitmap* source, int32 inset, bool acceptViews)
 
 	return target;
 }
-
-

@@ -14,13 +14,12 @@
 #include <Entry.h>
 #include <NodeInfo.h>
 
-#include <string.h>
 #include <compat/sys/stat.h>
+#include <string.h>
 
 
 bool
-ImageFilter::Filter(const entry_ref* ref, BNode* node, struct stat_beos* stat,
-	const char* fileType)
+ImageFilter::Filter(const entry_ref* ref, BNode* node, struct stat_beos* stat, const char* fileType)
 {
 	if (S_ISDIR(stat->st_mode))
 		return true;
@@ -37,4 +36,3 @@ ImageFilter::Filter(const entry_ref* ref, BNode* node, struct stat_beos* stat,
 
 	return false;
 }
-

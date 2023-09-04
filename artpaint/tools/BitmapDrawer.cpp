@@ -7,8 +7,8 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include <stdio.h>
 #include <algorithm>
+#include <stdio.h>
 
 
 #include "BitmapDrawer.h"
@@ -17,40 +17,40 @@
 #include "Selection.h"
 
 
-BitmapDrawer::BitmapDrawer(BBitmap *bitmap)
+BitmapDrawer::BitmapDrawer(BBitmap* bitmap)
 {
 	bitmap_bounds = bitmap->Bounds();
 
 	bitmap_bits = (uint32*)bitmap->Bits();
-	bitmap_bpr = bitmap->BytesPerRow()/4;
+	bitmap_bpr = bitmap->BytesPerRow() / 4;
 	bitmap_data_length = bitmap->BitsLength();
 }
 
 
 status_t
-BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color,
-	bool anti_alias, Selection *sel,
+BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color, bool anti_alias, Selection* sel,
 	uint32 (*composite_func)(uint32, uint32))
 {
 	// This function only draws lines with width of 1.
 	// Always draw the lines from left to right or from top to bottom.
-	float start_x = min_c(start.x,end.x);
-	float start_y = min_c(start.y,end.y);
+	float start_x = min_c(start.x, end.x);
+	float start_y = min_c(start.y, end.y);
 
-	float end_x = max_c(start.x,end.x);
-	float end_y = max_c(start.y,end.y);
+	float end_x = max_c(start.x, end.x);
+	float end_y = max_c(start.y, end.y);
 	float dx = end_x - start_x;
 	float dy = end_y - start_y;
 	float sign_y = 0.0, sign_x = 0.0;
 	if (dx > dy) {
 		if (end.y != start.y)
-			sign_y = (start_x == start.x ? (end.y - start.y)/fabs(start.y-end.y) : (start.y - end.y)/fabs(end.y-start.y));
+			sign_y = (start_x == start.x ? (end.y - start.y) / fabs(start.y - end.y)
+										 : (start.y - end.y) / fabs(end.y - start.y));
 		else
 			sign_y = 0;
-	}
-	else {
+	} else {
 		if (start.x != end.x)
-			sign_x = (start_y == start.y ? (end.x - start.x)/fabs(end.x-start.x) : (start.x - end.x)/fabs(start.x-end.x));
+			sign_x = (start_y == start.y ? (end.x - start.x) / fabs(end.x - start.x)
+										 : (start.x - end.x) / fabs(start.x - end.x));
 		else
 			sign_x = 0;
 	}
@@ -62,55 +62,53 @@ BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color,
 		if (dx > dy) {
 			// Draw the line horizontally. For every x-coordinate we mix the color with
 			// two pixels at positions x,floor(y) and x,ceil(y).
-			float step_y = sign_y*dy/dx;
-			float y = ( (start_x == start.x) ? start.y : end.y);
-			float y_mix_upper,y_mix_lower;
+			float step_y = sign_y * dy / dx;
+			float y = ((start_x == start.x) ? start.y : end.y);
+			float y_mix_upper, y_mix_lower;
 
-			for (float x=start_x;x<=end_x;x++) {
-				y_mix_upper = y-floor(y);
+			for (float x = start_x; x <= end_x; x++) {
+				y_mix_upper = y - floor(y);
 				y_mix_lower = 1.0 - y_mix_upper;
 
 				// This is the real Wu's two point anti-aliasing scheme.
-				new_value = ((uint32)(( (color >> 24) & 0xFF) * y_mix_upper) << 24) |
-							((uint32)(( (color >> 16) & 0xFF) * y_mix_upper) << 16) |
-							((uint32)(( (color >> 8) & 0xFF) * y_mix_upper) << 8) |
-							((uint32)(( (color ) & 0xFF) * y_mix_upper) );
-				SetPixel(BPoint(x,ceil(y)), new_value, sel);
-				new_value = ((uint32)(( (color >> 24) & 0xFF) * y_mix_lower) << 24) |
-							((uint32)(( (color >> 16) & 0xFF) * y_mix_lower) << 16) |
-							((uint32)(( (color >> 8) & 0xFF) * y_mix_lower) << 8) |
-							((uint32)(( (color ) & 0xFF) * y_mix_lower) );
-				SetPixel(BPoint(x,floor(y)), new_value, sel, composite_func);
+				new_value = ((uint32)(((color >> 24) & 0xFF) * y_mix_upper) << 24)
+					| ((uint32)(((color >> 16) & 0xFF) * y_mix_upper) << 16)
+					| ((uint32)(((color >> 8) & 0xFF) * y_mix_upper) << 8)
+					| ((uint32)(((color) &0xFF) * y_mix_upper));
+				SetPixel(BPoint(x, ceil(y)), new_value, sel);
+				new_value = ((uint32)(((color >> 24) & 0xFF) * y_mix_lower) << 24)
+					| ((uint32)(((color >> 16) & 0xFF) * y_mix_lower) << 16)
+					| ((uint32)(((color >> 8) & 0xFF) * y_mix_lower) << 8)
+					| ((uint32)(((color) &0xFF) * y_mix_lower));
+				SetPixel(BPoint(x, floor(y)), new_value, sel, composite_func);
 				y += step_y;
 			}
-		}
-		else {
+		} else {
 			// Draw the line vertically.
-			float step_x = sign_x*dx/dy;
-			float x = ( (start_y == start.y) ? start.x : end.x);
-			float x_mix_left,x_mix_right;
+			float step_x = sign_x * dx / dy;
+			float x = ((start_y == start.y) ? start.x : end.x);
+			float x_mix_left, x_mix_right;
 
-			for (float y=start_y;y<=end_y;y++) {
-				x_mix_left = ceil(x)-x;
+			for (float y = start_y; y <= end_y; y++) {
+				x_mix_left = ceil(x) - x;
 				x_mix_right = 1.0 - x_mix_left;
 
 				// This is the real Wu's two point anti-aliasing scheme.
-				new_value = ((uint32)(( (color >> 24) & 0xFF) * x_mix_right) << 24) |
-							((uint32)(( (color >> 16) & 0xFF) * x_mix_right) << 16) |
-							((uint32)(( (color >> 8) & 0xFF) * x_mix_right) << 8) |
-							((uint32)(( (color ) & 0xFF) * x_mix_right) );
-				SetPixel(BPoint(ceil(x),y),new_value, sel);
-				new_value = ((uint32)(( (color >> 24) & 0xFF) * x_mix_left) << 24) |
-							((uint32)(( (color >> 16) & 0xFF) * x_mix_left) << 16) |
-							((uint32)(( (color >> 8) & 0xFF) * x_mix_left) << 8) |
-							((uint32)(( (color ) & 0xFF) * x_mix_left) );
-				SetPixel(BPoint(floor(x),y),new_value, sel, composite_func);
+				new_value = ((uint32)(((color >> 24) & 0xFF) * x_mix_right) << 24)
+					| ((uint32)(((color >> 16) & 0xFF) * x_mix_right) << 16)
+					| ((uint32)(((color >> 8) & 0xFF) * x_mix_right) << 8)
+					| ((uint32)(((color) &0xFF) * x_mix_right));
+				SetPixel(BPoint(ceil(x), y), new_value, sel);
+				new_value = ((uint32)(((color >> 24) & 0xFF) * x_mix_left) << 24)
+					| ((uint32)(((color >> 16) & 0xFF) * x_mix_left) << 16)
+					| ((uint32)(((color >> 8) & 0xFF) * x_mix_left) << 8)
+					| ((uint32)(((color) &0xFF) * x_mix_left));
+				SetPixel(BPoint(floor(x), y), new_value, sel, composite_func);
 
 				x += step_x;
 			}
 		}
-	}
-	else {
+	} else {
 		// use DDA-algorithm to calculate line between the two argument points
 		// first check whether the line is longer in x direction than y
 		bool increase_x = fabs(start.x - end.x) >= fabs(start.y - end.y);
@@ -118,35 +116,30 @@ BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color,
 		float sign_x;
 		float sign_y;
 
-		if ((end.x-start.x) != 0) {
-			sign_x = (end.x-start.x)/fabs(end.x-start.x);
-		}
-		else {
+		if ((end.x - start.x) != 0)
+			sign_x = (end.x - start.x) / fabs(end.x - start.x);
+		else
 			sign_x = 0;
-		}
-		if ((end.y-start.y) != 0) {
-			sign_y = (end.y-start.y)/fabs(end.y-start.y);
-		}
-		else {
+
+		if ((end.y - start.y) != 0)
+			sign_y = (end.y - start.y) / fabs(end.y - start.y);
+		else
 			sign_y = 0;
-		}
 
 		if (increase_x) {
 			// allocate the point-list
 			int32 number_of_points = (int32)fabs(start.x - end.x) + 1;
 			float y_add = ((float)fabs(start.y - end.y)) / ((float)fabs(start.x - end.x));
-			for (int32 i=0;i < number_of_points;i++) {
+			for (int32 i = 0; i < number_of_points; i++) {
 				SetPixel(start, color, sel, composite_func);
 
 				start.x += sign_x;
 				start.y += sign_y * y_add;
 			}
-		}
-
-		else {
+		} else {
 			int32 number_of_points = (int32)fabs(start.y - end.y) + 1;
 			float x_add = ((float)fabs(start.x - end.x)) / ((float)fabs(start.y - end.y));
-			for (int32 i=0;i < number_of_points;i++) {
+			for (int32 i = 0; i < number_of_points; i++) {
 				SetPixel(start, color, sel, composite_func);
 
 				start.y += sign_y;
@@ -160,9 +153,8 @@ BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color,
 
 
 status_t
-BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width,
-	bool anti_alias, Selection *sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width, bool anti_alias,
+	Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	// The line width is split in to two parts
 	float distance1_from_center = ceil((width - 1.0) / 2.0);
@@ -172,27 +164,27 @@ BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width,
 	if (start == end)
 		return B_ERROR;
 
-	// Then we take the normal vector of (end - start)by using cross product.
+	// Then we take the normal vector of (end - start) by using cross product.
 	// Let's pretend that a = (end-start) is a vector in three dimensional
 	// vector space. The normal for it (in two dimensions) can be obtained by:
 	//
-	//				|	i	j	k	|
-	//		a'xa =	| a'.x a'.y	1	| 	=	(a'.y*0 - 1*a.y)i - (a'.x*0 - 1*a.x)k + (a'.x*a.y - a'.y*a.x)k
-	//				|	a.x	a.y	0	|
+	//			|	i	j	k	|
+	//	a'xa =	| a'.x a'.y	1	| 	=	(a'.y*0 - 1*a.y)i - (a'.x*0 - 1*a.x)k + (a'.x*a.y - a'.y*a.x)k
+	//			|	a.x	a.y	0	|
 	//
 	// We then ignore the k component.
 	BPoint normal;
-	normal.x = -(end-start).y;
-	normal.y = (end-start).x;
+	normal.x = -(end - start).y;
+	normal.y = (end - start).x;
 
 	// Then we normalize the normal vector
-	float normal_vector_length = sqrt((normal.x*normal.x)+(normal.y*normal.y));
-	normal.x = normal.x/normal_vector_length;
-	normal.y = normal.y/normal_vector_length;
+	float normal_vector_length = sqrt((normal.x * normal.x) + (normal.y * normal.y));
+	normal.x = normal.x / normal_vector_length;
+	normal.y = normal.y / normal_vector_length;
 
 	// Change the normal vector to point upward.
 	if (normal.y < 0) {
-		normal = BPoint(0,0)-normal;
+		normal = BPoint(0, 0) - normal;
 	}
 
 	BPoint normal1;
@@ -215,7 +207,7 @@ BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width,
 //	poly->RoundToInteger();
 
 	// Then we fill the rectangle.
-	DrawRectanglePolygon(point_list,color, TRUE, anti_alias, sel, composite_func);
+	DrawRectanglePolygon(point_list, color, TRUE, anti_alias, sel, composite_func);
 //	DrawConvexPolygon(poly->GetPointList(),poly->GetPointCount(),color,TRUE,anti_alias);
 
 //	delete poly;
@@ -225,13 +217,12 @@ BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width,
 
 
 status_t
-BitmapDrawer::DrawCircle(BPoint center, float radius, uint32 color,
-	bool fill, bool anti_alias, Selection *sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::DrawCircle(BPoint center, float radius, uint32 color, bool fill, bool anti_alias,
+	Selection* sel, uint32(*composite_func)(uint32, uint32))
 {
 	// For the moment we only do non-anti-aliased circles. So radius should be a whole number.
 
-	BRect circleRect(center.x-radius, center.y-radius, center.x+radius, center.y+radius);
+	BRect circleRect(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
 	DrawEllipse(circleRect, color, fill, anti_alias, sel, composite_func);
 
 	return B_OK;
@@ -239,26 +230,25 @@ BitmapDrawer::DrawCircle(BPoint center, float radius, uint32 color,
 
 
 status_t
-BitmapDrawer::DrawEllipse(BRect rect, uint32 color,
-	bool fill, bool anti_alias, Selection *sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::DrawEllipse(BRect rect, uint32 color, bool fill, bool anti_alias, Selection* sel,
+	uint32(*composite_func)(uint32, uint32))
 {
 	BPoint center;
-	center.x = floor(rect.left + (rect.right-rect.left)/2.0);
-	center.y = floor(rect.top + (rect.bottom-rect.top)/2.0);
+	center.x = floor(rect.left + (rect.right - rect.left) / 2.0);
+	center.y = floor(rect.top + (rect.bottom - rect.top) / 2.0);
 
-	uint32 radius1 = rect.Width()/2.;
-	uint32 radius2 = rect.Height()/2.;
+	uint32 radius1 = rect.Width() / 2.;
+	uint32 radius2 = rect.Height() / 2.;
 
-	uint32 radiusSqr = radius1*radius1;
-	uint32 radius2Sqr = radius2*radius2;
+	uint32 radiusSqr = radius1 * radius1;
+	uint32 radius2Sqr = radius2 * radius2;
 
-	int32 quarter = round(max_c(radiusSqr, radius2Sqr) / sqrt(radiusSqr+radius2Sqr));
+	int32 quarter = round(max_c(radiusSqr, radius2Sqr) / sqrt(radiusSqr + radius2Sqr));
 
 	int32 xmax = min_c(quarter, radius1);
 	int32 ymax = min_c(quarter, radius2);
 	for (int32 x = 0; x <= xmax; ++x) {
-		float y = radius2 * sqrt(1.-(float)(x*x)/(float)(radiusSqr));
+		float y = radius2 * sqrt(1. - (float)(x * x) / (float)(radiusSqr));
 		float error = y - floor(y);
 
 		union {
@@ -276,24 +266,20 @@ BitmapDrawer::DrawEllipse(BRect rect, uint32 color,
 
 		if (fill) {
 			if (anti_alias == TRUE)
-				SetMirroredPixels(center, x, floor(y)+1, color2.word, sel,
-					composite_func);
+				SetMirroredPixels(center, x, floor(y) + 1, color2.word, sel, composite_func);
 			if (x != 0)
 				FillColumn(center, x, 1, floor(y), color, sel, composite_func);
 		} else {
 			if (anti_alias == TRUE) {
-				SetMirroredPixels(center, x, floor(y), color1.word, sel,
-					composite_func);
-				SetMirroredPixels(center, x, floor(y)+1, color2.word, sel,
-					composite_func);
-			} else {
+				SetMirroredPixels(center, x, floor(y), color1.word, sel, composite_func);
+				SetMirroredPixels(center, x, floor(y) + 1, color2.word, sel, composite_func);
+			} else
 				SetMirroredPixels(center, x, y, color, sel, composite_func);
-			}
 		}
 	}
 
 	for (int32 y = 0; y <= ymax; ++y) {
-		float x = radius1 * sqrt(1.-(float)(y*y)/(float)(radius2Sqr));
+		float x = radius1 * sqrt(1. - (float)(y * y) / (float)(radius2Sqr));
 		float error = x - floor(x);
 
 		union {
@@ -311,20 +297,15 @@ BitmapDrawer::DrawEllipse(BRect rect, uint32 color,
 
 		if (fill) {
 			if (anti_alias == TRUE)
-				SetMirroredPixels(center, floor(x)+1, y, color2.word, sel,
-					composite_func);
+				SetMirroredPixels(center, floor(x) + 1, y, color2.word, sel, composite_func);
 			if (y != 0)
-				FillRow(center, quarter+1, floor(x), y, color, sel,
-					composite_func);
+				FillRow(center, quarter + 1, floor(x), y, color, sel, composite_func);
 		} else {
 			if (anti_alias == TRUE) {
-				SetMirroredPixels(center, floor(x), y, color1.word, sel,
-					composite_func);
-				SetMirroredPixels(center, floor(x)+1, y, color2.word, sel,
-					composite_func);
-			} else {
+				SetMirroredPixels(center, floor(x), y, color1.word, sel, composite_func);
+				SetMirroredPixels(center, floor(x) + 1, y, color2.word, sel, composite_func);
+			} else
 				SetMirroredPixels(center, x, y, color, sel, composite_func);
-			}
 		}
 	}
 
@@ -341,12 +322,12 @@ BitmapDrawer::DrawEllipse(BRect rect, uint32 color,
 // This function is quite useless unless we want draw a rectangular bitmap such that the data
 // reaches borders at every position and it is binary data.
 status_t
-BitmapDrawer::DrawBitmap(BBitmap *bitmap, BRect bounds, BRect exclude,bool)
+BitmapDrawer::DrawBitmap(BBitmap* bitmap, BRect bounds, BRect exclude, bool)
 {
 	// The exclude rect should be the same size as bounds but with a different offset.
 	// This will copy a bitmap to the actual bitmap
-	uint32 *target_bits;
-	uint32 *bits = (uint32*)bitmap->Bits();
+	uint32* target_bits;
+	uint32* bits = (uint32*)bitmap->Bits();
 	int32 bitmap_width = bitmap->Bounds().IntegerWidth();
 
 	// Divide the bounds into two rectangles.
@@ -354,10 +335,9 @@ BitmapDrawer::DrawBitmap(BBitmap *bitmap, BRect bounds, BRect exclude,bool)
 	if (exclude.IsValid() == TRUE) {
 		if (exclude.top > bounds.top) {
 			area1.top = bounds.top;
-			area1.bottom = exclude.top-1;
-		}
-		else {
-			area1.top = exclude.bottom+1;
+			area1.bottom = exclude.top - 1;
+		} else {
+			area1.top = exclude.bottom + 1;
 			area1.bottom = bounds.bottom;
 		}
 		area1.left = bounds.left;
@@ -368,10 +348,10 @@ BitmapDrawer::DrawBitmap(BBitmap *bitmap, BRect bounds, BRect exclude,bool)
 	target_bits = bitmap_bits + (int32)area1.left + (int32)area1.top * bitmap_bpr;
 	int32 area_width = area1.IntegerWidth();
 	int32 area_height = area1.IntegerHeight();
-	for (int32 y=0;y<=area_height;y++) {
-		for (int32 x=0;x<=area_width;x++) {
+	for (int32 y = 0; y <= area_height; y++) {
+		for (int32 x = 0; x <= area_width; x++)
 			*target_bits++ = *bits++;
-		}
+
 		target_bits += bitmap_bpr - area_width - 1;
 		bits += bitmap_width - area_width;
 	}
@@ -381,10 +361,9 @@ BitmapDrawer::DrawBitmap(BBitmap *bitmap, BRect bounds, BRect exclude,bool)
 		if (exclude.IsValid() == TRUE) {
 			if (exclude.left > bounds.left) {
 				area2.left = bounds.left;
-				area2.right = exclude.left-1;
-			}
-			else {
-				area2.left = exclude.right+1;
+				area2.right = exclude.left - 1;
+			} else {
+				area2.left = exclude.right + 1;
 				area2.right = bounds.right;
 			}
 			area2.top = (area1.bottom < exclude.top ? area1.bottom + 1 : bounds.top);
@@ -396,10 +375,10 @@ BitmapDrawer::DrawBitmap(BBitmap *bitmap, BRect bounds, BRect exclude,bool)
 		bits = (uint32*)bitmap->Bits();
 		area_width = area2.IntegerWidth();
 		area_height = area2.IntegerHeight();
-		for (int32 y=0;y<=area_height;y++) {
-			for (int32 x=0;x<=area_width;x++) {
+		for (int32 y = 0; y <= area_height; y++) {
+			for (int32 x = 0; x <= area_width; x++)
 				*target_bits++ = *bits++;
-			}
+
 			target_bits += bitmap_bpr - area_width - 1;
 			bits += bitmap_width - area_width;
 		}
@@ -409,17 +388,16 @@ BitmapDrawer::DrawBitmap(BBitmap *bitmap, BRect bounds, BRect exclude,bool)
 
 
 status_t
-BitmapDrawer::DrawConvexPolygon(BPoint *point_list, int32 point_count,
-	uint32 color, bool fill, bool anti_alias)
+BitmapDrawer::DrawConvexPolygon(
+	BPoint* point_list, int32 point_count, uint32 color, bool fill, bool anti_alias)
 {
 	if (fill == FALSE) {
 		// Just connect the corners with lines.
-		for (int32 i=0;i<point_count-1;i++) {
-			DrawHairLine(point_list[i], point_list[i+1], color, anti_alias);
-		}
-		DrawHairLine(point_list[point_count-1], point_list[0], color, anti_alias);
-	}
-	else /*if (anti_aliasing == FALSE) */ {
+		for (int32 i = 0; i < point_count - 1; i++)
+			DrawHairLine(point_list[i], point_list[i + 1], color, anti_alias);
+
+		DrawHairLine(point_list[point_count - 1], point_list[0], color, anti_alias);
+	} else /*if (anti_aliasing == FALSE) */ {
 		// We have to fill the polygon.
 		// We use the following method:
 		//	1.	Determine the minimum y and maximum y coordinates of the polygon.
@@ -428,35 +406,39 @@ BitmapDrawer::DrawConvexPolygon(BPoint *point_list, int32 point_count,
 		//	3.	For those two found lines calculate the x-coordinates at y-position.
 		//	4.	Select the minimum and maximum of those x-coordinates.
 		//	5.	Fill the line at y-coordinate between minimum x and maximum x.
-		float min_y=1000000,max_y=-1000000;
-		for (int32 i=0;i<point_count;i++) {
+		float min_y = 1000000, max_y = -1000000;
+		for (int32 i = 0; i < point_count; i++) {
 			min_y = min_c(point_list[i].y, min_y);
 			max_y = max_c(point_list[i].y, max_y);
 		}
 
 		// Round the mimimum and maximum y to the nearest integer.
-		min_y = ( ((min_y-floor(min_y)) < 0.5 ) ? floor(min_y) : ceil(min_y) );
-		max_y = ( ((max_y-floor(min_y)) < 0.5 ) ? floor(max_y) : ceil(max_y) );
+		min_y = (((min_y - floor(min_y)) < 0.5) ? floor(min_y) : ceil(min_y));
+		max_y = (((max_y - floor(min_y)) < 0.5) ? floor(max_y) : ceil(max_y));
 
-		for (int32 y=(int32)min_y;y<=max_y;y++) {
-			float min_x=1000000,max_x=-1000000;
-			int32 i=0,found_lines=0;
+		for (int32 y = (int32)min_y; y <= max_y; y++) {
+			float min_x = 1000000, max_x = -1000000;
+			int32 i = 0, found_lines = 0;
 
 			// We have to examine at least three lines because otherwise lines beginning at
 			// a the same corner-point might be the only found lines that cross certain y-row.
-			while ( (found_lines < 3) && (i<(point_count-1)) ) {
-				if ( ((point_list[i].y<=y) && (point_list[i+1].y >= y)) || ((point_list[i].y>=y) && (point_list[i+1].y <= y)) ) {
+			while ((found_lines < 3) && (i < (point_count - 1))) {
+				if (((point_list[i].y <= y) && (point_list[i + 1].y >= y))
+					|| ((point_list[i].y >= y) && (point_list[i + 1].y <= y))) {
 					found_lines++;
-					min_x = min_c(min_x,MinimumCrossingPoint(point_list[i],point_list[i+1],y));
-					max_x = max_c(max_x,MaximumCrossingPoint(point_list[i],point_list[i+1],y));
+					min_x = min_c(min_x, MinimumCrossingPoint(point_list[i], point_list[i + 1], y));
+					max_x = max_c(max_x, MaximumCrossingPoint(point_list[i], point_list[i + 1], y));
 				}
 				i++;
 			}
 			if (found_lines < 3) {
-				if (((point_list[0].y<=y) && (point_list[point_count-1].y >= y)) || ((point_list[0].y>=y) && (point_list[point_count-1].y <= y)) ) {
+				if (((point_list[0].y <= y) && (point_list[point_count - 1].y >= y))
+					|| ((point_list[0].y >= y) && (point_list[point_count - 1].y <= y))) {
 					found_lines++;
-					min_x = min_c(min_x,MinimumCrossingPoint(point_list[0],point_list[point_count-1],y));
-					max_x = max_c(max_x,MaximumCrossingPoint(point_list[0],point_list[point_count-1],y));
+					min_x = min_c(
+						min_x, MinimumCrossingPoint(point_list[0], point_list[point_count - 1], y));
+					max_x = max_c(
+						max_x, MaximumCrossingPoint(point_list[0], point_list[point_count - 1], y));
 				}
 			}
 			if (found_lines == 0) {
@@ -465,16 +447,15 @@ BitmapDrawer::DrawConvexPolygon(BPoint *point_list, int32 point_count,
 				max_x = 0;
 			}
 			// Then round the minimum and maximum x to nearest integers.
-			min_x = ( ((min_x-floor(min_x)) < 0.5 ) ? floor(min_x) : ceil(min_x) );
-			max_x = ( ((max_x-floor(min_x)) < 0.5 ) ? floor(max_x) : ceil(max_x) );
+			min_x = (((min_x - floor(min_x)) < 0.5) ? floor(min_x) : ceil(min_x));
+			max_x = (((max_x - floor(min_x)) < 0.5) ? floor(max_x) : ceil(max_x));
 
 			// Then fill the span
 			// First round the minimum and maximum x to nearest integers.
-			min_x = ( ((min_x-floor(min_x)) < 0.5 ) ? floor(min_x) : ceil(min_x) );
-			max_x = ( ((max_x-floor(min_x)) < 0.5 ) ? floor(max_x) : ceil(max_x) );
-			for (int32 x=(int32)min_x;x<=max_x;x++) {
-				SetPixel(BPoint(x,y),color);
-			}
+			min_x = (((min_x - floor(min_x)) < 0.5) ? floor(min_x) : ceil(min_x));
+			max_x = (((max_x - floor(min_x)) < 0.5) ? floor(max_x) : ceil(max_x));
+			for (int32 x = (int32)min_x; x <= max_x; x++)
+				SetPixel(BPoint(x, y), color);
 		}
 	}
 	/* else {
@@ -486,64 +467,59 @@ BitmapDrawer::DrawConvexPolygon(BPoint *point_list, int32 point_count,
 
 
 float
-BitmapDrawer::MinimumCrossingPoint(BPoint &start, BPoint &end, int32 y)
+BitmapDrawer::MinimumCrossingPoint(BPoint& start, BPoint& end, int32 y)
 {
 	// If the line is more vertical than horizontal there is only one point
 	// at coordinate y.
-	if (fabs(start.y-end.y) >= fabs(start.x-end.x)) {
+	if (fabs(start.y - end.y) >= fabs(start.x - end.x)) {
 		// Now we just have to return the point at that location.
-		float step_x = (end.x-start.x)/fabs(start.y-end.y);
-		return start.x + fabs(start.y-y)*step_x;
-	}
-	else {
-		float step_y = (start.y-end.y)/fabs(start.x-end.x);
+		float step_x = (end.x - start.x) / fabs(start.y - end.y);
+		return start.x + fabs(start.y - y) * step_x;
+	} else {
+		float step_y = (start.y - end.y) / fabs(start.x - end.x);
 		if (step_y != 0) {
-			float dir_x = (end.x-start.x)/fabs(start.x-end.x);
-			float x_add = fabs((fabs(start.y-y)-0.5)/step_y);
-			float x1 = start.x + dir_x*x_add;
-			x_add = fabs((fabs(start.y-y)+0.5)/step_y);
-			float x2 = start.x + dir_x*x_add;
-			return max_c(min_c(start.x,end.x),min_c(x1,x2));
-		}
-		else
-			return min_c(start.x,end.x);
+			float dir_x = (end.x - start.x) / fabs(start.x - end.x);
+			float x_add = fabs((fabs(start.y - y) - 0.5) / step_y);
+			float x1 = start.x + dir_x * x_add;
+			x_add = fabs((fabs(start.y - y) + 0.5) / step_y);
+			float x2 = start.x + dir_x * x_add;
+			return max_c(min_c(start.x, end.x), min_c(x1, x2));
+		} else
+			return min_c(start.x, end.x);
 	}
 }
 
 
 float
-BitmapDrawer::MaximumCrossingPoint(BPoint &start, BPoint &end, int32 y)
+BitmapDrawer::MaximumCrossingPoint(BPoint& start, BPoint& end, int32 y)
 {
 	// If the line is more vertical than horizontal there is only one point
 	// at coordinate y.
-	if (fabs(start.y-end.y) >= fabs(start.x-end.x)) {
+	if (fabs(start.y - end.y) >= fabs(start.x - end.x)) {
 		// Now we just have to return the point at that location.
-		float step_x = (end.x-start.x)/fabs(start.y-end.y);
-		return start.x + fabs(start.y-y)*step_x;
-	}
-	else {
-		float step_y = (start.y-end.y)/fabs(start.x-end.x);
+		float step_x = (end.x - start.x) / fabs(start.y - end.y);
+		return start.x + fabs(start.y - y) * step_x;
+	} else {
+		float step_y = (start.y - end.y) / fabs(start.x - end.x);
 		if (step_y != 0) {
-			float dir_x = (end.x-start.x)/fabs(start.x-end.x);
-			float x_add = fabs((fabs(start.y-y)-0.5)/step_y);
-			float x1 = start.x + dir_x*x_add;
-			x_add = fabs((fabs(start.y-y)+0.5)/step_y);
-			float x2 = start.x + dir_x*x_add;
-			return min_c(max_c(start.x,end.x),max_c(x1,x2));
-		}
-		else
-			return max_c(start.x,end.x);
+			float dir_x = (end.x - start.x) / fabs(start.x - end.x);
+			float x_add = fabs((fabs(start.y - y) - 0.5) / step_y);
+			float x1 = start.x + dir_x * x_add;
+			x_add = fabs((fabs(start.y - y) + 0.5) / step_y);
+			float x2 = start.x + dir_x * x_add;
+			return min_c(max_c(start.x, end.x), max_c(x1, x2));
+		} else
+			return max_c(start.x, end.x);
 	}
 }
 
 
 status_t
-BitmapDrawer::DrawRectanglePolygon(BPoint *corners, uint32 color,
-	bool fill, bool anti_alias, Selection *sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::DrawRectanglePolygon(BPoint* corners, uint32 color, bool fill, bool anti_alias,
+	Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
-	// This is a special-case of the convex-polygon function that draws polygons that are rectangular.
-	// In addition to the convex polygon case we can use the following simplifications:
+	// This is a special-case of the convex-polygon function that draws polygons that are
+	// rectangular. In addition to the convex polygon case we can use the following simplifications:
 	//	1.	The rectangle has two pairs of parallel lines.
 	//	2.	Rectangle is symmetric; point at (x,y) is same as point at (-x,-y)
 	//		when the origo is at polygons center.
@@ -571,14 +547,11 @@ BitmapDrawer::DrawRectanglePolygon(BPoint *corners, uint32 color,
 		DrawHairLine(corners[1], corners[2], color, anti_alias, sel, composite_func);
 		DrawHairLine(corners[2], corners[3], color, anti_alias, sel, composite_func);
 		DrawHairLine(corners[3], corners[0], color, anti_alias, sel, composite_func);
-	}
-	else {
-		if (anti_alias == TRUE) {
+	} else {
+		if (anti_alias == TRUE)
 			FillAntiAliasedRectangle(corners, color, sel, composite_func);
-		}
-		else {
+		else
 			FillRectangle(corners, color, sel, composite_func);
-		}
 	}
 
 	return B_OK;
@@ -586,8 +559,8 @@ BitmapDrawer::DrawRectanglePolygon(BPoint *corners, uint32 color,
 
 
 status_t
-BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
-	Selection *sel, uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::FillAntiAliasedRectangle(
+	BPoint* corners, uint32 color, Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	// If the rectangle is aligned with the coordinate axis we do not need to
 	// do much.
@@ -598,10 +571,9 @@ BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
 		int32 min_y = (int32)round(min_c(corners[0].y, corners[2].y));
 		int32 max_y = (int32)round(max_c(corners[0].y, corners[2].y));
 
-		for (int32 y=min_y;y<=max_y;y++) {
-			for (int32 x=min_x;x<=max_x;x++) {
-				SetPixel(BPoint(x,y), color, sel, composite_func);
-			}
+		for (int32 y = min_y; y <= max_y; y++) {
+			for (int32 x = min_x; x <= max_x; x++)
+				SetPixel(BPoint(x, y), color, sel, composite_func);
 		}
 	}
 	// If the rectangle is not rectilinear we must sort the points
@@ -623,9 +595,9 @@ BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
 		// Left
 		//			Right
 		//   Bottom
-		BPoint left,right,top,bottom;
+		BPoint left, right, top, bottom;
 		left = right = top = bottom = corners[0];
-		for (int32 i=0;i<4;i++) {
+		for (int32 i = 0; i < 4; i++) {
 			if (corners[i].x < left.x)
 				left = corners[i];
 			if (corners[i].x > right.x)
@@ -672,29 +644,32 @@ BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
 			while (y <= bottom_y) {
 
 				if ((y <= absolute_bottom) && (y >= absolute_top)) {
-	//				int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-	//				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
-					int32 left_bound = (int32)max_c(floor(span_left+left_diff),max_c(absolute_left,floor(left.x)));
-					int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right+right_diff));
-					for (int32 x=left_bound;x<=right_bound;x++) {
+//					int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
+//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
+					int32 left_bound = (int32)max_c(
+						floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
+					int32 right_bound = (int32)min_c(
+						min_c(absolute_right, ceil(right.x)), ceil(span_right + right_diff));
+					for (int32 x = left_bound; x <= right_bound; x++) {
 						coverage = 0;
-						if ( (((top.y) + (top.x - (x-0.5))*left_y_diff) > (y-0.5))
-							 || (((top.y) + ((x+0.5) - top.x )*right_y_diff) > (y-0.5)) ) {
+						if ((((top.y) + (top.x - (x - 0.5)) * left_y_diff) > (y - 0.5))
+							|| (((top.y) + ((x + 0.5) - top.x) * right_y_diff) > (y - 0.5))) {
 							// First calculate the subpixel coverages for the point x,y.
-							for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-								for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									if ( (((top.y) + (top.x - sub_x)*left_y_diff) <= sub_y)
-										 && (((top.y) + (sub_x - top.x )*right_y_diff) <= sub_y) ) {
-										 coverage++;
+							for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+								sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+								for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+									sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									if ((((top.y) + (top.x - sub_x) * left_y_diff) <= sub_y)
+										&& (((top.y) + (sub_x - top.x) * right_y_diff) <= sub_y)) {
+										coverage++;
 									}
 								}
 							}
-							norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+							norm_color.bytes[3] = (uint8)(
+								alpha * ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 							SetPixel(x, int32(y), norm_color.word, sel, composite_func);
 							max_coverage = max_c(coverage, max_coverage);
-						}
-						else
+						} else
 							SetPixel(x, int32(y), color, sel, composite_func);
 					}
 				}
@@ -703,306 +678,325 @@ BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
 				span_right += right_diff;
 			}
 
-			bottom_y = max_c(left.y,right.y);
+			bottom_y = max_c(left.y, right.y);
 
-			if ((y>=left.y) && (left_diff <= 0)) {
-				left_diff = (bottom.x - left.x)/(bottom.y - left.y);
-				span_left = (y - left.y)*left_diff + left.x;
-				left_y_diff = (bottom.y - left.y)/(bottom.x - left.x);
+			if ((y >= left.y) && (left_diff <= 0)) {
+				left_diff = (bottom.x - left.x) / (bottom.y - left.y);
+				span_left = (y - left.y) * left_diff + left.x;
+				left_y_diff = (bottom.y - left.y) / (bottom.x - left.x);
 
 				while (y <= bottom_y) {
 
-					if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//					int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-	//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
-						int32 left_bound = (int32)max_c(floor(span_left-left_diff),max_c(absolute_left,floor(left.x)));
-						int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right+right_diff));
-						for (int32 x=left_bound;x<=right_bound;x++) {
+					if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//						int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
+//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
+						int32 left_bound = (int32)max_c(
+							floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
+						int32 right_bound = (int32)min_c(
+							min_c(absolute_right, ceil(right.x)), ceil(span_right + right_diff));
+						for (int32 x = left_bound; x <= right_bound; x++) {
 							coverage = 0;
 
 							// We can calculate y-coordinates of the boundaries at any given
 							// x-coordinate by using the y_diffs
-							if ( (((left.y) + ((x-0.5)-left.x)*left_y_diff) < (y+0.5))
-								 || (((top.y) + ((x+0.5) - top.x )*right_y_diff) > (y-0.5)) ) {
+							if ((((left.y) + ((x - 0.5) - left.x) * left_y_diff) < (y + 0.5))
+								|| (((top.y) + ((x + 0.5) - top.x) * right_y_diff) > (y - 0.5))) {
 								// First calculate the subpixel coverages for the point x,y.
-								for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-										if ( (((left.y) + (sub_x - left.x)*left_y_diff) >= sub_y)
-											 && (((top.y) + (sub_x - top.x )*right_y_diff) <= sub_y) ) {
-											 coverage++;
+								for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+									sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+										sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+										if ((((left.y) + (sub_x - left.x) * left_y_diff) >= sub_y)
+											&& (((top.y) + (sub_x - top.x) * right_y_diff)
+												<= sub_y)) {
+											coverage++;
 										}
 									}
 								}
-								norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+								norm_color.bytes[3] = (uint8)(alpha
+									* ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 								SetPixel(x, int32(y), norm_color.word, sel, composite_func);
-								max_coverage = max_c(coverage,max_coverage);
-							}
-							else
+								max_coverage = max_c(coverage, max_coverage);
+							} else
 								SetPixel(x, int32(y), color, sel, composite_func);
 						}
 					}
 					y++;
 					span_left += left_diff;
 					span_right += right_diff;
-
 				}
-			}
-			else if ((y>=right.y) && (right_diff >= 0)) {
-				right_diff = (bottom.x - right.x)/(bottom.y - right.y);
-				span_right = (y - right.y)*right_diff + right.x;
-				right_y_diff = (bottom.y - right.y)/(right.x - bottom.x);
+			} else if ((y >= right.y) && (right_diff >= 0)) {
+				right_diff = (bottom.x - right.x) / (bottom.y - right.y);
+				span_right = (y - right.y) * right_diff + right.x;
+				right_y_diff = (bottom.y - right.y) / (right.x - bottom.x);
 
 				while (y <= bottom_y) {
 
-					if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//					int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-	//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
-						int32 left_bound = (int32)max_c(floor(span_left+left_diff),max_c(absolute_left,floor(left.x)));
-						int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right-right_diff));
-						for (int32 x=left_bound;x<=right_bound;x++) {
+					if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//						int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
+//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
+						int32 left_bound = (int32)max_c(
+							floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
+						int32 right_bound = (int32)min_c(
+							min_c(absolute_right, ceil(right.x)), ceil(span_right - right_diff));
+						for (int32 x = left_bound; x <= right_bound; x++) {
 							coverage = 0;
-							if ( (((top.y) + (top.x - (x-0.5))*left_y_diff) > (y-0.5))
-								 || (((right.y) + (right.x - (x+0.5))*right_y_diff) < (y+0.5)) ) {
+							if ((((top.y) + (top.x - (x - 0.5)) * left_y_diff) > (y - 0.5))
+								|| (((right.y) + (right.x - (x + 0.5)) * right_y_diff)
+									< (y + 0.5))) {
 								// First calculate the subpixel coverages for the point x,y.
-								for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-										if ( (((top.y) + (top.x - sub_x)*left_y_diff) <= sub_y)
-											 && (((right.y) + (right.x - sub_x)*right_y_diff) > sub_y) ) {
-											 coverage++;
+								for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+									sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+										sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+										if ((((top.y) + (top.x - sub_x) * left_y_diff) <= sub_y)
+											&& (((right.y) + (right.x - sub_x) * right_y_diff)
+												> sub_y)) {
+											coverage++;
 										}
 									}
 								}
-								norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+								norm_color.bytes[3] = (uint8)(alpha
+									* ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 								SetPixel(x, int32(y), norm_color.word, sel, composite_func);
 								max_coverage = max_c(coverage, max_coverage);
-							}
-							else
+							} else
 								SetPixel(x, int32(y), color, sel, composite_func);
 						}
 					}
 					y++;
 					span_left += left_diff;
 					span_right += right_diff;
-
 				}
 			}
 
 			bottom_y = ceil(bottom.y);
-			if ((y>=left.y) && (left_diff <= 0)) {
-				left_diff = (bottom.x - left.x)/(bottom.y - left.y);
-				span_left = (y - left.y)*left_diff + left.x;
-				left_y_diff = (bottom.y - left.y)/(bottom.x - left.x);
+			if ((y >= left.y) && (left_diff <= 0)) {
+				left_diff = (bottom.x - left.x) / (bottom.y - left.y);
+				span_left = (y - left.y) * left_diff + left.x;
+				left_y_diff = (bottom.y - left.y) / (bottom.x - left.x);
 			}
-			if ((y>=right.y) && (right_diff >= 0)) {
-				right_diff = (bottom.x - right.x)/(bottom.y - right.y);
-				span_right = (y - right.y)*right_diff + right.x;
-				right_y_diff = (bottom.y - right.y)/(right.x - bottom.x);
+			if ((y >= right.y) && (right_diff >= 0)) {
+				right_diff = (bottom.x - right.x) / (bottom.y - right.y);
+				span_right = (y - right.y) * right_diff + right.x;
+				right_y_diff = (bottom.y - right.y) / (right.x - bottom.x);
 			}
 
 			while (y <= bottom_y) {
 
-				if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//				int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-	//				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
-					int32 left_bound = (int32)max_c(floor(span_left-left_diff),max_c(absolute_left,floor(left.x)));
-					int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right-right_diff));
-					for (int32 x=left_bound;x<=right_bound;x++) {
+				if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//					int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
+//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
+					int32 left_bound = (int32)max_c(
+						floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
+					int32 right_bound = (int32)min_c(
+						min_c(absolute_right, ceil(right.x)), ceil(span_right - right_diff));
+					for (int32 x = left_bound; x <= right_bound; x++) {
 						coverage = 0;
-						if ( (((left.y) + ((x-0.5)-left.x)*left_y_diff) < (y+0.5))
-							 || (((right.y) + (right.x - (x+0.5))*right_y_diff) < (y+0.5)) ) {
+						if ((((left.y) + ((x - 0.5) - left.x) * left_y_diff) < (y + 0.5))
+							|| (((right.y) + (right.x - (x + 0.5)) * right_y_diff) < (y + 0.5))) {
 							// First calculate the subpixel coverages for the point x,y.
-							for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-								for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									if ( (((left.y) + (sub_x - left.x)*left_y_diff) >= sub_y)
-										 && (((right.y) + (right.x - sub_x)*right_y_diff) > sub_y) ) {
-										 coverage++;
+							for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+								sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+								for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+									sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									if ((((left.y) + (sub_x - left.x) * left_y_diff) >= sub_y)
+										&& (((right.y) + (right.x - sub_x) * right_y_diff)
+											> sub_y)) {
+										coverage++;
 									}
 								}
 							}
-							norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+							norm_color.bytes[3] = (uint8)(
+								alpha * ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 							SetPixel(x, int32(y), norm_color.word, sel, composite_func);
 							max_coverage = max_c(coverage, max_coverage);
-						}
-						else
+						} else
 							SetPixel(x, int32(y), color, sel, composite_func);
 					}
 				}
 				y++;
 				span_left += left_diff;
 				span_right += right_diff;
-
 			}
-		}
-		else {
+		} else {
 			while (y <= bottom_y) {
 
-				if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//				int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-	//				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
-					int32 left_bound = (int32)max_c(floor(span_left+left_diff),max_c(absolute_left,floor(left.x)));
-					int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right+right_diff));
-					for (int32 x=left_bound;x<=right_bound;x++) {
+				if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//					int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
+//	 				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
+					int32 left_bound = (int32)max_c(
+						floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
+					int32 right_bound = (int32)min_c(
+						min_c(absolute_right, ceil(right.x)), ceil(span_right + right_diff));
+					for (int32 x = left_bound; x <= right_bound; x++) {
 						coverage = 0;
-						if ( (((top.y) + (top.x - (x-0.5))*left_y_diff) > (y-0.5))
-							 || (((top.y) + ((x+0.5) - top.x )*right_y_diff) > (y-0.5)) ) {
+						if ((((top.y) + (top.x - (x - 0.5)) * left_y_diff) > (y - 0.5))
+							|| (((top.y) + ((x + 0.5) - top.x) * right_y_diff) > (y - 0.5))) {
 							// First calculate the subpixel coverages for the point x,y.
-							for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-								for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									if ( (((top.y) + (top.x - sub_x)*left_y_diff) <= sub_y)
-										 && (((top.y) + (sub_x - top.x )*right_y_diff) <= sub_y) ) {
-										 coverage++;
+							for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+								sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+								for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+									sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									if ((((top.y) + (top.x - sub_x) * left_y_diff) <= sub_y)
+										&& (((top.y) + (sub_x - top.x) * right_y_diff) <= sub_y)) {
+										coverage++;
 									}
 								}
 							}
-							norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+							norm_color.bytes[3] = (uint8)(
+								alpha * ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 							SetPixel(x, int32(y), norm_color.word, sel, composite_func);
-							max_coverage = max_c(coverage,max_coverage);
-						}
-						else
+							max_coverage = max_c(coverage, max_coverage);
+						} else
 							SetPixel(x, int32(y), color, sel, composite_func);
 					}
 				}
 				y++;
 				span_left += left_diff;
 				span_right += right_diff;
-
 			}
 
-			bottom_y = max_c(left.y,right.y);
+			bottom_y = max_c(left.y, right.y);
 
-			if ((y>=left.y) && (left_diff <= 0)) {
-				left_diff = (bottom.x - left.x)/(bottom.y - left.y);
-				span_left = (y - left.y)*left_diff + left.x;
-				left_y_diff = (bottom.y - left.y)/(bottom.x - left.x);
+			if ((y >= left.y) && (left_diff <= 0)) {
+				left_diff = (bottom.x - left.x) / (bottom.y - left.y);
+				span_left = (y - left.y) * left_diff + left.x;
+				left_y_diff = (bottom.y - left.y) / (bottom.x - left.x);
 
 				while (y <= bottom_y) {
-					if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//					int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-	//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
-						int32 left_bound = (int32)max_c(floor(span_left-left_diff),max_c(absolute_left,floor(left.x)));
-						int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right+right_diff));
-						for (int32 x=left_bound;x<=right_bound;x++) {
+					if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//						int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
+//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
+						int32 left_bound = (int32)max_c(
+							floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
+						int32 right_bound = (int32)min_c(
+							min_c(absolute_right, ceil(right.x)), ceil(span_right + right_diff));
+						for (int32 x = left_bound; x <= right_bound; x++) {
 							coverage = 0;
 
 							// We can calculate y-coordinates of the boundaries at any given
 							// x-coordinate by using the y_diffs
-							if ( (((left.y) + ((x-0.5)-left.x)*left_y_diff) < (y+0.5))
-								 || (((top.y) + ((x+0.5) - top.x )*right_y_diff) > (y-0.5)) ) {
+							if ((((left.y) + ((x - 0.5) - left.x) * left_y_diff) < (y + 0.5))
+								|| (((top.y) + ((x + 0.5) - top.x) * right_y_diff) > (y - 0.5))) {
 								// First calculate the subpixel coverages for the point x,y.
-								for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-										if ( (((left.y) + (sub_x - left.x)*left_y_diff) >= sub_y)
-											 && (((top.y) + (sub_x - top.x )*right_y_diff) <= sub_y) ) {
-											 coverage++;
+								for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+									sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+										sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+										if ((((left.y) + (sub_x - left.x) * left_y_diff) >= sub_y)
+											&& (((top.y) + (sub_x - top.x) * right_y_diff)
+												<= sub_y)) {
+											coverage++;
 										}
 									}
 								}
-								norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+								norm_color.bytes[3] = (uint8)(alpha
+									* ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 								SetPixel(x, int32(y), norm_color.word, sel, composite_func);
 
 								max_coverage = max_c(coverage, max_coverage);
-							}
-							else
+							} else
 								SetPixel(x, int32(y), color, sel, composite_func);
 						}
 					}
 					y++;
 					span_left += left_diff;
 					span_right += right_diff;
-
 				}
-			}
-			else if ((y>=right.y) && (right_diff >= 0)) {
-				right_diff = (bottom.x - right.x)/(bottom.y - right.y);
-				span_right = (y - right.y)*right_diff + right.x;
-				right_y_diff = (bottom.y - right.y)/(right.x - bottom.x);
+			} else if ((y >= right.y) && (right_diff >= 0)) {
+				right_diff = (bottom.x - right.x) / (bottom.y - right.y);
+				span_right = (y - right.y) * right_diff + right.x;
+				right_y_diff = (bottom.y - right.y) / (right.x - bottom.x);
 
 				while (y <= bottom_y) {
 
-					if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//					int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-	//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
-						int32 left_bound = (int32)max_c(floor(span_left+left_diff),max_c(absolute_left,floor(left.x)));
-						int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right-right_diff));
-						for (int32 x=left_bound;x<=right_bound;x++) {
+					if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//						int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
+//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
+						int32 left_bound = (int32)max_c(
+							floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
+						int32 right_bound = (int32)min_c(
+							min_c(absolute_right, ceil(right.x)), ceil(span_right - right_diff));
+						for (int32 x = left_bound; x <= right_bound; x++) {
 							coverage = 0;
-							if ( (((top.y) + (top.x - (x-0.5))*left_y_diff) > (y-0.5))
-								 || (((right.y) + (right.x - (x+0.5))*right_y_diff) < (y+0.5)) ) {
+							if ((((top.y) + (top.x - (x - 0.5)) * left_y_diff) > (y - 0.5))
+								|| (((right.y) + (right.x - (x + 0.5)) * right_y_diff)
+									< (y + 0.5))) {
 								// First calculate the subpixel coverages for the point x,y.
-								for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-										if ( (((top.y) + (top.x - sub_x)*left_y_diff) <= sub_y)
-											 && (((right.y) + (right.x - sub_x)*right_y_diff) > sub_y) ) {
-											 coverage++;
+								for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+									sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+										sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+										if ((((top.y) + (top.x - sub_x) * left_y_diff) <= sub_y)
+											&& (((right.y) + (right.x - sub_x) * right_y_diff)
+												> sub_y)) {
+											coverage++;
 										}
 									}
 								}
-								norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-									(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+								norm_color.bytes[3] = (uint8)(alpha
+									* ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 								SetPixel(x, int32(y), norm_color.word, sel, composite_func);
 								max_coverage = max_c(coverage, max_coverage);
-							}
-							else
+							} else
 								SetPixel(x, int32(y), color, sel, composite_func);
 						}
 					}
 					y++;
 					span_left += left_diff;
 					span_right += right_diff;
-
 				}
 			}
 
 			bottom_y = ceil(bottom.y);
-			if ((y>=left.y) && (left_diff <= 0)) {
-				left_diff = (bottom.x - left.x)/(bottom.y - left.y);
-				span_left = (y - left.y)*left_diff + left.x;
-				left_y_diff = (bottom.y - left.y)/(bottom.x - left.x);
+			if ((y >= left.y) && (left_diff <= 0)) {
+				left_diff = (bottom.x - left.x) / (bottom.y - left.y);
+				span_left = (y - left.y) * left_diff + left.x;
+				left_y_diff = (bottom.y - left.y) / (bottom.x - left.x);
 			}
-			if ((y>=right.y) && (right_diff >= 0)) {
-				right_diff = (bottom.x - right.x)/(bottom.y - right.y);
-				span_right = (y - right.y)*right_diff + right.x;
-				right_y_diff = (bottom.y - right.y)/(right.x - bottom.x);
+			if ((y >= right.y) && (right_diff >= 0)) {
+				right_diff = (bottom.x - right.x) / (bottom.y - right.y);
+				span_right = (y - right.y) * right_diff + right.x;
+				right_y_diff = (bottom.y - right.y) / (right.x - bottom.x);
 			}
 
 			while (y <= bottom_y) {
 
-				if ((y<=absolute_bottom) && (y>=absolute_top)) {
-	//				int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-	//				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
-					int32 left_bound = (int32)max_c(floor(span_left-left_diff),max_c(absolute_left,floor(left.x)));
-					int32 right_bound = (int32)min_c(min_c(absolute_right,ceil(right.x)),ceil(span_right-right_diff));
-					for (int32 x=left_bound;x<=right_bound;x++) {
+				if ((y <= absolute_bottom) && (y >= absolute_top)) {
+//					int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
+//	 				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
+					int32 left_bound = (int32)max_c(
+						floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
+					int32 right_bound = (int32)min_c(
+						min_c(absolute_right, ceil(right.x)), ceil(span_right - right_diff));
+					for (int32 x = left_bound; x <= right_bound; x++) {
 						coverage = 0;
-						if ( (((left.y) + ((x-0.5)-left.x)*left_y_diff) < (y+0.5))
-							 || (((right.y) + (right.x - (x+0.5))*right_y_diff) < (y+0.5)) ) {
+						if ((((left.y) + ((x - 0.5) - left.x) * left_y_diff) < (y + 0.5))
+							|| (((right.y) + (right.x - (x + 0.5)) * right_y_diff) < (y + 0.5))) {
 							// First calculate the subpixel coverages for the point x,y.
-							for (float sub_y = y - 0.51;sub_y <= y+0.51; sub_y += 1.0/(SUBPIXEL_AMOUNT-1)) {
-								for (float sub_x = x - 0.51;sub_x <= x+0.51; sub_x += 1.0/(SUBPIXEL_AMOUNT-1)) {
-									if ( (((left.y) + (sub_x - left.x)*left_y_diff) >= sub_y)
-										 && (((right.y) + (right.x - sub_x)*right_y_diff) > sub_y) ) {
-										 coverage++;
+							for (float sub_y = y - 0.51; sub_y <= y + 0.51;
+								sub_y += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+								for (float sub_x = x - 0.51; sub_x <= x + 0.51;
+									sub_x += 1.0 / (SUBPIXEL_AMOUNT - 1)) {
+									if ((((left.y) + (sub_x - left.x) * left_y_diff) >= sub_y)
+										&& (((right.y) + (right.x - sub_x) * right_y_diff)
+											> sub_y)) {
+										coverage++;
 									}
 								}
 							}
-							norm_color.bytes[3] = (uint8)(alpha*((float(coverage)) /
-								(SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
+							norm_color.bytes[3] = (uint8)(
+								alpha * ((float(coverage)) / (SUBPIXEL_AMOUNT * SUBPIXEL_AMOUNT)));
 							SetPixel(x, int32(y), norm_color.word, sel, composite_func);
 							max_coverage = max_c(coverage, max_coverage);
-						}
-						else
+						} else
 							SetPixel(x, int32(y), color, sel, composite_func);
 					}
 				}
 				y++;
 				span_left += left_diff;
 				span_right += right_diff;
-
 			}
 		}
 	}
@@ -1011,8 +1005,8 @@ BitmapDrawer::FillAntiAliasedRectangle(BPoint *corners, uint32 color,
 
 
 status_t
-BitmapDrawer::FillRectangle(BPoint *corners, uint32 color, Selection *sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::FillRectangle(
+	BPoint* corners, uint32 color, Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	// If the rectangle is aligned with the coordinate axis we do not need to
 	// do much.
@@ -1023,10 +1017,9 @@ BitmapDrawer::FillRectangle(BPoint *corners, uint32 color, Selection *sel,
 		int32 min_y = (int32)round(min_c(corners[0].y, corners[2].y));
 		int32 max_y = (int32)round(max_c(corners[0].y, corners[2].y));
 		// Then fill the rectangle.
-		for (int32 y = min_y;y <= max_y;y++) {
-			for (int32 x = min_x;x <= max_x;x++) {
+		for (int32 y = min_y; y <= max_y; y++) {
+			for (int32 x = min_x; x <= max_x; x++)
 				SetPixel(BPoint(x, y), color, sel, composite_func);
-			}
 		}
 	}
 	// If the rectanle is not rectilinear we must sort the points
@@ -1040,7 +1033,7 @@ BitmapDrawer::FillRectangle(BPoint *corners, uint32 color, Selection *sel,
 		//   Bottom
 		BPoint left, right, top, bottom;
 		left = right = top = bottom = corners[0];
-		for (int32 i = 0;i < 4;i++) {
+		for (int32 i = 0; i < 4; i++) {
 			if (corners[i].x < left.x)
 				left = corners[i];
 			if (corners[i].x > right.x)
@@ -1075,69 +1068,63 @@ BitmapDrawer::FillRectangle(BPoint *corners, uint32 color, Selection *sel,
 
 		while (y <= bottom_y) {
 
-			if ((y<=absolute_bottom) && (y>=absolute_top)) {
-				int32 left_bound = (int32)max_c(ceil(span_left),absolute_left);
-				int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
+			if ((y <= absolute_bottom) && (y >= absolute_top)) {
+				int32 left_bound = (int32)max_c(ceil(span_left), absolute_left);
+				int32 right_bound = (int32)min_c(absolute_right, floor(span_right));
 
-				for (int32 x=left_bound;x<=right_bound;x++) {
+				for (int32 x = left_bound; x <= right_bound; x++)
 					SetPixel(x, int32(y), color, sel, composite_func);
-				}
 			}
 			y++;
 			span_left += left_diff;
 			span_right += right_diff;
-
 		}
 
-		bottom_y = max_c(left.y,right.y);
+		bottom_y = max_c(left.y, right.y);
 
-		if ((y>=left.y) && (left_diff <= 0)) {
-			left_diff = (bottom.x - left.x)/(bottom.y - left.y);
-			span_left = (y - left.y)*left_diff + left.x;
+		if ((y >= left.y) && (left_diff <= 0)) {
+			left_diff = (bottom.x - left.x) / (bottom.y - left.y);
+			span_left = (y - left.y) * left_diff + left.x;
 		}
-		if ((y>=right.y) && (right_diff >= 0)) {
-			right_diff = (bottom.x - right.x)/(bottom.y - right.y);
-			span_right = (y - right.y)*right_diff + right.x;
+		if ((y >= right.y) && (right_diff >= 0)) {
+			right_diff = (bottom.x - right.x) / (bottom.y - right.y);
+			span_right = (y - right.y) * right_diff + right.x;
 		}
 
 		while (y <= bottom_y) {
-			if ((y<=absolute_bottom) && (y>=absolute_top)) {
-				int32 left_bound = (int32)max_c(ceil(span_left),absolute_left);
-				int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
+			if ((y <= absolute_bottom) && (y >= absolute_top)) {
+				int32 left_bound = (int32)max_c(ceil(span_left), absolute_left);
+				int32 right_bound = (int32)min_c(absolute_right, floor(span_right));
 
-				for (int32 x=left_bound;x<=right_bound;x++) {
+				for (int32 x = left_bound; x <= right_bound; x++)
 					SetPixel(x, int32(y), color, sel, composite_func);
-				}
 			}
 			y++;
 			span_left += left_diff;
 			span_right += right_diff;
-
 		}
 
 		bottom_y = floor(bottom.y);
-		if ((y>=left.y) && (left_diff <= 0)) {
-			left_diff = (bottom.x - left.x)/(bottom.y - left.y);
-			span_left = (y - left.y)*left_diff + left.x;
+		if ((y >= left.y) && (left_diff <= 0)) {
+			left_diff = (bottom.x - left.x) / (bottom.y - left.y);
+			span_left = (y - left.y) * left_diff + left.x;
 		}
-		if ((y>=right.y) && (right_diff >= 0)) {
-			right_diff = (bottom.x - right.x)/(bottom.y - right.y);
-			span_right = (y - right.y)*right_diff + right.x;
+		if ((y >= right.y) && (right_diff >= 0)) {
+			right_diff = (bottom.x - right.x) / (bottom.y - right.y);
+			span_right = (y - right.y) * right_diff + right.x;
 		}
 
 		while (y <= bottom_y) {
-			if ((y<=absolute_bottom) && (y>=absolute_top)) {
-				int32 left_bound = (int32)max_c(ceil(span_left),absolute_left);
-				int32 right_bound = (int32)min_c(absolute_right,floor(span_right));
+			if ((y <= absolute_bottom) && (y >= absolute_top)) {
+				int32 left_bound = (int32)max_c(ceil(span_left), absolute_left);
+				int32 right_bound = (int32)min_c(absolute_right, floor(span_right));
 
-				for (int32 x=left_bound;x<=right_bound;x++) {
+				for (int32 x = left_bound; x <= right_bound; x++)
 					SetPixel(x, int32(y), color, sel, composite_func);
-				}
 			}
 			y++;
 			span_left += left_diff;
 			span_right += right_diff;
-
 		}
 	}
 
@@ -1146,8 +1133,8 @@ BitmapDrawer::FillRectangle(BPoint *corners, uint32 color, Selection *sel,
 
 
 status_t
-BitmapDrawer::SetPixel(BPoint location, uint32 color, Selection* sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::SetPixel(
+	BPoint location, uint32 color, Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	if (sel == NULL || sel->ContainsPoint(location)) {
 		if (bitmap_bounds.Contains(location)) {
@@ -1162,30 +1149,22 @@ BitmapDrawer::SetPixel(BPoint location, uint32 color, Selection* sel,
 				uint32 target = GetPixel(location);
 				target_color.word = target;
 
-				*(bitmap_bits + (int32)location.x +
-					(int32)location.y * bitmap_bpr) =
-					(*composite_func)(
-						target_color.word, norm_color.word
-					);
-			} else {
-				*(bitmap_bits + (int32)location.x +
-					(int32)location.y * bitmap_bpr) = color;
-			}
+				*(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr)
+					= (*composite_func)(target_color.word, norm_color.word);
+			} else
+				*(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr) = color;
 
 			return B_OK;
-		}
-		else
+		} else
 			return B_ERROR;
-	}
-	else
+	} else
 		return B_ERROR;
-
 }
 
 
 status_t
-BitmapDrawer::SetPixel(int32 x, int32 y, uint32 color, Selection* sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::SetPixel(
+	int32 x, int32 y, uint32 color, Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	return SetPixel(BPoint(x, y), color, sel, composite_func);
 }
@@ -1194,10 +1173,8 @@ BitmapDrawer::SetPixel(int32 x, int32 y, uint32 color, Selection* sel,
 uint32
 BitmapDrawer::GetPixel(BPoint location)
 {
-	if (bitmap_bounds.Contains(location)) {
-		return *(bitmap_bits + (int32)location.x +
-			(int32)location.y * bitmap_bpr);
-	}
+	if (bitmap_bounds.Contains(location))
+		return *(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr);
 	else {
 		union {
 			unsigned char bytes[4];
@@ -1209,7 +1186,7 @@ BitmapDrawer::GetPixel(BPoint location)
 		color.bytes[2] = 0xFF;
 		color.bytes[3] = 0x00;
 
-		return color.word;	// If out of bounds return transparent white.
+		return color.word; // If out of bounds return transparent white.
 	}
 }
 
@@ -1222,54 +1199,52 @@ BitmapDrawer::GetPixel(int32 x, int32 y)
 
 
 void
-BitmapDrawer::SetMirroredPixels(BPoint center, uint32 x, uint32 y,
-	uint32 color, Selection* sel, uint32 (*composite_func)(uint32, uint32))
-{
-	uint32 centerX = center.x;
-	uint32 centerY = center.y;
-
-	SetPixel(centerX+x, centerY+y, color, sel, composite_func);
-	SetPixel(centerX-x, centerY+y, color, sel, composite_func);
-	SetPixel(centerX+x, centerY-y, color, sel, composite_func);
-	SetPixel(centerX-x, centerY-y, color, sel, composite_func);
-}
-
-
-void
-BitmapDrawer::FillColumn(BPoint center, uint32 x, uint32 miny, uint32 maxy,
-	uint32 color, Selection* sel,
+BitmapDrawer::SetMirroredPixels(BPoint center, uint32 x, uint32 y, uint32 color, Selection* sel,
 	uint32 (*composite_func)(uint32, uint32))
 {
 	uint32 centerX = center.x;
 	uint32 centerY = center.y;
 
+	SetPixel(centerX + x, centerY + y, color, sel, composite_func);
+	SetPixel(centerX - x, centerY + y, color, sel, composite_func);
+	SetPixel(centerX + x, centerY - y, color, sel, composite_func);
+	SetPixel(centerX - x, centerY - y, color, sel, composite_func);
+}
+
+
+void
+BitmapDrawer::FillColumn(BPoint center, uint32 x, uint32 miny, uint32 maxy, uint32 color,
+	Selection* sel, uint32 (*composite_func)(uint32, uint32))
+{
+	uint32 centerX = center.x;
+	uint32 centerY = center.y;
+
 	for (uint32 y = miny; y <= maxy; ++y) {
-		SetPixel(centerX+x, centerY+y, color, sel, composite_func);
-		SetPixel(centerX+x, centerY-y, color, sel, composite_func);
+		SetPixel(centerX + x, centerY + y, color, sel, composite_func);
+		SetPixel(centerX + x, centerY - y, color, sel, composite_func);
 		if (x != 0) {
-			SetPixel(centerX-x, centerY+y, color, sel, composite_func);
+			SetPixel(centerX - x, centerY + y, color, sel, composite_func);
 			if (y != 0)
-				SetPixel(centerX-x, centerY-y, color, sel, composite_func);
+				SetPixel(centerX - x, centerY - y, color, sel, composite_func);
 		}
 	}
 }
 
 
 void
-BitmapDrawer::FillRow(BPoint center, uint32 minx, uint32 maxx,
-	uint32 y, uint32 color, Selection* sel,
-	uint32 (*composite_func)(uint32, uint32))
+BitmapDrawer::FillRow(BPoint center, uint32 minx, uint32 maxx, uint32 y, uint32 color,
+	Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	uint32 centerX = center.x;
 	uint32 centerY = center.y;
 
 	for (uint32 x = minx; x <= maxx; ++x) {
-		SetPixel(centerX+x, centerY+y, color, sel, composite_func);
-		SetPixel(centerX-x, centerY+y, color, sel, composite_func);
+		SetPixel(centerX + x, centerY + y, color, sel, composite_func);
+		SetPixel(centerX - x, centerY + y, color, sel, composite_func);
 		if (y != 0) {
-			SetPixel(centerX+x, centerY-y, color, sel, composite_func);
+			SetPixel(centerX + x, centerY - y, color, sel, composite_func);
 			if (x != 0)
-				SetPixel(centerX-x, centerY-y, color, sel, composite_func);
+				SetPixel(centerX - x, centerY - y, color, sel, composite_func);
 		}
 	}
 }

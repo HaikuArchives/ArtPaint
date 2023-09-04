@@ -15,8 +15,8 @@
 ToolEventAdapter::ToolEventAdapter()
 {
 	is_clicks_data_valid = FALSE;
-	last_click_bitmap_location = BPoint(0,0);
-	last_click_view_location = BPoint(0,0);
+	last_click_bitmap_location = BPoint(0, 0);
+	last_click_view_location = BPoint(0, 0);
 	last_click_buttons = 0;
 	last_click_clicks = 0;
 
@@ -37,7 +37,8 @@ ToolEventAdapter::~ToolEventAdapter()
 
 
 void
-ToolEventAdapter::SetClickEvent(BPoint view_point,BPoint bitmap_point,uint32 buttons,int32 clicks)
+ToolEventAdapter::SetClickEvent(
+	BPoint view_point, BPoint bitmap_point, uint32 buttons, int32 clicks)
 {
 	last_click_bitmap_location = bitmap_point;
 	last_click_view_location = view_point;
@@ -48,30 +49,30 @@ ToolEventAdapter::SetClickEvent(BPoint view_point,BPoint bitmap_point,uint32 but
 
 
 void
-ToolEventAdapter::SetKeyEvent(const char *bytes, int32 num_bytes)
+ToolEventAdapter::SetKeyEvent(const char* bytes, int32 num_bytes)
 {
 	delete last_key_event_bytes;
 
 	last_key_event_bytes = new char[num_bytes];
-	strncpy(last_key_event_bytes,bytes,num_bytes);
+	strncpy(last_key_event_bytes, bytes, num_bytes);
 	last_key_event_num_bytes = num_bytes;
 	is_keys_data_valid = TRUE;
 }
 
 
 bool
-ToolEventAdapter::SetActiveImageView(BView *view)
+ToolEventAdapter::SetActiveImageView(BView* view)
 {
 	if (active_image_view != view) {
 		active_image_view = view;
 		is_view_data_valid = TRUE;
 		return TRUE;
-	}
-	else {
+	} else {
 		is_view_data_valid = TRUE;
 		return FALSE;
 	}
 }
+
 
 bool
 ToolEventAdapter::SetIsMouseInsideActiveView(bool is_inside)
@@ -80,8 +81,7 @@ ToolEventAdapter::SetIsMouseInsideActiveView(bool is_inside)
 		is_mouse_inside_the_active_view = is_inside;
 		is_view_data_valid = TRUE;
 		return TRUE;
-	}
-	else {
+	} else {
 		is_view_data_valid = TRUE;
 		return FALSE;
 	}

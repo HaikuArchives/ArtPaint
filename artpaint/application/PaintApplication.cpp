@@ -58,14 +58,15 @@
 
 
 #undef B_TRANSLATION_CONTEXT
-#define B_TRANSLATION_CONTEXT	"PaintApplication"
+#define B_TRANSLATION_CONTEXT "PaintApplication"
 
 
 PaintApplication::PaintApplication()
-	: BApplication("application/x-vnd.artpaint")
-	, fImageOpenPanel(NULL)
-	, fProjectOpenPanel(NULL)
-	, fShuttingDown(false)
+	:
+	BApplication("application/x-vnd.artpaint"),
+	fImageOpenPanel(NULL),
+	fProjectOpenPanel(NULL),
+	fShuttingDown(false)
 {
 	SettingsServer::Instantiate();
 	ResourceServer::Instantiate();
@@ -125,10 +126,12 @@ PaintApplication::AboutRequested()
 		"stargater",
 		NULL
 	};
-	BAboutWindow* aboutW = new BAboutWindow("ArtPaint", "application/x-vnd.artpaint");
-	aboutW->AddDescription(B_TRANSLATE(
-		"ArtPaint is a painting and image-processing program for Haiku.")),
-	aboutW->AddCopyright(2003, "Heikki Suhonen");
+
+	BAboutWindow* aboutW = new BAboutWindow(B_TRANSLATE_SYSTEM_NAME("ArtPaint"),
+		"application/x-vnd.artpaint");
+	aboutW->AddDescription(
+		B_TRANSLATE("ArtPaint is a painting and image-processing program for Haiku.")),
+		aboutW->AddCopyright(2003, "Heikki Suhonen");
 	aboutW->AddAuthors(authors);
 	aboutW->Show();
 }
@@ -138,14 +141,16 @@ void
 PaintApplication::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case HS_NEW_PAINT_WINDOW: {
+		case HS_NEW_PAINT_WINDOW:
+		{
 			// issued from paint-window's menubar->"Window"->"New Paint Window"
 			PaintWindow* window = PaintWindow::CreatePaintWindow();
 			if (window)
 				window->Show();
-		}	break;
-
-		case HS_SHOW_IMAGE_OPEN_PANEL: {
+			break;
+		}
+		case HS_SHOW_IMAGE_OPEN_PANEL:
+		{
 			// issued from paint-window's menubar->"File"->"Open"->"Open Image…"
 			BMessage filePanelMessage(B_REFS_RECEIVED);
 			if (fImageOpenPanel == NULL) {
@@ -158,19 +163,21 @@ PaintApplication::MessageReceived(BMessage* message)
 				filePanelMessage.AddBool("from_filepanel", true);
 
 				BMessenger app(this);
-				fImageOpenPanel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
-					B_FILE_NODE, true, NULL, new ImageFilter());
+				fImageOpenPanel = new BFilePanel(
+					B_OPEN_PANEL, &app, &ref, B_FILE_NODE, true, NULL, new ImageFilter());
 			}
 
 			fImageOpenPanel->SetMessage(&filePanelMessage);
-			fImageOpenPanel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open image" B_UTF8_ELLIPSIS));
+			fImageOpenPanel->Window()->SetTitle(
+				B_TRANSLATE("ArtPaint: Open image" B_UTF8_ELLIPSIS));
 			fImageOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fImageOpenPanel);
 			fImageOpenPanel->Show();
-		}	break;
-
-		case HS_SHOW_PROJECT_OPEN_PANEL: {
+			break;
+		}
+		case HS_SHOW_PROJECT_OPEN_PANEL:
+		{
 			BMessage filePanelMessage(B_REFS_RECEIVED);
 			if (fProjectOpenPanel == NULL) {
 				entry_ref ref;
@@ -182,19 +189,20 @@ PaintApplication::MessageReceived(BMessage* message)
 				filePanelMessage.AddBool("from_filepanel", true);
 
 				BMessenger app(this);
-				fProjectOpenPanel = new BFilePanel(B_OPEN_PANEL, &app, &ref,
-					B_FILE_NODE);
+				fProjectOpenPanel = new BFilePanel(B_OPEN_PANEL, &app, &ref, B_FILE_NODE);
 			}
 
 			fProjectOpenPanel->SetMessage(&filePanelMessage);
-			fProjectOpenPanel->Window()->SetTitle(B_TRANSLATE("ArtPaint: Open project" B_UTF8_ELLIPSIS));
+			fProjectOpenPanel->Window()->SetTitle(
+				B_TRANSLATE("ArtPaint: Open project" B_UTF8_ELLIPSIS));
 			fProjectOpenPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 
 			set_filepanel_strings(fProjectOpenPanel);
 			fProjectOpenPanel->Show();
-		}	break;
-
-		case HS_SHOW_USER_DOCUMENTATION: {
+			break;
+		}
+		case HS_SHOW_USER_DOCUMENTATION:
+		{
 			// issued from paint-window's menubar->"ArtPaint"->"User documentation"
 			BRoster roster;
 			entry_ref mimeHandler;
@@ -214,9 +222,10 @@ PaintApplication::MessageReceived(BMessage* message)
 					}
 				}
 			}
-		}	break;
-
-		case B_PASTE: {
+			break;
+		}
+		case B_PASTE:
+		{
 			if (be_clipboard->Lock()) {
 				BMessage* data = be_clipboard->Data();
 				if (data) {
@@ -225,8 +234,8 @@ PaintApplication::MessageReceived(BMessage* message)
 						BBitmap* pastedBitmap = new BBitmap(&message);
 						if (pastedBitmap && pastedBitmap->IsValid()) {
 							char name[] = "Clip 1";
-							PaintWindow* window =
-								PaintWindow::CreatePaintWindow(pastedBitmap, name);
+							PaintWindow* window
+								= PaintWindow::CreatePaintWindow(pastedBitmap, name);
 							if (window)
 								window->Show();
 						}
@@ -234,13 +243,14 @@ PaintApplication::MessageReceived(BMessage* message)
 				}
 				be_clipboard->Unlock();
 			}
-		}	break;
-
+			break;
+		}
 		case B_SIMPLE_DATA:
-		case B_REFS_RECEIVED: {
+		case B_REFS_RECEIVED:
+		{
 			RefsReceived(message);
-		}	break;
-
+			break;
+		}
 		default:
 			BApplication::MessageReceived(message);
 			break;
@@ -274,16 +284,16 @@ PaintApplication::QuitRequested()
 
 	if (BApplication::QuitRequested()) {
 		if (SettingsServer* server = SettingsServer::Instance()) {
-			server->SetValue(SettingsServer::Application,
-				skToolSetupWindowVisible, tool_setup_window_visible);
-			server->SetValue(SettingsServer::Application,
-				skSelectToolWindowVisible, tool_select_window_visible);
-			server->SetValue(SettingsServer::Application,
-				skPaletteWindowVisible, palette_window_visible);
-			server->SetValue(SettingsServer::Application, skBrushWindowVisible,
-				brush_window_visible);
-			server->SetValue(SettingsServer::Application, skLayerWindowVisible,
-				layer_window_visible);
+			server->SetValue(
+				SettingsServer::Application, skToolSetupWindowVisible, tool_setup_window_visible);
+			server->SetValue(
+				SettingsServer::Application, skSelectToolWindowVisible, tool_select_window_visible);
+			server->SetValue(
+				SettingsServer::Application, skPaletteWindowVisible, palette_window_visible);
+			server->SetValue(
+				SettingsServer::Application, skBrushWindowVisible, brush_window_visible);
+			server->SetValue(
+				SettingsServer::Application, skLayerWindowVisible, layer_window_visible);
 		}
 		return true;
 	}
@@ -350,13 +360,13 @@ PaintApplication::RefsReceived(BMessage* message)
 	if (type != B_REF_TYPE)
 		return;
 
-	for (int32 i = --count; i >= 0;  --i) {
+	for (int32 i = --count; i >= 0; --i) {
 		entry_ref ref;
 		if (message->FindRef("refs", i, &ref) != B_OK)
 			continue;
 
 		BFile file;
-		if (file.SetTo(&ref, B_READ_ONLY) != B_OK )
+		if (file.SetTo(&ref, B_READ_ONLY) != B_OK)
 			continue;
 
 		char mimeType[B_MIME_TYPE_LENGTH];
@@ -374,23 +384,21 @@ PaintApplication::RefsReceived(BMessage* message)
 			// Call the static showPaletteWindow-function. Giving it an
 			// argument containing refs makes it also load a palette.
 			BMessage message(HS_PALETTE_OPEN_REFS);
-			message.AddRef("refs",&ref);
+			message.AddRef("refs", &ref);
 			ColorPaletteWindow::showPaletteWindow(&message);
-		}
-		else if ((strcmp(mimeType, HS_PROJECT_MIME_STRING) == 0)
+		} else if ((strcmp(mimeType, HS_PROJECT_MIME_STRING) == 0)
 			|| (strcmp(mimeType, _OLD_HS_PROJECT_MIME_STRING) == 0)) {
 
 			SettingsServer* server = SettingsServer::Instance();
 			if (server) {
 				server->AddRecentProjectPath(path.Path());
-				server->SetValue(SettingsServer::Application, skProjectOpenPath,
-					_OpenPath(message, ref));
+				server->SetValue(
+					SettingsServer::Application, skProjectOpenPath, _OpenPath(message, ref));
 			}
 
 			if (_ReadProject(file, ref) != B_OK && server)
 				server->RemoveRecentProjectPath(path.Path());
-		}
-		else if (strncmp(mimeType, "image/", 6) == 0 || strcmp(mimeType, "") == 0) {
+		} else if (strncmp(mimeType, "image/", 6) == 0 || strcmp(mimeType, "") == 0) {
 			// The file was not one of ArtPaint's file types. Perhaps it is
 			// an image-file. Try to read it using the Translation-kit.
 			BBitmap* bitmap = BTranslationUtils::GetBitmapFile(path.Path());
@@ -408,8 +416,8 @@ PaintApplication::RefsReceived(BMessage* message)
 
 				// Check if a reverse translation can be done.
 				BBitmapStream imageBuffer(bitmap);
-				status_t status = roster->Identify(&imageBuffer, NULL,
-					&testInfo, 0, NULL, orgInfo.type);
+				status_t status
+					= roster->Identify(&imageBuffer, NULL, &testInfo, 0, NULL, orgInfo.type);
 				imageBuffer.DetachBitmap(&bitmap);
 
 				if (status != B_OK) { // Reverse translation is not possible
@@ -419,12 +427,12 @@ PaintApplication::RefsReceived(BMessage* message)
 
 				if (SettingsServer* server = SettingsServer::Instance()) {
 					server->AddRecentImagePath(path.Path());
-					server->SetValue(SettingsServer::Application,
-						skImageOpenPath, _OpenPath(message, ref));
+					server->SetValue(
+						SettingsServer::Application, skImageOpenPath, _OpenPath(message, ref));
 				}
 
-				PaintWindow* window = PaintWindow::CreatePaintWindow(bitmap,
-					ref.name, orgInfo.type, ref, testInfo.translator);
+				PaintWindow* window = PaintWindow::CreatePaintWindow(
+					bitmap, ref.name, orgInfo.type, ref, testInfo.translator);
 				if (window) {
 					window->ReadAttributes(file);
 					window->Show();
@@ -448,8 +456,8 @@ PaintApplication::RefsReceived(BMessage* message)
 rgb_color
 PaintApplication::Color(bool foreground) const
 {
-	rgb_color primary = { 0, 0, 0, 255 };
-	rgb_color secondary = { 255, 255, 255, 255 };
+	rgb_color primary = {0, 0, 0, 255};
+	rgb_color secondary = {255, 255, 255, 255};
 
 	rgb_color* color = foreground ? &primary : &secondary;
 	if (SettingsServer* server = SettingsServer::Instance()) {
@@ -458,11 +466,10 @@ PaintApplication::Color(bool foreground) const
 
 		ssize_t dataSize;
 		const rgb_color* data;
-		if (settings.FindData((foreground ? skPrimaryColor : skSecondaryColor),
-			B_RGB_COLOR_TYPE, (const void**)&data, &dataSize) == B_OK) {
-			if (dataSize == sizeof(rgb_color)) {
+		if (settings.FindData((foreground ? skPrimaryColor : skSecondaryColor), B_RGB_COLOR_TYPE,
+				(const void**)&data, &dataSize) == B_OK) {
+			if (dataSize == sizeof(rgb_color))
 				memcpy(color, data, sizeof(rgb_color));
-			}
 		}
 	}
 
@@ -475,8 +482,8 @@ PaintApplication::SetColor(rgb_color color, bool foreground)
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BString field = foreground ? skPrimaryColor : skSecondaryColor;
-		server->SetValue(SettingsServer::Application, field, B_RGB_COLOR_TYPE,
-			&color, sizeof(rgb_color));
+		server->SetValue(
+			SettingsServer::Application, field, B_RGB_COLOR_TYPE, &color, sizeof(rgb_color));
 	}
 }
 
@@ -490,16 +497,15 @@ PaintApplication::_InstallMimeType()
 		return;
 
 	BString snifferRule;
-	if (mime.IsInstalled() && mime.GetSnifferRule(&snifferRule)
-			== B_OK && snifferRule.Length() > 0)
+	if (mime.IsInstalled() && mime.GetSnifferRule(&snifferRule) == B_OK && snifferRule.Length() > 0)
 		return;
 
 	mime.Delete();
 
 	status_t ret = mime.Install();
 	if (ret < B_OK) {
-		fprintf(stderr, "Could not install mime type '" HS_PROJECT_MIME_STRING
-			"': %s.\n", strerror(ret));
+		fprintf(stderr, "Could not install mime type '" HS_PROJECT_MIME_STRING "': %s.\n",
+			strerror(ret));
 		return;
 	}
 
@@ -509,19 +515,21 @@ PaintApplication::_InstallMimeType()
 
 	// set descriptions
 	if (mime.SetShortDescription(B_TRANSLATE_COMMENT(
-			"ArtPaint project", "MIME type short description")) < B_OK)
+			"ArtPaint project", "MIME type short description"))
+		< B_OK)
 		fprintf(stderr, "Could not set short description of mime type!\n");
 	if (mime.SetLongDescription(B_TRANSLATE_COMMENT(
-			"ArtPaint project format containing layers etc.", "MIME type long description")) != B_OK)
+			"ArtPaint project format containing layers etc.", "MIME type long description"))
+		!= B_OK)
 		fprintf(stderr, "Could not set long description of mime type!\n");
 
 	// set sniffer rule
-/*	According to Pete Goodeve's investigation of ArtPaint's project file format,
-	this seems to be what's at the start of every file:
-	0x ffffffff   01010101   02000000    02020202    00110011     08000000   00000000
-	   little     file ID    number of   section     dimension    section    data?
-	   endian                sections    start       section ID   length
-*/
+	/*	According to Pete Goodeve's investigation of ArtPaint's project file format,
+		this seems to be what's at the start of every file:
+		0x ffffffff   01010101   02000000    02020202    00110011     08000000   00000000
+		   little     file ID    number of   section     dimension    section    data?
+		   endian                sections    start       section ID   length
+	*/
 	snifferRule = "0.50 ([4] 0x01010101) ([12] 0x0202020200110011)";
 	if (mime.SetSnifferRule(snifferRule.String()) < B_OK) {
 		BString parseError;
@@ -576,7 +584,7 @@ PaintApplication::_ReadPreferences()
 			}
 
 			if (status != B_OK)
-				;// We might create some default brushes.
+				; // We might create some default brushes.
 
 			// Create a tool-manager object. Depends on the language being set.
 			ToolManager::CreateToolManager();
@@ -647,9 +655,8 @@ PaintApplication::_WritePreferences()
 			BFile colors;
 			if (settingsDir.CreateFile("color_preferences", &colors, false) == B_OK)
 				ColorSet::writeSets(colors);
-		} else {
+		} else
 			fprintf(stderr, "Could not write preferences.\n");
-		}
 	}
 }
 
@@ -664,13 +671,12 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 		return B_ERROR;
 
 	bool isLittleEndian = true;
-	if (lendian == 0x00000000) {
+	if (lendian == 0x00000000)
 		isLittleEndian = false;
-	} else if (uint32(lendian) == 0xFFFFFFFF) {
+	else if (uint32(lendian) == 0xFFFFFFFF)
 		isLittleEndian = true;
-	} else {
+	else
 		return B_ERROR;
-	}
 
 	int32 fileId;
 	if (file.Read(&fileId, sizeof(int32)) != sizeof(int32))
@@ -681,9 +687,9 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 	else
 		fileId = B_BENDIAN_TO_HOST_INT32(fileId);
 
-	file.Seek(0,SEEK_SET);
+	file.Seek(0, SEEK_SET);
 	if (fileId != PROJECT_FILE_ID)
-		return _ReadProjectOldStyle(file,ref);
+		return _ReadProjectOldStyle(file, ref);
 
 	// This is the new way of reading a structured project file. The possibility
 	// to read old project files is still maintained through ReadProjectOldStyle.
@@ -732,7 +738,7 @@ PaintApplication::_ReadProject(BFile& file, entry_ref& ref)
 status_t
 PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 {
-// This old version of file reading will be copied to the conversion utility.
+	// This old version of file reading will be copied to the conversion utility.
 	// The structure of a project file is following.
 	// 	1.	Identification string HS_PROJECT_ID_STRING
 	//	2.	ArtPaint version number ARTPAINT_VERSION
@@ -781,7 +787,7 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 
 	uint32 width, height;
 	if (file.Read(&width, sizeof(uint32)) != sizeof(uint32)
-		|| file.Read(&height,sizeof(uint32)) != sizeof(uint32)) {
+		|| file.Read(&height, sizeof(uint32)) != sizeof(uint32)) {
 		_ShowAlert(text);
 		return B_ERROR;
 	}
@@ -796,7 +802,7 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 
 		// Read the layers from the file. First read how many layers there are.
 		int32 layerCount;
-		if (file.Read(&layerCount,sizeof(int32)) == sizeof(int32)) {
+		if (file.Read(&layerCount, sizeof(int32)) == sizeof(int32)) {
 			layerCount = B_BENDIAN_TO_HOST_INT32(layerCount);
 			Image* image = window->ReturnImageView()->ReturnImage();
 			if (image->ReadLayersOldStyle(file, layerCount) == B_OK) {
@@ -820,7 +826,7 @@ PaintApplication::_ReadProjectOldStyle(BFile& file, entry_ref& ref)
 
 
 void
-PaintApplication::HomeDirectory(BPath &path)
+PaintApplication::HomeDirectory(BPath& path)
 {
 	// this from the newsletter 81
 	app_info info;
@@ -833,8 +839,7 @@ void
 PaintApplication::_ShowAlert(const BString& text)
 {
 	BAlert* alert = new BAlert("title", text.String(),
-		B_TRANSLATE("OK"), NULL, NULL, B_WIDTH_AS_USUAL,
-		B_WARNING_ALERT);
+		B_TRANSLATE("OK"), NULL, NULL, B_WIDTH_AS_USUAL, B_WARNING_ALERT);
 	alert->Go();
 }
 
@@ -866,6 +871,7 @@ PaintApplication::_GetParentPath(const entry_ref& entryRef)
 
 	return path;
 }
+
 
 int
 main(int argc, char* argv[])

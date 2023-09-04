@@ -18,10 +18,10 @@
 #include "MessageConstants.h"
 #include "MessageFilters.h"
 #include "SettingsServer.h"
-#include "Tools.h"
 #include "ToolButton.h"
 #include "ToolManager.h"
 #include "ToolSetupWindow.h"
+#include "Tools.h"
 #include "UtilityClasses.h"
 
 
@@ -35,8 +35,8 @@
 #define B_TRANSLATION_CONTEXT "Tools"
 
 
-const int32 kExtraEdge	= 4;
-typedef std::map<int32, ToolButton* > ToolMap;
+const int32 kExtraEdge = 4;
+typedef std::map<int32, ToolButton*> ToolMap;
 
 
 ToolMap gToolMap;
@@ -44,16 +44,15 @@ ToolSelectionWindow* ToolSelectionWindow::fSelectionWindow = NULL;
 
 
 ToolSelectionWindow::ToolSelectionWindow(BRect frame)
-	: BWindow(frame, B_TRANSLATE("Tools"),
-		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_H_RESIZABLE |
-		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
+	:
+	BWindow(frame, B_TRANSLATE("Tools"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+		B_NOT_H_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT)
 {
 	int32 pictureSize = LARGE_TOOL_ICON_SIZE + 4.0;
 
 	window_feel feel = B_NORMAL_WINDOW_FEEL;
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skSelectToolWindowVisible,
-			true);
+		server->SetValue(SettingsServer::Application, skSelectToolWindowVisible, true);
 
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
@@ -94,13 +93,12 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 		SetLook(B_FLOATING_WINDOW_LOOK);
 
 	float minDimension = 2 * kExtraEdge + pictureSize;
-	float maxDimension = 1 + kExtraEdge + fMatrixView->CountChildren() *
-		(pictureSize + kExtraEdge);
+	float maxDimension = 1 + kExtraEdge + fMatrixView->CountChildren() * (pictureSize + kExtraEdge);
 	SetSizeLimits(minDimension, maxDimension, minDimension, maxDimension);
 
 	if (Lock()) {
-		AddCommonFilter(new BMessageFilter(B_ANY_DELIVERY, B_ANY_SOURCE,
-			B_MOUSE_DOWN, window_activation_filter));
+		AddCommonFilter(new BMessageFilter(
+			B_ANY_DELIVERY, B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter));
 		AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
 		Unlock();
 	}
@@ -109,7 +107,7 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 
 	// NOTE: this is broken/ not implemented in Haiku, so the tools window
 	//		 will not show up horizontal as it should be, enable if implemented
-	//SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, picture_size + kExtraEdge,
+	// SetWindowAlignment(B_PIXEL_ALIGNMENT, 0, 0, picture_size + kExtraEdge,
 	//	kExtraEdge + 1, 0, 0, picture_size + kExtraEdge, kExtraEdge + 1);
 
 	fSelectionWindow = this;
@@ -120,14 +118,12 @@ ToolSelectionWindow::ToolSelectionWindow(BRect frame)
 ToolSelectionWindow::~ToolSelectionWindow()
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skSelectToolWindowVisible,
-			false);
-		server->SetValue(SettingsServer::Application, skSelectToolWindowFrame,
-			Frame());
+		server->SetValue(SettingsServer::Application, skSelectToolWindowVisible, false);
+		server->SetValue(SettingsServer::Application, skSelectToolWindowFrame, Frame());
 	}
 
 	fMatrixView->RemoveSelf();
-	while(fMatrixView->ChildAt(0) != NULL)
+	while (fMatrixView->ChildAt(0) != NULL)
 		fMatrixView->RemoveChild(fMatrixView->ChildAt(0));
 
 	delete fMatrixView;
@@ -156,22 +152,20 @@ void
 ToolSelectionWindow::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case HS_TOOL_CHANGED: {
+		case HS_TOOL_CHANGED:
+		{
 			int32 tool;
 			if (message->FindInt32(skTool, &tool) == B_OK) {
 				ToolManager::Instance().ChangeTool(tool);
 
 				uint32 button;
 				if (message->FindUInt32("buttons", &button) == B_OK
-					&& (button & B_SECONDARY_MOUSE_BUTTON)) {
+					&& (button & B_SECONDARY_MOUSE_BUTTON))
 					ToolSetupWindow::ShowToolSetupWindow(tool);
-				}
 			}
 		} break;
-
-		default: {
+		default:
 			BWindow::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -208,10 +202,8 @@ ToolSelectionWindow::showWindow()
 void
 ToolSelectionWindow::setFeel(window_feel feel)
 {
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skSelectToolWindowFeel,
-			int32(feel));
-	}
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->SetValue(SettingsServer::Application, skSelectToolWindowFeel, int32(feel));
 
 	if (fSelectionWindow) {
 		window_look look = B_TITLED_WINDOW_LOOK;

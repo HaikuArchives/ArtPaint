@@ -23,8 +23,8 @@
 #include "ToolSetupWindow.h"
 
 
-#include <MenuItem.h>
 #include <File.h>
+#include <MenuItem.h>
 #include <PopUpMenu.h>
 
 
@@ -32,19 +32,21 @@
 
 
 struct ToolManagerClient {
-						ToolManagerClient(ImageView *view)
-							: fLastUpdatedRect(BRect())
-							, fClient(view)
-							, fActiveTool(NULL)
-							, fActiveBrush(NULL)
-							, fNextClient(NULL) {}
+				ToolManagerClient(ImageView* view)
+					:
+					fLastUpdatedRect(BRect()),
+					fClient(view),
+					fActiveTool(NULL),
+					fActiveBrush(NULL),
+					fNextClient(NULL)
+				{}
 
-	BRect				fLastUpdatedRect;
+	BRect 			fLastUpdatedRect;
 
-	ImageView*			fClient;
-	DrawingTool*		fActiveTool;
-	Brush*				fActiveBrush;
-	ToolManagerClient*	fNextClient;
+	ImageView* 		fClient;
+	DrawingTool* 	fActiveTool;
+	Brush* 			fActiveBrush;
+	ToolManagerClient* fNextClient;
 };
 
 
@@ -55,8 +57,8 @@ ToolManager* ToolManager::fToolManager = NULL;
 std::map<int32, DrawingTool*> gManagerToolMap;
 
 
-#define	TOOL_SETTINGS_FILE_ID		0x12345678
-#define	TOOL_SETTINGS_FILE_VERSION	0x00000001
+#define TOOL_SETTINGS_FILE_ID 0x12345678
+#define TOOL_SETTINGS_FILE_VERSION 0x00000001
 
 
 ToolManager&
@@ -92,8 +94,8 @@ ToolManager::DestroyToolManager()
 
 // These are the ImageView-interface functions.
 ToolScript*
-ToolManager::StartTool(ImageView *view, uint32 buttons, BPoint bitmap_point,
-	BPoint view_point, int32 toolType)
+ToolManager::StartTool(
+	ImageView* view, uint32 buttons, BPoint bitmap_point, BPoint view_point, int32 toolType)
 {
 	DrawingTool* activeTool = NULL;
 
@@ -118,8 +120,8 @@ ToolManager::StartTool(ImageView *view, uint32 buttons, BPoint bitmap_point,
 	clientData->fActiveTool = activeTool;
 	if (clientData->fActiveTool != NULL) {
 		view->SetToolHelpString(activeTool->HelpString(true));
-		ToolScript *the_script = clientData->fActiveTool->UseTool(view,
-			buttons, bitmap_point, view_point);
+		ToolScript* the_script
+			= clientData->fActiveTool->UseTool(view, buttons, bitmap_point, view_point);
 		view->SetToolHelpString(activeTool->HelpString(false));
 
 		// When the tool has finished we should record the updated_rect into
@@ -135,19 +137,17 @@ ToolManager::StartTool(ImageView *view, uint32 buttons, BPoint bitmap_point,
 
 
 status_t
-ToolManager::MouseDown(ImageView *view, BPoint view_point, BPoint bitmap_point,
-	uint32 buttons, int32 clicks)
+ToolManager::MouseDown(
+	ImageView* view, BPoint view_point, BPoint bitmap_point, uint32 buttons, int32 clicks)
 {
 	// Here inform the client_data->fActiveTool about the mouse-event if it
 	// accepts that information.
-	ToolManagerClient *client_data = _ReturnClientData(view);
+	ToolManagerClient* client_data = _ReturnClientData(view);
 
 	if (client_data->fActiveTool != NULL) {
-		ToolEventAdapter *adapter =
-			dynamic_cast<ToolEventAdapter*>(client_data->fActiveTool);
-		if (adapter != NULL) {
-			adapter->SetClickEvent(view_point,bitmap_point,buttons,clicks);
-		}
+		ToolEventAdapter* adapter = dynamic_cast<ToolEventAdapter*>(client_data->fActiveTool);
+		if (adapter != NULL)
+			adapter->SetClickEvent(view_point, bitmap_point, buttons, clicks);
 	}
 	return B_OK;
 }
@@ -158,15 +158,13 @@ ToolManager::KeyDown(ImageView* view, const char* bytes, int32 numBytes)
 {
 	// Here inform the client_data->fActiveTool about the key-event if it
 	// accepts that information.
-	ToolManagerClient *client_data = _ReturnClientData(view);
+	ToolManagerClient* client_data = _ReturnClientData(view);
 
 	if (client_data != NULL) {
 		if (client_data->fActiveTool != NULL) {
-			ToolEventAdapter *adapter =
-				dynamic_cast<ToolEventAdapter*>(client_data->fActiveTool);
-			if (adapter != NULL) {
-				adapter->SetKeyEvent(bytes,numBytes);
-			}
+			ToolEventAdapter* adapter = dynamic_cast<ToolEventAdapter*>(client_data->fActiveTool);
+			if (adapter != NULL)
+				adapter->SetKeyEvent(bytes, numBytes);
 		}
 	}
 	return B_OK;
@@ -174,7 +172,7 @@ ToolManager::KeyDown(ImageView* view, const char* bytes, int32 numBytes)
 
 
 status_t
-ToolManager::KeyUp(ImageView *view,const char *bytes,int32 numBytes)
+ToolManager::KeyUp(ImageView* view, const char* bytes, int32 numBytes)
 {
 	// Here inform the client_data->fActiveTool about the key-event if it
 	// accepts that information.
@@ -183,9 +181,9 @@ ToolManager::KeyUp(ImageView *view,const char *bytes,int32 numBytes)
 
 
 BRect
-ToolManager::LastUpdatedRect(ImageView *view)
+ToolManager::LastUpdatedRect(ImageView* view)
 {
-	ToolManagerClient *client_data = _ReturnClientData(view);
+	ToolManagerClient* client_data = _ReturnClientData(view);
 
 	BRect temp_rect = client_data->fLastUpdatedRect;
 	client_data->fLastUpdatedRect = BRect(0, 0, -1, -1);
@@ -253,7 +251,7 @@ ToolManager::ReturnActiveToolType() const
 
 
 status_t
-ToolManager::SetCurrentBrush(brush_info *binfo)
+ToolManager::SetCurrentBrush(brush_info* binfo)
 {
 	// Set the new brush for all tools that use brushes.
 	if (fActiveBrush == NULL)
@@ -292,19 +290,19 @@ ToolManager::GetCurrentBrush()
 
 
 status_t
-ToolManager::NotifyViewEvent(ImageView *view, image_view_event_type type)
+ToolManager::NotifyViewEvent(ImageView* view, image_view_event_type type)
 {
 	if (fActiveTool) {
-		ToolManagerClient *client_data = _ReturnClientData(view);
+		ToolManagerClient* client_data = _ReturnClientData(view);
 		bool show = (client_data->fActiveTool == fActiveTool);
 
-		if (type == CURSOR_ENTERED_VIEW) {
-				view->SetToolHelpString(fActiveTool->HelpString(show));
-		} else if (type == TOOL_ACTIVATED) {
+		if (type == CURSOR_ENTERED_VIEW)
 			view->SetToolHelpString(fActiveTool->HelpString(show));
-		} else if (type == CURSOR_EXITED_VIEW) {
+		else if (type == TOOL_ACTIVATED)
+			view->SetToolHelpString(fActiveTool->HelpString(show));
+		else if (type == CURSOR_EXITED_VIEW)
 			view->SetToolHelpString("");
-		}
+
 		return B_OK;
 	}
 	return B_ERROR;
@@ -328,8 +326,8 @@ ToolManager::ToolPopUpMenu()
 
 		std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.begin();
 		for (it = it; it != gManagerToolMap.end(); ++it) {
-			fToolPopUpMenu->AddItem(new BMenuItem(it->second->Name(),
-				new BMessage(it->second->Type())));
+			fToolPopUpMenu->AddItem(
+				new BMenuItem(it->second->Name(), new BMessage(it->second->Type())));
 		}
 	}
 	return fToolPopUpMenu;
@@ -337,23 +335,23 @@ ToolManager::ToolPopUpMenu()
 
 
 status_t
-ToolManager::ReadToolSettings(BFile &file)
+ToolManager::ReadToolSettings(BFile& file)
 {
 	// Read the endianness of the file.
 	int32 endianness;
 	bool is_little_endian;
-	if (file.Read(&endianness,sizeof(int32)) != sizeof(int32)) {
+	if (file.Read(&endianness, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-	}
+
 	if (endianness == 0x00000000)
 		is_little_endian = FALSE;
 	else
 		is_little_endian = TRUE;
 
 	int32 marker;
-	if (file.Read(&marker,sizeof(int32)) != sizeof(int32)) {
+	if (file.Read(&marker, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-	}
+
 	if (is_little_endian)
 		marker = B_LENDIAN_TO_HOST_INT32(marker);
 	else
@@ -362,9 +360,9 @@ ToolManager::ReadToolSettings(BFile &file)
 	if (marker != TOOL_SETTINGS_FILE_ID)
 		return B_ERROR;
 
-	if (file.Read(&marker,sizeof(int32)) != sizeof(int32)) {
+	if (file.Read(&marker, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
-	}
+
 	if (is_little_endian)
 		marker = B_LENDIAN_TO_HOST_INT32(marker);
 	else
@@ -389,7 +387,7 @@ ToolManager::ReadToolSettings(BFile &file)
 
 
 status_t
-ToolManager::WriteToolSettings(BFile &file)
+ToolManager::WriteToolSettings(BFile& file)
 {
 	int32 endianness;
 	if (B_HOST_IS_LENDIAN == 1)
@@ -397,15 +395,15 @@ ToolManager::WriteToolSettings(BFile &file)
 	else
 		endianness = 0x00000000;
 
-	if (file.Write(&endianness,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&endianness, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 id = TOOL_SETTINGS_FILE_ID;
-	if (file.Write(&id,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&id, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 version = TOOL_SETTINGS_FILE_VERSION;
-	if (file.Write(&version,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&version, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	std::map<int32, DrawingTool*>::const_iterator it = gManagerToolMap.begin();
@@ -418,9 +416,10 @@ ToolManager::WriteToolSettings(BFile &file)
 
 // Here begin the definitions of private ToolManager-class functions.
 ToolManager::ToolManager()
-	: fToolPopUpMenu(NULL)
-	, fActiveTool(NULL)
-	, fClientListHead(NULL)
+	:
+	fToolPopUpMenu(NULL),
+	fActiveTool(NULL),
+	fClientListHead(NULL)
 {
 	_AddTool(new FreeLineTool());
 	_AddTool(new StraightLineTool());
@@ -442,9 +441,9 @@ ToolManager::ToolManager()
 ToolManager::~ToolManager()
 {
 	// Delete the client structs
-	ToolManagerClient *client = fClientListHead;
+	ToolManagerClient* client = fClientListHead;
 	while (client != NULL) {
-		ToolManagerClient *helper = client->fNextClient;
+		ToolManagerClient* helper = client->fNextClient;
 		delete client;
 		client = helper;
 	}
@@ -466,23 +465,22 @@ ToolManager::_AddTool(DrawingTool* tool)
 
 
 ToolManagerClient*
-ToolManager::_ReturnClientData(ImageView *view)
+ToolManager::_ReturnClientData(ImageView* view)
 {
 	// What is the purpose of this function. What are the clients. Some
 	// commentation about them would not be a bad idea.
 
 	// First search from the client-list for an entry with view.
-	ToolManagerClient *current_entry = fClientListHead;
-	ToolManagerClient *previous_entry = NULL;
+	ToolManagerClient* current_entry = fClientListHead;
+	ToolManagerClient* previous_entry = NULL;
 	while ((current_entry != NULL) && (current_entry->fClient != view)) {
 		previous_entry = current_entry;
 		current_entry = current_entry->fNextClient;
 	}
 
 	if (current_entry != NULL) {
-		if (previous_entry != NULL) {
+		if (previous_entry != NULL)
 			previous_entry->fNextClient = current_entry->fNextClient;
-		}
 
 		// This if is very important.
 		if (current_entry != fClientListHead) {

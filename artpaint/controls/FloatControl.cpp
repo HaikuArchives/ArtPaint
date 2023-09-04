@@ -19,9 +19,11 @@
 namespace ArtPaint {
 	namespace Interface {
 
-FloatControl::FloatControl(const char* label, const char* text,
-		BMessage* message, int32 maxBytes, bool allowNegative, bool continuous)
-	: BTextControl(label, text, message)
+
+FloatControl::FloatControl(const char* label, const char* text, BMessage* message, int32 maxBytes,
+	bool allowNegative, bool continuous)
+	:
+	BTextControl(label, text, message)
 {
 	_InitControl(maxBytes, allowNegative, continuous);
 }
@@ -70,7 +72,7 @@ FloatControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuous)
 	TextView()->AllowChar('8');
 	TextView()->AllowChar('9');
 	TextView()->AllowChar('.');
-	TextView()->AllowChar(',');  // should localize
+	TextView()->AllowChar(','); // should localize
 
 	if (allowNegative)
 		TextView()->AllowChar('-');
@@ -91,5 +93,5 @@ FloatControl::SetWidthInBytes(uint32 bytes)
 }
 
 
-	}	// namespace Interface
-}	// namespace ArtPaint
+	} // namespace Interface
+} // namespace ArtPaint

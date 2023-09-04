@@ -39,7 +39,7 @@ UndoEvent::~UndoEvent()
 {
 	delete thumbnail_image;
 
-	for (int32 i=0;i<action_count;i++) {
+	for (int32 i = 0; i < action_count; i++) {
 		delete actions[i];
 		actions[i] = NULL;
 	}
@@ -52,7 +52,8 @@ UndoEvent::~UndoEvent()
 }
 
 
-void UndoEvent::AddAction(UndoAction *action)
+void
+UndoEvent::AddAction(UndoAction* action)
 {
 	if (actions == NULL) {
 		max_action_count = 1;
@@ -61,10 +62,10 @@ void UndoEvent::AddAction(UndoAction *action)
 
 	if (action_count == max_action_count) {
 		max_action_count *= 2;
-		UndoAction **new_actions = new UndoAction*[max_action_count];
-		for (int32 i=0;i<action_count;i++) {
+		UndoAction** new_actions = new UndoAction*[max_action_count];
+		for (int32 i = 0; i < action_count; i++) {
 			new_actions[i] = actions[i];
-			actions[i]= NULL;
+			actions[i] = NULL;
 		}
 		delete[] actions;
 		actions = new_actions;
@@ -75,26 +76,28 @@ void UndoEvent::AddAction(UndoAction *action)
 }
 
 
-UndoAction** UndoEvent::ReturnActions()
+UndoAction**
+UndoEvent::ReturnActions()
 {
 	return actions;
 }
 
 
-int32 UndoEvent::ActionCount()
+int32
+UndoEvent::ActionCount()
 {
 	return action_count;
 }
 
 
-
-bool UndoEvent::IsEmpty()
+bool
+UndoEvent::IsEmpty()
 {
 	if (action_count == 0)
 		return TRUE;
 
 	bool is_empty = TRUE;
-	for (int32 i=0;i<action_count;i++) {
+	for (int32 i = 0; i < action_count; i++) {
 		if (actions[i]->IsEmpty() == FALSE)
 			is_empty = FALSE;
 	}

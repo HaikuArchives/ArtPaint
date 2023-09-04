@@ -22,9 +22,9 @@
 #include <Message.h>
 #include <PopUpMenu.h>
 #include <String.h>
+#include <TranslationUtils.h>
 #include <TranslatorFormats.h>
 #include <TranslatorRoster.h>
-#include <TranslationUtils.h>
 #include <View.h>
 #include <Window.h>
 
@@ -35,7 +35,8 @@
 
 ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		BMessage& message, int32 saveFormat, BBitmap* savedBitmap)
-	: BFilePanel(B_SAVE_PANEL, &target, &startDir, 0, false, &message)
+	:
+	BFilePanel(B_SAVE_PANEL, &target, &startDir, 0, false, &message)
 {
 	if (Window()->Lock()) {
 		BString title = B_TRANSLATE("ArtPaint: Save image");
@@ -71,12 +72,11 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 
 			settingsButton->SetTarget(target);
 			settingsButton->ResizeToPreferred();
-			settingsButton->MoveBy(-(settingsButton->Bounds().Width() + 10.0),
-				0.0);
+			settingsButton->MoveBy(-(settingsButton->Bounds().Width() + 10.0), 0.0);
 			width += settingsButton->Bounds().Width() + 10.0;
 		}
 		Window()->ResizeTo(width + 20.0, Window()->Bounds().Height());
-		
+
 		if (settingsButton != NULL) {
 			float textViewWidth = settingsButton->Frame().left - textView->Frame().left - 10.0;
 			textView->ResizeTo(textViewWidth, textView->Bounds().Height());
@@ -85,8 +85,8 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 		// and tells it if the user changed the format to save the target
 		BPopUpMenu* formatMenu = new BPopUpMenu(B_TRANSLATE("Choose format"));
 		BMessage message(HS_SAVE_FORMAT_CHANGED);
-		BTranslationUtils::AddTranslationItems(formatMenu, B_TRANSLATOR_BITMAP,
-			&message, NULL, NULL, NULL);
+		BTranslationUtils::AddTranslationItems(
+			formatMenu, B_TRANSLATOR_BITMAP, &message, NULL, NULL, NULL);
 
 		int32 type;
 		bool typeFound = false;
@@ -112,7 +112,7 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 
 		const char* string = B_TRANSLATE("Save format:");
 		BMenuField* menuField = new BMenuField(BRect(textView->Frame().LeftBottom() +
-			BPoint(0.0, 10.0), textView->Frame().RightBottom() + BPoint(200, 30.)),
+			BPoint(0.0, 10.0), textView->Frame().RightBottom() + BPoint(200.0, 30.0)),
 			"menu field", string, formatMenu, B_FOLLOW_LEFT | B_FOLLOW_BOTTOM);
 		root->AddChild(menuField);
 		menuField->SetDivider(menuField->StringWidth(string) + 5.0);
@@ -128,7 +128,7 @@ ImageSavePanel::~ImageSavePanel()
 
 
 status_t
-set_filepanel_strings(BFilePanel *panel)
+set_filepanel_strings(BFilePanel* panel)
 {
 	if (!panel)
 		return B_ERROR;
@@ -138,8 +138,7 @@ set_filepanel_strings(BFilePanel *panel)
 		return B_ERROR;
 
 	if (window->Lock()) {
-		BButton* button =
-				dynamic_cast<BButton*>(window->FindView("default button"));
+		BButton* button = dynamic_cast<BButton*>(window->FindView("default button"));
 
 		if (button) {
 			if (strcmp(button->Label(), "Save") == 0)

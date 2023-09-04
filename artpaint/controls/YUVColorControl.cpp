@@ -7,37 +7,37 @@
  *
  */
 
- #include "YUVColorControl.h"
+#include "YUVColorControl.h"
 
 
- #include "ColorUtilities.h"
+#include "ColorUtilities.h"
 
 
- YUVColorControl::YUVColorControl(rgb_color c)
- 	: MultichannelColorControl(c, "Y", "U", "V", "A")
- {
+YUVColorControl::YUVColorControl(rgb_color c)
+	: MultichannelColorControl(c, "Y", "U", "V", "A")
+{
 	slider1->SetResolution(1);
 	slider2->SetResolution(1);
 	slider3->SetResolution(1);
 	slider4->SetResolution(1);
- }
+}
 
 
- void
- YUVColorControl::SetValue(rgb_color c)
- {
- 	float y, u, v;
+void
+YUVColorControl::SetValue(rgb_color c)
+{
+	float y, u, v;
 
- 	rgb2yuv((float)c.red, (float)c.green, (float)c.blue, y, u, v);
+	rgb2yuv((float)c.red, (float)c.green, (float)c.blue, y, u, v);
 
- 	slider1->SetValue(y);
- 	slider2->SetValue(u);
- 	slider3->SetValue(v);
- 	slider4->SetValue(c.alpha);
+	slider1->SetValue(y);
+	slider2->SetValue(u);
+	slider3->SetValue(v);
+	slider4->SetValue(c.alpha);
 
- 	rgb_color color1s, color1e;
- 	rgb_color color2s, color2e;
- 	rgb_color color3s, color3e;
+	rgb_color color1s, color1e;
+	rgb_color color2s, color2e;
+	rgb_color color3s, color3e;
 	rgb_color color4s, color4e;
 
 	float r, g, b;
@@ -60,19 +60,18 @@
 	slider2->Slider()->SetColors(color2s, color2e);
 	slider3->Slider()->SetColors(color3s, color3e);
 	slider4->Slider()->SetColors(color4s, color4e);
- }
+}
 
 
- void
- YUVColorControl::_SetColor(float one, float two,
- 	float three, float four)
- {
- 	float r, g, b;
+void
+YUVColorControl::_SetColor(float one, float two, float three, float four)
+{
+	float r, g, b;
 
- 	yuv2rgb(one, two, three, r, g, b);
+	yuv2rgb(one, two, three, r, g, b);
 
- 	value.bytes[0] = (uint8)r;
- 	value.bytes[1] = (uint8)g;
- 	value.bytes[2] = (uint8)b;
- 	value.bytes[3] = (uint8)four;
- }
+	value.bytes[0] = (uint8)r;
+	value.bytes[1] = (uint8)g;
+	value.bytes[2] = (uint8)b;
+	value.bytes[3] = (uint8)four;
+}

@@ -33,12 +33,12 @@ BList ManipulatorWindow::sfWindowList(10);
 sem_id ManipulatorWindow::sfWindowListMutex = create_sem(1, "list_mutex");
 
 
-ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
-		BWindow* master, const BMessenger& target)
-	: BWindow(rect, name, B_FLOATING_WINDOW_LOOK, B_FLOATING_SUBSET_WINDOW_FEEL,
-		B_NOT_ZOOMABLE | B_NOT_ANCHORED_ON_ACTIVATE | B_NOT_CLOSABLE
-		| B_AUTO_UPDATE_SIZE_LIMITS)
-	, fManipulatorView(view)
+ManipulatorWindow::ManipulatorWindow(
+	BRect rect, BView* view, const char* name, BWindow* master, const BMessenger& target)
+	:
+	BWindow(rect, name, B_FLOATING_WINDOW_LOOK, B_FLOATING_SUBSET_WINDOW_FEEL,
+		B_NOT_ZOOMABLE | B_NOT_ANCHORED_ON_ACTIVATE | B_NOT_CLOSABLE | B_AUTO_UPDATE_SIZE_LIMITS),
+	fManipulatorView(view)
 {
 	window_feel feel = B_FLOATING_APP_WINDOW_FEEL;
 	if (SettingsServer* server = SettingsServer::Instance()) {
@@ -46,12 +46,12 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 		server->GetApplicationSettings(&settings);
 		settings.FindInt32(skAddOnWindowFeel, (int32*)&feel);
 	}
-	//SetFeel(feel);
+	// SetFeel(feel);
 
 	window_look look = B_FLOATING_WINDOW_LOOK;
 	if (feel == B_NORMAL_WINDOW_FEEL)
 		look = B_TITLED_WINDOW_LOOK;
-	//SetLook(look);
+	// SetLook(look);
 
 	AddToSubset(master);
 
@@ -65,13 +65,11 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 
 	BMessage* cancelMessage = new BMessage(HS_MANIPULATOR_FINISHED);
 	cancelMessage->AddBool("status", false);
-	BButton* cancelButton =
-		new BButton(B_TRANSLATE("Cancel"), cancelMessage);
+	BButton* cancelButton = new BButton(B_TRANSLATE("Cancel"), cancelMessage);
 
 	BMessage* okMessage = new BMessage(HS_MANIPULATOR_FINISHED);
 	okMessage->AddBool("status", true);
-	BButton* okButton = new BButton(B_TRANSLATE("OK"),
-		okMessage);
+	BButton* okButton = new BButton(B_TRANSLATE("OK"), okMessage);
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 10.0)
@@ -93,10 +91,9 @@ ManipulatorWindow::ManipulatorWindow(BRect rect, BView* view, const char* name,
 
 	Show();
 	Lock();
-	AddCommonFilter(new BMessageFilter(B_KEY_DOWN,AppKeyFilterFunction));
+	AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
 	Unlock();
 }
-
 
 
 ManipulatorWindow::~ManipulatorWindow()
@@ -108,23 +105,18 @@ ManipulatorWindow::~ManipulatorWindow()
 	// The manipulator will delete this.
 	fManipulatorView->RemoveSelf();
 
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skAddOnWindowFrame,
-			Frame());
-	}
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->SetValue(SettingsServer::Application, skAddOnWindowFrame, Frame());
 
 	ColorPaletteWindow::RemoveMasterWindow(this);
 }
 
 
-
 void
 ManipulatorWindow::setFeel(window_feel feel)
 {
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skAddOnWindowFeel,
-			int32(feel));
-	}
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->SetValue(SettingsServer::Application, skAddOnWindowFeel, int32(feel));
 
 	window_look look = B_FLOATING_WINDOW_LOOK;
 	if (feel == B_NORMAL_WINDOW_FEEL)
@@ -133,7 +125,7 @@ ManipulatorWindow::setFeel(window_feel feel)
 	acquire_sem(sfWindowListMutex);
 
 	for (int32 i = 0; i < sfWindowList.CountItems(); ++i) {
-		BWindow *window = static_cast<BWindow*> (sfWindowList.ItemAt(i));
+		BWindow* window = static_cast<BWindow*>(sfWindowList.ItemAt(i));
 		window->SetFeel(feel);
 		window->SetLook(look);
 	}

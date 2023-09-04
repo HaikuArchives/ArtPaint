@@ -29,20 +29,21 @@
 #define PI M_PI
 
 
-bool Brush::compare_brushes(brush_info one, brush_info two)
+bool
+Brush::compare_brushes(brush_info one, brush_info two)
 {
-	if (one.shape == two.shape &&
-		one.width == two.width &&
-		one.height == two.height &&
-		one.angle == two.angle &&
-		one.hardness == two.hardness)
+	if (one.shape == two.shape
+		&& one.width == two.width
+		&& one.height == two.height
+		&& one.angle == two.angle
+		&& one.hardness == two.hardness)
 		return true;
 
 	return false;
 }
 
 
-Brush::Brush(brush_info &info)
+Brush::Brush(brush_info& info)
 {
 	// First record the data for the brush
 	shape_ = info.shape;
@@ -88,7 +89,7 @@ Brush::~Brush()
 
 
 void
-Brush::ModifyBrush(brush_info &info)
+Brush::ModifyBrush(brush_info& info)
 {
 	delete_all_data();
 
@@ -143,7 +144,7 @@ Brush::CreateDiffBrushes()
 
 
 uint32*
-Brush::GetData(span **sp)
+Brush::GetData(span** sp)
 {
 	*sp = brush_span;
 	return (uint32*)brush_bmap->Bits();
@@ -173,14 +174,14 @@ Brush::make_rectangular_brush()
 	// We make a rectangular brush that has the fade length maximum of edge_hardness.
 	// If hardness is greater than width/2 or height/2, we will not fade to maximum
 	// value in that direction. At the moment the fade is linear.
-	float angle_rad = angle_*PI/180.0;
+	float angle_rad = angle_ * PI / 180.0;
 	float half_width = actual_width / 2;
 	float half_height = actual_height / 2;
 
-	width_ = ceil(fabs(cos(angle_rad) * half_width) +
-		fabs(cos(PI / 2 - angle_rad) * half_height)) * 2 + 1;
-	height_ = ceil(fabs(sin(angle_rad) * half_width) +
-		fabs(sin(PI / 2 - angle_rad) * half_height)) * 2 + 1;
+	width_ = ceil(fabs(cos(angle_rad) * half_width)
+		+ fabs(cos(PI / 2 - angle_rad) * half_height)) * 2 + 1;
+	height_ = ceil(fabs(sin(angle_rad) * half_width)
+		+ fabs(sin(PI / 2 - angle_rad) * half_height)) * 2 + 1;
 
 	uint32 min_dimension = min_c(half_width, half_height);
 	uint32 fade_pixels = min_dimension;
@@ -192,7 +193,7 @@ Brush::make_rectangular_brush()
 
 	reserve_brush();
 	BPoint p1;
-	BPoint c = BPoint(floor(width_ / 2),floor(height_ / 2));
+	BPoint c = BPoint(floor(width_ / 2), floor(height_ / 2));
 	float x_distance, y_distance;
 	float x_value, y_value;
 	float value;
@@ -202,24 +203,22 @@ Brush::make_rectangular_brush()
 	BitmapUtilities::ClearBitmap(brush_bmap, 0);
 	uint32* bits = (uint32*)brush_bmap->Bits();
 	uint32 bpr = brush_bmap->BytesPerRow() / 4;
-	for (int32 y = 0;y < height_;y++) {
-		for (int32 x = 0;x < width_;x++) {
+	for (int32 y = 0; y < height_; y++) {
+		for (int32 x = 0; x < width_; x++) {
 			p1.x = cos_minus_angle * (x - c.x) - sin_minus_angle * (y - c.y);
 			p1.y = sin_minus_angle * (x - c.x) + cos_minus_angle * (y - c.y);
 
 			x_distance = fabs(p1.x);
 			if (x_distance <= (half_width - fade_pixels))
 				x_value = 1;
-			else {
+			else
 				x_value = 1.0 - (x_distance - (half_width - fade_pixels)) * diff;
-			}
 
 			y_distance = fabs(p1.y);
 			if (y_distance <= (half_height - fade_pixels))
 				y_value = 1;
-			else {
+			else
 				y_value = 1.0 - (y_distance - (half_height - fade_pixels)) * diff;
-			}
 
 			value = min_c(x_value, y_value);
 			if (value >= 0) {
@@ -244,13 +243,12 @@ Brush::make_elliptical_brush()
 	float ratio;
 	dimension = max_c(dimension, 1.0);
 
-	if (height_ == width_) {
+	if (height_ == width_)
 		ratio = 1.0;
-	} else if (height_ > width_) {
+	else if (height_ > width_)
 		ratio = height_ / width_;
-	} else {
+	else
 		ratio = width_ / height_;
-	}
 
 	float w = width_;
 	float h = height_;
@@ -279,11 +277,11 @@ Brush::make_elliptical_brush()
 	uint32* bits = (uint32*)brush_bmap->Bits();
 	uint32 bpr = brush_bmap->BytesPerRow() / 4;
 
-	for (int32 y = 0;y < height_;y++) {
+	for (int32 y = 0; y < height_; y++) {
 		float sinY = sin_val * (y - dimension);
 		float cosY = cos_val * (y - dimension);
 
-		for (int32 x = 0;x < width_;x++) {
+		for (int32 x = 0; x < width_; x++) {
 			float rotX, rotY;
 
 			rotX = cos_val * (x - dimension) - sinY;
@@ -326,36 +324,31 @@ Brush::make_span_list()
 	// pixel at both ends. In that case checking the span would mean a lot of
 	// useless work.
 	bool inside_span;
-	span *first = NULL;
-	span *current = NULL;
+	span* first = NULL;
+	span* current = NULL;
 
-	uint32 *bits = (uint32*)brush_bmap->Bits();
+	uint32* bits = (uint32*)brush_bmap->Bits();
 	uint32 bpr = brush_bmap->BytesPerRow() / 4;
-	for (int32 y=0;y<height_;y++) {
+	for (int32 y = 0; y < height_; y++) {
 		inside_span = FALSE;
-		for (int32 x=0;x<width_;x++) {
+		for (int32 x = 0; x < width_; x++) {
 			union color_conversion color;
 			color.word = *(bits + x + y * bpr);
 			if (color.bytes[3] != 0) {
 				if (inside_span == FALSE) {
 					if (first == NULL) {
-						first = new span(y,x,x);
+						first = new span(y, x, x);
 						current = first;
-					}
-					else {
-						current->next = new span(y,x,x);
+					} else {
+						current->next = new span(y, x, x);
 						current = current->next;
 					}
 					inside_span = TRUE;
-				}
-				else {
+				} else
 					current->span_end = x;
-				}
-			}
-			else {
-				if (inside_span == TRUE) {
+			} else {
+				if (inside_span == TRUE)
 					inside_span = FALSE;
-				}
 			}
 		}
 	}
@@ -366,8 +359,8 @@ Brush::make_span_list()
 void
 Brush::delete_all_data()
 {
-	span *c;
-	span *help;
+	span* c;
+	span* help;
 	if (brush_bmap != NULL) {
 		delete brush_bmap;
 		c = brush_span;
@@ -381,26 +374,26 @@ Brush::delete_all_data()
 
 
 float
-Brush::PreviewBrush(BBitmap *preview_bitmap)
+Brush::PreviewBrush(BBitmap* preview_bitmap)
 {
 	float preview_width = width_;
 	float preview_height = height_;
 
-	float bmap_width = preview_bitmap->Bounds().Width()+1;
-	float bmap_height = preview_bitmap->Bounds().Height()+1;
+	float bmap_width = preview_bitmap->Bounds().Width() + 1;
+	float bmap_height = preview_bitmap->Bounds().Height() + 1;
 
 	while ((preview_width > bmap_width) || (preview_height > bmap_height)) {
 		preview_width /= 2.0;
 		preview_height /= 2.0;
 	}
-	int32 scale = (int32)(width_/preview_width);
+	int32 scale = (int32)(width_ / preview_width);
 
-	int32 top = (int32)((bmap_height-preview_height) / 2.0);
-	int32 left = (int32)((bmap_width-preview_width) / 2.0);
+	int32 top = (int32)((bmap_height - preview_height) / 2.0);
+	int32 left = (int32)((bmap_width - preview_width) / 2.0);
 
-	uint32 *bits = (uint32*)preview_bitmap->Bits();
-	int32 bpr = preview_bitmap->BytesPerRow()/4;
-	int32 bits_length = preview_bitmap->BitsLength()/4;
+	uint32* bits = (uint32*)preview_bitmap->Bits();
+	int32 bpr = preview_bitmap->BytesPerRow() / 4;
+	int32 bits_length = preview_bitmap->BitsLength() / 4;
 	// Here we clear the bitmap.
 	union color_conversion color;
 
@@ -421,14 +414,13 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 		for (int32 y = 0; y < preview_height; ++y) {
 			for (int32 x = 0; x < preview_width; ++x) {
 				union color_conversion color;
-				color.word = *(brush_bits + (x * scale) +
-					(y * scale * brush_bpr));
+				color.word = *(brush_bits + (x * scale) + (y * scale * brush_bpr));
 				color.bytes[0] = 255 - color.bytes[0];
 				color.bytes[1] = 255 - color.bytes[1];
 				color.bytes[2] = 255 - color.bytes[2];
 
 				color.bytes[3] = 0xFF;
-				*(bits + (top+y)*bpr + left+x) = color.word;
+				*(bits + (top + y) * bpr + left + x) = color.word;
 			}
 		}
 	}
@@ -448,18 +440,18 @@ Brush::PreviewBrush(BBitmap *preview_bitmap)
 	*(bits - bpr) = color.word;
 	*(bits + bpr) = color.word;
 
-	return preview_width/width_;
+	return preview_width / width_;
 }
 
 
 void
-Brush::print_brush(uint32 **b)
+Brush::print_brush(uint32** b)
 {
 	printf("Brush:\n");
 	for (int32 y = 0; y < height_; y++) {
-		for (int32 x = 0 ; x < width_; x++) {
-			printf("%ld ",b[y][x]);
-		}
+		for (int32 x = 0; x < width_; x++)
+			printf("%ld ", b[y][x]);
+
 		printf("\n");
 	}
 }
@@ -488,7 +480,7 @@ Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 	uint32 bpr = buffer->BytesPerRow() / 4;
 	uint32* target_bits;
 	while ((spans != NULL) && (spans->row + py <= bottom_bound)) {
-		int32 left = max_c(px + spans->span_start, left_bound) ;
+		int32 left = max_c(px + spans->span_start, left_bound);
 		int32 right = min_c(px + spans->span_end, right_bound);
 		int32 y = spans->row;
 		if (y + py >= top_bound) {
@@ -518,11 +510,10 @@ Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 
 
 BRect
-Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
-	Selection* selection)
+Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, Selection* selection)
 {
-	int32 brush_width_per_2 = (int32)floor(this->Width()/2);
-	int32 brush_height_per_2 = (int32)floor(this->Height()/2);
+	int32 brush_width_per_2 = (int32)floor(this->Width() / 2);
+	int32 brush_height_per_2 = (int32)floor(this->Height() / 2);
 	BRect a_rect = MakeRectFromPoints(start, end);
 	a_rect.InsetBy(-brush_width_per_2 - 1, -brush_height_per_2 - 1);
 
@@ -538,7 +529,7 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 	else
 		sign_x = 0;
 
-	if ((end.y-start.y) != 0)
+	if ((end.y - start.y) != 0)
 		sign_y = (end.y - start.y) / fabs(start.y - end.y);
 	else
 		sign_y = 0;
@@ -559,8 +550,8 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 			last_x = (int32)round(last_point.x);
 			last_y = (int32)round(last_point.y);
 
-			this->draw(buffer, BPoint(new_x - brush_width_per_2, new_y -
-				brush_height_per_2), selection);
+			this->draw(
+				buffer, BPoint(new_x - brush_width_per_2, new_y - brush_height_per_2), selection);
 
 //			view->Window()->Lock();
 //			view->Invalidate();
@@ -569,7 +560,7 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 		}
 	} else {
 		float x_add = ((float)fabs(start.x - end.x)) / ((float)fabs(start.y - end.y));
-		number_of_points = (int32)fabs(start.y-end.y);
+		number_of_points = (int32)fabs(start.y - end.y);
 		for (int32 i = 0; i < number_of_points; i++) {
 			last_point = start;
 			start.y += sign_y;
@@ -579,8 +570,8 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end,
 			last_x = (int32)round(last_point.x);
 			last_y = (int32)round(last_point.y);
 
-			this->draw(buffer, BPoint(new_x - brush_width_per_2,
-				new_y - brush_height_per_2), selection);
+			this->draw(
+				buffer, BPoint(new_x - brush_width_per_2, new_y - brush_height_per_2), selection);
 
 //			view->Window()->Lock();
 //			view->Invalidate();

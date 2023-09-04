@@ -27,8 +27,8 @@
 
 
 #include <Bitmap.h>
-#include <CheckBox.h>
 #include <Catalog.h>
+#include <CheckBox.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <Window.h>
@@ -42,8 +42,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 TransparencyTool::TransparencyTool()
-	: DrawingTool(B_TRANSLATE("Transparency tool"), "n",
-		TRANSPARENCY_TOOL)
+	:
+	DrawingTool(B_TRANSLATE("Transparency tool"), "n", TRANSPARENCY_TOOL)
 {
 	// The pressure option controls the speed of transparency change.
 	fOptions = SIZE_OPTION | PRESSURE_OPTION | TRANSPARENCY_OPTION | USE_BRUSH_OPTION;
@@ -73,16 +73,16 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		return NULL;
 
 	image_view = view;
-	thread_id coordinate_reader = spawn_thread(CoordinateReader,
-		"read coordinates", B_NORMAL_PRIORITY, this);
+	thread_id coordinate_reader
+		= spawn_thread(CoordinateReader, "read coordinates", B_NORMAL_PRIORITY, this);
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
 
 	BWindow* window = view->Window();
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
-		((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script
+		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
 
 	BRect bounds = bitmap->Bounds();
 	uint32* bits_origin = (uint32*)bitmap->Bits();
@@ -92,7 +92,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	// for the quick calculation of square-roots
 	float sqrt_table[5500];
-	for (int32 i=0;i<5500;i++)
+	for (int32 i = 0; i < 5500; i++)
 		sqrt_table[i] = sqrt(i);
 
 	float half_width = fToolSettings.size / 2;
@@ -128,16 +128,15 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	float pressure = (float)fToolSettings.pressure / 100.;
 
-	uint8 transparency_value =
-		((100. - (float)fToolSettings.transparency) / 100.) * 255;
+	uint8 transparency_value = ((100. - (float)fToolSettings.transparency) / 100.) * 255;
 
 	status_t status_of_read;
 
 	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
 		|| (reading_coordinates == true)) {
-		if ( (status_of_read == B_OK)  ) {
-			if (selection == NULL || selection->IsEmpty() == true ||
-				selection->ContainsPoint(point)) {
+		if ((status_of_read == B_OK)) {
+			if (selection == NULL || selection->IsEmpty() == true
+				|| selection->ContainsPoint(point)) {
 
 				the_script->AddPoint(point);
 
@@ -168,29 +167,24 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 							brush_color.word = *(brush_bits + x + y * brush_bpr);
 							brush_val = brush_color.bytes[3];
 						}
-						if ((fToolSettings.use_current_brush == true && brush_val > 0.0) ||
-							(fToolSettings.use_current_brush == false &&
-							sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
+						if ((fToolSettings.use_current_brush == true && brush_val > 0.0)
+							|| (fToolSettings.use_current_brush == false
+								&& sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
 							color.word = *(bits_origin + real_y * bpr + real_x);
-							if (selection == NULL ||
-								selection->IsEmpty() == true ||
-								selection->ContainsPoint(real_x, real_y)) {
+							if (selection == NULL || selection->IsEmpty() == true
+								|| selection->ContainsPoint(real_x, real_y)) {
 
 								uint8 diff = fabs(color.bytes[3] - transparency_value);
 								uint8 step = (uint8)(ceil(diff * pressure * brush_val / 2));
 
 								if (color.bytes[3] < transparency_value) {
-									color.bytes[3] = (uint8)min_c(color.bytes[3] +
-										step,
-										transparency_value);
-									*(bits_origin + real_y*bpr + real_x) =
-										color.word;
+									color.bytes[3]
+										= (uint8)min_c(color.bytes[3] + step, transparency_value);
+									*(bits_origin + real_y * bpr + real_x) = color.word;
 								} else if (color.bytes[3] > transparency_value) {
-									color.bytes[3] = (uint8)max_c(color.bytes[3] -
-										step,
-										transparency_value);
-									*(bits_origin + real_y*bpr + real_x) =
-										color.word;
+									color.bytes[3]
+										= (uint8)max_c(color.bytes[3] - step, transparency_value);
+									*(bits_origin + real_y * bpr + real_x) = color.word;
 								}
 							}
 						}
@@ -238,15 +232,15 @@ TransparencyTool::ToolCursor() const
 const char*
 TransparencyTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Adjusting the layer's transparency.")
-		: B_TRANSLATE("Transparency tool"));
+	return (isInUse ? B_TRANSLATE("Adjusting the layer's transparency.")
+					: B_TRANSLATE("Transparency tool"));
 }
 
+
 int32
-TransparencyTool::CoordinateReader(void *data)
+TransparencyTool::CoordinateReader(void* data)
 {
-	TransparencyTool *this_pointer = (TransparencyTool*)data;
+	TransparencyTool* this_pointer = (TransparencyTool*)data;
 	return this_pointer->read_coordinates();
 }
 
@@ -256,13 +250,13 @@ TransparencyTool::read_coordinates()
 {
 	reading_coordinates = true;
 	uint32 buttons;
-	BPoint point,prev_point;
+	BPoint point, prev_point;
 	BPoint view_point;
 	image_view->Window()->Lock();
-	image_view->getCoords(&point,&buttons,&view_point);
+	image_view->getCoords(&point, &buttons, &view_point);
 	image_view->MovePenTo(view_point);
 	image_view->Window()->Unlock();
-	prev_point = point + BPoint(1,1);
+	prev_point = point + BPoint(1, 1);
 
 	while (buttons) {
 		image_view->Window()->Lock();
@@ -270,7 +264,7 @@ TransparencyTool::read_coordinates()
 			coordinate_queue->Put(point);
 			prev_point = point;
 		}
-		image_view->getCoords(&point,&buttons,&view_point);
+		image_view->getCoords(&point, &buttons, &view_point);
 		image_view->Window()->Unlock();
 		snooze(20 * 1000);
 	}
@@ -283,38 +277,34 @@ TransparencyTool::read_coordinates()
 
 
 TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SIZE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-		fSizeSlider =
-			new NumberSliderControl(B_TRANSLATE("Size:"),
-			"1", message, 1, 100, false);
+		fSizeSlider = new NumberSliderControl(B_TRANSLATE("Size:"), "1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", TRANSPARENCY_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(TRANSPARENCY_OPTION));
 
-		fTransparencySlider =
-			new NumberSliderControl(B_TRANSLATE("Transparency:"),
-			"1", message, 0, 100, false);
+		fTransparencySlider
+			= new NumberSliderControl(B_TRANSLATE("Transparency:"), "1", message, 0, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", PRESSURE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(PRESSURE_OPTION));
 
-		fSpeedSlider =
-			new NumberSliderControl(B_TRANSLATE("Pressure:"),
-			"1", message, 1, 100, false);
+		fSpeedSlider
+			= new NumberSliderControl(B_TRANSLATE("Pressure:"), "1", message, 1, 100, false);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", USE_BRUSH_OPTION);
 		message->AddInt32("value", 0x00000000);
-		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
-			message);
+		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"), message);
 
 		BGridLayout* sizeLayout = BGridLayoutBuilder(5.0, 5.0)
 			.Add(fSizeSlider, 0, 0, 0, 0)
@@ -351,9 +341,8 @@ TransparencyToolConfigView::TransparencyToolConfigView(DrawingTool* tool)
 		);
 
 		fUseBrush->SetValue(tool->GetCurrentValue(USE_BRUSH_OPTION));
-		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF) {
+		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF)
 			fSizeSlider->SetEnabled(FALSE);
-		}
 	}
 }
 
@@ -375,8 +364,9 @@ TransparencyToolConfigView::MessageReceived(BMessage* message)
 {
 	DrawingToolConfigView::MessageReceived(message);
 
-	switch(message->what) {
-		case OPTION_CHANGED: {
+	switch (message->what) {
+		case OPTION_CHANGED:
+		{
 			if (message->FindInt32("option") == USE_BRUSH_OPTION) {
 				if (fUseBrush->Value() == B_CONTROL_OFF)
 					fSizeSlider->SetEnabled(TRUE);

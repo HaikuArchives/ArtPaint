@@ -13,8 +13,8 @@
 #include <Window.h>
 
 #include "AddOns.h"
-#include "NegativeAddOn.h"
 #include "ManipulatorInformer.h"
+#include "NegativeAddOn.h"
 #include "Selection.h"
 
 #undef B_TRANSLATION_CONTEXT
@@ -22,7 +22,8 @@
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 	char name[255] = B_TRANSLATE_MARK("Negative");
 	char menu_help_string[255] = B_TRANSLATE_MARK("Makes a negative of the active layer.");
@@ -33,68 +34,65 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 {
 	delete i;
 	return new NegativeAddOnManipulator(bm);
 }
 
 
-
-
 NegativeAddOnManipulator::NegativeAddOnManipulator(BBitmap*)
-		: Manipulator(),
-		selection(NULL)
+	:
+	Manipulator(),
+	selection(NULL)
 {
 }
 
 
 NegativeAddOnManipulator::~NegativeAddOnManipulator()
 {
-
 }
 
 
-BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap* original,
-	BStatusBar* status_bar)
+BBitmap*
+NegativeAddOnManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
-	progress_message.AddFloat("delta",0.0);
+	progress_message.AddFloat("delta", 0.0);
 	if (status_bar != NULL) {
-		progress_message.ReplaceFloat("delta",100);
-		status_bar->Window()->PostMessage(&progress_message,status_bar);
+		progress_message.ReplaceFloat("delta", 100);
+		status_bar->Window()->PostMessage(&progress_message, status_bar);
 	}
 
-	int32 bits_length = original->BitsLength()/4;
-	uint32 *bits = (uint32*)original->Bits();
+	int32 bits_length = original->BitsLength() / 4;
+	uint32* bits = (uint32*)original->Bits();
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color;
 
 	if (selection->IsEmpty() == TRUE) {
-		for (int32 i=0;i<bits_length;i++) {
+		for (int32 i = 0; i < bits_length; i++) {
 			color.word = *bits;
 			color.bytes[0] = 255 - color.bytes[0];
 			color.bytes[1] = 255 - color.bytes[1];
 			color.bytes[2] = 255 - color.bytes[2];
 			*bits++ = color.word;
 		}
-	}
-	else {
+	} else {
 		int32 width = original->Bounds().Width();
 		int32 height = original->Bounds().Height();
 
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				if (selection->ContainsPoint(x,y)) {
+		for (int32 y = 0; y <= height; y++) {
+			for (int32 x = 0; x <= width; x++) {
+				if (selection->ContainsPoint(x, y)) {
 					color.word = *bits;
 					color.bytes[0] = 255 - color.bytes[0];
 					color.bytes[1] = 255 - color.bytes[1];
 					color.bytes[2] = 255 - color.bytes[2];
 					*bits++ = color.word;
-				}
-				else
+				} else
 					++bits;
 			}
 		}
@@ -103,13 +101,15 @@ BBitmap* NegativeAddOnManipulator::ManipulateBitmap(BBitmap* original,
 }
 
 
-const char* NegativeAddOnManipulator::ReturnHelpString()
+const char*
+NegativeAddOnManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Makes a negative of the active layer.");
 }
 
 
-const char*	NegativeAddOnManipulator::ReturnName()
+const char*
+NegativeAddOnManipulator::ReturnName()
 {
 	return B_TRANSLATE("Negative");
 }

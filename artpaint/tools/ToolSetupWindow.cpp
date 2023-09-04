@@ -34,11 +34,11 @@ ToolSetupWindow* ToolSetupWindow::sfToolSetupWindow = NULL;
 
 
 ToolSetupWindow::ToolSetupWindow(BRect frame)
-	: BWindow(frame, B_TRANSLATE("Tool setup"),
-		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
-		B_NOT_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT |
-		B_AUTO_UPDATE_SIZE_LIMITS)
-	, fCurrentTool(-1)
+	:
+	BWindow(frame, B_TRANSLATE("Tool setup"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+		B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT
+			| B_AUTO_UPDATE_SIZE_LIMITS),
+	fCurrentTool(-1)
 {
 	BGroupLayout* layout = new BGroupLayout(B_VERTICAL);
 	SetLayout(layout);
@@ -46,8 +46,8 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 	layout->View()->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	if (Lock()) {
-		AddCommonFilter(new BMessageFilter(B_ANY_DELIVERY, B_ANY_SOURCE,
-			B_MOUSE_DOWN, window_activation_filter));
+		AddCommonFilter(new BMessageFilter(
+			B_ANY_DELIVERY, B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter));
 		AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
 		Unlock();
 	}
@@ -66,20 +66,16 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 	}
 	SetWindowFeel(feel);
 
-	if (server) {
-		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible,
-			true);
-	}
+	if (server)
+		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible, true);
 }
 
 
 ToolSetupWindow::~ToolSetupWindow()
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible,
-			false);
-		server->SetValue(SettingsServer::Application, skToolSetupWindowFrame,
-			Frame());
+		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible, false);
+		server->SetValue(SettingsServer::Application, skToolSetupWindowFrame, Frame());
 	}
 
 	sfToolSetupWindow = NULL;
@@ -132,15 +128,13 @@ ToolSetupWindow::ShowToolSetupWindow(int32 toolType)
 void
 ToolSetupWindow::SetWindowFeel(window_feel feel)
 {
-	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skToolSetupWindowFeel,
-			int32(feel));
-	}
+	if (SettingsServer* server = SettingsServer::Instance())
+		server->SetValue(SettingsServer::Application, skToolSetupWindowFeel, int32(feel));
 
 	if (sfToolSetupWindow) {
 		sfToolSetupWindow->SetFeel(feel);
-		sfToolSetupWindow->SetLook((feel == B_NORMAL_WINDOW_FEEL
-			? B_TITLED_WINDOW_LOOK : B_FLOATING_WINDOW_LOOK));
+		sfToolSetupWindow->SetLook(
+			(feel == B_NORMAL_WINDOW_FEEL ? B_TITLED_WINDOW_LOOK : B_FLOATING_WINDOW_LOOK));
 	}
 }
 
@@ -169,10 +163,12 @@ ToolSetupWindow::_UpdateConfigurationView(int32 tool)
 
 		BView* configView = ToolManager::Instance().ConfigView(tool);
 		if (configView == NULL) {
-			BBox* box = new BBox(B_FANCY_BORDER, BGroupLayoutBuilder(B_VERTICAL)
-				.Add(new BStringView("", B_TRANSLATE("No configuration options available.")))
-				.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0)
-				.TopView());
+			BBox* box = new BBox(B_FANCY_BORDER,
+				BGroupLayoutBuilder(B_VERTICAL)
+					.Add(new BStringView("", B_TRANSLATE("No configuration options available.")))
+					.SetInsets(10.0, be_bold_font->Size(), 10.0, 10.0)
+					.TopView()
+				);
 			box->SetLabel(ToolManager::Instance().ReturnTool(tool)->Name().String());
 			configView = box;
 		}

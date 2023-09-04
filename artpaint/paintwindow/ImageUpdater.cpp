@@ -17,16 +17,17 @@
 
 
 ImageUpdater::ImageUpdater(ImageView* imageView, bigtime_t updateInterval)
-	: fImageView(imageView)
-	, fUpdatedRect(BRect())
-	, fUpdateInterval(updateInterval)
-	, fContinueUpdating(true)
-	, fBenaphoreCount(0)
-	, fBenaphoreMutex(create_sem(0, "BenaphoreMutex"))
+	:
+	fImageView(imageView),
+	fUpdatedRect(BRect()),
+	fUpdateInterval(updateInterval),
+	fContinueUpdating(true),
+	fBenaphoreCount(0),
+	fBenaphoreMutex(create_sem(0, "BenaphoreMutex"))
 {
 	if (fUpdateInterval > 0) {
-		fUpdaterThreadId = spawn_thread(_ThreadFunc, "ImageUpdaterThread",
-			B_DISPLAY_PRIORITY, this);
+		fUpdaterThreadId
+			= spawn_thread(_ThreadFunc, "ImageUpdaterThread", B_DISPLAY_PRIORITY, this);
 		resume_thread(fUpdaterThreadId);
 	}
 }
@@ -100,7 +101,7 @@ ImageUpdater::_Update()
 int32
 ImageUpdater::_ThreadFunc(void* data)
 {
-	ImageUpdater* imageUpdater = static_cast<ImageUpdater*> (data);
+	ImageUpdater* imageUpdater = static_cast<ImageUpdater*>(data);
 	return imageUpdater->_Update();
 }
 

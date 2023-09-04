@@ -12,15 +12,14 @@
 #include "CustomGridLayout.h"
 #include "FloaterManager.h"
 #include "ImageView.h"
-#include "MessageConstants.h"
-#include "MessageFilters.h"
 #include "Layer.h"
 #include "LayerView.h"
+#include "MessageConstants.h"
+#include "MessageFilters.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "PaintWindow.h"
 #include "PixelOperations.h"
-#include "UtilityClasses.h"
 #include "SettingsServer.h"
 #include "UtilityClasses.h"
 
@@ -29,8 +28,8 @@
 #include <Button.h>
 #include <Catalog.h>
 #include <Font.h>
-#include <GroupLayout.h>
 #include <GridLayout.h>
+#include <GroupLayout.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <MenuField.h>
@@ -61,34 +60,30 @@ LayerWindow* LayerWindow::layer_window = NULL;
 BWindow* LayerWindow::target_window = NULL;
 BList* LayerWindow::target_list = NULL;
 const char* LayerWindow::window_title = NULL;
-sem_id LayerWindow::layer_window_semaphore = create_sem(1,"layer window semaphore");
+sem_id LayerWindow::layer_window_semaphore = create_sem(1, "layer window semaphore");
 
 
 LayerWindow::LayerWindow(BRect frame)
-	: BWindow(frame, B_TRANSLATE("Layers"),
-		B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_NOT_ZOOMABLE)
+	:
+	BWindow(
+		frame, B_TRANSLATE("Layers"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE)
 {
 	top_part = new BBox(B_PLAIN_BORDER, NULL);
 	title_view = new BStringView("title", "");
 
 	layer_operation_menu = new BMenu(B_TRANSLATE("Layer"));
 
-	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Add"),
-		new BMessage(HS_ADD_LAYER_FRONT)));
+	layer_operation_menu->AddItem(
+		new BMenuItem(B_TRANSLATE("Add"), new BMessage(HS_ADD_LAYER_FRONT)));
 
-	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Delete"),
-		new BMessage(HS_DELETE_LAYER)));
+	layer_operation_menu->AddItem(
+		new BMenuItem(B_TRANSLATE("Delete"), new BMessage(HS_DELETE_LAYER)));
 
-	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Duplicate"),
-		new BMessage(HS_DUPLICATE_LAYER)));
+	layer_operation_menu->AddItem(
+		new BMenuItem(B_TRANSLATE("Duplicate"), new BMessage(HS_DUPLICATE_LAYER)));
 
-	layer_operation_menu->AddItem(new BMenuItem(
-		B_TRANSLATE("Merge down"),
-		new BMessage(HS_MERGE_WITH_LOWER_LAYER)));
+	layer_operation_menu->AddItem(
+		new BMenuItem(B_TRANSLATE("Merge down"), new BMessage(HS_MERGE_WITH_LOWER_LAYER)));
 
 	layer_operation_menu->SetRadioMode(false);
 
@@ -206,15 +201,13 @@ LayerWindow::LayerWindow(BRect frame)
 
 	blend_mode_menu->ItemAt(0)->SetMarked(TRUE);
 
-	BMenuField* blend_dropdown = new BMenuField("blend_dropdown",
-		B_TRANSLATE("Mode:"), blend_mode_menu);
+	BMenuField* blend_dropdown
+		= new BMenuField("blend_dropdown", B_TRANSLATE("Mode:"), blend_mode_menu);
 
 	BMessage* message = new BMessage(HS_LAYER_TRANSPARENCY_CHANGED);
 	message->AddInt32("value", 0);
 
-	transparency_slider =
-		new NumberSliderControl("Alpha:", "0",
-		message, 0, 100, false, false);
+	transparency_slider = new NumberSliderControl("Alpha:", "0", message, 0, 100, false, false);
 
 	BFont font;
 
@@ -227,21 +220,19 @@ LayerWindow::LayerWindow(BRect frame)
 		.Add(blend_dropdown->CreateMenuBarLayoutItem(), 1, 1, 3);
 
 	transparencyLayout->SetMaxColumnWidth(1, font.StringWidth("1"));
-	transparencyLayout->SetMinColumnWidth(2,
-		font.StringWidth("SLIDERSLIDERSLIDER"));
+	transparencyLayout->SetMinColumnWidth(2, font.StringWidth("SLIDERSLIDERSLIDER"));
 
 	transparency_slider->Slider()->SetToolTip(B_TRANSLATE("Layer transparency"));
 
 	BGroupLayout* topLayout = BLayoutBuilder::Group<>(top_part, B_VERTICAL)
 		.Add(transparencyLayout)
-		.SetInsets(B_USE_SMALL_INSETS, B_USE_SMALL_INSETS,
-			B_USE_SMALL_INSETS, B_USE_SMALL_INSETS);
+		.SetInsets(B_USE_SMALL_INSETS, B_USE_SMALL_INSETS, B_USE_SMALL_INSETS, B_USE_SMALL_INSETS);
 
 	list_view = new LayerListView();
 	list_view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
-	BScrollView* scroll_view = new BScrollView("scroller", list_view,
-		B_FRAME_EVENTS, false, true, B_NO_BORDER);
+	BScrollView* scroll_view
+		= new BScrollView("scroller", list_view, B_FRAME_EVENTS, false, true, B_NO_BORDER);
 	scroll_view->ScrollBar(B_VERTICAL)->SetSteps(8.0, 32.0);
 
 	BGroupLayout* mainLayout = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
@@ -259,23 +250,20 @@ LayerWindow::LayerWindow(BRect frame)
 		server->GetApplicationSettings(&settings);
 
 		settings.FindInt32(skLayerWindowFeel, (int32*)&feel);
-		server->SetValue(SettingsServer::Application, skLayerWindowVisible,
-			true);
+		server->SetValue(SettingsServer::Application, skLayerWindowVisible, true);
 	}
 	setFeel(feel);
-	float min_width = font.StringWidth("W") * 20 +
-		scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width();
+	float min_width
+		= font.StringWidth("W") * 20 + scroll_view->ScrollBar(B_VERTICAL)->Bounds().Width();
 
-	scroll_view->SetExplicitMinSize(BSize(min_width,
-		LAYER_VIEW_HEIGHT));
+	scroll_view->SetExplicitMinSize(BSize(min_width, LAYER_VIEW_HEIGHT));
 
 	if (Lock()) {
-		BMessageFilter *activation_filter = new BMessageFilter(B_ANY_DELIVERY,
-			B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
+		BMessageFilter* activation_filter = new BMessageFilter(
+			B_ANY_DELIVERY, B_ANY_SOURCE, B_MOUSE_DOWN, window_activation_filter);
 		AddCommonFilter(activation_filter);
 		AddCommonFilter(new BMessageFilter(B_KEY_DOWN, AppKeyFilterFunction));
-		SetSizeLimits(min_width, 1000,
-			LAYER_VIEW_HEIGHT * 2.5, 1000);
+		SetSizeLimits(min_width, 1000, LAYER_VIEW_HEIGHT * 2.5, 1000);
 		Unlock();
 	}
 	Show();
@@ -295,10 +283,8 @@ LayerWindow::~LayerWindow()
 	release_sem(layer_window_semaphore);
 
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skLayerWindowFrame,
-			Frame());
-		server->SetValue(SettingsServer::Application, skLayerWindowVisible,
-			false);
+		server->SetValue(SettingsServer::Application, skLayerWindowFrame, Frame());
+		server->SetValue(SettingsServer::Application, skLayerWindowVisible, false);
 	}
 
 	FloaterManager::RemoveFloater(this);
@@ -306,7 +292,7 @@ LayerWindow::~LayerWindow()
 
 
 void
-LayerWindow::MessageReceived(BMessage *message)
+LayerWindow::MessageReceived(BMessage* message)
 {
 	// a standard switch to handle the messages
 	switch (message->what) {
@@ -314,71 +300,78 @@ LayerWindow::MessageReceived(BMessage *message)
 		case HS_DUPLICATE_LAYER:
 		case HS_DELETE_LAYER:
 		case HS_MERGE_WITH_LOWER_LAYER:
+		{
 			if (active_layer != NULL) {
 				BMessage layer_op_message;
 				layer_op_message.what = message->what;
 				layer_op_message.AddInt32("layer_id", active_layer->Id());
-				layer_op_message.AddPointer("layer_pointer",(void*)active_layer);
+				layer_op_message.AddPointer("layer_pointer", (void*)active_layer);
 
-				BView *image_view = (BView*)active_layer->GetImageView();
-				BWindow *image_window = image_view->Window();
+				BView* image_view = (BView*)active_layer->GetImageView();
+				BWindow* image_window = image_view->Window();
 
 				if (image_window && active_layer->IsActive())
 					image_window->PostMessage(&layer_op_message, image_view);
-			} break;
+			}
+		} break;
 		case HS_LAYER_TRANSPARENCY_CHANGED:
+		{
 			if (active_layer != NULL && active_layer->IsActive()) {
 				int32 value = transparency_slider->Value();
 
 				BMessage layer_op_message;
 				layer_op_message.what = message->what;
 				layer_op_message.AddInt32("layer_id", active_layer->Id());
-				layer_op_message.AddPointer("layer_pointer",(void*)active_layer);
+				layer_op_message.AddPointer("layer_pointer", (void*)active_layer);
 				layer_op_message.AddInt32("transparency", value);
 				bool final = false;
 				layer_op_message.AddBool("final", final);
 				if (message->FindBool("final", &final) == B_OK)
 					layer_op_message.ReplaceBool("final", final);
 
-				//active_layer->SetTransparency((float)value / 100.0f);
+				// active_layer->SetTransparency((float)value / 100.0f);
 
-				BView *image_view = (BView*)active_layer->GetImageView();
-				BWindow *image_window = image_view->Window();
+				BView* image_view = (BView*)active_layer->GetImageView();
+				BWindow* image_window = image_view->Window();
 
 				if (image_window && active_layer->IsActive())
 					image_window->PostMessage(&layer_op_message, image_view);
-			} break;
+			}
+		} break;
 		case HS_LAYER_BLEND_MODE_CHANGED:
+		{
 			if (active_layer != NULL && active_layer->IsActive()) {
 				uint8 mode;
-				if(message->FindUInt8("blend_mode", &mode) == B_OK) {
+				if (message->FindUInt8("blend_mode", &mode) == B_OK) {
 					BMessage layer_op_message;
 					layer_op_message.what = message->what;
 					layer_op_message.AddInt32("layer_id", active_layer->Id());
-					layer_op_message.AddPointer("layer_pointer",(void*)active_layer);
+					layer_op_message.AddPointer("layer_pointer", (void*)active_layer);
 					layer_op_message.AddUInt8("blend_mode", mode);
 
-					BView *image_view = (BView*)active_layer->GetImageView();
-					BWindow *image_window = image_view->Window();
+					BView* image_view = (BView*)active_layer->GetImageView();
+					BWindow* image_window = image_view->Window();
 
 					if (image_window && active_layer->IsActive())
 						image_window->PostMessage(&layer_op_message, image_view);
 				}
-			} break;
+			}
+		} break;
 		case B_KEY_DOWN:
 		case B_UNMAPPED_KEY_DOWN:
+		{
 			if (active_layer != NULL && active_layer->IsActive()) {
-				BView *image_view = (BView*)active_layer->GetImageView();
-				BWindow *image_window = image_view->Window();
+				BView* image_view = (BView*)active_layer->GetImageView();
+				BWindow* image_window = image_view->Window();
 
 				if (image_window && active_layer->IsActive()) {
 					image_window->Activate();
 					image_window->PostMessage(message);
 				}
-			} break;
+			}
+		} break;
 		default:
 			BWindow::MessageReceived(message);
-			break;
 	}
 }
 
@@ -391,14 +384,13 @@ LayerWindow::QuitRequested()
 
 
 void
-LayerWindow::ActiveWindowChanged(BWindow *active_window,
-	BList *list, BBitmap *composite)
+LayerWindow::ActiveWindowChanged(BWindow* active_window, BList* list, BBitmap* composite)
 {
 	acquire_sem(layer_window_semaphore);
 	target_window = active_window;
 	target_list = list;
 
-	Layer *a_layer = NULL;
+	Layer* a_layer = NULL;
 	if (list != NULL)
 		a_layer = (Layer*)list->ItemAt(0);
 
@@ -433,8 +425,7 @@ LayerWindow::showLayerWindow()
 		new LayerWindow(FitRectToScreen(frame));
 
 		layer_window->Update();
-	}
-	else {
+	} else {
 		layer_window->SetWorkspaces(B_CURRENT_WORKSPACE);
 		layer_window->Show();
 		layer_window->Activate();
@@ -450,8 +441,7 @@ void
 LayerWindow::setFeel(window_feel feel)
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skLayerWindowFeel,
-			int32(feel));
+		server->SetValue(SettingsServer::Application, skLayerWindowFeel, int32(feel));
 	}
 
 	if (layer_window) {
@@ -511,20 +501,20 @@ LayerWindow::Update()
 		if (layer_count != target_list->CountItems())
 			must_update = TRUE;
 		else {
-			for (int32 i = 0;i < list_view->CountChildren(); i++) {
-				Layer *layer = (Layer*)((LayerView*)list_view->ChildAt(i))->ReturnLayer();
+			for (int32 i = 0; i < list_view->CountChildren(); i++) {
+				Layer* layer = (Layer*)((LayerView*)list_view->ChildAt(i))->ReturnLayer();
 				if (layer != (Layer*)target_list->ItemAt(i))
 					must_update = TRUE;
 				if (layer->IsActive())
 					SetActiveLayer(layer);
 			}
 		}
-		if ((window_title == NULL) || (title_view->Text() == NULL) || (strcmp(window_title,title_view->Text()) != 0))
+		if ((window_title == NULL) || (title_view->Text() == NULL)
+			|| (strcmp(window_title, title_view->Text()) != 0))
 			must_update = TRUE;
 
 		layer_window->Unlock();
-	}
-	else
+	} else
 		must_update = TRUE;
 
 	if (must_update) {
@@ -533,7 +523,7 @@ LayerWindow::Update()
 		BGridLayout* layout = (BGridLayout*)layer_window->list_view->GetLayout();
 
 		while (layout->CountItems() > 0)
-			layout->RemoveItem((int32) 0);
+			layout->RemoveItem((int32)0);
 
 		// locking target_window here causes deadlocks so we do not lock it at the moment
 		// concurrency problems with the closing of target_window should be solved somehow though
@@ -544,16 +534,15 @@ LayerWindow::Update()
 			if (target_list != NULL) {
 				// Reorder the layers' views so that the topmost layer's view is at the top.
 				int numItems = target_list->CountItems();
-				for (int32 i = numItems - 1;i >= 0; i--) {
+				for (int32 i = numItems - 1; i >= 0; i--) {
 					Layer* added_layer = (Layer*)target_list->ItemAt(i);
-					LayerView *added_view = (LayerView*)(added_layer)->GetView();
+					LayerView* added_view = (LayerView*)(added_layer)->GetView();
 					layout->AddView(added_view, 0, numItems - i);
 					if (added_layer->IsActive())
 						SetActiveLayer(added_layer);
 				}
 				number_of_layers = target_list->CountItems();
-				layout->AddItem(BSpaceLayoutItem::CreateGlue(), 0,
-					number_of_layers + 1);
+				layout->AddItem(BSpaceLayoutItem::CreateGlue(), 0, number_of_layers + 1);
 			}
 		}
 
@@ -579,14 +568,14 @@ LayerWindow::SetActiveLayer(Layer* layer)
 {
 	active_layer = layer;
 	transparency_slider->SetValue(active_layer->GetTransparency() * 100);
-	BMenuItem* blend_mode_item = blend_mode_menu->FindItem(
-		mode_to_string((BlendModes)(active_layer->GetBlendMode())));
+	BMenuItem* blend_mode_item
+		= blend_mode_menu->FindItem(mode_to_string((BlendModes)(active_layer->GetBlendMode())));
 
 	if (blend_mode_item)
 		blend_mode_item->SetMarked(true);
 
-	BView *image_view = (BView*)active_layer->GetImageView();
-	PaintWindow *image_window = (PaintWindow*)(image_view->Window());
+	BView* image_view = (BView*)active_layer->GetImageView();
+	PaintWindow* image_window = (PaintWindow*)(image_view->Window());
 	BMenuBar* main_menubar = image_window->ReturnMenuBar();
 
 	layer_operation_menu->FindItem(HS_DELETE_LAYER)->SetEnabled(TRUE);
@@ -603,14 +592,14 @@ LayerWindow::SetActiveLayer(Layer* layer)
 		layer_operation_menu->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
 		main_menubar->FindItem(HS_MERGE_WITH_LOWER_LAYER)->SetEnabled(TRUE);
 	}
-
 }
 
 
 LayerListView::LayerListView()
-	: BView("list of layers", B_WILL_DRAW | B_FRAME_EVENTS)
+	:
+	BView("list of layers", B_WILL_DRAW | B_FRAME_EVENTS)
 {
-	CustomGridLayout *mainLayout = new CustomGridLayout(B_USE_DEFAULT_SPACING, 0.0);
+	CustomGridLayout* mainLayout = new CustomGridLayout(B_USE_DEFAULT_SPACING, 0.0);
 	SetLayout(mainLayout);
 }
 
@@ -623,7 +612,7 @@ LayerListView::~LayerListView()
 void
 LayerListView::DetachedFromWindow()
 {
-	BView *view = ScrollBar(B_VERTICAL);
+	BView* view = ScrollBar(B_VERTICAL);
 
 	if (view != NULL) {
 		view->RemoveSelf();

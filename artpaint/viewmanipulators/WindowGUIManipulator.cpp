@@ -13,13 +13,15 @@
 
 
 WindowGUIManipulatorView::WindowGUIManipulatorView()
-	: BView("window_gui_manipulator_view", B_WILL_DRAW, NULL)
+	:
+	BView("window_gui_manipulator_view", B_WILL_DRAW, NULL)
 {
 }
 
 
 WindowGUIManipulatorView::WindowGUIManipulatorView(BRect rect)
-	: BView(rect,"window_gui_manipulator_view",B_FOLLOW_ALL_SIDES,B_WILL_DRAW)
+	:
+	BView(rect, "window_gui_manipulator_view", B_FOLLOW_ALL_SIDES, B_WILL_DRAW)
 {
 }
 

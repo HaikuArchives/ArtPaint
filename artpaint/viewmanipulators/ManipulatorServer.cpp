@@ -17,8 +17,8 @@
 #include "GUIManipulator.h"
 #include "ManipulatorInformer.h"
 #include "PaintApplication.h"
-#include "RotationManipulator.h"
 #include "Rotate90Manipulator.h"
+#include "RotationManipulator.h"
 #include "ScaleCanvasManipulator.h"
 #include "ScaleManipulator.h"
 #include "SettingsServer.h"
@@ -50,10 +50,11 @@ ManipulatorServer::Instance()
 
 
 ManipulatorServer::ManipulatorServer()
-	: fAddonsLoaded(false)
+	:
+	fAddonsLoaded(false)
 {
-	thread_id threadId = spawn_thread(_AddOnLoaderThread, "AddOnLoaderThread",
-		B_NORMAL_PRIORITY, NULL);
+	thread_id threadId
+		= spawn_thread(_AddOnLoaderThread, "AddOnLoaderThread", B_NORMAL_PRIORITY, NULL);
 	if (threadId >= 0)
 		resume_thread(threadId);
 }
@@ -96,101 +97,99 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 	Manipulator* manipulator = NULL;
 
 	switch (type) {
-		case ADD_ON_MANIPULATOR: {
+		case ADD_ON_MANIPULATOR:
+		{
 			Manipulator* (*Instantiate)(BBitmap*, ManipulatorInformer*);
-			status_t status = get_image_symbol(imageId, "instantiate_add_on",
-				B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
+			status_t status = get_image_symbol(
+				imageId, "instantiate_add_on", B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
 			if (status == B_OK) {
 				manipulator = Instantiate(NULL, new ManipulatorInformer());
 				manipulator->add_on_id = imageId;
 				// Here we also give the add-on a chance to load its settings if
 				// it is a GUIManipulator
 				BNode node;
-				GUIManipulator *gui_manipulator
-					= dynamic_cast<GUIManipulator*> (manipulator);
+				GUIManipulator* gui_manipulator = dynamic_cast<GUIManipulator*>(manipulator);
 				if (gui_manipulator && _GetNodeFor(imageId, &node) == B_OK)
 					gui_manipulator->ReadSettings(&node);
 			}
-		}	break;
-
-		case FREE_TRANSFORM_MANIPULATOR: {
+		} break;
+		case FREE_TRANSFORM_MANIPULATOR:
+		{
 			manipulator = new FreeTransformManipulator(NULL);
-		}	break;
-
-		case TRANSLATION_MANIPULATOR: {
+		} break;
+		case TRANSLATION_MANIPULATOR:
+		{
 			manipulator = new TranslationManipulator(NULL);
-		}	break;
-
-		case TRANSLATE_SELECTION_MANIPULATOR: {
+		} break;
+		case TRANSLATE_SELECTION_MANIPULATOR:
+		{
 			manipulator = new TranslationManipulator(NULL);
 			((TranslationManipulator*)manipulator)->SetTransformSelectionOnly(true);
-		} 	break;
-
-		case ROTATION_MANIPULATOR: {
+		} break;
+		case ROTATION_MANIPULATOR:
+		{
 			manipulator = new RotationManipulator(NULL);
-		}	break;
-
-		case ROTATE_SELECTION_MANIPULATOR: {
+		} break;
+		case ROTATE_SELECTION_MANIPULATOR:
+		{
 			manipulator = new RotationManipulator(NULL);
 			((RotationManipulator*)manipulator)->SetTransformSelectionOnly(true);
-		}	break;
-
-		case HORIZ_FLIP_MANIPULATOR: {
+		} break;
+		case HORIZ_FLIP_MANIPULATOR:
+		{
 			manipulator = new HorizFlipManipulator();
-		}	break;
-
-		case VERT_FLIP_MANIPULATOR: {
+		} break;
+		case VERT_FLIP_MANIPULATOR:
+		{
 			manipulator = new VertFlipManipulator();
-		}	break;
-
-		case ROTATE_CW_MANIPULATOR: {
+		} break;
+		case ROTATE_CW_MANIPULATOR:
+		{
 			manipulator = new RotationManipulator(NULL);
 			((RotationManipulator*)manipulator)->SetAngle(90.);
-			GUIManipulator *gui_manipulator
-					= dynamic_cast<GUIManipulator*> (manipulator);
+			GUIManipulator* gui_manipulator = dynamic_cast<GUIManipulator*>(manipulator);
 			if (gui_manipulator != NULL)
 				gui_manipulator->EnableWindow(false);
-		}	break;
-
-		case ROTATE_CCW_MANIPULATOR: {
+		} break;
+		case ROTATE_CCW_MANIPULATOR:
+		{
 			manipulator = new RotationManipulator(NULL);
 			((RotationManipulator*)manipulator)->SetAngle(-90.);
-			GUIManipulator *gui_manipulator
-					= dynamic_cast<GUIManipulator*> (manipulator);
+			GUIManipulator* gui_manipulator = dynamic_cast<GUIManipulator*>(manipulator);
 			if (gui_manipulator != NULL)
 				gui_manipulator->EnableWindow(false);
-		}	break;
-
-		case ROTATE_CW_CANVAS_MANIPULATOR: {
+		} break;
+		case ROTATE_CW_CANVAS_MANIPULATOR:
+		{
 			manipulator = new Rotate90ClockwiseManipulator();
-		}	break;
-
-		case ROTATE_CCW_CANVAS_MANIPULATOR: {
+		} break;
+		case ROTATE_CCW_CANVAS_MANIPULATOR:
+		{
 			manipulator = new Rotate90CounterclockwiseManipulator();
-		}	break;
-
-		case SCALE_MANIPULATOR: {
+		} break;
+		case SCALE_MANIPULATOR:
+		{
 			manipulator = new ScaleManipulator(NULL);
-		}	break;
-
-		case SCALE_CANVAS_MANIPULATOR: {
+		} break;
+		case SCALE_CANVAS_MANIPULATOR:
+		{
 			manipulator = new ScaleCanvasManipulator(NULL);
-		}	break;
-
-		case SCALE_SELECTION_MANIPULATOR: {
+		} break;
+		case SCALE_SELECTION_MANIPULATOR:
+		{
 			manipulator = new ScaleManipulator(NULL);
 			((ScaleManipulator*)manipulator)->SetTransformSelectionOnly(true);
-		} 	break;
-
-		case CROP_MANIPULATOR: {
+		} break;
+		case CROP_MANIPULATOR:
+		{
 			manipulator = new CropManipulator(NULL);
-		}	break;
-
-		case TRANSPARENCY_MANIPULATOR: {
+		} break;
+		case TRANSPARENCY_MANIPULATOR:
+		{
 			manipulator = new TransparencyManipulator(NULL);
-		}	break;
-
-		case TEXT_MANIPULATOR:  {
+		} break;
+		case TEXT_MANIPULATOR:
+		{
 			TextManipulator* textManipulator = new TextManipulator(NULL);
 			if (SettingsServer* server = SettingsServer::Instance()) {
 				BMessage settings;
@@ -198,11 +197,9 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 					textManipulator->Restore(settings);
 			}
 			manipulator = textManipulator;
-		}	break;
-
-		default: {
+		} break;
+		default:
 			manipulator = NULL;
-		}	break;
 	}
 
 	return manipulator;
@@ -214,8 +211,7 @@ ManipulatorServer::StoreManipulatorSettings(Manipulator* manipulator)
 {
 	// Currently the text-manipulator is the only internal manipulator that
 	// stores its settings.
-	TextManipulator* textManipulator
-		= dynamic_cast<TextManipulator*> (manipulator);
+	TextManipulator* textManipulator = dynamic_cast<TextManipulator*>(manipulator);
 	if (textManipulator) {
 		BMessage settings;
 		if (textManipulator->Save(settings) == B_OK) {
@@ -223,8 +219,7 @@ ManipulatorServer::StoreManipulatorSettings(Manipulator* manipulator)
 				server->WriteSettings("text", settings);
 		}
 	} else {
-		GUIManipulator* guiManipulator
-			= dynamic_cast<GUIManipulator*> (manipulator);
+		GUIManipulator* guiManipulator = dynamic_cast<GUIManipulator*>(manipulator);
 		if (guiManipulator) {
 			BNode node;
 			if (_GetNodeFor(guiManipulator->add_on_id, &node) == B_OK)
@@ -265,7 +260,7 @@ ManipulatorServer::_LoadAddOns(const BPath& path)
 		return;
 
 	BDirectory addOnDir;
-	if (addOnDir.SetTo(&entry) == B_OK)	{
+	if (addOnDir.SetTo(&entry) == B_OK) {
 		while (addOnDir.GetNextEntry(&entry) == B_OK) {
 			BPath addOnPath;
 			entry.GetPath(&addOnPath);

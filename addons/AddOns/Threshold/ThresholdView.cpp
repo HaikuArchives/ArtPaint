@@ -21,21 +21,22 @@
 #define B_TRANSLATION_CONTEXT "AddOns_Threshold"
 
 
-ThresholdView::ThresholdView(BMessage *msg)
-	:	BControl("threshold_view", B_TRANSLATE("Threshold"), msg,B_WILL_DRAW)
+ThresholdView::ThresholdView(BMessage* msg)
+	:
+	BControl("threshold_view", B_TRANSLATE("Threshold"), msg, B_WILL_DRAW)
 {
 	histogramBitmap = NULL;
-	for (int32 i=0;i<256;i++) {
+	for (int32 i = 0; i < 256; i++)
 		histogram[i] = 0;
-	}
 
 	isTracking = false;
 	mode = HISTOGRAM_MODE_INTENSITY;
-	histogramRect = BRect(4,4,259,103);
-	histogramBitmap = new BBitmap(histogramRect,B_RGBA32);
+	histogramRect = BRect(4, 4, 259, 103);
+	histogramBitmap = new BBitmap(histogramRect, B_RGBA32);
 
-	BMenu *a_menu = new BPopUpMenu("mode");
-	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Intensity"), new BMessage(HISTOGRAM_MODE_INTENSITY)));
+	BMenu* a_menu = new BPopUpMenu("mode");
+	a_menu->AddItem(
+		new BMenuItem(B_TRANSLATE("Intensity"), new BMessage(HISTOGRAM_MODE_INTENSITY)));
 	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Red"), new BMessage(HISTOGRAM_MODE_RED)));
 	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Green"), new BMessage(HISTOGRAM_MODE_GREEN)));
 	a_menu->AddItem(new BMenuItem(B_TRANSLATE("Blue"), new BMessage(HISTOGRAM_MODE_BLUE)));
@@ -49,149 +50,150 @@ ThresholdView::ThresholdView(BMessage *msg)
 		.Add(modeMenu)
 		.AddGlue()
 		.SetInsets(B_USE_SMALL_INSETS)
-		.End();
+	.End();
 }
 
 
-void ThresholdView::AttachedToWindow()
+void
+ThresholdView::AttachedToWindow()
 {
-	if (Parent() != NULL) {
+	if (Parent() != NULL)
 		SetViewColor(Parent()->ViewColor());
-	}
-	else {
+	else
 		SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	}
 
 	modeMenu->Menu()->SetTargetForItems(this);
 }
 
+
 void ThresholdView::Draw(BRect)
-{	
+{
 	SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetLowColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	BRect clearRect = BRect(BPoint(histogramRect.left,histogramRect.bottom-4.0),
-		BPoint(histogramRect.right,histogramRect.bottom));
+	BRect clearRect = BRect(BPoint(histogramRect.left, histogramRect.bottom - 4.0),
+		BPoint(histogramRect.right, histogramRect.bottom));
 	FillRect(clearRect);
 
-	if (histogramBitmap != NULL) {
-		DrawBitmap(histogramBitmap,histogramBitmap->Bounds(),histogramRect);
-	}
+	if (histogramBitmap != NULL)
+		DrawBitmap(histogramBitmap, histogramBitmap->Bounds(), histogramRect);
 
-	SetHighColor(255,0,0,255);
+	SetHighColor(255, 0, 0, 255);
 
-	StrokeLine(BPoint(histogramRect.left+threshold,histogramRect.top),
-				BPoint(histogramRect.left+threshold,histogramRect.bottom));
+	StrokeLine(BPoint(histogramRect.left + threshold, histogramRect.top),
+		BPoint(histogramRect.left + threshold, histogramRect.bottom));
 }
 
 
-status_t ThresholdView::Invoke(BMessage *msg)
+status_t
+ThresholdView::Invoke(BMessage* msg)
 {
-	if (msg == NULL) {
+	if (msg == NULL)
 		msg = Message();
-	}
+
 	if (msg != NULL) {
 		if (msg->HasInt32("threshold") == false)
-			msg->AddInt32("threshold",0);
+			msg->AddInt32("threshold", 0);
 		if (msg->HasInt32("mode") == false)
-			msg->AddInt32("mode",0);
+			msg->AddInt32("mode", 0);
 
-		msg->ReplaceInt32("threshold",threshold);
-		msg->ReplaceInt32("mode",mode);
+		msg->ReplaceInt32("threshold", threshold);
+		msg->ReplaceInt32("mode", mode);
 	}
 
 	return BControl::Invoke(msg);
 }
 
-void ThresholdView::MessageReceived(BMessage *msg)
+
+void
+ThresholdView::MessageReceived(BMessage* msg)
 {
 	switch (msg->what) {
 		case HISTOGRAM_MODE_INTENSITY:
 		case HISTOGRAM_MODE_RED:
 		case HISTOGRAM_MODE_GREEN:
 		case HISTOGRAM_MODE_BLUE:
+		{
 			mode = msg->what;
 			Invoke();
 			CalculateHistogram();
 			Draw(histogramRect);
-			break;
+		} break;
 		default:
 			BControl::MessageReceived(msg);
-			break;
 	}
 }
-void ThresholdView::MouseDown(BPoint point)
+
+
+void
+ThresholdView::MouseDown(BPoint point)
 {
 	isTracking = true;
-	threshold = (int32)min_c(255,max_c(0,point.x-histogramRect.left));
-//	Invoke();
+	threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
+	//	Invoke();
 	Draw(histogramRect);
 }
 
 
-void ThresholdView::MouseMoved(BPoint point,uint32,const BMessage*)
+void
+ThresholdView::MouseMoved(BPoint point, uint32, const BMessage*)
 {
 	if (isTracking) {
-		threshold = (int32)min_c(255,max_c(0,point.x-histogramRect.left));
+		threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
 //		Invoke();
 		Draw(histogramRect);
 	}
 }
 
 
-void ThresholdView::MouseUp(BPoint point)
+void
+ThresholdView::MouseUp(BPoint point)
 {
 	isTracking = false;
-	threshold = (int32)min_c(255,max_c(0,point.x-histogramRect.left));
+	threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
 	Invoke();
 	Draw(histogramRect);
 }
 
 
-
-void ThresholdView::SetBitmap(BBitmap *bitmap)
+void
+ThresholdView::SetBitmap(BBitmap* bitmap)
 {
 	analyzedBitmap = bitmap;
 	CalculateHistogram();
 }
 
 
-
-void ThresholdView::CalculateHistogram()
+void
+ThresholdView::CalculateHistogram()
 {
-	for (int32 i=0;i<256;i++) {
+	for (int32 i = 0; i < 256; i++)
 		histogram[i] = 0;
-	}
 
 	if (analyzedBitmap != NULL) {
-		uint32 *bits = (uint32*)analyzedBitmap->Bits();
-		int32 bits_length = analyzedBitmap->BitsLength()/4;
+		uint32* bits = (uint32*)analyzedBitmap->Bits();
+		int32 bits_length = analyzedBitmap->BitsLength() / 4;
 		union {
 			uint8 bytes[4];
 			uint32 word;
 		} c;
 
-		for (int32 i=0;i<bits_length;i++) {
+		for (int32 i = 0; i < bits_length; i++) {
 			c.word = *bits++;
-			if (mode == HISTOGRAM_MODE_INTENSITY) {
-				histogram[(int32)(0.299*c.bytes[2] + 0.587*c.bytes[1] + 0.114*c.bytes[0])]++;
-			}
-			else if (mode == HISTOGRAM_MODE_RED) {
+			if (mode == HISTOGRAM_MODE_INTENSITY)
+				histogram[(int32)(0.299 * c.bytes[2] + 0.587 * c.bytes[1] + 0.114 * c.bytes[0])]++;
+			else if (mode == HISTOGRAM_MODE_RED)
 				histogram[c.bytes[2]]++;
-			}
-			else if (mode == HISTOGRAM_MODE_GREEN) {
+			else if (mode == HISTOGRAM_MODE_GREEN)
 				histogram[c.bytes[1]]++;
-			}
-			else if (mode == HISTOGRAM_MODE_BLUE) {
+			else if (mode == HISTOGRAM_MODE_BLUE)
 				histogram[c.bytes[0]]++;
-			}
 		}
 	}
 
-
 	if (histogramBitmap != NULL) {
-		uint32 *bits = (uint32*)histogramBitmap->Bits();
-		int32 bpr = histogramBitmap->BytesPerRow()/4;
-		int32 bits_length = histogramBitmap->BitsLength()/4;
+		uint32* bits = (uint32*)histogramBitmap->Bits();
+		int32 bpr = histogramBitmap->BytesPerRow() / 4;
+		int32 bits_length = histogramBitmap->BitsLength() / 4;
 
 		union {
 			uint8 bytes[4];
@@ -199,27 +201,25 @@ void ThresholdView::CalculateHistogram()
 		} c;
 		c.word = 0xFFFFFFFF;
 
-		for (int32 i=0;i<bits_length;i++) {
+		for (int32 i = 0; i < bits_length; i++)
 			*bits++ = c.word;
-		}
+
 		bits = (uint32*)histogramBitmap->Bits();
 
 		int32 max = 0;
-		for (int32 i=0;i<256;i++)
-			max = (int32)max_c(max,histogram[i]);
+		for (int32 i = 0; i < 256; i++)
+			max = (int32)max_c(max, histogram[i]);
 
 		if (max > 0) {
 			int32 height = histogramBitmap->Bounds().IntegerHeight();
 			c.word = 0x00000000;
 			c.bytes[3] = 0xFF;
-			for (int32 i=0;i<256;i++) {
-				int32 top = height - (float)histogram[i]/(float)max * height;
-				for (int32 y=top;y<=height;y++) {
-					*(bits + y*bpr + i) = c.word;
-				}
+			for (int32 i = 0; i < 256; i++) {
+				int32 top = height - (float)histogram[i] / (float)max * height;
+				for (int32 y = top; y <= height; y++)
+					*(bits + y * bpr + i) = c.word;
 			}
-		}
-		else
+		} else
 			printf("Boo\n");
 	}
 }

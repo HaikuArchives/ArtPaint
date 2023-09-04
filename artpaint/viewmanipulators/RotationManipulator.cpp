@@ -8,12 +8,12 @@
  *
  */
 
+#include "RotationManipulator.h"
 #include "BitmapUtilities.h"
 #include "HSPolygon.h"
 #include "ImageView.h"
 #include "MessageConstants.h"
 #include "PixelOperations.h"
-#include "RotationManipulator.h"
 #include "Selection.h"
 #include "UtilityClasses.h"
 
@@ -42,7 +42,8 @@
 
 
 RotationManipulator::RotationManipulator(BBitmap* bitmap)
-	:	WindowGUIManipulator(),
+	:
+	WindowGUIManipulator(),
 	selection(NULL),
 	orig_selection_map(NULL),
 	transform_selection_only(false)
@@ -90,25 +91,22 @@ RotationManipulator::~RotationManipulator()
 void
 RotationManipulator::SetPreviewBitmap(BBitmap* bitmap)
 {
-	if (config_view != NULL) {
+	if (config_view != NULL)
 		config_view->SetAngle(0.0);
-	}
 
-	if ((bitmap == NULL) || (preview_bitmap == NULL) ||
-		(bitmap->Bounds() != preview_bitmap->Bounds())) {
+	if ((bitmap == NULL) || (preview_bitmap == NULL)
+		|| (bitmap->Bounds() != preview_bitmap->Bounds())) {
 		try {
-			if (preview_bitmap != NULL) {
+			if (preview_bitmap != NULL)
 				delete copy_of_the_preview_bitmap;
-			}
+
 			if (bitmap != NULL) {
 				preview_bitmap = bitmap;
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
 				BRect bounds = preview_bitmap->Bounds();
-				settings->origo = BPoint((bounds.right - bounds.left) / 2 +
-					bounds.left, (bounds.bottom - bounds.top) / 2 +
-					bounds.top);
-			}
-			else {
+				settings->origo = BPoint((bounds.right - bounds.left) / 2 + bounds.left,
+					(bounds.bottom - bounds.top) / 2 + bounds.top);
+			} else {
 				preview_bitmap = NULL;
 				copy_of_the_preview_bitmap = NULL;
 			}
@@ -118,14 +116,13 @@ RotationManipulator::SetPreviewBitmap(BBitmap* bitmap)
 			copy_of_the_preview_bitmap = NULL;
 			throw e;
 		}
-	}
-	else {
+	} else {
 		// Just update the copy_of_the_preview_bitmap
 		preview_bitmap = bitmap;
-		uint32 *source = (uint32*)preview_bitmap->Bits();
-		uint32 *target = (uint32*)copy_of_the_preview_bitmap->Bits();
-		int32 bitslength = min_c(preview_bitmap->BitsLength(),
-			copy_of_the_preview_bitmap->BitsLength());
+		uint32* source = (uint32*)preview_bitmap->Bits();
+		uint32* target = (uint32*)copy_of_the_preview_bitmap->Bits();
+		int32 bitslength
+			= min_c(preview_bitmap->BitsLength(), copy_of_the_preview_bitmap->BitsLength());
 		memcpy(target, source, bitslength);
 	}
 
@@ -135,13 +132,11 @@ RotationManipulator::SetPreviewBitmap(BBitmap* bitmap)
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width() + 1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
-		while ((2 * num_pixels / lowest_available_quality /
-			lowest_available_quality) > speed)
+		while ((2 * num_pixels / lowest_available_quality / lowest_available_quality) > speed)
 			lowest_available_quality *= 2;
 
 		highest_available_quality = max_c(lowest_available_quality / 2, 1);
-	}
-	else {
+	} else {
 		lowest_available_quality = 1;
 		highest_available_quality = 1;
 	}
@@ -163,8 +158,8 @@ RotationManipulator::Draw(BView* view, float mag_scale)
 		BPoint(mag_scale * x + 5, mag_scale * y + 5)), B_MIXED_COLORS);
 
 	BRegion updated_region;
-	updated_region.Set(BRect(mag_scale * x - 10, mag_scale * y - 10,
-		mag_scale * x + 10, mag_scale * y + 10));
+	updated_region.Set(
+		BRect(mag_scale * x - 10, mag_scale * y - 10, mag_scale * x + 10, mag_scale * y + 10));
 	return updated_region;
 }
 
@@ -173,9 +168,9 @@ void
 RotationManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_click)
 {
 	if (first_click == TRUE) {
-		if (!(buttons & B_PRIMARY_MOUSE_BUTTON) ||
-			((fabs(point.x - settings->origo.x) < 10) &&
-			(fabs(point.y - settings->origo.y) < 10)))
+		if (!(buttons & B_PRIMARY_MOUSE_BUTTON)
+			|| ((fabs(point.x - settings->origo.x) < 10)
+				&& (fabs(point.y - settings->origo.y) < 10)))
 			move_origo = TRUE;
 		else
 			move_origo = FALSE;
@@ -205,9 +200,8 @@ RotationManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_
 			settings->angle += new_angle - starting_angle;
 
 			starting_angle = new_angle;
-			if ((config_view != NULL) && (new_angle != previous_angle)) {
+			if ((config_view != NULL) && (new_angle != previous_angle))
 				config_view->SetAngle(settings->angle);
-			}
 		}
 	} else {
 		// Set the new origo for rotation and reset the angle.
@@ -220,13 +214,12 @@ RotationManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_
 
 
 BBitmap*
-RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* original,
-	BStatusBar* status_bar)
+RotationManipulator::ManipulateBitmap(
+	ManipulatorSettings* set, BBitmap* original, BStatusBar* status_bar)
 {
 	// Here move the contents of the original-bitmap to the new_bitmap,
 	// rotated by s->angle around s->origin.
-	RotationManipulatorSettings* new_settings = cast_as(set,
-		RotationManipulatorSettings);
+	RotationManipulatorSettings* new_settings = cast_as(set, RotationManipulatorSettings);
 
 	if (transform_selection_only == true)
 		return NULL;
@@ -248,8 +241,7 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 		original->Unlock();
 		if (new_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
-	}
-	else {
+	} else {
 		new_bitmap = original;
 		original = copy_of_the_preview_bitmap;
 	}
@@ -267,8 +259,8 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 	float sin_angle = sin(-the_angle / 360 * 2 * PI);
 	float cos_angle = cos(-the_angle / 360 * 2 * PI);
 
-	int32 *target_bits = (int32*)new_bitmap->Bits();
-	int32 *source_bits = (int32*)original->Bits();
+	int32* target_bits = (int32*)new_bitmap->Bits();
+	int32* source_bits = (int32*)original->Bits();
 	int32 source_bpr = original->BytesPerRow() / 4;
 	int32 target_bpr = new_bitmap->BytesPerRow() / 4;
 
@@ -281,13 +273,13 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 	float bottom = original->Bounds().bottom;
 	float center_x = center.x;
 	float center_y = center.y;
-	float source_x,source_y;
+	float source_x, source_y;
 	float y_times_sin = (-center_y) * sin_angle;
 	float y_times_cos = (-center_y) * cos_angle;
 
 	BWindow* status_bar_window = status_bar->Window();
 
-	float floor_x, ceil_x, floor_y, ceil_y;	// was int32 before optimization
+	float floor_x, ceil_x, floor_y, ceil_y; // was int32 before optimization
 
 	uint32 p1, p2, p3, p4;
 
@@ -319,33 +311,28 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 				float u = source_x - floor_x;
 				float v = source_y - floor_y;
 				// Then add the weighted sums of the four pixels.
-				if ((floor_x <= right) && (floor_y <= bottom) &&
-					(floor_x >= left) && (floor_y >= top)) {
-					p1 = *(source_bits + (int32)floor_x +
-						(int32)floor_y * source_bpr);
-				}
+				if ((floor_x <= right) && (floor_y <= bottom) && (floor_x >= left)
+					&& (floor_y >= top))
+					p1 = *(source_bits + (int32)floor_x + (int32)floor_y * source_bpr);
 				else
 					p1 = background.word;
 
-				if ((ceil_x <= right) && (floor_y <= bottom) &&
-					(ceil_x >= left) && (floor_y >= top)) {
-					p2 = *(source_bits + (int32)ceil_x +
-						(int32)floor_y * source_bpr);
-				} else
+				if ((ceil_x <= right) && (floor_y <= bottom) && (ceil_x >= left)
+					&& (floor_y >= top))
+					p2 = *(source_bits + (int32)ceil_x + (int32)floor_y * source_bpr);
+				else
 					p2 = background.word;
 
-				if ((floor_x <= right) && (ceil_y <= bottom) &&
-					(floor_x >= left) && (ceil_y >= top)) {
-					p3 = *(source_bits + (int32)floor_x +
-						(int32)ceil_y * source_bpr);
-				} else
+				if ((floor_x <= right) && (ceil_y <= bottom) && (floor_x >= left)
+					&& (ceil_y >= top))
+					p3 = *(source_bits + (int32)floor_x + (int32)ceil_y * source_bpr);
+				else
 					p3 = background.word;
 
-				if ((ceil_x <= right) && (ceil_y <= bottom) &&
-					(ceil_x >= left) && (ceil_y >= top)) {
-					p4 = *(source_bits + (int32)ceil_x +
-						(int32)ceil_y * source_bpr);
-				} else
+				if ((ceil_x <= right) && (ceil_y <= bottom) && (ceil_x >= left)
+					&& (ceil_y >= top))
+					p4 = *(source_bits + (int32)ceil_x + (int32)ceil_y * source_bpr);
+				else
 					p4 = background.word;
 
 				*target_bits++ = bilinear_interpolation(p1, p2, p3, p4, u, v);
@@ -354,8 +341,7 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 			}
 			y_times_sin += sin_angle;
 			y_times_cos += cos_angle;
-			if ((((int32)y % 20) == 0) && (status_bar != NULL) &&
-				(status_bar_window != NULL)) {
+			if ((((int32)y % 20) == 0) && (status_bar != NULL) && (status_bar_window != NULL)) {
 				status_bar_window->Lock();
 				status_bar->Update(100.0 / (float)height * 20);
 				status_bar_window->Unlock();
@@ -369,13 +355,12 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 		// of original image correspond to the pixels in the rotated selection. The only problem
 		// with this approach is if we want to clear the selection first so we must clear it before
 		// rotating the selection.
-		for (int32 y = 0;y <= height; y++) {
+		for (int32 y = 0; y <= height; y++) {
 			for (int32 x = 0; x <= width; x++) {
 				if (selection->ContainsPoint(x, y))
 					*(target_bits + x + y * target_bpr) = background.word;
 				else
-					*(target_bits + x + y * target_bpr) =
-						*(source_bits + x + y * source_bpr);
+					*(target_bits + x + y * target_bpr) = *(source_bits + x + y * source_bpr);
 			}
 		}
 
@@ -410,47 +395,39 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 					float u = source_x - floor_x;
 					float v = source_y - floor_y;
 					// Then add the weighted sums of the four pixels.
-					if ((floor_x <= right) && (floor_y <= bottom) &&
-						(floor_x >= left) && (floor_y >= top)) {
-						p1 = src_over_fixed(
-							*(target_bits + (int32)x + (int32)y * target_bpr),
-							*(source_bits + (int32)floor_x +
-							(int32)floor_y * source_bpr));
+					if ((floor_x <= right) && (floor_y <= bottom) && (floor_x >= left)
+						&& (floor_y >= top)) {
+						p1 = src_over_fixed(*(target_bits + (int32)x + (int32)y * target_bpr),
+							*(source_bits + (int32)floor_x + (int32)floor_y * source_bpr));
 					} else
 						p1 = background.word;
 
 					// second
-					if ((ceil_x <= right) && (floor_y <= bottom) &&
-						(ceil_x >= left) && (floor_y >= top)) {
-						p2 = src_over_fixed(
-							*(target_bits + (int32)x + (int32)y * target_bpr),
-							*(source_bits + (int32)ceil_x +
-							(int32)ceil_y * source_bpr));
+					if ((ceil_x <= right) && (floor_y <= bottom) && (ceil_x >= left)
+						&& (floor_y >= top)) {
+						p2 = src_over_fixed(*(target_bits + (int32)x + (int32)y * target_bpr),
+							*(source_bits + (int32)ceil_x + (int32)ceil_y * source_bpr));
 					} else
 						p2 = background.word;
 
 					// third
-					if ((floor_x <= right) && (ceil_y <= bottom) &&
-						(floor_x >= left) && (ceil_y >= top)) {
-						p3 = src_over_fixed(
-							*(target_bits + (int32)x + (int32)y * target_bpr),
-							*(source_bits + (int32)floor_x +
-							(int32)ceil_y * source_bpr));
+					if ((floor_x <= right) && (ceil_y <= bottom) && (floor_x >= left)
+						&& (ceil_y >= top)) {
+						p3 = src_over_fixed(*(target_bits + (int32)x + (int32)y * target_bpr),
+							*(source_bits + (int32)floor_x + (int32)ceil_y * source_bpr));
 					} else
 						p3 = background.word;
 
 					// fourth
-					if ((ceil_x <= right) && (ceil_y <= bottom) &&
-						(ceil_x >= left) && (ceil_y >= top) ) {
-						p4 = src_over_fixed(
-							*(target_bits + (int32)x + (int32)y * target_bpr),
-							*(source_bits + (int32)ceil_x +
-							(int32)ceil_y * source_bpr));
+					if ((ceil_x <= right) && (ceil_y <= bottom) && (ceil_x >= left)
+						&& (ceil_y >= top)) {
+						p4 = src_over_fixed(*(target_bits + (int32)x + (int32)y * target_bpr),
+							*(source_bits + (int32)ceil_x + (int32)ceil_y * source_bpr));
 					} else
 						p4 = background.word;
 
-					*(target_bits + (int32)x + (int32)y * target_bpr) =
-						bilinear_interpolation(p1, p2, p3, p4, u, v);
+					*(target_bits + (int32)x + (int32)y * target_bpr)
+						= bilinear_interpolation(p1, p2, p3, p4, u, v);
 				}
 				x_times_sin += sin_angle;
 				x_times_cos += cos_angle;
@@ -458,9 +435,8 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 			y_times_sin += sin_angle;
 			y_times_cos += cos_angle;
 			if ((status_bar != NULL) && (status_bar->Window() != NULL)) {
-				BMessage *a_message = new BMessage(B_UPDATE_STATUS_BAR);
-				a_message->AddFloat("delta", 100.0 /
-					(float)(sel_bottom - sel_top));
+				BMessage* a_message = new BMessage(B_UPDATE_STATUS_BAR);
+				a_message->AddFloat("delta", 100.0 / (float)(sel_bottom - sel_top));
 				status_bar->Window()->PostMessage(a_message, status_bar);
 				delete a_message;
 			}
@@ -472,11 +448,9 @@ RotationManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* origina
 
 
 int32
-RotationManipulator::PreviewBitmap(bool full_quality,
-	BRegion* updated_region)
+RotationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
-	if (transform_selection_only == true &&
-		(selection == NULL || selection->IsEmpty() == true))
+	if (transform_selection_only == true && (selection == NULL || selection->IsEmpty() == true))
 		return 0;
 
 	// First decide the resolution of the bitmap
@@ -490,9 +464,9 @@ RotationManipulator::PreviewBitmap(bool full_quality,
 				return 0;
 		} else
 			last_calculated_resolution = last_calculated_resolution / 2;
-	} else if (full_quality == TRUE) {
+	} else if (full_quality == TRUE)
 		last_calculated_resolution = 1;
-	} else
+	else
 		last_calculated_resolution = lowest_available_quality;
 
 	union color_conversion background;
@@ -508,8 +482,8 @@ RotationManipulator::PreviewBitmap(bool full_quality,
 	float sin_angle = sin(-the_angle / 360 * 2 * PI);
 	float cos_angle = cos(-the_angle / 360 * 2 * PI);
 
-	int32 *target_bits = (int32*)preview_bitmap->Bits();
-	int32 *source_bits = (int32*)copy_of_the_preview_bitmap->Bits();
+	int32* target_bits = (int32*)preview_bitmap->Bits();
+	int32* source_bits = (int32*)copy_of_the_preview_bitmap->Bits();
 	int32 source_bpr = copy_of_the_preview_bitmap->BytesPerRow() / 4;
 	int32 target_bpr = preview_bitmap->BytesPerRow() / 4;
 
@@ -536,13 +510,11 @@ RotationManipulator::PreviewBitmap(bool full_quality,
 				// translate back to correct position
 				source_x += center_x;
 				source_y += center_y;
-				if ((source_x <= right) && (source_y <= bottom)
-					&& (source_x >= left) && (source_y >= top)) {
-						*(target_bits + x + y * target_bpr) =
-							*(source_bits + (int32)source_x +
-							(int32)source_y * source_bpr);
-				}
-				else
+				if ((source_x <= right) && (source_y <= bottom) && (source_x >= left)
+					&& (source_y >= top)) {
+					*(target_bits + x + y * target_bpr)
+						= *(source_bits + (int32)source_x + (int32)source_y * source_bpr);
+				} else
 					*(target_bits + x + y * target_bpr) = background.word;
 
 				x_times_sin += last_calculated_resolution * sin_angle;
@@ -566,29 +538,25 @@ RotationManipulator::PreviewBitmap(bool full_quality,
 					// translate back to correct position
 					source_x += center_x;
 					source_y += center_y;
-					if ((source_x <= right) && (source_y <= bottom) &&
-						(source_x >= left) && (source_y >= top)
-						&& selection->ContainsPoint(int32(source_x),
-							int32(source_y))) {
-							if (selection->ContainsPoint(x, y))
-								*(target_bits + x + y * target_bpr) =
-									src_over_fixed(background.word,
-										*(source_bits + (int32)source_x +
-										(int32)source_y * source_bpr));
-							else
-								*(target_bits + x + y * target_bpr) =
-									src_over_fixed(
-										*(source_bits + (int32)x + (int32)y * source_bpr),
-										*(source_bits + (int32)source_x +
-										(int32)source_y * source_bpr));
+					if ((source_x <= right) && (source_y <= bottom) && (source_x >= left)
+						&& (source_y >= top)
+						&& selection->ContainsPoint(int32(source_x), int32(source_y))) {
+						if (selection->ContainsPoint(x, y)) {
+							*(target_bits + x + y * target_bpr) = src_over_fixed(background.word,
+								*(source_bits + (int32)source_x + (int32)source_y * source_bpr));
+						} else {
+							*(target_bits + x + y * target_bpr) = src_over_fixed(
+								*(source_bits + (int32)x + (int32)y * source_bpr),
+								*(source_bits + (int32)source_x + (int32)source_y * source_bpr));
+						}
 					} else if (selection->ContainsPoint(BPoint(source_x, source_y)))
-						*(target_bits + x + y * target_bpr) = background.word;	// Transparent.
-					else if (selection->ContainsPoint(x,y))
+						*(target_bits + x + y * target_bpr) = background.word; // Transparent.
+					else if (selection->ContainsPoint(x, y))
 						*(target_bits + x + y * target_bpr) = background.word;
-					else // outside selection
-						*(target_bits + x + y * target_bpr) =
-							*(source_bits + (int32)x + (int32)y * source_bpr);
-
+					else { // outside selection
+						*(target_bits + x + y * target_bpr)
+							= *(source_bits + (int32)x + (int32)y * source_bpr);
+					}
 					x_times_sin += last_calculated_resolution * sin_angle;
 					x_times_cos += last_calculated_resolution * cos_angle;
 				}
@@ -628,8 +596,7 @@ RotationManipulator::Reset()
 BView*
 RotationManipulator::MakeConfigurationView(const BMessenger& target)
 {
-	config_view =
-		new RotationManipulatorConfigurationView(this, target);
+	config_view = new RotationManipulatorConfigurationView(this, target);
 	config_view->SetAngle(settings->angle);
 	return config_view;
 }
@@ -646,9 +613,9 @@ RotationManipulator::SetAngle(float angle)
 const char*
 RotationManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Rotate: Left-drag to rotate, " \
-		"right-click to set rotation center, " \
-		"SHIFT to snap angle.");
+	return B_TRANSLATE("Rotate: Left-drag to rotate, "
+			"right-click to set rotation center, "
+			"SHIFT to snap angle.");
 }
 
 
@@ -692,8 +659,9 @@ RotationManipulator::UpdateSettings()
 
 
 RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
-		RotationManipulator* manipulator, const BMessenger& target)
-	: WindowGUIManipulatorView(),
+	RotationManipulator* manipulator, const BMessenger& target)
+	:
+	WindowGUIManipulatorView(),
 	fTarget(target),
 	fManipulator(manipulator)
 {
@@ -703,8 +671,7 @@ RotationManipulatorConfigurationView::RotationManipulatorConfigurationView(
 	fTextControl->TextView()->SetExplicitMaxSize(BSize(StringWidth("-999.99'"), bounds.Height()));
 
 	SetLayout(BLayoutBuilder::Group<>(this, B_VERTICAL)
-		.Add(fTextControl)
-	);
+		.Add(fTextControl));
 
 	RotationManipulatorSettings* settings
 		= (RotationManipulatorSettings*)manipulator->ReturnSettings();
@@ -736,32 +703,31 @@ void
 RotationManipulatorConfigurationView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case HS_MANIPULATOR_ADJUSTING_FINISHED: {
-			BTextView *text_view = fTextControl->TextView();
+		case HS_MANIPULATOR_ADJUSTING_FINISHED:
+		{
+			BTextView* text_view = fTextControl->TextView();
 			char float_text[256];
-			const char *text = text_view->Text();
+			const char* text = text_view->Text();
 			float angle = 0;
-			int	decimal_place = 0;
+			int decimal_place = 0;
 			float sign = 1;
 
 			for (uint32 i = 0; i < strlen(text); i++) {
 				if (isdigit(text[i]) != 0) {
 					float new_number = text[i] - '0';
 					if (decimal_place <= 0)
-						angle = 10*angle + new_number;
+						angle = 10 * angle + new_number;
 					else {
-						angle = angle + new_number / pow(10,decimal_place);
+						angle = angle + new_number / pow(10, decimal_place);
 						decimal_place++;
 					}
-				}
-				else if (((text[i] == '.') || (text[i] == ',')) && (decimal_place <= 0)) {
+				} else if (((text[i] == '.') || (text[i] == ',')) && (decimal_place <= 0))
 					decimal_place = 1;
-				}
 				else if ((decimal_place <= 0) && (angle == 0) && (text[i] == '-'))
 					sign = -1;
 			}
 
-			angle = sign*angle;
+			angle = sign * angle;
 
 			while (angle > 360)
 				angle -= 360;
@@ -773,16 +739,14 @@ RotationManipulatorConfigurationView::MessageReceived(BMessage* message)
 			if (angle < -180)
 				angle += 360;
 
-			sprintf(float_text,"%.1f˚",angle);
+			sprintf(float_text, "%.1f˚", angle);
 			text_view->SetText(float_text);
 			fManipulator->SetAngle(angle);
 			if (fTarget.IsValid())
 				fTarget.SendMessage(message);
-		}	break;
-
-		default: {
+		} break;
+		default:
 			WindowGUIManipulatorView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -810,28 +774,26 @@ RotationManipulatorConfigurationView::SetTarget(const BMessenger& target)
 void
 RotationManipulatorConfigurationView::GetControlValues(float& angle)
 {
-	BTextView *text_view = fTextControl->TextView();
+	BTextView* text_view = fTextControl->TextView();
 	char float_text[256];
-	const char *text = text_view->Text();
-	int	decimal_place = 0;
+	const char* text = text_view->Text();
+	int decimal_place = 0;
 	float sign = 1;
 
 	for (uint32 i = 0; i < strlen(text); i++) {
 		if (isdigit(text[i]) != 0) {
 			float new_number = text[i] - '0';
 			if (decimal_place <= 0)
-				angle = 10*angle + new_number;
+				angle = 10 * angle + new_number;
 			else {
-				angle = angle + new_number / pow(10,decimal_place);
+				angle = angle + new_number / pow(10, decimal_place);
 				decimal_place++;
 			}
-		}
-		else if (((text[i] == '.') || (text[i] == ',')) && (decimal_place <= 0)) {
+		} else if (((text[i] == '.') || (text[i] == ',')) && (decimal_place <= 0))
 			decimal_place = 1;
-		}
 		else if ((decimal_place <= 0) && (angle == 0) && (text[i] == '-'))
 			sign = -1;
 	}
 
-	angle = sign*angle;
+	angle = sign * angle;
 }

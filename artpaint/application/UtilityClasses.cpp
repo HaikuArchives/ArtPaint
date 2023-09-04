@@ -17,16 +17,17 @@
 
 
 BitmapView::BitmapView(BBitmap* bitmap, BRect frame)
-	: BView(frame, "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW)
-	, fBitmap(bitmap)
+	:
+	BView(frame, "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW),
+	fBitmap(bitmap)
 {
 }
 
 
 BitmapView::BitmapView(BBitmap* bitmap, BPoint leftTop)
-	: BView(BRect(leftTop, leftTop), "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP,
-		B_WILL_DRAW)
-	, fBitmap(bitmap)
+	:
+	BView(BRect(leftTop, leftTop), "bitmap view", B_FOLLOW_LEFT | B_FOLLOW_TOP, B_WILL_DRAW),
+	fBitmap(bitmap)
 {
 	if (fBitmap)
 		ResizeTo(fBitmap->Bounds().Width(), fBitmap->Bounds().Height());
@@ -115,9 +116,8 @@ PointContainer::InsertPoint(int32 x, int32 y)
 	} else {
 		BPoint* new_array = new BPoint[list_length_table[key] + 1];
 
-		for (int32 i = 0; i < list_length_table[key]; i++) {
+		for (int32 i = 0; i < list_length_table[key]; i++)
 			new_array[i] = hash_table[key][i];
-		}
 
 		delete[] hash_table[key];
 		hash_table[key] = new_array;
@@ -179,8 +179,10 @@ CenterRectOnScreen(BRect source)
 	BPoint leftTop((screenFrame.Width() + source.Width()) / 2.0,
 		(screenFrame.Height() + source.Height()) / 2.0);
 
-	if (leftTop.x < 0.0) leftTop.x = 0.0;
-	if (leftTop.y < 0.0) leftTop.y = 0.0;
+	if (leftTop.x < 0.0)
+		leftTop.x = 0.0;
+	if (leftTop.y < 0.0)
+		leftTop.y = 0.0;
 
 	return source.OffsetToCopy(leftTop);
 }
