@@ -20,6 +20,8 @@ public:
 		const char*		ReturnName();
 		void			SetSelection(Selection* new_selection) { selection = new_selection; };
 
+		BBitmap*		ManipulateSelectionMap();
+
 private:
 		Selection*		selection;
 };
@@ -32,6 +34,9 @@ public:
 
 		const char*		ReturnName();
 		void			SetSelection(Selection* new_selection) { selection = new_selection; };
+
+		BBitmap*		ManipulateSelectionMap();
+
 private:
 		Selection*		selection;
 };

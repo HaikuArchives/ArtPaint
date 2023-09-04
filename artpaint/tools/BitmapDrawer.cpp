@@ -1216,6 +1216,10 @@ BitmapDrawer::SetPixel(
 	BPoint location, uint32 color, Selection* sel, uint32 (*composite_func)(uint32, uint32))
 {
 	if (sel == NULL || sel->ContainsPoint(location)) {
+		float sel_alpha = 1.0;
+		if (sel != NULL && sel->IsEmpty() == false)
+			sel_alpha = sel->Value(location) / 255.;
+
 		if (bitmap_bounds.Contains(location)) {
 			if (composite_func) {
 				union {
@@ -1224,14 +1228,24 @@ BitmapDrawer::SetPixel(
 				} norm_color, target_color;
 
 				norm_color.word = color;
+				norm_color.bytes[3] *= sel_alpha;
 
 				uint32 target = GetPixel(location);
 				target_color.word = target;
 
 				*(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr)
 					= (*composite_func)(target_color.word, norm_color.word);
-			} else
-				*(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr) = color;
+			} else {
+				union {
+					unsigned char bytes[4];
+					uint32 word;
+				} norm_color;
+
+				norm_color.word = color;
+				norm_color.bytes[3] *= sel_alpha;
+
+				*(bitmap_bits + (int32)location.x + (int32)location.y * bitmap_bpr) = norm_color.word;
+			}
 
 			return B_OK;
 		} else

@@ -1797,7 +1797,12 @@ ImageView::ManipulatorMouseTrackerThread()
 		if (LockLooper() == TRUE) {
 			gui_manipulator->MouseDown(point, buttons, this, first_call_to_mouse_down);
 			first_call_to_mouse_down = FALSE;
+			if (show_selection == true)
+				selection->StopDrawing();
 			preview_quality = gui_manipulator->PreviewBitmap(FALSE, updated_region);
+			if (show_selection == true)
+				selection->StartDrawing(this, magnify_scale);
+
 			if (preview_quality != DRAW_NOTHING) {
 				if ((preview_quality != DRAW_ONLY_GUI) && (updated_region->Frame().IsValid())) {
 					if (manipulated_layers != HS_MANIPULATE_ALL_LAYERS) {
@@ -2113,9 +2118,6 @@ ImageView::ManipulatorFinisherThread()
 
 	the_image->SetImageSize();
 	the_image->Render();
-
-	// also recalculate the selection
-	selection->Recalculate();
 
 	// Change the selection for the undo-queue if necessary.
 	if ((new_event != NULL)

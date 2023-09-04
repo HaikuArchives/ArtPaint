@@ -824,7 +824,12 @@ Selection::Invert()
 		uint8* bits = (uint8*)selection_map->Bits();
 		int32 bits_length = selection_map->BitsLength();
 		for (int32 i = 0; i < bits_length; i++) {
-			*bits = ~(*bits);
+			union color_conversion pixel;
+			pixel.word = *bits;
+			for (int i = 0; i < 4; ++i)
+				pixel.bytes[i] = 255 - pixel.bytes[i];
+
+			*bits = pixel.word;
 			++bits;
 		}
 		selection_bounds = BRect(0, 0, -1, -1);

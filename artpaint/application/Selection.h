@@ -185,6 +185,9 @@ public:
 			// GetBoundingRect-function.
 	inline	bool			ContainsPoint(BPoint);
 	inline	bool			ContainsPoint(int32, int32);
+
+	inline 	uint8			Value(BPoint);
+	inline 	uint8			Value(int32, int32);
 };
 
 
@@ -204,6 +207,26 @@ Selection::ContainsPoint(int32 x, int32 y)
 	return (selection_bits == NULL ||
 		(image_bounds.Contains(BPoint(x, y)) &&
 		((*(selection_bits + y * selection_bpr + x)) != 0x00)));
+}
+
+
+uint8
+Selection::Value(BPoint p)
+{
+	return Value((int32)p.x, (int32)p.y);
+}
+
+
+uint8
+Selection::Value(int32 x, int32 y)
+{
+	if (x < 0 || y < 0)
+		return 0;
+
+	if (selection_bits == NULL || image_bounds.Contains(BPoint(x, y)) == false)
+		return 0;
+
+	return *(selection_bits + y * selection_bpr + x);
 }
 
 

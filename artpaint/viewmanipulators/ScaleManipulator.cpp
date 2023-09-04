@@ -310,14 +310,10 @@ ScaleManipulator::ManipulateBitmap(
 	target_bits = (uint32*)final_bitmap->Bits();
 	uint32 target_bpr = final_bitmap->BytesPerRow() / 4;
 
-	if (selection != NULL && selection->IsEmpty() == FALSE)
-		final_bounds = bounds;
-	else {
-		final_bounds.top = settings->top;
-		final_bounds.bottom = settings->bottom;
-		final_bounds.left = settings->left;
-		final_bounds.right = settings->right;
-	}
+	final_bounds.top = settings->top;
+	final_bounds.bottom = settings->bottom;
+	final_bounds.left = settings->left;
+	final_bounds.right = settings->right;
 
 	if (source_bits != NULL) {
 		for (int32 y = final_bounds.top; y <= final_bounds.bottom; y++) {
@@ -333,7 +329,7 @@ ScaleManipulator::ManipulateBitmap(
 				if (selection == NULL || selection->IsEmpty() == TRUE
 					|| selection->ContainsPoint(x, y)) {
 					int32 src_x = x - final_bounds.left;
-					if (src_x >= target_bpr || src_x >= source_bpr)
+					if (src_x >= source_bpr)
 						break;
 					if (x < 0)
 						continue;
@@ -379,8 +375,8 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	target_bits = (uint8*)final_bitmap->Bits();
 	uint32 target_bpr = final_bitmap->BytesPerRow();
 
-	for (int32 y = 0; y < final_bitmap->Bounds().Height(); y++)
-		for (int32 x = 0; x < final_bitmap->Bounds().Width(); x++)
+	for (int32 y = 0; y <= final_bitmap->Bounds().Height(); y++)
+		for (int32 x = 0; x <= final_bitmap->Bounds().Width(); x++)
 			*(target_bits + x + y * target_bpr) = background;
 
 	BRect bounds = selection_map->Bounds();
@@ -406,14 +402,22 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 		&& new_settings->left == original_left && new_settings->top == original_top)
 		return NULL;
 
-	if (new_width == starting_width && new_height == starting_height)
-		return NULL;
+	if (new_width == starting_width && new_height == starting_height) {
+		if (final_bitmap != NULL)
+			delete final_bitmap;
+		final_bitmap = new BBitmap(selection_map, B_GRAY8);
+		return final_bitmap;
+	}
 
 	BBitmap* scale_x_bitmap = NULL;
 	BBitmap* scale_y_bitmap = NULL;
 
+	BRect scale_x_frame(bitmap_frame);
+
 	if (new_width != starting_width) {
-		scale_x_bitmap = new BBitmap(bitmap_frame, B_GRAY8);
+		scale_x_frame.right = max_c(scale_x_frame.right, new_width);
+
+		scale_x_bitmap = new BBitmap(scale_x_frame, B_GRAY8);
 		if (scale_x_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
 
@@ -428,7 +432,7 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 				*(target_bits + x + y * target_bpr) = background;
 
 		if (diff != 1) {
-			ScaleUtilities::ScaleHorizontallyGray(target_bpr, starting_height,
+			ScaleUtilities::ScaleHorizontallyGray(new_width, starting_height,
 				BPoint(original_left, original_top), selection_map, scale_x_bitmap, diff);
 		} else {
 			for (int32 y = 0; y <= selection_map->Bounds().Height(); y++) {
@@ -443,7 +447,10 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	}
 
 	if (new_height != starting_height) {
-		scale_y_bitmap = new BBitmap(bitmap_frame, B_GRAY8);
+		BRect scale_y_frame(scale_x_frame);
+
+		scale_y_frame.bottom = max_c(scale_y_frame.bottom, new_height);
+		scale_y_bitmap = new BBitmap(scale_y_frame, B_GRAY8);
 		if (scale_y_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
 
@@ -452,8 +459,10 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 		source_bits = (uint8*)scale_x_bitmap->Bits();
 		int32 source_bpr = scale_x_bitmap->BytesPerRow();
 
-		for (int32 y = 0; y < new_height; y++)
-			for (int32 x = 0; x < new_width; x++)
+		int32 max_height = min_c(new_height, scale_y_bitmap->Bounds().Height());
+		int32 max_width = min_c(new_width, target_bpr);
+		for (int32 y = 0; y < max_height; y++)
+			for (int32 x = 0; x < max_width; x++)
 				*(target_bits + x + y * target_bpr) = background;
 
 		int32 top = (int32)bounds.top;
@@ -470,8 +479,8 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 			ScaleUtilities::ScaleVerticallyGray(new_width, new_height, BPoint(left, top),
 				scale_x_bitmap, scale_y_bitmap, diff);
 		} else {
-			for (int32 y = 0; y < selection_map->Bounds().Height(); y++) {
-				for (int32 x = 0; x <= selection_map->Bounds().Width(); x++) {
+			for (int32 y = 0; y < scale_x_bitmap->Bounds().Height(); y++) {
+				for (int32 x = 0; x <= scale_x_bitmap->Bounds().Width(); x++) {
 					// Just copy it straight
 					*(target_bits + x + y * target_bpr) = *(source_bits + x + y * source_bpr);
 				}
@@ -506,15 +515,15 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	target_bpr = final_bitmap->BytesPerRow();
 
 	final_bounds.top = settings->top;
-	final_bounds.bottom = settings->bottom;
+	final_bounds.bottom = min_c(settings->bottom, final_bitmap->Bounds().bottom);
 	final_bounds.left = settings->left;
-	final_bounds.right = settings->right;
+	final_bounds.right = min_c(settings->right, final_bitmap->Bounds().right);
 
 	if (source_bits != NULL) {
 		for (int32 y = final_bounds.top; y <= final_bounds.bottom; y++) {
 			int32 src_y = y - final_bounds.top;
 
-			if (src_y >= source_bounds.bottom)
+			if (src_y > source_bounds.bottom)
 				break;
 
 			if (y < 0)
@@ -522,7 +531,7 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 
 			for (int32 x = final_bounds.left; x <= final_bounds.right; x++) {
 				int32 src_x = x - final_bounds.left;
-				if (src_x >= target_bpr || src_x >= source_bpr)
+				if (src_x > source_bpr)
 					break;
 				if (x < 0)
 					continue;
@@ -532,6 +541,8 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 			}
 		}
 	}
+
+	delete selection_map;
 
 	return final_bitmap;
 }
@@ -552,11 +563,13 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 	white.bytes[2] = 0xFF;
 	white.bytes[3] = 0x00;
 
+	preview_bitmap->Lock();
 	// Here do a DDA-scaling from copy_of_the_preview_bitmap to preview_bitmap.
 	uint32 width = preview_bitmap->Bounds().IntegerWidth();
 	uint32 height = preview_bitmap->Bounds().IntegerHeight();
 	uint32 source_width = copy_of_the_preview_bitmap->Bounds().IntegerWidth();
 	uint32 source_height = copy_of_the_preview_bitmap->Bounds().IntegerHeight();
+	preview_bitmap->Unlock();
 
 	if (width == 0 || height == 0)
 		return 0;
@@ -571,6 +584,15 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 	float old_height = original_bottom - original_top;
 	float width_coeff = old_width / new_width;
 	float height_coeff = old_height / new_height;
+
+	BRect selection_bounds;
+	if (selection != NULL) {
+		selection_bounds = selection->GetBoundingRect();
+		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
+	}
+
+	if (orig_selection_map != NULL)
+		selection->ReplaceSelection(orig_selection_map);
 
 	if (selection == NULL || selection->IsEmpty() == true) {
 		int32 preview_width = width;
@@ -622,14 +644,13 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 		if (reject_mouse_input == true)
 			return 1;
 
-		BRect selection_bounds = selection->GetBoundingRect();
-		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
+		BRect orig_selection_bounds = selection->GetBoundingRect();
+
 		int32 sel_top = (int32)selection_bounds.top;
 		int32 sel_bottom = (int32)selection_bounds.bottom;
 		int32 sel_left = (int32)selection_bounds.left;
 		int32 sel_right = (int32)selection_bounds.right;
 
-		selection->ReplaceSelection(orig_selection_map);
 		if (transform_selection_only == false) {
 			for (int32 y = sel_top; y <= sel_bottom; ++y) {
 				for (int32 x = sel_left; x <= sel_right; ++x) {
@@ -641,61 +662,49 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 				}
 			}
 		}
+
+		BBitmap* selmap = PreviewSelectionMap(width_coeff, height_coeff); //settings);
+		selection->ReplaceSelection(selmap);
 		selection_bounds = selection->GetBoundingRect();
+		delete selmap;
 
-		selection->ScaleTo(selection_bounds.LeftTop(), new_x, new_y);
-		selection->Recalculate();
-
-		selection_bounds = selection->GetBoundingRect();
-
-		if (settings->left != original_left || settings->top != original_top) {
-
-			selection->Translate(settings->left - original_left, settings->top - original_top);
-			selection->Recalculate();
-			selection_bounds = selection->GetBoundingRect();
-		}
-
+		copy_of_the_preview_bitmap->Lock();
 		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
+		copy_of_the_preview_bitmap->Unlock();
 
 		if (transform_selection_only == false) {
 			if (selection_bounds.IsValid() == false
 				|| selection_bounds.Width() <= 1
 				|| selection_bounds.Height() <= 1) {
 				selection->ReplaceSelection(orig_selection_map);
-				selection->Translate(previous_left, previous_top);
-				selection->Recalculate();
 				selection_bounds = selection->GetBoundingRect();
-				selection->ScaleTo(selection_bounds.LeftTop(), previous_right - previous_left,
-					previous_bottom - previous_top);
-				selection->Recalculate();
 
 				reject_mouse_input = true;
 				return 1;
 			}
 
-			sel_top = (int32)selection_bounds.top;
-			sel_bottom = (int32)selection_bounds.bottom;
-			sel_left = (int32)selection_bounds.left;
-			sel_right = (int32)selection_bounds.right;
-			if (settings->left < 0)
-				sel_left = settings->left;
-			if (settings->top < 0)
-				sel_top = settings->top;
+			sel_top = (int32)settings->top;
+			sel_bottom = min_c((int32)selection_bounds.bottom, preview_bitmap->Bounds().bottom);
+			sel_left = (int32)settings->left;
+			sel_right = min_c((int32)selection_bounds.right, preview_bitmap->Bounds().right);
 
-			for (int32 y = sel_top; y <= sel_bottom; y++) {
-				int32 source_y = (int32)floor((y - sel_top) * height_coeff) + original_top;
-				int32 y_times_bpr = y * bpr;
-				int32 source_y_times_bpr = source_y * bpr;
-				for (int32 x = sel_left; x <= sel_right; x++) {
-					if (selection->ContainsPoint(x, y)) {
-						int32 source_x
-							= (int32)floor((x - sel_left) * width_coeff) + original_left;
-						if (source_x > width || source_y > height) {
-							*(target_bits + x + y_times_bpr) = white.word;
-						} else {
-							*(target_bits + x + y_times_bpr)
-								= src_over_fixed(*(target_bits + x + y_times_bpr),
-									*(source_bits + source_x + source_y_times_bpr));
+			if (sel_right > 0 && sel_bottom > 0
+				&& sel_left < preview_bitmap->Bounds().right
+				&& sel_top < preview_bitmap->Bounds().bottom)  {
+				for (int32 y = sel_top; y <= sel_bottom; y++) {
+					int32 source_y = (int32)floor((y - sel_top) * height_coeff) + original_top;
+					int32 y_times_bpr = y * bpr;
+					int32 source_y_times_bpr = source_y * bpr;
+					for (int32 x = sel_left; x <= sel_right; x++) {
+						if (selection->ContainsPoint(x, y)) {
+							int32 source_x
+								= (int32)floor((x - sel_left) * width_coeff) + original_left;
+							if (source_x > width || source_y > height || source_x < 0 || source_y < 0) {
+								*(target_bits + x + y_times_bpr) = white.word;
+							} else {
+								*(target_bits + x + y_times_bpr)
+									= *(source_bits + source_x + source_y_times_bpr);
+							}
 						}
 					}
 				}
@@ -706,6 +715,68 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 	region->Set(preview_bitmap->Bounds());
 
 	return 1;
+}
+
+
+BBitmap*
+ScaleManipulator::PreviewSelectionMap(float width_coeff, float height_coeff)
+{
+	BBitmap* current_selection_map = selection->ReturnSelectionMap();
+
+	BRect selection_frame(settings->left, settings->top, settings->right, settings->bottom);
+	int32 width = selection_frame.IntegerWidth();
+	int32 height = selection_frame.IntegerHeight();
+
+	BRect selection_map_frame = BRect(preview_bitmap->Bounds());
+	selection_map_frame.right = max_c(selection_map_frame.right, width);
+	selection_map_frame.bottom = max_c(selection_map_frame.bottom, height);
+
+	BBitmap* selection_map = new BBitmap(selection_map_frame, B_GRAY8);
+
+	uint8* source_bits = (uint8*)current_selection_map->Bits();
+	uint8* target_bits = (uint8*)selection_map->Bits();
+	int32 bpr = selection_map->BytesPerRow();
+	int32 source_bpr = current_selection_map->BytesPerRow();
+
+	for (int32 y = 0; y <= selection_map->Bounds().IntegerHeight(); y++)
+			for (int32 x = 0; x <= selection_map->Bounds().IntegerWidth(); x++)
+				*(target_bits + x + y * bpr) = 0;
+
+	int32 sel_top = (int32)settings->top;
+	int32 sel_bottom = min_c((int32)selection_frame.bottom, preview_bitmap->Bounds().bottom);
+	int32 sel_left = (int32)settings->left;
+	int32 sel_right = min_c((int32)selection_frame.right, preview_bitmap->Bounds().right);
+
+	for (int32 y = sel_top; y <= sel_bottom; y++) {
+		int32 source_y = (int32)floor((y - sel_top) * height_coeff) + original_top;
+		int32 y_times_bpr = y * bpr;
+		int32 source_y_times_bpr = source_y * source_bpr;
+
+		if (y < 0)
+			continue;
+
+		if (y > preview_bitmap->Bounds().bottom)
+			break;
+
+		for (int32 x = sel_left; x <= sel_right; x++) {
+			if (x < 0)
+				continue;
+
+			if (x > preview_bitmap->Bounds().right)
+				break;
+
+			int32 source_x
+				= (int32)floor((x - sel_left) * width_coeff) + original_left;
+			if (source_x > 0 && source_y > 0
+				&& source_x < current_selection_map->Bounds().right
+				&& source_y < current_selection_map->Bounds().bottom) {
+				*(target_bits + x + y_times_bpr)
+					= *(source_bits + source_x + source_y_times_bpr);
+			}
+		}
+	}
+
+	return selection_map;
 }
 
 

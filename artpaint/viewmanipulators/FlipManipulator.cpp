@@ -88,10 +88,56 @@ HorizFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar
 		}
 	}
 
-	if (selection != NULL)
-		selection->FlipHorizontally();
+	if (selection != NULL) {
+		BBitmap* sel_map = ManipulateSelectionMap();
+		selection->ReplaceSelection(sel_map);
+	}
 
 	return original;
+}
+
+
+BBitmap*
+HorizFlipManipulator::ManipulateSelectionMap()
+{
+	BRect bounds = selection->GetBoundingRect();
+	BBitmap* selection_map = new BBitmap(selection->ReturnSelectionMap());
+
+	int32 height = bounds.IntegerHeight();
+	int32 width = bounds.IntegerWidth();
+	int32 width_per_2 = width / 2;
+	uint8 left_bits, right_bits;
+	uint8* bits = (uint8*)selection_map->Bits();
+	uint32 bpr = selection_map->BytesPerRow();
+
+	int32 left = bounds.left;
+	int32 right = bounds.right;
+	int32 right_per_2 = bounds.left + width_per_2;
+	int32 top = bounds.top;
+	int32 bottom = bounds.bottom;
+
+	for (int32 y = top; y <= bottom; y++) {
+		for (int32 x = left; x <= right_per_2; x++) {
+			uint8* bit = bits + y * bpr;
+			int32 right_x = left + right - x;
+			right_bits = *(bit + right_x);
+			left_bits = *(bit + x);
+			*(bit + x) = right_bits;
+			*(bit + right_x) = left_bits;
+
+			if (selection->ContainsPoint(x, y))
+				*(bit + x) = 0;
+			if (selection->ContainsPoint(right_x, y))
+				*(bit + right_x) = 0;
+
+			if (selection->ContainsPoint(x, y))
+				*(bit + right_x) = left_bits;
+			if (selection->ContainsPoint(right_x, y))
+				*(bit + x) = right_bits;
+		}
+	}
+
+	return selection_map;
 }
 
 
@@ -163,10 +209,55 @@ VertFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 		}
 	}
 
-	if (selection != NULL)
-		selection->FlipVertically();
+	if (selection != NULL) {
+		BBitmap* sel_map = ManipulateSelectionMap();
+		selection->ReplaceSelection(sel_map);
+	}
 
 	return original;
+}
+
+
+BBitmap*
+VertFlipManipulator::ManipulateSelectionMap()
+{
+	BRect bounds = selection->GetBoundingRect();
+
+	BBitmap* selection_map = new BBitmap(selection->ReturnSelectionMap());
+	int32 height = bounds.IntegerHeight();
+	int32 height_per_2 = height / 2;
+	uint8 top_bits, bottom_bits;
+	uint8* bits = (uint8*)selection_map->Bits();
+	uint32 bpr = selection_map->BytesPerRow();
+
+	int32 left = bounds.left;
+	int32 right = bounds.right;
+	int32 top = bounds.top;
+	int32 bottom = bounds.bottom;
+	int32 bottom_per_2 = bounds.top + height_per_2;
+
+	for (int32 y = top; y <= bottom_per_2; y++) {
+		for (int32 x = left; x <= right; x++) {
+			uint8* bit = bits; // + y * bpr;
+			int32 bottom_y = top + bottom - y;
+			bottom_bits = *(bit + x + bottom_y * bpr);
+			top_bits = *(bit + x + y * bpr);
+			*(bit + x + y * bpr) = bottom_bits;
+			*(bit + x + bottom_y * bpr) = top_bits;
+
+			if (selection->ContainsPoint(x, y))
+				*(bit + x + y * bpr) = 0;
+			if (selection->ContainsPoint(x, bottom_y))
+				*(bit + x + bottom_y * bpr) = 0;
+
+			if (selection->ContainsPoint(x, y))
+				*(bit + x + bottom_y * bpr) = top_bits;
+			if (selection->ContainsPoint(x, bottom_y))
+				*(bit + x + y * bpr) = bottom_bits;
+		}
+	}
+
+	return selection_map;
 }
 
 

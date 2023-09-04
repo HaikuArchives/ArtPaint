@@ -149,11 +149,7 @@ BitmapUtilities::ConvertToMask(BBitmap* inBitmap, uint8 color)
 	for (int32 y = 0; y < out_map->Bounds().IntegerHeight() + 1; y++) {
 		for (int32 x = 0; x < out_map->Bounds().IntegerWidth() + 1; x++) {
 			c.word = *(in_bits + x + y * in_bpr);
-			// revert this change when the rest of ArtPaint understands
-			// selections with alpha
-			float alpha = 0;
-			if (c.bytes[3] > 0x00)
-				alpha = 1;
+			float alpha = (float)c.bytes[3] / 255.;
 
 			*(out_bits + x + y * out_bpr) = (uint8)((float)color * alpha);
 		}

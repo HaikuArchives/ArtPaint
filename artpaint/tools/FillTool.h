@@ -83,16 +83,16 @@ private:
 									Selection* = NULL);
 			void				FillGradientLinear(BitmapDrawer*, BBitmap*, BPoint,
 									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1);
+									uint32, uint8 skip = 1, Selection* sel = NULL);
 			void				FillGradientRadial(BitmapDrawer*, BBitmap*, BPoint,
 									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1);
+									uint32, uint8 skip = 1, Selection* sel = NULL);
 			void				FillGradientSquare(BitmapDrawer*, BBitmap*, BPoint,
 									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1);
+									uint32, uint8 skip = 1, Selection* sel = NULL);
 			void				FillGradientConic(BitmapDrawer*, BBitmap*, BPoint,
 									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1);
+									uint32, uint8 skip = 1, Selection* sel = NULL);
 
 			BRect				calcBinaryMapBounds(BBitmap *boolean_map);
 };
