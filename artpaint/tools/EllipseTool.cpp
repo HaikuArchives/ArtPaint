@@ -38,13 +38,16 @@ EllipseTool::EllipseTool()
 	:
 	DrawingTool(B_TRANSLATE("Ellipse tool"), "p", ELLIPSE_TOOL)
 {
-	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION | ANTI_ALIASING_LEVEL_OPTION;
-	fOptionsCount = 4;
+
+	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION | ANTI_ALIASING_LEVEL_OPTION
+	               | ROTATION_ENABLED_OPTION;
+	fOptionsCount = 5;
 
 	SetOption(FILL_ENABLED_OPTION, B_CONTROL_OFF);
 	SetOption(SIZE_OPTION, 1);
 	SetOption(SHAPE_OPTION, HS_CENTER_TO_CORNER);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION, B_CONTROL_OFF);
+	SetOption(ROTATION_ENABLED_OPTION, B_CONTROL_OFF);
 }
 
 
@@ -64,7 +67,7 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	Selection* selection = view->GetSelection();
 
 	if (window != NULL) {
-		BPoint original_point;
+		BPoint original_point, view_point;
 		BRect bitmap_rect, old_rect, new_rect;
 		window->Lock();
 		rgb_color old_color = view->HighColor();
@@ -82,13 +85,16 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		window->Lock();
 		view->SetHighColor(c);
 		view->StrokeEllipse(new_rect, B_SOLID_HIGH);
+		view->SetHighColor(old_color);
 		window->Unlock();
 
 		while (buttons) {
 			window->Lock();
 			if (old_rect != new_rect) {
 				view->Draw(old_rect);
+				view->SetHighColor(c);
 				view->StrokeEllipse(new_rect);
+				view->SetHighColor(old_color);
 				old_rect = new_rect;
 			}
 			view->getCoords(&point, &buttons);
@@ -127,10 +133,82 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			snooze(20 * 1000);
 		}
 
-		BitmapDrawer* drawer = new BitmapDrawer(bitmap);
+		float new_angle, prev_angle;
+        if (GetCurrentValue(ROTATION_ENABLED_OPTION) == B_CONTROL_ON) {
+			BPoint centroid = new_rect.LeftTop() + new_rect.RightTop()
+				+ new_rect.RightBottom() + new_rect.LeftBottom();
+			centroid.x /= 4;
+			centroid.y /= 4;
+			prev_angle = new_angle = 0;
+			bool continue_rotating = true;
+			float original_angle;
+			if (centroid.x != point.x) {
+				original_angle = atan((centroid.y - point.y)
+					/ (centroid.x - point.x)) * 180 /M_PI;
+			} else {
+				original_angle = 90;
+			}
+
+			while (continue_rotating) {
+				if (is_clicks_data_valid) {
+					continue_rotating = FALSE;
+					is_clicks_data_valid = FALSE;
+				}
+				else if (is_keys_data_valid) {
+					if (last_key_event_bytes[0] == B_ESCAPE) {
+						continue_rotating = FALSE;
+						//draw_rectangle = FALSE;
+					}
+					is_keys_data_valid = FALSE;
+				}
+				else {
+					// Here we should rotate the polygon
+					window->Lock();
+					if (new_angle != prev_angle) {
+						float scale = view->getMagScale();
+						BRect eraseRect(0, 0, 1, 1);
+						float max_dim = ceil(max_c(new_rect.Width(), new_rect.Height()) / 2.);
+
+						eraseRect.top = centroid.y - max_dim;
+						eraseRect.bottom = centroid.y + max_dim;
+						eraseRect.left = centroid.x - max_dim;
+						eraseRect.right = centroid.x + max_dim;
+						view->Draw(eraseRect);
+						view->PushState();
+						view->SetOrigin(centroid);
+						float newAngleRad = new_angle * M_PI / 180.;
+						view->RotateBy(newAngleRad);
+						view->SetHighColor(c);
+						view->StrokeEllipse(new_rect.OffsetByCopy(-centroid.x, -centroid.y));
+						view->SetHighColor(old_color);
+						view->PopState();
+						prev_angle = new_angle;
+					}
+					view->getCoords(&point, &buttons, &view_point);
+					window->Unlock();
+					if (centroid.x != point.x) {
+						new_angle = atan((centroid.y - view_point.y)
+							/ (centroid.x - view_point.x)) * 180 / M_PI;
+					} else {
+						new_angle = 90;
+					}
+					new_angle -= original_angle;
+
+					if (modifiers() & B_SHIFT_KEY)
+						new_angle = SnapToAngle(22.5, new_angle);
+
+					snooze(20 * 1000);
+    			}
+			}
+		} else {
+			new_angle = 0.;
+		}
+
+		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
 		bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
 		bool use_anti_aliasing = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
-		drawer->DrawEllipse(bitmap_rect, RGBColorToBGRA(c), use_fill, use_anti_aliasing, selection);
+		drawer->DrawEllipse(bitmap_rect, RGBColorToBGRA(c), use_fill,
+			use_anti_aliasing, selection, new_angle);
 		delete drawer;
 
 		the_script->AddPoint(bitmap_rect.LeftTop());
@@ -138,14 +216,27 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		the_script->AddPoint(bitmap_rect.RightBottom());
 		the_script->AddPoint(bitmap_rect.LeftBottom());
 
-		bitmap_rect.InsetBy(-1, -1);
+        float max_dim = ceil(max_c(bitmap_rect.Width(), bitmap_rect.Height()) / 2.);
+		BPoint centroid = bitmap_rect.LeftTop() + bitmap_rect.RightTop()
+		  + bitmap_rect.RightBottom() + bitmap_rect.LeftBottom();
+		centroid.x /= 4;
+		centroid.y /= 4;
+
+		BRect updatedRect(0, 0, 1, 1);
+
+		updatedRect.top = centroid.y - max_dim;
+		updatedRect.left = centroid.x - max_dim;
+		updatedRect.bottom = centroid.y + max_dim;
+		updatedRect.right = centroid.x + max_dim;
+
+		updatedRect.InsetBy(-10,-10);
 		window->Lock();
 		view->SetHighColor(old_color);
 		view->SetDrawingMode(old_mode);
-		view->UpdateImage(bitmap_rect);
+		view->UpdateImage(updatedRect);
 		view->Sync();
 		window->Unlock();
-		SetLastUpdatedRect(bitmap_rect);
+		SetLastUpdatedRect(updatedRect);
 	}
 
 	return the_script;
@@ -194,6 +285,14 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 		message->AddInt32("value", 0x00000000);
 		fFillEllipse = new BCheckBox(B_TRANSLATE("Fill ellipse"), message);
 
+        message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", ROTATION_ENABLED_OPTION);
+		message->AddInt32("value", 0x00000000);
+
+		fRotation =
+			new BCheckBox(B_TRANSLATE("Enable rotation"),
+			message);
+
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
 		message->AddInt32("value", 0x00000000);
@@ -208,6 +307,7 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Options")))
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
+			    .Add(fRotation)
 				.Add(fAntiAlias)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
 			.End()
@@ -216,6 +316,9 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 
 		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
 			fFillEllipse->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(ROTATION_ENABLED_OPTION) != B_CONTROL_OFF)
+			fRotation->SetValue(B_CONTROL_ON);
 
 		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
 			fAntiAlias->SetValue(B_CONTROL_ON);
@@ -229,5 +332,6 @@ EllipseToolConfigView::AttachedToWindow()
 	DrawingToolConfigView::AttachedToWindow();
 
 	fFillEllipse->SetTarget(this);
+	fRotation->SetTarget(this);
 	fAntiAlias->SetTarget(this);
 }
