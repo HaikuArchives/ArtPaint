@@ -31,8 +31,8 @@ public:
 						WindowGUIManipulatorView();
 						WindowGUIManipulatorView(BRect rect);
 
-
-	virtual	void		AttachedToWindow();
+    virtual	void		AttachedToWindow();
+    virtual void        MessageReceived(BMessage* message);
 };
 
 
