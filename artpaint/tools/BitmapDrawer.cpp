@@ -218,99 +218,204 @@ BitmapDrawer::DrawCircle(BPoint center, float radius, uint32 color, bool fill, b
 	// For the moment we only do non-anti-aliased circles. So radius should be a whole number.
 
 	BRect circleRect(center.x - radius, center.y - radius, center.x + radius, center.y + radius);
-	DrawEllipse(circleRect, color, fill, anti_alias, sel, composite_func);
+	DrawEllipse(circleRect, color, fill, anti_alias, sel, 0, composite_func);
 
 	return B_OK;
 }
 
 
 status_t
-BitmapDrawer::DrawEllipse(BRect rect, uint32 color, bool fill, bool anti_alias, Selection* sel,
-	uint32(*composite_func)(uint32, uint32))
+BitmapDrawer::DrawEllipse(BRect rect, uint32 color,
+	bool fill, bool anti_alias, Selection *sel, float angle,
+	uint32 (*composite_func)(uint32, uint32))
 {
 	BPoint center;
-	center.x = floor(rect.left + (rect.right - rect.left) / 2.0);
-	center.y = floor(rect.top + (rect.bottom - rect.top) / 2.0);
+	center.x = floor(rect.left + (rect.right-rect.left) / 2.0);
+	center.y = floor(rect.top + (rect.bottom-rect.top) / 2.0);
 
-	uint32 radius1 = rect.Width() / 2.;
-	uint32 radius2 = rect.Height() / 2.;
+	float radius1 = rect.Width() / 2.;
+	float radius2 = rect.Height() / 2.;
 
-	uint32 radiusSqr = radius1 * radius1;
-	uint32 radius2Sqr = radius2 * radius2;
+	if (radius1 == radius2 || (int32)angle % 180 == 0)
+		_DrawShearedEllipse(center, radius1, radius2, color, fill, anti_alias, 1, 0, sel, composite_func);
+	else {
+		if (abs(angle) > 45) {
+			uint32 temp = radius1;
+			radius1 = radius2;
+			radius2 = temp;
 
-	int32 quarter = round(max_c(radiusSqr, radius2Sqr) / sqrt(radiusSqr + radius2Sqr));
-
-	int32 xmax = min_c(quarter, radius1);
-	int32 ymax = min_c(quarter, radius2);
-	for (int32 x = 0; x <= xmax; ++x) {
-		float y = radius2 * sqrt(1. - (float)(x * x) / (float)(radiusSqr));
-		float error = y - floor(y);
-
-		union {
-			uint8 bytes[4];
-			uint32 word;
-		} color1, color2;
-
-		color1.word = color;
-		color2.word = color;
-
-		uint8 alpha = round((1.0 - error) * color1.bytes[3]);
-
-		color1.bytes[3] = alpha;
-		color2.bytes[3] -= alpha;
-
-		if (fill) {
-			if (anti_alias == TRUE)
-				SetMirroredPixels(center, x, floor(y) + 1, color2.word, sel, composite_func);
-			if (x != 0)
-				FillColumn(center, x, 1, floor(y), color, sel, composite_func);
-		} else {
-			if (anti_alias == TRUE) {
-				SetMirroredPixels(center, x, floor(y), color1.word, sel, composite_func);
-				SetMirroredPixels(center, x, floor(y) + 1, color2.word, sel, composite_func);
-			} else
-				SetMirroredPixels(center, x, y, color, sel, composite_func);
+			angle += 90;
 		}
-	}
-
-	for (int32 y = 0; y <= ymax; ++y) {
-		float x = radius1 * sqrt(1. - (float)(y * y) / (float)(radius2Sqr));
-		float error = x - floor(x);
-
-		union {
-			uint8 bytes[4];
-			uint32 word;
-		} color1, color2;
-
-		color1.word = color;
-		color2.word = color;
-
-		uint8 alpha = round((1.0 - error) * color1.bytes[3]);
-
-		color1.bytes[3] = alpha;
-		color2.bytes[3] -= alpha;
-
-		if (fill) {
-			if (anti_alias == TRUE)
-				SetMirroredPixels(center, floor(x) + 1, y, color2.word, sel, composite_func);
-			if (y != 0)
-				FillRow(center, quarter + 1, floor(x), y, color, sel, composite_func);
-		} else {
-			if (anti_alias == TRUE) {
-				SetMirroredPixels(center, floor(x), y, color1.word, sel, composite_func);
-				SetMirroredPixels(center, floor(x) + 1, y, color2.word, sel, composite_func);
-			} else
-				SetMirroredPixels(center, x, y, color, sel, composite_func);
-		}
-	}
-
-	if (fill) {
-		FillRow(center, 1, radius1, 0, color, sel, composite_func);
-		FillColumn(center, 0, 1, radius2, color, sel, composite_func);
-		SetPixel(center, color, sel, composite_func);
+		angle = angle * M_PI / 180.;
+		float theta = atan((radius2 / radius1) * (-1. * tan(angle)));
+		float shear_dx = (radius1 * cos(theta) * cos(angle)) - (radius2 * sin(theta) * sin(angle));
+		float shear_dy = (radius1 * cos(theta) * sin(angle)) + (radius2 * sin(theta) * cos(angle));
+		float shear_x = abs(shear_dx);
+		float shear_y = (radius2 * radius1) / shear_x;
+		_DrawShearedEllipse(center, floor(shear_x), floor(shear_y), color, fill, anti_alias, shear_dx, shear_dy, sel, composite_func);
 	}
 
 	return B_OK;
+}
+
+
+status_t
+BitmapDrawer::_DrawShearedEllipse(BPoint center, float width, float height, uint32 color,
+	bool fill, bool anti_alias, float shear_dx, float shear_dy, Selection* sel,
+	uint32 (*composite_func)(uint32, uint32))
+{
+	if (shear_dx != 0) {
+		float a_squared = width * width;
+		float four_a_squared = a_squared * 4.;
+		float b_squared = height * height;
+		float four_b_squared = b_squared * 4.;
+
+		float x = 0;
+		float y = height;
+
+		float ffd = a_squared / sqrt(b_squared + a_squared);
+		for (x = 0; x < ffd; ++x) {
+			y = height * sqrt(1 - (x * x)/a_squared);
+
+			int32 fy = floor(y);
+
+			union color_conversion color1, color2;
+
+			color1.word = color;
+			if (anti_alias == true) {
+				float error = y - fy;
+
+				color2.word = color;
+
+				uint8 alpha = round((1.0 - error) * color1.bytes[3]);
+
+				color1.bytes[3] = alpha;
+				color2.bytes[3] -= alpha;
+			}
+
+			if (fill == true) {
+				_FillShearedColumn(center.x, center.y, x, 0 - fy, fy, shear_dx, shear_dy, color, sel, composite_func);
+				if (x != 0)
+					_FillShearedColumn(center.x, center.y, 0 - x, 0 - fy, fy, shear_dx, shear_dy, color, sel, composite_func);
+
+				if (anti_alias == true) {
+					_SetShearedPixel(center.x, center.y, x, 0 - fy - 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - x, 0 - fy - 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, x, fy + 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - x, fy + 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+				}
+			} else {
+				_SetShearedPixel(center.x, center.y, x, fy, shear_dx, shear_dy, color1.word, sel, composite_func);
+				_SetShearedPixel(center.x, center.y, 0 - x, fy, shear_dx, shear_dy, color1.word, sel, composite_func);
+				_SetShearedPixel(center.x, center.y, x, 0 - fy, shear_dx, shear_dy, color1.word, sel, composite_func);
+				_SetShearedPixel(center.x, center.y, 0 - x, 0 - fy, shear_dx, shear_dy, color1.word, sel, composite_func);
+
+				if (anti_alias == true) {
+					_SetShearedPixel(center.x, center.y, x, fy + 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - x, fy + 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, x, 0 - fy - 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - x, 0 - fy - 1, shear_dx, shear_dy, color2.word, sel, composite_func);
+				}
+			}
+		}
+
+		int32 pfx = floor(ffd);
+		float ffdy = b_squared / sqrt(b_squared + a_squared);
+		for (y = ffdy; y > 0; --y) {
+			x = width * sqrt(1 - (y * y) / b_squared);
+
+			int32 fx = floor(x);
+			union color_conversion color1, color2;
+
+			color1.word = color;
+			if (anti_alias == true) {
+				float error = x - fx;
+
+                color2.word = color;
+
+				uint8 alpha = round((1.0 - error) * color1.bytes[3]);
+
+				color1.bytes[3] = alpha;
+				color2.bytes[3] -= alpha;
+			}
+
+			if (fill == true) {
+				if (pfx != fx) {
+					_FillShearedColumn(center.x, center.y, fx, 0 - y, y, shear_dx, shear_dy, color, sel, composite_func);
+					_FillShearedColumn(center.x, center.y, 0 - fx, 0 - y, y, shear_dx, shear_dy, color, sel, composite_func);
+					pfx = fx;
+				}
+
+				if (anti_alias == true) {
+					_SetShearedPixel(center.x, center.y, fx + 1, y, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - fx - 1, y, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, fx + 1, 0 - y, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - fx - 1, 0 - y, shear_dx, shear_dy, color2.word, sel, composite_func);
+				}
+			} else {
+				_SetShearedPixel(center.x, center.y, fx, y, shear_dx, shear_dy, color1.word, sel, composite_func);
+				_SetShearedPixel(center.x, center.y, 0 - fx, y, shear_dx, shear_dy, color1.word, sel, composite_func);
+				_SetShearedPixel(center.x, center.y, fx, 0 - y, shear_dx, shear_dy, color1.word, sel, composite_func);
+				_SetShearedPixel(center.x, center.y, 0 - fx, 0 - y, shear_dx, shear_dy, color1.word, sel, composite_func);
+
+				if (anti_alias == true) {
+					_SetShearedPixel(center.x, center.y, fx + 1, y, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - fx - 1, y, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, fx + 1, 0 - y, shear_dx, shear_dy, color2.word, sel, composite_func);
+					_SetShearedPixel(center.x, center.y, 0 - fx - 1, 0 - y, shear_dx, shear_dy, color2.word, sel, composite_func);
+				}
+			}
+		}
+	}
+
+	return B_OK;
+}
+
+
+void
+BitmapDrawer::_SetShearedPixel(int32 x, int32 y, int32 dx, int32 dy,
+	float shear_dx, float shear_dy, uint32 color, Selection* sel,
+	uint32 (*composite_func)(uint32, uint32))
+{
+	float shear_delta = ((float)dx * shear_dy) / shear_dx;
+	int32 x0 = x + dx;
+	int32 y0 = y + dy + floor(shear_delta);
+
+	if (x0 < 0)
+		x0 = 0;
+
+	if (y0 < 0)
+		y0 = 0;
+
+	SetPixel(x0, y0, color, sel, composite_func);
+}
+
+
+void
+BitmapDrawer::_FillShearedColumn(int32 x, int32 y, int32 dx, int32 dy0,
+	int32 dy1, float shear_dx, float shear_dy, uint32 color,
+	Selection* sel, uint32 (*composite_func)(uint32, uint32))
+{
+	float shear_delta = ((float)dx * shear_dy) / shear_dx;
+	int32 x0 = x + dx;
+	int32 y0 = y + dy0 + floor(shear_delta);
+	int32 x1 = x + dx;
+	int32 y1 = y + dy1 + floor(shear_delta);
+
+	if (x0 < 0)
+		x0 = 0;
+
+	if (y0 < 0)
+		y0 = 0;
+
+	if (y0 > y1) {
+		int32 temp = y1;
+		y1 = y0;
+		y0 = temp;
+	}
+
+	for (uint32 yy = y0; yy <= y1; ++yy)
+		SetPixel(x0, yy, color, sel, composite_func);
 }
 
 
@@ -1174,56 +1279,4 @@ uint32
 BitmapDrawer::GetPixel(int32 x, int32 y)
 {
 	return GetPixel(BPoint(x, y));
-}
-
-
-void
-BitmapDrawer::SetMirroredPixels(BPoint center, uint32 x, uint32 y, uint32 color, Selection* sel,
-	uint32 (*composite_func)(uint32, uint32))
-{
-	uint32 centerX = center.x;
-	uint32 centerY = center.y;
-
-	SetPixel(centerX + x, centerY + y, color, sel, composite_func);
-	SetPixel(centerX - x, centerY + y, color, sel, composite_func);
-	SetPixel(centerX + x, centerY - y, color, sel, composite_func);
-	SetPixel(centerX - x, centerY - y, color, sel, composite_func);
-}
-
-
-void
-BitmapDrawer::FillColumn(BPoint center, uint32 x, uint32 miny, uint32 maxy, uint32 color,
-	Selection* sel, uint32 (*composite_func)(uint32, uint32))
-{
-	uint32 centerX = center.x;
-	uint32 centerY = center.y;
-
-	for (uint32 y = miny; y <= maxy; ++y) {
-		SetPixel(centerX + x, centerY + y, color, sel, composite_func);
-		SetPixel(centerX + x, centerY - y, color, sel, composite_func);
-		if (x != 0) {
-			SetPixel(centerX - x, centerY + y, color, sel, composite_func);
-			if (y != 0)
-				SetPixel(centerX - x, centerY - y, color, sel, composite_func);
-		}
-	}
-}
-
-
-void
-BitmapDrawer::FillRow(BPoint center, uint32 minx, uint32 maxx, uint32 y, uint32 color,
-	Selection* sel, uint32 (*composite_func)(uint32, uint32))
-{
-	uint32 centerX = center.x;
-	uint32 centerY = center.y;
-
-	for (uint32 x = minx; x <= maxx; ++x) {
-		SetPixel(centerX + x, centerY + y, color, sel, composite_func);
-		SetPixel(centerX - x, centerY + y, color, sel, composite_func);
-		if (y != 0) {
-			SetPixel(centerX + x, centerY - y, color, sel, composite_func);
-			if (x != 0)
-				SetPixel(centerX - x, centerY - y, color, sel, composite_func);
-		}
-	}
 }

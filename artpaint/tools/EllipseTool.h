@@ -12,6 +12,7 @@
 #define ELLIPSE_TOOL_H
 
 #include "DrawingTool.h"
+#include "ToolEventAdapter.h"
 
 
 class BCheckBox;
@@ -21,7 +22,7 @@ class ImageView;
 class ToolScript;
 
 
-class EllipseTool : public DrawingTool {
+class EllipseTool : public DrawingTool, public ToolEventAdapter {
 public:
 								EllipseTool();
 
@@ -46,6 +47,7 @@ private:
 			BRadioButton*		fCorner2Corner;
 			BRadioButton*		fCenter2Corner;
 			BCheckBox*			fAntiAlias;
+			BCheckBox*          fRotation;
 };
 
 

@@ -42,6 +42,7 @@ public:
 					uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
 	status_t	DrawEllipse(BRect, uint32, bool fill = TRUE,
 					bool anti_alias = TRUE, Selection* sel = NULL,
+					float angle = 0,
 					uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
 	status_t	DrawBitmap(BBitmap*, BRect, BRect, bool use_alpha = TRUE);
 
@@ -68,15 +69,19 @@ public:
 	uint32		GetPixel(BPoint location);
 	uint32		GetPixel(int32 x, int32 y);
 
-	void 		SetMirroredPixels(BPoint center, uint32 x, uint32 y, uint32 color,
-					Selection* sel = NULL,
-					uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
-	void		FillColumn(BPoint center, uint32 x, uint32 miny, uint32 maxy,
-					uint32 color, Selection* sel = NULL,
-					uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
-	void 		FillRow(BPoint center, uint32 minx, uint32 maxx, uint32 y,
-					uint32 color, Selection* sel = NULL,
-					uint32 (*composite_func)(uint32, uint32) = src_over_fixed);
+
+	status_t    _DrawShearedEllipse(BPoint center, float width, float height, uint32 color,
+                    bool fill, bool anti_alias, float shear_dx, float shear_dy, Selection* sel,
+                    uint32 (*composite_func)(uint32, uint32));
+    void        _SetShearedPixel(int32 x, int32 y, int32 dx, int32 dy,
+                    float shear_dx, float shear_dy, uint32 color,
+                    Selection* sel, uint32 (*composite_func)(uint32, uint32));
+    void        _FillShearedColumn(int32 x, int32 y, int32 dx, int32 dy0, int32 dy1,
+                    float shear_dx, float shear_dy, uint32 color,
+                    Selection* sel, uint32 (*composite_func)(uint32, uint32));
+    void        _FillShearedRow(int32 x, int32 y, int32 dx0, int32 dx1, int32 dy,
+                    float shear_dx, float shear_dy, uint32 color,
+                    Selection* sel, uint32 (*composite_func)(uint32, uint32));
 };
 
 
