@@ -90,12 +90,12 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 	uint32* source_bits = (uint32*)source->Bits();
 	int32 source_bpr = source->BytesPerRow() / 4;
 
-	for (int32 y = 0; y <= height; y++) {
+	for (int32 y = 0; y <= (int32)height; y++) {
 		int32 low = floor(ratio * y);
 		int32 high = ceil(ratio * y);
-		float weight = ratio * y - low;
-		uint32* src_bits_low = source_bits + (int32)offset.x + low * source_bpr;
-		uint32* src_bits_high = source_bits + (int32)offset.x + high * source_bpr;
+		float weight = (ratio * y) - low;
+		uint32* src_bits_low = source_bits + (int32)offset.x + (low + (int32)ceil(offset.y + 0.5)) * source_bpr;
+		uint32* src_bits_high = source_bits + (int32)offset.x + (high + (int32)ceil(offset.y + 0.5)) * source_bpr;
 
 		for (int32 x = 0; x <= width; x++) {
 			switch(method) {
@@ -126,9 +126,9 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 						high2 = high;
 
 					uint32* src_bits_low0 =
-						source_bits + (int32)offset.x + low0 * source_bpr;
+						source_bits + (int32)offset.x + (low0 + (int32)ceil(offset.y + 0.5)) * source_bpr;
 					uint32* src_bits_high2 =
-						source_bits + (int32)offset.x + high2 * source_bpr;
+						source_bits + (int32)offset.x + (high2 + (int32)ceil(offset.y + 0.5)) * source_bpr;
 
 					// default MITCHELL
 					float B = 1. / 3.;
@@ -148,7 +148,7 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 						mitchell_netravali(*(src_bits_low0 + x),
 							*(src_bits_low + x),
 							*(src_bits_high + x),
-							*(src_bits_high2+ x),
+							*(src_bits_high2 + x),
 							weight, B, C);
 				} break;
 			}
