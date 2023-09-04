@@ -98,25 +98,25 @@ struct menu_item {
 };
 
 
-PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views,
-		const BMessage& settings)
-	: BWindow(frame, name, B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_WILL_ACCEPT_FIRST_CLICK | B_AUTO_UPDATE_SIZE_LIMITS)
-	, fSettings(settings)
-	, fImageView(NULL)
-	, fBackground(NULL)
-	, fVerticalScrollbar(NULL)
-	, fHorizontalScrollbar(NULL)
-	, fMenubar(NULL)
-	, fStatusView(NULL)
-	, fContainerBox(NULL)
-	, fSetSizeButton(NULL)
-	, fWidthNumberControl(NULL)
-	, fHeightNumberControl(NULL)
-	, fImageSavePanel(NULL)
-	, fProjectSavePanel(NULL)
-	, fCurrentHandler(0)
-	, fImageSizeWindow(NULL)
+PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views, const BMessage& settings)
+	:
+	BWindow(frame, name, B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
+		B_WILL_ACCEPT_FIRST_CLICK | B_AUTO_UPDATE_SIZE_LIMITS),
+	fSettings(settings),
+	fImageView(NULL),
+	fBackground(NULL),
+	fVerticalScrollbar(NULL),
+	fHorizontalScrollbar(NULL),
+	fMenubar(NULL),
+	fStatusView(NULL),
+	fContainerBox(NULL),
+	fSetSizeButton(NULL),
+	fWidthNumberControl(NULL),
+	fHeightNumberControl(NULL),
+	fImageSavePanel(NULL),
+	fProjectSavePanel(NULL),
+	fCurrentHandler(0),
+	fImageSizeWindow(NULL)
 {
 	sgPaintWindowCount++;
 	SetSizeLimits(500, 10000, 400, 10000);
