@@ -715,6 +715,12 @@ inline uint32 linear_interpolation(uint32 p1, uint32 p2, float t)
 }
 
 
+inline uint8 linear_interpolation(uint8 p1, uint8 p2, float t)
+{
+	return (p1 * (1.0 - t)) + (p2 * t);
+}
+
+
 inline uint32 mitchell_netravali(uint32 p0, uint32 p1, uint32 p2, uint32 p3,
 	float t, float B, float C)
 {

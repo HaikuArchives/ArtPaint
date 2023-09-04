@@ -193,14 +193,18 @@ ScaleUtilities::ScaleVerticallyGray(float width, float height, BPoint offset, BB
 	uint8* source_bits = (uint8*)source->Bits();
 	int32 source_bpr = source->BytesPerRow();
 
-	for (int32 y = 0; y <= (int32)height; y++) {
+	int32 max_width = width;
+	int32 max_height = height;
+
+	for (int32 y = 0; y <= (int32)max_height; y++) {
 		int32 low = floor(ratio * y);
 		int32 high = ceil(ratio * y);
 		float weight = (ratio * y) - low;
+
 		uint8* src_bits_low = source_bits + (int32)offset.x + (low + (int32)ceil(offset.y + 0.5)) * source_bpr;
 		uint8* src_bits_high = source_bits + (int32)offset.x + (high + (int32)ceil(offset.y + 0.5)) * source_bpr;
 
-		for (int32 x = 0; x <= width; x++) {
+		for (int32 x = 0; x <= max_width; x++) {
 			*(target_bits + x + y * target_bpr)
 				= linear_interpolation(*(src_bits_low + x),
 					*(src_bits_high + x), weight);

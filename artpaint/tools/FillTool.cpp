@@ -197,7 +197,7 @@ FillTool::NormalFill(ImageView* view, uint32 buttons, BPoint start, Selection* s
 					if ((sel == NULL || sel->IsEmpty() == true || sel->ContainsPoint(x, y))
 						&& compare_2_pixels_with_variance(
 							old_color, drawer->GetPixel(x, y), tolerance)) {
-						drawer->SetPixel(x, y, color);
+						drawer->SetPixel(x, y, color, sel);
 					}
 				}
 			}
@@ -246,7 +246,7 @@ FillTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer, PointStack& stack,
 		} else if (binary_bits != NULL)
 			*(binary_bits + y * binary_bpr + (x / 8)) |= (0x01 << (7 - x % 8));
 
-		drawer->SetPixel(x, y, new_color);
+		drawer->SetPixel(x, y, new_color, sel);
 
 		if (spans == BOTH || spans == LOWER) {
 			if ((inside_lower_span == FALSE)
@@ -303,7 +303,7 @@ FillTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer, PointStack& stack,
 		} else if (binary_bits != NULL)
 			*(binary_bits + y * binary_bpr + (x / 8)) |= (0x01 << (7 - x % 8));
 
-		drawer->SetPixel(x, y, new_color);
+		drawer->SetPixel(x, y, new_color, sel);
 
 		if (spans == BOTH || spans == LOWER) {
 			if ((inside_lower_span == FALSE)
@@ -364,7 +364,7 @@ FillTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x, int32 m
 	// Then go from start towards the left side of the bitmap.
 	while ((sel == NULL || sel->IsEmpty() || sel->ContainsPoint(x, y)) && (x >= min_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance))) {
-		drawer->SetPixel(x, y, new_color);
+		drawer->SetPixel(x, y, new_color, sel);
 		if (binary_bits != NULL)
 			*(binary_bits + y * binary_bpr + (x / 8))
 				= *(binary_bits + y * binary_bpr + (x / 8)) | (0x01 << (7 - x % 8));
@@ -375,7 +375,7 @@ FillTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x, int32 m
 	x = start_x + 1;
 	while ((sel == NULL || sel->IsEmpty() || sel->ContainsPoint(x, y)) && (x <= max_x)
 		&& (compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance))) {
-		drawer->SetPixel(x, y, new_color);
+		drawer->SetPixel(x, y, new_color, sel);
 		if (binary_bits != NULL)
 			*(binary_bits + y * binary_bpr + (x / 8))
 				= *(binary_bits + y * binary_bpr + (x / 8)) | (0x01 << (7 - x % 8));
@@ -523,16 +523,16 @@ FillTool::GradientFill(
 
 					if (fToolSettings.shape == GRADIENT_CONIC) {
 						FillGradientConic(drawer, binary_map, start, new_point, min_x, max_x, min_y,
-							max_y, color, gradient_color);
+							max_y, color, gradient_color, 2, sel);
 					} else if (fToolSettings.shape == GRADIENT_RADIAL) {
 						FillGradientRadial(drawer, binary_map, start, new_point, min_x, max_x,
-							min_y, max_y, color, gradient_color, 2);
+							min_y, max_y, color, gradient_color, 2, sel);
 					} else if (fToolSettings.shape == GRADIENT_SQUARE) {
 						FillGradientSquare(drawer, binary_map, start, new_point, min_x, max_x,
-							min_y, max_y, color, gradient_color, 2);
+							min_y, max_y, color, gradient_color, 2, sel);
 					} else {
 						FillGradientLinear(drawer, binary_map, start, new_point, min_x, max_x,
-							min_y, max_y, color, gradient_color, 2);
+							min_y, max_y, color, gradient_color, 2, sel);
 					}
 
 					bitmap->Lock();
@@ -560,16 +560,16 @@ FillTool::GradientFill(
 		// Here calculate the final gradient.
 		if (fToolSettings.shape == GRADIENT_CONIC) {
 			FillGradientConic(drawer, binary_map, start, new_point, min_x, max_x, min_y, max_y,
-				color, gradient_color);
+				color, gradient_color, 1, sel);
 		} else if (fToolSettings.shape == GRADIENT_RADIAL) {
 			FillGradientRadial(drawer, binary_map, start, new_point, min_x, max_x, min_y, max_y,
-				color, gradient_color);
+				color, gradient_color, 1, sel);
 		} else if (fToolSettings.shape == GRADIENT_SQUARE) {
 			FillGradientSquare(drawer, binary_map, start, new_point, min_x, max_x, min_y, max_y,
-				color, gradient_color);
+				color, gradient_color, 1, sel);
 		} else {
 			FillGradientLinear(drawer, binary_map, start, new_point, min_x, max_x, min_y, max_y,
-				color, gradient_color);
+				color, gradient_color, 1, sel);
 		}
 		// Update the image-view.
 		bitmap->Lock();
@@ -773,7 +773,7 @@ FillTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x, int
 void
 FillTool::FillGradientLinear(BitmapDrawer* drawer, BBitmap* binary_map, BPoint start, BPoint end,
 	int32 min_x, int32 max_x, int32 min_y, int32 max_y, uint32 new_color, uint32 gradient_color,
-	uint8 skip)
+	uint8 skip, Selection* sel)
 {
 	uchar* binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
@@ -838,7 +838,7 @@ FillTool::FillGradientLinear(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 
 				for (int dy = 0; dy < skip; ++dy) {
 					for (int dx = 0; dx < skip; ++dx)
-						drawer->SetPixel(x + dx, y + dy, out_color.word);
+						drawer->SetPixel(x + dx, y + dy, out_color.word, sel);
 				}
 			}
 		}
@@ -849,7 +849,7 @@ FillTool::FillGradientLinear(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 void
 FillTool::FillGradientRadial(BitmapDrawer* drawer, BBitmap* binary_map, BPoint start, BPoint end,
 	int32 min_x, int32 max_x, int32 min_y, int32 max_y, uint32 new_color, uint32 gradient_color,
-	uint8 skip)
+	uint8 skip, Selection* sel)
 {
 	uchar* binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
@@ -901,7 +901,7 @@ FillTool::FillGradientRadial(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 
 				for (int dy = 0; dy < skip; ++dy) {
 					for (int dx = 0; dx < skip; ++dx)
-						drawer->SetPixel(x + dx, y + dy, out_color.word);
+						drawer->SetPixel(x + dx, y + dy, out_color.word, sel);
 				}
 			}
 		}
@@ -912,7 +912,7 @@ FillTool::FillGradientRadial(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 void
 FillTool::FillGradientSquare(BitmapDrawer* drawer, BBitmap* binary_map, BPoint start, BPoint end,
 	int32 min_x, int32 max_x, int32 min_y, int32 max_y, uint32 new_color, uint32 gradient_color,
-	uint8 skip)
+	uint8 skip, Selection* sel)
 {
 	uchar* binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
@@ -971,7 +971,7 @@ FillTool::FillGradientSquare(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 
 				for (int dy = 0; dy < skip; ++dy) {
 					for (int dx = 0; dx < skip; ++dx)
-						drawer->SetPixel(x + dx, y + dy, out_color.word);
+						drawer->SetPixel(x + dx, y + dy, out_color.word, sel);
 				}
 			}
 		}
@@ -982,7 +982,7 @@ FillTool::FillGradientSquare(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 void
 FillTool::FillGradientConic(BitmapDrawer* drawer, BBitmap* binary_map, BPoint start, BPoint end,
 	int32 min_x, int32 max_x, int32 min_y, int32 max_y, uint32 new_color, uint32 gradient_color,
-	uint8 skip)
+	uint8 skip, Selection* sel)
 {
 	uchar* binary_bits = (uchar*)binary_map->Bits();
 	int32 binary_bpr = binary_map->BytesPerRow();
@@ -1043,7 +1043,7 @@ FillTool::FillGradientConic(BitmapDrawer* drawer, BBitmap* binary_map, BPoint st
 
 				for (int dy = 0; dy < skip; ++dy) {
 					for (int dx = 0; dx < skip; ++dx)
-						drawer->SetPixel(x + dx, y + dy, out_color.word);
+						drawer->SetPixel(x + dx, y + dy, out_color.word, sel);
 				}
 			}
 		}

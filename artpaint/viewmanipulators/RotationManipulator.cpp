@@ -365,8 +365,8 @@ RotationManipulator::ManipulateBitmap(
 		}
 
 		// We must make a copy of the selection in order to be able to rotate it
-		selection->RotateTo(center, the_angle);
-		selection->Recalculate();
+		BBitmap* selmap = ManipulateSelectionMap(new_settings);
+		selection->ReplaceSelection(selmap);
 
 		BRect selection_bounds = selection->GetBoundingRect();
 		int32 sel_top = (int32)selection_bounds.top;
@@ -693,7 +693,6 @@ RotationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 void
 RotationManipulator::Reset()
 {
-	selection->RotateTo(settings->origo, 0);
 	settings->angle = 0;
 	previous_angle = 0;
 

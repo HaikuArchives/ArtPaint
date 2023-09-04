@@ -110,7 +110,7 @@ public:
 
 	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
 					BStatusBar*);
-	int32		PreviewBitmap(bool, BRegion* =NULL);
+	int32		PreviewBitmap(bool, BRegion* = NULL);
 
 	void		MouseDown(BPoint, uint32, BView*, bool);
 
@@ -135,6 +135,7 @@ public:
 	void		SetInterpolationMethod(interpolation_type newMethod) { method = newMethod; }
 	void		UpdateSettings();
 	BBitmap*	ManipulateSelectionMap(ManipulatorSettings*);
+	BBitmap*	PreviewSelectionMap(float width_coeff, float height_coeff);
 };
 
 

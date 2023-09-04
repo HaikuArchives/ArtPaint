@@ -491,11 +491,16 @@ Brush::draw(BBitmap* buffer, BPoint point, Selection* selection)
 			target_bits = bits + (y + py) * bpr + left;
 			for (int32 x = left; x <= right; ++x) {
 				if (selection->IsEmpty() || selection->ContainsPoint(x, y + py)) {
+					float sel_alpha = 1.0;
+					if (selection->IsEmpty() == false && selection->ContainsPoint(x, y + py))
+						sel_alpha = selection->Value(x, y + py) / 255.;
+
 					union color_conversion brush_color, target_color, result;
 					brush_color.word = *(brush_bits + (x - px) + y * brush_bpr);
 					brush_color.bytes[0] = 0xFF;
 					brush_color.bytes[1] = 0xFF;
 					brush_color.bytes[2] = 0xFF;
+					brush_color.bytes[3] *= sel_alpha;
 
 					target_color.word = *target_bits;
 
