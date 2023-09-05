@@ -72,16 +72,15 @@ BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color, bool anti_ali
 				y_mix_lower = 1.0 - y_mix_upper;
 
 				// This is the real Wu's two point anti-aliasing scheme.
-				new_value = ((uint32)(((color >> 24) & 0xFF) * y_mix_upper) << 24)
-					| ((uint32)(((color >> 16) & 0xFF) * y_mix_upper) << 16)
-					| ((uint32)(((color >> 8) & 0xFF) * y_mix_upper) << 8)
-					| ((uint32)(((color) &0xFF) * y_mix_upper));
-				SetPixel(BPoint(x, ceil(y)), new_value, sel);
-				new_value = ((uint32)(((color >> 24) & 0xFF) * y_mix_lower) << 24)
-					| ((uint32)(((color >> 16) & 0xFF) * y_mix_lower) << 16)
-					| ((uint32)(((color >> 8) & 0xFF) * y_mix_lower) << 8)
-					| ((uint32)(((color) &0xFF) * y_mix_lower));
-				SetPixel(BPoint(x, floor(y)), new_value, sel, composite_func);
+				union color_conversion color1, color2;
+				color1.word = color2.word = color;
+
+				uint8 alpha = round((y_mix_lower) * color1.bytes[3]);
+				color1.bytes[3] = alpha;
+				color2.bytes[3] += -alpha;
+
+				SetPixel(BPoint(x, ceil(y)), color2.word, sel, composite_func);
+				SetPixel(BPoint(x, floor(y)), color1.word, sel, composite_func);
 				y += step_y;
 			}
 		} else {
@@ -95,16 +94,15 @@ BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color, bool anti_ali
 				x_mix_right = 1.0 - x_mix_left;
 
 				// This is the real Wu's two point anti-aliasing scheme.
-				new_value = ((uint32)(((color >> 24) & 0xFF) * x_mix_right) << 24)
-					| ((uint32)(((color >> 16) & 0xFF) * x_mix_right) << 16)
-					| ((uint32)(((color >> 8) & 0xFF) * x_mix_right) << 8)
-					| ((uint32)(((color) &0xFF) * x_mix_right));
-				SetPixel(BPoint(ceil(x), y), new_value, sel);
-				new_value = ((uint32)(((color >> 24) & 0xFF) * x_mix_left) << 24)
-					| ((uint32)(((color >> 16) & 0xFF) * x_mix_left) << 16)
-					| ((uint32)(((color >> 8) & 0xFF) * x_mix_left) << 8)
-					| ((uint32)(((color) &0xFF) * x_mix_left));
-				SetPixel(BPoint(floor(x), y), new_value, sel, composite_func);
+				union color_conversion color1, color2;
+				color1.word = color2.word = color;
+
+				uint8 alpha = round((x_mix_right) * color1.bytes[3]);
+				color1.bytes[3] = alpha;
+				color2.bytes[3] += -alpha;
+
+				SetPixel(BPoint(ceil(x), y), color1.word, sel, composite_func);
+				SetPixel(BPoint(floor(x), y), color2.word, sel, composite_func);
 
 				x += step_x;
 			}
