@@ -14,7 +14,8 @@ Addon-Includes=${ArtPaint-Source}/application \
                ${ArtPaint-Source}/paintwindow \
                ${ArtPaint-Source}/tools \
                ${ArtPaint-Source}/viewmanipulators \
-               ${ArtPaint-Source}/windows
+               ${ArtPaint-Source}/windows \
+               ${ArtPaint-Source}/Utilities
 
 # The name of the binary.
 NAME = Dispersion.so
