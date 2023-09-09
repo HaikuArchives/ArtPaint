@@ -552,11 +552,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, Selection* selection
 
 			this->draw(
 				buffer, BPoint(new_x - brush_width_per_2, new_y - brush_height_per_2), selection);
-
-//			view->Window()->Lock();
-//			view->Invalidate();
-//			view->Window()->Unlock();
-//			snooze(50 * 1000);
 		}
 	} else {
 		float x_add = ((float)fabs(start.x - end.x)) / ((float)fabs(start.y - end.y));
@@ -572,11 +567,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, Selection* selection
 
 			this->draw(
 				buffer, BPoint(new_x - brush_width_per_2, new_y - brush_height_per_2), selection);
-
-//			view->Window()->Lock();
-//			view->Invalidate();
-//			view->Window()->Unlock();
-//			snooze(50 * 1000);
 		}
 	}
 

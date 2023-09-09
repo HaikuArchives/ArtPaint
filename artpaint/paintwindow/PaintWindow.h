@@ -90,9 +90,6 @@ public:
 			// whenever an image is loaded
 			void				ReadAttributes(const BNode& node);
 
-			// this is the function used by layer-window to inform paint-windows
-			// that it has been closed if no target window is specified ATM.
-	//static	void			LayerWindowClosed();
 	static  void				Redraw();
 
 			// This returns the number of paint-windows
@@ -132,9 +129,6 @@ private:
 			// this function will resize the window to fit image
 			void				_ResizeToImage();
 			BRect				_PreferredSize(Image* image) const;
-
-			// this function will show the layer-window
-			//void				showLayerWindow();
 
 			// These function will save the image.
 	static	int32				save_image(void*);

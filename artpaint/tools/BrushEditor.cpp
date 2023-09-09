@@ -130,18 +130,17 @@ BrushEditor::BrushEditor(Brush* brush)
 	gridLayout->SetColumnWeight(2, 0.7);
 	gridLayout->SetMaxColumnWidth(0, StringWidth("XXX"));
 	gridLayout->SetMaxColumnWidth(1, StringWidth("1000"));
-	// gridLayout->SetMaxColumnWidth(2, StringWidth("SLIDERSLIDER"));
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL, 5.0)
 		 .AddGroup(B_HORIZONTAL, 5.0)
-		 .Add(fBrushView)
-		 .AddStrut(5.0)
-		 .AddGroup(B_VERTICAL, 5.0)
-		 .AddGlue()
-		 .Add(fEllipse)
-		 .Add(fRectangle)
-		 .End()
+			 .Add(fBrushView)
+			 .AddStrut(5.0)
+			 .AddGroup(B_VERTICAL, 5.0)
+				 .AddGlue()
+				 .Add(fEllipse)
+				 .Add(fRectangle)
+			.End()
 		 .AddGlue()
 		 .End()
 		 .AddStrut(1.0)
@@ -150,8 +149,8 @@ BrushEditor::BrushEditor(Brush* brush)
 		 .Add(gridLayout->View())
 		 .AddStrut(1.0)
 		 .AddGroup(B_HORIZONTAL)
-		 .Add(fStoreBrush)
-		 .Add(fResetBrush)
+			 .Add(fStoreBrush)
+			 .Add(fResetBrush)
 		 .End()
 		 .SetInsets(5.0, 5.0, 5.0, 5.0)
 	);

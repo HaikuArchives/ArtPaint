@@ -277,20 +277,10 @@ DetectEdgesManipulator::thread_function(int32 thread_number)
 					float blue = 0;
 
 					// First the top row
-//					color.word = *(source + 1+x-1 + (1+y-1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
-
 					color.word = *(source + 1 + x + (1 + y - 1) * source_bpr);
 					red -= color.bytes[2];
 					green -= color.bytes[1];
 					blue -= color.bytes[0];
-
-//					color.word = *(source + 1+x+1 + (1+y-1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
 
 					// Then the middle row
 					color.word = *(source + 1 + x - 1 + (1 + y) * source_bpr);
@@ -309,20 +299,10 @@ DetectEdgesManipulator::thread_function(int32 thread_number)
 					blue -= color.bytes[0];
 
 					// Then the bottom row
-//					color.word = *(source + 1+x-1 + (1+y+1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
-
 					color.word = *(source + 1 + x + (1 + y + 1) * source_bpr);
 					red -= color.bytes[2];
 					green -= color.bytes[1];
 					blue -= color.bytes[0];
-
-//					color.word = *(source + 1+x+1 + (1+y+1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
 
 					// Then limit the values between 0 and 255.
 					red = min_c(255, max_c(0, red));

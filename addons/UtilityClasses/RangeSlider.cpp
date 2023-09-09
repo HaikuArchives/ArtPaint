@@ -162,7 +162,6 @@ RangeSlider::track_mouse()
 		// track both values
 		int32 original_value = value;
 		int32 original_low = lower_value;
-//		int32 original_high = higher_value;
 		int32 upper_limit = (max_value - min_value) - (higher_value - lower_value) + min_value;
 		int32 lower_limit = min_value;
 		int32 previous_value = value;

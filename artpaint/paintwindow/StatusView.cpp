@@ -114,9 +114,6 @@ StatusView::~StatusView()
 
 	if (selected_colors->Parent() == NULL)
 		delete selected_colors;
-
-//	if (current_brush->Parent() == NULL)
-//	delete current_brush;
 }
 
 
@@ -222,7 +219,6 @@ SelectedColorsView::Draw(BRect area)
 	SetHighColor(255, 255, 255, 255);
 	StrokeRect(foreground_rect);
 	foreground_rect.InsetBy(1, 1);
-//	foreground_rect = foreground_rect & area;
 
 	SetHighAndLowColors(((PaintApplication*)be_app)->Color(TRUE));
 	FillRect(foreground_rect, HS_2X2_BLOCKS);
@@ -442,24 +438,8 @@ CurrentBrushView::MessageReceived(BMessage* message)
 		{
 			SetBrush(ToolManager::Instance().GetCurrentBrush());
 		} break;
-//		case HS_BRUSH_DRAGGED: {
-//			int32 size;
-//			brush_info* info;
-//			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
-//			if (size == sizeof(brush_info)) {
-//				fBrush->ModifyBrush(*info);
-//				fBrush->PreviewBrush(fBrushPreview);
-//				Invalidate();
-//				fBrush->CreateDiffBrushes();
-//				if (Window() && Parent())
-//					Window()->PostMessage(kBrushAltered, Parent());
-//			}
-//			break;
-//
 		default:
-		{
 			BView::MessageReceived(message);
-		} break;
 	}
 }
 

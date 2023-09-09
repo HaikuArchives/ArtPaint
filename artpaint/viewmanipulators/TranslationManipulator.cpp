@@ -266,7 +266,6 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 			// First clear the target bitmap.
 			BRegion to_be_cleared;
 			to_be_cleared.Set(uncleared_rect);
-//			uncleared_rect.PrintToStream();
 			uncleared_rect.left = 0;
 			uncleared_rect.top = 0;
 			uncleared_rect.right = width;

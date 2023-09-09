@@ -159,14 +159,6 @@ BrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint viewPoi
 
 	delete imageUpdater;
 	delete coordinate_reader;
-
-//	test_brush(point,new_color);
-//	if (view->LockLooper() == true) {
-//		view->UpdateImage(view->Bounds());
-//		view->Invalidate();
-//		view->UnlockLooper();
-//	}
-
 	delete srcBuffer;
 	delete tmpBuffer;
 
@@ -280,7 +272,4 @@ BrushToolConfigView::BrushToolConfigView(DrawingTool* tool)
 	:
 	DrawingToolConfigView(tool)
 {
-	if (BLayout* layout = GetLayout()) {
-		// layout->AddView(BrushEditor::CreateBrushEditor(brush));
-	}
 }

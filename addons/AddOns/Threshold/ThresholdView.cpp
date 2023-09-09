@@ -129,7 +129,6 @@ ThresholdView::MouseDown(BPoint point)
 {
 	isTracking = true;
 	threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
-	//	Invoke();
 	Draw(histogramRect);
 }
 
@@ -139,7 +138,6 @@ ThresholdView::MouseMoved(BPoint point, uint32, const BMessage*)
 {
 	if (isTracking) {
 		threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
-//		Invoke();
 		Draw(histogramRect);
 	}
 }

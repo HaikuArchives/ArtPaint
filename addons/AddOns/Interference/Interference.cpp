@@ -195,8 +195,6 @@ InterferenceManipulator::MakeInterference(BBitmap* target, InterferenceManipulat
 					* max_c(0, (max_dist - dist_A)) / max_dist;
 				float contrib_B = sin(((dist_B * wl_B) - floor(dist_B * wl_B)) * 2 * PI)
 					* max_c(0, (max_dist - dist_B)) / max_dist;
-//				float contrib_A = sin_table[(int32)(((dist_A*wl_A)-floor(dist_A*wl_A))*720)];
-// 				float contrib_B = sin_table[(int32)(((dist_B*wl_B)-floor(dist_B*wl_B))*720)];
 
 				float contrib = (contrib_A + contrib_B + 2) / 4;
 				float contrib_opposite = 1.0 - contrib;
@@ -205,16 +203,6 @@ InterferenceManipulator::MakeInterference(BBitmap* target, InterferenceManipulat
 				c.bytes[1] = bg.bytes[1] * contrib_opposite + fg.bytes[1] * contrib;
 				c.bytes[2] = bg.bytes[2] * contrib_opposite + fg.bytes[2] * contrib;
 				c.bytes[3] = bg.bytes[3] * contrib_opposite + fg.bytes[3] * contrib;
-
-
-//				if (contrib_A*contrib_B > 0) {
-//					// partially constructive
-//					c.bytes[0] = c.bytes[1] = c.bytes[2] = 255;
-//				}
-//				else {
-//					// destructive
-//					c.bytes[0] = c.bytes[1] = c.bytes[2] = 0;
-//				}
 
 				*(target_bits + x + y * target_bpr) = c.word;
 			}

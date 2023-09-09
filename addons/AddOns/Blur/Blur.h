@@ -61,12 +61,6 @@ BBitmap				*preview_bitmap;
 BBitmap				*wide_copy_of_the_preview_bitmap;
 BBitmap				*tall_copy_of_the_preview_bitmap;
 
-//BBitmap				*half_preview_bitmap;
-//BBitmap				*quarter_preview_bitmap;
-//BBitmap				*eight_preview_bitmap;
-//
-
-
 // These variables will be used by the threads that calculate the Blur
 // The threads take a local copy of these when they start.
 int32		thread_count;
@@ -84,7 +78,6 @@ int32 		blur_amount;
 Selection	*selection;
 BStatusBar	*status_bar;
 
-
 // These functions calculate the blur. The function CalculateBlur is
 // used to start a few threads for the calclation. It will return after the
 // threads have finished their jobs. Before calling it the above variables
@@ -94,13 +87,10 @@ static		int32	thread_entry(void*);
 			int32	VerticalBlur(int32 thread_number);
 			int32	HorizontalBlur(int32 thread_number);
 
-
-
 BlurManipulatorSettings	settings;
 BlurManipulatorSettings	previous_settings;
 
 BlurManipulatorView		*config_view;
-//void		CalculateBlur(BBitmap*,BBitmap*,int32,BlurManipulatorSettings*,Selection*,BStatusBar*);
 
 public:
 			BlurManipulator(BBitmap*);
@@ -112,17 +102,12 @@ int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
 void		Reset();
 void		SetPreviewBitmap(BBitmap*);
 
-
 const char*	ReturnHelpString();
 const char*	ReturnName();
 
 ManipulatorSettings*	ReturnSettings();
 
-//void		FinishManipulation(bool);
-//void		ChangeValue(int32);
-//void		ChangeTransparency(int32);
 void		ChangeSettings(ManipulatorSettings*);
-
 
 status_t	ReadSettings(BNode*);
 status_t	WriteSettings(BNode*);
@@ -135,7 +120,6 @@ class BlurManipulatorView : public WindowGUIManipulatorView {
 		BlurManipulator	*manipulator;
 		BMessenger		*target;
 		BSlider			*blur_amount_slider;
-//		BCheckBox		*transparency_checkbox;
 
 		BlurManipulatorSettings	settings;
 

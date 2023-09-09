@@ -114,7 +114,6 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 
 	Selection* selection = view->GetSelection();
-//	BView *buffer_view = view->getBufferView();
 	BitmapDrawer* drawer = new (std::nothrow) BitmapDrawer(tmpBuffer);
 	if (drawer == NULL) {
 		delete coordinate_queue;
@@ -127,8 +126,6 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	rgb_color new_color;
 	union color_conversion new_color_bgra;
-//	int32 original_mouse_speed;
-//	get_mouse_speed(&original_mouse_speed);
 
 	BPoint prev_point;
 
@@ -189,13 +186,6 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		|| (reading_coordinates == true)) {
 		if ((status_of_read == B_OK) && (prev_point != point)) {
 			the_script->AddPoint(point);
-//			if (modifiers() & B_LEFT_CONTROL_KEY) {
-//				set_mouse_speed(0);
-//			}
-//			else {
-//				set_mouse_speed(original_mouse_speed);
-//			}
-
 			brush->draw(tmpBuffer,
 				BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2), selection);
 			brush->draw_line(tmpBuffer, point, prev_point, selection);

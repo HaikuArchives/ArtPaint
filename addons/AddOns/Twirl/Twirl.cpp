@@ -338,7 +338,6 @@ TwirlManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 #ifdef __POWERPC__
 					distance = 1.0 / reciprocal_of_square_root(real_x * real_x + real_y * real_y);
 #else
-//					distance = fsqrt(real_x*real_x + real_y*real_y);
 					distance = sqrt(real_x * real_x + real_y * real_y);
 #endif
 					if (distance <= center_distance_from_edges) {
@@ -372,7 +371,6 @@ TwirlManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 #ifdef __POWERPC__
 					distance = 1.0 / reciprocal_of_square_root(real_x * real_x + real_y * real_y);
 #else
-//					distance = fsqrt(real_x*real_x + real_y*real_y);
 					distance = sqrt(real_x * real_x + real_y * real_y);
 #endif
 					if ((distance <= center_distance_from_edges)

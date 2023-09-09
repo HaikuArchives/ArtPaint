@@ -172,10 +172,6 @@ WoodManipulator::thread_function(int32 thread_number)
 					= .144 * (color1.bytes[0] - color2.bytes[0])
 					+ .587 * (color1.bytes[1] - color2.bytes[1])
 					+ .299 * (color1.bytes[2] - color2.bytes[2]);
-
-//				if (difference != 0)
-//					difference /= abs(difference);
-
 				difference /= 255.0;
 
 				// This creates a woodlike texture when one_per_width is 1/8 and one_per_height is

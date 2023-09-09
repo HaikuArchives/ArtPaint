@@ -348,8 +348,6 @@ UndoAction::StoreDifferences(BBitmap* old, BBitmap* current, BRect area)
 			difference = NO_DIFFERENCE;
 			for (int32 y = top; (y <= bottom) && (difference == NO_DIFFERENCE); y++) {
 				for (int32 x = left; (x <= right) && (difference == NO_DIFFERENCE); x++) {
-//					different = different || (*(bits + x + y * bpr) == *(old_bits + x +
-//					y * bpr) ? FALSE : TRUE);
 					if (*(bits + x + y * bpr) != *(old_bits + x + y * bpr))
 						difference = GREAT_DIFFERENCE;
 				}

@@ -577,7 +577,6 @@ Image::MergeLayers(Layer* merged_layer, int32, bool merge_with_upper)
 			}
 		}
 		// Then actually remove the layer
-		// int32 removed_layer_index = layer_list->IndexOf(other);
 		layer_id_list[other->Id()] = NULL;
 
 		layer_list->RemoveItem(other);
@@ -612,7 +611,7 @@ Image::RemoveLayer(Layer* removed_layer, int32 removed_layer_id)
 	//	3.	Will the same current layer-index still be good or should we reduce it by one.
 	//	4.	Is the deleted layer the current layer.
 	//	5.	If the layer count goes to 1, we should also delete the composite picture.
-	//
+
 	bool active_layer_changed = FALSE;
 
 	if (layer_list->CountItems() <= 1) {
@@ -645,7 +644,6 @@ Image::RemoveLayer(Layer* removed_layer, int32 removed_layer_id)
 		}
 		// Then actually remove the layer
 		removed_layer_id = removed_layer->Id();
-		// int32 removed_layer_index = layer_list->IndexOf(removed_layer);
 		layer_id_list[removed_layer_id] = NULL;
 		layer_list->RemoveItem(removed_layer);
 		SetImageSize();
@@ -1179,9 +1177,6 @@ Image::candidate_creator(void*)
 		color_entry* candidates = new color_entry[2 * 32768];
 		rgb_color* rgb_color_map = new rgb_color[32768];
 		for (int32 i = 0; i < 32768; i++) {
-//			rgb_color_map[i].blue = 255 * (float)((i) & 0x1F) / (float)0x1F;
-//			rgb_color_map[i].green = 255 * (float)((i >> 5) & 0x1F) / (float)0x1F;
-//			rgb_color_map[i].red = 255 * (float)((i >> 10) & 0x1F) / (float)0x1F;
 			rgb_color_map[i].blue = (i & 0x1F) << 3;
 			rgb_color_map[i].green = ((i >> 5) & 0x1F) << 3;
 			rgb_color_map[i].red = ((i >> 10) & 0x1F) << 3;
@@ -1430,10 +1425,10 @@ Image::DoDither(BRect area)
 
 						color.word = *(bgra_bits + x + y * bgra_bpr);
 
-						int32 rgb15 = (((color.bytes[2] & 0xf8) << 7)
-							| ((color.bytes[1] & 0xf8) << 2) | ((color.bytes[0] & 0xf8) >> 3));//							int32 rgb15 = ( ((int32)((color.bytes[2] / 255.0)*0x1f)<<10) |
-//											((int32)((color.bytes[1] / 255.0)*0x1f)<<5) |
-//											((int32)(color.bytes[0] / 255.0)*0x1f));
+						int32 rgb15
+							= (((color.bytes[2] & 0xf8) << 7)
+							| ((color.bytes[1] & 0xf8) << 2)
+							| ((color.bytes[0] & 0xf8) >> 3));
 						int8 value;
 						if (color_candidates[2 * rgb15].probability < random_number)
 							value = color_candidates[2 * rgb15].value;

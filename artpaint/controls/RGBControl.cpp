@@ -25,7 +25,6 @@ RGBControl::RGBControl(BPoint position, rgb_color c)
 int32
 RGBControl::value_at_1()
 {
-//	return (value>>8) & 0xFF;
 	return value.bytes[2];
 }
 
@@ -33,7 +32,6 @@ RGBControl::value_at_1()
 int32
 RGBControl::value_at_2()
 {
-//	return (value>>16) & 0xFF;
 	return value.bytes[1];
 }
 
@@ -41,7 +39,6 @@ RGBControl::value_at_2()
 int32
 RGBControl::value_at_3()
 {
-//	return (value>>24) & 0xFF;
 	return value.bytes[0];
 }
 
@@ -78,10 +75,6 @@ RGBControl::MouseDown(BPoint point)
 				Message()->ReplaceInt32("buttons", buttons);
 		}
 
-//		int32 red_value = (value>>8) & 0xFF;
-//		int32 green_value = (value>>16) & 0xFF;
-//		int32 blue_value = (value>>24) & 0xFF;
-//		int32 alpha_value = value & 0xFF;
 		int32 red_value = value.bytes[2];
 		int32 green_value = value.bytes[1];
 		int32 blue_value = value.bytes[0];
@@ -177,7 +170,6 @@ RGBControl::CalcRamps()
 		uint32 word;
 	} color, black, white;
 	for (int32 i = 0; i < 256; i++) {
-//		*bits++ = (value & 0xFF000000) + (value & 0x00FF0000) + ((i<<8) & 0x0000FF00);
 		color.bytes[0] = value.bytes[0];
 		color.bytes[1] = value.bytes[1];
 		color.bytes[2] = i;
@@ -186,7 +178,6 @@ RGBControl::CalcRamps()
 	}
 	bits = (uint32*)ramp2->Bits();
 	for (int32 i = 0; i < 256; i++) {
-//		*bits++ = (value & 0xFF000000) + ((i<<16) & 0x00FF0000) + (value & 0x0000FF00);
 		color.bytes[0] = value.bytes[0];
 		color.bytes[1] = i;
 		color.bytes[2] = value.bytes[2];
@@ -195,7 +186,6 @@ RGBControl::CalcRamps()
 	}
 	bits = (uint32*)ramp3->Bits();
 	for (int32 i = 0; i < 256; i++) {
-//		*bits++ = ((i<<24) & 0xFF000000) + (value & 0x00FF0000) + (value & 0x0000FF00);
 		color.bytes[0] = i;
 		color.bytes[1] = value.bytes[1];
 		color.bytes[2] = value.bytes[2];

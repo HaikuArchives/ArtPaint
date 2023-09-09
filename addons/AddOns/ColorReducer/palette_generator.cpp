@@ -211,14 +211,9 @@ gla_palette(BBitmap* inBitmap, int paletteSize)
 		// Here compare if the palette actually improved
 		palette_still_improving = false;
 		float error_amount = 0;
-		for (int32 i = 0; i < paletteSize; i++) {
-//			if ((palette[i].red != previous_palette[i].red) ||
-//				(palette[i].green != previous_palette[i].green) ||
-//				(palette[i].blue != previous_palette[i].blue)) {
-//				palette_still_improving = true;
-//			}
+		for (int32 i = 0; i < paletteSize; i++)
 			error_amount += color_metric->color_distance(palette[i], previous_palette[i]);
-		}
+
 		if (error_amount > 0)
 			palette_still_improving = true;
 	}

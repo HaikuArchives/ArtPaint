@@ -37,10 +37,6 @@ public:
 			status_t			writeSettings(BFile& file);
 
 private:
-//			int32				read_coordinates();
-//	static	int32				CoordinateReader(void*);
-
-private:
 			BPoint				last_point;
 			bool				reading_coordinates;
 

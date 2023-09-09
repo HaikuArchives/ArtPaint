@@ -303,7 +303,6 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(
 
 	red_slider = new BSlider("red_slider", NULL, new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED),
 		-255, 255, B_HORIZONTAL, B_TRIANGLE_THUMB);
-//	red_slider->SetLimitLabels(B_TRANSLATE("Less"), B_TRANSLATE("More"));
 	red_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	red_slider->SetHashMarkCount(11);
 	red_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));
@@ -316,7 +315,6 @@ ColorBalanceManipulatorView::ColorBalanceManipulatorView(
 
 	green_slider = new BSlider("green_slider", NULL,
 		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), -255, 255, B_HORIZONTAL, B_TRIANGLE_THUMB);
-//	green_slider->SetLimitLabels(B_TRANSLATE("Less"), B_TRANSLATE("More"));
 	green_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	green_slider->SetHashMarkCount(11);
 	green_slider->SetModificationMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_STARTED));

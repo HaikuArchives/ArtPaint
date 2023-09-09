@@ -34,9 +34,6 @@ class UndoQueue {
 static	int32		maximum_queue_depth;
 		int32		current_queue_depth;
 
-//		int32		event_count;
-//		int32		max_event_count;
-
 		BMenuItem	*undo_menu_item;
 		BMenuItem	*redo_menu_item;
 		ImageView	*image_view;

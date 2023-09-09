@@ -46,17 +46,6 @@ enum brush_shapes {
 	HS_IRREGULAR_BRUSH
 };
 
-//enum brush_types {
-//	HS_BINARY_BRUSH,
-//	HS_ALPHA_BRUSH,
-//	HS_RGBA_BRUSH
-//};
-
-//struct brush_edge {
-//	float	hardness;	// This determines how many pixels the fade takes
-//	float	fade_type;		// This determines the type of fade (exponential,linear or somewhere in between).
-//};
-
 
 struct brush_info {
 	int32	shape;

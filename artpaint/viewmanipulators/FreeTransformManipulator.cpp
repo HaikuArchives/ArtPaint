@@ -67,10 +67,10 @@ FreeTransformManipulator::ManipulateBitmap(
 	ManipulatorSettings* set, BBitmap* original, BStatusBar* status_bar)
 {
 	// TODO: check what's the idea behind this
-
-//	FreeTransformManipulatorSettings *new_settings =
-//		cast_as(set,FreeTransformManipulatorSettings);
-//	if (new_settings == NULL)
+	//
+	//	FreeTransformManipulatorSettings *new_settings =
+	//		cast_as(set,FreeTransformManipulatorSettings);
+	//	if (new_settings == NULL)
 	return NULL;
 }
 
@@ -94,20 +94,6 @@ FreeTransformManipulator::PreviewBitmap(bool, BRegion* region)
 	white.bytes[1] = 0xFF;
 	white.bytes[2] = 0xFF;
 	white.bytes[3] = 0x00;
-
-// int32 width = preview_bitmap->Bounds().IntegerWidth();
-// int32 height = preview_bitmap->Bounds().IntegerHeight();
-
-// uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
-// uint32 *target_bits = (uint32*)preview_bitmap->Bits();
-// int32 bpr = preview_bitmap->BytesPerRow()/4;
-
-// float rad_angle = current_settings.rotation/180.0*PI;
-
-	// 1. Translate by -width/2, -height/2
-	// 2. Rotate by rad_angle
-	// 3. Scale by dx and dy
-	// 4. Translate by translation_x + width/2, translation_y + height/2
 
 	return 1;
 }

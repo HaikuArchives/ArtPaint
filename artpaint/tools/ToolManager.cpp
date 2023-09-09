@@ -425,7 +425,6 @@ ToolManager::ToolManager()
 	_AddTool(new StraightLineTool());
 	_AddTool(new RectangleTool());
 	_AddTool(new EllipseTool());
-//	_AddTool(new BrushTool());
 	_AddTool(new HairyBrushTool());
 	_AddTool(new AirBrushTool());
 	_AddTool(new BlurTool());

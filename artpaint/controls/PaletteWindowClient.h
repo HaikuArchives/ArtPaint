@@ -16,12 +16,10 @@
 class PaletteWindowClient {
 public:
 				PaletteWindowClient() {
-					//printf("PaletteWindowClient\n");
 					ColorPaletteWindow::AddPaletteWindowClient(this);
 				}
 
 virtual			~PaletteWindowClient() {
-				//	printf("~PaletteWindowClient\n");
 					ColorPaletteWindow::RemovePaletteWindowClient(this);
 				}
 

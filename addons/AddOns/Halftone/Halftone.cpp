@@ -187,10 +187,6 @@ BBitmap*
 Halftone::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	return round_dot_halftone(original, selection, status_bar);
-//	return diagonal_line_halftone(original,selection,status_bar);
-//	return ordered_dither_halftone(original,selection,status_bar);
-//	return fs_dither_halftone(original,selection,status_bar);
-//	return ncandidate_dither_halftone(original,selection,status_bar);
 }
 
 
@@ -615,9 +611,8 @@ Halftone::ncandidate_dither_halftone(
 	c2.bytes[3] = c.alpha;
 
 	float probs[256];
-	for (int32 i = 0; i < 256; i++) {
+	for (int32 i = 0; i < 256; i++)
 		probs[i] = (float)i / 256.0; // probability to get white
-	}
 
 	RandomNumberGenerator* generator = new RandomNumberGenerator(1027, 1000000);
 	if (selection->IsEmpty()) {

@@ -1579,9 +1579,6 @@ ColorContainer::colorBounds(int32 index)
 
 	int32 row = 1, column = 1;
 
-//	row = ceil((float)index / column_count);
-//	column = ((index - 1) % column_count) + 1;
-
 	for (int32 i = 0; i < index; i++) {
 		if (column >= color_count / row_count) {
 			column = 1;

@@ -49,8 +49,6 @@ void ColorView::Draw(BRect)
 	SetHighColor(high);
 	SetLowColor(low);
 
-//	BRect filled_area = BRect(1, font_leading,
-//		(Bounds().bottom - font_leading) - (font_leading - 1), Bounds().bottom - font_leading);
 	BRect filled_area = BRect(1, 1, Bounds().Height() - 2, Bounds().Height() - 2);
 	FillRect(filled_area, B_MIXED_COLORS);
 	SetPenSize(1);

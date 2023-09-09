@@ -190,9 +190,6 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				start_point.y
 					= random_round(start_point.y, random_stream->UniformDistribution(0.0, 1.0));
 
-//				start_point.x = round(start_point.x);
-//				start_point.y = round(start_point.y);
-
 				BPoint end_point = point + offset;
 				end_point.x = round(end_point.x);
 				end_point.y = round(end_point.y);
@@ -220,7 +217,6 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				if (color_amount_array[i] > 0) {
 					drawer->DrawHairLine(
 						start_point, end_point, RGBColorToBGRA(color_array[i]), true, selection);
-//					drawer->DrawLine(start_point,end_point,RGBColorToBGRA(color_array[i]),2,false,selection);
 				}
 
 				updated_rect = updated_rect | BRect(start_point, start_point);
@@ -239,10 +235,8 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	imageUpdater->ForceUpdate();
 
 	float number_of_consecutive_growths = 0;
-//	while (((status_of_read = coordinate_queue->Get(point)) == B_OK) || (reading_coordinates ==
-//		true)) {
+
 	while (reader->GetPoint(point) == B_OK) {
-//		if ( (status_of_read == B_OK) && (prev_point != point) ) {
 		if (prev_point != point) {
 			the_script->AddPoint(point);
 
@@ -317,9 +311,6 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				end_point.y
 					= random_round(end_point.y, random_stream->UniformDistribution(0.0, 1.0));
 
-//				end_point.x = round(end_point.x);
-//				end_point.y = round(end_point.y);
-
 				start_point_array[i] = end_point;
 
 				// Then calculate how much and what color will be used. Also
@@ -344,7 +335,6 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				if (color_amount_array[i] > 0) {
 					drawer->DrawHairLine(
 						start_point, end_point, RGBColorToBGRA(color_array[i]), true, selection);
-//						drawer->DrawLine(start_point,end_point,RGBColorToBGRA(color_array[i]),2,false,selection);
 				}
 				updated_rect = updated_rect | BRect(start_point, start_point);
 				updated_rect = updated_rect | BRect(end_point, end_point);
@@ -405,42 +395,6 @@ HairyBrushTool::HelpString(bool isInUse) const
 	return (
 		isInUse ? B_TRANSLATE("Painting with a hairy brush.") : B_TRANSLATE("Hairy brush tool"));
 }
-
-
-// int32 HairyBrushTool::CoordinateReader(void *data)
-//{
-//	HairyBrushTool *this_pointer = (HairyBrushTool*)data;
-//	return this_pointer->read_coordinates();
-//}
-//
-//
-// int32 HairyBrushTool::read_coordinates()
-//{
-//	reading_coordinates = true;
-//	uint32 buttons;
-//	BPoint point,prev_point;
-//	BPoint view_point;
-//	image_view->Window()->Lock();
-//	image_view->getCoords(&point,&buttons,&view_point);
-//	image_view->MovePenTo(view_point);
-//	image_view->Window()->Unlock();
-//	prev_point = point + BPoint(1,1);
-//
-//	while (buttons) {
-//		image_view->Window()->Lock();
-//		if (point != prev_point) {
-//			coordinate_queue->Put(point);
-//			image_view->StrokeLine(view_point);
-//			prev_point = point;
-//		}
-//		image_view->getCoords(&point,&buttons,&view_point);
-//		image_view->Window()->Unlock();
-//		snooze(20.0 * 1000.0);
-//	}
-//
-//	reading_coordinates = FALSE;
-//	return B_OK;
-//}
 
 
 // #pragma mark -- HairyBrushToolConfigView

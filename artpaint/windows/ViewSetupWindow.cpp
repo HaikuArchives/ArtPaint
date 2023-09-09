@@ -30,9 +30,6 @@ ViewSetupWindow::ViewSetupWindow(BRect frame)
 		AddChild(rgb_control);
 		ResizeTo(rgb_control->Frame().Width(), rgb_control->Frame().Height());
 		rgb_control->SetTarget(target_view);
-//		invoker_message = new BMessage(HS_AREA_COLOR_CHANGED);
-//		invoker_message->AddInt32("color",0);
-//		rgb_control->SetMessage(invoker_message);
 	}
 }
 

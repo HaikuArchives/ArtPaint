@@ -69,9 +69,6 @@ ImageView::ImageView(BRect frame, float width, float height)
 	// Initialize the undo-queue
 	undo_queue = new UndoQueue(NULL, NULL, this);
 
-	// This will only be set once after reafing the prefs-file
-//	UndoQueue::SetQueueDepth(((PaintApplication*)be_app)->GlobalSettings()->undo_queue_depth);
-
 	// Initialize the image.
 	the_image = new Image(this, width, height, undo_queue);
 	current_display_mode = FULL_RGB_DISPLAY_MODE;
@@ -1056,7 +1053,6 @@ ImageView::MouseDown(BPoint view_point)
 
 	// here read the modifier keys
 	BMessage* message = Window()->CurrentMessage();
-	// int32 modifiers = message->FindInt32("modifiers");
 
 	// here we read which mousebutton was pressed
 	uint32 buttons = message->FindInt32("buttons");
@@ -1485,9 +1481,6 @@ ImageView::convertBitmapRectToView(BRect rect)
 		rect.right = floor(rect.right * scale);
 		rect.bottom = floor(rect.bottom * scale);
 	}
-
-	// here convert the rect to use offset
-	// rect.OffsetBy(((Layer*)layer_list->ItemAt(current_layer_index))->Offset().LeftTop());
 
 	return rect;
 }
@@ -2424,7 +2417,6 @@ ImageView::DoPaste()
 				if ((pasted_bitmap != NULL) && (pasted_bitmap->IsValid() == TRUE)) {
 					try {
 						if (the_image->AddLayer(pasted_bitmap, NULL, TRUE, 1.0, &offset) != NULL) {
-							//	delete pasted_bitmap;
 							Invalidate();
 							LayerWindow::ActiveWindowChanged(Window(), the_image->LayerList(),
 								the_image->ReturnThumbnailImage());
@@ -2672,7 +2664,6 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 {
 	filter_result filter_message = B_DISPATCH_MESSAGE;
 
-//	message->PrintToStream();
 	ImageView* view = dynamic_cast<ImageView*>(*handler);
 	if (view != NULL) {
 		BWindow* window = view->Window();

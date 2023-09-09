@@ -48,8 +48,6 @@ MatrixView::FrameResized(float width, float)
 void
 MatrixView::GetPreferredSize(float* width, float* height)
 {
-	// The preferred size depends on the current size
-	// if (Bounds().IntegerWidth() >= Bounds().IntegerHeight()) {
 	// If the bounds are wider than high, use as many rows as possible
 	int32 i_height = Bounds().IntegerHeight();
 	int32 rows = min_c(
@@ -62,23 +60,6 @@ MatrixView::GetPreferredSize(float* width, float* height)
 	*width = columns * (cell_width + cell_spacing) + cell_spacing;
 
 	*width = max_c(*width, 2 * cell_spacing + cell_width);
-	//		printf("Did a vertical\n");
-	//	}
-	//	else {
-	//		// if the bounds is higher than wide, use as many columns as possible
-	//		int32 i_width = Bounds().IntegerWidth();
-	//		int32 columns =
-	//min_c(CountChildren(),max_c(1,(i_width-cell_spacing)/(cell_width+cell_spacing)));
-	//
-	//		int32 rows = max_c(1,ceil((float)CountChildren()/(float)columns));
-	//		columns = max_c(1,ceil((float)CountChildren()/(float)rows));
-	//
-	//		*height = rows*(cell_height+cell_spacing)+cell_spacing;
-	//		*width = columns*(cell_width+cell_spacing)+cell_spacing;
-	//
-	//		*height = max_c(*height,2*cell_spacing+cell_height);
-	//		printf("Did a horizontal\n");
-	//	}
 }
 
 

@@ -21,9 +21,6 @@ VisualColorControl::VisualColorControl(
 	BControl(BRect(position, position), "rgb control", "RGB-Control", NULL,
 		B_FOLLOW_TOP | B_FOLLOW_LEFT, B_WILL_DRAW)
 {
-//	value = ( 	((c.blue<<24) & 0xFF000000) | ((c.green<<16) & 0x00FF0000)
-//				| ((c.red<<8) &0x0000FF00) | (c.alpha & 0x000000FF) );
-
 	value.bytes[0] = c.blue;
 	value.bytes[1] = c.green;
 	value.bytes[2] = c.red;
@@ -207,12 +204,6 @@ void VisualColorControl::Draw(BRect)
 	previous_value_at_2 = value_at_2();
 	previous_value_at_3 = value_at_3();
 	previous_value_at_4 = value_at_4();
-
-
-//	DrawPicture(down_arrow,BPoint(ramp_left_edge +
-//		(float)(value_at_2())/255.0*RAMP_WIDTH+4,COLOR_HEIGHT+5));
-//	DrawPicture(down_arrow,BPoint(ramp_left_edge +
-//		(float)(value_at_3())/255.0*RAMP_WIDTH+4,2*COLOR_HEIGHT+5));
 }
 
 
@@ -247,9 +238,6 @@ VisualColorControl::SetValue(int32 val)
 void
 VisualColorControl::SetValue(rgb_color c)
 {
-//	value = ( 	((c.blue<<24) & 0xFF000000) | ((c.green<<16) & 0x00FF0000)
-//				| ((c.red<<8) &0x0000FF00) | (c.alpha & 0x000000FF) );
-
 	value.bytes[0] = c.blue;
 	value.bytes[1] = c.green;
 	value.bytes[2] = c.red;
@@ -264,10 +252,6 @@ rgb_color
 VisualColorControl::ValueAsColor()
 {
 	rgb_color c;
-//	c.red = (value >> 8) & 0xFF;
-//	c.blue = (value >> 24) & 0xFF;
-//	c.green = (value >>16) & 0xFF;
-//	c.alpha = (value) & 0xFF;
 	c.red = value.bytes[2];
 	c.green = value.bytes[1];
 	c.blue = value.bytes[0];

@@ -534,13 +534,12 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id, bool is_little
 Layer*
 Layer::readLayerOldStyle(BFile& file, ImageView* imageView, int32 new_id)
 {
-	//	// Layer has stored the following things:
-	//	//	1.	Layer frame (i.e. the frame of bitmap)
-	//	//	2.	Layer id
-	//	//	3.	Layer type
-	//	//	4.	Layer visibility
-	//	//	5.	Bitmap data
-	//	//
+	// Layer has stored the following things:
+	//	1.	Layer frame (i.e. the frame of bitmap)
+	//	2.	Layer id
+	//	3.	Layer type
+	//	4.	Layer visibility
+	//	5.	Bitmap data
 
 	BRect layer_frame;
 	if (file.Read(&layer_frame, sizeof(BRect)) != sizeof(BRect))

@@ -85,8 +85,6 @@ EmbossManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* progress_view
 	// the spare-buffer should be 1 pixel larger in each direction than the
 	// actual buffer
 	BRect a_rect = original->Bounds();
-	//	a_rect.InsetBy(-1,-1);
-	//	BBitmap *spare_buffer = new BBitmap(a_rect,B_RGB_32_BIT);
 	BBitmap* spare_buffer = DuplicateBitmap(original, -1);
 	// here we should copy the buffer to spare and pad the edges twice
 	int32* buffer_bits = (int32*)original->Bits();
@@ -123,12 +121,6 @@ EmbossManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* progress_view
 
 					here P == X1 - X2
 				*/
-//				target_value
-//					= (((LT>>24)&0xFF) > ((RB>>24)&0xFF) ? (((LT>>24)&0xFF)-((RB>>24)&0xFF))<<24 : 0x00000000)
-//					| (((LT>>16)&0xFF) > ((RB>>16)&0xFF) ? (((LT>>16)&0xFF)-((RB>>16)&0xFF))<<16 : 0x00000000)
-//					| (((LT>>8)&0xFF) > ((RB>>8)&0xFF) ? (((LT>>8)&0xFF)-((RB>>8)&0xFF))<<8 : 0x00000000)
-//					| (*spare_bits & 0x000000FF);
-// 				*buffer_bits++ = target_value;
 				left_top.word = LT;
 				right_bottom.word = RB;
 				result.word = *spare_bits;
@@ -161,12 +153,6 @@ EmbossManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* progress_view
 			for (int32 x = left; x <= right; x++) {
 				if (selection->ContainsPoint(x, y) == TRUE) {
 					spare_bits = spare_origin + y * spare_bpr + x;
-//					target_value
-//						= (((LT>>24)&0xFF) > ((RB>>24)&0xFF) ? (((LT>>24)&0xFF)-((RB>>24)&0xFF))<<24 : 0x00000000)
-//						| (((LT>>16)&0xFF) > ((RB>>16)&0xFF) ? (((LT>>16)&0xFF)-((RB>>16)&0xFF))<<16 : 0x00000000)
-//						| (((LT>>8)&0xFF) > ((RB>>8)&0xFF) ? (((LT>>8)&0xFF)-((RB>>8)&0xFF))<<8	 : 0x00000000)
-//						| (*spare_bits & 0x000000FF);
-//					*(buffer_bits + y*buffer_bpr + x) = target_value;
 					left_top.word = LT;
 					right_bottom.word = RB;
 					result.word = *spare_bits;

@@ -64,12 +64,6 @@ ContrastManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 		b_hist[i] = 0;
 	}
 
-	// These maps contain the values that particular values of component map to.
-	// e.g red value of 23 might map to 1 <=> r_map[23] == 0x00000100.
-//	uint32 r_map[256];
-//	uint32 g_map[256];
-//	uint32 b_map[256];
-
 	uchar r_min = 255, r_max = 0;
 	uchar g_min = 255, g_max = 0;
 	uchar b_min = 255, b_max = 0;
@@ -110,13 +104,6 @@ ContrastManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 		map[(int32)i].bytes[0] = (i - b_min) / (b_max - b_min) * 255;
 		map[(int32)i].bytes[1] = (i - g_min) / (g_max - g_min) * 255;
 		map[(int32)i].bytes[2] = (i - r_min) / (r_max - r_min) * 255;
-
-//		r_map[(int32)i] = (((uint32)(((float)(i-r_min))/((float)(r_max-r_min))*255.0)) << 8)
-//			& 0x0000FF00;
-//		g_map[(int32)i] = (((uint32)(((float)(i-g_min))/((float)(g_max-g_min))*255.0)) << 16)
-//			& 0x00FF0000;
-//		b_map[(int32)i] = (((uint32)(((float)(i-b_min))/((float)(b_max-b_min))*255.0)) << 24)
-//			& 0xFF000000;
 	}
 
 	// Here change the pixel values according to mapping.
@@ -124,11 +111,6 @@ ContrastManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 
 	if (selection->IsEmpty() == TRUE) {
 		for (int32 i = 0; i < bits_length; i++) {
-//			*bits
-//			= r_map[(*bits >> 8) & 0xFF]
-//			| g_map[(*bits >> 16) & 0xFF]
-//			| b_map[(*bits >> 24) & 0xFF]
-//			| (*bits & 0xFF);
 			color.word = *bits;
 			color.bytes[0] = map[color.bytes[0]].bytes[0];
 			color.bytes[1] = map[color.bytes[1]].bytes[1];

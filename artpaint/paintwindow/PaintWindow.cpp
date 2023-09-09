@@ -953,13 +953,10 @@ PaintWindow::WorkspaceActivated(int32, bool active)
 {
 	if (active) {
 		if (fImageView != NULL) {
-			if (BScreen(this).ColorSpace() == B_CMAP8) {
-				//				printf("B_CMAP8\n");
+			if (BScreen(this).ColorSpace() == B_CMAP8)
 				fImageView->SetDisplayMode(DITHERED_8_BIT_DISPLAY_MODE);
-			} else {
-				//				printf("not B_CMAP8\n");
+			else
 				fImageView->SetDisplayMode(FULL_RGB_DISPLAY_MODE);
-			}
 		}
 	}
 }
@@ -987,10 +984,6 @@ void
 PaintWindow::DisplayCoordinates(BPoint point, BPoint reference, bool useReference)
 {
 	// here we set the proper view to display the coordinates
-
-	// set the coords string with sprintf
-//	sprintf(coords,"X: %.0f  Y: %.0f",point.x,point.y);
-
 	fStatusView->SetCoordinates(point, reference, useReference);
 
 	if (fSetSizeButton != NULL) {
@@ -1091,7 +1084,9 @@ PaintWindow::openMenuBar()
 			B_TRANSLATE("Saves the image under its current name.") },
 		{ B_TRANSLATE("Save image as" B_UTF8_ELLIPSIS), HS_SHOW_IMAGE_SAVE_PANEL, 0, 0, this,
 			B_TRANSLATE("Saves the image to disk.") },
+
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" }, // separator
+
 		{ B_TRANSLATE("New project" B_UTF8_ELLIPSIS), HS_NEW_PAINT_WINDOW, 'N', 0, be_app,
 			B_TRANSLATE("Creates a new empty canvas.") },
 		{ B_TRANSLATE("Open project" B_UTF8_ELLIPSIS), HS_SHOW_PROJECT_OPEN_PANEL, 'O', B_SHIFT_KEY,
@@ -1100,6 +1095,7 @@ PaintWindow::openMenuBar()
 			B_TRANSLATE("Saves the project under its current name.") },
 		{ B_TRANSLATE("Save project as" B_UTF8_ELLIPSIS), HS_SHOW_PROJECT_SAVE_PANEL, 0, 0, this,
 			B_TRANSLATE("Saves the project to disk.") },
+
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" } // separator
 	};
 
@@ -1210,12 +1206,6 @@ PaintWindow::openMenuBar()
 	a_message->AddInt32("layers", HS_MANIPULATE_ALL_LAYERS);
 	subMenu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("All layers"), a_message, 'E', B_SHIFT_KEY,
 		this, B_TRANSLATE("Scales all layers.")));
-
-//	a_message = new BMessage(HS_START_MANIPULATOR);
-//	a_message->AddInt32("manipulator_type",FREE_TRANSFORM_MANIPULATOR);
-//	a_message->AddInt32("layers",HS_MANIPULATE_CURRENT_LAYER);
-//	menu->AddItem(new PaintWindowMenuItem("Free transform test",a_message,0,0,this,"Use left
-//	shift and control to rotate and scale."));
 
 	menu->AddSeparatorItem();
 
@@ -1415,12 +1405,6 @@ PaintWindow::openMenuBar()
 		new BMessage(HS_SHOW_BRUSH_STORE_WINDOW), 'B', 0, this,
 		B_TRANSLATE("Opens the window of stored brushes.")));
 
-//	menu->AddItem(new PaintWindowMenuItem(_StringForId(NEW_PAINT_WINDOW_STRING),new
-//	BMessage(HS_NEW_PAINT_WINDOW),'N',0,this,_StringForId(NEW_PROJECT_HELP_STRING)));
-//	menu->AddSeparatorItem();
-//	menu->AddItem(new BMenuItem(B_TRANSLATE("Window settings" B_UTF8_ELLIPSIS), new
-//	BMessage(HS_SHOW_VIEW_SETUP_WINDOW)));
-
 	// This will be only temporary place for add-ons. Later they will be spread
 	// in the menu hierarchy according to their types.
 	menu = new BMenu(B_TRANSLATE("Add-ons"));
@@ -1541,11 +1525,6 @@ PaintWindow::AddImageView()
 
 	// put the view as target for scrollbars
 	fBackground->SetTarget(fImageView);
-	// Change the regular help-view's message.
-//	BMessage *help_message = new BMessage(HS_REGULAR_HELP_MESSAGE);
-//	help_message->AddString("message",HS_DRAW_MODE_HELP_MESSAGE);
-//	PostMessage(help_message,this);
-//	delete help_message;
 
 	// Change the menu-mode to enable all items.
 	_ChangeMenuMode(FULL_MENU);
@@ -1815,9 +1794,6 @@ PaintWindow::_SaveImage(BMessage* message)
 				fImageView->ResetChangeStatistics(false, true);
 				fImageView->SetImageName(title);
 
-				// BMenuItem *item = fMenubar->FindItem(HS_SAVE_IMAGE);
-				// if (item) item->SetEnabled(true);
-
 				Unlock();
 			}
 
@@ -1896,10 +1872,6 @@ PaintWindow::_SaveProject(BMessage* message)
 		// app. Get and set the app signature, not sure why it's commented out.
 		BNodeInfo nodeInfo(&file);
 		nodeInfo.SetType(HS_PROJECT_MIME_STRING);
-
-// 		app_info info;
-// 		be_app->GetAppInfo(&info);
-// 		nodeinfo.SetPreferredApp(info.signature);
 
 		// The project-file will be written in the endianness of the host.
 		// First word of the file will mark the endianness. If its 0xFFFFFFFF
@@ -2018,9 +1990,6 @@ PaintWindow::_SaveProject(BMessage* message)
 			// This must come after the project's name has been set.
 			LayerWindow::ActiveWindowChanged(this, fImageView->ReturnImage()->LayerList(),
 				fImageView->ReturnImage()->ReturnThumbnailImage());
-
-			// BMenuItem *item = fMenubar->FindItem(HS_SAVE_PROJECT);
-			// if (item) item->SetEnabled(true);
 
 			Unlock();
 		}

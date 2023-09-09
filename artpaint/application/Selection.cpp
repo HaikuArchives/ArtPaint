@@ -944,7 +944,6 @@ Selection::SimplifySelection()
 }
 
 
-// --------------------------
 SelectionData::SelectionData()
 {
 	selections_array_size = 4;

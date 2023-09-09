@@ -82,7 +82,6 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 	BWindow* window = view->Window();
 	drawing_mode old_mode;
 
-//	BView *bitmap_view = view->getBufferView();
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	if (buffer == NULL)
 		return NULL;

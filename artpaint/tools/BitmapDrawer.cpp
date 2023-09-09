@@ -203,14 +203,8 @@ BitmapDrawer::DrawLine(BPoint start, BPoint end, uint32 color, float width, bool
 	point_list[2] = end - normal2;
 	point_list[3] = start - normal2;
 
-//	HSPolygon *poly = new HSPolygon(point_list,4);
-//	poly->RoundToInteger();
-
 	// Then we fill the rectangle.
 	DrawRectanglePolygon(point_list, color, TRUE, anti_alias, sel, composite_func);
-//	DrawConvexPolygon(poly->GetPointList(),poly->GetPointCount(),color,TRUE,anti_alias);
-
-//	delete poly;
 
 	return B_OK;
 }
@@ -644,8 +638,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 			while (y <= bottom_y) {
 
 				if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//					int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
 					int32 left_bound = (int32)max_c(
 						floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
 					int32 right_bound = (int32)min_c(
@@ -688,8 +680,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 				while (y <= bottom_y) {
 
 					if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//						int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
 						int32 left_bound = (int32)max_c(
 							floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
 						int32 right_bound = (int32)min_c(
@@ -733,8 +723,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 				while (y <= bottom_y) {
 
 					if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//						int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
 						int32 left_bound = (int32)max_c(
 							floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
 						int32 right_bound = (int32)min_c(
@@ -785,8 +773,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 			while (y <= bottom_y) {
 
 				if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//					int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-//					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
 					int32 left_bound = (int32)max_c(
 						floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
 					int32 right_bound = (int32)min_c(
@@ -823,8 +809,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 			while (y <= bottom_y) {
 
 				if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//					int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-//	 				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
 					int32 left_bound = (int32)max_c(
 						floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
 					int32 right_bound = (int32)min_c(
@@ -866,8 +850,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 
 				while (y <= bottom_y) {
 					if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//						int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right+right_diff));
 						int32 left_bound = (int32)max_c(
 							floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
 						int32 right_bound = (int32)min_c(
@@ -912,8 +894,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 				while (y <= bottom_y) {
 
 					if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//						int32 left_bound = max_c(ceil(span_left+left_diff),max_c(absolute_left,left.x));
-//	 					int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
 						int32 left_bound = (int32)max_c(
 							floor(span_left + left_diff), max_c(absolute_left, floor(left.x)));
 						int32 right_bound = (int32)min_c(
@@ -964,8 +944,6 @@ BitmapDrawer::FillAntiAliasedRectangle(
 			while (y <= bottom_y) {
 
 				if ((y <= absolute_bottom) && (y >= absolute_top)) {
-//					int32 left_bound = max_c(ceil(span_left-left_diff),max_c(absolute_left,left.x));
-//	 				int32 right_bound = min_c(min_c(absolute_right,right.x),floor(span_right-right_diff));
 					int32 left_bound = (int32)max_c(
 						floor(span_left - left_diff), max_c(absolute_left, floor(left.x)));
 					int32 right_bound = (int32)min_c(

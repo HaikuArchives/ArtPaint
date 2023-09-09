@@ -66,89 +66,6 @@ enum BlendModes {
 // This seems to work perfectly, but it is a little bit slow
 inline uint32 combine_4_pixels(uint32 p1,uint32 p2,uint32 p3,uint32 p4,float c1,float c2,float c3,float c4)
 {
-//	float red_error = 0;
-//	float green_error = 0;
-//	float blue_error = 0;
-//	float alpha_error = 0;
-//	uint32 new_value = 0x00000000;
-//
-//	float red,green,blue,alpha;
-//	// First handle the red value.
-//	red = ((p1>>8) & 0xFF)*c1;
-//	red_error += red - (uint32)red;
-//	new_value += (uint32)red<<8;
-//
-//	red = ((p2>>8) & 0xFF)*c2;
-//	red_error += red - (uint32)red;
-//	new_value += (uint32)red<<8;
-//
-//	red = ((p3>>8) & 0xFF)*c3;
-//	red_error += red - (uint32)red;
-//	new_value += (uint32)red<<8;
-//
-//	red = ((p4>>8) & 0xFF)*c4;
-//	red_error += red - (uint32)red;
-//	new_value += (uint32)red<<8;
-//	// Finally add the red_error
-//	new_value += ((uint32)round(red_error))<<8;
-//
-//	// Handle the green
-//	green = ((p1>>16) & 0xFF)*c1;
-//	green_error += green - (uint32)green;
-//	new_value += (uint32)green<<16;
-//
-//	green = ((p2>>16) & 0xFF)*c2;
-//	green_error += green - (uint32)green;
-//	new_value += (uint32)green<<16;
-//
-//	green = ((p3>>16) & 0xFF)*c3;
-//	green_error += green - (uint32)green;
-//	new_value += (uint32)green<<16;
-//
-//	green = ((p4>>16) & 0xFF)*c4;
-//	green_error += green - (uint32)green;
-//	new_value += (uint32)green<<16;
-//	// Finally add the green_error
-//	new_value += ((uint32)round(green_error))<<16;
-//
-//	// Handle the blue
-//	blue = ((p1>>24) & 0xFF)*c1;
-//	blue_error += blue - (uint32)blue;
-//	new_value += (uint32)blue<<24;
-//
-//	blue = ((p2>>24) & 0xFF)*c2;
-//	blue_error += blue - (uint32)blue;
-//	new_value += (uint32)blue<<24;
-//
-//	blue = ((p3>>24) & 0xFF)*c3;
-//	blue_error += blue - (uint32)blue;
-//	new_value += (uint32)blue<<24;
-//
-//	blue = ((p4>>24) & 0xFF)*c4;
-//	blue_error += blue - (uint32)blue;
-//	new_value += (uint32)blue<<24;
-//	// Finally add the blue_error
-//	new_value += ((uint32)round(blue_error))<<24;
-//
-//	// Handle the alpha
-//	alpha = ((p1) & 0xFF)*c1;
-//	alpha_error += alpha - (uint32)alpha;
-//	new_value += (uint32)alpha;
-//
-//	alpha = ((p2) & 0xFF)*c2;
-//	alpha_error += alpha - (uint32)alpha;
-//	new_value += (uint32)alpha;
-//
-//	alpha = ((p3) & 0xFF)*c3;
-//	alpha_error += alpha - (uint32)alpha;
-//	new_value += (uint32)alpha;
-//
-//	alpha = ((p4) & 0xFF)*c4;
-//	alpha_error += alpha - (uint32)alpha;
-//	new_value += (uint32)alpha;
-//	// Finally add the blue_error
-//	new_value += ((uint32)round(alpha_error));
-
 	uint32 new_value;
 	float red,green,blue,alpha;
 	red = (((p1>>8) & 0xFF)*c1) + (((p2>>8) & 0xFF)*c2) + (((p3>>8) & 0xFF)*c3) + (((p4>>8) & 0xFF)*c4);
@@ -260,7 +177,6 @@ inline asm uint32 mix_2_pixels_asm(uint32 p1, uint32 p2, float c)
 	// Then we must store the values to memory in order to copy them to
 	// float registers.
 
-
 	blr
 }
 #endif
@@ -294,8 +210,6 @@ inline uint32 src_over_fixed(uint32 dst, uint32 src)
 	uint32 result_alpha = src_alpha + inv_dst_alpha;
 	if (result_alpha == 0)
 		return 0;
-
-	// r-rgb * r-a = s-rgb * s-a + d-rgb * d-a * (1 - s-a)
 
 	result_rgba.bytes[0] = (src_rgba.bytes[0] * src_alpha +
 		dst_rgba.bytes[0] * inv_dst_alpha) / result_alpha;
@@ -659,10 +573,6 @@ inline uint32 src_over_fixed_blend(uint32 dst, uint32 src, uint32 mode=0)
 	if (result_alpha == 0)
 		return 0;
 
-	// r-rgb * r-a = s-a * (1 - d-a) * s-rgb +
-	//		s-a * d-a * blend(d-rgb, s-rgb) +
-	// 		d-rgb * d-a * (1 - s-a)
-
 	result_rgba.bytes[0] = (src_rgba.bytes[0] * inv_dst_src_alpha +
 		src_dst_alpha * blend_color.bytes[0] +
 		dst_rgba.bytes[0] * inv_src_dst_alpha) / result_alpha;
@@ -695,8 +605,6 @@ inline uint32 dst_over_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		result_alpha = 1;
 
-	// r-rgb * r-a = s-rgb * s-a * (1 - d-a) + d-rgb * d-a
-
 	result_rgba.bytes[0] = (src_rgba.bytes[0] * inv_src_alpha +
 		dst_rgba.bytes[0] * dst_alpha) / result_alpha;
 	result_rgba.bytes[1] = (src_rgba.bytes[1] * inv_src_alpha +
@@ -724,8 +632,6 @@ inline uint32 src_out_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		return 0;
 
-	// r-rgb * r-a = s-rgb * (1 - d-a)
-
 	result_rgba.bytes[0] = src_rgba.bytes[0];
 	result_rgba.bytes[1] = src_rgba.bytes[1];
 	result_rgba.bytes[2] = src_rgba.bytes[2];
@@ -749,8 +655,6 @@ inline uint32 dst_out_fixed(uint32 dst, uint32 src)
 	uint32 result_alpha = (inv_src_alpha * dst_alpha) / 255;
 	if (result_alpha == 0)
 		return 0;
-
-	// r-rgb * r-a = s-rgb * (1 - d-a)
 
 	result_rgba.bytes[0] = dst_rgba.bytes[0];
 	result_rgba.bytes[1] = dst_rgba.bytes[1];

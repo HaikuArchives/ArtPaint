@@ -108,31 +108,7 @@ int32
 BlurManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
 	updated_region->Set(preview_bitmap->Bounds());
-//	if ((settings == previous_settings) == FALSE) {
-//		last_calculated_quality = lowest_allowed_quality;
-//		previous_settings = settings;
-//	}
-//	else
-//		last_calculated_quality = floor(last_calculated_quality/2.0);
-//
-//	if (full_quality == TRUE) {
-//		if (last_calculated_quality > 1)
-//			last_calculated_quality = 1;
-//	}
-//
-//	if (last_calculated_quality == 1)
-//		CalculateBlur(copy_of_the_preview_bitmap,preview_bitmap,1,&settings,sel,NULL);
-//
-//	else if (last_calculated_quality == 2)
-//		CalculateBlur(half_preview_bitmap,preview_bitmap,2,&settings,sel,NULL);
-//
-//	else if (last_calculated_quality == 4)
-//		CalculateBlur(quarter_preview_bitmap,preview_bitmap,4,&settings,sel,NULL);
-//
-//	else if (last_calculated_quality == 8)
-//		CalculateBlur(eight_preview_bitmap,preview_bitmap,8,&settings,sel,NULL);
-//
-//	return last_calculated_quality;
+
 	if ((settings == previous_settings) == FALSE) {
 		// The blur will be done separably. First in the vertical direction and then in horizontal
 		// direction.
@@ -145,7 +121,6 @@ BlurManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 		final_bpr = preview_bitmap->BytesPerRow() / 4;
 		final_width = preview_bitmap->Bounds().Width();
 		final_height = preview_bitmap->Bounds().Height();
-		// selection = sel;
 		status_bar = NULL;
 		blur_amount = settings.blur_amount;
 		previous_settings = settings;
@@ -615,11 +590,6 @@ BlurManipulatorView::BlurManipulatorView(BRect rect, BlurManipulator* manip, con
 	blur_amount_slider->SetHashMarkCount(11);
 	blur_amount_slider->SetModificationMessage(new BMessage(BLUR_AMOUNT_CHANGE_STARTED));
 
-//	BRect frame_rect = blur_amount_slider->Frame();
-//	frame_rect.bottom = frame_rect.top;
-//	transparency_checkbox = new BCheckBox(frame_rect,"transparency_checkbox",
-//		"Blur Transparency",new BMessage(BLUR_TRANSPARENCY_CHANGED));
-
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(blur_amount_slider)
 		.SetInsets(B_USE_SMALL_INSETS)
@@ -640,7 +610,6 @@ BlurManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 	blur_amount_slider->SetTarget(BMessenger(this));
-//	transparency_checkbox->SetTarget(this);
 }
 
 
@@ -664,12 +633,6 @@ BlurManipulatorView::MessageReceived(BMessage* message)
 			preview_started = FALSE;
 			target->SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 		} break;
-//		case BLUR_TRANSPARENCY_CHANGED:
-//		{
-//			settings.blur_alpha = (transparency_checkbox->Value() == B_CONTROL_ON);
-//			manipulator->ChangeSettings(&settings);
-//			break;
-//		}
 		default:
 			WindowGUIManipulatorView::MessageReceived(message);
 	}

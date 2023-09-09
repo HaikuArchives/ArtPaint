@@ -329,8 +329,6 @@ LayerWindow::MessageReceived(BMessage* message)
 				if (message->FindBool("final", &final) == B_OK)
 					layer_op_message.ReplaceBool("final", final);
 
-				// active_layer->SetTransparency((float)value / 100.0f);
-
 				BView* image_view = (BView*)active_layer->GetImageView();
 				BWindow* image_window = image_view->Window();
 
@@ -398,11 +396,6 @@ LayerWindow::ActiveWindowChanged(BWindow* active_window, BList* list, BBitmap* c
 		window_title = a_layer->ReturnProjectName();
 	else
 		window_title = NULL;
-
-//	if (target_window != NULL)
-//		window_title = target_window->Title();
-//	else
-//		window_title = NULL;
 
 	if (layer_window != NULL)
 		layer_window->Update();

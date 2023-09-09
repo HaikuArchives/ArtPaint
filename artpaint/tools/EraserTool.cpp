@@ -196,10 +196,6 @@ EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		|| (reading_coordinates == true)) {
 		if ((status_of_read == B_OK) && (prev_point != point)) {
 			the_script->AddPoint(point);
-//			if (modifiers() & B_LEFT_CONTROL_KEY)
-//				set_mouse_speed(0);
-//			else
-//				set_mouse_speed(original_mouse_speed);
 			if (fToolSettings.use_current_brush == true) {
 				brush->draw(tmpBuffer,
 					BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2), selection);
@@ -237,12 +233,6 @@ EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		}
 	}
 
-//	set_mouse_speed(original_mouse_speed);
-//	help_message = new BMessage(HS_REGULAR_HELP_MESSAGE);
-//	help_message->AddString("message",HS_DRAW_MODE_HELP_MESSAGE);
-//	view->Window()->PostMessage(help_message,view->Window());
-//
-//	delete help_message;
 	imageUpdater->ForceUpdate();
 	delete imageUpdater;
 

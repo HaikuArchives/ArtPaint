@@ -45,7 +45,6 @@ class SelectionData;
 class Selection {
 		// This list holds pointers to HSPolygons. The polygons make up the
 		// selections.
-//		BList	*selections;
 		SelectionData*	selection_data;
 
 		// This is used when rotating the selections to store the original
@@ -72,9 +71,6 @@ class Selection {
 
 		// This points to the view that we want to draw to.
 		BView*			image_view;
-
-//		// If this is true, the selection is inverted.
-//		bool	inverted;
 
 		bool			needs_recalculating;
 

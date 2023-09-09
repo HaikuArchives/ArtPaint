@@ -69,7 +69,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 	BWindow* window = view->Window();
 	drawing_mode old_mode;
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
-//	BView *bitmap_view = view->getBufferView();
 
 	ToolScript* the_script
 		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
@@ -193,7 +192,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 						BRect bbox = view_poly->BoundingBox();
 						view->Draw(bbox);
 
-//						poly->RotateAboutCenter(new_angle - prev_angle);
 						view_poly->RotateAboutCenter(new_angle - prev_angle);
 
 						BPolygon* draw_poly = view_poly->GetBPolygon();

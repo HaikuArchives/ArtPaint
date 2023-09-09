@@ -31,7 +31,6 @@ class	ReducerManipulatorSettings : public ManipulatorSettings {
 public:
 		ReducerManipulatorSettings()
 			: ManipulatorSettings() {
-//			dither_mode = FLOYD_STEINBERG_EDD_DITHER;
 			dither_mode = NO_DITHER;
 			palette_size = 256;
 			palette_mode = BEOS_PALETTE;

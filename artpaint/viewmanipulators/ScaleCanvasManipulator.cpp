@@ -104,8 +104,6 @@ ScaleCanvasManipulator::ManipulateBitmap(
 	float starting_width = bounds.Width() + 1;
 	float starting_height = bounds.Height() + 1;
 
-	// float new_width = round(starting_width * new_settings->width_coefficient);
-	// float new_height = round(starting_height * new_settings->height_coefficient);
 	float new_width = round(new_settings->right - new_settings->left) + 1;
 	float new_height = round(new_settings->bottom - new_settings->top) + 1;
 
@@ -676,7 +674,6 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 		case WIDTH_CHANGED:
 		case HEIGHT_CHANGED:
 		{
-			//			message->PrintToStream();
 			if (message->what == LEFT_CHANGED)
 				current_left = left_control->Value();
 			else if (message->what == WIDTH_CHANGED) {
@@ -707,7 +704,6 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 		{
 			case MULTIPLY_HEIGHT:
 				float coefficient;
-//				message->PrintToStream();
 				if (message->FindFloat("coefficient", &coefficient) == B_OK) {
 					if (message->what == MULTIPLY_WIDTH) {
 						current_width = max_c(1.0, ceil(width_control->Value() * coefficient));
@@ -735,7 +731,6 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 		case RESTORE_HEIGHT:
 		{
 			case RESTORE_WIDTH:
-//				message->PrintToStream();
 				if (message->what == RESTORE_WIDTH) {
 					SetValues(original_left, current_top, original_width, current_height);
 					if (fManipulator) {
@@ -756,7 +751,6 @@ ScaleCanvasManipulatorView::MessageReceived(BMessage* message)
 		{
 			maintain_proportions = !maintain_proportions;
 			if (maintain_proportions) {
-				// float current_width = current_width;
 				float current_height
 					= max_c(1.0, floor(original_height * (current_width / original_width) + 0.5));
 

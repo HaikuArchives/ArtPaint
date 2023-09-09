@@ -42,10 +42,6 @@ public:
 
 private:
 			ImageView*			image_view;
-//	CoordinateQueue	*coordinate_queue;
-//	bool		reading_coordinates;
-//	static	int32	CoordinateReader(void*);
-//	int32	read_coordinates();
 };
 
 
