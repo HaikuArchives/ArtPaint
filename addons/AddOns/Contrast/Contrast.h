@@ -122,7 +122,6 @@ class ContrastManipulatorView : public WindowGUIManipulatorView {
 		bool							started_adjusting;
 public:
 		ContrastManipulatorView(ContrastManipulator*,const BMessenger&);
-		~ContrastManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

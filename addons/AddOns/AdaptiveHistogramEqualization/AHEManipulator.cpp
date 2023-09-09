@@ -20,8 +20,7 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Adaptive histogram equalization");
 	char menu_help_string[255]
@@ -49,11 +48,6 @@ AHEManipulator::AHEManipulator(BBitmap*)
 }
 
 
-AHEManipulator::~AHEManipulator()
-{
-}
-
-
 BBitmap*
 AHEManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 {
@@ -61,10 +55,6 @@ AHEManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 	ImageProcessingLibrary iplib;
 
 	iplib.grayscale_clahe(original, 16, 5);
-
-	if (selection->IsEmpty() == true) {
-	} else {
-	}
 
 	return original;
 }

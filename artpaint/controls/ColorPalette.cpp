@@ -251,8 +251,8 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		.Add(container_box, 0, 0)
 		.Add(sliderLayout, 1, 0)
 		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING, 2, 0)
-		.Add(colorPreview)
-		.Add(hexColorField)
+			.Add(colorPreview)
+			.Add(hexColorField)
 		.End()
 		.SetInsets(5, 5, 5, 5);
 

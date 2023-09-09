@@ -157,7 +157,7 @@ ScaleCanvasManipulator::ManipulateBitmap(
 					*(target_bits + x + y * target_bpr) = *(src_bits + x);
 				}
 				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta", (100.0) / bottom * 10.0 / 2);
+					progress_message.ReplaceFloat("delta", 100.0 / bottom * 10.0 / 2);
 					status_bar->Window()->PostMessage(&progress_message, status_bar);
 				}
 			}
@@ -204,7 +204,7 @@ ScaleCanvasManipulator::ManipulateBitmap(
 					*target_bits++ = *source_bits++;
 				}
 				if ((y % 10 == 0) && (status_bar != NULL)) {
-					progress_message.ReplaceFloat("delta", (100.0) / bottom * 10.0 / 2);
+					progress_message.ReplaceFloat("delta", 100.0 / bottom * 10.0 / 2);
 					status_bar->Window()->PostMessage(&progress_message, status_bar);
 				}
 			}

@@ -105,9 +105,7 @@ class ColorSeparatorManipulatorView : public WindowGUIManipulatorView {
 		bool							started_adjusting;
 public:
 		ColorSeparatorManipulatorView(ColorSeparatorManipulator*,const BMessenger&);
-		~ColorSeparatorManipulatorView();
 
-void	AllAttached();
 void	AttachedToWindow();
 void	MessageReceived(BMessage*);
 void	ChangeSettings(ManipulatorSettings*);

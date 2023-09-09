@@ -14,8 +14,7 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	char name[255] = "Enhance Edges";
 	char menu_help_string[255] = "Enhances the edges in the current layer.";

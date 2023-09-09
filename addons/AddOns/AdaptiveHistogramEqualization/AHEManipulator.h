@@ -17,7 +17,6 @@ Selection	*selection;
 
 public:
 			AHEManipulator(BBitmap*);
-			~AHEManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();

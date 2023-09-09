@@ -33,8 +33,7 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Color reducer" B_UTF8_ELLIPSIS);
 	char menu_help_string[255] = B_TRANSLATE_MARK("Reduces the number of used colors.");

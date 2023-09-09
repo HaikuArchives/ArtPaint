@@ -149,51 +149,49 @@ floyd_steinberg_edd_color_mapper(BBitmap* inSource, const rgb_color* inPalette, 
 
 	for (int32 y = 0; y <= height; y++) {
 		red_side_error = green_side_error = blue_side_error = 0;
-		if (true /*y % 2 == 0*/) {
-			// Go from left to right.
-			for (int32 x = 0; x <= width; x++) {
-				bgra32.word = *source_bits++;
-				// Add the error.
-				bgra32.bytes[0] = min_c(255, max_c(0, bgra32.bytes[0] - blue_side_error));
-				bgra32.bytes[1] = min_c(255, max_c(0, bgra32.bytes[1] - green_side_error));
-				bgra32.bytes[2] = min_c(255, max_c(0, bgra32.bytes[2] - red_side_error));
+		// Go from left to right.
+		for (int32 x = 0; x <= width; x++) {
+			bgra32.word = *source_bits++;
+			// Add the error.
+			bgra32.bytes[0] = min_c(255, max_c(0, bgra32.bytes[0] - blue_side_error));
+			bgra32.bytes[1] = min_c(255, max_c(0, bgra32.bytes[1] - green_side_error));
+			bgra32.bytes[2] = min_c(255, max_c(0, bgra32.bytes[2] - red_side_error));
 
-				// squeeze the 32-bit color to 15 bit index. See BeBook
-				// BScreen chapter for the reference on this.
-				uint16 rgb15 = ((bgra32.bytes[2] & 0xf8) << 7) | ((bgra32.bytes[1] & 0xf8) << 2)
-					| ((bgra32.bytes[0] & 0xf8) >> 3);
+			// squeeze the 32-bit color to 15 bit index. See BeBook
+			// BScreen chapter for the reference on this.
+			uint16 rgb15 = ((bgra32.bytes[2] & 0xf8) << 7) | ((bgra32.bytes[1] & 0xf8) << 2)
+				| ((bgra32.bytes[0] & 0xf8) >> 3);
 
-				if (map_function[rgb15] < 0) {
-					// The mapping for the color has not yet been found.
-					map_function[rgb15] = find_palette_index(bgra32.word, inPalette, inPaletteSize);
-				}
-
-				uint8 color_index = *destination_bits++ = (uint8)map_function[rgb15];
-
-				int32 red_total_error = inPalette[color_index].red - bgra32.bytes[2];
-				int32 green_total_error = inPalette[color_index].green - bgra32.bytes[1];
-				int32 blue_total_error = inPalette[color_index].blue - bgra32.bytes[0];
-
-				red_side_error = (red_error[x + 1] + (red_total_error * seven_sixteenth)) >> 15;
-				blue_side_error = (blue_error[x + 1] + (blue_total_error * seven_sixteenth)) >> 15;
-				green_side_error
-					= (green_error[x + 1] + (green_total_error * seven_sixteenth)) >> 15;
-
-				red_error[x + 1] = (red_total_error * one_sixteenth);
-				green_error[x + 1] = (green_total_error * one_sixteenth);
-				blue_error[x + 1] = (blue_total_error * one_sixteenth);
-
-				red_error[x] += (red_total_error * five_sixteenth);
-				green_error[x] += (green_total_error * five_sixteenth);
-				blue_error[x] += (blue_total_error * five_sixteenth);
-
-				red_error[x - 1] += (red_total_error * three_sixteenth);
-				green_error[x - 1] += (green_total_error * three_sixteenth);
-				blue_error[x - 1] += (blue_total_error * three_sixteenth);
+			if (map_function[rgb15] < 0) {
+				// The mapping for the color has not yet been found.
+				map_function[rgb15] = find_palette_index(bgra32.word, inPalette, inPaletteSize);
 			}
-			destination_bits += destination_padding;
-			source_bits += source_padding;
+
+			uint8 color_index = *destination_bits++ = (uint8)map_function[rgb15];
+
+			int32 red_total_error = inPalette[color_index].red - bgra32.bytes[2];
+			int32 green_total_error = inPalette[color_index].green - bgra32.bytes[1];
+			int32 blue_total_error = inPalette[color_index].blue - bgra32.bytes[0];
+
+			red_side_error = (red_error[x + 1] + (red_total_error * seven_sixteenth)) >> 15;
+			blue_side_error = (blue_error[x + 1] + (blue_total_error * seven_sixteenth)) >> 15;
+			green_side_error
+				= (green_error[x + 1] + (green_total_error * seven_sixteenth)) >> 15;
+
+			red_error[x + 1] = (red_total_error * one_sixteenth);
+			green_error[x + 1] = (green_total_error * one_sixteenth);
+			blue_error[x + 1] = (blue_total_error * one_sixteenth);
+
+			red_error[x] += (red_total_error * five_sixteenth);
+			green_error[x] += (green_total_error * five_sixteenth);
+			blue_error[x] += (blue_total_error * five_sixteenth);
+
+			red_error[x - 1] += (red_total_error * three_sixteenth);
+			green_error[x - 1] += (green_total_error * three_sixteenth);
+			blue_error[x - 1] += (blue_total_error * three_sixteenth);
 		}
+		destination_bits += destination_padding;
+		source_bits += source_padding;
 	}
 
 	delete[] map_function;
@@ -262,81 +260,79 @@ preserve_solids_fs_color_mapper(BBitmap* inSource, const rgb_color* inPalette, i
 
 	for (int32 y = 0; y <= height; y++) {
 		red_side_error = green_side_error = blue_side_error = 0;
-		if (true /*y % 2 == 0*/) {
-			// Go from left to right.
-			for (int32 x = 0; x <= width; x++) {
-				if (analyzer->GradientMagnitude(x, y) > 0) {
-					bgra32.word = *source_bits++;
-					// Add the error.
-					bgra32.bytes[0] = min_c(255, max_c(0, bgra32.bytes[0] - blue_side_error));
-					bgra32.bytes[1] = min_c(255, max_c(0, bgra32.bytes[1] - green_side_error));
-					bgra32.bytes[2] = min_c(255, max_c(0, bgra32.bytes[2] - red_side_error));
+		// Go from left to right.
+		for (int32 x = 0; x <= width; x++) {
+			if (analyzer->GradientMagnitude(x, y) > 0) {
+				bgra32.word = *source_bits++;
+				// Add the error.
+				bgra32.bytes[0] = min_c(255, max_c(0, bgra32.bytes[0] - blue_side_error));
+				bgra32.bytes[1] = min_c(255, max_c(0, bgra32.bytes[1] - green_side_error));
+				bgra32.bytes[2] = min_c(255, max_c(0, bgra32.bytes[2] - red_side_error));
 
-					// squeeze the 32-bit color to 15 bit index. See BeBook
-					// BScreen chapter for the reference on this.
-					uint16 rgb15
-						= ((bgra32.bytes[2] & 0xf8) << 7)
-						| ((bgra32.bytes[1] & 0xf8) << 2)
-						| ((bgra32.bytes[0] & 0xf8) >> 3);
+				// squeeze the 32-bit color to 15 bit index. See BeBook
+				// BScreen chapter for the reference on this.
+				uint16 rgb15
+					= ((bgra32.bytes[2] & 0xf8) << 7)
+					| ((bgra32.bytes[1] & 0xf8) << 2)
+					| ((bgra32.bytes[0] & 0xf8) >> 3);
 
-					if (map_function[rgb15] < 0) {
-						// The mapping for the color has not yet been found.
-						map_function[rgb15]
-							= find_palette_index(bgra32.word, inPalette, inPaletteSize);
-					}
-
-					uint8 color_index = *destination_bits++ = (uint8)map_function[rgb15];
-
-					int32 red_total_error = inPalette[color_index].red - bgra32.bytes[2];
-					int32 green_total_error = inPalette[color_index].green - bgra32.bytes[1];
-					int32 blue_total_error = inPalette[color_index].blue - bgra32.bytes[0];
-
-					red_side_error
-						= (red_error[x + 1] + (red_total_error * seven_sixteenth)) >> 15;
-					blue_side_error
-						= (blue_error[x + 1] + (blue_total_error * seven_sixteenth)) >> 15;
-					green_side_error
-						= (green_error[x + 1] + (green_total_error * seven_sixteenth)) >> 15;
-
-					red_error[x + 1] = (red_total_error * one_sixteenth);
-					green_error[x + 1] = (green_total_error * one_sixteenth);
-					blue_error[x + 1] = (blue_total_error * one_sixteenth);
-
-					red_error[x] += (red_total_error * five_sixteenth);
-					green_error[x] += (green_total_error * five_sixteenth);
-					blue_error[x] += (blue_total_error * five_sixteenth);
-
-					red_error[x - 1] += (red_total_error * three_sixteenth);
-					green_error[x - 1] += (green_total_error * three_sixteenth);
-					blue_error[x - 1] += (blue_total_error * three_sixteenth);
-				} else {
-					bgra32.word = *source_bits++;
-
-					// squeeze the 32-bit color to 15 bit index. See BeBook
-					// BScreen chapter for the reference on this.
-					uint16 rgb15
-						= ((bgra32.bytes[2] & 0xf8) << 7)
-						| ((bgra32.bytes[1] & 0xf8) << 2)
-						| ((bgra32.bytes[0] & 0xf8) >> 3);
-
-					if (map_function[rgb15] < 0) {
-						// The mapping for the color has not yet been found.
-						map_function[rgb15]
-							= find_palette_index(bgra32.word, inPalette, inPaletteSize);
-					}
-
-					red_side_error = red_error[x + 1] >> 15;
-					blue_side_error = blue_error[x + 1] >> 15;
-					green_side_error = green_error[x + 1] >> 15;
-
-					red_error[x + 1] = 0;
-					green_error[x + 1] = 0;
-					blue_error[x + 1] = 0;
+				if (map_function[rgb15] < 0) {
+					// The mapping for the color has not yet been found.
+					map_function[rgb15]
+						= find_palette_index(bgra32.word, inPalette, inPaletteSize);
 				}
+
+				uint8 color_index = *destination_bits++ = (uint8)map_function[rgb15];
+
+				int32 red_total_error = inPalette[color_index].red - bgra32.bytes[2];
+				int32 green_total_error = inPalette[color_index].green - bgra32.bytes[1];
+				int32 blue_total_error = inPalette[color_index].blue - bgra32.bytes[0];
+
+				red_side_error
+					= (red_error[x + 1] + (red_total_error * seven_sixteenth)) >> 15;
+				blue_side_error
+					= (blue_error[x + 1] + (blue_total_error * seven_sixteenth)) >> 15;
+				green_side_error
+					= (green_error[x + 1] + (green_total_error * seven_sixteenth)) >> 15;
+
+				red_error[x + 1] = (red_total_error * one_sixteenth);
+				green_error[x + 1] = (green_total_error * one_sixteenth);
+				blue_error[x + 1] = (blue_total_error * one_sixteenth);
+
+				red_error[x] += (red_total_error * five_sixteenth);
+				green_error[x] += (green_total_error * five_sixteenth);
+				blue_error[x] += (blue_total_error * five_sixteenth);
+
+				red_error[x - 1] += (red_total_error * three_sixteenth);
+				green_error[x - 1] += (green_total_error * three_sixteenth);
+				blue_error[x - 1] += (blue_total_error * three_sixteenth);
+			} else {
+				bgra32.word = *source_bits++;
+
+				// squeeze the 32-bit color to 15 bit index. See BeBook
+				// BScreen chapter for the reference on this.
+				uint16 rgb15
+					= ((bgra32.bytes[2] & 0xf8) << 7)
+					| ((bgra32.bytes[1] & 0xf8) << 2)
+					| ((bgra32.bytes[0] & 0xf8) >> 3);
+
+				if (map_function[rgb15] < 0) {
+					// The mapping for the color has not yet been found.
+					map_function[rgb15]
+						= find_palette_index(bgra32.word, inPalette, inPaletteSize);
+				}
+
+				red_side_error = red_error[x + 1] >> 15;
+				blue_side_error = blue_error[x + 1] >> 15;
+				green_side_error = green_error[x + 1] >> 15;
+
+				red_error[x + 1] = 0;
+				green_error[x + 1] = 0;
+				blue_error[x + 1] = 0;
 			}
-			destination_bits += destination_padding;
-			source_bits += source_padding;
 		}
+		destination_bits += destination_padding;
+		source_bits += source_padding;
 	}
 
 	delete[] map_function;

@@ -98,8 +98,7 @@ ColorFloatSlider::MessageReceived(BMessage* message)
 		{
 			SetValue(atof(fFloatControl->Text()));
 			_SendMessage(atof(fFloatControl->Text()));
-		break;
-		}
+		} break;
 		case kSliderValueModified:
 		{
 			BString value;

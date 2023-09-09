@@ -17,7 +17,6 @@ Selection*	selection;
 
 public:
 			ContrastManipulator(BBitmap*);
-			~ContrastManipulator();
 
 BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 const char*	ReturnHelpString();

@@ -990,9 +990,8 @@ Image::ReadLayersOldStyle(BFile& file, int32 count)
 {
 	Layer* layer = NULL;
 	// If count is not within reasonable limits we must presume that the file is corrupt.
-	if ((count < 1) || (count > 10000)) {
+	if ((count < 1) || (count > 10000))
 		return B_ERROR;
-	}
 
 	int32 max_layer_id = -2;
 	while (count > 0) {

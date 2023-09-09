@@ -587,16 +587,6 @@ PreviewPane::Draw(BRect updateRect)
 }
 
 
-void
-PreviewPane::MessageReceived(BMessage* message)
-{
-	switch (message->what) {
-		default:
-			BView::MessageReceived(message);
-	}
-}
-
-
 ColorSwatch::ColorSwatch(BRect frame, const char* name)
 	:
 	BControl(
@@ -721,10 +711,10 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(labelCursor)
 		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
-			.Add(fToolCursor
-				= new BRadioButton(B_TRANSLATE("Tool cursor"), new BMessage(kToolCursorMode)))
+			.Add(fToolCursor = new BRadioButton(
+				B_TRANSLATE("Tool cursor"), new BMessage(kToolCursorMode)))
 			.Add(fCrossHairCursor = new BRadioButton(
-					 B_TRANSLATE("Cross-hair cursor"), new BMessage(kCrossHairCursorMode)))
+				B_TRANSLATE("Cross-hair cursor"), new BMessage(kCrossHairCursorMode)))
 			.Add(fDrawBrushSize)
 			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
 		.End()
@@ -769,16 +759,12 @@ GlobalSetupWindow::MiscControlView::MessageReceived(BMessage* message)
 		{
 			fCursorMode = TOOL_CURSOR_MODE;
 		} break;
-
 		case kCrossHairCursorMode:
 		{
 			fCursorMode = CROSS_HAIR_CURSOR_MODE;
 		} break;
-
 		default:
-		{
 			BView::MessageReceived(message);
-		} break;
 	}
 }
 
@@ -882,11 +868,9 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 
 			if (fTransparencyControlView)
 				fTransparencyControlView->ApplyChanges();
-
-			// fall through
-			case kCloseAndDiscardSettings:
+		} // fall through
+		case kCloseAndDiscardSettings:
 				Quit();
-		} break;
 		default:
 			BWindow::MessageReceived(message);
 	}

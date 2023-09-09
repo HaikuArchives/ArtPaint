@@ -427,13 +427,11 @@ SettingsServer::_SettingsForType(Setting type)
 		case Application:
 		{
 			settings = &fApplicationSettings;
-			break;
-		}
+		} break;
 		case PaintWindow:
 		{
 			settings = &fWindowSettings;
-			break;
-		}
+		} break;
 		default:
 			settings = NULL;
 	}

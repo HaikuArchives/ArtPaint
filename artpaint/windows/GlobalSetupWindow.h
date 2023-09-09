@@ -55,7 +55,6 @@ public:
 	virtual		~PreviewPane();
 
 	virtual void 	Draw(BRect updateRect);
-	virtual void	MessageReceived(BMessage* message);
 
 	BBitmap*	previewBitmap() { return fPreviewBitmap; }
 

@@ -77,7 +77,7 @@ ColorView::MessageReceived(BMessage* message)
 				"RGBColor", B_RGB_COLOR_TYPE, (const void**)&new_color, &color_size) == B_OK) {
 				current_color = *new_color;
 				Invalidate();
-				Message()->ReplaceInt32("value", (RGBColorToBGRA(current_color)));
+				Message()->ReplaceInt32("value", RGBColorToBGRA(current_color));
 				Invoke();
 			}
 		} break;
@@ -99,12 +99,8 @@ ColorView::MouseDown(BPoint point)
 		GetMouse(&point, &buttons);
 		snooze(20 * 1000);
 	}
-	if (TRUE) {
-		ColorPaletteWindow::showPaletteWindow();
-		ColorPaletteWindow::ChangePaletteColor(current_color);
-	} else {
-		// Make a color-packet to be dragged.
-	}
+	ColorPaletteWindow::showPaletteWindow();
+	ColorPaletteWindow::ChangePaletteColor(current_color);
 }
 
 
@@ -127,6 +123,6 @@ ColorView::SetColor(rgb_color c)
 {
 	current_color = c;
 	Invalidate();
-	Message()->ReplaceInt32("value", (RGBColorToBGRA(current_color)));
+	Message()->ReplaceInt32("value", RGBColorToBGRA(current_color));
 	Invoke();
 }

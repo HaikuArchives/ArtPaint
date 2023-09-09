@@ -228,40 +228,36 @@ ResourceServer::_GetResourceInfo(int32 id, type_code* type, float* width, float*
 
 	switch (id) {
 		case LEFT_ARROW:
+		case RIGHT_ARROW:
+		case LEFT_ARROW_PUSHED:
+		case RIGHT_ARROW_PUSHED:
 		{
-			case RIGHT_ARROW:
-			case LEFT_ARROW_PUSHED:
-			case RIGHT_ARROW_PUSHED:
-				*width = 9.0;
-				*height = 13.0;
-				*type = B_COLOR_8_BIT_TYPE;
-			break;
-		}
+			*width = 9.0;
+			*height = 13.0;
+			*type = B_COLOR_8_BIT_TYPE;
+		} break;
 		case OK_BUTTON:
+		case CANCEL_BUTTON:
+		case OK_BUTTON_PUSHED:
+		case CANCEL_BUTTON_PUSHED:
 		{
-			case CANCEL_BUTTON:
-			case OK_BUTTON_PUSHED:
-			case CANCEL_BUTTON_PUSHED:
-				*width = 16.0;
-				*height = 16.0;
-				*type = B_COLOR_8_BIT_TYPE;
-			break;
-		}
+			*width = 16.0;
+			*height = 16.0;
+			*type = B_COLOR_8_BIT_TYPE;
+		} break;
 		case POP_UP_LIST:
+		case POP_UP_LIST_PUSHED:
 		{
-			case POP_UP_LIST_PUSHED:
-				*width = 10.0;
-				*height = 20.0;
-				*type = B_COLOR_8_BIT_TYPE;
-			break;
-		}
+			*width = 10.0;
+			*height = 20.0;
+			*type = B_COLOR_8_BIT_TYPE;
+		} break;
 		default:
 		{
 			*width = 0.0;
 			*height = 0.0;
 			status = B_ERROR;
 			*type = B_ANY_TYPE;
-			break;
 		}
 	}
 

@@ -114,7 +114,7 @@ CoordinateReader::reader_function()
 				ExitCS();
 				prev_point = point;
 			}
-			snooze((bigtime_t) reader_delay);
+			snooze((bigtime_t)reader_delay);
 		} else
 			continue_reading = FALSE;
 	}

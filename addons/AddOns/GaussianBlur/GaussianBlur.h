@@ -115,7 +115,6 @@ class GaussianBlurManipulatorView : public WindowGUIManipulatorView {
 		bool							started_adjusting;
 public:
 		GaussianBlurManipulatorView(GaussianBlurManipulator*,const BMessenger& target);
-		~GaussianBlurManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();

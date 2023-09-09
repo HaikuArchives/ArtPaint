@@ -30,8 +30,7 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Color separator" B_UTF8_ELLIPSIS);
 	char menu_help_string[255] = B_TRANSLATE_MARK("Extracts the color components for printing.");
@@ -272,22 +271,11 @@ ColorSeparatorManipulatorView::ColorSeparatorManipulatorView(
 }
 
 
-ColorSeparatorManipulatorView::~ColorSeparatorManipulatorView()
-{
-}
-
-
 void
 ColorSeparatorManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 	cmyk_menu_field->Menu()->SetTargetForItems(BMessenger(this));
-}
-
-
-void
-ColorSeparatorManipulatorView::AllAttached()
-{
 }
 
 

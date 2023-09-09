@@ -26,8 +26,7 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	char name[255] = B_TRANSLATE_MARK("Blur" B_UTF8_ELLIPSIS);
@@ -98,14 +97,6 @@ BlurManipulator::ManipulateBitmap(
 	BBitmap* source_bitmap;
 	BBitmap* target_bitmap;
 	BBitmap* new_bitmap = NULL;
-
-	if (original == preview_bitmap) {
-		return original;
-	} else {
-//		target_bitmap = original;
-//		source_bitmap =
-//		new_bitmap = source_bitmap;
-	}
 
 //	CalculateBlur(source_bitmap,target_bitmap,1,new_settings,selection,status_bar);
 

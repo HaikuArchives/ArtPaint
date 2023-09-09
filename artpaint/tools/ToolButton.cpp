@@ -183,19 +183,19 @@ ToolButton::KeyDown(const char* bytes, int32 numBytes)
 {
 	switch (bytes[0]) {
 		case B_SPACE:
+		case B_RETURN:
 		{
-			case B_RETURN:
-				if (IsEnabled() && !Value()) {
-					SetValue(B_CONTROL_ON);
-					Invoke();
-				}
+			if (IsEnabled() && !Value()) {
+				SetValue(B_CONTROL_ON);
+				Invoke();
+			}
 		} break;
 		case B_UP_ARROW:
+		case B_DOWN_ARROW:
+		case B_LEFT_ARROW:
+		case B_RIGHT_ARROW:
 		{
-			case B_DOWN_ARROW:
-			case B_LEFT_ARROW:
-			case B_RIGHT_ARROW:
-				_SelectNextToolButton(bytes[0]);
+			_SelectNextToolButton(bytes[0]);
 		} break;
 		default:
 			BControl::KeyDown(bytes, numBytes);

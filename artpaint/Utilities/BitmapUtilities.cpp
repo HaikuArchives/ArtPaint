@@ -296,13 +296,13 @@ BitmapUtilities::GetPixel(BBitmap* bitmap, int32 x, int32 y)
 		bpr = bitmap->BytesPerRow();
 		uint8* bits = (uint8*)bitmap->Bits();
 
-		return (uint32) * (bits + x + y * bpr);
+		return (uint32)*(bits + x + y * bpr);
 
 	} else if (bitmap->ColorSpace() == B_RGBA32) {
 		bpr = bitmap->BytesPerRow() / 4;
 		uint32* bits = (uint32*)bitmap->Bits();
 
-		return (uint32) * (bits + x + y * bpr);
+		return (uint32)*(bits + x + y * bpr);
 	}
 
 	return 0;

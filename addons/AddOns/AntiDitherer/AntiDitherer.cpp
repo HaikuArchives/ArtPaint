@@ -26,8 +26,7 @@
 
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Anti-Dither" B_UTF8_ELLIPSIS);
 	char menu_help_string[255] = B_TRANSLATE_MARK("Attempts to reverse the effects of dithering.");
@@ -298,11 +297,6 @@ AntiDithererManipulatorView::AntiDithererManipulatorView(
 		.Add(reduce_resolution_box)
 		.SetInsets(B_USE_SMALL_INSETS)
 		.End();
-}
-
-
-AntiDithererManipulatorView::~AntiDithererManipulatorView()
-{
 }
 
 

@@ -2092,8 +2092,7 @@ ImageView::ManipulatorFinisherThread()
 				}
 			}
 		}
-	}
-	catch (std::bad_alloc e) {
+	} catch (std::bad_alloc e) {
 		ShowAlert(CANNOT_FINISH_MANIPULATOR_ALERT);
 		// The manipulator should be asked to reset the preview-bitmap, if it is
 		// a GUIManipulator.
@@ -2691,106 +2690,91 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 							{
 								if (view->space_down == TRUE)
 									filter_message = B_SKIP_MESSAGE;
-								break;
-							}
+							} break;
 							case 'b':
 							{
 								ToolManager::Instance().ChangeTool(BRUSH_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'a':
 							{
 								ToolManager::Instance().ChangeTool(AIR_BRUSH_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'e':
 							{
 								ToolManager::Instance().ChangeTool(ERASER_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'f':
 							{
 								ToolManager::Instance().ChangeTool(FREE_LINE_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 's':
 							{
 								ToolManager::Instance().ChangeTool(SELECTOR_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'r':
 							{
 								ToolManager::Instance().ChangeTool(RECTANGLE_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'l':
 							{
 								ToolManager::Instance().ChangeTool(STRAIGHT_LINE_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'h':
 							{
 								ToolManager::Instance().ChangeTool(HAIRY_BRUSH_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'u':
 							{
 								ToolManager::Instance().ChangeTool(BLUR_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'i':
 							{
 								ToolManager::Instance().ChangeTool(FILL_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 't':
 							{
 								ToolManager::Instance().ChangeTool(TEXT_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'n':
 							{
 								ToolManager::Instance().ChangeTool(TRANSPARENCY_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'c':
 							{
 								ToolManager::Instance().ChangeTool(COLOR_SELECTOR_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 							case 'p':
 							{
 								ToolManager::Instance().ChangeTool(ELLIPSE_TOOL);
 								view->SetCursor();
 								view->Invalidate();
-								break;
-							}
+							} break;
 						}
 						view->Flush();
 					}
@@ -2801,18 +2785,15 @@ KeyFilterFunction(BMessage* message, BHandler** handler, BMessageFilter*)
 							{
 								if (view->space_down == TRUE)
 									filter_message = B_SKIP_MESSAGE;
-								break;
-							}
+							} break;
 							case B_ESCAPE:
 							{
 								view->PostponeMessageAndFinishManipulator();
-								break;
-							}
+							} break;
 							case B_ENTER:
 							{
 								view->PostponeMessageAndFinishManipulator(TRUE);
-								break;
-							}
+							} break;
 						}
 					}
 				}

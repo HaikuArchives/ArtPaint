@@ -114,7 +114,6 @@ class AntiDithererManipulatorView : public WindowGUIManipulatorView {
 		bool							started_adjusting;
 public:
 		AntiDithererManipulatorView(AntiDithererManipulator*,const BMessenger& target);
-		~AntiDithererManipulatorView();
 
 void	AllAttached();
 void	AttachedToWindow();
