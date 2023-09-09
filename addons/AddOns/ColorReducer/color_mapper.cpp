@@ -455,6 +455,5 @@ n_candidate_color_mapper(
 		source_bits += source_padding;
 	}
 
-
 	return outDestination;
 }

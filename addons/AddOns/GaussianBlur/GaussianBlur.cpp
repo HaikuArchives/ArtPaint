@@ -181,13 +181,6 @@ GaussianBlurManipulator::PreviewBitmap(bool full_quality, BRegion* updated_regio
 
 
 void
-GaussianBlurManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in GaussianBlurManipulator.
-}
-
-
-void
 GaussianBlurManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {

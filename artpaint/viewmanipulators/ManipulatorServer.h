@@ -13,10 +13,8 @@
 
 #include "Manipulator.h"
 
-
 #include <Locker.h>
 #include <String.h>
-
 
 #include <list>
 #include <set>
@@ -40,15 +38,9 @@ public:
 										int32 imageId = -1) const;
 			void					StoreManipulatorSettings(Manipulator*);
 
-			bool					AddOnsLoaded() const {
-										return fAddonsLoaded;
-									}
-			int32					AddOnCount() const {
-										return fAddOnImages.size();
-									}
-			const ImageList&		AddOnImageList() const {
-										return fAddOnImages;
-									}
+			bool					AddOnsLoaded() const { return fAddonsLoaded; }
+			int32					AddOnCount() const { return fAddOnImages.size(); }
+			const ImageList&		AddOnImageList() const { return fAddOnImages; }
 
 private:
 									ManipulatorServer();
@@ -70,5 +62,6 @@ private:
 	static	BLocker					fLocker;
 	static	ManipulatorServer*		fManipulatorServer;
 };
+
 
 #endif	// MANIPULATOR_SERVER_H

@@ -29,11 +29,6 @@ CustomGridLayout::CustomGridLayout(float horizontal, float vertical)
 }
 
 
-CustomGridLayout::~CustomGridLayout()
-{
-}
-
-
 BPoint
 CustomGridLayout::GetViewPosition(BView* view)
 {

@@ -7,7 +7,6 @@
  *
  */
 
-
 /*
 	Brush-class represents a brush that can be drawn to image by copying it's
 	bits or by using it's bits as a weighting function when drawing with a solid
@@ -20,14 +19,12 @@
 
 	The class offers facilities for creating and editing the brushes.
 */
-
 #ifndef BRUSH_H
 #define BRUSH_H
 
 #include <Bitmap.h>
 #include <Point.h>
 #include <SupportDefs.h>
-
 
 #include "Selection.h"
 
@@ -68,56 +65,57 @@ struct span {
 };
 
 class Brush {
-	int32			shape_;
-	float 			width_;
-	float			height_;
-	float			angle_;
-	float			hardness_;
+			int32		shape_;
+			float 		width_;
+			float		height_;
+			float		angle_;
+			float		hardness_;
 
-	float			maximum_width;
-	float			maximum_height;
+			float		maximum_width;
+			float		maximum_height;
 
-	float 			actual_width;
-	float 			actual_height;
+			float 		actual_width;
+			float 		actual_height;
 
-	void			make_rectangular_brush();
-	void			make_elliptical_brush();
+			void		make_rectangular_brush();
+			void		make_elliptical_brush();
 
-	void			reserve_brush();
-	span*			make_span_list();
+			void		reserve_brush();
+			span*		make_span_list();
 
-	void			delete_all_data();
+			void		delete_all_data();
 
-	void			print_brush(uint32**);
+			void		print_brush(uint32**);
 
-	BBitmap			*brush_bmap;
+			BBitmap*	brush_bmap;
 
-	span			*brush_span;
-	HSPolygon**		shapes;
-	int32			num_shapes;
+			span*		brush_span;
+			HSPolygon**	shapes;
+			int32		num_shapes;
 
 public:
-					Brush(brush_info &info);
-					~Brush();
+						Brush(brush_info &info);
+						~Brush();
 
-	void			ModifyBrush(brush_info &info);
-	void			CreateDiffBrushes();
+			void		ModifyBrush(brush_info &info);
+			void		CreateDiffBrushes();
 
-	float			PreviewBrush(BBitmap*);
-	void			draw(BBitmap* buffer, BPoint point,
-						Selection* selection);
-	BRect			draw_line(BBitmap* buffer,
-						BPoint start, BPoint end,
-						Selection* selection);
-	static bool		compare_brushes(brush_info one, brush_info two);
+			float		PreviewBrush(BBitmap*);
+			void		draw(BBitmap* buffer, BPoint point,
+							Selection* selection);
+			BRect		draw_line(BBitmap* buffer,
+							BPoint start, BPoint end,
+							Selection* selection);
+	static	bool		compare_brushes(brush_info one, brush_info two);
 
-	uint32*			GetData(span**);
-	float			Width() { return width_; }
-	float			Height() { return height_; }
-	brush_info		GetInfo();
-	BBitmap*		GetBitmap() { return brush_bmap; }
-	int				GetShapes(BPolygon** shapes);
-	int 			GetNumShapes() { return num_shapes; }
+			uint32*		GetData(span**);
+			float		Width() { return width_; }
+			float		Height() { return height_; }
+			brush_info	GetInfo();
+			BBitmap*	GetBitmap() { return brush_bmap; }
+			int			GetShapes(BPolygon** shapes);
+			int 		GetNumShapes() { return num_shapes; }
 };
 
-#endif
+
+#endif // BRUSH_H

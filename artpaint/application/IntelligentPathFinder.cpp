@@ -6,11 +6,11 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include <Bitmap.h>
 #include <StopWatch.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 
 #include "IntelligentPathFinder.h"
 

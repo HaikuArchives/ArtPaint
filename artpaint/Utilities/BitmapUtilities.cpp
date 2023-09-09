@@ -7,8 +7,8 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include "BitmapUtilities.h"
 
+#include "BitmapUtilities.h"
 
 #include "HSPolygon.h"
 #include "PixelOperations.h"

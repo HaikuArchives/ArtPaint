@@ -28,14 +28,12 @@ public:
 	virtual	void		SetValue(int32 value);
 			void		SetWidthInBytes(uint32 bytes);
 
-	virtual	void		AttachedToWindow();
-
 private:
-			void		_InitControl(int32 maxBytes, bool allowNegative,
-							bool continuos);
+			void		_InitControl(int32 maxBytes, bool allowNegative, bool continuos);
 };
 
 	}	// namespace Interface
 }	// namespace ArtPaint
+
 
 #endif // NUMBERCONTROL_H

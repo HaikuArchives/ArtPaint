@@ -27,11 +27,6 @@ TextTool::TextTool()
 }
 
 
-TextTool::~TextTool()
-{
-}
-
-
 int32
 TextTool::UseToolWithScript(ToolScript*, BBitmap*)
 {

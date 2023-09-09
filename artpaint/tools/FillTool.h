@@ -41,13 +41,12 @@ using ArtPaint::Interface::NumberSliderControl;
 class FillTool : public DrawingTool {
 public:
 								FillTool();
-	virtual						~FillTool();
 
 			BView*				ConfigView();
-			int32				UseToolWithScript(ToolScript*,BBitmap*);
-			ToolScript*			UseTool(ImageView*,uint32,BPoint,BPoint);
+			int32				UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-			status_t			readSettings(BFile&,bool);
+			status_t			readSettings(BFile&, bool);
 			status_t			writeSettings(BFile&);
 
 			void				SetGradient(uint32 c1, uint32 c2) {
@@ -65,8 +64,7 @@ private:
 			BBitmap*			filled_bitmap;
 			BBitmap*			binary_fill_map;
 
-			status_t			NormalFill(ImageView*, uint32, BPoint,
-									Selection* = NULL);
+			status_t			NormalFill(ImageView*, uint32, BPoint, Selection* = NULL);
 
 			void				CheckSpans(BPoint, BitmapDrawer*,
 									PointStack&, int32, int32, uint32, uint32,
@@ -123,5 +121,6 @@ private:
 			BRadioButton*			fSquareGradient;
 			BRadioButton*			fConicGradient;
 };
+
 
 #endif	// FILL_TOOL_H

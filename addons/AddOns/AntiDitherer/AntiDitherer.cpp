@@ -111,13 +111,6 @@ AntiDithererManipulator::PreviewBitmap(bool full_quality, BRegion* updated_regio
 
 
 void
-AntiDithererManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in AntiDithererManipulator.
-}
-
-
-void
 AntiDithererManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {

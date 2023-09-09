@@ -237,55 +237,11 @@ FreeTransformManipulatorView::FreeTransformManipulatorView(
 }
 
 
-FreeTransformManipulatorView::~FreeTransformManipulatorView()
-{
-}
-
-
-void
-FreeTransformManipulatorView::AttachedToWindow()
-{
-}
-
-
 void
 FreeTransformManipulatorView::MessageReceived(BMessage* message)
 {
 	WindowGUIManipulatorView::MessageReceived(message);
 }
-
-
-/*
-void
-FreeTransformManipulatorView::SetValues(float width, float height)
-{
-	original_width = width;
-	original_height = height;
-	current_width = width;
-	current_height = height;
-
-	char text[256];
-
-	BWindow *window = Window();
-	if (window != NULL)
-		window->Lock();
-
-	sprintf(text,"%.0f",original_width);
-	BTextControl *text_control = cast_as(FindView("width_control"),BTextControl);
-	if (text_control != NULL) {
-		text_control->SetText(text);
-	}
-	sprintf(text,"%.0f",original_height);
-
-	text_control = cast_as(FindView("height_control"),BTextControl);
-	if (text_control != NULL) {
-		text_control->SetText(text);
-	}
-
-	if (window != NULL)
-		window->Unlock();
-}
-*/
 
 
 void

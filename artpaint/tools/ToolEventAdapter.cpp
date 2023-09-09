@@ -6,10 +6,11 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <string.h>
-
 
 #include "ToolEventAdapter.h"
+
+
+#include <string.h>
 
 
 ToolEventAdapter::ToolEventAdapter()

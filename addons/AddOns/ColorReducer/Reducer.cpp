@@ -151,13 +151,6 @@ ReducerManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 
 
 void
-ReducerManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in ReducerManipulator.
-}
-
-
-void
 ReducerManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {
@@ -392,18 +385,6 @@ ReducerManipulatorView::ReducerManipulatorView(ReducerManipulator* manip, const 
 		.End()
 		.SetInsets(B_USE_SMALL_INSETS)
 	.End();
-}
-
-
-ReducerManipulatorView::~ReducerManipulatorView()
-{
-}
-
-
-void
-ReducerManipulatorView::AttachedToWindow()
-{
-	WindowGUIManipulatorView::AttachedToWindow();
 }
 
 

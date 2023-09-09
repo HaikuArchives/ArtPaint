@@ -50,11 +50,6 @@ EnhanceEdgesManipulator::EnhanceEdgesManipulator()
 }
 
 
-EnhanceEdgesManipulator::~EnhanceEdgesManipulator()
-{
-}
-
-
 BBitmap*
 EnhanceEdgesManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

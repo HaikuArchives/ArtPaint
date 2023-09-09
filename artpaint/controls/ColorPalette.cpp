@@ -1876,13 +1876,6 @@ ColorChip::Draw(BRect updateRect)
 
 
 void
-ColorChip::MessageReceived(BMessage* message)
-{
-	BControl::MessageReceived(message);
-}
-
-
-void
 ColorChip::SetColor(uint32 color)
 {
 	fColor = color;

@@ -279,5 +279,5 @@ FloatSliderControl::_SendMessage(float value, bool final)
 	}
 }
 
-} // namespace Interface
+	} // namespace Interface
 } // namespace ArtPaint

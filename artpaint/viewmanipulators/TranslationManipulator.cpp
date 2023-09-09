@@ -7,6 +7,7 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
+
 #include "BitmapUtilities.h"
 #include "ImageView.h"
 #include "MessageConstants.h"

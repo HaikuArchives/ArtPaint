@@ -66,11 +66,6 @@ HSPictureButton::HSPictureButton(BRect frame, BBitmap* off, BBitmap* on, BMessag
 }
 
 
-HSPictureButton::~HSPictureButton()
-{
-}
-
-
 void
 HSPictureButton::MouseDown(BPoint location)
 {

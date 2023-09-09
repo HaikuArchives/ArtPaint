@@ -27,26 +27,25 @@ using ArtPaint::Interface::NumberSliderControl;
 
 class ColorSelectorTool : public DrawingTool {
 public:
-								ColorSelectorTool();
-	virtual						~ColorSelectorTool();
+							ColorSelectorTool();
 
-			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
+			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
 
-			BView*				ConfigView();
-			const void*			ToolCursor() const;
-			const char*			HelpString(bool isInUse) const;
+			BView*			ConfigView();
+			const void*		ToolCursor() const;
+			const char*		HelpString(bool isInUse) const;
 };
 
 
 class ColorSelectorToolConfigView : public DrawingToolConfigView {
 public:
-								ColorSelectorToolConfigView(DrawingTool* tool);
-	virtual						~ColorSelectorToolConfigView() {}
+							ColorSelectorToolConfigView(DrawingTool* tool);
 
-	virtual	void				AttachedToWindow();
+	virtual	void			AttachedToWindow();
 
 private:
-		NumberSliderControl*	fSizeSlider;
+			NumberSliderControl* fSizeSlider;
 };
+
 
 #endif	// COLOR_SELECTOR_TOOL_H

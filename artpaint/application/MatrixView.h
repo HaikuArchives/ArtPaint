@@ -19,18 +19,19 @@
 
 
 class MatrixView : public BView {
-		const	int32 	cell_height;
-		const	int32 	cell_width;
-		const	int32	cell_spacing;
+	const	int32 		cell_height;
+	const	int32 		cell_width;
+	const	int32		cell_spacing;
+
 public:
-			MatrixView(int32 cell_h,int32 cell_w,int32 spacing);
+						MatrixView(int32 cell_h, int32 cell_w, int32 spacing);
 
-void		AttachedToWindow();
-void		FrameResized(float,float);
-void		GetPreferredSize(float*,float*);
+			void		AttachedToWindow();
+			void		FrameResized(float, float);
+			void		GetPreferredSize(float*, float*);
 
-status_t	AddSubView(BView*);
+			status_t	AddSubView(BView*);
 };
 
 
-#endif
+#endif // MATRIX_VIEW_H

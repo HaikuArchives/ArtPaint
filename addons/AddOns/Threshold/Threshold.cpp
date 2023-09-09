@@ -467,11 +467,6 @@ ThresholdManipulatorView::ThresholdManipulatorView(ThresholdManipulator* manip, 
 }
 
 
-ThresholdManipulatorView::~ThresholdManipulatorView()
-{
-}
-
-
 void
 ThresholdManipulatorView::AttachedToWindow()
 {

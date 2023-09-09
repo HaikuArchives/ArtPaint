@@ -11,7 +11,6 @@
 #ifndef POP_UP_SLIDER_H
 #define	POP_UP_SLIDER_H
 
-
 #include <Window.h>
 
 
@@ -30,11 +29,10 @@ public:
 
 private:
 							PopUpSlider(BRect rect);
-	virtual					~PopUpSlider();
 
 private:
 			BSlider*		fSlider;
 };
 
 
-#endif
+#endif // POP_UP_SLIDER_H

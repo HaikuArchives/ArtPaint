@@ -11,10 +11,12 @@
 
 #include <GraphicsDefs.h>
 
+
 class ManipulatorInformer {
 public:
-rgb_color	GetForegroundColor();
-rgb_color	GetBackgroundColor();
+		rgb_color	GetForegroundColor();
+		rgb_color	GetBackgroundColor();
 };
 
-#endif
+
+#endif // MANIPULATOR_INFORMER_H

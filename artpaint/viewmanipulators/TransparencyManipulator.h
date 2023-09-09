@@ -14,7 +14,6 @@
 #include "UtilityClasses.h"
 #include "WindowGUIManipulator.h"
 
-
 #include <Messenger.h>
 
 
@@ -34,49 +33,46 @@ class TransparencyManipulatorView;
 
 
 class TransparencyManipulator : public WindowGUIManipulator, public ImageAdapter {
-	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
-		{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
+		BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+						{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-BBitmap				*preview_bitmap;
-BBitmap				*copy_of_the_preview_bitmap;
+		BBitmap*	preview_bitmap;
+		BBitmap*	copy_of_the_preview_bitmap;
 
-Layer				*preview_layer;
+		Layer*		preview_layer;
 
-int32				transparency;
-int32				last_calculated_resolution;
-int32				lowest_available_quality;
-int32				highest_available_quality;
+		int32		transparency;
+		int32		last_calculated_resolution;
+		int32		lowest_available_quality;
+		int32		highest_available_quality;
 
-float				previous_transparency_change;
-float				original_transparency_coefficient;
+		float		previous_transparency_change;
+		float		original_transparency_coefficient;
 
+		TransparencyManipulatorSettings	*settings;
+		TransparencyManipulatorView		*config_view;
 
-TransparencyManipulatorSettings	*settings;
-TransparencyManipulatorView		*config_view;
-
-	Selection*	selection;
+		Selection*	selection;
 
 public:
-			TransparencyManipulator(BBitmap*);
-			~TransparencyManipulator();
+					TransparencyManipulator(BBitmap*);
+					~TransparencyManipulator();
 
-BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-int32		PreviewBitmap(bool full_quality = FALSE,
-				BRegion* updated_region = NULL);
-BView*		MakeConfigurationView(const BMessenger& target);
+		BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+		int32		PreviewBitmap(bool full_quality = FALSE, BRegion* updated_region = NULL);
+		BView*		MakeConfigurationView(const BMessenger& target);
 
-void		Reset();
-void		SetPreviewBitmap(BBitmap*);
+		void		Reset();
+		void		SetPreviewBitmap(BBitmap*);
 
-const	char*	ReturnHelpString();
-const	char*	ReturnName();
+		const char*	ReturnHelpString();
+		const char*	ReturnName();
 
-void		SetTransparency(float);
+		void		SetTransparency(float);
 
-ManipulatorSettings*	ReturnSettings();
+		ManipulatorSettings*	ReturnSettings();
 
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+		void		SetSelection(Selection* new_selection) { selection = new_selection; };
 };
 
 
@@ -92,36 +88,33 @@ public:
 			transparency = s->transparency;
 		}
 
-
 	float	transparency;
 };
 
 
-
-
 class TransparencyManipulatorView : public WindowGUIManipulatorView {
 public:
-										TransparencyManipulatorView(
-											TransparencyManipulator* manipulator,
-											const BMessenger& target);
-	virtual								~TransparencyManipulatorView() {}
+						TransparencyManipulatorView(
+							TransparencyManipulator* manipulator,
+							const BMessenger& target);
 
-	virtual	void						AllAttached();
-	virtual	void						AttachedToWindow();
-	virtual	void						MessageReceived(BMessage* message);
+	virtual	void		AllAttached();
+	virtual	void		AttachedToWindow();
+	virtual	void		MessageReceived(BMessage* message);
 
-			void						ChangeSettings(TransparencyManipulatorSettings*);
+			void		ChangeSettings(TransparencyManipulatorSettings*);
 
 private:
-			BMessenger					fTarget;
-			bool						fTracking;
+			BMessenger	fTarget;
+			bool		fTracking;
 			TransparencyManipulatorSettings	settings;
 
 			TransparencyManipulator*	fManipulator;
-			BSlider*					fTransparency;
+			BSlider*	fTransparency;
 };
 
-#endif
+
+#endif // TRANSPARENCY_MANIPULATOR_H
 
 
 

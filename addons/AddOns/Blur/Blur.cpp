@@ -98,8 +98,6 @@ BlurManipulator::ManipulateBitmap(
 	BBitmap* target_bitmap;
 	BBitmap* new_bitmap = NULL;
 
-//	CalculateBlur(source_bitmap,target_bitmap,1,new_settings,selection,status_bar);
-
 	return original;
 }
 

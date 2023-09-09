@@ -103,11 +103,10 @@ class ScaleCanvasManipulator : public WindowGUIManipulator {
 	interpolation_type	method;
 
 public:
-	ScaleCanvasManipulator(BBitmap*);
-	~ScaleCanvasManipulator();
+				ScaleCanvasManipulator(BBitmap*);
+				~ScaleCanvasManipulator();
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
-					BStatusBar*);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original, BStatusBar*);
 	int32		PreviewBitmap(bool, BRegion* =NULL);
 
 	void		MouseDown(BPoint, uint32, BView*, bool);
@@ -120,14 +119,13 @@ public:
 	void		Reset();
 	void		SetPreviewBitmap(BBitmap*);
 
-	const	char*	ReturnHelpString();
-	const	char*	ReturnName();
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
 
 	ManipulatorSettings*	ReturnSettings();
 	void		SetSelection(Selection* new_selection);
 
-	void		SetInterpolationMethod(interpolation_type newMethod)
-					{ method = newMethod; }
+	void		SetInterpolationMethod(interpolation_type newMethod) { method = newMethod; }
 
 	void		UpdateSettings();
 };
@@ -135,44 +133,41 @@ public:
 
 class ScaleCanvasManipulatorView : public WindowGUIManipulatorView {
 public:
-								ScaleCanvasManipulatorView(ScaleCanvasManipulator*,
-									const BMessenger& target);
-	virtual						~ScaleCanvasManipulatorView() {}
+							ScaleCanvasManipulatorView(ScaleCanvasManipulator*,
+								const BMessenger& target);
 
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage* message);
+	virtual	void			AttachedToWindow();
+	virtual	void			MessageReceived(BMessage* message);
 
-			bool				MaintainProportions() {
-									return maintain_proportions;
-								}
-			void				SetValues(float left, float top, float right, float bottom);
-			void				GetControlValues(float& left, float& top,
-									float& right, float& bottom);
+			bool			MaintainProportions() { return maintain_proportions; }
+			void			SetValues(float left, float top, float right, float bottom);
+			void			GetControlValues(float& left, float& top,
+								float& right, float& bottom);
 private:
-			void				_SetTarget(BView* view);
-			void				_SetValues(float left, float top, float right, float bottom);
-			BButton*			_MakeButton(const char* label,
-									uint32 what, float coefficient);
+			void			_SetTarget(BView* view);
+			void			_SetValues(float left, float top, float right, float bottom);
+			BButton*		_MakeButton(const char* label, uint32 what, float coefficient);
 
 private:
-			BMessenger			fTarget;
-			float				original_left;
-			float				original_top;
-			float				original_width;
-			float				original_height;
-			float				current_left;
-			float				current_top;
-			float				current_width;
-			float				current_height;
-			bool				maintain_proportions;
+			BMessenger		fTarget;
+			float			original_left;
+			float			original_top;
+			float			original_width;
+			float			original_height;
+			float			current_left;
+			float			current_top;
+			float			current_width;
+			float			current_height;
+			bool			maintain_proportions;
 			interpolation_type	method;
 
 			ScaleCanvasManipulator*	fManipulator;
-			NumberControl*		left_control;
-			NumberControl*		top_control;
-			NumberControl*		width_control;
-			NumberControl*		height_control;
-			BPopUpMenu*			sample_mode_menu;
+			NumberControl*	left_control;
+			NumberControl*	top_control;
+			NumberControl*	width_control;
+			NumberControl*	height_control;
+			BPopUpMenu*		sample_mode_menu;
 };
 
-#endif
+
+#endif // SCALE_CANVAS_MANIPULATOR_H

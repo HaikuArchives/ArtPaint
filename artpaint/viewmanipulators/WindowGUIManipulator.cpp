@@ -32,10 +32,3 @@ WindowGUIManipulatorView::AttachedToWindow()
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
 }
-
-
-void
-WindowGUIManipulatorView::MessageReceived(BMessage* message)
-{
-	BView::MessageReceived(message);
-}

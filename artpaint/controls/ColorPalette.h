@@ -9,14 +9,12 @@
 #ifndef COLOR_PALETTE_H
 #define COLOR_PALETTE_H
 
-
 #include "MultichannelColorControl.h"
 #include "RGBColorControl.h"
 #include "CMYColorControl.h"
 #include "YUVColorControl.h"
 #include "HSVColorControl.h"
 #include "LABColorControl.h"
-
 
 #include <Box.h>
 #include <Button.h>
@@ -44,8 +42,9 @@ class PaletteWindowClient;
 class HSColorControl : public BColorControl {
 
 public:
-		HSColorControl(BPoint left_top, color_control_layout matrix, float cellSide, const char *name);
-void	MouseDown(BPoint location);
+			HSColorControl(BPoint left_top, color_control_layout matrix, float cellSide,
+				const char *name);
+	void	MouseDown(BPoint location);
 };
 
 enum color_window_modes {
@@ -61,149 +60,145 @@ enum color_window_modes {
 
 class ColorPaletteWindow : public BWindow {
 private:
-		int32 selector_mode;
+			int32 selector_mode;
 
-		// This lists the windows that have the colorwindow in
-		// their subset.
-static	BList*					master_window_list;
-static	BList*					palette_window_clients;
+			// This lists the windows that have the colorwindow in
+			// their subset.
+	static	BList*					master_window_list;
+	static	BList*					palette_window_clients;
 
-		BCardLayout*			sliderLayout;
-// this variable holds a derived color control object
-		HSColorControl* 		color_control;
+			BCardLayout*			sliderLayout;
 
-// this holds an ColorControl-object
-		MultichannelColorControl*		color_slider;
+			// this variable holds a derived color control object
+			HSColorControl* 		color_control;
 
-// this variable points to the color container object
-		ColorContainer* 		color_container;
+			// this holds an ColorControl-object
+			MultichannelColorControl*		color_slider;
 
-// these buttons can change to next or previous color-set
-		BButton* 				previous_set;
-		BButton*				next_set;
+			// this variable points to the color container object
+			ColorContainer* 		color_container;
 
-// this variable points to menubar that is opened
-		BMenuBar* 				menu_bar;
+			// these buttons can change to next or previous color-set
+			BButton* 				previous_set;
+			BButton*				next_set;
 
-// these are boxes that can be used to hold the components
-		BBox* 					box1;
+			// this variable points to menubar that is opened
+			BMenuBar* 				menu_bar;
 
-// these point to file-panels for opening and saving palette
-		BFilePanel*				open_panel;
-		BFilePanel*				save_panel;
+			// these are boxes that can be used to hold the components
+			BBox* 					box1;
 
-		RGBColorControl* 		rgbSlider;
-		CMYColorControl* 		cmySlider;
-		LABColorControl* 		labSlider;
-		HSVColorControl* 		hsvSlider;
+			// these point to file-panels for opening and saving palette
+			BFilePanel*				open_panel;
+			BFilePanel*				save_panel;
 
-		ColorChip*				colorPreview;
-		BTextControl*			hexColorField;
+			RGBColorControl* 		rgbSlider;
+			CMYColorControl* 		cmySlider;
+			LABColorControl* 		labSlider;
+			HSVColorControl* 		hsvSlider;
 
-		void					SetHexColor(const rgb_color c);
-// This static holds the pointer to the open palette-window.
-// If no window is open, it is NULL
-static	ColorPaletteWindow*		palette_window;
+			ColorChip*				colorPreview;
+			BTextControl*			hexColorField;
 
-// these functions are used to open necessary control views
-// and delete them when necessary
-		bool	openControlViews(int32 mode);
-		void	openMenuBar();
+			void					SetHexColor(const rgb_color c);
 
+			// This static holds the pointer to the open palette-window.
+			// If no window is open, it is NULL
+	static	ColorPaletteWindow*		palette_window;
 
-// these functions handle the palette loading and saving
-		void	handlePaletteLoad(BMessage *message);
-		void	handlePaletteSave(BMessage *message);
+			// these functions are used to open necessary control views
+			// and delete them when necessary
+			bool	openControlViews(int32 mode);
+			void	openMenuBar();
 
+			// these functions handle the palette loading and saving
+			void	handlePaletteLoad(BMessage *message);
+			void	handlePaletteSave(BMessage *message);
 
-static	void	InformClients(const rgb_color&);
+	static	void	InformClients(const rgb_color&);
+
 public:
-				ColorPaletteWindow(BRect frame,int32 mode);
-				~ColorPaletteWindow();
-		bool	QuitRequested();
-		void	MessageReceived(BMessage *message);
+					ColorPaletteWindow(BRect frame, int32 mode);
+					~ColorPaletteWindow();
+			bool	QuitRequested();
+			void	MessageReceived(BMessage* message);
 
-rgb_color	getColor(int32 index);
+		rgb_color	getColor(int32 index);
 
-// This static function will bring the palette window to front, or open
-// it if none is already open. If a message is provided, it is presumed
-// to contain refs to a palette file, and that will be loaded.
-static	void	showPaletteWindow(BMessage* = NULL);
-static	void	ChangePaletteColor(rgb_color&);
-static	void	setFeel(window_feel);
-static	void	AddMasterWindow(BWindow*);
-static	void	RemoveMasterWindow(BWindow*);
+			// This static function will bring the palette window to front, or open
+			// it if none is already open. If a message is provided, it is presumed
+			// to contain refs to a palette file, and that will be loaded.
+	static	void	showPaletteWindow(BMessage* = NULL);
+	static	void	ChangePaletteColor(rgb_color&);
+	static	void	setFeel(window_feel);
+	static	void	AddMasterWindow(BWindow*);
+	static	void	RemoveMasterWindow(BWindow*);
 
-static	void	AddPaletteWindowClient(PaletteWindowClient*);
-static	void	RemovePaletteWindowClient(PaletteWindowClient*);
+	static	void	AddPaletteWindowClient(PaletteWindowClient*);
+	static	void	RemovePaletteWindowClient(PaletteWindowClient*);
 };
 
 
 class ColorContainer : public BView {
+			// these variables hold the vital info about the container
+			int32 	color_count;
+			int32	row_count;
+			int32 	column_count;
+			int32	horiz_c_size;
+			int32	vert_c_size;
+			int32	horiz_gutter;
+			int32	vert_gutter;
 
-		// these variables hold the vital info about the container
-		int32 	color_count;
-		int32	row_count;
-		int32 	column_count;
-		int32	horiz_c_size;
-		int32	vert_c_size;
-		int32	horiz_gutter;
-		int32	vert_gutter;
+			// this variable holds the information whether the selected color
+			// should be highlighted or not
+			bool	highlight_selected;
+			bool	dragging_enabled;
+			bool	contains_arrows;
 
+			// this points to list that holds the pointers to every color container
+			// an entry is added to the front of list whenever container is created
+			// and is removed whenever a container is deleted
+			static 	BList*	container_list;
 
-		// this variable holds the information whether the selected color
-		// should be highlighted or not
-		bool	highlight_selected;
-		bool	dragging_enabled;
-		bool	contains_arrows;
+			BPictureButton*	left_arrow;
+			BPictureButton*	right_arrow;
 
+			// this function gives the rect for palette entry at index
+			BRect	colorBounds(int32 index);
 
-		// this points to list that holds the pointers to every color container
-		// an entry is added to the front of list whenever container is created
-		// and is removed whenever a container is deleted
-		static 	BList 	*container_list;
+			// this function gives the index for palette entry at point
+			// or -1 if none
+			int32	pointIndex(BPoint point);
 
+			// this sets up the container view and initializes variables
+			// it is called whenever a container is created and whenever
+			// palette is changed
+			void	setUpContainer(BRect frame, int32 number_of_colors,bool add_arrows);
 
-		BPictureButton	*left_arrow;
-		BPictureButton	*right_arrow;
-
-
-// this function gives the rect for palette entry at index
-BRect	colorBounds(int32 index);
-
-// this function gives the index for palette entry at point
-// or -1 if none
-int32	pointIndex(BPoint point);
-
-// this sets up the container view and initializes variables
-// it is called whenever a container is created and whenever
-// palette is changed
-void	setUpContainer(BRect frame, int32 number_of_colors,bool add_arrows);
-
-void	SetHighAndLowColors(const rgb_color&);
+			void	SetHighAndLowColors(const rgb_color&);
 
 public:
-		// this constructs a container that fits inside the rectangle
-		// or stretches the rectangle if it is too small
-		ColorContainer(BRect frame, int32 amount_of_colors,uint32 resizingMode=B_FOLLOW_NONE, bool highlight=TRUE,bool add_arrows=FALSE);
+			// this constructs a container that fits inside the rectangle
+			// or stretches the rectangle if it is too small
+			ColorContainer(BRect frame, int32 amount_of_colors, uint32 resizingMode = B_FOLLOW_NONE,
+				bool highlight = TRUE, bool add_arrows = FALSE);
 
-		// this removes the container from container_list
-		~ColorContainer();
+			// this removes the container from container_list
+			~ColorContainer();
 
-void	AttachedToWindow();
-void	Draw(BRect);
-void	MouseDown(BPoint point);
-void	MouseMoved(BPoint,uint32,const BMessage*);
-void	MessageReceived(BMessage *message);
-void	FrameResized(float width, float height);
+			void	AttachedToWindow();
+			void	Draw(BRect);
+			void	MouseDown(BPoint point);
+			void	MouseMoved(BPoint,uint32,const BMessage*);
+			void	MessageReceived(BMessage *message);
+			void	FrameResized(float width, float height);
 
-void	colorChanged(int32 color_index);
+			void	colorChanged(int32 color_index);
 
+			void	SetDraggingEnabled(bool e) { dragging_enabled = e; }
 
-void	SetDraggingEnabled(bool e) { dragging_enabled = e; }
-
-// this function sends a message to all color containers
-static	void	sendMessageToAllContainers(BMessage *message);
+			// this function sends a message to all color containers
+	static	void	sendMessageToAllContainers(BMessage *message);
 };
 
 
@@ -235,7 +230,7 @@ public:
 		inline	rgb_color	currentColor() { return palette[current_color_index]; }
 		inline	int32		currentColorIndex() { return current_color_index; }
 
-// these are used to set colors of the set, the first is used when loading a set
+		// these are used to set colors of the set, the first is used when loading a set
 				void		setColor(int32 index,rgb_color color);
 		inline	void		setCurrentColor(rgb_color color)
 								{ palette[current_color_index] = color; }
@@ -246,14 +241,12 @@ public:
 				char*		getName();
 
 static	inline	ColorSet*	currentSet() {
-								return (ColorSet*)color_set_list->ItemAt(
-									current_set_index
-								);
+								return (ColorSet*)color_set_list->ItemAt(current_set_index);
 							}
 static	inline	int32		currentSetIndex() { return current_set_index; }
 static	inline	void		moveToNextSet() {
-								current_set_index =
-									min_c(current_set_index + 1,
+								current_set_index
+									= min_c(current_set_index + 1,
 									color_set_list->CountItems() - 1);
 							}
 static	inline	void		moveToPrevSet() {
@@ -262,7 +255,7 @@ static	inline	void		moveToPrevSet() {
 static	inline	int32		numberOfSets() { return color_set_list->CountItems(); }
 static  inline 	void		moveToSet(int32 index) { current_set_index = index; }
 
-// these functions read and write all the sets to the preferences-file
+		// these functions read and write all the sets to the preferences-file
 static			status_t	readSets(BFile &file);
 static			status_t	writeSets(BFile &file);
 };
@@ -270,22 +263,23 @@ static			status_t	writeSets(BFile &file);
 
 class ColorChip : public BControl {
 public:
-				ColorChip(const char* name);
-	virtual		~ColorChip();
+							ColorChip(const char* name);
+		virtual				~ColorChip();
 
-	virtual void 	Draw(BRect updateRect);
-	virtual void	MessageReceived(BMessage* message);
-	virtual void	MouseDown(BPoint point);
+		virtual void 		Draw(BRect updateRect);
+		virtual void		MouseDown(BPoint point);
 
-	BBitmap*	chipBitmap() { return fChipBitmap; }
+				BBitmap*	chipBitmap() { return fChipBitmap; }
 
-	void		Redraw() { Draw(Bounds()); }
+				void		Redraw() { Draw(Bounds()); }
 
-	void		SetColor(uint32 new_color);
-	uint32		Color() { return fColor; }
+				void		SetColor(uint32 new_color);
+				uint32		Color() { return fColor; }
+
 private:
-	BBitmap*	fChipBitmap;
-	uint32		fColor;
+				BBitmap*	fChipBitmap;
+				uint32		fColor;
 };
 
-#endif
+
+#endif // COLOR_PALETTE_H

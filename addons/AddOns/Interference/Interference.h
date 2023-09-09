@@ -26,44 +26,44 @@
 
 class InterferenceManipulatorSettings : public ManipulatorSettings {
 public:
-		InterferenceManipulatorSettings()
-			: ManipulatorSettings() {
-			centerA = BPoint(0,0);
-			waveLengthA = 30;
-			centerB = BPoint(0,0);
-			waveLengthB = 30;
-			grayscale = B_CONTROL_OFF;
-		}
+	InterferenceManipulatorSettings()
+		: ManipulatorSettings() {
+		centerA = BPoint(0,0);
+		waveLengthA = 30;
+		centerB = BPoint(0,0);
+		waveLengthB = 30;
+		grayscale = B_CONTROL_OFF;
+	}
 
-		InterferenceManipulatorSettings(const InterferenceManipulatorSettings& s)
-			: ManipulatorSettings() {
-			centerA = s.centerA;
-			waveLengthA = s.waveLengthA;
-			centerB = s.centerB;
-			waveLengthB = s.waveLengthB;
-			grayscale = s.grayscale;
-		}
+	InterferenceManipulatorSettings(const InterferenceManipulatorSettings& s)
+		: ManipulatorSettings() {
+		centerA = s.centerA;
+		waveLengthA = s.waveLengthA;
+		centerB = s.centerB;
+		waveLengthB = s.waveLengthB;
+		grayscale = s.grayscale;
+	}
 
-		InterferenceManipulatorSettings& operator=(const InterferenceManipulatorSettings& s) {
-			centerA = s.centerA;
-			waveLengthA = s.waveLengthA;
-			centerB = s.centerB;
-			waveLengthB = s.waveLengthB;
-			grayscale = s.grayscale;
-			return *this;
-		}
+	InterferenceManipulatorSettings& operator=(const InterferenceManipulatorSettings& s) {
+		centerA = s.centerA;
+		waveLengthA = s.waveLengthA;
+		centerB = s.centerB;
+		waveLengthB = s.waveLengthB;
+		grayscale = s.grayscale;
+		return *this;
+	}
 
-		bool operator==(InterferenceManipulatorSettings s) {
-			return ((centerA == s.centerA) && (waveLengthA == s.waveLengthA) &&
-					(centerB == s.centerB) && (waveLengthB == s.waveLengthB) &&
-					(grayscale == s.grayscale));
-		}
+	bool operator==(InterferenceManipulatorSettings s) {
+		return ((centerA == s.centerA) && (waveLengthA == s.waveLengthA)
+			&& (centerB == s.centerB) && (waveLengthB == s.waveLengthB)
+			&& (grayscale == s.grayscale));
+	}
 
-		BPoint	centerA;
-		BPoint	centerB;
-		float	waveLengthA;
-		float	waveLengthB;
-		int32	grayscale;
+	BPoint	centerA;
+	BPoint	centerB;
+	float	waveLengthA;
+	float	waveLengthB;
+	int32	grayscale;
 };
 
 
@@ -74,16 +74,16 @@ class InterferenceManipulatorView;
 
 
 class InterferenceManipulator : public WindowGUIManipulator {
-	BBitmap*						preview_bitmap;
-	BBitmap*						copy_of_the_preview_bitmap;
+	BBitmap*	preview_bitmap;
+	BBitmap*	copy_of_the_preview_bitmap;
 
 	InterferenceManipulatorSettings	settings;
 	InterferenceManipulatorSettings	previous_settings;
 
 	InterferenceManipulatorView*	config_view;
-	float*							sin_table;
+	float*		sin_table;
 
-	ManipulatorInformer				*informer;
+	ManipulatorInformer*			informer;
 
 	void		MakeInterference(BBitmap*, InterferenceManipulatorSettings*);
 	Selection*	selection;
@@ -113,23 +113,22 @@ public:
 
 
 class InterferenceManipulatorView : public WindowGUIManipulatorView {
-	BMessenger*					target;
+	BMessenger*	target;
 	InterferenceManipulator*	manipulator;
-	BSlider*					waveLengthSliderA;
-	BSlider*					waveLengthSliderB;
-	BSpinner*					centerAX;
-	BSpinner*					centerAY;
-	BSpinner*					centerBX;
-	BSpinner*					centerBY;
-	BCheckBox*					grayScale;
+	BSlider*	waveLengthSliderA;
+	BSlider*	waveLengthSliderB;
+	BSpinner*	centerAX;
+	BSpinner*	centerAY;
+	BSpinner*	centerBX;
+	BSpinner*	centerBY;
+	BCheckBox*	grayScale;
 
 	InterferenceManipulatorSettings	settings;
 
-	bool			preview_started;
+	bool		preview_started;
 
 public:
-				InterferenceManipulatorView(BRect,
-					InterferenceManipulator*, const BMessenger&);
+				InterferenceManipulatorView(BRect, InterferenceManipulator*, const BMessenger&);
 				~InterferenceManipulatorView() { delete target; }
 
 	void		AttachedToWindow();

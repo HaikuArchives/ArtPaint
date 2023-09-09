@@ -9,7 +9,6 @@
 #ifndef CMY_COLOR_CONTROL_H
 #define CMY_COLOR_CONTROL_H
 
-
 #include "ColorFloatSlider.h"
 #include "MultichannelColorControl.h"
 
@@ -22,20 +21,19 @@ using ArtPaint::Interface::ColorFloatSlider;
 
 class CMYColorControl : public MultichannelColorControl {
 public:
-					CMYColorControl(rgb_color c);
-					~CMYColorControl();
+						CMYColorControl(rgb_color c);
+						~CMYColorControl();
 
-		void		AttachedToWindow();
-		void		MessageReceived(BMessage* message);
-virtual	void		SetValue(rgb_color c);
-virtual	void		SetValue(float one, float two,
-						float three, float four, float five);
-		rgb_color	ValueAsColor();
-virtual	void		SetSliderColors(rgb_color c);
+			void		AttachedToWindow();
+			void		MessageReceived(BMessage* message);
+	virtual	void		SetValue(rgb_color c);
+	virtual	void		SetValue(float one, float two, float three, float four, float five);
+			rgb_color	ValueAsColor();
+	virtual	void		SetSliderColors(rgb_color c);
 
 private:
-		ColorFloatSlider* slider5;
+			ColorFloatSlider* slider5;
 };
 
 
-#endif
+#endif // CMY_COLOR_CONTROL_H

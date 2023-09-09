@@ -7,7 +7,6 @@
  *
  */
 
-
 /*	This class represents a view that accepts colordrops in the format
 	defined by röColor. The format is following:
 
@@ -37,26 +36,28 @@
 	BControl.
 
 */
-
 #ifndef COLOR_VIEW_H
 #define COLOR_VIEW_H
 
 #include <Control.h>
 #include <StringView.h>
 
+
 class ColorView : public BControl {
-		rgb_color	current_color;
-		BStringView	*label_view;
-		float 		font_leading;
+	rgb_color		current_color;
+	BStringView*	label_view;
+	float			font_leading;
 
 public:
-		ColorView(BRect frame,char *label,BMessage *message,rgb_color initial_color);
+					ColorView(BRect frame, char *label, BMessage* message, rgb_color initial_color);
 
-void		MessageReceived(BMessage*);
-void		MouseDown(BPoint);
-void		Draw(BRect);
-void		ResizeToPreferred();
-void		SetColor(rgb_color);
-rgb_color	GetColor() { return current_color; }
+	void			MessageReceived(BMessage*);
+	void			MouseDown(BPoint);
+	void			Draw(BRect);
+	void			ResizeToPreferred();
+	void			SetColor(rgb_color);
+	rgb_color		GetColor() { return current_color; }
 };
-#endif
+
+
+#endif // COLOR_VIEW_H

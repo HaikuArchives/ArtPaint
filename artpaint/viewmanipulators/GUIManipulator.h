@@ -11,7 +11,6 @@
 
 #include "Manipulator.h"
 
-
 #include <Region.h>
 
 
@@ -36,22 +35,19 @@ enum draw_resolutions {
 
 class GUIManipulator : public Manipulator {
 protected:
-	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar*) { return b; }
+			BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar*) { return b; }
 
 public:
-	GUIManipulator() : Manipulator() { fEnabled = true; }
-	virtual				~GUIManipulator() {}
+						GUIManipulator() : Manipulator() { fEnabled = true; }
 
-
-	virtual	void		MouseDown(BPoint,uint32,BView*,bool) {}
-	virtual	int32		PreviewBitmap(bool full_quality=FALSE,BRegion *updated_region=NULL) = 0;
-	virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings*,BBitmap*,BStatusBar*) = 0;
-	virtual	BRegion		Draw(BView*,float) { return BRegion(); }
+	virtual void		MouseDown(BPoint, uint32, BView*, bool) {}
+	virtual	int32		PreviewBitmap(bool full_quality = FALSE, BRegion* updated_region = NULL) = 0;
+	virtual	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*) = 0;
+	virtual	BRegion		Draw(BView*, float) { return BRegion(); }
 	virtual	void		Reset() = 0;
 	virtual	void		SetPreviewBitmap(BBitmap*) = 0;
-	virtual	const	void*		ManipulatorCursor() { return NULL; }
-	virtual	const	char*		ReturnHelpString() = 0;
-	virtual	void		ChangeSettings(ManipulatorSettings*) {}
+	virtual	const void*	ManipulatorCursor() { return NULL; }
+	virtual	const char*	ReturnHelpString() = 0;
 
 	ManipulatorSettings*	ReturnSettings() = 0;
 
@@ -60,11 +56,13 @@ public:
 
 	virtual status_t	Save(BMessage& settings) const { return B_OK; }
 	virtual status_t	Restore(const BMessage& settings) { return B_OK; }
-	
-			void			EnableWindow(bool enable) { fEnabled = enable; }
-			bool			IsWindowEnabled() { return fEnabled; }
+
+			void		EnableWindow(bool enable) { fEnabled = enable; }
+			bool		IsWindowEnabled() { return fEnabled; }
+
 private:
-			bool			fEnabled;
+			bool		fEnabled;
 };
 
-#endif
+
+#endif // GUI_MANIPULATOR_H

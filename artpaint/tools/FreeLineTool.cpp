@@ -56,11 +56,6 @@ FreeLineTool::FreeLineTool()
 }
 
 
-FreeLineTool::~FreeLineTool()
-{
-}
-
-
 ToolScript*
 FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {

@@ -6,10 +6,8 @@
  * 		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-
 #ifndef CUSTOM_GRID_LAYOUT_H
 #define CUSTOM_GRID_LAYOUT_H
-
 
 #include <GridLayout.h>
 #include <LayoutItem.h>
@@ -20,15 +18,13 @@
 
 class CustomGridLayout : public BGridLayout {
 public:
-			CustomGridLayout(BMessage* message);
-			CustomGridLayout(float horizontal, float vertical);
-	virtual	~CustomGridLayout();
+				CustomGridLayout(BMessage* message);
+				CustomGridLayout(float horizontal, float vertical);
 
 public:
-			BPoint 				GetViewPosition(BView* view);
-			void				SwapViews(BView* view1, BView* view2);
+	BPoint 		GetViewPosition(BView* view);
+	void		SwapViews(BView* view1, BView* view2);
 };
 
 
-#endif
-
+#endif // CUSTOM_GRID_LAYOUT_H

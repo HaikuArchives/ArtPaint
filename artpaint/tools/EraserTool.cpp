@@ -57,11 +57,6 @@ EraserTool::EraserTool()
 }
 
 
-EraserTool::~EraserTool()
-{
-}
-
-
 ToolScript*
 EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {

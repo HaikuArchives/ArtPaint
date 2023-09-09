@@ -24,11 +24,9 @@ class ToolScript;
 class EllipseTool : public DrawingTool {
 public:
 								EllipseTool();
-	virtual						~EllipseTool();
 
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
-
 
 			BView*				ConfigView();
 			const void*			ToolCursor() const;
@@ -49,5 +47,6 @@ private:
 			BRadioButton*		fCenter2Corner;
 			BCheckBox*			fAntiAlias;
 };
+
 
 #endif	// ELLIPSE_TOOL_H

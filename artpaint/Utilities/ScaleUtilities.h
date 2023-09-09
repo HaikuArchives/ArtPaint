@@ -9,9 +9,7 @@
 #ifndef _SCALE_UTILITIES_H
 #define	_SCALE_UTILITIES_H
 
-
 #include "PixelOperations.h"
-
 
 #include <Bitmap.h>
 #include <Catalog.h>
@@ -71,7 +69,6 @@ public:
 						BBitmap* source, BBitmap* target,
 						float ratio, interpolation_type method);
 };
-
 
 
 #endif	// _SCALE_UTILITIES_H

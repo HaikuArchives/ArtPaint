@@ -60,11 +60,6 @@ HairyBrushTool::HairyBrushTool()
 }
 
 
-HairyBrushTool::~HairyBrushTool()
-{
-}
-
-
 ToolScript*
 HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {

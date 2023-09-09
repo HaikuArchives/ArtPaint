@@ -137,12 +137,6 @@ LayerView::MouseDown(BPoint location)
 
 
 void
-LayerView::MouseMoved(BPoint where, uint32 transit, const BMessage*)
-{
-}
-
-
-void
 LayerView::UpdateImage()
 {
 	thumbnail_view->Redraw();
@@ -311,11 +305,6 @@ ThumbnailView::ThumbnailView(BBitmap* image)
 
 	frame.InsetBy(1.0, 1.0);
 	fThumbnailBitmap = image;
-}
-
-
-ThumbnailView::~ThumbnailView()
-{
 }
 
 

@@ -51,11 +51,6 @@ OilManipulator::OilManipulator(BBitmap*)
 }
 
 
-OilManipulator::~OilManipulator()
-{
-}
-
-
 BBitmap*
 OilManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

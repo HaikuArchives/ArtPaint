@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include <math.h>
 #include <stdio.h>
 
@@ -99,6 +100,7 @@ HSPolygon::Rotate(const BPoint& center, float angle)
 	//	1.	Translate center to origin.
 	//	2.	Rotate about origin.
 	//	3.	Translate origin to center.
+
 	float new_x, new_y;
 
 	for (int32 i = 0; i < point_count; i++) {

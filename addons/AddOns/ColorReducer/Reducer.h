@@ -29,79 +29,77 @@ enum {
 
 class	ReducerManipulatorSettings : public ManipulatorSettings {
 public:
-		ReducerManipulatorSettings()
-			: ManipulatorSettings() {
-			dither_mode = NO_DITHER;
-			palette_size = 256;
-			palette_mode = BEOS_PALETTE;
-		}
+	ReducerManipulatorSettings()
+		: ManipulatorSettings() {
+		dither_mode = NO_DITHER;
+		palette_size = 256;
+		palette_mode = BEOS_PALETTE;
+	}
 
-		ReducerManipulatorSettings(const ReducerManipulatorSettings& s)
-			: ManipulatorSettings() {
-			dither_mode = s.dither_mode;
-			palette_size = s.palette_size;
-			palette_mode = s.palette_mode;
-		}
+	ReducerManipulatorSettings(const ReducerManipulatorSettings& s)
+		: ManipulatorSettings() {
+		dither_mode = s.dither_mode;
+		palette_size = s.palette_size;
+		palette_mode = s.palette_mode;
+	}
 
+	ReducerManipulatorSettings& operator=(const ReducerManipulatorSettings& s) {
+		dither_mode = s.dither_mode;
+		palette_size = s.palette_size;
+		palette_mode = s.palette_mode;
+		return *this;
+	}
 
-		ReducerManipulatorSettings& operator=(const ReducerManipulatorSettings& s) {
-			dither_mode = s.dither_mode;
-			palette_size = s.palette_size;
-			palette_mode = s.palette_mode;
-			return *this;
-		}
+	bool operator==(ReducerManipulatorSettings s) {
+		return ((dither_mode == s.dither_mode)
+			&& (palette_size == s.palette_size)
+			&& (palette_mode == s.palette_mode));
+	}
 
+	bool operator!=(ReducerManipulatorSettings s) {
+		return !(*this == s);
+	}
 
-		bool operator==(ReducerManipulatorSettings s) {
-			return ((dither_mode == s.dither_mode)
-					&& (palette_size == s.palette_size)
-					&& (palette_mode == s.palette_mode));
-		}
-
-		bool operator!=(ReducerManipulatorSettings s) {
-			return !(*this==s);
-		}
-
-int32	dither_mode;
-int32	palette_size;
-int32	palette_mode;
+	int32	dither_mode;
+	int32	palette_size;
+	int32	palette_mode;
 };
 
 
 class ReducerManipulatorView;
 
 class ReducerManipulator : public WindowGUIManipulator {
-			BBitmap	*preview_bitmap;
-			BBitmap	*copy_of_the_preview_bitmap;
+	BBitmap*	preview_bitmap;
+	BBitmap*	copy_of_the_preview_bitmap;
 
-			ReducerManipulatorSettings	settings;
-			ReducerManipulatorSettings	previous_settings;
+	ReducerManipulatorSettings	settings;
+	ReducerManipulatorSettings	previous_settings;
 
-			ReducerManipulatorView		*config_view;
+	ReducerManipulatorView*		config_view;
 
-void		do_dither(BBitmap*,BBitmap*,const rgb_color *palette,int palette_size,int32 dither_mode);
+	void		do_dither(BBitmap*, BBitmap*, const rgb_color* palette, int palette_size,
+					int32 dither_mode);
 
-Selection*	selection;
+	Selection*	selection;
 
 public:
-			ReducerManipulator(BBitmap*);
-			~ReducerManipulator();
+				ReducerManipulator(BBitmap*);
+				~ReducerManipulator();
 
-void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-void		Reset();
-void		SetPreviewBitmap(BBitmap*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
+	int32		PreviewBitmap(bool full_quality = FALSE, BRegion* = NULL);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+	void		Reset();
+	void		SetPreviewBitmap(BBitmap*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
 
-ManipulatorSettings*	ReturnSettings();
+	ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(const BMessenger& target);
+	BView*		MakeConfigurationView(const BMessenger& target);
 
-void		ChangeSettings(ManipulatorSettings*);
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+	void		ChangeSettings(ManipulatorSettings*);
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 
@@ -114,24 +112,22 @@ void		SetSelection(Selection* new_selection)
 #define REDUCER_FINISHED	'Refn'
 
 class ReducerManipulatorView : public WindowGUIManipulatorView {
-		BMessenger						target;
-		ReducerManipulator			*manipulator;
-		ReducerManipulatorSettings	settings;
+	BMessenger		target;
+	ReducerManipulator*			manipulator;
+	ReducerManipulatorSettings	settings;
 
-		BMenuField		*dither_mode_menu_field;
-		BMenuField		*palette_size_menu_field;
-		BMenuField		*palette_mode_menu_field;
+	BMenuField*		dither_mode_menu_field;
+	BMenuField*		palette_size_menu_field;
+	BMenuField*		palette_mode_menu_field;
 
-		BStringView		*busy;
+	BStringView*	busy;
 
 public:
-		ReducerManipulatorView(ReducerManipulator*,const BMessenger& target);
-		~ReducerManipulatorView();
+			ReducerManipulatorView(ReducerManipulator*, const BMessenger& target);
 
-void	AllAttached();
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
-void	ChangeSettings(ManipulatorSettings*);
+	void	AllAttached();
+	void	MessageReceived(BMessage*);
+	void	ChangeSettings(ManipulatorSettings*);
 };
 
 #endif

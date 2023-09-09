@@ -104,13 +104,6 @@ MultichannelColorControl::AttachedToWindow()
 
 
 void
-MultichannelColorControl::Draw(BRect rect)
-{
-	BControl::Draw(rect);
-}
-
-
-void
 MultichannelColorControl::MessageReceived(BMessage* message)
 {
 	switch (message->what) {

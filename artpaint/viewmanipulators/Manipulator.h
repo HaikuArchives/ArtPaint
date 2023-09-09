@@ -9,7 +9,6 @@
 #ifndef MANIPULATOR_H
 #define MANIPULATOR_H
 
-
 #include <image.h>
 
 
@@ -59,16 +58,13 @@ public:
 									Manipulator();
 	virtual							~Manipulator() {}
 
-	virtual	BBitmap*				ManipulateBitmap(BBitmap*,
-										BStatusBar*) = 0;
+	virtual	BBitmap*				ManipulateBitmap(BBitmap*, BStatusBar*) = 0;
 	virtual	ManipulatorSettings*	ReturnSettings() { return NULL; }
 	virtual	const char*				ReturnName() = 0;
 	virtual const char*				ReturnHelpString() { return NULL; }
 
-	double							GetSystemClockSpeed()
-										{ return fSystemClockSpeed; }
-	int								GetSystemCpuCount()
-										{ return fCpuCount; }
+	double							GetSystemClockSpeed() { return fSystemClockSpeed; }
+	int								GetSystemCpuCount() { return fCpuCount; }
 	virtual void					SetSelection(Selection* new_selection) = 0;
 
 protected:
@@ -81,5 +77,6 @@ private:
 			double					fSystemClockSpeed;
 			int						fCpuCount;
 };
+
 
 #endif	// MANIPULATOR_H

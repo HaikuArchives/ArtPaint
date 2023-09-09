@@ -48,11 +48,6 @@ EllipseTool::EllipseTool()
 }
 
 
-EllipseTool::~EllipseTool()
-{
-}
-
-
 ToolScript*
 EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {

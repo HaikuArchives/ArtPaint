@@ -6,9 +6,11 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include <algorithm>
 
 #include "FloaterManager.h"
+
 
 vector<BWindow*> FloaterManager::floaterVector;
 

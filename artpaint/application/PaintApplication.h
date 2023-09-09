@@ -25,39 +25,39 @@ struct entry_ref;
 
 class PaintApplication : public BApplication {
 public:
-								PaintApplication();
-	virtual						~PaintApplication();
+							PaintApplication();
+	virtual					~PaintApplication();
 
-			void				AboutRequested();
-	virtual	void				ReadyToRun();
-	virtual	bool				QuitRequested();
-	virtual	void				RefsReceived(BMessage* message);
-	virtual	void				MessageReceived(BMessage* message);
+			void			AboutRequested();
+	virtual	void			ReadyToRun();
+	virtual	bool			QuitRequested();
+	virtual	void			RefsReceived(BMessage* message);
+	virtual	void			MessageReceived(BMessage* message);
 
-			rgb_color			Color(bool foreground) const;
-			void				SetColor(rgb_color color, bool foreground);
+			rgb_color		Color(bool foreground) const;
+			void			SetColor(rgb_color color, bool foreground);
 
-			bool				ShuttingDown() const;
+			bool			ShuttingDown() const;
 
-	static	void				HomeDirectory(BPath& path);
-
-private:
-			void				_InstallMimeType();
-			void				_ReadPreferences();
-			void				_WritePreferences();
-
-			void				_ShowAlert(const BString& text);
-			const char*			_OpenPath(const BMessage* message,
-									const entry_ref& ref);
-	static	BPath				_GetParentPath(const entry_ref& entryRef);
-
-			status_t			_ReadProject(BFile& file, entry_ref& ref);
-			status_t			_ReadProjectOldStyle(BFile& file, entry_ref& ref);
+	static	void			HomeDirectory(BPath& path);
 
 private:
-			BFilePanel*			fImageOpenPanel;
-			BFilePanel*			fProjectOpenPanel;
-			bool				fShuttingDown;
+			void			_InstallMimeType();
+			void			_ReadPreferences();
+			void			_WritePreferences();
+
+			void			_ShowAlert(const BString& text);
+			const char*		_OpenPath(const BMessage* message, const entry_ref& ref);
+	static	BPath			_GetParentPath(const entry_ref& entryRef);
+
+			status_t		_ReadProject(BFile& file, entry_ref& ref);
+			status_t		_ReadProjectOldStyle(BFile& file, entry_ref& ref);
+
+private:
+			BFilePanel*		fImageOpenPanel;
+			BFilePanel*		fProjectOpenPanel;
+			bool			fShuttingDown;
 };
 
-#endif
+
+#endif // PAINT_APPLICATION_H

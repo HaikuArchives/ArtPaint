@@ -11,16 +11,17 @@
 
 #include <ScrollView.h>
 
+
 // this view will be used to draw border around ImageView
 // when necessary
 // also used to help in resizing ImageView
 class BackgroundView : public BScrollView {
-
 public:
-		BackgroundView(BRect frame);
-void	Draw(BRect);
-void	FrameResized(float,float);
-void	MouseDown(BPoint);
+				BackgroundView(BRect frame);
+		void	Draw(BRect);
+		void	FrameResized(float, float);
+		void	MouseDown(BPoint);
 };
 
-#endif
+
+#endif // BACKGROUND_VIEW_H

@@ -51,13 +51,6 @@ NumberControl::SetValue(int32 value)
 
 
 void
-NumberControl::AttachedToWindow()
-{
-	BTextControl::AttachedToWindow();
-}
-
-
-void
 NumberControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuos)
 {
 	for (uint32 i = 0; i < 256; ++i)

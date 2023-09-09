@@ -122,11 +122,6 @@ ImageSavePanel::ImageSavePanel(const entry_ref& startDir, BMessenger& target,
 }
 
 
-ImageSavePanel::~ImageSavePanel()
-{
-}
-
-
 status_t
 set_filepanel_strings(BFilePanel* panel)
 {

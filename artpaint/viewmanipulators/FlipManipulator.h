@@ -11,31 +11,30 @@
 #ifndef FLIP_MANIPULATOR_H
 #define	FLIP_MANIPULATOR_H
 
+
 class HorizFlipManipulator : public Manipulator {
-
 public:
-			HorizFlipManipulator();
-BBitmap*	ManipulateBitmap(BBitmap* original, BStatusBar*);
+						HorizFlipManipulator();
+		BBitmap*		ManipulateBitmap(BBitmap* original, BStatusBar*);
 
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+		const char*		ReturnName();
+		void			SetSelection(Selection* new_selection) { selection = new_selection; };
+
 private:
-Selection*	selection;
+		Selection*		selection;
 };
+
 
 class VertFlipManipulator : public Manipulator {
-
 public:
-			VertFlipManipulator();
-BBitmap*	ManipulateBitmap(BBitmap* original, BStatusBar*);
+						VertFlipManipulator();
+		BBitmap*		ManipulateBitmap(BBitmap* original, BStatusBar*);
 
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+		const char*		ReturnName();
+		void			SetSelection(Selection* new_selection) { selection = new_selection; };
 private:
-Selection*	selection;
+		Selection*		selection;
 };
 
 
-#endif
+#endif // FLIP_MANIPULATOR_H

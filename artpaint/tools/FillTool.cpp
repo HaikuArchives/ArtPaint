@@ -73,11 +73,6 @@ FillTool::FillTool()
 }
 
 
-FillTool::~FillTool()
-{
-}
-
-
 ToolScript*
 FillTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint viewPoint)
 {

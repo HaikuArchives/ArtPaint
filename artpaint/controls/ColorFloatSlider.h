@@ -78,4 +78,5 @@ private:
 	}	// namespace Interface
 }	// namespace ArtPaint
 
+
 #endif	//	COLOR_FLOAT_SLIDER_H

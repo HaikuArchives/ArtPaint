@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include "BackgroundView.h"
 #include "ImageView.h"
 #include "MessageConstants.h"

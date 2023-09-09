@@ -54,18 +54,18 @@ using ArtPaint::Interface::NumberSliderControl;
 class ColorSelectorView : public BView
 {
 public:
-					ColorSelectorView(BRect frame);
+							ColorSelectorView(BRect frame);
 
-	virtual void	Draw(BRect updateRect);
+	virtual void			Draw(BRect updateRect);
 
-	void 			ChangeValue(uint32);
+			void 			ChangeValue(uint32);
 
 private:
-	uint32 			selected_color;
-	BStringView* 	red_view;
-	BStringView* 	green_view;
-	BStringView* 	blue_view;
-	BStringView* 	alpha_view;
+			uint32 			selected_color;
+			BStringView* 	red_view;
+			BStringView* 	green_view;
+			BStringView* 	blue_view;
+			BStringView* 	alpha_view;
 };
 
 
@@ -284,11 +284,6 @@ ColorSelectorTool::ColorSelectorTool()
 
 	SetOption(SIZE_OPTION, 1);
 	SetOption(MODE_OPTION, HS_ALL_BUTTONS);
-}
-
-
-ColorSelectorTool::~ColorSelectorTool()
-{
 }
 
 

@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include "ManipulatorInformer.h"
 #include "PaintApplication.h"
 

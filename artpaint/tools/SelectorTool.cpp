@@ -12,7 +12,6 @@
 
 #include "SelectorTool.h"
 
-
 #include "BitmapDrawer.h"
 #include "BitmapUtilities.h"
 #include "Cursors.h"
@@ -55,11 +54,6 @@ SelectorTool::SelectorTool()
 	SetOption(MODE_OPTION, B_OP_ADD);
 	SetOption(SHAPE_OPTION, HS_RECTANGLE);
 	SetOption(TOLERANCE_OPTION, 10);
-}
-
-
-SelectorTool::~SelectorTool()
-{
 }
 
 

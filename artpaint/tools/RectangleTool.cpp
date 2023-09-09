@@ -54,11 +54,6 @@ RectangleTool::RectangleTool()
 }
 
 
-RectangleTool::~RectangleTool()
-{
-}
-
-
 ToolScript*
 RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view_point)
 {

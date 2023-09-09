@@ -428,31 +428,6 @@ void BrushView::Draw(BRect)
 
 
 void
-BrushView::MessageReceived(BMessage* message)
-{
-//	switch (message->what) {
-//		case HS_BRUSH_DRAGGED: {
-//			int32 size;
-//			brush_info* info;
-//			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
-//			if (size == sizeof(brush_info)) {
-//				fBrush->ModifyBrush(*info);
-//				fBrush->PreviewBrush(fBrushPreview);
-//				Invalidate();
-//				fBrush->CreateDiffBrushes();
-//				if (Window() && Parent())
-//					Window()->PostMessage(kBrushAltered, Parent());
-//			}
-//			break;
-//
-//		default: {
-	BView::MessageReceived(message);
-//		}	break;
-//	}
-}
-
-
-void
 BrushView::MouseDown(BPoint point)
 {
 	BPoint c;
@@ -502,13 +477,7 @@ BrushView::MouseDown(BPoint point)
 
 		fBrush->CreateDiffBrushes();
 		Window()->PostMessage(kBrushAltered, Parent());
-	} /* else {
-			info = fBrush->GetInfo();
-			BMessage* message = new BMessage(HS_BRUSH_DRAGGED);
-			message->AddData("brush data",B_ANY_TYPE,&info,sizeof(brush_info));
-			DragMessage(message,BRect(0,0,fBrushPreview_WIDTH-1,fBrushPreview_HEIGHT-1));
-			delete message;
-	} */
+	}
 }
 
 

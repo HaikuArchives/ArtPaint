@@ -12,23 +12,23 @@
 #include "Manipulator.h"
 
 class EnhanceEdgesManipulator : public Manipulator {
-		BBitmap		*source_bitmap;
-		BBitmap		*target_bitmap;
-		BStatusBar	*progress_bar;
-		Selection	*selection;
+		BBitmap*	source_bitmap;
+		BBitmap*	target_bitmap;
+		BStatusBar*	progress_bar;
+		Selection*	selection;
 
 static	int32		thread_entry(void*);
 		int32		thread_function(int32);
 		int			processor_count;
 
 public:
-			EnhanceEdgesManipulator();
-			~EnhanceEdgesManipulator();
+					EnhanceEdgesManipulator();
+					~EnhanceEdgesManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+		BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+		const char*	ReturnHelpString();
+		const char*	ReturnName();
+		void		SetSelection(Selection* new_selection)
+						{ selection = new_selection; };
 };
 #endif

@@ -16,7 +16,6 @@
 #include "Selection.h"
 #include "WindowGUIManipulator.h"
 
-
 #include <Messenger.h>
 
 
@@ -106,8 +105,8 @@ class ScaleManipulator : public WindowGUIManipulator {
 	interpolation_type	method;
 
 public:
-	ScaleManipulator(BBitmap*);
-	~ScaleManipulator();
+				ScaleManipulator(BBitmap*);
+				~ScaleManipulator();
 
 	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
 					BStatusBar*);
@@ -123,8 +122,8 @@ public:
 	void		Reset();
 	void		SetPreviewBitmap(BBitmap*);
 
-	const	char*	ReturnHelpString();
-	const	char*	ReturnName();
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
 
 	ManipulatorSettings*	ReturnSettings();
 	void		SetSelection(Selection* new_selection);
@@ -133,54 +132,51 @@ public:
 	bool		GetTransformSelectionOnly()
 					{ return transform_selection_only; }
 
-	void		SetInterpolationMethod(interpolation_type newMethod)
-					{ method = newMethod; }
+	void		SetInterpolationMethod(interpolation_type newMethod) { method = newMethod; }
 	void		UpdateSettings();
 };
 
 
 class ScaleManipulatorView : public WindowGUIManipulatorView {
 public:
-								ScaleManipulatorView(ScaleManipulator*,
-									const BMessenger& target);
-	virtual						~ScaleManipulatorView() {}
+							ScaleManipulatorView(ScaleManipulator*, const BMessenger& target);
 
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage* message);
+	virtual	void			AttachedToWindow();
+	virtual	void			MessageReceived(BMessage* message);
 
-			bool				MaintainProportions() {
-									return maintain_proportions;
-								}
-			void				SetValues(float left, float top,
-									float width, float height);
-			void				GetControlValues(float& left, float& top,
-									float& width, float& height);
-private:
-			void				_SetTarget(BView* view);
-			void				_SetValues(float left, float top,
-									float width, float height);
-			BButton*			_MakeButton(const char* label,
-									uint32 what, float coefficient);
+			bool			MaintainProportions() { return maintain_proportions; }
+			void			SetValues(float left, float top,
+								float width, float height);
+			void			GetControlValues(float& left, float& top,
+								float& width, float& height);
 
 private:
-			BMessenger			fTarget;
-			float				original_left;
-			float				original_top;
-			float				original_width;
-			float				original_height;
-			float				current_left;
-			float				current_top;
-			float				current_width;
-			float				current_height;
-			bool				maintain_proportions;
+			void			_SetTarget(BView* view);
+			void			_SetValues(float left, float top,
+								float width, float height);
+			BButton*		_MakeButton(const char* label,
+								uint32 what, float coefficient);
+
+private:
+			BMessenger		fTarget;
+			float			original_left;
+			float			original_top;
+			float			original_width;
+			float			original_height;
+			float			current_left;
+			float			current_top;
+			float			current_width;
+			float			current_height;
+			bool			maintain_proportions;
 			interpolation_type	method;
 
 			ScaleManipulator*	fManipulator;
-			NumberControl*		left_control;
-			NumberControl*		top_control;
-			NumberControl*		width_control;
-			NumberControl*		height_control;
-			BPopUpMenu*			sample_mode_menu;
+			NumberControl*	left_control;
+			NumberControl*	top_control;
+			NumberControl*	width_control;
+			NumberControl*	height_control;
+			BPopUpMenu*		sample_mode_menu;
 };
 
-#endif
+
+#endif // SCALE_MANIPULATOR_H

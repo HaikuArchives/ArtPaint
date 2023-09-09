@@ -50,11 +50,6 @@ DetectEdgesManipulator::DetectEdgesManipulator()
 }
 
 
-DetectEdgesManipulator::~DetectEdgesManipulator()
-{
-}
-
-
 BBitmap*
 DetectEdgesManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

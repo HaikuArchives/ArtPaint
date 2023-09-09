@@ -30,7 +30,6 @@ using ArtPaint::Interface::NumberSliderControl;
 class BlurTool : public DrawingTool {
 public:
 								BlurTool();
-	virtual						~BlurTool();
 
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -46,16 +45,17 @@ private:
 
 class BlurToolConfigView : public DrawingToolConfigView {
 public:
-									BlurToolConfigView(DrawingTool* tool);
-	virtual							~BlurToolConfigView() {}
+								BlurToolConfigView(DrawingTool* tool);
+	virtual						~BlurToolConfigView() {}
 
-	virtual	void					AttachedToWindow();
-	virtual void					MessageReceived(BMessage* message);
+	virtual	void				AttachedToWindow();
+	virtual void				MessageReceived(BMessage* message);
 
 private:
-			NumberSliderControl*	fBlurSize;
-			BCheckBox*				fContinuity;
-			BCheckBox*				fUseBrush;
+			NumberSliderControl* fBlurSize;
+			BCheckBox*			fContinuity;
+			BCheckBox*			fUseBrush;
 };
+
 
 #endif	// BLUR_TOOL_H

@@ -332,13 +332,6 @@ SaturationManipulator::thread_function(int32 thread_number)
 
 
 void
-SaturationManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in SaturationManipulator.
-}
-
-
-void
 SaturationManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {
@@ -457,11 +450,6 @@ SaturationManipulatorView::SaturationManipulatorView(
 		.Add(saturation_slider)
 		.SetInsets(B_USE_SMALL_INSETS)
 	.End();
-}
-
-
-SaturationManipulatorView::~SaturationManipulatorView()
-{
 }
 
 

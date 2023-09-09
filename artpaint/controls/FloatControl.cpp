@@ -49,13 +49,6 @@ FloatControl::SetValue(float value)
 
 
 void
-FloatControl::AttachedToWindow()
-{
-	BTextControl::AttachedToWindow();
-}
-
-
-void
 FloatControl::_InitControl(int32 maxBytes, bool allowNegative, bool continuous)
 {
 	for (uint32 i = 0; i < 256; ++i)

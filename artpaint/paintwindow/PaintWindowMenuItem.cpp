@@ -25,11 +25,6 @@ PaintWindowMenuItem::PaintWindowMenuItem(const char* label, BMessage* message, c
 }
 
 
-PaintWindowMenuItem::~PaintWindowMenuItem()
-{
-}
-
-
 void
 PaintWindowMenuItem::Highlight(bool highlighted)
 {

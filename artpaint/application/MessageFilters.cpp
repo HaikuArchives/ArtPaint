@@ -10,7 +10,6 @@
 #include "MessageFilters.h"
 #include "FloaterManager.h"
 
-
 #include <Looper.h>
 #include <Message.h>
 #include <View.h>

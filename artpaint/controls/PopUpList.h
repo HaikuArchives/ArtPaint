@@ -17,25 +17,24 @@
 // constructor's message-list. The message should also contain a string named
 // 'label'. That will be used as the label for menuitem.
 class PopUpList : public BView {
-		BBitmap 	*pushed;
-		BBitmap 	*not_pushed;
+		BBitmap*	pushed;
+		BBitmap*	not_pushed;
 
-		BBitmap		*current_bitmap;
+		BBitmap*	current_bitmap;
 		BMessenger	fTarget;
-		BPopUpMenu	*the_menu;
+		BPopUpMenu*	the_menu;
 
 public:
-		PopUpList(BRect,BBitmap*,BBitmap*, const BMessage& list, int32 count,
-			const BMessenger& target);
-		PopUpList(BRect,BBitmap*,BBitmap*,BPopUpMenu*,BMessenger*);
-		~PopUpList();
+					PopUpList(BRect,BBitmap*, BBitmap*, const BMessage& list, int32 count,
+						const BMessenger& target);
+					PopUpList(BRect,BBitmap*, BBitmap*, BPopUpMenu*, BMessenger*);
+					~PopUpList();
 
-void	Draw(BRect);
-void	MouseDown(BPoint);
+		void		Draw(BRect);
+		void		MouseDown(BPoint);
 
-BMenu*	ReturnMenu() { return the_menu; }
+		BMenu*		ReturnMenu() { return the_menu; }
 };
 
 
-
-#endif
+#endif // POP_UP_LIST_H

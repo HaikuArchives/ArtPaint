@@ -49,11 +49,6 @@ NegativeAddOnManipulator::NegativeAddOnManipulator(BBitmap*)
 }
 
 
-NegativeAddOnManipulator::~NegativeAddOnManipulator()
-{
-}
-
-
 BBitmap*
 NegativeAddOnManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

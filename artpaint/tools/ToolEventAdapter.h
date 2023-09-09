@@ -28,24 +28,25 @@ protected:
 		int32	last_click_clicks;
 
 		bool 	is_keys_data_valid;
-		char	*last_key_event_bytes;
+		char*	last_key_event_bytes;
 		int32	last_key_event_num_bytes;
 
 
 		bool	is_view_data_valid;
-		BView	*active_image_view;
+		BView*	active_image_view;
 		bool	is_mouse_inside_the_active_view;
 
 
 public:
-		ToolEventAdapter();
-		~ToolEventAdapter();
+				ToolEventAdapter();
+				~ToolEventAdapter();
 
-void	SetClickEvent(BPoint,BPoint,uint32,int32);
-void	SetKeyEvent(const char*,int32);
+		void	SetClickEvent(BPoint, BPoint, uint32, int32);
+		void	SetKeyEvent(const char*, int32);
 
-bool	SetActiveImageView(BView*);
-bool	SetIsMouseInsideActiveView(bool);
+		bool	SetActiveImageView(BView*);
+		bool	SetIsMouseInsideActiveView(bool);
 };
 
-#endif
+
+#endif // TOOL_EVENT_ADAPTER_H

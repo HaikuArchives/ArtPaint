@@ -14,11 +14,11 @@
 class ManipulatorInformer;
 
 class MarbleManipulator : public Manipulator {
-		BBitmap		*source_bitmap;
-		BBitmap		*target_bitmap;
-		BStatusBar	*progress_bar;
+		BBitmap*	source_bitmap;
+		BBitmap*	target_bitmap;
+		BStatusBar*	progress_bar;
 
-		BBitmap		*spare_copy_bitmap;
+		BBitmap*	spare_copy_bitmap;
 
 		ManipulatorInformer	*informer;
 
@@ -30,14 +30,14 @@ static	int32		thread_entry(void*);
 		Selection*	selection;
 
 public:
-			MarbleManipulator(ManipulatorInformer*);
-			~MarbleManipulator();
+					MarbleManipulator(ManipulatorInformer*);
+					~MarbleManipulator();
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+		BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+		const char*	ReturnHelpString();
+		const char*	ReturnName();
+		void		SetSelection(Selection* new_selection)
+						{ selection = new_selection; };
 };
 
 #endif

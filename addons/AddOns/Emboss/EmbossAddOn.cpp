@@ -49,10 +49,6 @@ EmbossManipulator::EmbossManipulator()
 }
 
 
-EmbossManipulator::~EmbossManipulator()
-{
-}
-
 // these are used when calculating the new pixel-value
 #define LT (*(spare_bits - spare_bpr - 1))
 #define RB (*(spare_bits + spare_bpr + 1))
@@ -172,7 +168,6 @@ EmbossManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* progress_view
 
 	// we should also delete the spare-bitmap
 	delete spare_buffer;
-
 
 	return original;
 }

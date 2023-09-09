@@ -181,4 +181,5 @@ private:
 			uint8				fBlendMode;
 };
 
-#endif
+
+#endif // LAYER_H

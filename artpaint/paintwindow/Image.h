@@ -9,7 +9,6 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-
 #include <InterfaceDefs.h>
 #include <List.h>
 #include <Region.h>
@@ -42,118 +41,113 @@ struct color_entry {
 		5.	Makes a dithered image if necessary.
 */
 class Image {
-		BList*		layer_list;
-		Layer**		layer_id_list;
+			BList*		layer_list;
+			Layer**		layer_id_list;
 
-		// This is the index of active layer in layer_list.
-		int32		current_layer_index;
-		int32		next_layer_id;
+			// This is the index of active layer in layer_list.
+			int32		current_layer_index;
+			int32		next_layer_id;
 
-		BBitmap* 	rendered_image;
-		BBitmap* 	thumbnail_image;
+			BBitmap* 	rendered_image;
+			BBitmap* 	thumbnail_image;
 
-		BBitmap* 	dithered_image;
-		BList*		dithered_users;
+			BBitmap* 	dithered_image;
+			BList*		dithered_users;
 
-		bool		dithered_up_to_date;
+			bool		dithered_up_to_date;
 
-		// these are the real width and height of canvas in pixels
-		float		image_width;
-		float 		image_height;
+			// these are the real width and height of canvas in pixels
+			float		image_width;
+			float 		image_height;
 
-		ImageView*	image_view;
-		UndoQueue*	undo_queue;
-
-
-
-		void		CalculateThumbnails();
-static	int32		calculate_thumbnail_image(void*);
+			ImageView*	image_view;
+			UndoQueue*	undo_queue;
 
 
-		uint32		full_fixed_alpha;
+			void		CalculateThumbnails();
+	static	int32		calculate_thumbnail_image(void*);
 
-//		uint8		index_map[32768];
-static	rgb_color*	color_list;
-static	color_entry* color_candidates;
-static	int32		color_candidate_users;
 
-		int32		number_of_cpus;
+			uint32		full_fixed_alpha;
 
-static	int32		enter_dither(void*);
-		int32		DoDither(BRect);
+	static	rgb_color*	color_list;
+	static	color_entry* color_candidates;
+	static	int32		color_candidate_users;
 
-//static	int32		enter_copy_to_dither(void*);
-//		int32		CopyToDitherImage(BRect);
+			int32		number_of_cpus;
 
-static	int32		candidate_creator(void*);
+	static	int32		enter_dither(void*);
+			int32		DoDither(BRect);
 
-static	int32		enter_render(void*);
-static  int32  		enter_render_nobg(void*);
-		int32		DoRender(BRect, bool bg = true);
+	static	int32		candidate_creator(void*);
 
-static	int32		enter_render_preview(void*);
-		int32		DoRenderPreview(BRect, int32);
+	static	int32		enter_render(void*);
+	static  int32  		enter_render_nobg(void*);
+			int32		DoRender(BRect, bool bg = true);
+
+	static	int32		enter_render_preview(void*);
+			int32		DoRenderPreview(BRect, int32);
 
 public:
-					Image(ImageView*, float, float, UndoQueue*);
-					~Image();
+						Image(ImageView*, float, float, UndoQueue*);
+						~Image();
 
-		void		Render(bool bg = true);
-		void		Render(BRect, bool bg = true);
-		void		RenderPreview(BRect, int32);
-		void		RenderPreview(BRegion&, int32);
-		void		MultiplyRenderedImagePixels(int32);
+			void		Render(bool bg = true);
+			void		Render(BRect, bool bg = true);
+			void		RenderPreview(BRect, int32);
+			void		RenderPreview(BRegion&, int32);
+			void		MultiplyRenderedImagePixels(int32);
 
-		bool		SetImageSize();
+			bool		SetImageSize();
 
-		Layer*		AddLayer(BBitmap*, Layer*, bool add_to_front,
-						float layer_transparency_coefficient = 1.0,
-						BRect* offset = NULL);
-		bool		ChangeActiveLayer(Layer*, int32);
-		bool		ChangeActiveLayer(int32);
-		bool		ChangeLayerPosition(Layer*, int32, int32);
-		bool		ClearCurrentLayer(rgb_color&);
-		bool		ClearLayers(rgb_color&);
-		bool		DuplicateLayer(Layer*, int32);
-		bool		MergeLayers(Layer*, int32, bool merge_with_upper);
-		bool		RemoveLayer(Layer*, int32);
-		bool		ToggleLayerVisibility(Layer*, int32);
+			Layer*		AddLayer(BBitmap*, Layer*, bool add_to_front,
+							float layer_transparency_coefficient = 1.0,
+							BRect* offset = NULL);
+			bool		ChangeActiveLayer(Layer*, int32);
+			bool		ChangeActiveLayer(int32);
+			bool		ChangeLayerPosition(Layer*, int32, int32);
+			bool		ClearCurrentLayer(rgb_color&);
+			bool		ClearLayers(rgb_color&);
+			bool		DuplicateLayer(Layer*, int32);
+			bool		MergeLayers(Layer*, int32, bool merge_with_upper);
+			bool		RemoveLayer(Layer*, int32);
+			bool		ToggleLayerVisibility(Layer*, int32);
 
-		Layer*		ReturnUpperLayer(Layer*);
-		Layer*		ReturnLowerLayer(Layer*);
+			Layer*		ReturnUpperLayer(Layer*);
+			Layer*		ReturnLowerLayer(Layer*);
 
-		status_t	InsertLayer(BBitmap *layer_bitmap = NULL);
+			status_t	InsertLayer(BBitmap* layer_bitmap = NULL);
 
-		BList*		LayerList() { return layer_list; }
+			BList*		LayerList() { return layer_list; }
 
-		void		UpdateImageStructure(UndoEvent*);
+			void		UpdateImageStructure(UndoEvent*);
 
-		void		RegisterLayersWithUndo();
+			void		RegisterLayersWithUndo();
 
-		BBitmap*	ReturnThumbnailImage();
-		BBitmap*	ReturnRenderedImage();
-		BBitmap*	ReturnActiveBitmap();
-		Layer*		ReturnActiveLayer() {
-			return (Layer*)layer_list->ItemAt(current_layer_index);
-		}
-		Layer*		ReturnLayerById(int32 id);
+			BBitmap*	ReturnThumbnailImage();
+			BBitmap*	ReturnRenderedImage();
+			BBitmap*	ReturnActiveBitmap();
+			Layer*		ReturnActiveLayer() {
+							return (Layer*)layer_list->ItemAt(current_layer_index);
+						}
+			Layer*		ReturnLayerById(int32 id);
 
-		int32		ReturnActiveLayerIndex() { return current_layer_index; }
+			int32		ReturnActiveLayerIndex() { return current_layer_index; }
 
-		float		Width() { return image_width; }
-		float		Height() { return image_height; }
+			float		Width() { return image_width; }
+			float		Height() { return image_height; }
 
-		bool		ContainsLayer(Layer*);
+			bool		ContainsLayer(Layer*);
 
-		status_t	ReadLayers(BFile&);
-		int64		WriteLayers(BFile&);
-		status_t	ReadLayersOldStyle(BFile&, int32);
+			status_t	ReadLayers(BFile&);
+			int64		WriteLayers(BFile&);
+			status_t	ReadLayersOldStyle(BFile&, int32);
 
-		status_t	RegisterDitheredUser(void*);
-		status_t	UnregisterDitheredUser(void*);
-		BBitmap*	ReturnDitheredImage() { return dithered_image; }
-		bool		IsDitheredUpToDate() { return dithered_up_to_date; }
+			status_t	RegisterDitheredUser(void*);
+			status_t	UnregisterDitheredUser(void*);
+			BBitmap*	ReturnDitheredImage() { return dithered_image; }
+			bool		IsDitheredUpToDate() { return dithered_up_to_date; }
 };
 
 
-#endif
+#endif // IMAGE_H

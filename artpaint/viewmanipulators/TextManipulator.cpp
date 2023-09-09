@@ -43,7 +43,6 @@
 
 #define TEXT_SETTINGS_VERSION 0x03
 
-
 #define TEXT_CHANGED 'Txch'
 #define FONT_STYLE_CHANGED 'Fsch'
 #define FONT_SIZE_CHANGED 'Fsic'

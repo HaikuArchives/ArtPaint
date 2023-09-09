@@ -6,11 +6,13 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <stdio.h>
 
 #include "MessageConstants.h"
 #include "RGBControl.h"
 #include "ViewSetupWindow.h"
+
+
+#include <stdio.h>
 
 // These pointers are NULL in the beginning. This window has
 // not been created yet.

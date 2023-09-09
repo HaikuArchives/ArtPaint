@@ -314,13 +314,6 @@ ContrastManipulator::thread_function(int32 thread_number)
 
 
 void
-ContrastManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in ContrastManipulator.
-}
-
-
-void
 ContrastManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {

@@ -83,28 +83,27 @@ GlobalSetupWindow* GlobalSetupWindow::fSetupWindow = NULL;
 class GlobalSetupWindow::WindowFeelView : public BView
 {
 public:
-					WindowFeelView();
-	virtual 		~WindowFeelView() {}
+						WindowFeelView();
 
-	virtual void 	AttachedToWindow();
-	virtual void 	MessageReceived(BMessage* message);
+	virtual void 		AttachedToWindow();
+	virtual void 		MessageReceived(BMessage* message);
 
-			void 	ApplyChanges();
+			void 		ApplyChanges();
 
 private:
-	window_feel 	fToolWindowFeel;
-	window_feel 	fToolSetupWindowFeel;
-	window_feel 	fPaletteWindowFeel;
-	window_feel 	fBrushWindowFeel;
-	window_feel 	fLayerWindowFeel;
-	window_feel 	fAddOnWindowFeel;
+			window_feel fToolWindowFeel;
+			window_feel fToolSetupWindowFeel;
+			window_feel fPaletteWindowFeel;
+			window_feel fBrushWindowFeel;
+			window_feel fLayerWindowFeel;
+			window_feel fAddOnWindowFeel;
 
-	BCheckBox* 		fColor;
-	BCheckBox* 		fSelection;
-	BCheckBox* 		fSetup;
-	BCheckBox* 		fLayer;
-	BCheckBox* 		fBrush;
-	BCheckBox* 		fEffects;
+			BCheckBox* 	fColor;
+			BCheckBox* 	fSelection;
+			BCheckBox* 	fSetup;
+			BCheckBox* 	fLayer;
+			BCheckBox* 	fBrush;
+			BCheckBox* 	fEffects;
 };
 
 

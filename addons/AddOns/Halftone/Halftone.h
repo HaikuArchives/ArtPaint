@@ -29,21 +29,21 @@ class Halftone : public Manipulator {
 
 ManipulatorInformer	*informer;
 
-	BBitmap*	round_dot_halftone(BBitmap*,Selection*,BStatusBar*);
-	BBitmap*	diagonal_line_halftone(BBitmap*,Selection*,BStatusBar*);
-	BBitmap*	ordered_dither_halftone(BBitmap*,Selection*,BStatusBar*);
-	BBitmap*	fs_dither_halftone(BBitmap*,Selection*,BStatusBar*);
-	BBitmap*	ncandidate_dither_halftone(BBitmap*,Selection*,BStatusBar*);
+	BBitmap*	round_dot_halftone(BBitmap*, Selection*, BStatusBar*);
+	BBitmap*	diagonal_line_halftone(BBitmap*, Selection*, BStatusBar*);
+	BBitmap*	ordered_dither_halftone(BBitmap*, Selection*, BStatusBar*);
+	BBitmap*	fs_dither_halftone(BBitmap*, Selection*, BStatusBar*);
+	BBitmap*	ncandidate_dither_halftone(BBitmap*, Selection*, BStatusBar*);
 	Selection*	selection;
 
 public:
-			Halftone(ManipulatorInformer*);
-			~Halftone();
+				Halftone(ManipulatorInformer*);
+				~Halftone();
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 #endif

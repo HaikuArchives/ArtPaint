@@ -63,11 +63,6 @@ StraightLineTool::StraightLineTool()
 }
 
 
-StraightLineTool::~StraightLineTool()
-{
-}
-
-
 ToolScript*
 StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view_point)
 {

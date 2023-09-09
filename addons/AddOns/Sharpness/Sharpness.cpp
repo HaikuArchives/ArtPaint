@@ -319,13 +319,6 @@ SharpnessManipulator::thread_function(int32 thread_number)
 
 
 void
-SharpnessManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in SharpnessManipulator.
-}
-
-
-void
 SharpnessManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {
@@ -458,11 +451,6 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator* manip, 
 		.Add(blur_size_slider)
 		.SetInsets(B_USE_SMALL_INSETS)
 	.End();
-}
-
-
-SharpnessManipulatorView::~SharpnessManipulatorView()
-{
 }
 
 

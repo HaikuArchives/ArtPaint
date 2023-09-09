@@ -54,11 +54,6 @@ DispersionManipulator::DispersionManipulator(BBitmap*)
 }
 
 
-DispersionManipulator::~DispersionManipulator()
-{
-}
-
-
 BBitmap*
 DispersionManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

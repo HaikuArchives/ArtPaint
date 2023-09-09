@@ -34,7 +34,6 @@ using ArtPaint::Interface::NumberSliderControl;
 class SelectorTool : public DrawingTool, public ToolEventAdapter {
 public:
 								SelectorTool();
-	virtual						~SelectorTool();
 
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
@@ -58,21 +57,22 @@ private:
 
 class SelectorToolConfigView : public DrawingToolConfigView {
 public:
-									SelectorToolConfigView(DrawingTool* tool);
-	virtual							~SelectorToolConfigView() {}
+								SelectorToolConfigView(DrawingTool* tool);
+	virtual						~SelectorToolConfigView() {}
 
-	virtual	void					AttachedToWindow();
-	virtual void					MessageReceived(BMessage* message);
+	virtual	void				AttachedToWindow();
+	virtual void				MessageReceived(BMessage* message);
 
 private:
-			BRadioButton*			fAddArea;
-			BRadioButton*			fSubstractArea;
-			BRadioButton*			fFreeLine;
-			BRadioButton*			fRectangle;
-			BRadioButton*			fEllipse;
-			BRadioButton*			fMagicWand;
-			BRadioButton*			fScissors;
-			NumberSliderControl*	fTolerance;
+			BRadioButton*		fAddArea;
+			BRadioButton*		fSubstractArea;
+			BRadioButton*		fFreeLine;
+			BRadioButton*		fRectangle;
+			BRadioButton*		fEllipse;
+			BRadioButton*		fMagicWand;
+			BRadioButton*		fScissors;
+			NumberSliderControl* fTolerance;
 };
+
 
 #endif	// SELECTOR_TOOL_H

@@ -21,4 +21,4 @@ private:
 };
 
 
-#endif
+#endif // MANIPULATOR_SETTINGS_H

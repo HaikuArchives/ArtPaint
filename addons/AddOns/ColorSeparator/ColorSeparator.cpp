@@ -116,13 +116,6 @@ ColorSeparatorManipulator::PreviewBitmap(bool full_quality, BRegion* updated_reg
 
 
 void
-ColorSeparatorManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in ColorSeparatorManipulator.
-}
-
-
-void
 ColorSeparatorManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {

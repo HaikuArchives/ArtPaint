@@ -52,11 +52,6 @@ PolarMapper::PolarMapper(BBitmap*)
 }
 
 
-PolarMapper::~PolarMapper()
-{
-}
-
-
 BBitmap*
 PolarMapper::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

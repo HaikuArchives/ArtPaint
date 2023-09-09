@@ -288,13 +288,6 @@ BrightnessManipulator::thread_function(int32 thread_number)
 
 
 void
-BrightnessManipulator::MouseDown(BPoint point, uint32, BView*, bool first_click)
-{
-	// This function does nothing in BrightnessManipulator.
-}
-
-
-void
 BrightnessManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (preview_bitmap != bm) {
@@ -406,11 +399,6 @@ BrightnessManipulatorView::BrightnessManipulatorView(
 		.Add(brightness_slider)
 		.SetInsets(B_USE_SMALL_INSETS)
 		.End();
-}
-
-
-BrightnessManipulatorView::~BrightnessManipulatorView()
-{
 }
 
 

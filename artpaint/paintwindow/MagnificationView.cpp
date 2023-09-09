@@ -129,13 +129,6 @@ MagnificationView::AttachedToWindow()
 
 
 void
-MagnificationView::Draw(BRect updateRect)
-{
-	BBox::Draw(updateRect);
-}
-
-
-void
 MagnificationView::SetMagnificationLevel(float magLevel)
 {
 	double percentValue = magLevel;

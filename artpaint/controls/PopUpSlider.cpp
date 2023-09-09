@@ -26,11 +26,6 @@ PopUpSlider::PopUpSlider(BRect rect)
 }
 
 
-PopUpSlider::~PopUpSlider()
-{
-}
-
-
 PopUpSlider*
 PopUpSlider::Instantiate(
 	const BMessenger& target, BMessage* message, int32 minRange, int32 maxRange)

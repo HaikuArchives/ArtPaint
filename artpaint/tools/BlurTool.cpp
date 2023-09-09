@@ -52,11 +52,6 @@ BlurTool::BlurTool()
 }
 
 
-BlurTool::~BlurTool()
-{
-}
-
-
 ToolScript*
 BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {

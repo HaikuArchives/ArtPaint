@@ -17,7 +17,6 @@
 class TextTool : public DrawingTool {
 public:
 							TextTool();
-	virtual					~TextTool();
 
 			int32			UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -26,4 +25,5 @@ public:
 			const char*		HelpString(bool isInUse) const;
 };
 
-#endif
+
+#endif // TEXT_TOOL_H

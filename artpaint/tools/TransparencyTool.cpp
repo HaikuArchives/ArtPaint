@@ -56,11 +56,6 @@ TransparencyTool::TransparencyTool()
 }
 
 
-TransparencyTool::~TransparencyTool()
-{
-}
-
-
 ToolScript*
 TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {

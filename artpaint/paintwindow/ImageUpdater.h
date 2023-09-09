@@ -45,4 +45,5 @@ private:
 			thread_id		fUpdaterThreadId;
 };
 
-#endif
+
+#endif // IMAGE_UPDATER_H

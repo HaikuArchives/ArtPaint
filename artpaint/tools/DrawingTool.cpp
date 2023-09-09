@@ -326,11 +326,6 @@ DrawingToolConfigView::DrawingToolConfigView(DrawingTool* drawingTool)
 }
 
 
-DrawingToolConfigView::~DrawingToolConfigView()
-{
-}
-
-
 void
 DrawingToolConfigView::AttachedToWindow()
 {

@@ -13,6 +13,7 @@
 
 #include <FilePanel.h>
 
+
 class BBitmap;
 class BMessenger;
 
@@ -20,12 +21,11 @@ struct entry_ref;
 
 class ImageSavePanel : public BFilePanel {
 public:
-				ImageSavePanel(const entry_ref& startDir, BMessenger& target,
-					BMessage& message, int32 saveFormat, BBitmap* bitmap = NULL);
-	virtual			~ImageSavePanel();
+		ImageSavePanel(const entry_ref& startDir, BMessenger& target,
+			BMessage& message, int32 saveFormat, BBitmap* bitmap = NULL);
 };
 
 // The next function translates the strings in filepanels (like 'Open' etc.)
 status_t set_filepanel_strings(BFilePanel*);
 
-#endif
+#endif // FILE_PANELS_H

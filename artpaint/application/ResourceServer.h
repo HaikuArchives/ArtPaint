@@ -53,8 +53,7 @@ private:
 								~ResourceServer();
 
 			bool				_Init();
-			status_t			_FillPicture(const BBitmap* bitmap,
-									BPicture* picture);
+			status_t			_FillPicture(const BBitmap* bitmap, BPicture* picture);
 			status_t			_GetResourceInfo(int32 id, type_code* type,
 									float* width, float* height);
 
@@ -67,5 +66,6 @@ private:
 	static	BLocker				fLocker;
 	static	ResourceServer*		fResourceServer;
 };
+
 
 #endif	// RESOURCESERVER_H

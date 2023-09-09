@@ -6,7 +6,6 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-
 #ifndef FLOATCONTROL_H
 #define FLOATCONTROL_H
 
@@ -27,14 +26,12 @@ public:
 	virtual	void		SetValue(float value);
 			void		SetWidthInBytes(uint32 bytes);
 
-	virtual	void		AttachedToWindow();
-
 private:
-			void		_InitControl(int32 maxBytes, bool allowNegative,
-							bool continuous);
+			void		_InitControl(int32 maxBytes, bool allowNegative, bool continuous);
 };
 
 	}	// namespace Interface
 }	// namespace ArtPaint
+
 
 #endif // FLOATCONTROL_H

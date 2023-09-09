@@ -18,4 +18,5 @@ public:
 							struct stat_beos* stat, const char* fileType);
 };
 
-#endif
+
+#endif // REF_FILTERS_H

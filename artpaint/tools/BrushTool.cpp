@@ -49,11 +49,6 @@ BrushTool::BrushTool()
 }
 
 
-BrushTool::~BrushTool()
-{
-}
-
-
 ToolScript*
 BrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint viewPoint)
 {

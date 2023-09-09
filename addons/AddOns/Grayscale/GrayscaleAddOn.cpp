@@ -49,11 +49,6 @@ GrayscaleAddOnManipulator::GrayscaleAddOnManipulator(BBitmap*)
 }
 
 
-GrayscaleAddOnManipulator::~GrayscaleAddOnManipulator()
-{
-}
-
-
 BBitmap*
 GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {

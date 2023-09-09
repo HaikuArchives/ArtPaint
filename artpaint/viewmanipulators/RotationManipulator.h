@@ -40,82 +40,83 @@ public:
 	-180˚ and +180. Negative angles are clockwise and positive counterclockwise.
 */
 class RotationManipulator: public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
+		BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+						{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-	BBitmap* 	copy_of_the_preview_bitmap;
-	BBitmap* 	preview_bitmap;
+		BBitmap* 	copy_of_the_preview_bitmap;
+		BBitmap* 	preview_bitmap;
 
-	float		previous_angle;
-	float		starting_angle;
-	BPoint		previous_origo;
-	int32		last_calculated_resolution;
-	int32		lowest_available_quality;
-	int32		highest_available_quality;
+		float		previous_angle;
+		float		starting_angle;
+		BPoint		previous_origo;
+		int32		last_calculated_resolution;
+		int32		lowest_available_quality;
+		int32		highest_available_quality;
 
-	RotationManipulatorSettings*			settings;
+		RotationManipulatorSettings*	settings;
 
-	HSPolygon*								view_polygon;
+		HSPolygon*	view_polygon;
 
-	RotationManipulatorConfigurationView*	config_view;
+		RotationManipulatorConfigurationView*	config_view;
 
-	bool		move_origo;
+		bool		move_origo;
 
-	Selection*	selection;
-	BBitmap*	orig_selection_map;
-	bool		transform_selection_only;
+		Selection*	selection;
+		BBitmap*	orig_selection_map;
+		bool		transform_selection_only;
 
 public:
-	RotationManipulator(BBitmap*);
-	~RotationManipulator();
+					RotationManipulator(BBitmap*);
+					~RotationManipulator();
 
-	void		SetPreviewBitmap(BBitmap*);
+		void		SetPreviewBitmap(BBitmap*);
 
-	BRegion		Draw(BView*, float);
-	void		MouseDown(BPoint, uint32, BView*, bool);
+		BRegion		Draw(BView*, float);
+		void		MouseDown(BPoint, uint32, BView*, bool);
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-	int32		PreviewBitmap(bool full_quality = FALSE,
-					BRegion* updated_region = NULL);
-	void		Reset();
+		BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+		int32		PreviewBitmap(bool full_quality = FALSE, BRegion* updated_region = NULL);
+		void		Reset();
 
-	const char*	ReturnHelpString();
-	const char*	ReturnName();
+		const char*	ReturnHelpString();
+		const char*	ReturnName();
 
-	BView*					MakeConfigurationView(const BMessenger& target);
+		BView*		MakeConfigurationView(const BMessenger& target);
 
-	ManipulatorSettings*	ReturnSettings() { return new RotationManipulatorSettings(settings); }
+		ManipulatorSettings*	ReturnSettings()
+									{ return new RotationManipulatorSettings(settings); }
 
-	const	void*			ManipulatorCursor() { return HS_ROTATION_CURSOR; }
+		const void*	ManipulatorCursor() { return HS_ROTATION_CURSOR; }
 
-	void		SetAngle(float);
+		void		SetAngle(float);
 
-	void		SetSelection(Selection* new_selection);
-	void		SetTransformSelectionOnly(bool select_only)
-					{ transform_selection_only = select_only; }
+		void		SetSelection(Selection* new_selection);
+		void		SetTransformSelectionOnly(bool select_only)
+						{ transform_selection_only = select_only; }
 
-	void		UpdateSettings();
+		void		UpdateSettings();
 };
 
 
 class RotationManipulatorConfigurationView : public WindowGUIManipulatorView {
 public:
-								RotationManipulatorConfigurationView(
-									RotationManipulator* manipulator,
-									const BMessenger& target);
-	virtual						~RotationManipulatorConfigurationView() {}
+							RotationManipulatorConfigurationView(
+								RotationManipulator* manipulator,
+								const BMessenger& target);
+	virtual					~RotationManipulatorConfigurationView() {}
 
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage* message);
+	virtual	void			AttachedToWindow();
+	virtual	void			MessageReceived(BMessage* message);
 
-			void				SetAngle(float angle);
-			void				SetTarget(const BMessenger& target);
-			void				GetControlValues(float& angle);
+			void			SetAngle(float angle);
+			void			SetTarget(const BMessenger& target);
+			void			GetControlValues(float& angle);
 private:
-		BMessenger				fTarget;
+			BMessenger		fTarget;
 
-		BTextControl*			fTextControl;
-		RotationManipulator*	fManipulator;
+			BTextControl*	fTextControl;
+			RotationManipulator*	fManipulator;
 };
+
 
 #endif	// ROTATION_MANIPULATOR_H

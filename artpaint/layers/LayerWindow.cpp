@@ -7,6 +7,7 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
+ 
 #include "LayerWindow.h"
 
 #include "CustomGridLayout.h"
@@ -478,12 +479,6 @@ LayerWindow::SetBlendMode(uint8 mode)
 
 
 void
-LayerWindow::FrameResized(float width, float height)
-{
-}
-
-
-void
 LayerWindow::Update()
 {
 	// Only update if the order or the amount of the layers has changed or
@@ -611,10 +606,4 @@ LayerListView::DetachedFromWindow()
 		view->RemoveSelf();
 		delete view;
 	}
-}
-
-
-void
-LayerListView::FrameResized(float, float height)
-{
 }

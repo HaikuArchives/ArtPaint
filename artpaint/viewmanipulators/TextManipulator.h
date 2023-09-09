@@ -39,68 +39,68 @@ using ArtPaint::Interface::NumberSliderControl;
 
 class TextManipulatorSettings : public ManipulatorSettings {
 public:
-	TextManipulatorSettings();
-	TextManipulatorSettings(const TextManipulatorSettings&);
-	virtual	~TextManipulatorSettings();
+						TextManipulatorSettings();
+						TextManipulatorSettings(const TextManipulatorSettings&);
+	virtual				~TextManipulatorSettings();
 
 	bool operator==(const TextManipulatorSettings&);
 	bool operator!=(const TextManipulatorSettings&);
 	TextManipulatorSettings& operator=(const TextManipulatorSettings&);
 
-	char		*text;
-	rgb_color	*text_color_array;
-	int32		text_array_length;
+			char*		text;
+			rgb_color*	text_color_array;
+			int32		text_array_length;
 
-	BPoint 		starting_point;
-	BFont		font;
+			BPoint 		starting_point;
+			BFont		font;
 };
 
 
 class TextManipulator : public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
+			BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+							{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-	BBitmap	*preview_bitmap;
-	BBitmap	*copy_of_the_preview_bitmap;
+			BBitmap*	preview_bitmap;
+			BBitmap*	copy_of_the_preview_bitmap;
 
-	BRegion	previously_updated_region;
+			BRegion		previously_updated_region;
 
-	TextManipulatorSettings	fSettings;
-	TextManipulatorSettings previous_settings;
-	BPoint					origo;
+			TextManipulatorSettings	fSettings;
+			TextManipulatorSettings previous_settings;
+			BPoint		origo;
 
-	TextManipulatorView	*config_view;
+			TextManipulatorView	*config_view;
 
-	int32	last_used_quality;
-	int32	lowest_allowed_quality;
+			int32		last_used_quality;
+			int32		lowest_allowed_quality;
 
-	Selection*	selection;
+			Selection*	selection;
+
 public:
-	TextManipulator(BBitmap*);
-	~TextManipulator();
+						TextManipulator(BBitmap*);
+						~TextManipulator();
 
-	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-	int32		PreviewBitmap(bool full_quality = FALSE,
-					BRegion *updated_region = NULL);
-	BView*		MakeConfigurationView(const BMessenger& target);
+			BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+			int32		PreviewBitmap(bool full_quality = FALSE,
+							BRegion* updated_region = NULL);
+			BView*		MakeConfigurationView(const BMessenger& target);
 
-	void		MouseDown(BPoint,uint32,BView*,bool);
-	BRegion		Draw(BView*,float);
-	void		Reset();
-	void		SetPreviewBitmap(BBitmap*);
-	const	char*	ReturnHelpString();
-	const	char*	ReturnName();
+			void		MouseDown(BPoint,uint32,BView*, bool);
+			BRegion		Draw(BView*, float);
+			void		Reset();
+			void		SetPreviewBitmap(BBitmap*);
+			const char*	ReturnHelpString();
+			const char*	ReturnName();
 
-	ManipulatorSettings*	ReturnSettings();
+			ManipulatorSettings*	ReturnSettings();
 
-	void		ChangeSettings(ManipulatorSettings*);
-	void		SetStartingPoint(BPoint point) { fSettings.starting_point = point; }
+			void		ChangeSettings(ManipulatorSettings*);
+			void		SetStartingPoint(BPoint point) { fSettings.starting_point = point; }
 
-	status_t	Save(BMessage& settings) const;
-	status_t	Restore(const BMessage& settings);
+			status_t	Save(BMessage& settings) const;
+			status_t	Restore(const BMessage& settings);
 
-	void		SetSelection(Selection* new_selection)
-					{ selection = new_selection; };
+			void		SetSelection(Selection* new_selection) { selection = new_selection; };
 };
 
 
@@ -109,25 +109,25 @@ public:
 // of the ColorPaletteWindow.
 class TextEditor : public BTextView, PaletteWindowClient {
 public:
-							TextEditor();
-	virtual					~TextEditor();
+						TextEditor();
+	virtual				~TextEditor();
 
-			void			PaletteColorChanged(const rgb_color& color);
+			void		PaletteColorChanged(const rgb_color& color);
 
-			void			SetMessage(BMessage* message);
-			void			SetTarget(const BMessenger& target);
+			void		SetMessage(BMessage* message);
+			void		SetTarget(const BMessenger& target);
 
 protected:
-			void			InsertText(const char* text, int32 length,
-								int32 offset, const text_run_array* runs);
-			void			DeleteText(int32 start, int32 finish);
+			void		InsertText(const char* text, int32 length,
+							int32 offset, const text_run_array* runs);
+			void		DeleteText(int32 start, int32 finish);
 
 private:
-			void			_SendMessage();
+			void		_SendMessage();
 
 private:
-			BMessage*		fMessage;
-			BMessenger		fTarget;
+			BMessage*	fMessage;
+			BMessenger	fTarget;
 };
 
 
@@ -135,7 +135,6 @@ class TextManipulatorView : public WindowGUIManipulatorView {
 public:
 									TextManipulatorView(TextManipulator*,
 										const BMessenger& target);
-	virtual							~TextManipulatorView() {}
 
 	virtual	void					AllAttached();
 	virtual	void					AttachedToWindow();
@@ -163,5 +162,6 @@ private:
 			NumberSliderControl*	fShearControl;
 			BCheckBox*				fAntiAliasing;
 };
+
 
 #endif	// TEXT_MANIPULATOR_H

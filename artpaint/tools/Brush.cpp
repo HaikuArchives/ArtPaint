@@ -7,8 +7,8 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include "Brush.h"
 
+#include "Brush.h"
 
 #include <Bitmap.h>
 #include <Point.h>

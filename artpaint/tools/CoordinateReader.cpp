@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include <Debug.h>
 #include <Window.h>
 #include <stdio.h>

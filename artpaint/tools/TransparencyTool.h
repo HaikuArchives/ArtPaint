@@ -31,7 +31,6 @@ using ArtPaint::Interface::NumberSliderControl;
 class TransparencyTool : public DrawingTool {
 public:
 								TransparencyTool();
-	virtual						~TransparencyTool();
 
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -41,13 +40,13 @@ public:
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
 private:
-			int32					read_coordinates();
-	static	int32					CoordinateReader(void*);
+			int32				read_coordinates();
+	static	int32				CoordinateReader(void*);
 
-			bool					reading_coordinates;
+			bool				reading_coordinates;
 
-			ImageView*				image_view;
-			CoordinateQueue*		coordinate_queue;
+			ImageView*			image_view;
+			CoordinateQueue*	coordinate_queue;
 };
 
 
@@ -65,5 +64,6 @@ private:
 		NumberSliderControl*	fTransparencySlider;
 		BCheckBox*				fUseBrush;
 };
+
 
 #endif	// TRANSPARENCY_TOOL_H
