@@ -314,7 +314,7 @@ Layer::Merge(Layer* top_layer)
 
 	int32 height = (int32)min_c(
 		top_layer->Bitmap()->Bounds().Height() + 1, Bitmap()->Bounds().Height() + 1);
-	int32 width	= (int32)min_c(
+	int32 width = (int32)min_c(
 		top_layer->Bitmap()->Bounds().Width() + 1, Bitmap()->Bounds().Width() + 1);
 
 	union color_conversion top, bottom;

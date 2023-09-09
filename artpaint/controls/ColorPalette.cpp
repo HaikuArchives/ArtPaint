@@ -207,7 +207,6 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		.Add(hsvSlider)
 		.Add(color_control);
 
-
 	rgbSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
 	cmySlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
 	labSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
@@ -1313,7 +1312,6 @@ ColorContainer::MouseDown(BPoint point)
 			dragger_message.AddData(
 				"text/plain", B_MIME_TYPE, hexColor.String(), hexColor.Length());
 			DragMessage(&dragger_message, dragged_map, B_OP_ALPHA, BPoint(7, 7));
-//			dragged = TRUE;
 			index = ColorSet::currentSet()->currentColorIndex(); // The active color did not change.
 		}
 	}

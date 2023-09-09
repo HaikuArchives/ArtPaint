@@ -381,9 +381,9 @@ AirBrushToolConfigView::AirBrushToolConfigView(DrawingTool* tool)
 			.AddStrut(kWidgetSpacing)
 			.Add(SeparatorView(B_TRANSLATE("Mode")))
 			.Add(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
-				.Add(fSpray)
-				.Add(fAirBrush)
-				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0))
+			.Add(fSpray)
+			.Add(fAirBrush)
+			.SetInsets(kWidgetInset, 0.0, 0.0, 0.0))
 		);
 
 		if (tool->GetCurrentValue(MODE_OPTION) == HS_SPRAY_MODE)

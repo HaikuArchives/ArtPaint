@@ -902,23 +902,23 @@ ScaleManipulatorView::ScaleManipulatorView(ScaleManipulator* manipulator, const 
 		= new BMenuField("sample_dropdown", B_TRANSLATE("Filter:"), sample_mode_menu);
 
 	BGridLayout* mainLayout = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
-								  .Add(left_control->CreateLabelLayoutItem(), 0, 0)
-								  .Add(left_control->CreateTextViewLayoutItem(), 1, 0)
-								  .Add(top_control->CreateLabelLayoutItem(), 0, 1)
-								  .Add(top_control->CreateTextViewLayoutItem(), 1, 1)
-								  .Add(width_control->CreateLabelLayoutItem(), 0, 2)
-								  .Add(width_control->CreateTextViewLayoutItem(), 1, 2)
-								  .Add(height_control->CreateLabelLayoutItem(), 0, 3)
-								  .Add(height_control->CreateTextViewLayoutItem(), 1, 3)
-								  .Add(proportion_box, 5, 2, 1, 2)
-								  .Add(doubleWidthButton, 2, 2)
-								  .Add(halveWidthButton, 3, 2)
-								  .Add(restoreWidthButton, 4, 2)
-								  .Add(doubleHeightButton, 2, 3)
-								  .Add(halveHeightButton, 3, 3)
-								  .Add(restoreHeightButton, 4, 3)
-								  .Add(sample_dropdown->CreateLabelLayoutItem(), 0, 4)
-								  .Add(sample_dropdown->CreateMenuBarLayoutItem(), 1, 4, 4);
+	  .Add(left_control->CreateLabelLayoutItem(), 0, 0)
+	  .Add(left_control->CreateTextViewLayoutItem(), 1, 0)
+	  .Add(top_control->CreateLabelLayoutItem(), 0, 1)
+	  .Add(top_control->CreateTextViewLayoutItem(), 1, 1)
+	  .Add(width_control->CreateLabelLayoutItem(), 0, 2)
+	  .Add(width_control->CreateTextViewLayoutItem(), 1, 2)
+	  .Add(height_control->CreateLabelLayoutItem(), 0, 3)
+	  .Add(height_control->CreateTextViewLayoutItem(), 1, 3)
+	  .Add(proportion_box, 5, 2, 1, 2)
+	  .Add(doubleWidthButton, 2, 2)
+	  .Add(halveWidthButton, 3, 2)
+	  .Add(restoreWidthButton, 4, 2)
+	  .Add(doubleHeightButton, 2, 3)
+	  .Add(halveHeightButton, 3, 3)
+	  .Add(restoreHeightButton, 4, 3)
+	  .Add(sample_dropdown->CreateLabelLayoutItem(), 0, 4)
+	  .Add(sample_dropdown->CreateMenuBarLayoutItem(), 1, 4, 4);
 
 	mainLayout->SetMaxColumnWidth(0, font.StringWidth("LABELLABELLABEL"));
 	mainLayout->SetMinColumnWidth(1, font.StringWidth("01234"));

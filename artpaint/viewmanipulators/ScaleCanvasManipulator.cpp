@@ -650,7 +650,6 @@ ScaleCanvasManipulatorView::ScaleCanvasManipulatorView(
 
 	mainLayout->SetMaxColumnWidth(0, font.StringWidth("LABELLABELLABEL"));
 	mainLayout->SetMinColumnWidth(1, font.StringWidth("01234"));
-//	mainLayout->SetMaxColumnWidth(2, buttonWidth);
 }
 
 
