@@ -224,6 +224,7 @@ inline uint32 src_over_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		return 0;
 
+	// pseudo-code: r-rgb * r-a = s-rgb * s-a + d-rgb * d-a * (1 - s-a)
 	result_rgba.bytes[0] = (src_rgba.bytes[0] * src_alpha
 		+ dst_rgba.bytes[0] * inv_dst_alpha) / result_alpha;
 	result_rgba.bytes[1] = (src_rgba.bytes[1] * src_alpha
@@ -568,6 +569,10 @@ inline uint32 src_over_fixed_blend(uint32 dst, uint32 src, uint32 mode=0)
 	if (result_alpha == 0)
 		return 0;
 
+	// pseudo-code:
+	//	r-rgb * r-a = s-a * (1 - d-a) * s-rgb +
+	//  s-a * d-a * blend(d-rgb, s-rgb) +
+	//	d-rgb * d-a * (1 -s-a)
 	result_rgba.bytes[0]
 		= (src_rgba.bytes[0] * inv_dst_src_alpha + src_dst_alpha * blend_color.bytes[0]
 		+ dst_rgba.bytes[0] * inv_src_dst_alpha) / result_alpha;
@@ -600,6 +605,7 @@ inline uint32 dst_over_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		result_alpha = 1;
 
+	// pseudo-code: r-rgb * r-a = s-rgb * s-a * (1 - d-a) + d-rgb * d-a
 	result_rgba.bytes[0]
 		= (src_rgba.bytes[0] * inv_src_alpha + dst_rgba.bytes[0] * dst_alpha) / result_alpha;
 	result_rgba.bytes[1]
@@ -627,6 +633,7 @@ inline uint32 src_out_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		return 0;
 
+	// pseudo-code: r-rgb * r-a = s-rgb * (1 - d-a)
 	result_rgba.bytes[0] = src_rgba.bytes[0];
 	result_rgba.bytes[1] = src_rgba.bytes[1];
 	result_rgba.bytes[2] = src_rgba.bytes[2];
@@ -651,6 +658,7 @@ inline uint32 dst_out_fixed(uint32 dst, uint32 src)
 	if (result_alpha == 0)
 		return 0;
 
+	// pseudo-code: r-rgb * r-a = s-rgb * (1 - d-a)
 	result_rgba.bytes[0] = dst_rgba.bytes[0];
 	result_rgba.bytes[1] = dst_rgba.bytes[1];
 	result_rgba.bytes[2] = dst_rgba.bytes[2];
