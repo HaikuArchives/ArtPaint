@@ -35,4 +35,5 @@ enum {
 	ZLIB_COMPRESSION = 0x00000004
 };
 
-#endif
+
+#endif // PROJECT_FILE_FUNCTIONS_H

@@ -16,17 +16,13 @@
 #include "UtilityClasses.h"
 
 
-#define RES 	128
+#define RES 128
 
 
-ColorSlider::ColorSlider(BRect frame, const char* name,
-	const char* label, BMessage* message,
-	int32 minValue, int32 maxValue,
-	thumb_style thumbType,
-	uint32 resizingMode,
-	uint32 flags)
-	: BSlider(frame, name, label, message, minValue, maxValue,
-		thumbType, resizingMode, flags)
+ColorSlider::ColorSlider(BRect frame, const char* name, const char* label, BMessage* message,
+	int32 minValue, int32 maxValue, thumb_style thumbType, uint32 resizingMode, uint32 flags)
+	:
+	BSlider(frame, name, label, message, minValue, maxValue, thumbType, resizingMode, flags)
 {
 	gradient = new BBitmap(BRect(BPoint(0, 0), BSize(RES, 0)), B_RGBA32);
 	rgb_color start = {255, 0, 0, 255};
@@ -36,15 +32,12 @@ ColorSlider::ColorSlider(BRect frame, const char* name,
 }
 
 
-ColorSlider::ColorSlider(BRect frame, const char* name,
-	const char* label, BMessage* message,
-	int32 minValue, int32 maxValue,
-	orientation posture,
-	thumb_style thumbType,
-	uint32 resizingMode,
+ColorSlider::ColorSlider(BRect frame, const char* name, const char* label, BMessage* message,
+	int32 minValue, int32 maxValue, orientation posture, thumb_style thumbType, uint32 resizingMode,
 	uint32 flags)
-	: BSlider(frame, name, label, message, minValue, maxValue,
-		posture, thumbType, resizingMode, flags)
+	:
+	BSlider(
+		frame, name, label, message, minValue, maxValue, posture, thumbType, resizingMode, flags)
 {
 	gradient = new BBitmap(BRect(BPoint(0, 0), BSize(RES, 0)), B_RGBA32);
 	rgb_color start = {255, 0, 0, 255};
@@ -54,13 +47,10 @@ ColorSlider::ColorSlider(BRect frame, const char* name,
 }
 
 
-ColorSlider::ColorSlider(const char* name, const char* label,
-	BMessage* message, int32 minValue,
-	int32 maxValue, orientation posture,
-	thumb_style thumbType,
-	uint32 flags)
-	: BSlider(name, label, message, minValue, maxValue,
-	posture, thumbType, flags)
+ColorSlider::ColorSlider(const char* name, const char* label, BMessage* message, int32 minValue,
+	int32 maxValue, orientation posture, thumb_style thumbType, uint32 flags)
+	:
+	BSlider(name, label, message, minValue, maxValue, posture, thumbType, flags)
 {
 	gradient = new BBitmap(BRect(BPoint(0, 0), BSize(RES, 0)), B_RGBA32);
 	rgb_color start = {255, 0, 0, 255};
@@ -71,7 +61,8 @@ ColorSlider::ColorSlider(const char* name, const char* label,
 
 
 ColorSlider::ColorSlider(BMessage* archive)
-	: BSlider(archive)
+	:
+	BSlider(archive)
 {
 }
 
@@ -132,8 +123,7 @@ ColorSlider::SetColors(BList* colors)
 	uint32 numColors = colors->CountItems();
 	uint32 step = ceil((float)RES / (numColors - 1));
 
-	for (int i = 0; i < numColors - 1; ++i)
-	{
+	for (int i = 0; i < numColors - 1; ++i) {
 		start.word = *((uint32*)colors->ItemAt(i));
 		end.word = *((uint32*)colors->ItemAt(i + 1));
 
@@ -144,8 +134,7 @@ ColorSlider::SetColors(BList* colors)
 		float b_delta = (float)(end.bytes[0] - start.bytes[0]) / (float)step;
 		float a_delta = (float)(end.bytes[3] - start.bytes[3]) / (float)step;
 
-		for (int j = 0; j < step; ++j)
-		{
+		for (int j = 0; j < step; ++j) {
 			*bits++ = pixel.word;
 
 			pixel.bytes[0] = min_c(255, pixel.bytes[0] + ceil(b_delta));
@@ -181,8 +170,7 @@ ColorSlider::DrawBar()
 
 	BBitmap* tmpBitmap = new BBitmap(gradient);
 	BitmapUtilities::CheckerBitmap(gradient, color1, color2, 4);
-	BitmapUtilities::CompositeBitmapOnSource(gradient, gradient,
-		tmpBitmap, gradient->Bounds());
+	BitmapUtilities::CompositeBitmapOnSource(gradient, gradient, tmpBitmap, gradient->Bounds());
 
 	view->DrawBitmap(gradient, gradient->Bounds(), frame);
 	view->StrokeRect(frame);

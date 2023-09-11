@@ -18,92 +18,88 @@ class BSlider;
 
 class	SaturationManipulatorSettings : public ManipulatorSettings {
 public:
-		SaturationManipulatorSettings()
-			: ManipulatorSettings() {
-			saturation = 100;
-		}
+	SaturationManipulatorSettings()
+		: ManipulatorSettings() {
+		saturation = 100;
+	}
 
-		SaturationManipulatorSettings(const SaturationManipulatorSettings& s)
-			: ManipulatorSettings() {
-			saturation = s.saturation;
-		}
+	SaturationManipulatorSettings(const SaturationManipulatorSettings& s)
+		: ManipulatorSettings() {
+		saturation = s.saturation;
+	}
 
+	SaturationManipulatorSettings& operator=(const SaturationManipulatorSettings& s) {
+		saturation = s.saturation;
+		return *this;
+	}
 
-		SaturationManipulatorSettings& operator=(const SaturationManipulatorSettings& s) {
-			saturation = s.saturation;
-			return *this;
-		}
+	bool operator==(SaturationManipulatorSettings s) {
+		return (saturation == s.saturation);
+	}
 
+	bool operator!=(SaturationManipulatorSettings s) {
+		return !(*this == s);
+	}
 
-		bool operator==(SaturationManipulatorSettings s) {
-			return (saturation == s.saturation);
-		}
-
-		bool operator!=(SaturationManipulatorSettings s) {
-			return !(*this==s);
-		}
-
-int32	saturation;
+	int32	saturation;
 };
 
 
 class SaturationManipulatorView;
 
 class SaturationManipulator : public WindowGUIManipulator {
-			BBitmap	*preview_bitmap;
-			BBitmap	*copy_of_the_preview_bitmap;
+			BBitmap*	preview_bitmap;
+			BBitmap*	copy_of_the_preview_bitmap;
 
-			BBitmap	*luminance_image;
+			BBitmap*	luminance_image;
 
-			int32	lowest_available_quality;
-			int32	highest_available_quality;
-			int32	last_calculated_resolution;
+			int32		lowest_available_quality;
+			int32		highest_available_quality;
+			int32		last_calculated_resolution;
 
 			SaturationManipulatorSettings	settings;
 			SaturationManipulatorSettings	previous_settings;
 
-			SaturationManipulatorView		*config_view;
-
+			SaturationManipulatorView*		config_view;
 
 			// The next attributes will be used by the thread_function.
-			int32	number_of_threads;
-			int32	current_resolution;
+			int32		number_of_threads;
+			int32		current_resolution;
 
 			SaturationManipulatorSettings	current_settings;
 
-			Selection	*selection;
+			Selection*	selection;
 
-			BBitmap		*source_bitmap;
-			BBitmap		*target_bitmap;
-			BStatusBar	*progress_bar;
+			BBitmap*	source_bitmap;
+			BBitmap*	target_bitmap;
+			BStatusBar*	progress_bar;
 
-			void	start_threads();
+			void		start_threads();
 
-	static	int32	thread_entry(void*);
-			int32	thread_function(int32);
+	static	int32		thread_entry(void*);
+			int32		thread_function(int32);
 
 
-			void	CalculateLuminanceImage(BBitmap*);
+			void		CalculateLuminanceImage(BBitmap*);
 
 public:
-			SaturationManipulator(BBitmap*);
-			~SaturationManipulator();
+						SaturationManipulator(BBitmap*);
+						~SaturationManipulator();
 
-void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-void		Reset();
-void		SetPreviewBitmap(BBitmap*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
+			int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
+			BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+			void		Reset();
+			void		SetPreviewBitmap(BBitmap*);
+			const char*	ReturnHelpString();
+			const char*	ReturnName();
 
-ManipulatorSettings*	ReturnSettings();
+			ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(const BMessenger& target);
+			BView*		MakeConfigurationView(const BMessenger& target);
 
-void		ChangeSettings(ManipulatorSettings*);
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+			void		ChangeSettings(ManipulatorSettings*);
+			void		SetSelection(Selection* new_selection)
+							{ selection = new_selection; };
 };
 
 
@@ -112,25 +108,21 @@ void		SetSelection(Selection* new_selection)
 #define	SATURATION_ADJUSTING_FINISHED	'Thaf'
 
 class SaturationManipulatorView : public WindowGUIManipulatorView {
-		BMessenger						target;
-		SaturationManipulator			*manipulator;
+		BMessenger		target;
+		SaturationManipulator*			manipulator;
 		SaturationManipulatorSettings	settings;
 
-		BSlider							*saturation_slider;
+		BSlider*		saturation_slider;
 
+		bool			started_adjusting;
 
-		bool							started_adjusting;
 public:
-		SaturationManipulatorView(SaturationManipulator*,const BMessenger& target);
-		~SaturationManipulatorView();
+						SaturationManipulatorView(SaturationManipulator*,const BMessenger& target);
 
-void	AllAttached();
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
-void	ChangeSettings(ManipulatorSettings*);
+		void			AllAttached();
+		void			AttachedToWindow();
+		void			MessageReceived(BMessage*);
+		void			ChangeSettings(ManipulatorSettings*);
 };
 
 #endif
-
-
-

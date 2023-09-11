@@ -14,6 +14,7 @@
 #include <MenuItem.h>
 #include <String.h>
 
+
 class PaintWindow;
 
 
@@ -22,7 +23,6 @@ public:
 						PaintWindowMenuItem(const char* label, BMessage* message,
 							char shortcut = 0, uint32 modifiers = 0,
 							PaintWindow* pw = NULL, const char* help = NULL);
-	virtual				~PaintWindowMenuItem();
 
 	virtual	void		Highlight(bool highlighted);
 
@@ -31,4 +31,4 @@ private:
 		PaintWindow*	fPaintWindow;
 };
 
-#endif
+#endif // PAINT_WINDOW_MENU_ITEM_H

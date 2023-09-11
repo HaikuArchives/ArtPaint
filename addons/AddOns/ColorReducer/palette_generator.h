@@ -11,9 +11,7 @@
 
 #include <GraphicsDefs.h>
 
-rgb_color* gla_palette(BBitmap * inBitmap, int paletteSize);
-
-
+rgb_color* gla_palette(BBitmap* inBitmap, int paletteSize);
 
 
 #endif

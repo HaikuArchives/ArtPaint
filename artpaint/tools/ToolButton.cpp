@@ -24,10 +24,11 @@ const float gInset = 2.0;
 
 
 ToolButton::ToolButton(const char* name, const char* shortcut, BMessage* message, BBitmap* icon)
-	: BControl(name, "?", message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS)
-	, fInside(false)
-	, fMouseButton(0)
-	, fIcon(icon)
+	:
+	BControl(name, "?", message, B_WILL_DRAW | B_NAVIGABLE | B_FRAME_EVENTS),
+	fInside(false),
+	fMouseButton(0),
+	fIcon(icon)
 {
 	BString toolShort(shortcut);
 	BString toolName(name);
@@ -61,7 +62,7 @@ ToolButton::SetValue(int32 value)
 		child = Window()->ChildAt(0);
 
 	while (child) {
-		ToolButton* button = dynamic_cast<ToolButton*> (child);
+		ToolButton* button = dynamic_cast<ToolButton*>(child);
 		if (button && (button != this))
 			button->SetValue(B_CONTROL_OFF);
 		child = child->NextSibling();
@@ -91,10 +92,8 @@ ToolButton::Draw(BRect updateRect)
 			flags |= BControlLook::B_ACTIVATED;
 
 		BRect rect = Bounds();
-		be_control_look->DrawButtonFrame(this, rect, updateRect,
-			base, background, flags);
-		be_control_look->DrawButtonBackground(this, rect, updateRect,
-			base, flags);
+		be_control_look->DrawButtonFrame(this, rect, updateRect, base, background, flags);
+		be_control_look->DrawButtonBackground(this, rect, updateRect, base, flags);
 
 		if (!fIcon) {
 			if (be_control_look) {
@@ -102,8 +101,8 @@ ToolButton::Draw(BRect updateRect)
 				SetFontSize(LARGE_TOOL_ICON_SIZE);
 
 				rect.InsetBy(gInset, gInset);
-				be_control_look->DrawLabel(this, Label(), rect, updateRect,
-					base, flags, BAlignment(B_ALIGN_CENTER, B_ALIGN_MIDDLE));
+				be_control_look->DrawLabel(this, Label(), rect, updateRect, base, flags,
+					BAlignment(B_ALIGN_CENTER, B_ALIGN_MIDDLE));
 			}
 		} else {
 			SetDrawingMode(B_OP_ALPHA);
@@ -183,24 +182,23 @@ void
 ToolButton::KeyDown(const char* bytes, int32 numBytes)
 {
 	switch (bytes[0]) {
-		case B_SPACE: {
+		case B_SPACE:
 		case B_RETURN:
+		{
 			if (IsEnabled() && !Value()) {
 				SetValue(B_CONTROL_ON);
 				Invoke();
 			}
-		}	break;
-
-		case B_UP_ARROW: {
+		} break;
+		case B_UP_ARROW:
 		case B_DOWN_ARROW:
 		case B_LEFT_ARROW:
 		case B_RIGHT_ARROW:
+		{
 			_SelectNextToolButton(bytes[0]);
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BControl::KeyDown(bytes, numBytes);
-		}	break;
 	}
 }
 
@@ -237,37 +235,41 @@ ToolButton::_SelectNextToolButton(uchar key)
 		BRect frame = Frame();
 		float difference = 10000;
 		ToolButton* nextButton = NULL;
-		for (int32  i = 0; i < parent->CountChildren(); ++i) {
-			ToolButton* button = dynamic_cast<ToolButton*> (parent->ChildAt(i));
+		for (int32 i = 0; i < parent->CountChildren(); ++i) {
+			ToolButton* button = dynamic_cast<ToolButton*>(parent->ChildAt(i));
 			if (button && button != this) {
 				float diff = 0.0;
 				float offset = 0.0;
 				switch (key) {
-					case B_UP_ARROW: {
+					case B_UP_ARROW:
+					{
 						BRect nextFrame = button->Frame();
 						diff = frame.top - nextFrame.bottom;
 						offset = nextFrame.left - frame.left;
-					}	break;
-
-					case B_DOWN_ARROW: {
+						break;
+					}
+					case B_DOWN_ARROW:
+					{
 						BRect nextFrame = button->Frame();
 						diff = nextFrame.top - frame.bottom;
 						offset = nextFrame.left - frame.left;
-					}	break;
-
-					case B_LEFT_ARROW: {
+						break;
+					}
+					case B_LEFT_ARROW:
+					{
 						BRect nextFrame = button->Frame();
 						offset = nextFrame.top - frame.top;
 						diff = frame.left - nextFrame.right;
-					}	break;
-
-					case B_RIGHT_ARROW: {
+						break;
+					}
+					case B_RIGHT_ARROW:
+					{
 						BRect nextFrame = button->Frame();
 						offset = nextFrame.top - frame.top;
 						diff = nextFrame.left - frame.right;
-					}	break;
+						break;
+					}
 				}
-
 				if (offset > -5.0 && offset < 5.0) {
 					if ((difference > diff) && (diff > 0.0)) {
 						difference = diff;
@@ -276,7 +278,6 @@ ToolButton::_SelectNextToolButton(uchar key)
 				}
 			}
 		}
-
 		if (nextButton)
 			nextButton->MakeFocus(true);
 	}

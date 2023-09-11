@@ -15,16 +15,16 @@
 #define	MAX_DISPERSION_X	8
 
 class PolarMapper : public Manipulator {
-Selection*	selection;
-public:
-			PolarMapper(BBitmap*);
-			~PolarMapper();
+	Selection*	selection;
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+public:
+				PolarMapper(BBitmap*);
+
+	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 #endif

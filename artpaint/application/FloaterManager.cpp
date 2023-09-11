@@ -6,16 +6,19 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include <algorithm>
 
 #include "FloaterManager.h"
+
 
 vector<BWindow*> FloaterManager::floaterVector;
 
 bool FloaterManager::floatersVisible = true;
 
 
-void FloaterManager::ToggleFloaterVisibility()
+void
+FloaterManager::ToggleFloaterVisibility()
 {
 	floatersVisible = !floatersVisible;
 
@@ -24,45 +27,40 @@ void FloaterManager::ToggleFloaterVisibility()
 	if (floatersVisible) {
 		while (floater_iterator < floaterVector.end()) {
 			(*floater_iterator)->Lock();
-			if ((*floater_iterator)->IsHidden()) {
+			if ((*floater_iterator)->IsHidden())
 				(*floater_iterator)->Show();
-			}
+
 			(*floater_iterator)->Unlock();
 			floater_iterator++;
 		}
-	}
-	else {
+	} else {
 		while (floater_iterator < floaterVector.end()) {
 			(*floater_iterator)->Lock();
-			if ((*floater_iterator)->IsHidden() == false) {
+			if ((*floater_iterator)->IsHidden() == false)
 				(*floater_iterator)->Hide();
-			}
+
 			(*floater_iterator)->Unlock();
 			floater_iterator++;
 		}
 	}
-
 }
 
 
-
-void FloaterManager::AddFloater(BWindow *floater)
+void
+FloaterManager::AddFloater(BWindow* floater)
 {
-	vector<BWindow*>::iterator iter
-				= find(floaterVector.begin(),floaterVector.end(),floater);
+	vector<BWindow*>::iterator iter = find(floaterVector.begin(), floaterVector.end(), floater);
 
-	if (iter == floaterVector.end()) {
+	if (iter == floaterVector.end())
 		floaterVector.push_back(floater);
-	}
 }
 
 
-void FloaterManager::RemoveFloater(BWindow *floater)
+void
+FloaterManager::RemoveFloater(BWindow* floater)
 {
-	vector<BWindow*>::iterator iter
-				= find(floaterVector.begin(),floaterVector.end(),floater);
+	vector<BWindow*>::iterator iter = find(floaterVector.begin(), floaterVector.end(), floater);
 
-	if (iter < floaterVector.end()) {
+	if (iter < floaterVector.end())
 		floaterVector.erase(iter);
-	}
 }

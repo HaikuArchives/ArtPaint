@@ -13,10 +13,10 @@
 
 #include <View.h>
 
-
 #include <stack>
 
 #define B_UNUSED(x) (void)x;
+
 
 class BitmapView : public BView {
 public:
@@ -47,26 +47,25 @@ public:
 
 
 class PointContainer {
-		BPoint**	hash_table;
-		int32*		list_length_table;
+			BPoint**	hash_table;
+			int32*		list_length_table;
 
-		int32		hash_value(int32 x, int32 y);
-const	int32		hash_table_size;
+			int32		hash_value(int32 x, int32 y);
+	const	int32		hash_table_size;
 
 public:
-					PointContainer();
-					~PointContainer();
+						PointContainer();
+						~PointContainer();
 
-		void		InsertPoint(int32 x, int32 y);
-		bool		HasPoint(int32 x, int32 y);
+			void		InsertPoint(int32 x, int32 y);
+			bool		HasPoint(int32 x, int32 y);
 };
 
 
 BRect FitRectToScreen(BRect source);
 BRect CenterRectOnScreen(BRect source);
 BRect MakeRectFromPoints(const BPoint& point1, const BPoint& point2);
-float SnapToAngle(const float snap_angle, const float src_angle,
-	const float max_angle = 90.);
+float SnapToAngle(const float snap_angle, const float src_angle, const float max_angle = 90.);
 
 
 inline uint32
@@ -104,4 +103,4 @@ BGRAColorToRGB(uint32 bgra_color)
 	return c;
 }
 
-#endif
+#endif // UTILITY_CLASSES_H

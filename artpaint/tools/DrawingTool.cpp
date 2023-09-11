@@ -23,8 +23,8 @@
 #include <Catalog.h>
 #include <CheckBox.h>
 #include <File.h>
-#include <GroupLayoutBuilder.h>
 #include <GridLayoutBuilder.h>
+#include <GroupLayoutBuilder.h>
 #include <Handler.h>
 #include <SeparatorView.h>
 #include <StringView.h>
@@ -38,18 +38,19 @@
 
 
 DrawingTool::DrawingTool(const BString& name, const BString& shortcut, int32 type)
-	: fIcon(NULL)
-	, fName(name)
-	, fShortcut(shortcut)
-	, fType(type)
-	, fLastUpdatedRect(BRect())
+	:
+	fIcon(NULL),
+	fName(name),
+	fShortcut(shortcut),
+	fType(type),
+	fLastUpdatedRect(BRect())
 {
 	// In derived classes set whatever options tool happens to use.
 	fOptions = 0;
 	fOptionsCount = 0;
 
-	ResourceServer::Instance()->GetBitmap(B_VECTOR_ICON_TYPE, type,
-		LARGE_TOOL_ICON_SIZE, LARGE_TOOL_ICON_SIZE, &fIcon);
+	ResourceServer::Instance()->GetBitmap(
+		B_VECTOR_ICON_TYPE, type, LARGE_TOOL_ICON_SIZE, LARGE_TOOL_ICON_SIZE, &fIcon);
 }
 
 
@@ -64,8 +65,7 @@ DrawingTool::~DrawingTool()
 	provide necessary data with a function that can be called from here.
 */
 ToolScript*
-DrawingTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
-	BPoint viewPoint)
+DrawingTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
 	B_UNUSED(view)
 	B_UNUSED(buttons)
@@ -91,7 +91,7 @@ DrawingTool::ConfigView()
 
 
 void
-DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
+DrawingTool::SetOption(int32 option, int32 value, BHandler* source)
 {
 	// If option is valid for this tool, set it.
 	// If handler is NULL, the boolean options should use value as the new value.
@@ -99,79 +99,80 @@ DrawingTool::SetOption(int32 option, int32 value, BHandler *source)
 
 	if (option & fOptions) {
 		switch (option) {
-			case SIZE_OPTION: {
+			case SIZE_OPTION:
+			{
 				fToolSettings.size = value;
-			}	break;
-
-			case PRESSURE_OPTION: {
+			} break;
+			case PRESSURE_OPTION:
+			{
 				fToolSettings.pressure = value;
-			}	break;
-
-			case MODE_OPTION: {
+			} break;
+			case MODE_OPTION:
+			{
 				fToolSettings.mode = value;
-				if (BCheckBox* booleanBox = dynamic_cast<BCheckBox*> (source))
+				if (BCheckBox* booleanBox = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.mode = booleanBox->Value();
 			} break;
-
-			case SHAPE_OPTION: {
+			case SHAPE_OPTION:
+			{
 				fToolSettings.shape = value;
-			}	break;
-
-			case GRADIENT_ENABLED_OPTION: {
+			} break;
+			case GRADIENT_ENABLED_OPTION:
+			{
 				fToolSettings.gradient_enabled = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.gradient_enabled = control->Value();
 			} break;
-
-			case GRADIENT_COLOR_OPTION: {
+			case GRADIENT_COLOR_OPTION:
+			{
 				fToolSettings.gradient_color = value;
-			}	break;
-
-			case PREVIEW_ENABLED_OPTION: {
+			} break;
+			case PREVIEW_ENABLED_OPTION:
+			{
 				fToolSettings.preview_enabled = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.preview_enabled = control->Value();
-			}	break;
-
-			case FILL_ENABLED_OPTION: {
+			} break;
+			case FILL_ENABLED_OPTION:
+			{
 				fToolSettings.fill_enabled = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.fill_enabled = control->Value();
-			}	break;
-
-			case ROTATION_ENABLED_OPTION: {
+			} break;
+			case ROTATION_ENABLED_OPTION:
+			{
 				fToolSettings.rotation_enabled = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.rotation_enabled = control->Value();
-			}	break;
-
-			case ANTI_ALIASING_LEVEL_OPTION: {
+			} break;
+			case ANTI_ALIASING_LEVEL_OPTION:
+			{
 				fToolSettings.anti_aliasing_level = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.anti_aliasing_level = control->Value();
-			}	break;
-
-			case CONTINUITY_OPTION: {
+			} break;
+			case CONTINUITY_OPTION:
+			{
 				fToolSettings.continuity = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.continuity = control->Value();
-			}	break;
-
-			case TOLERANCE_OPTION: {
+			} break;
+			case TOLERANCE_OPTION:
+			{
 				fToolSettings.tolerance = value;
-			}	break;
-
-			case TRANSPARENCY_OPTION: {
+			} break;
+			case TRANSPARENCY_OPTION:
+			{
 				fToolSettings.transparency = value;
-			}	break;
-
-			case USE_BRUSH_OPTION: {
+			} break;
+			case USE_BRUSH_OPTION:
+			{
 				fToolSettings.use_current_brush = value;
-				if (BControl* control = dynamic_cast<BCheckBox*> (source))
+				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.use_current_brush = control->Value();
-			}	break;
-
-			default:	break;
+			} break;
+			default:
+				break;
 		}
 	}
 }
@@ -226,10 +227,10 @@ DrawingTool::Icon() const
 
 
 status_t
-DrawingTool::readSettings(BFile &file, bool isLittleEndian)
+DrawingTool::readSettings(BFile& file, bool isLittleEndian)
 {
 	int32 length;
-	if (file.Read(&length,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&length, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	if (isLittleEndian)
@@ -238,7 +239,7 @@ DrawingTool::readSettings(BFile &file, bool isLittleEndian)
 		length = B_BENDIAN_TO_HOST_INT32(length);
 
 	int32 version;
-	if (file.Read(&version,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&version, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	if (isLittleEndian)
@@ -261,17 +262,17 @@ DrawingTool::readSettings(BFile &file, bool isLittleEndian)
 
 
 status_t
-DrawingTool::writeSettings(BFile &file)
+DrawingTool::writeSettings(BFile& file)
 {
-	if (file.Write(&fType,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&fType, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 settingsSize = sizeof(struct tool_settings) + sizeof(int32);
-	if (file.Write(&settingsSize,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&settingsSize, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 settingsVersion = TOOL_SETTINGS_STRUCT_VERSION;
-	if (file.Write(&settingsVersion,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&settingsVersion, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	settingsSize = sizeof(struct tool_settings);
@@ -306,9 +307,7 @@ DrawingTool::ToolCursor() const
 const char*
 DrawingTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Using the tool.")
-		: B_TRANSLATE("Click to use the tool."));
+	return (isInUse ? B_TRANSLATE("Using the tool.") : B_TRANSLATE("Click to use the tool."));
 }
 
 
@@ -316,18 +315,14 @@ DrawingTool::HelpString(bool isInUse) const
 
 
 DrawingToolConfigView::DrawingToolConfigView(DrawingTool* drawingTool)
-	: BBox(B_FANCY_BORDER, NULL)
-	, fTool(drawingTool)
+	:
+	BBox(B_FANCY_BORDER, NULL),
+	fTool(drawingTool)
 {
 	SetLayout(BGroupLayoutBuilder(B_VERTICAL)
-		.SetInsets(10.0, be_bold_font->Size()+10.0, 10.0, 10.0)
+		.SetInsets(10.0, be_bold_font->Size() + 10.0, 10.0, 10.0)
 		.TopLayout());
 	SetLabel(drawingTool->Name().String());
-}
-
-
-DrawingToolConfigView::~DrawingToolConfigView()
-{
 }
 
 
@@ -343,21 +338,20 @@ void
 DrawingToolConfigView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case OPTION_CHANGED: {
+		case OPTION_CHANGED:
+		{
 			// This comes from one of the controls in this window, it tells us
 			// that the value for tool control(s) have changed, it contains
 			// int32 "option" and int32 "value" data members
 			BHandler* handler;
 			message->FindPointer("source", (void**)&handler);
 			if (fTool) {
-				fTool->SetOption(message->FindInt32("option"),
-					message->FindInt32("value"), handler);
+				fTool->SetOption(
+					message->FindInt32("option"), message->FindInt32("value"), handler);
 			}
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -365,9 +359,8 @@ DrawingToolConfigView::MessageReceived(BMessage* message)
 BSeparatorView*
 DrawingToolConfigView::SeparatorView(const char* label) const
 {
-	BSeparatorView* view =
-		new BSeparatorView(label, B_HORIZONTAL, B_FANCY_BORDER,
-			BAlignment(B_ALIGN_LEFT, B_ALIGN_VERTICAL_CENTER));
+	BSeparatorView* view = new BSeparatorView(
+		label, B_HORIZONTAL, B_FANCY_BORDER, BAlignment(B_ALIGN_LEFT, B_ALIGN_VERTICAL_CENTER));
 	view->SetExplicitMinSize(BSize(200.0, B_SIZE_UNSET));
 	view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -376,20 +369,17 @@ DrawingToolConfigView::SeparatorView(const char* label) const
 
 
 BGridLayout*
-DrawingToolConfigView::LayoutSliderGrid(
-	ArtPaint::Interface::NumberSliderControl* slider) const
+DrawingToolConfigView::LayoutSliderGrid(ArtPaint::Interface::NumberSliderControl* slider) const
 {
-	BGridLayout* gridLayout = BGridLayoutBuilder(
-		kWidgetSpacing, kWidgetSpacing)
-			.Add(slider, 0, 0, 0, 0)
-			.Add(slider->LabelLayoutItem(), 0, 0)
-			.Add(slider->TextViewLayoutItem(), 1, 0)
-			.Add(slider->Slider(), 2, 0)
-			.SetInsets(kWidgetInset, 0.0, 0.0, 0.0);
-		gridLayout->SetMinColumnWidth(0, StringWidth("LABELSIZE"));
-		gridLayout->SetMaxColumnWidth(1, StringWidth("100"));
-		gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
+	BGridLayout* gridLayout = BGridLayoutBuilder(kWidgetSpacing, kWidgetSpacing)
+		.Add(slider, 0, 0, 0, 0)
+		.Add(slider->LabelLayoutItem(), 0, 0)
+		.Add(slider->TextViewLayoutItem(), 1, 0)
+		.Add(slider->Slider(), 2, 0)
+		.SetInsets(kWidgetInset, 0.0, 0.0, 0.0);
+	gridLayout->SetMinColumnWidth(0, StringWidth("LABELSIZE"));
+	gridLayout->SetMaxColumnWidth(1, StringWidth("100"));
+	gridLayout->SetMinColumnWidth(2, StringWidth("SLIDERSLIDERSLIDER"));
 
 	return gridLayout;
 }
-

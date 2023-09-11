@@ -16,17 +16,17 @@
 #include "Layer.h"
 #include "PixelOperations.h"
 #include "ProjectFileFunctions.h"
+#include "Selection.h"
+#include "SettingsServer.h"
 #include "UndoEvent.h"
 #include "UndoQueue.h"
 #include "UtilityClasses.h"
-#include "Selection.h"
-#include "SettingsServer.h"
 
 
 #include <Alert.h>
-#include <Catalog.h>
 #include <Bitmap.h>
 #include <ByteOrder.h>
+#include <Catalog.h>
 #include <File.h>
 #include <Screen.h>
 #include <StopWatch.h>
@@ -47,14 +47,14 @@ int32 Image::color_candidate_users = 0;
 rgb_color* Image::color_list = new rgb_color[256];
 
 
-Image::Image(ImageView *view,float width, float height, UndoQueue *q)
+Image::Image(ImageView* view, float width, float height, UndoQueue* q)
 {
 	image_view = view;
 	undo_queue = q;
 	rendered_image = NULL;
 	next_layer_id = 0;
 	current_layer_index = 0;
-	thumbnail_image = new BBitmap(BRect(0,0,64,64),B_RGB32);
+	thumbnail_image = new BBitmap(BRect(0, 0, 64, 64), B_RGB32);
 	layer_list = new BList(10);
 	layer_id_list = NULL;
 
@@ -76,13 +76,13 @@ Image::Image(ImageView *view,float width, float height, UndoQueue *q)
 
 Image::~Image()
 {
-	for (int32 i=0;i<layer_list->CountItems();i++) {
+	for (int32 i = 0; i < layer_list->CountItems(); i++)
 		layer_id_list[i] = NULL;
-	}
+
 	delete[] layer_id_list;
 
 	while (layer_list->CountItems() > 0) {
-		Layer *l = (Layer*)layer_list->RemoveItem((int32)0);
+		Layer* l = (Layer*)layer_list->RemoveItem((int32)0);
 		delete l;
 	}
 	delete layer_list;
@@ -100,7 +100,7 @@ Image::Render(bool bg)
 	Render(rendered_image->Bounds(), bg);
 }
 
-#define	ALPHA	(*s_bits & 0xff)
+#define ALPHA (*s_bits & 0xff)
 
 
 void
@@ -109,50 +109,49 @@ Image::Render(BRect area, bool bg)
 	dithered_up_to_date = FALSE;
 	area = area & rendered_image->Bounds();
 
-	int32 number_of_threads = 1;	// At least one thread
+	int32 number_of_threads = 1; // At least one thread
 
 	// Only start multiple threads if the area is big enough
-	if ((area.Height() > number_of_cpus) && (area.Height()*area.Width()>2500)) {
+	if ((area.Height() > number_of_cpus) && (area.Height() * area.Width() > 2500))
 		number_of_threads = number_of_cpus;
-	}
 
-	thread_id *threads = new thread_id[number_of_threads];
+	thread_id* threads = new thread_id[number_of_threads];
 
 	int32 height = area.IntegerHeight() / number_of_threads + 1;
-	for (int32 i=0;i<number_of_threads;i++) {
+	for (int32 i = 0; i < number_of_threads; i++) {
 		if (bg)
-			threads[i] = spawn_thread(enter_render,"render_thread",B_NORMAL_PRIORITY,this);
+			threads[i] = spawn_thread(enter_render, "render_thread", B_NORMAL_PRIORITY, this);
 		else
-			threads[i] = spawn_thread(enter_render_nobg,"render_thread",B_NORMAL_PRIORITY,this);
+			threads[i] = spawn_thread(enter_render_nobg, "render_thread", B_NORMAL_PRIORITY, this);
 
 		resume_thread(threads[i]);
 
 		BRect rect = area;
-		rect.top = min_c(area.bottom, area.top + i*height);
-		rect.bottom = min_c(area.bottom,rect.top+height-1);
-		send_data(threads[i],0,&rect,sizeof(BRect));
+		rect.top = min_c(area.bottom, area.top + i * height);
+		rect.bottom = min_c(area.bottom, rect.top + height - 1);
+		send_data(threads[i], 0, &rect, sizeof(BRect));
 	}
 
-	for (int32 i=0;i<number_of_threads;i++) {
+	for (int32 i = 0; i < number_of_threads; i++) {
 		int32 return_value;
-		wait_for_thread(threads[i],&return_value);
+		wait_for_thread(threads[i], &return_value);
 	}
 	if (dithered_image != NULL) {
-		for (int32 i=0;i<number_of_threads;i++) {
-			threads[i] = spawn_thread(enter_dither,"dither_thread",B_NORMAL_PRIORITY,this);
+		for (int32 i = 0; i < number_of_threads; i++) {
+			threads[i] = spawn_thread(enter_dither, "dither_thread", B_NORMAL_PRIORITY, this);
 			resume_thread(threads[i]);
 
 			BRect rect = area;
-			rect.top = min_c(area.bottom, area.top + i*height);
-			rect.bottom = min_c(area.bottom,rect.top+height-1);
+			rect.top = min_c(area.bottom, area.top + i * height);
+			rect.bottom = min_c(area.bottom, rect.top + height - 1);
 
-			send_data(threads[i],0,&rect,sizeof(BRect));
+			send_data(threads[i], 0, &rect, sizeof(BRect));
 		}
 
 		bool is_ready = TRUE;
-		for (int32 i=0;i<number_of_threads;i++) {
+		for (int32 i = 0; i < number_of_threads; i++) {
 			int32 return_value;
-			wait_for_thread(threads[i],&return_value);
+			wait_for_thread(threads[i], &return_value);
 			if (return_value != B_OK)
 				is_ready = FALSE;
 		}
@@ -173,48 +172,49 @@ void
 Image::RenderPreview(BRect area, int32 resolution)
 {
 	dithered_up_to_date = FALSE;
-	area.top = floor(area.top/resolution);
+	area.top = floor(area.top / resolution);
 	area.top *= resolution;
-	area.bottom = ceil(area.bottom/resolution);
+	area.bottom = ceil(area.bottom / resolution);
 	area.bottom *= resolution;
 
-	area.left = floor(area.left/resolution);
+	area.left = floor(area.left / resolution);
 	area.left *= resolution;
-	area.right = ceil(area.right/resolution);
+	area.right = ceil(area.right / resolution);
 	area.right *= resolution;
 
 	area = area & rendered_image->Bounds();
 
-	int32 number_of_threads = 1;	// At least one thread
+	int32 number_of_threads = 1; // At least one thread
 
 	// Only start multiple threads if the area is big enough
-	if ((area.Height() > number_of_cpus) && (area.Height()*area.Width()>2500)) {
+	if ((area.Height() > number_of_cpus) && (area.Height() * area.Width() > 2500)) {
 		number_of_threads = number_of_cpus;
 	}
 
-	thread_id *threads = new thread_id[number_of_threads];
+	thread_id* threads = new thread_id[number_of_threads];
 
 	int32 height = (area.IntegerHeight() + 1) / number_of_threads;
-	for (int32 i=0;i<number_of_threads;i++) {
-		threads[i] = spawn_thread(enter_render_preview,"render_preview_thread",B_NORMAL_PRIORITY,this);
+	for (int32 i = 0; i < number_of_threads; i++) {
+		threads[i]
+			= spawn_thread(enter_render_preview, "render_preview_thread", B_NORMAL_PRIORITY, this);
 		resume_thread(threads[i]);
 
 		BRect rect = area;
-		rect.top = min_c(area.bottom, area.top + i*height);
-		rect.bottom = min_c(area.bottom,rect.top+height-1);
+		rect.top = min_c(area.bottom, area.top + i * height);
+		rect.bottom = min_c(area.bottom, rect.top + height - 1);
 
-		rect.top = floor(rect.top/resolution)*resolution;
-		rect.bottom = ceil(rect.bottom/resolution)*resolution;
+		rect.top = floor(rect.top / resolution) * resolution;
+		rect.bottom = ceil(rect.bottom / resolution) * resolution;
 
 		// This calculation really needs to be fixed to be faster and more accurate
 		rect = rect & rendered_image->Bounds();
 
-		send_data(threads[i],resolution,&rect,sizeof(BRect));
+		send_data(threads[i], resolution, &rect, sizeof(BRect));
 	}
 
-	for (int32 i=0;i<number_of_threads;i++) {
+	for (int32 i = 0; i < number_of_threads; i++) {
 		int32 return_value;
-		wait_for_thread(threads[i],&return_value);
+		wait_for_thread(threads[i], &return_value);
 	}
 
 	delete[] threads;
@@ -222,22 +222,22 @@ Image::RenderPreview(BRect area, int32 resolution)
 
 
 void
-Image::RenderPreview(BRegion &region, int32 resolution)
+Image::RenderPreview(BRegion& region, int32 resolution)
 {
 	// Start a thread for each rectangle in the region
 	int32 rect_count = region.CountRects();
 	if (rect_count > 0) {
-		thread_id *threads = new thread_id[rect_count];
+		thread_id* threads = new thread_id[rect_count];
 
-		for (int32 i=0;i<rect_count;i++) {
-			threads[i] = spawn_thread(enter_render_preview,
-				"render_preview_thread", B_NORMAL_PRIORITY, this);
+		for (int32 i = 0; i < rect_count; i++) {
+			threads[i] = spawn_thread(
+				enter_render_preview, "render_preview_thread", B_NORMAL_PRIORITY, this);
 			resume_thread(threads[i]);
 			BRect rect = region.RectAt(i);
-			send_data(threads[i],resolution, &rect, sizeof(BRect));
+			send_data(threads[i], resolution, &rect, sizeof(BRect));
 		}
 
-		for (int32 i = 0;i < rect_count;i++) {
+		for (int32 i = 0; i < rect_count; i++) {
 			int32 return_value;
 			wait_for_thread(threads[i], &return_value);
 		}
@@ -255,19 +255,19 @@ Image::MultiplyRenderedImagePixels(int32 blocksize)
 			int32 height = rendered_image->Bounds().IntegerHeight();
 			int32 width = rendered_image->Bounds().IntegerWidth();
 
-			uint32 *bits = (uint32*)rendered_image->Bits();
-			uint32 bpr = rendered_image->BytesPerRow()/4;
+			uint32* bits = (uint32*)rendered_image->Bits();
+			uint32 bpr = rendered_image->BytesPerRow() / 4;
 			// Duplicate the pixels
-			for (int32 y=0;y<=height;y += blocksize) {
-				for (int32 x=0;x<=width;x += blocksize) {
-					int32 x_dimension = min_c(blocksize,width+1-x);
-					int32 y_dimension = min_c(blocksize,height+1-y);
-					uint32 value = *(bits + x + y*bpr);
-					uint32 y_offset = y*bpr;
-					for (int32 dy=0;dy<y_dimension;dy++) {
-						for (int32 dx=0;dx<x_dimension;dx++) {
-							*(bits + x+dx + y_offset) = value;
-						}
+			for (int32 y = 0; y <= height; y += blocksize) {
+				for (int32 x = 0; x <= width; x += blocksize) {
+					int32 x_dimension = min_c(blocksize, width + 1 - x);
+					int32 y_dimension = min_c(blocksize, height + 1 - y);
+					uint32 value = *(bits + x + y * bpr);
+					uint32 y_offset = y * bpr;
+					for (int32 dy = 0; dy < y_dimension; dy++) {
+						for (int32 dx = 0; dx < x_dimension; dx++)
+							*(bits + x + dx + y_offset) = value;
+
 						y_offset += bpr;
 					}
 				}
@@ -283,47 +283,42 @@ Image::SetImageSize()
 	// Take the minimum dimensions of layers as the new image dimensions.
 	float width = 1000000;
 	float height = 1000000;
-	for (int32 i=0;i<layer_list->CountItems();i++) {
-		Layer *layer = (Layer*)layer_list->ItemAt(i);
+	for (int32 i = 0; i < layer_list->CountItems(); i++) {
+		Layer* layer = (Layer*)layer_list->ItemAt(i);
 		width = min_c(layer->Bitmap()->Bounds().Width(), width);
 		height = min_c(layer->Bitmap()->Bounds().Height(), height);
 	}
-	image_width = width+1;
-	image_height = height+1;
+	image_width = width + 1;
+	image_height = height + 1;
 
 	if (layer_list->CountItems() >= 1) {
 		if (rendered_image == NULL) {
 			// Here we create new composite picture.
-			rendered_image = new BBitmap(BRect(0, 0,
-				image_width - 1, image_height - 1), B_RGBA32);
-		}
-		else if ((rendered_image->Bounds().Width() != (image_width - 1)) ||
-			(rendered_image->Bounds().Height() != (image_height - 1))) {
+			rendered_image = new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_RGBA32);
+		} else if ((rendered_image->Bounds().Width() != (image_width - 1))
+			|| (rendered_image->Bounds().Height() != (image_height - 1))) {
 			// Here we change the bitmap for the composite picture. Also
 			// if the dithered picture is required we change that too.
 			delete rendered_image;
-			rendered_image = new BBitmap(BRect(0, 0,
-				image_width - 1, image_height - 1), B_RGBA32);
+			rendered_image = new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_RGBA32);
 			if (dithered_image != NULL) {
 				delete dithered_image;
-				dithered_image = new BBitmap(BRect(0, 0,
-					image_width - 1, image_height - 1), B_CMAP8);
+				dithered_image
+					= new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_CMAP8);
 			}
 
 			if (rendered_image->IsValid() == FALSE) {
 				rendered_image = NULL;
 				throw std::bad_alloc();
 			}
-			if ((dithered_image != NULL) &&
-				(dithered_image->IsValid() == FALSE)) {
+			if ((dithered_image != NULL) && (dithered_image->IsValid() == FALSE)) {
 				dithered_image = NULL;
 				throw std::bad_alloc();
 			}
 
 			// If the image size changes, clear the selection.
 			image_view->GetSelection()->Clear();
-			image_view->GetSelection()->ImageSizeChanged(
-				rendered_image->Bounds());
+			image_view->GetSelection()->ImageSizeChanged(rendered_image->Bounds());
 
 			image_view->adjustSize();
 			image_view->adjustPosition();
@@ -336,16 +331,16 @@ Image::SetImageSize()
 
 
 Layer*
-Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
+Image::AddLayer(BBitmap* bitmap, Layer* next_layer, bool add_to_front,
 	float layer_transparency_coefficient, BRect* offset)
 {
 	bool create_layer = TRUE;
 	if (layer_list->CountItems() != 0) {
 		((Layer*)(layer_list->ItemAt(current_layer_index)))->ActivateLayer(FALSE);
 	}
-	int32 layer_id = atomic_add(&next_layer_id,1);
-	Layer **new_layer_id_list = new Layer*[layer_id+1];
-	for (int32 i=0;i<layer_id;i++) {
+	int32 layer_id = atomic_add(&next_layer_id, 1);
+	Layer** new_layer_id_list = new Layer*[layer_id + 1];
+	for (int32 i = 0; i < layer_id; i++) {
 		new_layer_id_list[i] = layer_id_list[i];
 		layer_id_list[i] = NULL;
 	}
@@ -353,10 +348,10 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 	delete[] layer_id_list;
 	layer_id_list = new_layer_id_list;
 	// add a layer to correct position in the list
-	Layer *new_layer;
+	Layer* new_layer;
 	try {
-		new_layer = new Layer(BRect(0,0,image_width-1,image_height-1),
-			layer_id,image_view, HS_NORMAL_LAYER, bitmap, offset);
+		new_layer = new Layer(BRect(0, 0, image_width - 1, image_height - 1),
+			layer_id, image_view, HS_NORMAL_LAYER, bitmap, offset);
 	}
 	catch (std::bad_alloc e) {
 		delete bitmap;
@@ -368,15 +363,14 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 		if (layer_transparency_coefficient != 1.0)
 			new_layer->SetTransparency(layer_transparency_coefficient);
 
-		if (next_layer == NULL) {
+		if (next_layer == NULL)
 			layer_list->AddItem(new_layer);
-		}
 		else {
 			int32 index = layer_list->IndexOf(next_layer);
 			if (add_to_front == TRUE)
 				index++;
 
-			layer_list->AddItem(new_layer,index);
+			layer_list->AddItem(new_layer, index);
 		}
 
 		layer_id_list[layer_id] = new_layer;
@@ -388,8 +382,8 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 		new_layer->AddToImage(this);
 
 		// if this is the first layer we should create the composite picture
-		if ((layer_list->CountItems() == 1) && (rendered_image == NULL) ) {
-			rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
+		if ((layer_list->CountItems() == 1) && (rendered_image == NULL)) {
+			rendered_image = new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_RGBA32);
 			if (rendered_image->IsValid() == FALSE) {
 				// If the creation of composite picture fails we should remove the newly added
 				// layer and inform the user that we cannot add a layer. The method that called
@@ -407,15 +401,17 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 
 		// Store the undo.
 		if (undo_queue != NULL) {
-			UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Add layer"),ReturnThumbnailImage());
+			UndoEvent* new_event
+				= undo_queue->AddUndoEvent(B_TRANSLATE("Add layer"), ReturnThumbnailImage());
 			if (new_event != NULL) {
-				for (int32 i=0;i<layer_list->CountItems();i++) {
-					Layer *layer = (Layer*)layer_list->ItemAt(i);
-					UndoAction *new_action;
+				for (int32 i = 0; i < layer_list->CountItems(); i++) {
+					Layer* layer = (Layer*)layer_list->ItemAt(i);
+					UndoAction* new_action;
 					if (layer->Id() != layer_id)
 						new_action = new UndoAction(layer->Id());
 					else {
-						new_action = new UndoAction(layer->Id(),ADD_LAYER_ACTION,layer->Bitmap()->Bounds());
+						new_action = new UndoAction(
+							layer->Id(), ADD_LAYER_ACTION, layer->Bitmap()->Bounds());
 						new_event->SetLayerData(layer);
 					}
 					new_event->AddAction(new_action);
@@ -430,7 +426,7 @@ Image::AddLayer(BBitmap *bitmap, Layer *next_layer, bool add_to_front,
 
 
 bool
-Image::ChangeActiveLayer(Layer *activated_layer, int32)
+Image::ChangeActiveLayer(Layer* activated_layer, int32)
 {
 	if (((Layer*)(layer_list->ItemAt(current_layer_index))) != activated_layer) {
 		if (layer_list->IndexOf(activated_layer) >= 0) {
@@ -464,16 +460,16 @@ Image::ChangeActiveLayer(int32 layer_index)
 
 
 bool
-Image::ChangeLayerPosition(Layer *changed_layer, int32,
-	int32 positions_moved)
+Image::ChangeLayerPosition(Layer* changed_layer, int32, int32 positions_moved)
 {
 	int32 original_position = layer_list->IndexOf(changed_layer);
 
 	if ((original_position >= 0) && (positions_moved != 0)) {
 		layer_list->RemoveItem(changed_layer);
 		// Make sure the new index is within list's range.
-		int32 new_position = min_c(layer_list->CountItems(),max_c(0,original_position+positions_moved));
-		layer_list->AddItem(changed_layer,new_position);
+		int32 new_position
+			= min_c(layer_list->CountItems(), max_c(0, original_position + positions_moved));
+		layer_list->AddItem(changed_layer, new_position);
 		Render();
 
 		((Layer*)(layer_list->ItemAt(current_layer_index)))->ActivateLayer(FALSE);
@@ -488,21 +484,21 @@ Image::ChangeLayerPosition(Layer *changed_layer, int32,
 
 
 bool
-Image::ClearCurrentLayer(rgb_color &c)
+Image::ClearCurrentLayer(rgb_color& c)
 {
-	Layer *cleared_layer = (Layer*)layer_list->ItemAt(current_layer_index);
+	Layer* cleared_layer = (Layer*)layer_list->ItemAt(current_layer_index);
 	cleared_layer->Clear(c);
 
 	// Store the undo.
-	UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Delete"),ReturnThumbnailImage());
+	UndoEvent* new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Delete"), ReturnThumbnailImage());
 	if (new_event != NULL) {
-		for (int32 i=0;i<layer_list->CountItems();i++) {
-			Layer *layer = (Layer*)layer_list->ItemAt(i);
-			UndoAction *new_action;
+		for (int32 i = 0; i < layer_list->CountItems(); i++) {
+			Layer* layer = (Layer*)layer_list->ItemAt(i);
+			UndoAction* new_action;
 			if (layer->Id() == cleared_layer->Id()) {
-				new_action = new UndoAction(layer->Id(),CLEAR_LAYER_ACTION,layer->Bitmap()->Bounds());
-			}
-			else
+				new_action
+					= new UndoAction(layer->Id(), CLEAR_LAYER_ACTION, layer->Bitmap()->Bounds());
+			} else
 				new_action = new UndoAction(layer->Id());
 
 			new_event->AddAction(new_action);
@@ -524,12 +520,11 @@ Image::ClearCurrentLayer(rgb_color &c)
 
 
 bool
-Image::DuplicateLayer(Layer *duplicated_layer, int32)
+Image::DuplicateLayer(Layer* duplicated_layer, int32)
 {
 	if (duplicated_layer != NULL) {
-		BBitmap *new_bitmap = new BBitmap(duplicated_layer->Bitmap());
-		AddLayer(new_bitmap, duplicated_layer, TRUE,
-			duplicated_layer->GetTransparency());
+		BBitmap* new_bitmap = new BBitmap(duplicated_layer->Bitmap());
+		AddLayer(new_bitmap, duplicated_layer, TRUE, duplicated_layer->GetTransparency());
 
 		return TRUE;
 	}
@@ -539,48 +534,42 @@ Image::DuplicateLayer(Layer *duplicated_layer, int32)
 
 
 bool
-Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
+Image::MergeLayers(Layer* merged_layer, int32, bool merge_with_upper)
 {
-	Layer *target;
-	Layer *other;
+	Layer* target;
+	Layer* other;
 
 	if (merge_with_upper) {
 		target = merged_layer;
-		other = (Layer*)layer_list->ItemAt(
-			layer_list->IndexOf(merged_layer) + 1);
-	}
-	else {
+		other = (Layer*)layer_list->ItemAt(layer_list->IndexOf(merged_layer) + 1);
+	} else {
 		other = merged_layer;
-		target = (Layer*)layer_list->ItemAt(
-			layer_list->IndexOf(merged_layer) - 1);
+		target = (Layer*)layer_list->ItemAt(layer_list->IndexOf(merged_layer) - 1);
 	}
 
 	if ((target != NULL) && (other != NULL)) {
 		target->Merge(other);
 
 		// Store the undo.
-		UndoEvent *new_event;
-		if (merge_with_upper)
+		UndoEvent* new_event;
+		if (merge_with_upper) {
 			new_event = undo_queue->AddUndoEvent(
-				B_TRANSLATE("Merge with layer above"),
-				ReturnThumbnailImage());
-		else
-			new_event = undo_queue->AddUndoEvent(
-				B_TRANSLATE("Merge down"),
-				ReturnThumbnailImage());
+				B_TRANSLATE("Merge with layer above"), ReturnThumbnailImage());
+		} else
+			new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Merge down"), ReturnThumbnailImage());
 
 		if (new_event != NULL) {
-			for (int32 i=0;i<layer_list->CountItems();i++) {
-				Layer *layer = (Layer*)layer_list->ItemAt(i);
-				UndoAction *new_action;
+			for (int32 i = 0; i < layer_list->CountItems(); i++) {
+				Layer* layer = (Layer*)layer_list->ItemAt(i);
+				UndoAction* new_action;
 				if (layer->Id() == target->Id()) {
-					new_action = new UndoAction(layer->Id(),other->Id(),layer->Bitmap()->Bounds());
-				}
-				else if (layer->Id() == other->Id()) {
-					new_action = new UndoAction(layer->Id(),DELETE_LAYER_ACTION,layer->Bitmap()->Bounds());
+					new_action
+						= new UndoAction(layer->Id(), other->Id(), layer->Bitmap()->Bounds());
+				} else if (layer->Id() == other->Id()) {
+					new_action = new UndoAction(
+						layer->Id(), DELETE_LAYER_ACTION, layer->Bitmap()->Bounds());
 					new_event->SetLayerData(layer);
-				}
-				else
+				} else
 					new_action = new UndoAction(layer->Id());
 
 				new_event->AddAction(new_action);
@@ -588,7 +577,6 @@ Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 			}
 		}
 		// Then actually remove the layer
-		//int32 removed_layer_index = layer_list->IndexOf(other);
 		layer_id_list[other->Id()] = NULL;
 
 		layer_list->RemoveItem(other);
@@ -597,7 +585,7 @@ Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 		if (!merge_with_upper)
 			--current_layer_index;
 
-		current_layer_index = min_c(current_layer_index, layer_list->CountItems()-1);
+		current_layer_index = min_c(current_layer_index, layer_list->CountItems() - 1);
 
 		if (current_layer_index >= 0) {
 			((Layer*)layer_list->ItemAt(current_layer_index))->ActivateLayer(TRUE);
@@ -605,7 +593,8 @@ Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 
 		Render();
 		delete other;
-		thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,target);
+		thread_id a_thread = spawn_thread(
+			Layer::CreateMiniatureImage, "create mini picture", B_LOW_PRIORITY, target);
 		resume_thread(a_thread);
 	}
 
@@ -614,7 +603,7 @@ Image::MergeLayers(Layer *merged_layer, int32, bool merge_with_upper)
 
 
 bool
-Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
+Image::RemoveLayer(Layer* removed_layer, int32 removed_layer_id)
 {
 	// Things we should check here:
 	//	1.	Do not remove the only layer.
@@ -622,30 +611,31 @@ Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 	//	3.	Will the same current layer-index still be good or should we reduce it by one.
 	//	4.	Is the deleted layer the current layer.
 	//	5.	If the layer count goes to 1, we should also delete the composite picture.
-	//
+
 	bool active_layer_changed = FALSE;
 
 	if (layer_list->CountItems() <= 1) {
 		// The UI actually prevents this from ever happening.
 		// But lets keep this just in case there is something wrong with the UI.
-		BAlert *an_alert;
-		an_alert = new BAlert("",B_TRANSLATE(
+		BAlert* an_alert;
+		an_alert = new BAlert("", B_TRANSLATE(
 			"Cannot delete the only layer. Create another picture to get a fresh start."),
 			B_TRANSLATE("OK"));
 		an_alert->Go();
 		return FALSE;
-	}
-	else {
+	} else {
 		// Store the undo.
-		UndoEvent *new_event = undo_queue->AddUndoEvent(B_TRANSLATE("Delete layer"),rendered_image);
+		UndoEvent* new_event
+			= undo_queue->AddUndoEvent(B_TRANSLATE("Delete layer"), rendered_image);
 		if (new_event != NULL) {
-			for (int32 i=0;i<layer_list->CountItems();i++) {
-				Layer *layer = (Layer*)layer_list->ItemAt(i);
-				UndoAction *new_action;
+			for (int32 i = 0; i < layer_list->CountItems(); i++) {
+				Layer* layer = (Layer*)layer_list->ItemAt(i);
+				UndoAction* new_action;
 				if (layer->Id() != removed_layer_id)
 					new_action = new UndoAction(layer->Id());
 				else {
-					new_action = new UndoAction(layer->Id(),DELETE_LAYER_ACTION,layer->Bitmap()->Bounds());
+					new_action = new UndoAction(
+						layer->Id(), DELETE_LAYER_ACTION, layer->Bitmap()->Bounds());
 					new_event->SetLayerData(layer);
 				}
 				new_event->AddAction(new_action);
@@ -654,20 +644,18 @@ Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 		}
 		// Then actually remove the layer
 		removed_layer_id = removed_layer->Id();
-		//int32 removed_layer_index = layer_list->IndexOf(removed_layer);
 		layer_id_list[removed_layer_id] = NULL;
 		layer_list->RemoveItem(removed_layer);
 		SetImageSize();
 
 		if (removed_layer->IsActive() == TRUE) {
-			current_layer_index = min_c(current_layer_index,layer_list->CountItems()-1);
-			if (current_layer_index >= 0) {
+			current_layer_index = min_c(current_layer_index, layer_list->CountItems() - 1);
+			if (current_layer_index >= 0)
 				((Layer*)layer_list->ItemAt(current_layer_index))->ActivateLayer(TRUE);
-			}
+
 			active_layer_changed = TRUE;
-		}
-		else {
-			for (int32 i=0;i<layer_list->CountItems();i++) {
+		} else {
+			for (int32 i = 0; i < layer_list->CountItems(); i++) {
 				if (((Layer*)layer_list->ItemAt(i))->IsActive() == TRUE)
 					current_layer_index = i;
 			}
@@ -682,11 +670,11 @@ Image::RemoveLayer(Layer *removed_layer, int32 removed_layer_id)
 
 
 bool
-Image::ToggleLayerVisibility(Layer *toggled_layer, int32)
+Image::ToggleLayerVisibility(Layer* toggled_layer, int32)
 {
 	bool layer_visibility = toggled_layer->IsVisible();
 	int32 number_of_visible_layers = 0;
-	for (int32 i=0;i<layer_list->CountItems();i++) {
+	for (int32 i = 0; i < layer_list->CountItems(); i++) {
 		if (((Layer*)(layer_list->ItemAt(i)))->IsVisible() == true)
 			number_of_visible_layers++;
 	}
@@ -695,13 +683,11 @@ Image::ToggleLayerVisibility(Layer *toggled_layer, int32)
 		toggled_layer->SetVisibility(false);
 		Render();
 		return true;
-	}
-	else if (layer_visibility == false) {
+	} else if (layer_visibility == false) {
 		toggled_layer->SetVisibility(true);
 		Render();
 		return true;
-	}
-	else if (number_of_visible_layers <= 1) {
+	} else if (number_of_visible_layers <= 1) {
 		// cannot make invisible the only layer
 		toggled_layer->SetVisibility(true);
 		return false;
@@ -711,60 +697,58 @@ Image::ToggleLayerVisibility(Layer *toggled_layer, int32)
 
 
 Layer*
-Image::ReturnLowerLayer(Layer *l)
+Image::ReturnLowerLayer(Layer* l)
 {
 	int32 index = layer_list->IndexOf(l);
-	if (index > 0) {
-		return (Layer*)layer_list->ItemAt(index-1);
-	}
+	if (index > 0)
+		return (Layer*)layer_list->ItemAt(index - 1);
 	else
 		return NULL;
 }
 
 
 Layer*
-Image::ReturnUpperLayer(Layer *l)
+Image::ReturnUpperLayer(Layer* l)
 {
 	int32 index = layer_list->IndexOf(l);
 	if (index >= 0) {
-		if (index < layer_list->CountItems()-1)
-			return (Layer*)layer_list->ItemAt(index+1);
+		if (index < layer_list->CountItems() - 1)
+			return (Layer*)layer_list->ItemAt(index + 1);
 		else
 			return NULL;
-	}
-	else
+	} else
 		return NULL;
 }
 
 
 status_t
-Image::InsertLayer(BBitmap *layer_bitmap)
+Image::InsertLayer(BBitmap* layer_bitmap)
 {
-	AddLayer(layer_bitmap,NULL,TRUE);
+	AddLayer(layer_bitmap, NULL, TRUE);
 	return B_OK;
 }
 
 
 void
-Image::UpdateImageStructure(UndoEvent *event)
+Image::UpdateImageStructure(UndoEvent* event)
 {
-	Layer *current_layer = (Layer*)layer_list->ItemAt(current_layer_index);
+	Layer* current_layer = (Layer*)layer_list->ItemAt(current_layer_index);
 	bool current_layer_deleted = FALSE;
 
 	// First empty the layer_list
-	for (int32 i=layer_list->CountItems()-1;i>=0;i--) {
+	for (int32 i = layer_list->CountItems() - 1; i >= 0; i--)
 		layer_list->RemoveItem(i);
-	}
-	UndoAction **actions = event->ReturnActions();
-	BRect updated_rect(1000000,1000000,-1000000,-1000000);
+
+	UndoAction** actions = event->ReturnActions();
+	BRect updated_rect(1000000, 1000000, -1000000, -1000000);
 	Layer* layer_data = event->ReturnLayerData();
 
-	for (int32 i=0;i<event->ActionCount();i++) {
+	for (int32 i = 0; i < event->ActionCount(); i++) {
 		int32 layer_id = actions[i]->LayerId();
-		Layer *layer = layer_id_list[layer_id];
+		Layer* layer = layer_id_list[layer_id];
 		BRect a_rect;
-		if (layer != NULL){
-			BBitmap *bitmap = actions[i]->ApplyUndo(layer->Bitmap(),a_rect);
+		if (layer != NULL) {
+			BBitmap* bitmap = actions[i]->ApplyUndo(layer->Bitmap(), a_rect);
 			if (bitmap == NULL) {
 				// The layer should be deleted
 				if (layer == current_layer)
@@ -773,30 +757,27 @@ Image::UpdateImageStructure(UndoEvent *event)
 				layer_id_list[layer_id] = NULL;
 				delete layer;
 				layer = NULL;
-			}
-			else if (bitmap != layer->Bitmap()) {
+			} else if (bitmap != layer->Bitmap()) {
 				// The bitmap has changed size
 				layer->ChangeBitmap(bitmap);
 			}
 			if (layer != NULL) {
 				// This should be here in order to crete a miniature picture for
 				// each layer that changes.
-				thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,
-					"create mini picture", B_LOW_PRIORITY, layer);
+				thread_id a_thread = spawn_thread(
+					Layer::CreateMiniatureImage, "create mini picture", B_LOW_PRIORITY, layer);
 				resume_thread(a_thread);
 			}
-		}
-		else {
+		} else {
 			// We should add a layer
-			BBitmap *bitmap = actions[i]->ApplyUndo(NULL,a_rect);
+			BBitmap* bitmap = actions[i]->ApplyUndo(NULL, a_rect);
 			if (bitmap != NULL) {
-				layer_id_list[layer_id] = new Layer(bitmap->Bounds(),
-					layer_id, image_view, HS_NORMAL_LAYER, bitmap);
+				layer_id_list[layer_id]
+					= new Layer(bitmap->Bounds(), layer_id, image_view, HS_NORMAL_LAYER, bitmap);
 				layer_id_list[layer_id]->SetVisibility(TRUE);
 				layer_id_list[layer_id]->AddToImage(this);
 				thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,
-					"create mini picture", B_LOW_PRIORITY,
-					layer_id_list[layer_id]);
+					"create mini picture", B_LOW_PRIORITY, layer_id_list[layer_id]);
 				resume_thread(a_thread);
 				BString new_name(layer_data->ReturnLayerName());
 				float new_transparency = layer_data->GetTransparency();
@@ -815,7 +796,7 @@ Image::UpdateImageStructure(UndoEvent *event)
 		updated_rect.bottom = max_c(updated_rect.bottom, a_rect.bottom);
 	}
 	// Here we copy the layers back to layer list
-	for (int32 i = 0;i < event->ActionCount();i++) {
+	for (int32 i = 0; i < event->ActionCount(); i++) {
 		int32 layer_id = actions[i]->LayerId();
 		if (layer_id_list[layer_id] != NULL)
 			layer_list->AddItem(layer_id_list[layer_id]);
@@ -823,13 +804,12 @@ Image::UpdateImageStructure(UndoEvent *event)
 	SetImageSize();
 
 	// Change the current layer to be right layer.
-	if (current_layer_deleted) {
-		current_layer_index = min_c(current_layer_index,layer_list->CountItems()-1);
-	}
-	else {
+	if (current_layer_deleted)
+		current_layer_index = min_c(current_layer_index, layer_list->CountItems() - 1);
+	else
 		current_layer_index = layer_list->IndexOf(current_layer);
-	}
-	Layer *active_layer = ((Layer*)(layer_list->ItemAt(current_layer_index)));
+
+	Layer* active_layer = ((Layer*)(layer_list->ItemAt(current_layer_index)));
 	if (active_layer != NULL)
 		active_layer->ActivateLayer(TRUE);
 
@@ -841,9 +821,9 @@ void
 Image::RegisterLayersWithUndo()
 {
 	if (undo_queue != NULL) {
-		for (int32 i=0;i<layer_list->CountItems();i++) {
-			Layer *layer = (Layer*)layer_list->ItemAt(i);
-			undo_queue->RegisterLayer(layer->Id(),layer->Bitmap());
+		for (int32 i = 0; i < layer_list->CountItems(); i++) {
+			Layer* layer = (Layer*)layer_list->ItemAt(i);
+			undo_queue->RegisterLayer(layer->Id(), layer->Bitmap());
 		}
 	}
 }
@@ -877,14 +857,15 @@ Image::ReturnLayerById(int32 id)
 		Layer* layer = layer_id_list[id];
 
 		return layer;
-	} catch(...) {
+	}
+	catch (...) {
 		return NULL;
 	}
 }
 
 
 bool
-Image::ContainsLayer(Layer *layer)
+Image::ContainsLayer(Layer* layer)
 {
 	if (layer_list->IndexOf(layer) < 0)
 		return FALSE;
@@ -894,24 +875,24 @@ Image::ContainsLayer(Layer *layer)
 
 
 status_t
-Image::ReadLayers(BFile &file)
+Image::ReadLayers(BFile& file)
 {
 	// The previous is the old way of reading layers. This new way is not
 	// compatible with the old files. Old system should be supported somehow
 	// though. First thing to do is to check the endianness of the file.
-	file.Seek(0,SEEK_SET);
+	file.Seek(0, SEEK_SET);
 	int32 lendian;
-	if (file.Read(&lendian,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&lendian, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
-	int64 length = FindProjectFileSection(file,PROJECT_FILE_LAYER_SECTION_ID);
+	int64 length = FindProjectFileSection(file, PROJECT_FILE_LAYER_SECTION_ID);
 
 	if (length == 0)
 		return B_ERROR;
 
 	// Read the layer-count
 	int32 count;
-	if (file.Read(&count,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&count, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 	if (lendian == 0x00000000)
 		count = B_BENDIAN_TO_HOST_INT32(count);
@@ -922,30 +903,30 @@ Image::ReadLayers(BFile &file)
 
 	// Read the used compression-method. Though currently it is unused.
 	int32 compression_method;
-	if (file.Read(&compression_method,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&compression_method, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 	if (lendian == 0x00000000)
 		compression_method = B_BENDIAN_TO_HOST_INT32(compression_method);
 	else if (uint32(lendian) == 0xFFFFFFFF)
 		compression_method = B_LENDIAN_TO_HOST_INT32(compression_method);
 
-	for (int32 i=0;i<count;i++) {
+	for (int32 i = 0; i < count; i++) {
 		// Here read the layers
-		Layer *layer = Layer::readLayer(file, image_view,
-			atomic_add(&next_layer_id, 1), uint32(lendian) == 0xFFFFFFFF,
-			compression_method);
+		Layer* layer = Layer::readLayer(file, image_view, atomic_add(&next_layer_id, 1),
+			uint32(lendian) == 0xFFFFFFFF, compression_method);
 
 		if (layer != NULL) {
 			// Change the layer's id-number
 			layer_list->AddItem(layer);
 			layer->AddToImage(this);
 			// Also inform the undo-queue about this layer.
-			undo_queue->RegisterLayer(layer->Id(),layer->Bitmap());
+			undo_queue->RegisterLayer(layer->Id(), layer->Bitmap());
 
-			layer->ActivateLayer(FALSE);	// We activate only the first read layer
+			layer->ActivateLayer(FALSE); // We activate only the first read layer
 			// if this is the first layer we should create the composite picture
-			if ((layer_list->CountItems() == 1) && (rendered_image == NULL) ) {
-				rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
+			if ((layer_list->CountItems() == 1) && (rendered_image == NULL)) {
+				rendered_image
+					= new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_RGBA32);
 				if (rendered_image->IsValid() == FALSE) {
 					// If the creatioin of composite picture fails we should remove the newly added
 					// layer and inform the user that we cannot add a layer. The method that called
@@ -961,8 +942,8 @@ Image::ReadLayers(BFile &file)
 		}
 	}
 	layer_id_list = new Layer*[next_layer_id];
-	for (int32 i=0;i<layer_list->CountItems();i++) {
-		Layer *layer = (Layer*)layer_list->ItemAt(i);
+	for (int32 i = 0; i < layer_list->CountItems(); i++) {
+		Layer* layer = (Layer*)layer_list->ItemAt(i);
 		layer_id_list[layer->Id()] = layer;
 	}
 
@@ -977,25 +958,25 @@ Image::ReadLayers(BFile &file)
 
 
 int64
-Image::WriteLayers(BFile &file)
+Image::WriteLayers(BFile& file)
 {
 	int64 written_bytes = 0;
 	int32 layer_count = layer_list->CountItems();
-	if (file.Write(&layer_count,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&layer_count, sizeof(int32)) != sizeof(int32))
 		return written_bytes;
 
 	written_bytes += sizeof(int32);
 
 	int32 compression_method = ZLIB_COMPRESSION;
 
-	if (file.Write(&compression_method,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&compression_method, sizeof(int32)) != sizeof(int32))
 		return written_bytes;
 
 	written_bytes += sizeof(int32);
 
-	for (int32 i=0;i<layer_count;i++) {
-		Layer *layer = (Layer*)layer_list->ItemAt(i);
-		written_bytes += layer->writeLayer(file,compression_method);
+	for (int32 i = 0; i < layer_count; i++) {
+		Layer* layer = (Layer*)layer_list->ItemAt(i);
+		written_bytes += layer->writeLayer(file, compression_method);
 	}
 
 	return written_bytes;
@@ -1003,29 +984,29 @@ Image::WriteLayers(BFile &file)
 
 
 status_t
-Image::ReadLayersOldStyle(BFile &file,int32 count)
+Image::ReadLayersOldStyle(BFile& file, int32 count)
 {
-	Layer *layer = NULL;
+	Layer* layer = NULL;
 	// If count is not within reasonable limits we must presume that the file is corrupt.
-	if ( (count<1) || (count > 10000) ) {
+	if ((count < 1) || (count > 10000))
 		return B_ERROR;
-	}
 
 	int32 max_layer_id = -2;
-	while ( count > 0 ){
+	while (count > 0) {
 		// If a layer is NULL we should actually stop reading.
-		layer = Layer::readLayerOldStyle(file,image_view,atomic_add(&next_layer_id,1));
+		layer = Layer::readLayerOldStyle(file, image_view, atomic_add(&next_layer_id, 1));
 		if (layer != NULL) {
 			// Change the layer's id-number
 			layer_list->AddItem(layer);
-			max_layer_id = max_c(max_layer_id,layer->Id());
+			max_layer_id = max_c(max_layer_id, layer->Id());
 			// Also inform the undo-queue about this layer.
-			undo_queue->RegisterLayer(layer->Id(),layer->Bitmap());
+			undo_queue->RegisterLayer(layer->Id(), layer->Bitmap());
 
-			layer->ActivateLayer(FALSE);	// We activate only the first read layer
+			layer->ActivateLayer(FALSE); // We activate only the first read layer
 			// if this is the first layer we should create the composite picture
-			if ((layer_list->CountItems() == 1) && (rendered_image == NULL) ) {
-				rendered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_RGBA32);
+			if ((layer_list->CountItems() == 1) && (rendered_image == NULL)) {
+				rendered_image
+					= new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_RGBA32);
 				if (rendered_image->IsValid() == FALSE) {
 					// If the creatioin of composite picture fails we should remove the newly added
 					// layer and inform the user that we cannot add a layer. The method that called
@@ -1042,8 +1023,8 @@ Image::ReadLayersOldStyle(BFile &file,int32 count)
 		count--;
 	}
 
-	layer_id_list = new Layer*[max_layer_id+1];
-	for (int32 i=0;i<layer_list->CountItems();i++) {
+	layer_id_list = new Layer*[max_layer_id + 1];
+	for (int32 i = 0; i < layer_list->CountItems(); i++) {
 		layer = (Layer*)layer_list->ItemAt(i);
 		layer_id_list[layer->Id()] = layer;
 	}
@@ -1062,21 +1043,22 @@ Image::ReadLayersOldStyle(BFile &file,int32 count)
 void
 Image::CalculateThumbnails()
 {
-	thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage,"create mini picture",B_LOW_PRIORITY,layer_list->ItemAt(current_layer_index));
+	thread_id a_thread = spawn_thread(Layer::CreateMiniatureImage, "create mini picture",
+		B_LOW_PRIORITY, layer_list->ItemAt(current_layer_index));
 	resume_thread(a_thread);
 
-	a_thread = spawn_thread(calculate_thumbnail_image,"create mini picture",B_LOW_PRIORITY,this);
+	a_thread = spawn_thread(calculate_thumbnail_image, "create mini picture", B_LOW_PRIORITY, this);
 	resume_thread(a_thread);
 }
 
 
 int32
-Image::calculate_thumbnail_image(void *data)
+Image::calculate_thumbnail_image(void* data)
 {
-	Image *this_pointer = (Image*)data;
+	Image* this_pointer = (Image*)data;
 
-	BBitmap *from = this_pointer->rendered_image;
-	BBitmap *to = this_pointer->thumbnail_image;
+	BBitmap* from = this_pointer->rendered_image;
+	BBitmap* to = this_pointer->thumbnail_image;
 
 	union {
 		uint8 bytes[4];
@@ -1088,47 +1070,49 @@ Image::calculate_thumbnail_image(void *data)
 	color.bytes[2] = 0xFF;
 	color.bytes[3] = 0x00;
 
-	int32 miniature_width = (int32)((to->Bounds().Width()+1) * (min_c(from->Bounds().Width()/from->Bounds().Height(),1)));
-	int32 miniature_height = (int32)((to->Bounds().Height()+1) * (min_c(from->Bounds().Height()/from->Bounds().Width(),1)));
+	int32 miniature_width = (int32)(
+		(to->Bounds().Width() + 1) * (min_c(from->Bounds().Width() / from->Bounds().Height(), 1)));
+	int32 miniature_height = (int32)(
+		(to->Bounds().Height() + 1) * (min_c(from->Bounds().Height() / from->Bounds().Width(), 1)));
 
 	// Here we copy the contents of the_bitmap to miniature image.
 	// by using a DDA-scaling algorithm first take the dx and dy variables
-	float dx = 	(from->Bounds().Width() + 1)/(float)miniature_width;
-	float dy = 	(from->Bounds().Height() + 1)/(float)miniature_height;
-	int32 x=0,y=0;
+	float dx = (from->Bounds().Width() + 1) / (float)miniature_width;
+	float dy = (from->Bounds().Height() + 1) / (float)miniature_height;
+	int32 x = 0, y = 0;
 
-	int32 x_offset_left = (int32)floor((float)(to->Bounds().Width()+1-miniature_width)/2.0);
-	int32 x_offset_right = (int32)ceil((float)(to->Bounds().Width()+1-miniature_width)/2.0);
+	int32 x_offset_left = (int32)floor((float)(to->Bounds().Width() + 1 - miniature_width) / 2.0);
+	int32 x_offset_right = (int32)ceil((float)(to->Bounds().Width() + 1 - miniature_width) / 2.0);
 
-	int32 y_offset = (int32)((to->Bounds().Height()+1-miniature_height)/2);
+	int32 y_offset = (int32)((to->Bounds().Height() + 1 - miniature_height) / 2);
 
 	// The bitmap might be changed and deleted while we are accessing it.
-	int32	b_bpr = from->BytesPerRow()/4;
-	uint32 *big_image;
-	uint32 *small_image = (uint32*)to->Bits();
+	int32 b_bpr = from->BytesPerRow() / 4;
+	uint32* big_image;
+	uint32* small_image = (uint32*)to->Bits();
 	big_image = (uint32*)from->Bits();
 	// Clear the parts that we do not set.
-	for (int32 i=0;i<(to->Bounds().Width()+1)*y_offset;i++)
+	for (int32 i = 0; i < (to->Bounds().Width() + 1) * y_offset; i++)
 		*small_image++ = color.word;
 
 	while (y < miniature_height) {
-		for (int32 i=0;i<x_offset_left;i++)
+		for (int32 i = 0; i < x_offset_left; i++)
 			*small_image++ = color.word;
 
 		while (x < miniature_width) {
-			*small_image++ = *(big_image + ((int32)(y*dy))*b_bpr + (int32)(x*dx));
+			*small_image++ = *(big_image + ((int32)(y * dy)) * b_bpr + (int32)(x * dx));
 			x++;
 		}
 		y++;
 
-		for (int32 i=0;i<x_offset_right;i++)
+		for (int32 i = 0; i < x_offset_right; i++)
 			*small_image++ = color.word;
 
 		x = 0;
 	}
 
 	// Clear the rest of the image
-	while (small_image != ((uint32*)to->Bits() + to->BitsLength()/4))
+	while (small_image != ((uint32*)to->Bits() + to->BitsLength() / 4))
 		*small_image++ = color.word;
 
 	return B_OK;
@@ -1136,21 +1120,22 @@ Image::calculate_thumbnail_image(void *data)
 
 
 status_t
-Image::RegisterDitheredUser(void *user)
+Image::RegisterDitheredUser(void* user)
 {
 	if (dithered_users->CountItems() == 0) {
-		dithered_image = new BBitmap(BRect(0,0,image_width-1,image_height-1),B_CMAP8);
+		dithered_image = new BBitmap(BRect(0, 0, image_width - 1, image_height - 1), B_CMAP8);
 		if (dithered_image->IsValid() == FALSE) {
 			delete dithered_image;
 			dithered_image = NULL;
 			return FALSE;
 		}
 
-		int32 previous_users = atomic_add(&color_candidate_users,1);
+		int32 previous_users = atomic_add(&color_candidate_users, 1);
 
 		if ((previous_users == 0) && (color_candidates == NULL)) {
 			// Create the candidate-map. This is done in a separate thread
-			thread_id candidate_creator_thread = spawn_thread(candidate_creator,"candidate_creator_thread",B_NORMAL_PRIORITY,this);
+			thread_id candidate_creator_thread = spawn_thread(
+				candidate_creator, "candidate_creator_thread", B_NORMAL_PRIORITY, this);
 			resume_thread(candidate_creator_thread);
 		}
 
@@ -1165,7 +1150,7 @@ Image::RegisterDitheredUser(void *user)
 
 
 status_t
-Image::UnregisterDitheredUser(void *user)
+Image::UnregisterDitheredUser(void* user)
 {
 	dithered_users->RemoveItem(user);
 
@@ -1182,65 +1167,60 @@ int32
 Image::candidate_creator(void*)
 {
 	if (color_candidates == NULL) {
-		BScreen *screen = new BScreen();
-		const color_map *map = screen->ColorMap();
+		BScreen* screen = new BScreen();
+		const color_map* map = screen->ColorMap();
 		delete screen;
-		for (int32 i=0;i<256;i++) {
+		for (int32 i = 0; i < 256; i++) {
 			color_list[i] = map->color_list[i];
 		}
 
-		color_entry *candidates = new color_entry[2*32768];
-		rgb_color *rgb_color_map = new rgb_color[32768];
-		for (int32 i=0;i<32768;i++) {
-//			rgb_color_map[i].blue = 255 * (float)((i) & 0x1F) / (float)0x1F;
-//			rgb_color_map[i].green = 255 * (float)((i >> 5) & 0x1F) / (float)0x1F;
-//			rgb_color_map[i].red = 255 * (float)((i >> 10) & 0x1F) / (float)0x1F;
+		color_entry* candidates = new color_entry[2 * 32768];
+		rgb_color* rgb_color_map = new rgb_color[32768];
+		for (int32 i = 0; i < 32768; i++) {
 			rgb_color_map[i].blue = (i & 0x1F) << 3;
-			rgb_color_map[i].green = ((i>>5) & 0x1F) << 3;
-			rgb_color_map[i].red = ((i>>10) & 0x1F) << 3;
-
+			rgb_color_map[i].green = ((i >> 5) & 0x1F) << 3;
+			rgb_color_map[i].red = ((i >> 10) & 0x1F) << 3;
 		}
 
-		for (int32 i=0;i<32768;i++) {
+		for (int32 i = 0; i < 32768; i++) {
 			// Find the two closest color-indexes for the RGB15 color i.
-			uint8 c1 = 0, c2 = 0;	// The color indexes
-			float p1,p2;	// and their probabilities.
+			uint8 c1 = 0, c2 = 0; // The color indexes
+			float p1, p2; // and their probabilities.
 
 			int32 dist1 = 1000000;
 			int32 dist2 = 1000000;
 
-			rgb_color color1,color2;
+			rgb_color color1, color2;
 			color1 = rgb_color_map[i];
-			for (int32 j=0;j<256;j++) {
+			for (int32 j = 0; j < 256; j++) {
 				color2 = color_list[j];
-				int32 new_dist = abs(color1.red-color2.red)+abs(color1.green-color2.green)+abs(color1.blue-color2.blue);
+				int32 new_dist = abs(color1.red - color2.red) + abs(color1.green - color2.green)
+					+ abs(color1.blue - color2.blue);
 				if (new_dist < dist1) {
 					c2 = c1;
 					c1 = j;
 					dist2 = dist1;
 					dist1 = new_dist;
-				}
-				else if (new_dist < dist2) {
+				} else if (new_dist < dist2) {
 					c2 = j;
 					dist2 = new_dist;
 				}
 			}
 
 			// Here calculate the probabilities for the colors.
-			if (dist2 > 3*dist1) {
+			if (dist2 > 3 * dist1) {
 				p1 = 1.0;
 				p2 = 0.0;
-			}
-			else {
-				p1 = 0.5 + (float)(dist1-dist2)/(float)(3*dist1)*0.5;
-				p2 = 1.0-p1;
+			} else {
+				p1 = 0.5 + (float)(dist1 - dist2) / (float)(3 * dist1) * 0.5;
+				p2 = 1.0 - p1;
 			}
 
-			candidates[2*i].value = c1;
-			candidates[2*i].probability = p1;
+			candidates[2 * i].value = c1;
+			candidates[2 * i].probability = p1;
 
-			candidates[2*i+1].value = c2;
-			candidates[2*i+1].probability = p1+p2;
+			candidates[2 * i + 1].value = c2;
+			candidates[2 * i + 1].probability = p1 + p2;
 		}
 		color_candidates = candidates;
 		delete[] rgb_color_map;
@@ -1251,28 +1231,28 @@ Image::candidate_creator(void*)
 
 
 int32
-Image::enter_render(void *data)
+Image::enter_render(void* data)
 {
-	Image *this_pointer = (Image*)data;
+	Image* this_pointer = (Image*)data;
 
 	BRect rect;
 
 	thread_id sender;
-	receive_data(&sender,&rect,sizeof(BRect));
+	receive_data(&sender, &rect, sizeof(BRect));
 
 	return this_pointer->DoRender(rect);
 }
 
 
 int32
-Image::enter_render_nobg(void *data)
+Image::enter_render_nobg(void* data)
 {
-	Image *this_pointer = (Image*)data;
+	Image* this_pointer = (Image*)data;
 
 	BRect rect;
 
 	thread_id sender;
-	receive_data(&sender,&rect,sizeof(BRect));
+	receive_data(&sender, &rect, sizeof(BRect));
 
 	return this_pointer->DoRender(rect, false);
 }
@@ -1291,24 +1271,24 @@ Image::DoRender(BRect area, bool bg)
 	// these variables are for row-length of the bitmaps in uint32
 	// e.g how many 32-bit groups there are in a row
 	int32 srl;
-	int32 drl = rendered_image->BytesPerRow()/4;
+	int32 drl = rendered_image->BytesPerRow() / 4;
 
 	// these variables are for width and height of area
-	int32 width = area.IntegerWidth()+1;
-	int32 height = area.IntegerHeight()+1;
+	int32 width = area.IntegerWidth() + 1;
+	int32 height = area.IntegerHeight() + 1;
 
 	// these variables are for source and destination bitmaps' start-coordinates
-	int32 s_start_x,s_start_y;
-	int32 d_start_x,d_start_y;
+	int32 s_start_x, s_start_y;
+	int32 d_start_x, d_start_y;
 	d_start_x = (int32)area.left;
 	d_start_y = (int32)area.top;
 
 	// these are the pointers to source and destination bitmaps.
-	uint32 *s_bits;
-	uint32 *d_bits;
+	uint32* s_bits;
+	uint32* d_bits;
 
 	int32 layer_count = layer_list->CountItems();
-	Layer *layer;
+	Layer* layer;
 	int32 layer_number = 0;
 
 	// First clear the image for the required part.
@@ -1334,8 +1314,7 @@ Image::DoRender(BRect area, bool bg)
 			color2 = settings.GetUInt32(skBgColor2, color2);
 		}
 
-		BitmapUtilities::CheckerBitmap(rendered_image,
-			color1, color2, gridSize, &area);
+		BitmapUtilities::CheckerBitmap(rendered_image, color1, color2, gridSize, &area);
 	} else {
 		union color_conversion white_alpha;
 		white_alpha.word = 0xFFFFFFFF;
@@ -1345,7 +1324,7 @@ Image::DoRender(BRect area, bool bg)
 	}
 
 	// Then mix each layer over the previous ones.
-	const uint32 *FixedAlphaTable;
+	const uint32* FixedAlphaTable;
 
 	while (layer_number < layer_count) {
 		layer = (Layer*)layer_list->ItemAt(layer_number);
@@ -1353,7 +1332,7 @@ Image::DoRender(BRect area, bool bg)
 		if (layer->IsVisible()) {
 			FixedAlphaTable = layer->ReturnFixedAlphaTable();
 
-			srl = layer->Bitmap()->BytesPerRow()/4;
+			srl = layer->Bitmap()->BytesPerRow() / 4;
 			s_start_x = d_start_x;
 			s_start_y = d_start_y;
 			s_bits = (uint32*)layer->Bitmap()->Bits();
@@ -1363,16 +1342,16 @@ Image::DoRender(BRect area, bool bg)
 			uint32 target;
 
 			// adjust the pointers to correct starting-positions
-			s_bits += srl*s_start_y + s_start_x;
-			d_bits += drl*d_start_y + d_start_x;
+			s_bits += srl * s_start_y + s_start_x;
+			d_bits += drl * d_start_y + d_start_x;
 
 			uint32 As;
 			uint32 Ad;
 
 			// Alpha-value is presence of pixel, hence 0x00 is transparent and 0xff for alpha
 			// is fully visible.
-			for (int32 y=0;y<height;++y) {
-				for (int32 x=0;x<width;++x) {
+			for (int32 y = 0; y < height; ++y) {
+				for (int32 x = 0; x < width; ++x) {
 					s = *s_bits;
 					d = *d_bits;
 
@@ -1397,14 +1376,14 @@ Image::DoRender(BRect area, bool bg)
 
 
 int32
-Image::enter_dither(void *data)
+Image::enter_dither(void* data)
 {
-	Image *this_pointer = (Image*)data;
+	Image* this_pointer = (Image*)data;
 
 	BRect rect;
 
 	thread_id sender;
-	receive_data(&sender,&rect,sizeof(BRect));
+	receive_data(&sender, &rect, sizeof(BRect));
 
 	return this_pointer->DoDither(rect);
 }
@@ -1413,103 +1392,98 @@ Image::enter_dither(void *data)
 int32
 Image::DoDither(BRect area)
 {
-// Here we try to dither with the N-candidate method.
-// The candidates for a color are in the array color_candidates.
-// each color has four entries of struct candidate. We take a
-// random number which decides which of those four entries to use.
+	// Here we try to dither with the N-candidate method.
+	// The candidates for a color are in the array color_candidates.
+	// each color has four entries of struct candidate. We take a
+	// random number which decides which of those four entries to use.
 
 	if (color_candidates != NULL) {
 		if (dithered_image != NULL) {
 			area = area & dithered_image->Bounds();
 			if (area.IsValid() == TRUE) {
-				uint8 *dithered_bits = (uint8*)dithered_image->Bits();
+				uint8* dithered_bits = (uint8*)dithered_image->Bits();
 				uint32 dithered_bpr = dithered_image->BytesPerRow();
 
-				uint32 *bgra_bits = (uint32*)rendered_image->Bits();
-				uint32 bgra_bpr = rendered_image->BytesPerRow()/4;
+				uint32* bgra_bits = (uint32*)rendered_image->Bits();
+				uint32 bgra_bpr = rendered_image->BytesPerRow() / 4;
 
 				int32 left = (int32)area.left;
 				int32 right = (int32)area.right;
 				int32 top = (int32)area.top;
 				int32 bottom = (int32)area.bottom;
 
-				float one_per_1024 = 1.0/1024;
+				float one_per_1024 = 1.0 / 1024;
 
 				union {
 					uint8 bytes[4];
 					uint32 word;
 				} color;
 
-				for (int32 y=top;y<=bottom;y++) {
-					for (int32 x=left;x<=right;x++) {
+				for (int32 y = top; y <= bottom; y++) {
+					for (int32 x = left; x <= right; x++) {
 						float random_number = (rand() % 1024) * one_per_1024;
 
-						color.word = *(bgra_bits + x + y*bgra_bpr);
+						color.word = *(bgra_bits + x + y * bgra_bpr);
 
-						int32 rgb15 = ( ((color.bytes[2] & 0xf8) << 7) |
-										((color.bytes[1] & 0xf8) << 2) |
-										((color.bytes[0] & 0xf8) >> 3) );
-//						int32 rgb15 = ( ((int32)((color.bytes[2] / 255.0)*0x1f)<<10) |
-//										((int32)((color.bytes[1] / 255.0)*0x1f)<<5) |
-//										((int32)(color.bytes[0] / 255.0)*0x1f) );
+						int32 rgb15
+							= (((color.bytes[2] & 0xf8) << 7)
+							| ((color.bytes[1] & 0xf8) << 2)
+							| ((color.bytes[0] & 0xf8) >> 3));
 						int8 value;
-						if (color_candidates[2*rgb15].probability < random_number)
-							value = color_candidates[2*rgb15].value;
+						if (color_candidates[2 * rgb15].probability < random_number)
+							value = color_candidates[2 * rgb15].value;
 						else
-							value = color_candidates[2*rgb15+1].value;
+							value = color_candidates[2 * rgb15 + 1].value;
 
-						*(dithered_bits + x + y*dithered_bpr) = value;
+						*(dithered_bits + x + y * dithered_bpr) = value;
 					}
 				}
-
 			}
 		}
 		return B_OK;
-	}
-	else {
+	} else
 		return B_ERROR;
-	}
 }
 
 
 int32
-Image::enter_render_preview(void *data)
+Image::enter_render_preview(void* data)
 {
-	Image *this_pointer = (Image*)data;
+	Image* this_pointer = (Image*)data;
 
 	BRect rect;
 	int32 resolution;
 	thread_id sender;
-	resolution = receive_data(&sender,&rect,sizeof(BRect));
+	resolution = receive_data(&sender, &rect, sizeof(BRect));
 
-	return this_pointer->DoRenderPreview(rect,resolution);
+	return this_pointer->DoRenderPreview(rect, resolution);
 }
 
 
 int32
-Image::DoRenderPreview(BRect area,int32 resolution)
+Image::DoRenderPreview(BRect area, int32 resolution)
 {
-	if (layer_list->CountItems() >= 1){
+	if (layer_list->CountItems() >= 1) {
 		// We take pointers to bitmaps of all visible layers.
-		uint32 **layer_bits = new uint32*[layer_list->CountItems()];
-		uint32 *layer_bprs = new uint32[layer_list->CountItems()];
-		float *alpha = new float[layer_list->CountItems()];
-		uint8 *blend = new uint8[layer_list->CountItems()];
+		uint32** layer_bits = new uint32*[layer_list->CountItems()];
+		uint32* layer_bprs = new uint32[layer_list->CountItems()];
+		float* alpha = new float[layer_list->CountItems()];
+		uint8* blend = new uint8[layer_list->CountItems()];
 
 		int32 visible_layer_count = 0;
-		for (int32 i=0;i<layer_list->CountItems();i++) {
-			Layer *layer = (Layer*)layer_list->ItemAt(i);
+		for (int32 i = 0; i < layer_list->CountItems(); i++) {
+			Layer* layer = (Layer*)layer_list->ItemAt(i);
 			if (layer->IsVisible() == TRUE) {
 				layer_bits[visible_layer_count] = (uint32*)layer->Bitmap()->Bits();
-				layer_bprs[visible_layer_count] = layer->Bitmap()->BytesPerRow()/4;
+				layer_bprs[visible_layer_count] = layer->Bitmap()->BytesPerRow() / 4;
 				alpha[visible_layer_count] = layer->GetTransparency();
 				blend[visible_layer_count] = layer->GetBlendMode();
 				visible_layer_count++;
 			}
 		}
 
-		uint32 *composite_bits = (uint32*)rendered_image->Bits();
-		uint32	composite_bpr = rendered_image->BytesPerRow()/4;
+		uint32* composite_bits = (uint32*)rendered_image->Bits();
+		uint32 composite_bpr = rendered_image->BytesPerRow() / 4;
 		// Then we iterate through all the pixels in the composite image and
 		// set them properly.
 		int32 width = rendered_image->Bounds().IntegerWidth();
@@ -1541,15 +1515,14 @@ Image::DoRenderPreview(BRect area,int32 resolution)
 			color2 = settings.GetUInt32(skBgColor2, color2);
 		}
 
-		BitmapUtilities::CheckerBitmap(rendered_image,
-			color1, color2, gridSize, &area);
+		BitmapUtilities::CheckerBitmap(rendered_image, color1, color2, gridSize, &area);
 
-		for (int32 y=top;y<=bottom;y+=resolution) {
-			for (int32 x=left;x<=right;x+=resolution) {
+		for (int32 y = top; y <= bottom; y += resolution) {
+			for (int32 x = left; x <= right; x += resolution) {
 				// Get the target value by combining the layers' pixels
-				uint32 target = *(composite_bits + x + y*composite_bpr);
-				for (int32 j=0;j<visible_layer_count;j++) {
-					uint32 layer = layer_bits[j][x + y*layer_bprs[j]];
+				uint32 target = *(composite_bits + x + y * composite_bpr);
+				for (int32 j = 0; j < visible_layer_count; j++) {
+					uint32 layer = layer_bits[j][x + y * layer_bprs[j]];
 
 					union color_conversion src;
 					src.word = layer;
@@ -1558,19 +1531,17 @@ Image::DoRenderPreview(BRect area,int32 resolution)
 					target = src_over_fixed_blend(target, src.word, blend[j]);
 				}
 				// Then copy the target-value to proper places in the composite picture
-				int32 x_dimension = min_c(resolution,width+1-x);
-				int32 y_dimension = min_c(resolution,height+1-y);
-				for (int32 dy=0;dy<y_dimension;dy++) {
-					for (int32 dx=0;dx<x_dimension;dx++) {
-						composite_bits[x+dx + (y+dy)*composite_bpr] = target;
-					}
+				int32 x_dimension = min_c(resolution, width + 1 - x);
+				int32 y_dimension = min_c(resolution, height + 1 - y);
+				for (int32 dy = 0; dy < y_dimension; dy++) {
+					for (int32 dx = 0; dx < x_dimension; dx++)
+						composite_bits[x + dx + (y + dy) * composite_bpr] = target;
 				}
 			}
 		}
 
-		for (int32 i=0;i<visible_layer_count;i++) {
+		for (int32 i = 0; i < visible_layer_count; i++)
 			layer_bits[i] = NULL;
-		}
 
 		delete[] blend;
 		delete[] alpha;

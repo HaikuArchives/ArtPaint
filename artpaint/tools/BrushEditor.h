@@ -18,13 +18,11 @@
 	if it does not fit it will be as small as possible.
 
 */
-
 #ifndef BRUSH_EDITOR_H
 #define BRUSH_EDITOR_H
 
 #include <Box.h>
 #include <View.h>
-
 
 #include "Brush.h"
 
@@ -82,7 +80,6 @@ public:
 	virtual							~BrushView();
 
 	virtual	void					Draw(BRect updateRect);
-	virtual	void					MessageReceived(BMessage* message);
 	virtual	void					MouseDown(BPoint where);
 	virtual	void					MouseMoved(BPoint where, uint32 transit,
 										const BMessage* messge);
@@ -96,5 +93,6 @@ private:
 			Brush*					fBrush;
 			BBitmap*				fBrushPreview;
 };
+
 
 #endif	// BRUSH_EDITOR_H

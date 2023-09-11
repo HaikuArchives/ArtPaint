@@ -33,7 +33,6 @@ using ArtPaint::Interface::NumberSliderControl;
 class FreeLineTool : public DrawingTool {
 public:
 									FreeLineTool();
-	virtual							~FreeLineTool();
 
 			int32					UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*				UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -66,5 +65,6 @@ private:
 			BCheckBox*				fUseBrush;
 			NumberSliderControl*	fPressureSlider;
 };
+
 
 #endif	// FREE_LINE_TOOL_H

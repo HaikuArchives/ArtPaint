@@ -62,8 +62,7 @@ ResourceServer::GetBitmap(int32 id, BBitmap** bitmap)
 
 
 status_t
-ResourceServer::GetBitmap(type_code type, int32 id, float width, float height,
-	BBitmap** bitmap)
+ResourceServer::GetBitmap(type_code type, int32 id, float width, float height, BBitmap** bitmap)
 {
 	if (!_Init())
 		return B_ERROR;
@@ -78,7 +77,7 @@ ResourceServer::GetBitmap(type_code type, int32 id, float width, float height,
 				delete *bitmap;
 				*bitmap = NULL;
 			}
-		} else if (type == B_COLOR_8_BIT_TYPE)  {
+		} else if (type == B_COLOR_8_BIT_TYPE) {
 			*bitmap = new (std::nothrow) BBitmap(BRect(0.0, 0.0, width - 1.0,
 				height - 1.0), B_CMAP8);
 			if (*bitmap)
@@ -133,8 +132,7 @@ ResourceServer::GetPicture(int32 id, BPicture** picture)
 
 
 status_t
-ResourceServer::GetPicture(type_code type, int32 id, float width, float height,
-	BPicture** picture)
+ResourceServer::GetPicture(type_code type, int32 id, float width, float height, BPicture** picture)
 {
 	status_t status = B_ERROR;
 
@@ -202,8 +200,7 @@ ResourceServer::_FillPicture(const BBitmap* bitmap, BPicture* picture)
 	if (!bitmap || !picture)
 		return status;
 
-	BBitmap* offscreenBitmap = new (std::nothrow) BBitmap(bitmap->Bounds(),
-		B_RGBA32, true);
+	BBitmap* offscreenBitmap = new (std::nothrow) BBitmap(bitmap->Bounds(), B_RGBA32, true);
 	if (offscreenBitmap) {
 		BView* view = new (std::nothrow) BView(bitmap->Bounds(), "offscreen",
 			B_FOLLOW_NONE, B_WILL_DRAW);
@@ -225,43 +222,43 @@ ResourceServer::_FillPicture(const BBitmap* bitmap, BPicture* picture)
 
 
 status_t
-ResourceServer::_GetResourceInfo(int32 id, type_code* type, float* width,
-	float* height)
+ResourceServer::_GetResourceInfo(int32 id, type_code* type, float* width, float* height)
 {
 	status_t status = B_OK;
 
 	switch (id) {
-		case LEFT_ARROW: {
+		case LEFT_ARROW:
 		case RIGHT_ARROW:
 		case LEFT_ARROW_PUSHED:
 		case RIGHT_ARROW_PUSHED:
+		{
 			*width = 9.0;
 			*height = 13.0;
 			*type = B_COLOR_8_BIT_TYPE;
-		}	break;
-
-		case OK_BUTTON: {
+		} break;
+		case OK_BUTTON:
 		case CANCEL_BUTTON:
 		case OK_BUTTON_PUSHED:
 		case CANCEL_BUTTON_PUSHED:
+		{
 			*width = 16.0;
 			*height = 16.0;
 			*type = B_COLOR_8_BIT_TYPE;
-		}	break;
-
-		case POP_UP_LIST: {
+		} break;
+		case POP_UP_LIST:
 		case POP_UP_LIST_PUSHED:
+		{
 			*width = 10.0;
 			*height = 20.0;
 			*type = B_COLOR_8_BIT_TYPE;
-		}	break;
-
-		default: {
+		} break;
+		default:
+		{
 			*width = 0.0;
 			*height = 0.0;
 			status = B_ERROR;
 			*type = B_ANY_TYPE;
-		}	break;
+		}
 	}
 
 	return status;

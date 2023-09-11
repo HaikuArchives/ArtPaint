@@ -9,7 +9,6 @@
 #ifndef UNDO_ACTION_H
 #define	UNDO_ACTION_H
 
-
 #include <Rect.h>
 
 #include "ToolScript.h"
@@ -31,15 +30,15 @@ enum action_type {
 };
 
 
-
 class UndoQueue;
 class UndoEvent;
 
 class UndoAction {
-	friend 	class	UndoQueue;
+	friend class UndoQueue;
+
 	BRect	 			bounding_rect;
-	BBitmap 			**undo_bitmaps;
-	BRect				*undo_rects;
+	BBitmap**			undo_bitmaps;
+	BRect*				undo_rects;
 	int32 				undo_bitmap_count;
 
 	int32				layer_id;
@@ -47,18 +46,18 @@ class UndoAction {
 	action_type			type;
 
 
-	ToolScript			*tool_script;
-	ManipulatorSettings	*manipulator_settings;
+	ToolScript*			tool_script;
+	ManipulatorSettings*	manipulator_settings;
 	manipulator_type	manip_type;
 	int32				add_on_id;
 
-	UndoQueue			*queue;
-	UndoEvent			*event;
+	UndoQueue*			queue;
+	UndoEvent*			event;
 
 	bool				size_has_changed;
 
-	void				StoreDifferences(BBitmap *old,BBitmap *current,BRect area);
-	BRect				RestoreDifference(BBitmap*,BBitmap*);
+	void				StoreDifferences(BBitmap*old,	BBitmap* current, BRect area);
+	BRect				RestoreDifference(BBitmap*, BBitmap*);
 
 	enum bitmap_difference {
 		NO_DIFFERENCE,
@@ -66,25 +65,25 @@ class UndoAction {
 		GREAT_DIFFERENCE
 	};
 
-
 public:
-	UndoAction(int32 layer,action_type t=NO_ACTION,BRect rect=BRect(0,0,-1,-1));
-	UndoAction(int32 layer,int32 merged_layer,BRect rect=BRect(0,0,-1,-1));
-	UndoAction(int32 layer,ToolScript *script,BRect rect);
-	UndoAction(int32 layer,ManipulatorSettings*,BRect rect,manipulator_type type,int32 aoid=-1);
+				UndoAction(int32 layer, action_type t = NO_ACTION, BRect rect = BRect(0, 0, -1, -1));
+				UndoAction(int32 layer, int32 merged_layer, BRect rect = BRect(0, 0, -1, -1));
+				UndoAction(int32 layer, ToolScript* script, BRect rect);
+				UndoAction(int32 layer, ManipulatorSettings*, BRect rect, manipulator_type type,
+					int32 aoid = -1);
 
-	~UndoAction();
+				~UndoAction();
 
-status_t	StoreUndo(BBitmap*);
-BBitmap*	ApplyUndo(BBitmap*,BRect&);
+	status_t	StoreUndo(BBitmap*);
+	BBitmap*	ApplyUndo(BBitmap*, BRect&);
 
 
-void		SetEvent(UndoEvent *e) { event = e; }
-void		SetQueue(UndoQueue *q) { queue = q; }
+	void		SetEvent(UndoEvent* e) { event = e; }
+	void		SetQueue(UndoQueue* q) { queue = q; }
 
-int32		LayerId() { return layer_id; }
-bool		IsEmpty() { return type == NO_ACTION; }
+	int32		LayerId() { return layer_id; }
+	bool		IsEmpty() { return type == NO_ACTION; }
 };
 
 
-#endif
+#endif // UNDO_ACTION_H

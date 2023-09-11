@@ -15,8 +15,8 @@
 #include "BitmapUtilities.h"
 #include "Brush.h"
 #include "BrushEditor.h"
-#include "CoordinateReader.h"
 #include "CoordinateQueue.h"
+#include "CoordinateReader.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
@@ -40,8 +40,8 @@
 
 
 BrushTool::BrushTool()
-	: DrawingTool(B_TRANSLATE("Brush tool"), "b",
-		BRUSH_TOOL)
+	:
+	DrawingTool(B_TRANSLATE("Brush tool"), "b", BRUSH_TOOL)
 {
 	// Options will also have some brush-data options.
 	fOptions = 0;
@@ -49,13 +49,8 @@ BrushTool::BrushTool()
 }
 
 
-BrushTool::~BrushTool()
-{
-}
-
-
 ToolScript*
-BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoint)
+BrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint viewPoint)
 {
 	B_UNUSED(buttons)
 	B_UNUSED(viewPoint)
@@ -68,13 +63,13 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	if (brush == NULL)
 		return NULL;
 
-	CoordinateReader* coordinate_reader =
-		new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false);
+	CoordinateReader* coordinate_reader
+		= new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false);
 	if (coordinate_reader == NULL)
 		return NULL;
 
-	ToolScript* the_script = new (std::nothrow) ToolScript(Type(),
-		fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script = new (std::nothrow)
+		ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
 	if (the_script == NULL) {
 		delete coordinate_reader;
 		return NULL;
@@ -92,8 +87,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 
 	BRect bitmap_bounds = buffer->Bounds();
 
-	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(bitmap_bounds,
-		buffer->ColorSpace());
+	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(bitmap_bounds, buffer->ColorSpace());
 	if (tmpBuffer == NULL) {
 		delete coordinate_reader;
 		delete the_script;
@@ -101,8 +95,8 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 		return NULL;
 	}
 
-	float brush_width_per_2 = floor(brush->Width()/2);
-	float brush_height_per_2 = floor(brush->Height()/2);
+	float brush_width_per_2 = floor(brush->Width() / 2);
+	float brush_height_per_2 = floor(brush->Height() / 2);
 
 	BPoint prev_point;
 
@@ -112,8 +106,7 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	if (buttons == B_SECONDARY_MOUSE_BUTTON)
 		use_fg_color = false;
 
-	new_color.word =
-		RGBColorToBGRA(((PaintApplication*)be_app)->Color(use_fg_color));
+	new_color.word = RGBColorToBGRA(((PaintApplication*)be_app)->Color(use_fg_color));
 
 	union color_conversion clear_color;
 	clear_color.word = new_color.word;
@@ -127,17 +120,16 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	the_script->AddPoint(point);
 
 	if (coordinate_reader->GetPoint(point) == B_OK) {
-		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
-			point.y - brush_height_per_2), selection);
+		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2),
+			selection);
 	}
 
-	updated_rect = BRect(point.x - brush_width_per_2,
-		point.y - brush_height_per_2, point.x + brush_width_per_2,
-		point.y + brush_height_per_2);
+	updated_rect = BRect(point.x - brush_width_per_2, point.y - brush_height_per_2,
+		point.x + brush_width_per_2, point.y + brush_height_per_2);
 	SetLastUpdatedRect(updated_rect);
 	buffer->Lock();
-	BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-		tmpBuffer, updated_rect, src_over_fixed, new_color.word);
+	BitmapUtilities::CompositeBitmapOnSource(
+		buffer, srcBuffer, tmpBuffer, updated_rect, src_over_fixed, new_color.word);
 	buffer->Unlock();
 	prev_point = point;
 
@@ -145,16 +137,15 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 	imageUpdater->AddRect(updated_rect);
 
 	while (coordinate_reader->GetPoint(point) == B_OK) {
-		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2,
-			point.y - brush_height_per_2), selection);
-		updated_rect = BRect(point.x - brush_width_per_2,
-			point.y - brush_height_per_2, point.x + brush_width_per_2,
-			point.y + brush_height_per_2);
+		brush->draw(tmpBuffer, BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2),
+			selection);
+		updated_rect = BRect(point.x - brush_width_per_2, point.y - brush_height_per_2,
+			point.x + brush_width_per_2, point.y + brush_height_per_2);
 		imageUpdater->AddRect(updated_rect);
 		SetLastUpdatedRect(updated_rect | LastUpdatedRect());
 		buffer->Lock();
-		BitmapUtilities::CompositeBitmapOnSource(buffer, srcBuffer,
-			tmpBuffer, updated_rect, src_over_fixed, new_color.word);
+		BitmapUtilities::CompositeBitmapOnSource(
+			buffer, srcBuffer, tmpBuffer, updated_rect, src_over_fixed, new_color.word);
 		buffer->Unlock();
 		prev_point = point;
 	}
@@ -163,14 +154,6 @@ BrushTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint viewPoi
 
 	delete imageUpdater;
 	delete coordinate_reader;
-
-//	test_brush(point,new_color);
-//	if (view->LockLooper() == true) {
-//		view->UpdateImage(view->Bounds());
-//		view->Invalidate();
-//		view->UnlockLooper();
-//	}
-
 	delete srcBuffer;
 	delete tmpBuffer;
 
@@ -202,17 +185,15 @@ BrushTool::ToolCursor() const
 const char*
 BrushTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Painting with a brush.")
-		: B_TRANSLATE("Brush tool"));
+	return (isInUse ? B_TRANSLATE("Painting with a brush.") : B_TRANSLATE("Brush tool"));
 }
 
 
 status_t
-BrushTool::readSettings(BFile &file, bool isLittleEndian)
+BrushTool::readSettings(BFile& file, bool isLittleEndian)
 {
 	int32 length;
-	if (file.Read(&length,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&length, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	if (isLittleEndian)
@@ -221,7 +202,7 @@ BrushTool::readSettings(BFile &file, bool isLittleEndian)
 		length = B_BENDIAN_TO_HOST_INT32(length);
 
 	int32 version;
-	if (file.Read(&version,sizeof(int32)) != sizeof(int32))
+	if (file.Read(&version, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	if (isLittleEndian)
@@ -239,10 +220,9 @@ BrushTool::readSettings(BFile &file, bool isLittleEndian)
 	if (file.Read(&info, sizeof(struct brush_info)) != sizeof(struct brush_info))
 		return B_ERROR;
 
-	if (info.width == 0 || info.width > 500 ||
-		info.height == 0 || info.height > 500 ||
-		info.shape > HS_IRREGULAR_BRUSH || info.hardness > 1.0 ||
-		info.angle > 180) {
+	if (info.width == 0 || info.width > 500
+		|| info.height == 0 || info.height > 500
+		|| info.shape > HS_IRREGULAR_BRUSH || info.hardness > 1.0 || info.angle > 180) {
 		info.width = 30;
 		info.height = 30;
 		info.angle = 0;
@@ -257,18 +237,18 @@ BrushTool::readSettings(BFile &file, bool isLittleEndian)
 
 
 status_t
-BrushTool::writeSettings(BFile &file)
+BrushTool::writeSettings(BFile& file)
 {
 	int32 type = Type();
 	if (file.Write(&type, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 settings_size = sizeof(struct brush_info) + sizeof(int32);
-	if (file.Write(&settings_size,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&settings_size, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	int32 settings_version = TOOL_SETTINGS_STRUCT_VERSION;
-	if (file.Write(&settings_version,sizeof(int32)) != sizeof(int32))
+	if (file.Write(&settings_version, sizeof(int32)) != sizeof(int32))
 		return B_ERROR;
 
 	brush_info info;
@@ -284,9 +264,7 @@ BrushTool::writeSettings(BFile &file)
 
 
 BrushToolConfigView::BrushToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
-	if (BLayout* layout = GetLayout()) {
-		//layout->AddView(BrushEditor::CreateBrushEditor(brush));
-	}
 }

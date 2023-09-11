@@ -11,7 +11,6 @@
 #ifndef GLOBAL_SETUP_WINDOW_H
 #define GLOBAL_SETUP_WINDOW_H
 
-
 #include <Control.h>
 #include <Window.h>
 
@@ -43,7 +42,6 @@ private:
 	class	MiscControlView;
 			MiscControlView*		fMiscControlView;
 
-
 			BTabView*				fTabView;
 	static	GlobalSetupWindow*		fSetupWindow;
 };
@@ -51,40 +49,39 @@ private:
 
 class PreviewPane : public BView {
 public:
-				PreviewPane(BRect frame);
-	virtual		~PreviewPane();
+						PreviewPane(BRect frame);
+	virtual				~PreviewPane();
 
-	virtual void 	Draw(BRect updateRect);
-	virtual void	MessageReceived(BMessage* message);
+	virtual void 		Draw(BRect updateRect);
 
-	BBitmap*	previewBitmap() { return fPreviewBitmap; }
+			BBitmap*	previewBitmap() { return fPreviewBitmap; }
 
-	void		Redraw() { Draw(Bounds()); }
+			void		Redraw() { Draw(Bounds()); }
 
 private:
-	BBitmap*	fPreviewBitmap;
+			BBitmap*	fPreviewBitmap;
 };
 
 
 class ColorSwatch : public BControl {
 public:
-				ColorSwatch(BRect frame, const char* name);
-	virtual		~ColorSwatch();
+						ColorSwatch(BRect frame, const char* name);
+	virtual				~ColorSwatch();
 
-	virtual void 	Draw(BRect updateRect);
-	virtual void	MessageReceived(BMessage* message);
-	virtual void	MouseDown(BPoint point);
+	virtual void 		Draw(BRect updateRect);
+	virtual void		MessageReceived(BMessage* message);
+	virtual void		MouseDown(BPoint point);
 
-	BBitmap*	swatchBitmap() { return fSwatchBitmap; }
+			BBitmap*	swatchBitmap() { return fSwatchBitmap; }
 
-	void		Redraw() { Draw(Bounds()); }
+			void		Redraw() { Draw(Bounds()); }
 
-	void		SetColor(uint32 new_color);
-	uint32		Color() { return fColor; }
+			void		SetColor(uint32 new_color);
+			uint32		Color() { return fColor; }
 private:
-	BBitmap*	fSwatchBitmap;
-	uint32		fColor;
+			BBitmap*	fSwatchBitmap;
+			uint32		fColor;
 };
 
 
-#endif
+#endif // GLOBAL_SETUP_WINDOW_H

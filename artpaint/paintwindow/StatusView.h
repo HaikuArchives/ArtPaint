@@ -16,7 +16,6 @@
 #include <StringView.h>
 #include <View.h>
 
-
 #include "Brush.h"
 
 
@@ -84,8 +83,8 @@ public:
 	static	void				sendMessageToAll(BMessage* message);
 
 private:
-			bool	IsPointOverForegroundColor(BPoint where);
-			void	SetHighAndLowColors(const rgb_color& color);
+			bool				IsPointOverForegroundColor(BPoint where);
+			void				SetHighAndLowColors(const rgb_color& color);
 
 private:
 			float				foreground_color_percentage;
@@ -111,5 +110,6 @@ private:
 			BBitmap*			fBrushPreview;
 	static	BList				list_of_views;
 };
+
 
 #endif	// STATUS_VIEW_H

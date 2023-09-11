@@ -32,104 +32,102 @@
 #define MIN_WAVE_LENGTH		3
 #define MAX_WAVE_DAMPENING	100
 
+
 class WaveManipulatorSettings : public ManipulatorSettings {
 public:
-		WaveManipulatorSettings()
-			: ManipulatorSettings() {
-			center = BPoint(0,0);
-			wave_length = 30;
-			wave_amount = 30;
-		}
+	WaveManipulatorSettings()
+		: ManipulatorSettings() {
+		center = BPoint(0, 0);
+		wave_length = 30;
+		wave_amount = 30;
+	}
 
-		WaveManipulatorSettings(const WaveManipulatorSettings& s)
-			: ManipulatorSettings() {
-			center = s.center;
-			wave_length = s.wave_length;
-			wave_amount = s.wave_amount;
-		}
+	WaveManipulatorSettings(const WaveManipulatorSettings& s)
+		: ManipulatorSettings() {
+		center = s.center;
+		wave_length = s.wave_length;
+		wave_amount = s.wave_amount;
+	}
 
+	WaveManipulatorSettings& operator=(const WaveManipulatorSettings& s) {
+		center = s.center;
+		wave_length = s.wave_length;
+		wave_amount = s.wave_amount;
+		return *this;
+	}
 
-		WaveManipulatorSettings& operator=(const WaveManipulatorSettings& s) {
-			center = s.center;
-			wave_length = s.wave_length;
-			wave_amount = s.wave_amount;
-			return *this;
-		}
+	bool operator==(WaveManipulatorSettings s) {
+		return ((center == s.center) && (wave_length == s.wave_length)
+				&& (wave_amount == s.wave_amount));
+	}
 
-
-		bool operator==(WaveManipulatorSettings s) {
-			return ((center == s.center) && (wave_length == s.wave_length)
-					&& (wave_amount == s.wave_amount));
-		}
-
-		BPoint	center;
-		float	wave_length;
-		float	wave_amount;
+	BPoint	center;
+	float	wave_length;
+	float	wave_amount;
 };
 
 
 class WaveManipulatorView;
 
 class WaveManipulator : public WindowGUIManipulator {
-BBitmap				*preview_bitmap;
-BBitmap				*copy_of_the_preview_bitmap;
+	BBitmap*	preview_bitmap;
+	BBitmap*	copy_of_the_preview_bitmap;
 
 
-WaveManipulatorSettings	settings;
-WaveManipulatorSettings	previous_settings;
+	WaveManipulatorSettings	settings;
+	WaveManipulatorSettings	previous_settings;
 
-WaveManipulatorView		*config_view;
+	WaveManipulatorView*	config_view;
 
-float					*sin_table;
+	float*		sin_table;
 
-int32					last_calculated_resolution;
-int32					lowest_available_quality;
-int32					highest_available_quality;
+	int32		last_calculated_resolution;
+	int32		lowest_available_quality;
+	int32		highest_available_quality;
 
-Selection*				selection;
+	Selection*	selection;
 
 public:
-			WaveManipulator(BBitmap*);
-			~WaveManipulator();
+				WaveManipulator(BBitmap*);
+				~WaveManipulator();
 
-void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-void		Reset();
-void		SetPreviewBitmap(BBitmap*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
+	void		MouseDown(BPoint, uint32 buttons, BView*, bool);
+	int32		PreviewBitmap(bool full_quality = FALSE, BRegion* = NULL);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+	void		Reset();
+	void		SetPreviewBitmap(BBitmap*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
 
-ManipulatorSettings*	ReturnSettings();
+	ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(const BMessenger& target);
+	BView*		MakeConfigurationView(const BMessenger& target);
 
-void		ChangeSettings(ManipulatorSettings*);
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+	void		ChangeSettings(ManipulatorSettings*);
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 
-
 class WaveManipulatorView : public WindowGUIManipulatorView {
-		BMessenger				*target;
-		WaveManipulator			*manipulator;
-		BSlider					*wave_length_slider;
-		BSlider					*wave_amount_slider;
-		BSpinner*				centerX;
-		BSpinner*				centerY;
-		WaveManipulatorSettings	settings;
+	BMessenger*	target;
+	WaveManipulator*	manipulator;
+	BSlider*	wave_length_slider;
+	BSlider*	wave_amount_slider;
+	BSpinner*	centerX;
+	BSpinner*	centerY;
+	WaveManipulatorSettings	settings;
 
-		bool					preview_started;
+	bool		preview_started;
 
 public:
-		WaveManipulatorView(BRect,WaveManipulator*, const BMessenger& target);
-		~WaveManipulatorView();
+				WaveManipulatorView(BRect,WaveManipulator*, const BMessenger& target);
+				~WaveManipulatorView();
 
-void	AttachedToWindow();
-void	AllAttached();
-void	MessageReceived(BMessage*);
-void	ChangeSettings(WaveManipulatorSettings *s);
+	void		AttachedToWindow();
+	void		AllAttached();
+	void		MessageReceived(BMessage*);
+	void		ChangeSettings(WaveManipulatorSettings *s);
 };
 
 
@@ -198,65 +196,69 @@ float reciprocal_of_square_root(float number)
 #define EXP_LSB    0x00100000 /* 1 << EXP_SHIFTS                   */
 #define MANT_MASK  0x000FFFFF /* Mask to extract mantissa          */
 
-int        sqrt_tab[SQRT_TAB_SIZE];
+int sqrt_tab[SQRT_TAB_SIZE];
 
 void
 init_sqrt_tab()
 {
-        int           i;
-        double        f;
-        unsigned int  *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
+	int i;
+	double f;
+	unsigned int* fi = (unsigned int *) &f + MOST_SIG_OFFSET;
 
-        for (i = 0; i < SQRT_TAB_SIZE/2; i++)
-        {
-                f = 0; /* Clears least sig part */
-                *fi = (i << MANT_SHIFTS) | (EXP_BIAS << EXP_SHIFTS);
-                f = sqrt(f);
-                sqrt_tab[i] = *fi & MANT_MASK;
+	for (i = 0; i < SQRT_TAB_SIZE/2; i++) {
+		f = 0; /* Clears least sig part */
+		*fi = (i << MANT_SHIFTS) | (EXP_BIAS << EXP_SHIFTS);
+		f = sqrt(f);
+		sqrt_tab[i] = *fi & MANT_MASK;
 
-                f = 0; /* Clears least sig part */
-                *fi = (i << MANT_SHIFTS) | ((EXP_BIAS + 1) << EXP_SHIFTS);
-                f = sqrt(f);
-                sqrt_tab[i + SQRT_TAB_SIZE/2] = *fi & MANT_MASK;
-        }
+		f = 0; /* Clears least sig part */
+		*fi = (i << MANT_SHIFTS) | ((EXP_BIAS + 1) << EXP_SHIFTS);
+		f = sqrt(f);
+		sqrt_tab[i + SQRT_TAB_SIZE/2] = *fi & MANT_MASK;
+	}
 }
+
 
 double
 fsqrt(double f)
 {
-        unsigned int e;
-        unsigned int   *fi = (unsigned int *) &f + MOST_SIG_OFFSET;
+	unsigned int e;
+	unsigned int* fi = (unsigned int *) &f + MOST_SIG_OFFSET;
 
-        if (f == 0.0) return(0.0);
-        e = (*fi >> EXP_SHIFTS) - EXP_BIAS;
-        *fi &= MANT_MASK;
-        if (e & 1)
-                *fi |= EXP_LSB;
-        e >>= 1;
-        *fi = (sqrt_tab[*fi >> MANT_SHIFTS]) |
-              ((e + EXP_BIAS) << EXP_SHIFTS);
-        return(f);
+	if (f == 0.0)
+		return (0.0);
+
+	e = (*fi >> EXP_SHIFTS) - EXP_BIAS;
+	*fi &= MANT_MASK;
+
+	if (e & 1)
+		*fi |= EXP_LSB;
+
+	e >>= 1;
+	*fi = (sqrt_tab[*fi >> MANT_SHIFTS])
+		| ((e + EXP_BIAS) << EXP_SHIFTS);
+
+	return(f);
 }
+
 
 void
 dump_sqrt_tab()
 {
-        int        i, nl = 0;
+	int i, nl = 0;
 
-        printf("unsigned int sqrt_tab[] = {\n");
-        for (i = 0; i < SQRT_TAB_SIZE-1; i++)
-        {
-                printf("0x%x,", sqrt_tab[i]);
-                nl++;
-                if (nl > 8) { nl = 0; putchar('\n'); }
-        }
-        printf("0x%x\n", sqrt_tab[SQRT_TAB_SIZE-1]);
-        printf("};\n");
+	printf("unsigned int sqrt_tab[] = {\n");
+	for (i = 0; i < SQRT_TAB_SIZE-1; i++) {
+		printf("0x%x,", sqrt_tab[i]);
+		nl++;
+		if (nl > 8) {
+			nl = 0;
+			putchar('\n');
+		}
+	}
+	printf("0x%x\n", sqrt_tab[SQRT_TAB_SIZE - 1]);
+	printf("};\n");
 }
 #endif
 
-
 #endif
-
-
-

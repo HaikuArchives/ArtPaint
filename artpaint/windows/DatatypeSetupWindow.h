@@ -17,18 +17,19 @@
 
 class DatatypeSetupWindow : public BWindow {
 public:
-	static	void					ShowWindow(translator_id translatorId);
-	static	void					ChangeHandler(translator_id translatorId);
+	static	void		ShowWindow(translator_id translatorId);
+	static	void		ChangeHandler(translator_id translatorId);
 
 private:
-									DatatypeSetupWindow();
-	virtual							~DatatypeSetupWindow();
+						DatatypeSetupWindow();
+	virtual				~DatatypeSetupWindow();
 
-			void					_ChangeHandler(translator_id translatorId);
+			void		_ChangeHandler(translator_id translatorId);
 
 private:
-			BView*					fRootView;
+			BView*		fRootView;
 	static	DatatypeSetupWindow*	fDatatypeSetupWindow;
 };
 
-#endif
+
+#endif // DATATYPE_SETUP_WINDOW_H

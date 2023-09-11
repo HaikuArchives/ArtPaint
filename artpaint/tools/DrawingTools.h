@@ -27,4 +27,4 @@
 #include "TextTool.h"
 
 
-#endif
+#endif // DRAWING_TOOLS_H

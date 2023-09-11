@@ -35,43 +35,37 @@
 
 
 EllipseTool::EllipseTool()
-	: DrawingTool(B_TRANSLATE("Ellipse tool"), "p",
-		ELLIPSE_TOOL)
+	:
+	DrawingTool(B_TRANSLATE("Ellipse tool"), "p", ELLIPSE_TOOL)
 {
-	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION |
-		ANTI_ALIASING_LEVEL_OPTION;
+	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION | ANTI_ALIASING_LEVEL_OPTION;
 	fOptionsCount = 4;
 
-	SetOption(FILL_ENABLED_OPTION,B_CONTROL_OFF);
-	SetOption(SIZE_OPTION,1);
-	SetOption(SHAPE_OPTION,HS_CENTER_TO_CORNER);
+	SetOption(FILL_ENABLED_OPTION, B_CONTROL_OFF);
+	SetOption(SIZE_OPTION, 1);
+	SetOption(SHAPE_OPTION, HS_CENTER_TO_CORNER);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION, B_CONTROL_OFF);
 }
 
 
-EllipseTool::~EllipseTool()
-{
-}
-
-
 ToolScript*
-EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
+EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 {
 	// Wait for the last_updated_region to become empty
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-	BWindow *window = view->Window();
+	BWindow* window = view->Window();
 	drawing_mode old_mode;
-	BBitmap *bitmap = view->ReturnImage()->ReturnActiveBitmap();
+	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
-		((PaintApplication*)be_app)->Color(true));
-	Selection *selection = view->GetSelection();
+	ToolScript* the_script
+		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	Selection* selection = view->GetSelection();
 
 	if (window != NULL) {
 		BPoint original_point;
-		BRect bitmap_rect,old_rect,new_rect;
+		BRect bitmap_rect, old_rect, new_rect;
 		window->Lock();
 		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
@@ -83,7 +77,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 		rgb_color c = ((PaintApplication*)be_app)->Color(use_fg_color);
 		original_point = point;
-		bitmap_rect = BRect(point,point);
+		bitmap_rect = BRect(point, point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
 		window->Lock();
 		view->SetHighColor(c);
@@ -97,12 +91,12 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 				view->StrokeEllipse(new_rect);
 				old_rect = new_rect;
 			}
-			view->getCoords(&point,&buttons);
+			view->getCoords(&point, &buttons);
 			window->Unlock();
 			bitmap_rect = MakeRectFromPoints(original_point, point);
 			if (modifiers() & B_SHIFT_KEY) {
 				// Make the ellipse circular.
-				float max_distance = max_c(bitmap_rect.Height(),bitmap_rect.Width());
+				float max_distance = max_c(bitmap_rect.Height(), bitmap_rect.Width());
 				if (original_point.x == bitmap_rect.left)
 					bitmap_rect.right = bitmap_rect.left + max_distance;
 				else
@@ -128,17 +122,15 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 					bitmap_rect.top = bitmap_rect.top - y_distance;
 				else
 					bitmap_rect.bottom = bitmap_rect.bottom + y_distance;
-
 			}
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 			snooze(20 * 1000);
 		}
 
-		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
+		BitmapDrawer* drawer = new BitmapDrawer(bitmap);
 		bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
 		bool use_anti_aliasing = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
-		drawer->DrawEllipse(bitmap_rect,RGBColorToBGRA(c), use_fill,
-			use_anti_aliasing, selection);
+		drawer->DrawEllipse(bitmap_rect, RGBColorToBGRA(c), use_fill, use_anti_aliasing, selection);
 		delete drawer;
 
 		the_script->AddPoint(bitmap_rect.LeftTop());
@@ -146,7 +138,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 		the_script->AddPoint(bitmap_rect.RightBottom());
 		the_script->AddPoint(bitmap_rect.LeftBottom());
 
-		bitmap_rect.InsetBy(-1,-1);
+		bitmap_rect.InsetBy(-1, -1);
 		window->Lock();
 		view->SetHighColor(old_color);
 		view->SetDrawingMode(old_mode);
@@ -161,7 +153,7 @@ EllipseTool::UseTool(ImageView *view, uint32 buttons, BPoint point, BPoint)
 
 
 int32
-EllipseTool::UseToolWithScript(ToolScript*,BBitmap*)
+EllipseTool::UseToolWithScript(ToolScript*, BBitmap*)
 {
 	return B_OK;
 }
@@ -184,9 +176,8 @@ EllipseTool::ToolCursor() const
 const char*
 EllipseTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Drawing an ellipse.")
-		: B_TRANSLATE("Ellipse: SHIFT for circle, ALT for centered"));
+	return (isInUse ? B_TRANSLATE("Drawing an ellipse.")
+					: B_TRANSLATE("Ellipse: SHIFT for circle, ALT for centered"));
 }
 
 
@@ -194,23 +185,20 @@ EllipseTool::HelpString(bool isInUse) const
 
 
 EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
-		message->AddInt32("option",FILL_ENABLED_OPTION);
+		message->AddInt32("option", FILL_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
-		fFillEllipse =
-			new BCheckBox(B_TRANSLATE("Fill ellipse"),
-				message);
+		fFillEllipse = new BCheckBox(B_TRANSLATE("Fill ellipse"), message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", ANTI_ALIASING_LEVEL_OPTION);
 		message->AddInt32("value", 0x00000000);
 
-		fAntiAlias =
-			new BCheckBox(B_TRANSLATE("Enable antialiasing"),
-			message);
+		fAntiAlias = new BCheckBox(B_TRANSLATE("Enable antialiasing"), message);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.AddGroup(B_VERTICAL, kWidgetSpacing)

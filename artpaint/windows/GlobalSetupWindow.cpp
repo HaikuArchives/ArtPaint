@@ -15,8 +15,8 @@
 
 #include "BitmapUtilities.h"
 #include "BrushStoreWindow.h"
-#include "Cursors.h"
 #include "ColorPalette.h"
+#include "Cursors.h"
 #include "LayerWindow.h"
 #include "ManipulatorWindow.h"
 #include "NumberControl.h"
@@ -51,70 +51,71 @@ using ArtPaint::Interface::NumberControl;
 using ArtPaint::Interface::NumberSliderControl;
 
 
-const uint32 kCloseAndApplySettings				= 'caas';
-const uint32 kCloseAndDiscardSettings			= 'cads';
+const uint32 kCloseAndApplySettings = 'caas';
+const uint32 kCloseAndDiscardSettings = 'cads';
 
-const uint32 kColorWindowFeelChanged			= '_col';
-const uint32 kToolSelectionWindowFeelChanged	= '_sel';
-const uint32 kToolSetupWindowFeelChanged		= '_set';
-const uint32 kLayerWindowFeelChanged			= '_lay';
-const uint32 kBrushWindowFeelChanged			= '_bru';
-const uint32 kEffectsWindowFeelChanged			= '_eff';
+const uint32 kColorWindowFeelChanged = '_col';
+const uint32 kToolSelectionWindowFeelChanged = '_sel';
+const uint32 kToolSetupWindowFeelChanged = '_set';
+const uint32 kLayerWindowFeelChanged = '_lay';
+const uint32 kBrushWindowFeelChanged = '_bru';
+const uint32 kEffectsWindowFeelChanged = '_eff';
 
-const uint32 kSetUndoDisabled					= '_sud';
-const uint32 kSetUnlimitedUndo					= '_suu';
-const uint32 kSetAdjustableUndo					= '_sau';
-const uint32 kUndoDepthAdjusted					= '_uda';
+const uint32 kSetUndoDisabled = '_sud';
+const uint32 kSetUnlimitedUndo = '_suu';
+const uint32 kSetAdjustableUndo = '_sau';
+const uint32 kUndoDepthAdjusted = '_uda';
 
-const uint32 kToolCursorMode					= '_too';
-const uint32 kCrossHairCursorMode				= '_cro';
-const uint32 kConfirmShutdownChanged			= '_con';
+const uint32 kToolCursorMode = '_too';
+const uint32 kCrossHairCursorMode = '_cro';
+const uint32 kConfirmShutdownChanged = '_con';
 
-const uint32 kBgColorsChanged					= '_bgc';
-const uint32 kBgGridSizeChanged					= '_bgg';
-const uint32 kBgRevertToDefaults     			= '_bgd';
+const uint32 kBgColorsChanged = '_bgc';
+const uint32 kBgGridSizeChanged = '_bgg';
+const uint32 kBgRevertToDefaults = '_bgd';
 
-const uint32 kDrop								= '_drp';
+const uint32 kDrop = '_drp';
 
 
 GlobalSetupWindow* GlobalSetupWindow::fSetupWindow = NULL;
 
 
-class GlobalSetupWindow::WindowFeelView : public BView {
+class GlobalSetupWindow::WindowFeelView : public BView
+{
 public:
 						WindowFeelView();
-	virtual				~WindowFeelView() {}
 
-	virtual	void		AttachedToWindow();
-	virtual	void		MessageReceived(BMessage* message);
+	virtual void 		AttachedToWindow();
+	virtual void 		MessageReceived(BMessage* message);
 
-			void		ApplyChanges();
+			void 		ApplyChanges();
 
 private:
-		window_feel		fToolWindowFeel;
-		window_feel		fToolSetupWindowFeel;
-		window_feel		fPaletteWindowFeel;
-		window_feel		fBrushWindowFeel;
-		window_feel		fLayerWindowFeel;
-		window_feel		fAddOnWindowFeel;
+			window_feel fToolWindowFeel;
+			window_feel fToolSetupWindowFeel;
+			window_feel fPaletteWindowFeel;
+			window_feel fBrushWindowFeel;
+			window_feel fLayerWindowFeel;
+			window_feel fAddOnWindowFeel;
 
-		BCheckBox*		fColor;
-		BCheckBox*		fSelection;
-		BCheckBox*		fSetup;
-		BCheckBox*		fLayer;
-		BCheckBox*		fBrush;
-		BCheckBox*		fEffects;
+			BCheckBox* 	fColor;
+			BCheckBox* 	fSelection;
+			BCheckBox* 	fSetup;
+			BCheckBox* 	fLayer;
+			BCheckBox* 	fBrush;
+			BCheckBox* 	fEffects;
 };
 
 
 GlobalSetupWindow::WindowFeelView::WindowFeelView()
-	:	BView("window feel view", 0)
-	, fToolWindowFeel(B_NORMAL_WINDOW_FEEL)
-	, fToolSetupWindowFeel(B_NORMAL_WINDOW_FEEL)
-	, fPaletteWindowFeel(B_NORMAL_WINDOW_FEEL)
-	, fBrushWindowFeel(B_NORMAL_WINDOW_FEEL)
-	, fLayerWindowFeel(B_NORMAL_WINDOW_FEEL)
-	, fAddOnWindowFeel(B_NORMAL_WINDOW_FEEL)
+	:
+	BView("window feel view", 0),
+	fToolWindowFeel(B_NORMAL_WINDOW_FEEL),
+	fToolSetupWindowFeel(B_NORMAL_WINDOW_FEEL),
+	fPaletteWindowFeel(B_NORMAL_WINDOW_FEEL),
+	fBrushWindowFeel(B_NORMAL_WINDOW_FEEL),
+	fLayerWindowFeel(B_NORMAL_WINDOW_FEEL),
+	fAddOnWindowFeel(B_NORMAL_WINDOW_FEEL)
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BMessage settings;
@@ -128,29 +129,22 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 		settings.FindInt32(skAddOnWindowFeel, (int32*)&fAddOnWindowFeel);
 	}
 
-	fColor = new BCheckBox(B_TRANSLATE("Colors"),
-		new BMessage(kColorWindowFeelChanged));
+	fColor = new BCheckBox(B_TRANSLATE("Colors"), new BMessage(kColorWindowFeelChanged));
 	fColor->SetValue(fPaletteWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fSelection =
-		new BCheckBox(B_TRANSLATE("Tools"),
-		new BMessage(kToolSelectionWindowFeelChanged));
+	fSelection = new BCheckBox(B_TRANSLATE("Tools"), new BMessage(kToolSelectionWindowFeelChanged));
 	fSelection->SetValue(fToolWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fSetup = new BCheckBox(B_TRANSLATE("Tool setup"),
-		new BMessage(kToolSetupWindowFeelChanged));
+	fSetup = new BCheckBox(B_TRANSLATE("Tool setup"), new BMessage(kToolSetupWindowFeelChanged));
 	fSetup->SetValue(fToolSetupWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fLayer = new BCheckBox(B_TRANSLATE("Layers"),
-		new BMessage(kLayerWindowFeelChanged));
+	fLayer = new BCheckBox(B_TRANSLATE("Layers"), new BMessage(kLayerWindowFeelChanged));
 	fLayer->SetValue(fLayerWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fBrush = new BCheckBox(B_TRANSLATE("Brushes"),
-		new BMessage(kBrushWindowFeelChanged));
+	fBrush = new BCheckBox(B_TRANSLATE("Brushes"), new BMessage(kBrushWindowFeelChanged));
 	fBrush->SetValue(fBrushWindowFeel == B_FLOATING_APP_WINDOW_FEEL);
 
-	fEffects = new BCheckBox(B_TRANSLATE("Add-ons"),
-		new BMessage(kEffectsWindowFeelChanged));
+	fEffects = new BCheckBox(B_TRANSLATE("Add-ons"), new BMessage(kEffectsWindowFeelChanged));
 	fEffects->SetValue(fAddOnWindowFeel == B_FLOATING_SUBSET_WINDOW_FEEL);
 
 	BStringView* label = new BStringView("label", B_TRANSLATE("Keep in front"));
@@ -166,11 +160,11 @@ GlobalSetupWindow::WindowFeelView::WindowFeelView()
 			.Add(fLayer, 2, 0)
 			.Add(fSelection, 2, 1)
 			.Add(fSetup, 2, 2)
-		.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
+			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
 		.End()
 		.AddGlue()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING);
 }
 
 
@@ -193,51 +187,50 @@ void
 GlobalSetupWindow::WindowFeelView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kColorWindowFeelChanged: {
+		case kColorWindowFeelChanged:
+		{
 			if (fColor->Value() == B_CONTROL_OFF)
 				fPaletteWindowFeel = B_NORMAL_WINDOW_FEEL;
 			else
 				fPaletteWindowFeel = B_FLOATING_APP_WINDOW_FEEL;
-		}	break;
-
-		case kToolSelectionWindowFeelChanged: {
+		} break;
+		case kToolSelectionWindowFeelChanged:
+		{
 			if (fSelection->Value() == B_CONTROL_OFF)
 				fToolWindowFeel = B_NORMAL_WINDOW_FEEL;
 			else
 				fToolWindowFeel = B_FLOATING_APP_WINDOW_FEEL;
-		}	break;
-
-		case kToolSetupWindowFeelChanged: {
+		} break;
+		case kToolSetupWindowFeelChanged:
+		{
 			if (fSetup->Value() == B_CONTROL_OFF)
 				fToolSetupWindowFeel = B_NORMAL_WINDOW_FEEL;
 			else
 				fToolSetupWindowFeel = B_FLOATING_APP_WINDOW_FEEL;
-		}	break;
-
-		case kLayerWindowFeelChanged: {
+		} break;
+		case kLayerWindowFeelChanged:
+		{
 			if (fLayer->Value() == B_CONTROL_OFF)
 				fLayerWindowFeel = B_NORMAL_WINDOW_FEEL;
 			else
 				fLayerWindowFeel = B_FLOATING_APP_WINDOW_FEEL;
-		}	break;
-
-		case kBrushWindowFeelChanged: {
+		} break;
+		case kBrushWindowFeelChanged:
+		{
 			if (fBrush->Value() == B_CONTROL_OFF)
 				fBrushWindowFeel = B_NORMAL_WINDOW_FEEL;
 			else
 				fBrushWindowFeel = B_FLOATING_APP_WINDOW_FEEL;
-		}	break;
-
-		case kEffectsWindowFeelChanged: {
+		} break;
+		case kEffectsWindowFeelChanged:
+		{
 			if (fEffects->Value() == B_CONTROL_OFF)
 				fAddOnWindowFeel = B_NORMAL_WINDOW_FEEL;
 			else
 				fAddOnWindowFeel = B_FLOATING_SUBSET_WINDOW_FEEL;
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -257,53 +250,53 @@ GlobalSetupWindow::WindowFeelView::ApplyChanges()
 // #pragma mark -- UndoControlView
 
 
-class GlobalSetupWindow::UndoControlView : public BView {
+class GlobalSetupWindow::UndoControlView : public BView
+{
 public:
-						UndoControlView();
-	virtual				~UndoControlView() {}
+					UndoControlView();
+	virtual 		~UndoControlView() {}
 
-	virtual	void		AttachedToWindow();
-	virtual	void		MessageReceived(BMessage* message);
+	virtual void 	AttachedToWindow();
+	virtual void 	MessageReceived(BMessage* message);
 
-			void		ApplyChanges();
-
-private:
-			void		_Update(int32 undoDepth, bool enableInput);
+			void 	ApplyChanges();
 
 private:
-		int32			fUndoDepth;
-		BRadioButton*	fUnlimitedUndo;
-		BRadioButton*	fAdjustableUndo;
-		BRadioButton*	fDisabledUndo;
-		NumberControl*	fAdjustableUndoInput;
+			void 	_Update(int32 undoDepth, bool enableInput);
+
+private:
+	int32 			fUndoDepth;
+	BRadioButton* 	fUnlimitedUndo;
+	BRadioButton* 	fAdjustableUndo;
+	BRadioButton* 	fDisabledUndo;
+	NumberControl* 	fAdjustableUndoInput;
 };
 
 
 GlobalSetupWindow::UndoControlView::UndoControlView()
-	: BView("undo control view", 0)
-	, fUndoDepth(UndoQueue::ReturnDepth())
+	:
+	BView("undo control view", 0),
+	fUndoDepth(UndoQueue::ReturnDepth())
 {
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-		.AddGroup (B_VERTICAL, B_USE_SMALL_SPACING)
-			.Add(fDisabledUndo =
-					new BRadioButton(B_TRANSLATE("Off"),
-					new BMessage(kSetUndoDisabled)))
-			.Add(fUnlimitedUndo =
-					new BRadioButton(B_TRANSLATE("Unlimited"),
-					new BMessage(kSetUnlimitedUndo)))
-			.Add(fAdjustableUndo =
-					new BRadioButton(B_TRANSLATE("Adjustable"),
-					new BMessage(kSetAdjustableUndo)))
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
+			.Add(fDisabledUndo
+				= new BRadioButton(B_TRANSLATE("Off"), new BMessage(kSetUndoDisabled)))
+			.Add(fUnlimitedUndo
+				= new BRadioButton(B_TRANSLATE("Unlimited"), new BMessage(kSetUnlimitedUndo)))
+			.Add(fAdjustableUndo
+				= new BRadioButton(B_TRANSLATE("Adjustable"), new BMessage(kSetAdjustableUndo)))
 		.End()
-		.AddGroup (B_HORIZONTAL)
+		.AddGroup(B_HORIZONTAL)
 			.AddStrut(B_USE_DEFAULT_SPACING)
-			.Add(fAdjustableUndoInput = new NumberControl(B_TRANSLATE("Undo steps:"), "20",
-					new BMessage(kUndoDepthAdjusted)))
+			.Add(fAdjustableUndoInput
+				= new NumberControl(B_TRANSLATE("Undo steps:"), "20",
+				new BMessage(kUndoDepthAdjusted)))
 			.AddGlue()
 		.End()
 		.AddGlue()
-		.SetInsets(B_USE_BIG_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		.SetInsets(
+			B_USE_BIG_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 
 	fAdjustableUndoInput->SetValue(0);
 	fAdjustableUndoInput->SetEnabled(false);
@@ -339,27 +332,26 @@ void
 GlobalSetupWindow::UndoControlView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kSetUndoDisabled: {
+		case kSetUndoDisabled:
+		{
 			_Update(0, false);
-		}	break;
-
-		case kSetUnlimitedUndo: {
+		} break;
+		case kSetUnlimitedUndo:
+		{
 			_Update(INFINITE_QUEUE_DEPTH, false);
-		}	break;
-
-		case kSetAdjustableUndo: {
+		} break;
+		case kSetAdjustableUndo:
+		{
 			_Update(fAdjustableUndoInput->Value(), true);
-		}	break;
-
-		case kUndoDepthAdjusted: {
+		} break;
+		case kUndoDepthAdjusted:
+		{
 			int32 value = min_c(fAdjustableUndoInput->Value(), 100);
 			fAdjustableUndoInput->SetValue(value);
 			fUndoDepth = value;
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -382,43 +374,45 @@ GlobalSetupWindow::UndoControlView::_Update(int32 undoDepth, bool enableInput)
 // #pragma mark -- TransparencyControlView
 
 
-class GlobalSetupWindow::TransparencyControlView : public BView {
+class GlobalSetupWindow::TransparencyControlView : public BView
+{
 public:
-						TransparencyControlView();
-	virtual				~TransparencyControlView() {}
+					TransparencyControlView();
+	virtual 		~TransparencyControlView() {}
 
-	virtual	void		AllAttached();
-	virtual	void		MessageReceived(BMessage* message);
+	virtual void 	AllAttached();
+	virtual void 	MessageReceived(BMessage* message);
 
-			void		ApplyChanges();
-			void		SetColor(PreviewPane* which, uint32 color);
-
-private:
-			void		_SetDefaults();
-			void		_Update();
+			void 	ApplyChanges();
+			void 	SetColor(PreviewPane* which, uint32 color);
 
 private:
-			NumberSliderControl*	fGridSizeControl;
-			BBitmap*				fPreview;
-			PreviewPane*			fBgContainer;
-			ColorSwatch*			fColorSwatch1;
-			ColorSwatch*			fColorSwatch2;
-			BButton*				fDefaultsButton;
+			void 	_SetDefaults();
+			void 	_Update();
 
-			uint32		fColor1;
-			uint32		fColor2;
-			int32		fGridSize;
+private:
+	NumberSliderControl* fGridSizeControl;
+	BBitmap* 		fPreview;
+	PreviewPane* 	fBgContainer;
+	ColorSwatch* 	fColorSwatch1;
+	ColorSwatch* 	fColorSwatch2;
+	BButton* 		fDefaultsButton;
+
+	uint32 			fColor1;
+	uint32 			fColor2;
+	int32 			fGridSize;
 };
 
 
 GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
-	: BView("background control view", 0)
+	:
+	BView("background control view", 0)
 {
 	BMessage* message = new BMessage(kBgGridSizeChanged);
-	fGridSizeControl = new NumberSliderControl(B_TRANSLATE("Grid size:"),
-								"0", message, 4, 50, false, true);
-	fGridSizeControl->Slider()->SetExplicitMinSize(BSize(
-		StringWidth("SLIDERSLIDERSLIDERSLIDER"), B_SIZE_UNSET));
+	fGridSizeControl
+		= new NumberSliderControl(B_TRANSLATE("Grid size:"), "0", message, 4, 50, false, true);
+	fGridSizeControl->Slider()->SetExplicitMinSize(
+		BSize(StringWidth("SLIDERSLIDERSLIDERSLIDER"), B_SIZE_UNSET));
 	fGridSizeControl->TextControl()->SetWidthInBytes(7);
 
 	float size = be_plain_font->Size() / 12.0f;
@@ -432,11 +426,9 @@ GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
 	fColorSwatch2 = new ColorSwatch(frameSwatch, "color2");
 	fColorSwatch2->SetToolTip(B_TRANSLATE("Drop a color from the Colors window"));
 
-	BStringView* labelColors = new BStringView("color1label",
-		B_TRANSLATE("Colors:"));
+	BStringView* labelColors = new BStringView("color1label", B_TRANSLATE("Colors:"));
 
-	fDefaultsButton = new BButton(B_TRANSLATE("Defaults"),
-		new BMessage(kBgRevertToDefaults));
+	fDefaultsButton = new BButton(B_TRANSLATE("Defaults"), new BMessage(kBgRevertToDefaults));
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fBgContainer)
@@ -453,14 +445,14 @@ GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
 			.AddGlue()
 			.Add(fDefaultsButton)
 		.End()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING);
 
 	_SetDefaults();
 
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		 BMessage settings;
-		 server->GetApplicationSettings(&settings);
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
 
 		fGridSize = settings.GetInt32(skBgGridSize, fGridSize);
 		fColor1 = settings.GetUInt32(skBgColor1, fColor1);
@@ -495,11 +487,13 @@ void
 GlobalSetupWindow::TransparencyControlView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kBgGridSizeChanged: {
+		case kBgGridSizeChanged:
+		{
 			fGridSize = fGridSizeControl->Value();
 			_Update();
 		} break;
-		case kBgColorsChanged: {
+		case kBgColorsChanged:
+		{
 			const char* name;
 			if (message->FindString("name", &name) == B_OK) {
 				uint32 new_color;
@@ -513,14 +507,14 @@ GlobalSetupWindow::TransparencyControlView::MessageReceived(BMessage* message)
 				}
 			}
 		} break;
-		case kBgRevertToDefaults: {
+		case kBgRevertToDefaults:
+		{
 			_SetDefaults();
 			fGridSizeControl->SetValue(fGridSize);
 			_Update();
 		} break;
-		default: {
+		default:
 			BView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -529,12 +523,9 @@ void
 GlobalSetupWindow::TransparencyControlView::ApplyChanges()
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skBgGridSize,
-			fGridSize);
-		server->SetValue(SettingsServer::Application, skBgColor1,
-			fColor1);
-		server->SetValue(SettingsServer::Application, skBgColor2,
-			fColor2);
+		server->SetValue(SettingsServer::Application, skBgGridSize, fGridSize);
+		server->SetValue(SettingsServer::Application, skBgColor1, fColor1);
+		server->SetValue(SettingsServer::Application, skBgColor2, fColor2);
 	}
 
 	PaintWindow::Redraw();
@@ -565,15 +556,15 @@ GlobalSetupWindow::TransparencyControlView::_SetDefaults()
 
 
 PreviewPane::PreviewPane(BRect frame)
-	: BView(frame, "previewpane", B_FOLLOW_NONE, B_WILL_DRAW)
-	, fPreviewBitmap(NULL)
+	:
+	BView(frame, "previewpane", B_FOLLOW_NONE, B_WILL_DRAW),
+	fPreviewBitmap(NULL)
 {
 	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
 	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
 
 	frame.InsetBy(1.0, 1.0);
-	fPreviewBitmap = new BBitmap(BRect(0.0, 0.0, frame.Width(),
-		frame.Height()), B_RGBA32);
+	fPreviewBitmap = new BBitmap(BRect(0.0, 0.0, frame.Width(), frame.Height()), B_RGBA32);
 }
 
 
@@ -595,20 +586,12 @@ PreviewPane::Draw(BRect updateRect)
 }
 
 
-void PreviewPane::MessageReceived(BMessage* message)
-{
-	switch(message->what) {
-		default:
-			BView::MessageReceived(message);
-	}
-}
-
-
 ColorSwatch::ColorSwatch(BRect frame, const char* name)
-	: BControl(frame, "colorswatch", name, new BMessage(kBgColorsChanged),
-			B_FOLLOW_NONE, B_WILL_DRAW)
-	, fSwatchBitmap(NULL)
-	, fColor(0)
+	:
+	BControl(
+		frame, "colorswatch", name, new BMessage(kBgColorsChanged), B_FOLLOW_NONE, B_WILL_DRAW),
+	fSwatchBitmap(NULL),
+	fColor(0)
 {
 	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
 	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
@@ -617,8 +600,7 @@ ColorSwatch::ColorSwatch(BRect frame, const char* name)
 	Message()->AddUInt32("color", fColor);
 
 	frame.InsetBy(1.0, 1.0);
-	fSwatchBitmap = new BBitmap(BRect(0.0, 0.0, frame.Width(),
-		frame.Height()), B_RGBA32);
+	fSwatchBitmap = new BBitmap(BRect(0.0, 0.0, frame.Width(), frame.Height()), B_RGBA32);
 }
 
 
@@ -641,16 +623,18 @@ ColorSwatch::Draw(BRect updateRect)
 }
 
 
-void ColorSwatch::MessageReceived(BMessage* message)
+void
+ColorSwatch::MessageReceived(BMessage* message)
 {
-	switch(message->what) {
-		case B_PASTE: {
+	switch (message->what) {
+		case B_PASTE:
+		{
 			if (message->WasDropped()) {
 				BPoint dropPoint = ConvertFromScreen(message->DropPoint());
 				ssize_t size;
 				const void* data;
-				if (message->FindData("RGBColor", B_RGB_COLOR_TYPE, &data,
-					&size) == B_OK && size == sizeof(rgb_color)) {
+				if (message->FindData("RGBColor", B_RGB_COLOR_TYPE, &data, &size) == B_OK
+					&& size == sizeof(rgb_color)) {
 					rgb_color new_color;
 					memcpy((void*)(&new_color), data, size);
 					new_color.alpha = 0xFF;
@@ -687,31 +671,33 @@ ColorSwatch::MouseDown(BPoint point)
 // #pragma mark -- MiscControlView
 
 
-class GlobalSetupWindow::MiscControlView : public BView {
+class GlobalSetupWindow::MiscControlView : public BView
+{
 public:
-						MiscControlView();
-	virtual				~MiscControlView() {}
+					MiscControlView();
+	virtual 		~MiscControlView() {}
 
-	virtual	void		AttachedToWindow();
-	virtual	void		MessageReceived(BMessage* message);
+	virtual void 	AttachedToWindow();
+	virtual void 	MessageReceived(BMessage* message);
 
-			void		ApplyChanges();
+			void 	ApplyChanges();
 
 private:
-		int32			fCursorMode;
-		int32			fShutdownMode;
-		int32			fDrawBrushSizeMode;
+	int32 			fCursorMode;
+	int32 			fShutdownMode;
+	int32 			fDrawBrushSizeMode;
 
-		BRadioButton*	fToolCursor;
-		BRadioButton*	fCrossHairCursor;
-		BCheckBox*		fDrawBrushSize;
+	BRadioButton* 	fToolCursor;
+	BRadioButton* 	fCrossHairCursor;
+	BCheckBox* 		fDrawBrushSize;
 };
 
 
 GlobalSetupWindow::MiscControlView::MiscControlView()
-	: BView("general control view", 0)
-	, fCursorMode(TOOL_CURSOR_MODE)
-	, fShutdownMode(B_CONTROL_ON)
+	:
+	BView("general control view", 0),
+	fCursorMode(TOOL_CURSOR_MODE),
+	fShutdownMode(B_CONTROL_ON)
 {
 	BStringView* labelCursor = new BStringView("labelCursor", B_TRANSLATE("Cursor"));
 	labelCursor->SetFont(be_bold_font);
@@ -724,18 +710,16 @@ GlobalSetupWindow::MiscControlView::MiscControlView()
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(labelCursor)
 		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING)
-			.Add(fToolCursor =
-				new BRadioButton(B_TRANSLATE("Tool cursor"),
-				new BMessage(kToolCursorMode)))
-			.Add(fCrossHairCursor =
-				new BRadioButton(B_TRANSLATE("Cross-hair cursor"),
-				new BMessage(kCrossHairCursorMode)))
+			.Add(fToolCursor = new BRadioButton(
+				B_TRANSLATE("Tool cursor"), new BMessage(kToolCursorMode)))
+			.Add(fCrossHairCursor = new BRadioButton(
+				B_TRANSLATE("Cross-hair cursor"), new BMessage(kCrossHairCursorMode)))
 			.Add(fDrawBrushSize)
 			.SetInsets(B_USE_DEFAULT_SPACING, 0, 0, 0)
 		.End()
 		.AddGlue()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING);
 
 	fToolCursor->SetValue(B_CONTROL_ON);
 
@@ -770,17 +754,16 @@ void
 GlobalSetupWindow::MiscControlView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kToolCursorMode: {
+		case kToolCursorMode:
+		{
 			fCursorMode = TOOL_CURSOR_MODE;
-		}	break;
-
-		case kCrossHairCursorMode: {
+		} break;
+		case kCrossHairCursorMode:
+		{
 			fCursorMode = CROSS_HAIR_CURSOR_MODE;
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -791,11 +774,9 @@ GlobalSetupWindow::MiscControlView::ApplyChanges()
 	fDrawBrushSizeMode = fDrawBrushSize->Value();
 
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skQuitConfirmMode,
-			fShutdownMode);
+		server->SetValue(SettingsServer::Application, skQuitConfirmMode, fShutdownMode);
 		server->SetValue(SettingsServer::Application, skCursorMode, fCursorMode);
-		server->SetValue(SettingsServer::Application, skDrawBrushSizeMode,
-			fDrawBrushSizeMode);
+		server->SetValue(SettingsServer::Application, skDrawBrushSizeMode, fDrawBrushSizeMode);
 	}
 }
 
@@ -804,10 +785,10 @@ GlobalSetupWindow::MiscControlView::ApplyChanges()
 
 
 GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
-	: BWindow(BRect(leftTop, BSize(10.0, 10.0)),
-		B_TRANSLATE("Settings"),
-		B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_NOT_ZOOMABLE |
-		B_NOT_RESIZABLE | B_AUTO_UPDATE_SIZE_LIMITS | B_CLOSE_ON_ESCAPE)
+	:
+	BWindow(BRect(leftTop, BSize(10.0, 10.0)), B_TRANSLATE("Settings"), B_TITLED_WINDOW_LOOK,
+		B_NORMAL_WINDOW_FEEL,
+		B_NOT_ZOOMABLE | B_NOT_RESIZABLE | B_AUTO_UPDATE_SIZE_LIMITS | B_CLOSE_ON_ESCAPE)
 {
 	fTabView = new BTabView("tab view", B_WIDTH_FROM_LABEL);
 
@@ -835,10 +816,8 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 		.Add(fTabView)
 		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
-			.Add(new BButton(B_TRANSLATE("Cancel"),
-				new BMessage(kCloseAndDiscardSettings)))
-			.Add(new BButton(B_TRANSLATE("OK"),
-				new BMessage(kCloseAndApplySettings)))
+			.Add(new BButton(B_TRANSLATE("Cancel"), new BMessage(kCloseAndDiscardSettings)))
+			.Add(new BButton(B_TRANSLATE("OK"), new BMessage(kCloseAndApplySettings)))
 			.AddGlue()
 		.End()
 		.SetInsets(-2, B_USE_WINDOW_INSETS, -2, B_USE_WINDOW_INSETS);
@@ -858,17 +837,14 @@ GlobalSetupWindow::GlobalSetupWindow(const BPoint& leftTop)
 	width += be_plain_font->StringWidth(B_TRANSLATE("Grid size:"));
 
 	fTabView->SetExplicitMinSize(BSize(width, B_SIZE_UNSET));
-
 }
 
 
 GlobalSetupWindow::~GlobalSetupWindow()
 {
 	if (SettingsServer* server = SettingsServer::Instance()) {
-		server->SetValue(SettingsServer::Application, skSettingsWindowFrame,
-			Frame());
-		server->SetValue(SettingsServer::Application, skSettingsWindowTab,
-			fTabView->Selection());
+		server->SetValue(SettingsServer::Application, skSettingsWindowFrame, Frame());
+		server->SetValue(SettingsServer::Application, skSettingsWindowTab, fTabView->Selection());
 	}
 	fSetupWindow = NULL;
 }
@@ -878,7 +854,8 @@ void
 GlobalSetupWindow::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kCloseAndApplySettings: {
+		case kCloseAndApplySettings:
+		{
 			if (fWindowFeelView)
 				fWindowFeelView->ApplyChanges();
 
@@ -890,15 +867,11 @@ GlobalSetupWindow::MessageReceived(BMessage* message)
 
 			if (fTransparencyControlView)
 				fTransparencyControlView->ApplyChanges();
-
-		// fall through
+		} // fall through
 		case kCloseAndDiscardSettings:
-			Quit();
-		}	break;
-
-		default: {
+				Quit();
+		default:
 			BWindow::MessageReceived(message);
-		}	break;
 	}
 }
 

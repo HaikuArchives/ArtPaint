@@ -29,4 +29,4 @@ enum add_on_types {
 extern "C" Manipulator* instantiate_add_on(BBitmap*, ManipulatorInformer*);
 
 
-#endif
+#endif // ADD_ONS_H

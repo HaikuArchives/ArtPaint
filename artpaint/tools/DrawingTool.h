@@ -13,7 +13,6 @@
 
 #include "Tools.h"
 
-
 #include <Box.h>
 #include <String.h>
 
@@ -49,15 +48,13 @@ public:
 	virtual					~DrawingTool();
 
 	virtual	int32			UseToolWithScript(ToolScript*, BBitmap*);
-	virtual	ToolScript*		UseTool(ImageView*, uint32 buttons, BPoint point,
-								BPoint viewPoint);
+	virtual	ToolScript*		UseTool(ImageView*, uint32 buttons, BPoint point, BPoint viewPoint);
 
 	virtual	BView*			ConfigView();
 	virtual	void			UpdateConfigView(BView*) {}
 
 	inline	int32			Options() { return fOptions; }
-	virtual	void			SetOption(int32 option, int32 value,
-								BHandler* source = NULL);
+	virtual	void			SetOption(int32 option, int32 value, BHandler* source = NULL);
 
 	virtual	int32			GetCurrentValue(int32 option);
 
@@ -68,7 +65,7 @@ public:
 
 
 	// these functions read and write tool's settings to a file
-	virtual	status_t		readSettings(BFile &file,bool is_little_endian);
+	virtual	status_t		readSettings(BFile &file, bool is_little_endian);
 	virtual	status_t		writeSettings(BFile &file);
 
 			BRect			LastUpdatedRect() const;
@@ -99,7 +96,6 @@ private:
 class DrawingToolConfigView : public BBox {
 public:
 							DrawingToolConfigView(DrawingTool* newTool);
-	virtual					~DrawingToolConfigView();
 
 	virtual	void			AttachedToWindow();
 	virtual	void			MessageReceived(BMessage* message);
@@ -113,5 +109,6 @@ public:
 private:
 			DrawingTool*	fTool;
 };
+
 
 #endif	// DRAWING_TOOL_H

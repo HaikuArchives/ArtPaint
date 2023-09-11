@@ -6,6 +6,7 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
+
 #include "RandomNumberGenerator.h"
 
 
@@ -27,7 +28,7 @@ RandomNumberGenerator::RandomNumberGenerator(int32 seed_number, int32 minimum_se
 		integer_random_number_array = new int32[random_array_length];
 		float_random_number_array = new float[random_array_length];
 
-		for (int32 i=0;i<random_array_length;i++) {
+		for (int32 i = 0; i < random_array_length; i++) {
 			integer_random_number_array[i] = IntegerNoise(i);
 			float_random_number_array[i] = FloatNoise(i);
 		}
@@ -42,9 +43,8 @@ RandomNumberGenerator::~RandomNumberGenerator()
 }
 
 
-
-
-void RandomNumberGenerator::ResetStreams()
+void
+RandomNumberGenerator::ResetStreams()
 {
 	normal_stream_position = 0;
 	uniform_stream_position = 0;

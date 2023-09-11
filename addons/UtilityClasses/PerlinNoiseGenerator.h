@@ -111,10 +111,6 @@ inline float PerlinNoiseGenerator::InterpolatedNoise2D(float x, float y)
 	float fractional_x = x - integer_x;
 	float fractional_y = y - integer_y;
 
-//	float v1 = Noise(integer_x,integer_y);
-//	float v2 = Noise(integer_x+1,integer_y);
-//	float v3 = Noise(integer_x,integer_y+1);
-//	float v4 = Noise(integer_x+1,integer_y+1);
 	float v1 = random_table[(integer_x + 57*integer_y)%1024];
 	float v2 = random_table[(integer_x+1 + 57*integer_y)%1024];
 	float v3 = random_table[(integer_x + 57*(integer_y+1))%1024];

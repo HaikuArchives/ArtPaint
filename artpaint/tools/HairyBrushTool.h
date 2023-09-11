@@ -29,39 +29,34 @@ using ArtPaint::Interface::NumberSliderControl;
 
 class HairyBrushTool : public DrawingTool {
 public:
-								HairyBrushTool();
-	virtual						~HairyBrushTool();
+							HairyBrushTool();
 
-			int32				UseToolWithScript(ToolScript*, BBitmap*);
-			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
+			int32			UseToolWithScript(ToolScript*, BBitmap*);
+			ToolScript*		UseTool(ImageView*, uint32, BPoint, BPoint);
 
 
-			BView*				ConfigView();
-			const void*			ToolCursor() const;
-			const char*			HelpString(bool isInUse) const;
+			BView*			ConfigView();
+			const void*		ToolCursor() const;
+			const char*		HelpString(bool isInUse) const;
 
 private:
-			ImageView*			image_view;
-//	CoordinateQueue	*coordinate_queue;
-//	bool		reading_coordinates;
-//	static	int32	CoordinateReader(void*);
-//	int32	read_coordinates();
+			ImageView*		image_view;
 };
 
 
 class HairyBrushToolConfigView : public DrawingToolConfigView {
 public:
-								HairyBrushToolConfigView(DrawingTool* tool);
-	virtual						~HairyBrushToolConfigView() {}
+							HairyBrushToolConfigView(DrawingTool* tool);
+	virtual					~HairyBrushToolConfigView() {}
 
-	virtual	void				AttachedToWindow();
-	virtual	void				MessageReceived(BMessage* message);
+	virtual	void			AttachedToWindow();
+	virtual	void			MessageReceived(BMessage* message);
 
 private:
-		NumberSliderControl*	fBrushSize;
-		NumberSliderControl*	fBrushHairs;
-		BSlider*				fColorAmount;
-		BSlider*				fColorVariance;
+			NumberSliderControl* fBrushSize;
+			NumberSliderControl* fBrushHairs;
+			BSlider*		fColorAmount;
+			BSlider*		fColorVariance;
 };
 
 
@@ -71,5 +66,6 @@ random_round(float number, float r)
 	const float dec = number - floor(number);
 	return (dec < r ? floor(number) : ceil(number));
 }
+
 
 #endif	// HAIRY_BRUSH_TOOL_H

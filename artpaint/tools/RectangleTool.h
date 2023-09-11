@@ -25,7 +25,6 @@ class ToolScript;
 class RectangleTool : public DrawingTool, public ToolEventAdapter {
 public:
 								RectangleTool();
-	virtual						~RectangleTool();
 
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -50,5 +49,6 @@ private:
 			BCheckBox*			fRotation;
 			BCheckBox*			fAntiAlias;
 };
+
 
 #endif	// RECTANGLE_TOOL_H

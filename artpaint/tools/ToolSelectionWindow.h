@@ -23,7 +23,6 @@ public:
 	virtual	void					FrameResized(float width, float height);
 	virtual	void					MessageReceived(BMessage* message);
 
-
 	static	void					showWindow();
 	static	void					setFeel(window_feel feel);
 
@@ -40,4 +39,5 @@ private:
 	static	ToolSelectionWindow*	fSelectionWindow;
 };
 
-#endif
+
+#endif // TOOL_SELECTION_WINDOW_H

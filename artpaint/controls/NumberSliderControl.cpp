@@ -27,17 +27,17 @@ namespace ArtPaint {
 	namespace Interface {
 
 enum {
-	kNumberControlFinished		= 'kncf',
-	kSliderValueModified		= 'ksvm',
-	kSliderModificationFinished	= 'ksmf'
+	kNumberControlFinished = 'kncf',
+	kSliderValueModified = 'ksvm',
+	kSliderModificationFinished = 'ksmf'
 };
 
 
-NumberSliderControl::NumberSliderControl(const char* label, const char* text,
-		BMessage* message, int32 minRange, int32 maxRange, bool layout,
-		bool continuous, border_style borderStyle, thumb_style thumbStyle,
-		bool proportional)
-	: BBox(borderStyle, NULL),
+NumberSliderControl::NumberSliderControl(const char* label, const char* text, BMessage* message,
+	int32 minRange, int32 maxRange, bool layout, bool continuous, border_style borderStyle,
+	thumb_style thumbStyle, bool proportional)
+	:
+	BBox(borderStyle, NULL),
 	fMinRange(minRange),
 	fMaxRange(maxRange),
 	fContinuous(continuous),
@@ -49,24 +49,22 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text,
 {
 	_InitMessage();
 
-	fNumberControl = new (std::nothrow) NumberControl(label, text,
-		new BMessage(kNumberControlFinished), 5, minRange < 0);
+	fNumberControl = new (std::nothrow)
+		NumberControl(label, text, new BMessage(kNumberControlFinished), 5, minRange < 0);
 	int32 range = fMaxRange - fMinRange;
 	int32 inc = 1000. / range;
 
-	fSlider = new (std::nothrow) BSlider(NULL, NULL,
-		new BMessage(kSliderModificationFinished), 0,
+	fSlider = new (std::nothrow) BSlider(NULL, NULL, new BMessage(kSliderModificationFinished), 0,
 		(inc * range), B_HORIZONTAL, thumbStyle);
 
 	if (fNumberControl && fSlider && layout) {
 		SetLayout(new BGroupLayout(B_VERTICAL));
 		AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 			.Add(fNumberControl)
-			.Add(fSlider)
-		);
+			.Add(fSlider));
 
-		SetExplicitMinSize(BSize(fNumberControl->PreferredSize().Width() * 2.5,
-			MinSize().Height()));
+		SetExplicitMinSize(
+			BSize(fNumberControl->PreferredSize().Width() * 2.5, MinSize().Height()));
 	}
 
 	if (fSlider) {
@@ -97,32 +95,29 @@ void
 NumberSliderControl::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kNumberControlFinished: {
-			fSlider->SetPosition(
-				_PositionForValue(_FixValue(atoi(fNumberControl->Text())))
-			);
+		case kNumberControlFinished:
+		{
+			fSlider->SetPosition(_PositionForValue(_FixValue(atoi(fNumberControl->Text()))));
 			_SendMessage(_FixValue(atoi(fNumberControl->Text())), true);
-		}	break;
-
-		case kSliderValueModified: {
+		} break;
+		case kSliderValueModified:
+		{
 			int32 numValue = _ValueForPosition(fSlider->Position());
 			BString value;
 			value << numValue;
 			fNumberControl->SetText(value.String());
 			_SendMessage(numValue, fContinuous);
-		}	break;
-
-		case kSliderModificationFinished: {
+		} break;
+		case kSliderModificationFinished:
+		{
 			int32 numValue = _ValueForPosition(fSlider->Position());
 			BString value;
 			value << numValue;
 			fNumberControl->SetText(value.String());
 			_SendMessage(numValue, true);
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BBox::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -243,7 +238,7 @@ NumberSliderControl::_InitMessage()
 		fMessage = new BMessage;
 
 	if (fMessage) {
-		if (!fMessage->HasInt32("value"))	// may have been set by creator
+		if (!fMessage->HasInt32("value")) // may have been set by creator
 			fMessage->AddInt32("value", 0);
 
 		fMessage->AddBool("final", true);
@@ -274,9 +269,8 @@ NumberSliderControl::_SendMessage(int32 value, bool final)
 		if (!fTarget.IsValid()) {
 			if (BWindow* window = Window())
 				window->PostMessage(fMessage, window);
-		} else {
+		} else
 			fTarget.SendMessage(fMessage);
-		}
 	}
 }
 
@@ -308,9 +302,8 @@ NumberSliderControl::_ValueForPosition(float position)
 		value = fMaxRange;
 
 	return value;
-
 }
 
 
-	}	// namespace Interface
-}	// namespace ArtPaint
+	} // namespace Interface
+} // namespace ArtPaint

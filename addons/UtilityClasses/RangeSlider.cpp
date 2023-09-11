@@ -6,13 +6,16 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include <stdlib.h>
 #include <Window.h>
+#include <stdlib.h>
 
 #include "RangeSlider.h"
 
-RangeSlider::RangeSlider(BRect frame, const char *name, const char *label, BMessage *message, int32 minValue, int32 maxValue)
-	:	BSlider(frame,name,label,message,minValue,maxValue,B_TRIANGLE_THUMB)
+
+RangeSlider::RangeSlider(BRect frame, const char* name, const char* label, BMessage* message,
+	int32 minValue, int32 maxValue)
+	:
+	BSlider(frame, name, label, message, minValue, maxValue, B_TRIANGLE_THUMB)
 {
 	min_value = lower_value = minValue;
 	max_value = higher_value = maxValue;
@@ -29,33 +32,35 @@ RangeSlider::RangeSlider(BRect frame, const char *name, const char *label, BMess
 }
 
 
-
-void RangeSlider::DrawBar()
+void
+RangeSlider::DrawBar()
 {
 	BSlider::DrawBar();
 	BRect rect = BarFrame();
 
 	rect.top += 2;
-	rect.left +=2;
+	rect.left += 2;
 	rect.right -= 1;
 	rect.bottom -= 1;
-	BView *view = OffscreenView();
+	BView* view = OffscreenView();
 	view->SetHighColor(BarColor());
 	view->FillRect(rect);
 
 	rgb_color fill_color;
 	if (FillColor(&fill_color)) {
 		view->SetHighColor(fill_color);
-		rect.left = max_c(rect.left,LowerValueX());
-		rect.right = min_c(rect.right,HigherValueX());
+		rect.left = max_c(rect.left, LowerValueX());
+		rect.right = min_c(rect.right, HigherValueX());
 		view->FillRect(rect);
 	}
 }
 
-void RangeSlider::DrawThumb()
+
+void
+RangeSlider::DrawThumb()
 {
 	BRect bar_frame = BarFrame();
-	BView *view = OffscreenView();
+	BView* view = OffscreenView();
 
 	float bottom = bar_frame.bottom;
 
@@ -63,111 +68,113 @@ void RangeSlider::DrawThumb()
 
 	// First draw the lower slider
 	x = LowerValueX();
-	BPoint point1,point2,point3;
-	point1.x = x-3;
-	point1.y = bottom+4;
+	BPoint point1, point2, point3;
+	point1.x = x - 3;
+	point1.y = bottom + 4;
 
 	point2.x = x;
-	point2.y = bottom+1;
+	point2.y = bottom + 1;
 
-	point3.x = x+3;
-	point3.y = bottom+4;
+	point3.x = x + 3;
+	point3.y = bottom + 4;
 
 	view->SetHighColor(lower_thumb_color);
-	view->FillTriangle(point1,point2,point3);
+	view->FillTriangle(point1, point2, point3);
 
-	point1 = point1 + BPoint(-2,1);
-	point2 = point2 + BPoint(0,-1);
-	point3 = point3 + BPoint(2,1);
+	point1 = point1 + BPoint(-2, 1);
+	point2 = point2 + BPoint(0, -1);
+	point3 = point3 + BPoint(2, 1);
 
-	view->SetHighColor(tint_color(lower_thumb_color,B_DARKEN_2_TINT));
-	view->StrokeTriangle(point1,point2,point3);
-	view->SetHighColor(tint_color(lower_thumb_color,B_LIGHTEN_2_TINT));
-	view->StrokeLine(point1,point2);
+	view->SetHighColor(tint_color(lower_thumb_color, B_DARKEN_2_TINT));
+	view->StrokeTriangle(point1, point2, point3);
+	view->SetHighColor(tint_color(lower_thumb_color, B_LIGHTEN_2_TINT));
+	view->StrokeLine(point1, point2);
 
 	// Then draw the higher slider
 	x = HigherValueX();
-	point1.x = x-3;
-	point1.y = bottom+4;
+	point1.x = x - 3;
+	point1.y = bottom + 4;
 
 	point2.x = x;
-	point2.y = bottom+1;
+	point2.y = bottom + 1;
 
-	point3.x = x+3;
-	point3.y = bottom+4;
+	point3.x = x + 3;
+	point3.y = bottom + 4;
 
 	view->SetHighColor(higher_thumb_color);
-	view->FillTriangle(point1,point2,point3);
+	view->FillTriangle(point1, point2, point3);
 
-	point1 = point1 + BPoint(-2,1);
-	point2 = point2 + BPoint(0,-1);
-	point3 = point3 + BPoint(2,1);
+	point1 = point1 + BPoint(-2, 1);
+	point2 = point2 + BPoint(0, -1);
+	point3 = point3 + BPoint(2, 1);
 
-	view->SetHighColor(tint_color(higher_thumb_color,B_DARKEN_2_TINT));
-	view->StrokeTriangle(point1,point2,point3);
-	view->SetHighColor(tint_color(higher_thumb_color,B_LIGHTEN_2_TINT));
-	view->StrokeLine(point1,point2);
-
+	view->SetHighColor(tint_color(higher_thumb_color, B_DARKEN_2_TINT));
+	view->StrokeTriangle(point1, point2, point3);
+	view->SetHighColor(tint_color(higher_thumb_color, B_LIGHTEN_2_TINT));
+	view->StrokeLine(point1, point2);
 }
+
 
 void RangeSlider::MouseDown(BPoint)
 {
-	thread_id track_thread = spawn_thread(track_entry,"track_thread",B_NORMAL_PRIORITY,(void*)this);
+	thread_id track_thread
+		= spawn_thread(track_entry, "track_thread", B_NORMAL_PRIORITY, (void*)this);
 	resume_thread(track_thread);
 }
 
 
-int32 RangeSlider::track_entry(void *p)
+int32
+RangeSlider::track_entry(void* p)
 {
 	return ((RangeSlider*)p)->track_mouse();
 }
 
 
-int32 RangeSlider::track_mouse()
+int32
+RangeSlider::track_mouse()
 {
 	uint32 buttons;
 	BPoint point;
-	BWindow *window = Window();
+	BWindow* window = Window();
 	if (window == NULL)
 		return B_ERROR;
 
-	BHandler *target_handler = Target();
+	BHandler* target_handler = Target();
 	if (target_handler == NULL)
 		return B_ERROR;
 
-	BLooper *target_looper = target_handler->Looper();
+	BLooper* target_looper = target_handler->Looper();
 
 	if (target_looper == NULL)
 		return B_ERROR;
 
-	BMessenger messenger = BMessenger(target_handler,target_looper);
+	BMessenger messenger = BMessenger(target_handler, target_looper);
 
 
 	// Here we should choose which side to track, max or min.
 	// The selected side is based on which is nearer the point's value.
 	window->Lock();
-	GetMouse(&point,&buttons);
-	int32 value	= ValueForPoint(point);
+	GetMouse(&point, &buttons);
+	int32 value = ValueForPoint(point);
 	window->Unlock();
 
 	if ((modifiers() & B_SHIFT_KEY) || (buttons & B_SECONDARY_MOUSE_BUTTON)) {
 		// track both values
 		int32 original_value = value;
 		int32 original_low = lower_value;
-//		int32 original_high = higher_value;
-		int32 upper_limit = (max_value-min_value) - (higher_value-lower_value)+min_value;
+		int32 upper_limit = (max_value - min_value) - (higher_value - lower_value) + min_value;
 		int32 lower_limit = min_value;
 		int32 previous_value = value;
 		int32 interval_length = higher_value - lower_value;
 		while (buttons) {
 			window->Lock();
-			GetMouse(&point,&buttons);
+			GetMouse(&point, &buttons);
 			value = ValueForPoint(point);
 			if (value != previous_value) {
-				int32 new_low = original_low + value-original_value;
+				int32 new_low = original_low + value - original_value;
 				int32 new_high;
-				new_low = min_c(new_low,upper_limit);
-				new_low = max_c(new_low,lower_limit);
+				new_low = min_c(new_low, upper_limit);
+				new_low = max_c(new_low, lower_limit);
 				new_high = new_low + interval_length;
 				if (ModificationMessage() != NULL)
 					messenger.SendMessage(ModificationMessage());
@@ -181,8 +188,7 @@ int32 RangeSlider::track_mouse()
 
 			snooze(SnoozeAmount());
 		}
-	}
-	else if ((value < LowerValue()) || (abs(value-LowerValue())<abs(value-HigherValue()))) {
+	} else if ((value < LowerValue()) || (abs(value - LowerValue()) < abs(value - HigherValue()))) {
 		// track the low value
 		if (value != LowerValue()) {
 			if (ModificationMessage() != NULL)
@@ -194,7 +200,7 @@ int32 RangeSlider::track_mouse()
 		}
 		while (buttons) {
 			window->Lock();
-			GetMouse(&point,&buttons);
+			GetMouse(&point, &buttons);
 			value = ValueForPoint(point);
 			if (value != LowerValue()) {
 				if (ModificationMessage() != NULL)
@@ -206,8 +212,7 @@ int32 RangeSlider::track_mouse()
 
 			snooze(SnoozeAmount());
 		}
-	}
-	else {
+	} else {
 		// track the high value
 		if (value != HigherValue()) {
 			if (ModificationMessage() != NULL)
@@ -219,7 +224,7 @@ int32 RangeSlider::track_mouse()
 		}
 		while (buttons) {
 			window->Lock();
-			GetMouse(&point,&buttons);
+			GetMouse(&point, &buttons);
 			value = ValueForPoint(point);
 			if (value != HigherValue()) {
 				if (ModificationMessage() != NULL)
@@ -240,12 +245,11 @@ int32 RangeSlider::track_mouse()
 }
 
 
-
-
-void RangeSlider::SetHigherValue(int32 new_value)
+void
+RangeSlider::SetHigherValue(int32 new_value)
 {
-	new_value = max_c(new_value,LowerValue());
-	new_value = min_c(new_value,max_value);
+	new_value = max_c(new_value, LowerValue());
+	new_value = min_c(new_value, max_value);
 
 	if (new_value != higher_value) {
 		higher_value = new_value;
@@ -254,10 +258,11 @@ void RangeSlider::SetHigherValue(int32 new_value)
 }
 
 
-void RangeSlider::SetLowerValue(int32 new_value)
+void
+RangeSlider::SetLowerValue(int32 new_value)
 {
-	new_value = max_c(new_value,min_value);
-	new_value = min_c(new_value,HigherValue());
+	new_value = max_c(new_value, min_value);
+	new_value = min_c(new_value, HigherValue());
 
 	if (new_value != lower_value) {
 		lower_value = new_value;
@@ -266,21 +271,24 @@ void RangeSlider::SetLowerValue(int32 new_value)
 }
 
 
-
-void RangeSlider::SetHigherThumbColor(rgb_color c)
+void
+RangeSlider::SetHigherThumbColor(rgb_color c)
 {
 	higher_thumb_color = c;
 	Invalidate();
 }
 
-void RangeSlider::SetLowerThumbColor(rgb_color c)
+
+void
+RangeSlider::SetLowerThumbColor(rgb_color c)
 {
 	lower_thumb_color = c;
 	Invalidate();
 }
 
 
-int32 RangeSlider::HigherValueX()
+int32
+RangeSlider::HigherValueX()
 {
 	BRect rect = BarFrame();
 	int32 left = int32(rect.left);
@@ -289,10 +297,11 @@ int32 RangeSlider::HigherValueX()
 }
 
 
-int32 RangeSlider::LowerValueX()
+int32
+RangeSlider::LowerValueX()
 {
 	BRect rect = BarFrame();
 	int32 left = int32(rect.left);
 	int32 width = rect.IntegerWidth();
-	return width/(max_value-min_value)*lower_value + left;
+	return width / (max_value - min_value) * lower_value + left;
 }

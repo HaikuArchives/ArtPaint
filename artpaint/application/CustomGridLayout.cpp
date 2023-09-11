@@ -16,18 +16,15 @@
 
 
 CustomGridLayout::CustomGridLayout(BMessage* message)
-	: BGridLayout(message)
+	:
+	BGridLayout(message)
 {
 }
 
 
 CustomGridLayout::CustomGridLayout(float horizontal, float vertical)
-	: BGridLayout(horizontal, vertical)
-{
-}
-
-
-CustomGridLayout::~CustomGridLayout()
+	:
+	BGridLayout(horizontal, vertical)
 {
 }
 

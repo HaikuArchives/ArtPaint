@@ -11,9 +11,8 @@
 
 
 void
-ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset,
-	BBitmap* source, BBitmap* target, float ratio,
-	interpolation_type method)
+ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset, BBitmap* source,
+	BBitmap* target, float ratio, interpolation_type method)
 {
 	uint32* target_bits = (uint32*)target->Bits();
 	int32 target_bpr = target->BytesPerRow() / 4;
@@ -28,23 +27,24 @@ ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset,
 			int32 high = ceil(ratio * x);
 			float weight = ratio * x - low;
 
-			switch(method) {
-				case NEAREST_NEIGHBOR: {
-					*(target_bits + x + y * target_bpr) =
-						nearest_neighbor(*(src_bits + low),
-							*(src_bits + high),
-							weight);
+			switch (method) {
+				case NEAREST_NEIGHBOR:
+				{
+					*(target_bits + x + y * target_bpr)
+						= nearest_neighbor(*(src_bits + low),
+						*(src_bits + high), weight);
 				} break;
-				case BILINEAR: {
-					*(target_bits + x + y * target_bpr) =
-						linear_interpolation(*(src_bits + low),
-							*(src_bits + high),
-							weight);
+				case BILINEAR:
+				{
+					*(target_bits + x + y * target_bpr)
+						= linear_interpolation(*(src_bits + low),
+						*(src_bits + high), weight);
 				} break;
 				case BICUBIC:
 				case BICUBIC_CATMULL_ROM:
 				case BICUBIC_BSPLINE:
-				case MITCHELL: {
+				case MITCHELL:
+				{
 					int32 low0 = ceil(ratio * (x - 1));
 					if (x == 0)
 						low0 = low;
@@ -67,8 +67,8 @@ ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset,
 						C = 0.;
 					}
 
-					*(target_bits + x + y * target_bpr) =
-						mitchell_netravali(*(src_bits + low0),
+					*(target_bits + x + y * target_bpr)
+						= mitchell_netravali(*(src_bits + low0),
 							*(src_bits + low),
 							*(src_bits + high),
 							*(src_bits + high2),
@@ -81,9 +81,8 @@ ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset,
 
 
 void
-ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
-	BBitmap* source, BBitmap* target, float ratio,
-	interpolation_type method)
+ScaleUtilities::ScaleVertically(float width, float height, BPoint offset, BBitmap* source,
+	BBitmap* target, float ratio, interpolation_type method)
 {
 	uint32* target_bits = (uint32*)target->Bits();
 	int32 target_bpr = target->BytesPerRow() / 4;
@@ -98,23 +97,26 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 		uint32* src_bits_high = source_bits + (int32)offset.x + (high + (int32)ceil(offset.y + 0.5)) * source_bpr;
 
 		for (int32 x = 0; x <= width; x++) {
-			switch(method) {
-				case NEAREST_NEIGHBOR: {
-					*(target_bits + x + y * target_bpr) =
-						nearest_neighbor(*(src_bits_low + x),
+			switch (method) {
+				case NEAREST_NEIGHBOR:
+				{
+					*(target_bits + x + y * target_bpr)
+						= nearest_neighbor(*(src_bits_low + x),
 							*(src_bits_high + x),
 							weight);
 				} break;
-				case BILINEAR: {
-					*(target_bits + x + y * target_bpr) =
-						linear_interpolation(*(src_bits_low + x),
+				case BILINEAR:
+				{
+					*(target_bits + x + y * target_bpr)
+						= linear_interpolation(*(src_bits_low + x),
 							*(src_bits_high + x),
 							weight);
 				} break;
 				case BICUBIC:
 				case BICUBIC_CATMULL_ROM:
 				case BICUBIC_BSPLINE:
-				case MITCHELL: {
+				case MITCHELL:
+				{
 					int32 low0;
 
 					low0 = ceil(ratio * (y - 1));
@@ -125,10 +127,10 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 					if (y == height)
 						high2 = high;
 
-					uint32* src_bits_low0 =
-						source_bits + (int32)offset.x + (low0 + (int32)ceil(offset.y + 0.5)) * source_bpr;
-					uint32* src_bits_high2 =
-						source_bits + (int32)offset.x + (high2 + (int32)ceil(offset.y + 0.5)) * source_bpr;
+					uint32* src_bits_low0 = source_bits + (int32)offset.x
+						+ (low0 + (int32)ceil(offset.y + 0.5)) * source_bpr;
+					uint32* src_bits_high2 = source_bits + (int32)offset.x
+						+ (high2 + (int32)ceil(offset.y + 0.5)) * source_bpr;
 
 					// default MITCHELL
 					float B = 1. / 3.;
@@ -144,8 +146,8 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 						C = 0.;
 					}
 
-					*(target_bits + x + y * target_bpr) =
-						mitchell_netravali(*(src_bits_low0 + x),
+					*(target_bits + x + y * target_bpr)
+						= mitchell_netravali(*(src_bits_low0 + x),
 							*(src_bits_low + x),
 							*(src_bits_high + x),
 							*(src_bits_high2 + x),
@@ -158,52 +160,44 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset,
 
 
 void
-ScaleUtilities::MoveGrabbers(BPoint point, BPoint& previous,
-	float& left, float& top, float& right, float& bottom, float aspect_ratio,
-	bool& move_left, bool& move_top, bool& move_right, bool& move_bottom,
-	bool& move_all, bool first_click, bool lock_aspect)
+ScaleUtilities::MoveGrabbers(BPoint point, BPoint& previous, float& left, float& top, float& right,
+	float& bottom, float aspect_ratio, bool& move_left, bool& move_top, bool& move_right,
+	bool& move_bottom, bool& move_all, bool first_click, bool lock_aspect)
 {
 	if (first_click == TRUE) {
 		// Here we select which grabbles to move
 		move_left = move_right = move_top = move_bottom = FALSE;
-		if (fabs(point.x - left) < 50)
-			if (fabs(point.x - left) <
-				fabs(point.x - (left +
-				(right - left) / 2)))
+		if (fabs(point.x - left) < 50) {
+			if (fabs(point.x - left) < fabs(point.x - (left + (right - left) / 2)))
 				move_left = TRUE;
-		if (fabs(point.x - right) < 50)
-			if (fabs(point.x - right) <
-				fabs(point.x - (left +
-				(right - left) / 2)))
+		}
+		if (fabs(point.x - right) < 50) {
+			if (fabs(point.x - right) < fabs(point.x - (left + (right - left) / 2)))
 				move_right = TRUE;
+		}
 		if ((move_left == TRUE) && (move_right == TRUE)) {
-			if (fabs(point.x - left) >
-				fabs(point.x - right))
+			if (fabs(point.x - left) > fabs(point.x - right))
 				move_left = FALSE;
 			else
 				move_right = FALSE;
 		}
 
-		if (fabs(point.y - top) < 50)
-			if (fabs(point.y - top) <
-				fabs(point.y - (top +
-				(bottom - top) / 2)))
+		if (fabs(point.y - top) < 50) {
+			if (fabs(point.y - top) < fabs(point.y - (top + (bottom - top) / 2)))
 				move_top = TRUE;
-		if (fabs(point.y - bottom) < 50)
-			if (fabs(point.y - bottom) <
-				fabs(point.y - (top +
-				(bottom - top) / 2)))
+		}
+		if (fabs(point.y - bottom) < 50) {
+			if (fabs(point.y - bottom) < fabs(point.y - (top + (bottom - top) / 2)))
 				move_bottom = TRUE;
+		}
 		if ((move_top == TRUE) && (move_bottom == TRUE)) {
-			if (fabs(point.y - top) >
-				fabs(point.y - bottom))
+			if (fabs(point.y - top) > fabs(point.y - bottom))
 				move_top = FALSE;
 			else
 				move_bottom = FALSE;
 		}
 
-		if (move_left == FALSE && move_top == FALSE &&
-			move_right == FALSE && move_bottom == FALSE)
+		if (move_left == FALSE && move_top == FALSE && move_right == FALSE && move_bottom == FALSE)
 			move_all = TRUE;
 		else
 			move_all = FALSE;

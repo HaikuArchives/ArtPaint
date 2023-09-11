@@ -9,8 +9,8 @@
 #include <Bitmap.h>
 #include <Catalog.h>
 #include <StatusBar.h>
-#include <new>
 #include <Window.h>
+#include <new>
 
 #include "AddOns.h"
 #include "DetectEdges.h"
@@ -33,29 +33,25 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap*, ManipulatorInformer* i)
 {
-	delete i;	// This should be deleted if it is not needed
+	delete i; // This should be deleted if it is not needed
 	return new DetectEdgesManipulator();
 }
 
 
-
 DetectEdgesManipulator::DetectEdgesManipulator()
-		: Manipulator(),
-		selection(NULL)
+	:
+	Manipulator(),
+	selection(NULL)
 {
 	processor_count = GetSystemCpuCount();
 }
 
 
-DetectEdgesManipulator::~DetectEdgesManipulator()
-{
-}
-
-
-BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap* original,
-	BStatusBar* status_bar)
+BBitmap*
+DetectEdgesManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	/*
 		This function will first copy the original and then calculate the effect from the copy
@@ -67,15 +63,15 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap* original,
 
 	*/
 
-	BBitmap *duplicate;
+	BBitmap* duplicate;
 	try {
 		// Make the duplicate 1 larger than the original. This allows the
 		// convolution to work properly.
-		duplicate = DuplicateBitmap(original,-1);
+		duplicate = DuplicateBitmap(original, -1);
 	}
 	catch (std::bad_alloc e) {
 		// Here we could clean up if there was need for that.
-		return NULL;	// Returning NULL means that the image did not change.
+		return NULL; // Returning NULL means that the image did not change.
 	}
 
 
@@ -85,20 +81,20 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap* original,
 	target_bitmap = original;
 	progress_bar = status_bar;
 
-	thread_id *threads = new thread_id[processor_count];
+	thread_id* threads = new thread_id[processor_count];
 
 	// Start the threads. If the image is small enough
 	// one thread might be enough.
-	for (int32 i = 0;i < processor_count;i++) {
-		threads[i] = spawn_thread(thread_entry,"enhance_edges_thread",B_NORMAL_PRIORITY,this);
+	for (int32 i = 0; i < processor_count; i++) {
+		threads[i] = spawn_thread(thread_entry, "enhance_edges_thread", B_NORMAL_PRIORITY, this);
 		resume_thread(threads[i]);
-		send_data(threads[i],i,NULL,0);
+		send_data(threads[i], i, NULL, 0);
 	}
 
 	// Wait for them threads to finish.
-	for (int32 i = 0;i < processor_count;i++) {
+	for (int32 i = 0; i < processor_count; i++) {
 		int32 return_value;
-		wait_for_thread(threads[i],&return_value);
+		wait_for_thread(threads[i], &return_value);
 	}
 
 	delete[] threads;
@@ -111,37 +107,44 @@ BBitmap* DetectEdgesManipulator::ManipulateBitmap(BBitmap* original,
 	return original;
 }
 
-const char* DetectEdgesManipulator::ReturnHelpString()
+
+const char*
+DetectEdgesManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Detects edges.");
 }
 
-const char* DetectEdgesManipulator::ReturnName()
+
+const char*
+DetectEdgesManipulator::ReturnName()
 {
 	return B_TRANSLATE("Detect edges");
 }
 
-int32 DetectEdgesManipulator::thread_entry(void *data)
+
+int32
+DetectEdgesManipulator::thread_entry(void* data)
 {
 	int32 thread_number;
-	thread_number = receive_data(NULL,NULL,0);
+	thread_number = receive_data(NULL, NULL, 0);
 
-	DetectEdgesManipulator *this_pointer = (DetectEdgesManipulator*)data;
+	DetectEdgesManipulator* this_pointer = (DetectEdgesManipulator*)data;
 
 	return this_pointer->thread_function(thread_number);
 }
 
 
-int32 DetectEdgesManipulator::thread_function(int32 thread_number)
+int32
+DetectEdgesManipulator::thread_function(int32 thread_number)
 {
-	BWindow *progress_bar_window = NULL;
+	BWindow* progress_bar_window = NULL;
 	if (progress_bar != NULL)
 		progress_bar_window = progress_bar->Window();
 
-	uint32 *source = (uint32*)source_bitmap->Bits();
-	uint32 *target = (uint32*)target_bitmap->Bits();
-	int32 source_bpr = source_bitmap->BytesPerRow()/4;
-	int32 target_bpr = target_bitmap->BytesPerRow()/4;
+	uint32* source = (uint32*)source_bitmap->Bits();
+	uint32* target = (uint32*)target_bitmap->Bits();
+	int32 source_bpr = source_bitmap->BytesPerRow() / 4;
+	int32 target_bpr = target_bitmap->BytesPerRow() / 4;
 
 	// This union must be used to guarantee endianness compatibility.
 	union {
@@ -157,75 +160,74 @@ int32 DetectEdgesManipulator::thread_function(int32 thread_number)
 		int32 bottom = target_bitmap->Bounds().bottom;
 
 		float height = bottom - top;
-		top = height/processor_count*thread_number;
-		bottom = min_c(bottom,top + (height+1)/processor_count);
+		top = height / processor_count * thread_number;
+		bottom = min_c(bottom, top + (height + 1) / processor_count);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
+		float update_amount = 100.0 / (bottom - top) * update_interval / (float)processor_count;
 		float missed_update = 0;
 
-		target += top*target_bpr;
+		target += top * target_bpr;
 
 		// Loop through all pixels in original.
-		for (int32 y=top;y<=bottom;++y) {
-			for (int32 x=left;x<=right;++x) {
+		for (int32 y = top; y <= bottom; ++y) {
+			for (int32 x = left; x <= right; ++x) {
 				float red = 0;
 				float green = 0;
 				float blue = 0;
 
 				// First the top row
-				color.word = *(source + 1+x-1 + (1+y-1)*source_bpr);
+				color.word = *(source + 1 + x - 1 + (1 + y - 1) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
-				color.word = *(source + 1+x + (1+y-1)*source_bpr);
+				color.word = *(source + 1 + x + (1 + y - 1) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
-				color.word = *(source + 1+x+1 + (1+y-1)*source_bpr);
+				color.word = *(source + 1 + x + 1 + (1 + y - 1) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
 				// Then the middle row
-				color.word = *(source + 1+x-1 + (1+y)*source_bpr);
+				color.word = *(source + 1 + x - 1 + (1 + y) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
-				color.word = *(source + 1+x + (1+y)*source_bpr);
-				red += 8*color.bytes[2];
-				green += 8*color.bytes[1];
-				blue += 8*color.bytes[0];
+				color.word = *(source + 1 + x + (1 + y) * source_bpr);
+				red += 8 * color.bytes[2];
+				green += 8 * color.bytes[1];
+				blue += 8 * color.bytes[0];
 
-				color.word = *(source + 1+x+1 + (1+y)*source_bpr);
+				color.word = *(source + 1 + x + 1 + (1 + y) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
 				// Then the bottom row
-				color.word = *(source + 1+x-1 + (1+y+1)*source_bpr);
+				color.word = *(source + 1 + x - 1 + (1 + y + 1) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
-				color.word = *(source + 1+x + (1+y+1)*source_bpr);
+				color.word = *(source + 1 + x + (1 + y + 1) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
 
-				color.word = *(source + 1+x+1 + (1+y+1)*source_bpr);
+				color.word = *(source + 1 + x + 1 + (1 + y + 1) * source_bpr);
 				red -= color.bytes[2];
 				green -= color.bytes[1];
 				blue -= color.bytes[0];
-
 
 				// Then limit the values between 0 and 255.
-				red = min_c(255,max_c(0,red));
-				green = min_c(255,max_c(0,green));
-				blue = min_c(255,max_c(0,blue));
+				red = min_c(255, max_c(0, red));
+				green = min_c(255, max_c(0, green));
+				blue = min_c(255, max_c(0, blue));
 
 				color.word = *target;
 				color.bytes[0] = (uint8)blue;
@@ -236,18 +238,16 @@ int32 DetectEdgesManipulator::thread_function(int32 thread_number)
 			}
 
 			// Update the status-bar
-			if ( ((y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
-				progress_bar->Update(update_amount+missed_update);
+			if (((y % update_interval) == 0) && (progress_bar_window != NULL)
+				&& (progress_bar_window->LockWithTimeout(0) == B_OK)) {
+				progress_bar->Update(update_amount + missed_update);
 				progress_bar_window->Unlock();
 				missed_update = 0;
-			}
-			else if ((y % update_interval) == 0) {
+			} else if ((y % update_interval) == 0)
 				missed_update += update_amount;
-			}
 		}
 
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
 		BRect rect = selection->GetBoundingRect();
 
@@ -257,85 +257,65 @@ int32 DetectEdgesManipulator::thread_function(int32 thread_number)
 		int32 bottom = rect.bottom;
 
 		float height = bottom - top;
-		top += height/processor_count*thread_number;
-		bottom = min_c(bottom,top + (height+1)/processor_count);
+		top += height / processor_count * thread_number;
+		bottom = min_c(bottom, top + (height + 1) / processor_count);
 
 		int32 update_interval = 10;
-		float update_amount = 100.0/(bottom-top)*update_interval/(float)processor_count;
+		float update_amount = 100.0 / (bottom - top) * update_interval / (float)processor_count;
 
 		// Loop through all pixels in original.
-		for (int32 y=top;y<=bottom;++y) {
-			for (int32 x=left;x<=right;++x) {
-				if (selection->ContainsPoint(x,y)) {
+		for (int32 y = top; y <= bottom; ++y) {
+			for (int32 x = left; x <= right; ++x) {
+				if (selection->ContainsPoint(x, y)) {
 					float red = 0;
 					float green = 0;
 					float blue = 0;
 
 					// First the top row
-//					color.word = *(source + 1+x-1 + (1+y-1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
-
-					color.word = *(source + 1+x + (1+y-1)*source_bpr);
+					color.word = *(source + 1 + x + (1 + y - 1) * source_bpr);
 					red -= color.bytes[2];
 					green -= color.bytes[1];
 					blue -= color.bytes[0];
 
-//					color.word = *(source + 1+x+1 + (1+y-1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
-//
 					// Then the middle row
-					color.word = *(source + 1+x-1 + (1+y)*source_bpr);
+					color.word = *(source + 1 + x - 1 + (1 + y) * source_bpr);
 					red -= color.bytes[2];
 					green -= color.bytes[1];
 					blue -= color.bytes[0];
 
-					color.word = *(source + 1+x + (1+y)*source_bpr);
-					red += 4*color.bytes[2];
-					green += 4*color.bytes[1];
-					blue += 4*color.bytes[0];
+					color.word = *(source + 1 + x + (1 + y) * source_bpr);
+					red += 4 * color.bytes[2];
+					green += 4 * color.bytes[1];
+					blue += 4 * color.bytes[0];
 
-					color.word = *(source + 1+x+1 + (1+y)*source_bpr);
+					color.word = *(source + 1 + x + 1 + (1 + y) * source_bpr);
 					red -= color.bytes[2];
 					green -= color.bytes[1];
 					blue -= color.bytes[0];
 
 					// Then the bottom row
-//					color.word = *(source + 1+x-1 + (1+y+1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
-
-					color.word = *(source + 1+x + (1+y+1)*source_bpr);
+					color.word = *(source + 1 + x + (1 + y + 1) * source_bpr);
 					red -= color.bytes[2];
 					green -= color.bytes[1];
 					blue -= color.bytes[0];
 
-//					color.word = *(source + 1+x+1 + (1+y+1)*source_bpr);
-//					red -= color.bytes[2];
-//					green -= color.bytes[1];
-//					blue -= color.bytes[0];
-
-
 					// Then limit the values between 0 and 255.
-					red = min_c(255,max_c(0,red));
-					green = min_c(255,max_c(0,green));
-					blue = min_c(255,max_c(0,blue));
+					red = min_c(255, max_c(0, red));
+					green = min_c(255, max_c(0, green));
+					blue = min_c(255, max_c(0, blue));
 
-					color.word = *(target + x + y*target_bpr);
+					color.word = *(target + x + y * target_bpr);
 					color.bytes[0] = (uint8)blue;
 					color.bytes[1] = (uint8)green;
 					color.bytes[2] = (uint8)red;
 
-					*(target + x + y*target_bpr) = color.word;
+					*(target + x + y * target_bpr) = color.word;
 				}
 			}
 
 			// Update the status-bar
-			if ( ((y % update_interval) == 0) && (progress_bar_window != NULL) && (progress_bar_window->LockWithTimeout(0) == B_OK) ) {
+			if (((y % update_interval) == 0) && (progress_bar_window != NULL)
+				&& (progress_bar_window->LockWithTimeout(0) == B_OK)) {
 				progress_bar->Update(update_amount);
 				progress_bar_window->Unlock();
 			}

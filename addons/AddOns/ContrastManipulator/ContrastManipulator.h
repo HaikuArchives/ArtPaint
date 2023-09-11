@@ -12,21 +12,17 @@
 #include "Manipulator.h"
 
 class ContrastManipulator : public Manipulator {
-BBitmap		*target_bitmap;
-Selection*	selection;
+	BBitmap*	target_bitmap;
+	Selection*	selection;
 
 public:
-			ContrastManipulator(BBitmap*);
-			~ContrastManipulator();
+				ContrastManipulator(BBitmap*);
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 #endif
-
-
-

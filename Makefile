@@ -41,7 +41,7 @@ artpaint/application/MessageFilters.cpp artpaint/application/PaintApplication.cp
 artpaint/application/RandomNumberGenerator.cpp artpaint/application/RefFilters.cpp artpaint/application/ResourceServer.cpp \
 artpaint/application/Selection.cpp artpaint/application/SettingsServer.cpp \
 artpaint/application/UndoAction.cpp artpaint/application/UndoEvent.cpp artpaint/application/UndoQueue.cpp \
-artpaint/application/UndoWindow.cpp artpaint/application/UtilityClasses.cpp artpaint/controls/ColorPalette.cpp \
+artpaint/application/UtilityClasses.cpp artpaint/controls/ColorPalette.cpp \
 artpaint/application/CustomGridLayout.cpp \
 artpaint/controls/ColorView.cpp artpaint/controls/HSPictureButton.cpp artpaint/controls/NumberControl.cpp \
 artpaint/controls/NumberSliderControl.cpp artpaint/controls/PopUpList.cpp artpaint/controls/PopUpSlider.cpp artpaint/controls/RGBControl.cpp \

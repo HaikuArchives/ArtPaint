@@ -83,4 +83,4 @@ const unsigned char gFlagFinnishBits [] = {
 };
 
 
-#endif
+#endif // FLAGS_H

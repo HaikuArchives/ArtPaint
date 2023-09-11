@@ -16,19 +16,20 @@
 
 class ManipulatorWindow : public BWindow {
 public:
-								ManipulatorWindow(BRect rect,
-									BView* manipulatorView, const char* name,
-									BWindow* master, const BMessenger& target);
-	virtual						~ManipulatorWindow();
+						ManipulatorWindow(BRect rect,
+						BView* manipulatorView, const char* name,
+						BWindow* master, const BMessenger& target);
+	virtual				~ManipulatorWindow();
 
-	static	void				setFeel(window_feel);
+	static	void		setFeel(window_feel);
 
 private:
-	static	BList				sfWindowList;
-	static	sem_id				sfWindowListMutex;
+	static	BList		sfWindowList;
+	static	sem_id		sfWindowListMutex;
 
-			BView*				fManipulatorView;
+			BView*		fManipulatorView;
 };
+
 
 #endif	// MANIPULATOR_WINDOW_H
 

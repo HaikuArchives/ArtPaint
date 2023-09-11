@@ -12,14 +12,13 @@
 
 #include "SelectorTool.h"
 
-
 #include "BitmapDrawer.h"
 #include "BitmapUtilities.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
-#include "IntelligentPathFinder.h"
 #include "ImageView.h"
+#include "IntelligentPathFinder.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Patterns.h"
@@ -45,8 +44,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 SelectorTool::SelectorTool()
-	: DrawingTool(B_TRANSLATE("Selection tool"), "s",
-		SELECTOR_TOOL),
+	:
+	DrawingTool(B_TRANSLATE("Selection tool"), "s", SELECTOR_TOOL),
 	ToolEventAdapter()
 {
 	// the value for mode will be either B_OP_ADD or B_OP_SUBTRACT
@@ -58,14 +57,8 @@ SelectorTool::SelectorTool()
 }
 
 
-SelectorTool::~SelectorTool()
-{
-}
-
-
 ToolScript*
-SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
-	BPoint view_point)
+SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view_point)
 {
 	// these are used when drawing the preview to the view
 	BPoint original_point = point;
@@ -77,8 +70,8 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 	if (window == NULL)
 		return NULL;
 
-	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
-		((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script
+		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
 
 	bool addSelection = true;
 
@@ -101,8 +94,8 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			return NULL;
 		}
 
-		IntelligentPathFinder* path_finder =
-			new IntelligentPathFinder(view->ReturnImage()->ReturnActiveBitmap());
+		IntelligentPathFinder* path_finder
+			= new IntelligentPathFinder(view->ReturnImage()->ReturnActiveBitmap());
 		HSPolygon* the_polygon = new HSPolygon(&point, 1);
 		BPolygon* active_view_polygon = NULL;
 
@@ -122,8 +115,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			// Add support for different zoom-levels. Currently it does not support
 			// changing the zoom-level while the tool is working.
 			BRect view_rect;
-			BRect bitmap_rect =
-				view->ReturnImage()->ReturnActiveBitmap()->Bounds();
+			BRect bitmap_rect = view->ReturnImage()->ReturnActiveBitmap()->Bounds();
 			if (is_clicks_data_valid) {
 				is_clicks_data_valid = false;
 				if (last_click_clicks >= 2) {
@@ -132,8 +124,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					finished = true;
 					delete active_view_polygon;
 					active_view_polygon = NULL;
-				} else if (point != seed_point &&
-					bitmap_rect.Contains(point)) {
+				} else if (point != seed_point && bitmap_rect.Contains(point)) {
 					// Here we should add a section from seed_point to
 					// point (or last_click_bitmap_location) to the_polygon,
 					// and respective changes to view_polygon too. If the
@@ -143,11 +134,11 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					// cleared and new round of dynamic programming should be
 					// started with last_click_bitmap_location as a seed_point.
 					int32 num_points;
-					BPoint* point_list = path_finder->ReturnPath(int32(point.x),
-						int32(point.y), &num_points);
+					BPoint* point_list
+						= path_finder->ReturnPath(int32(point.x), int32(point.y), &num_points);
 					while (point_list == NULL) {
-						point_list = path_finder->ReturnPath(int32(point.x),
-							int32(point.y), &num_points);
+						point_list
+							= path_finder->ReturnPath(int32(point.x), int32(point.y), &num_points);
 						snooze(50 * 1000);
 					}
 					the_polygon->AddPoints(point_list, num_points, true);
@@ -157,8 +148,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 						bitmap_rect = bpoly->Frame();
 						view_rect = view->convertBitmapRectToView(bitmap_rect);
 						bpoly->MapTo(bitmap_rect, view_rect);
-						view->StrokePolygon(bpoly, false,
-							HS_ANIMATED_STRIPES_1);
+						view->StrokePolygon(bpoly, false, HS_ANIMATED_STRIPES_1);
 						view->SetDrawingMode(B_OP_INVERT);
 						view->UnlockLooper();
 						delete bpoly;
@@ -177,21 +167,17 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					if (view->LockLooper()) {
 						if (active_view_polygon != NULL) {
 							bitmap_rect = active_view_polygon->Frame();
-							view_rect =
-								view->convertBitmapRectToView(bitmap_rect);
+							view_rect = view->convertBitmapRectToView(bitmap_rect);
 							view->Draw(view_rect);
 							delete active_view_polygon;
 						}
 						int32 num_points;
-						BPoint* point_list =
-							path_finder->ReturnPath(int32(point.x),
-							int32(point.y), &num_points);
+						BPoint* point_list
+							= path_finder->ReturnPath(int32(point.x), int32(point.y), &num_points);
 						if (point_list != NULL) {
-							active_view_polygon = new BPolygon(point_list,
-								num_points);
+							active_view_polygon = new BPolygon(point_list, num_points);
 							bitmap_rect = active_view_polygon->Frame();
-							view_rect =
-								view->convertBitmapRectToView(bitmap_rect);
+							view_rect = view->convertBitmapRectToView(bitmap_rect);
 							active_view_polygon->MapTo(bitmap_rect, view_rect);
 						} else {
 							point_list = new BPoint[3];
@@ -251,9 +237,9 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			the_script->AddPoint(point);
 			if (next_index == size) {
 				BPoint* new_list = new BPoint[2 * size];
-				for (int32 i = 0; i < next_index; i++) {
+				for (int32 i = 0; i < next_index; i++)
 					new_list[i] = point_list[i];
-				}
+
 				delete[] point_list;
 				point_list = new_list;
 				size = 2 * size;
@@ -266,8 +252,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 
 			snooze(20 * 1000);
 		}
-		HSPolygon* poly = new HSPolygon(point_list, next_index,
-			HS_POLYGON_CLOCKWISE);
+		HSPolygon* poly = new HSPolygon(point_list, next_index, HS_POLYGON_CLOCKWISE);
 		delete[] point_list;
 		selection->AddSelection(poly, addSelection);
 	} else if (fToolSettings.shape == HS_MAGIC_WAND) {
@@ -275,10 +260,9 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		BBitmap* selection_map;
 		// We use a fill-tool to select the area:
 		BitmapDrawer* drawer = new BitmapDrawer(original_bitmap);
-		selection_map = MakeFloodBinaryMap(drawer, 0,
-			int32(original_bitmap->Bounds().right), 0,
-			int32(original_bitmap->Bounds().bottom),
-			drawer->GetPixel(original_point), original_point);
+		selection_map = MakeFloodBinaryMap(drawer, 0, int32(original_bitmap->Bounds().right), 0,
+			int32(original_bitmap->Bounds().bottom), drawer->GetPixel(original_point),
+			original_point);
 		if (modifiers() & B_OPTION_KEY)
 			addSelection = false;
 		else
@@ -287,8 +271,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		selection->AddSelection(selection_map, addSelection);
 		delete drawer;
 		delete selection_map;
-	} else if (fToolSettings.shape == HS_CIRCLE ||
-		fToolSettings.shape == HS_RECTANGLE) {
+	} else if (fToolSettings.shape == HS_CIRCLE || fToolSettings.shape == HS_RECTANGLE) {
 		BRect old_rect, new_rect;
 		old_rect = new_rect = BRect(point, point);
 		float left, top, right, bottom;
@@ -296,11 +279,9 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 		drawing_mode old_mode = view->DrawingMode();
 		view->SetDrawingMode(B_OP_INVERT);
 		if (fToolSettings.shape == HS_CIRCLE)
-			view->StrokeEllipse(view->convertBitmapRectToView(new_rect),
-				HS_ANIMATED_STRIPES_1);
+			view->StrokeEllipse(view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
 		else
-			view->StrokeRect(view->convertBitmapRectToView(new_rect),
-				HS_ANIMATED_STRIPES_1);
+			view->StrokeRect(view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
 		view->Window()->Unlock();
 
 		the_script->AddPoint(point);
@@ -314,15 +295,13 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			if (old_rect != new_rect) {
 				view->Window()->Lock();
 				view->Draw(view->convertBitmapRectToView(old_rect));
-				if (fToolSettings.shape == HS_CIRCLE)
+				if (fToolSettings.shape == HS_CIRCLE) {
 					view->StrokeEllipse(
-						view->convertBitmapRectToView(new_rect),
-						HS_ANIMATED_STRIPES_1);
-				else
+						view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
+				} else {
 					view->StrokeRect(
-						view->convertBitmapRectToView(new_rect),
-						HS_ANIMATED_STRIPES_1);
-
+						view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
+				}
 				view->Window()->Unlock();
 
 				old_rect = new_rect;
@@ -360,7 +339,6 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 					bitmap_rect.top = bitmap_rect.top - y_distance;
 				else
 					bitmap_rect.bottom = bitmap_rect.bottom + y_distance;
-
 			}
 			new_rect = bitmap_rect;
 			snooze(20 * 1000);
@@ -373,16 +351,13 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 
 		if (fToolSettings.shape == HS_CIRCLE) {
 			BBitmap* selection_map;
-			BBitmap* draw_map =
-				new BBitmap(
-					view->ReturnImage()->ReturnActiveBitmap()->Bounds(),
-					B_RGBA32);
+			BBitmap* draw_map
+				= new BBitmap(view->ReturnImage()->ReturnActiveBitmap()->Bounds(), B_RGBA32);
 			memset(draw_map->Bits(), 0x00, draw_map->BitsLength());
 			// We use a fill-tool to select the area:
 			BitmapDrawer* drawer = new BitmapDrawer(draw_map);
 			drawer->DrawEllipse(new_rect, 0xFFFFFFFF, TRUE, FALSE);
-			selection_map =
-				BitmapUtilities::ConvertColorSpace(draw_map, B_GRAY8);
+			selection_map = BitmapUtilities::ConvertColorSpace(draw_map, B_GRAY8);
 			selection->AddSelection(selection_map, addSelection);
 			delete drawer;
 			delete selection_map;
@@ -392,8 +367,7 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point,
 			point_list[1] = old_rect.RightTop();
 			point_list[2] = old_rect.RightBottom();
 			point_list[3] = old_rect.LeftBottom();
-			HSPolygon* poly = new HSPolygon(point_list, 4,
-				HS_POLYGON_CLOCKWISE);
+			HSPolygon* poly = new HSPolygon(point_list, 4, HS_POLYGON_CLOCKWISE);
 			selection->AddSelection(poly, addSelection);
 		}
 	}
@@ -427,15 +401,15 @@ const char*
 SelectorTool::HelpString(bool isInUse) const
 {
 	return (isInUse
-		? B_TRANSLATE("Making a selection.")
-		: B_TRANSLATE("Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts"));
+			? B_TRANSLATE("Making a selection.")
+			: B_TRANSLATE(
+				"Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts"));
 }
 
 
 void
-SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
-	PointStack& stack, int32 min_x, int32 max_x, uint32 old_color,
-	int32 tolerance, BBitmap* binary_fill_map, span_type spans)
+SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer, PointStack& stack, int32 min_x,
+	int32 max_x, uint32 old_color, int32 tolerance, BBitmap* binary_fill_map, span_type spans)
 {
 	// First get the vital data.
 	int32 x, start_x;
@@ -453,17 +427,15 @@ SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 		return;
 
 	// Then go from start towards the left side of the bitmap.
-	while (x >= min_x && x <= max_x &&
-		compare_2_pixels_with_variance(
-			drawer->GetPixel(x, y), old_color, tolerance) &&
-		(*(binary_bits + y * binary_bpr + x) & 0x01) == 0x00) {
+	while (x >= min_x && x <= max_x
+		&& compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)
+		&& (*(binary_bits + y * binary_bpr + x) & 0x01) == 0x00) {
 
 		*(binary_bits + y * binary_bpr + x) = 0xFF;
 
 		if (spans == BOTH || spans == LOWER) {
 			uint32 pixel_color = drawer->GetPixel(x, y + 1);
-			bool match = compare_2_pixels_with_variance(
-					pixel_color, old_color, tolerance);
+			bool match = compare_2_pixels_with_variance(pixel_color, old_color, tolerance);
 			if (inside_lower_span == false && match == true)
 				stack.Push(BPoint(x, y + 1));
 			inside_lower_span = match;
@@ -471,35 +443,29 @@ SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 
 		if (spans == BOTH || spans == UPPER) {
 			uint32 pixel_color = drawer->GetPixel(x, y - 1);
-			bool match = compare_2_pixels_with_variance(
-					pixel_color, old_color, tolerance);
+			bool match = compare_2_pixels_with_variance(pixel_color, old_color, tolerance);
 			if (inside_upper_span == false && match == true)
 				stack.Push(BPoint(x, y - 1));
 			inside_upper_span = match;
 		}
-
 		x--;
 	}
 
 	// Then go from start_x+1 towards the right side of the bitmap.
 	// We might already be inside a lower span
-	inside_lower_span = compare_2_pixels_with_variance(
-		drawer->GetPixel(start_x, y + 1),
-		old_color, tolerance);
-	inside_upper_span = compare_2_pixels_with_variance(
-		drawer->GetPixel(start_x, y - 1),
-		old_color, tolerance);
+	inside_lower_span
+		= compare_2_pixels_with_variance(drawer->GetPixel(start_x, y + 1), old_color, tolerance);
+	inside_upper_span
+		= compare_2_pixels_with_variance(drawer->GetPixel(start_x, y - 1), old_color, tolerance);
 	x = start_x + 1;
-	while (x >= min_x && x <= max_x &&
-		compare_2_pixels_with_variance(
-			drawer->GetPixel(x, y), old_color, tolerance) &&
-		(*(binary_bits + y * binary_bpr + x) & 0x01) == 0x00) {
+	while (x >= min_x && x <= max_x
+		&& compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)
+		&& (*(binary_bits + y * binary_bpr + x) & 0x01) == 0x00) {
 		*(binary_bits + y * binary_bpr + x) = 0xFF;
 
 		if (spans == BOTH || spans == LOWER) {
 			uint32 pixel_color = drawer->GetPixel(x, y + 1);
-			bool match = compare_2_pixels_with_variance(
-					pixel_color, old_color, tolerance);
+			bool match = compare_2_pixels_with_variance(pixel_color, old_color, tolerance);
 			if (inside_lower_span == false && match == true)
 				stack.Push(BPoint(x, y + 1));
 			inside_lower_span = match;
@@ -507,8 +473,7 @@ SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 
 		if (spans == BOTH || spans == UPPER) {
 			uint32 pixel_color = drawer->GetPixel(x, y - 1);
-			bool match = compare_2_pixels_with_variance(
-					pixel_color, old_color, tolerance);
+			bool match = compare_2_pixels_with_variance(pixel_color, old_color, tolerance);
 			if (inside_upper_span == false && match == true)
 				stack.Push(BPoint(x, y - 1));
 			inside_upper_span = match;
@@ -519,8 +484,8 @@ SelectorTool::CheckSpans(BPoint span_start, BitmapDrawer* drawer,
 
 
 void
-SelectorTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x,
-	int32 max_x, uint32 old_color, int32 tolerance, BBitmap* binary_fill_map)
+SelectorTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x, int32 max_x,
+	uint32 old_color, int32 tolerance, BBitmap* binary_fill_map)
 {
 	// First get the vital data.
 	int32 x, start_x;
@@ -533,18 +498,16 @@ SelectorTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x,
 	uchar* binary_bits = (uchar*)binary_fill_map->Bits();
 
 	// Then go from start towards the left side of the bitmap.
-	while (x >= min_x &&
-		compare_2_pixels_with_variance(
-			drawer->GetPixel(x, y), old_color, tolerance)) {
+	while (x >= min_x
+		&& compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)) {
 		*(binary_bits + y * binary_bpr + x) = 0xFF;
 		x--;
 	}
 
 	// Then go from start_x+1 towards the right side of the bitmap.
 	x = start_x + 1;
-	while (x <= max_x &&
-		compare_2_pixels_with_variance(
-			drawer->GetPixel(x, y), old_color, tolerance)) {
+	while (x <= max_x
+		&& compare_2_pixels_with_variance(drawer->GetPixel(x, y), old_color, tolerance)) {
 		*(binary_bits + y * binary_bpr + x) = 0xFF;
 		x++;
 	}
@@ -552,13 +515,12 @@ SelectorTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x,
 
 
 BBitmap*
-SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
-	int32 min_y, int32 max_y, uint32 old_color, BPoint start)
+SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x, int32 min_y,
+	int32 max_y, uint32 old_color, BPoint start)
 {
 	// This function makes a binary bitmap of the image. It contains 255 where
 	// the flood fill should fill and zeroes elsewhere.
-	BBitmap* fill_map = new BBitmap(BRect(min_x, min_y, max_x, max_y),
-		B_GRAY8);
+	BBitmap* fill_map = new BBitmap(BRect(min_x, min_y, max_x, max_y), B_GRAY8);
 	memset(fill_map->Bits(), 0x00, fill_map->BitsLength());
 
 	// Here fill the area using drawer's SetPixel and GetPixel.
@@ -573,22 +535,22 @@ SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 
 	while (!stack.IsEmpty()) {
 		BPoint span_start = stack.Pop();
-		if (span_start.y == min_y && min_y != max_y)
+		if (span_start.y == min_y && min_y != max_y) {
 			// Only check the spans below this line
-			CheckSpans(span_start, drawer, stack, min_x, max_x,
-				old_color, tolerance, fill_map, LOWER);
-		else if (span_start.y == max_y && min_y != max_y)
+			CheckSpans(
+				span_start, drawer, stack, min_x, max_x, old_color, tolerance, fill_map, LOWER);
+		} else if (span_start.y == max_y && min_y != max_y) {
 			// Only check the spans above this line.
-			CheckSpans(span_start, drawer, stack, min_x, max_x,
-				old_color, tolerance, fill_map, UPPER);
-		else if (min_y != max_y)
+			CheckSpans(
+				span_start, drawer, stack, min_x, max_x, old_color, tolerance, fill_map, UPPER);
+		} else if (min_y != max_y) {
 			// Check the spans above and below this line.
-			CheckSpans(span_start, drawer, stack, min_x, max_x,
-				old_color, tolerance, fill_map, BOTH);
-		else
+			CheckSpans(
+				span_start, drawer, stack, min_x, max_x, old_color, tolerance, fill_map, BOTH);
+		} else {
 			// The image is only one pixel high. Check the only span.
-			FillSpan(span_start, drawer, min_x, max_x,
-				old_color, tolerance, fill_map);
+			FillSpan(span_start, drawer, min_x, max_x, old_color, tolerance, fill_map);
+		}
 	}
 
 	// Remember to NULL the attribute binary_fill_map
@@ -600,41 +562,32 @@ SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 
 
 SelectorToolConfigView::SelectorToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SHAPE_OPTION);
 		message->AddInt32("value", HS_FREE_LINE);
-		fFreeLine = new BRadioButton(B_TRANSLATE("Freehand"),
-			new BMessage(*message));
+		fFreeLine = new BRadioButton(B_TRANSLATE("Freehand"), new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_RECTANGLE);
-		fRectangle =
-			new BRadioButton(B_TRANSLATE("Rectangle"),
-				new BMessage(*message));
+		fRectangle = new BRadioButton(B_TRANSLATE("Rectangle"), new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_CIRCLE);
-		fEllipse =
-			new BRadioButton(B_TRANSLATE("Ellipse"),
-				new BMessage(*message));
+		fEllipse = new BRadioButton(B_TRANSLATE("Ellipse"), new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_INTELLIGENT_SCISSORS);
-		fScissors =  new
-			BRadioButton(B_TRANSLATE("Intelligent scissors"),
-				new BMessage(*message));
+		fScissors = new BRadioButton(B_TRANSLATE("Intelligent scissors"), new BMessage(*message));
 
 		message->ReplaceInt32("value", HS_MAGIC_WAND);
-		fMagicWand =
-			new BRadioButton(B_TRANSLATE("Magic wand"),
-				new BMessage(*message));
+		fMagicWand = new BRadioButton(B_TRANSLATE("Magic wand"), new BMessage(*message));
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", TOLERANCE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(TOLERANCE_OPTION));
-		fTolerance =
-			new NumberSliderControl(B_TRANSLATE("Tolerance:"),
-				"10", message, 0, 100, false);
+		fTolerance
+			= new NumberSliderControl(B_TRANSLATE("Tolerance:"), "10", message, 0, 100, false);
 		fTolerance->SetEnabled(FALSE);
 
 		BGridLayout* toleranceLayout = LayoutSliderGrid(fTolerance);
@@ -696,8 +649,9 @@ SelectorToolConfigView::MessageReceived(BMessage* message)
 {
 	DrawingToolConfigView::MessageReceived(message);
 
-	switch(message->what) {
-		case OPTION_CHANGED: {
+	switch (message->what) {
+		case OPTION_CHANGED:
+		{
 			if (message->FindInt32("option") == SHAPE_OPTION) {
 				if (fMagicWand->Value() == B_CONTROL_OFF)
 					fTolerance->SetEnabled(FALSE);

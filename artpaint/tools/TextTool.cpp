@@ -21,13 +21,8 @@
 
 
 TextTool::TextTool()
-	: DrawingTool(B_TRANSLATE("Text tool"), "t",
-		TEXT_TOOL)
-{
-}
-
-
-TextTool::~TextTool()
+	:
+	DrawingTool(B_TRANSLATE("Text tool"), "t", TEXT_TOOL)
 {
 }
 
@@ -56,7 +51,6 @@ TextTool::ToolCursor() const
 const char*
 TextTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Drag the text to correct position and set its appearance.")
-		: B_TRANSLATE("Click to place the text."));
+	return (isInUse ? B_TRANSLATE("Drag the text to correct position and set its appearance.")
+					: B_TRANSLATE("Click to place the text."));
 }

@@ -22,52 +22,51 @@
 
 
 LABColorControl::LABColorControl(rgb_color c)
- 	: MultichannelColorControl(c, "L", "a", "b", "A")
+	: MultichannelColorControl(c, "L", "a", "b", "A")
 {
- 	slider1->SetMinMax(0, 100);
-	slider1->SetToolTip(B_TRANSLATE_COMMENT("Lightness",
-		"For CIELAB color sliders - also called L*a*b* color"));
+	slider1->SetMinMax(0, 100);
+	slider1->SetToolTip(
+		B_TRANSLATE_COMMENT("Lightness", "For CIELAB color sliders - also called L*a*b* color"));
 	slider1->SetResolution(0);
 	slider2->SetMinMax(-128, 127);
-	slider2->SetToolTip(B_TRANSLATE_COMMENT("Channel a",
-		"For CIELAB color sliders - also called L*a*b* color"));
+	slider2->SetToolTip(
+		B_TRANSLATE_COMMENT("Channel a", "For CIELAB color sliders - also called L*a*b* color"));
 	slider2->SetResolution(0);
 	slider3->SetMinMax(-128, 127);
-	slider3->SetToolTip(B_TRANSLATE_COMMENT("Channel b",
-		"For CIELAB color sliders - also called L*a*b* color"));
+	slider3->SetToolTip(
+		B_TRANSLATE_COMMENT("Channel b", "For CIELAB color sliders - also called L*a*b* color"));
 	slider3->SetResolution(0);
 	slider4->SetResolution(0);
-	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha",
-		"For color sliders"));
+	slider4->SetToolTip(B_TRANSLATE_COMMENT("Alpha", "For color sliders"));
 }
 
 
 void
 LABColorControl::SetValue(rgb_color c)
 {
- 	float l, a, bb;
+	float l, a, bb;
 
- 	rgb2lab((float)c.red, (float)c.green, (float)c.blue, l, a, bb);
+	rgb2lab((float)c.red, (float)c.green, (float)c.blue, l, a, bb);
 
- 	slider1->SetValue(l);
- 	slider2->SetValue(a);
- 	slider3->SetValue(bb);
- 	slider4->SetValue(c.alpha);
- 	SetSliderColors(c);
+	slider1->SetValue(l);
+	slider2->SetValue(a);
+	slider3->SetValue(bb);
+	slider4->SetValue(c.alpha);
+	SetSliderColors(c);
 }
 
 
 void
 LABColorControl::SetSliderColors(rgb_color c)
 {
- 	rgb_color color1s, color1e;
- 	rgb_color color2s, color2e;
- 	rgb_color color3s, color3e;
+	rgb_color color1s, color1e;
+	rgb_color color2s, color2e;
+	rgb_color color3s, color3e;
 	rgb_color color4s, color4e;
 
 	float l, a, bb;
 
- 	rgb2lab((float)c.red, (float)c.green, (float)c.blue, l, a, bb);
+	rgb2lab((float)c.red, (float)c.green, (float)c.blue, l, a, bb);
 
 	float r, g, b;
 	lab2rgb(0.0, a, bb, r, g, b);
@@ -99,16 +98,15 @@ LABColorControl::SetSliderColors(rgb_color c)
 
 
 void
-LABColorControl::SetValue(float one, float two,
- 	float three, float four)
+LABColorControl::SetValue(float one, float two, float three, float four)
 {
- 	float r, g, b;
+	float r, g, b;
 
- 	lab2rgb(one, two, three, r, g, b);
+	lab2rgb(one, two, three, r, g, b);
 
- 	value.bytes[0] = (uint8)b;
- 	value.bytes[1] = (uint8)g;
- 	value.bytes[2] = (uint8)r;
- 	value.bytes[3] = (uint8)four;
- 	SetSliderColors(BGRAColorToRGB(value.word));
+	value.bytes[0] = (uint8)b;
+	value.bytes[1] = (uint8)g;
+	value.bytes[2] = (uint8)r;
+	value.bytes[3] = (uint8)four;
+	SetSliderColors(BGRAColorToRGB(value.word));
 }

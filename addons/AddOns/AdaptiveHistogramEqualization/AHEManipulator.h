@@ -12,19 +12,18 @@
 #include "Manipulator.h"
 
 class AHEManipulator : public Manipulator {
-BBitmap		*target_bitmap;
-Selection	*selection;
+	BBitmap*	target_bitmap;
+	Selection*	selection;
 
 public:
-			AHEManipulator(BBitmap*);
-			~AHEManipulator();
+				AHEManipulator(BBitmap*);
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
+	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
 
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 #endif	// _AHE_MANIPULATOR_H

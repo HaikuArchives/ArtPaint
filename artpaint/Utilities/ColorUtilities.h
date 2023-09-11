@@ -381,5 +381,4 @@ rgb2hsl(float r, float g, float b,
 }
 
 
-
-#endif
+#endif // COLOR_UTILITIES_H

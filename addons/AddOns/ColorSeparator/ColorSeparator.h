@@ -22,32 +22,30 @@ enum {
 
 class	ColorSeparatorManipulatorSettings : public ManipulatorSettings {
 public:
-		ColorSeparatorManipulatorSettings()
-			: ManipulatorSettings() {
-			mode = SHOW_BLACK;
-		}
+	ColorSeparatorManipulatorSettings()
+		: ManipulatorSettings() {
+		mode = SHOW_BLACK;
+	}
 
-		ColorSeparatorManipulatorSettings(const ColorSeparatorManipulatorSettings& s)
-			: ManipulatorSettings() {
-			mode = s.mode;
-		}
+	ColorSeparatorManipulatorSettings(const ColorSeparatorManipulatorSettings& s)
+		: ManipulatorSettings() {
+		mode = s.mode;
+	}
 
+	ColorSeparatorManipulatorSettings& operator=(const ColorSeparatorManipulatorSettings& s) {
+		mode = s.mode;
+		return *this;
+	}
 
-		ColorSeparatorManipulatorSettings& operator=(const ColorSeparatorManipulatorSettings& s) {
-			mode = s.mode;
-			return *this;
-		}
+	bool operator==(ColorSeparatorManipulatorSettings s) {
+		return (mode == s.mode);
+	}
 
+	bool operator!=(ColorSeparatorManipulatorSettings s) {
+		return !(*this == s);
+	}
 
-		bool operator==(ColorSeparatorManipulatorSettings s) {
-			return (mode == s.mode);
-		}
-
-		bool operator!=(ColorSeparatorManipulatorSettings s) {
-			return !(*this==s);
-		}
-
-int32	mode;
+	int32	mode;
 };
 
 
@@ -55,65 +53,58 @@ int32	mode;
 class ColorSeparatorManipulatorView;
 
 class ColorSeparatorManipulator : public WindowGUIManipulator {
-			BBitmap	*preview_bitmap;
-			BBitmap	*copy_of_the_preview_bitmap;
+	BBitmap* 	preview_bitmap;
+	BBitmap* 	copy_of_the_preview_bitmap;
 
-			ColorSeparatorManipulatorSettings	settings;
-			ColorSeparatorManipulatorSettings	previous_settings;
+	ColorSeparatorManipulatorSettings	settings;
+	ColorSeparatorManipulatorSettings	previous_settings;
 
-			ColorSeparatorManipulatorView		*config_view;
+	ColorSeparatorManipulatorView*		config_view;
 
-			BBitmap	*source_bitmap;
-			BBitmap	*target_bitmap;
+	BBitmap* 	source_bitmap;
+	BBitmap* 	target_bitmap;
 
-void		separate_colors();
+	void		separate_colors();
 
-Selection*	selection;
+	Selection*	selection;
 
 public:
-			ColorSeparatorManipulator(BBitmap*);
-			~ColorSeparatorManipulator();
+				ColorSeparatorManipulator(BBitmap*);
+				~ColorSeparatorManipulator();
 
-void		MouseDown(BPoint,uint32 buttons,BView*,bool);
-int32		PreviewBitmap(bool full_quality = FALSE, BRegion* =NULL);
-BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
-void		Reset();
-void		SetPreviewBitmap(BBitmap*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
+	int32		PreviewBitmap(bool full_quality = FALSE, BRegion* = NULL);
+	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
+	void		Reset();
+	void		SetPreviewBitmap(BBitmap*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
 
-ManipulatorSettings*	ReturnSettings();
+	ManipulatorSettings*	ReturnSettings();
 
-BView*		MakeConfigurationView(const BMessenger& target);
+	BView*		MakeConfigurationView(const BMessenger& target);
 
-void		ChangeSettings(ManipulatorSettings*);
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+	void		ChangeSettings(ManipulatorSettings*);
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
-
 
 
 #define	MENU_ENTRY_CHANGED		'Menc'
 
 class ColorSeparatorManipulatorView : public WindowGUIManipulatorView {
-		BMessenger						target;
-		ColorSeparatorManipulator			*manipulator;
-		ColorSeparatorManipulatorSettings	settings;
+	BMessenger	target;
+	ColorSeparatorManipulator*			manipulator;
+	ColorSeparatorManipulatorSettings	settings;
 
-		BMenuField						*cmyk_menu_field;
+	BMenuField*	cmyk_menu_field;
 
-		bool							started_adjusting;
+	bool		started_adjusting;
 public:
-		ColorSeparatorManipulatorView(ColorSeparatorManipulator*,const BMessenger&);
-		~ColorSeparatorManipulatorView();
+			ColorSeparatorManipulatorView(ColorSeparatorManipulator*, const BMessenger&);
 
-void	AllAttached();
-void	AttachedToWindow();
-void	MessageReceived(BMessage*);
-void	ChangeSettings(ManipulatorSettings*);
+	void	AttachedToWindow();
+	void	MessageReceived(BMessage*);
+	void	ChangeSettings(ManipulatorSettings*);
 };
 
 #endif
-
-
-

@@ -15,15 +15,17 @@
 	through which the Image can be set.
 */
 
+
 class Image;
 
 class ImageAdapter {
 protected:
-		Image	*image;
+		Image*		image;
 public:
-		ImageAdapter() { image = NULL; }
+					ImageAdapter() { image = NULL; }
 
-void		SetImage(Image *img) { image = img; }
+		void		SetImage(Image* img) { image = img; }
 };
 
-#endif
+
+#endif // IMAGE_ADAPTER_H

@@ -15,11 +15,11 @@
 #include "BitmapUtilities.h"
 #include "BrushStoreWindow.h"
 #include "ColorPalette.h"
-#include "PaintApplication.h"
-#include "MessageConstants.h"
 #include "HSPictureButton.h"
-#include "Patterns.h"
 #include "MagnificationView.h"
+#include "MessageConstants.h"
+#include "PaintApplication.h"
+#include "Patterns.h"
 #include "ResourceServer.h"
 #include "ToolManager.h"
 
@@ -38,18 +38,19 @@
 #define B_TRANSLATION_CONTEXT "StatusView"
 
 
-#define TOOLS_VIEW			0
-#define PROGRESS_VIEW 		1
+#define TOOLS_VIEW 0
+#define PROGRESS_VIEW 1
 
 
 StatusView::StatusView()
-	: BView("status view", B_WILL_DRAW)
+	:
+	BView("status view", B_WILL_DRAW)
 {
 	status_bar = NULL;
 	BFont font;
 
 	// First add the coordinate-view.
-	coordinate_view = new BStringView("coordinate_view","X: , Y:");
+	coordinate_view = new BStringView("coordinate_view", "X: , Y:");
 
 	coordinate_box = new BBox("coordinate box");
 	BGroupLayout* boxLayout = BLayoutBuilder::Group<>(coordinate_box, B_HORIZONTAL)
@@ -69,8 +70,7 @@ StatusView::StatusView()
 	selected_colors->SetExplicitMinSize(BSize(color_size + 2, color_size + 2));
 	selected_colors->SetExplicitMaxSize(BSize(color_size + 2, color_size + 2));
 
-	current_brush = new CurrentBrushView(
-		BRect(0, 0, color_size - 2, color_size - 2));
+	current_brush = new CurrentBrushView(BRect(0, 0, color_size - 2, color_size - 2));
 
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
@@ -84,12 +84,10 @@ StatusView::StatusView()
 	toolsAndColorsCard->SetMaxColumnWidth(3, 52);
 
 	BGroupLayout* progressBarCard = BLayoutBuilder::Group<>(B_VERTICAL, 5.0)
-		.Add(status_bar)
-		.SetInsets(2.0, 0.0, 5.0, 0.0);
+		.Add(status_bar).SetInsets(2.0, 0.0, 5.0, 0.0);
 
 	fCardLayout = BLayoutBuilder::Cards<>()
-		.Add(toolsAndColorsCard)
-		.Add(progressBarCard);
+		.Add(toolsAndColorsCard).Add(progressBarCard);
 
 	fStatusView = BLayoutBuilder::Grid<>(this, 5.0, 0.0)
 		.Add(coordinate_box, 0, 0)
@@ -116,11 +114,7 @@ StatusView::~StatusView()
 
 	if (selected_colors->Parent() == NULL)
 		delete selected_colors;
-
-	//if (current_brush->Parent() == NULL)
-	//	delete current_brush;
 }
-
 
 
 BStatusBar*
@@ -150,16 +144,16 @@ StatusView::DisplayToolsAndColors()
 void
 StatusView::SetCoordinates(BPoint point, BPoint reference, bool use_reference)
 {
-	int32 x=(int32)point.x;
-	int32 y=(int32)point.y;
+	int32 x = (int32)point.x;
+	int32 y = (int32)point.y;
 	char coords[40];
 	if (use_reference) {
 		int32 dx = (int32)fabs(point.x - reference.x) + 1;
 		int32 dy = (int32)fabs(point.y - reference.y) + 1;
-		sprintf(coords,"X: %ld (%ld) Y: %ld (%ld)",x,dx,y,dy);
-	} else {
-		sprintf(coords,"X: %ld   Y: %ld",x,y);
-	}
+		sprintf(coords, "X: %ld (%ld) Y: %ld (%ld)", x, dx, y, dy);
+	} else
+		sprintf(coords, "X: %ld   Y: %ld", x, y);
+
 	coordinate_view->SetText(coords);
 }
 
@@ -185,7 +179,8 @@ BList SelectedColorsView::list_of_views(10);
 
 
 SelectedColorsView::SelectedColorsView(BRect frame)
-	: BBox(frame, "selected colors view")
+	:
+	BBox(frame, "selected colors view")
 {
 	SetBorder(B_NO_BORDER);
 
@@ -207,24 +202,23 @@ SelectedColorsView::Draw(BRect area)
 	BBox::Draw(area);
 
 	BRect foreground_rect = Bounds();
-	foreground_rect.right = floor(foreground_rect.right*foreground_color_percentage);
-	foreground_rect.bottom = floor(foreground_rect.bottom*foreground_color_percentage);
+	foreground_rect.right = floor(foreground_rect.right * foreground_color_percentage);
+	foreground_rect.bottom = floor(foreground_rect.bottom * foreground_color_percentage);
 	foreground_rect.left += 2;
 	foreground_rect.top += 2;
 
 	BRegion background_region;
 	BRect rect = foreground_rect;
-	rect.OffsetBy(Bounds().right - rect.right - 2, Bounds().bottom - rect.bottom -2);
+	rect.OffsetBy(Bounds().right - rect.right - 2, Bounds().bottom - rect.bottom - 2);
 	rect.InsetBy(1, 1);
 	background_region.Set(rect);
-	foreground_rect.InsetBy(-1,-1);
+	foreground_rect.InsetBy(-1, -1);
 	background_region.Exclude(foreground_rect);
-	foreground_rect.InsetBy(1,1);
+	foreground_rect.InsetBy(1, 1);
 
 	SetHighColor(255, 255, 255, 255);
 	StrokeRect(foreground_rect);
 	foreground_rect.InsetBy(1, 1);
-//	foreground_rect = foreground_rect & area;
 
 	SetHighAndLowColors(((PaintApplication*)be_app)->Color(TRUE));
 	FillRect(foreground_rect, HS_2X2_BLOCKS);
@@ -249,7 +243,7 @@ SelectedColorsView::Draw(BRect area)
 
 
 void
-SelectedColorsView::MessageReceived(BMessage *message)
+SelectedColorsView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		// In this case the color for one of the mousebuttons has changed, draw
@@ -257,31 +251,30 @@ SelectedColorsView::MessageReceived(BMessage *message)
 		// ColorWindow::MessageReceived where it is sent by using the
 		// SendMessageToAll member-function, it informs us that the color for
 		// oneof the mousebuttons has changed
-		case HS_COLOR_CHANGED: {
+		case HS_COLOR_CHANGED:
+		{
 			Invalidate();
-		}	break;
-
-		case B_PASTE: {
+		} break;
+		case B_PASTE:
+		{
 			if (message->WasDropped()) {
 				// Here we see on to which button it was dropped and then
 				// try to extract a color from the message
-				rgb_color *color;
+				rgb_color* color;
 				ssize_t color_size;
-				if (message->FindData("RGBColor",B_RGB_COLOR_TYPE,
-						(const void**)&color, &color_size) == B_OK) {
+				if (message->FindData(
+					"RGBColor", B_RGB_COLOR_TYPE, (const void**)&color, &color_size) == B_OK) {
 					BPoint drop_point = message->DropPoint();
 					drop_point = ConvertFromScreen(drop_point);
-					((PaintApplication*)be_app)->SetColor(*color,
-						IsPointOverForegroundColor(drop_point));
+					((PaintApplication*)be_app)
+						->SetColor(*color, IsPointOverForegroundColor(drop_point));
 					// also inform the selected colors' views
 					SelectedColorsView::SendMessageToAll(HS_COLOR_CHANGED);
 				}
 			}
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BBox::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -306,8 +299,8 @@ SelectedColorsView::MouseDown(BPoint point)
 		rgb_color foreground = ((PaintApplication*)be_app)->Color(true);
 		rgb_color background = ((PaintApplication*)be_app)->Color(false);
 
-		((PaintApplication*)be_app)->SetColor(background,true);
-		((PaintApplication*)be_app)->SetColor(foreground,false);
+		((PaintApplication*)be_app)->SetColor(background, true);
+		((PaintApplication*)be_app)->SetColor(foreground, false);
 
 		SelectedColorsView::SendMessageToAll(HS_COLOR_CHANGED);
 	}
@@ -319,8 +312,8 @@ SelectedColorsView::MouseMoved(BPoint, uint32 transit, const BMessage*)
 {
 	if (transit == B_ENTERED_VIEW && Window()->IsActive()) {
 		BMessage message(HS_TEMPORARY_HELP_MESSAGE);
-		message.AddString("message",
-			B_TRANSLATE("Left-click for color panel, right-click to switch colors."));
+		message.AddString(
+			"message", B_TRANSLATE("Left-click for color panel, right-click to switch colors."));
 		Window()->PostMessage(&message, Window());
 	}
 
@@ -333,41 +326,39 @@ void
 SelectedColorsView::SendMessageToAll(uint32 what)
 {
 	for (int32 i = 0; i < list_of_views.CountItems(); ++i) {
-		if (SelectedColorsView* view =
-			static_cast<SelectedColorsView*> (list_of_views.ItemAt(i))) {
+		if (SelectedColorsView* view = static_cast<SelectedColorsView*>(list_of_views.ItemAt(i)))
 			view->Window()->PostMessage(what, view);
-		}
 	}
 }
 
 
 void
-SelectedColorsView::sendMessageToAll(BMessage *message)
+SelectedColorsView::sendMessageToAll(BMessage* message)
 {
-	SelectedColorsView *help;
+	SelectedColorsView* help;
 
-	for (int32 i=0;i<list_of_views.CountItems();i++) {
+	for (int32 i = 0; i < list_of_views.CountItems(); i++) {
 		help = (SelectedColorsView*)list_of_views.ItemAt(i);
-		help->Window()->PostMessage(message,help);
+		help->Window()->PostMessage(message, help);
 	}
 }
 
 
 void
-SelectedColorsView::SetHighAndLowColors(const rgb_color &c)
+SelectedColorsView::SetHighAndLowColors(const rgb_color& c)
 {
 	rgb_color low = c;
 	rgb_color high = c;
 
 	float coeff = c.alpha / 255.0;
-	low.red = (uint8)(coeff*c.red);
-	low.green = (uint8)(coeff*c.green);
-	low.blue = (uint8)(coeff*c.blue);
+	low.red = (uint8)(coeff * c.red);
+	low.green = (uint8)(coeff * c.green);
+	low.blue = (uint8)(coeff * c.blue);
 	low.alpha = 255;
 
-	high.red = (uint8)(coeff*c.red + (1-coeff)*255);
-	high.green = (uint8)(coeff*c.green + (1-coeff)*255);
-	high.blue = (uint8)(coeff*c.blue + (1-coeff)*255);
+	high.red = (uint8)(coeff * c.red + (1 - coeff) * 255);
+	high.green = (uint8)(coeff * c.green + (1 - coeff) * 255);
+	high.blue = (uint8)(coeff * c.blue + (1 - coeff) * 255);
 	high.alpha = 255;
 
 	SetHighColor(high);
@@ -394,9 +385,10 @@ BList CurrentBrushView::list_of_views(10);
 
 
 CurrentBrushView::CurrentBrushView(BRect frame)
-	: BView(frame, "brush view", B_FOLLOW_NONE, B_WILL_DRAW)
-	, fBrush(NULL)
-	, fBrushPreview(NULL)
+	:
+	BView(frame, "brush view", B_FOLLOW_NONE, B_WILL_DRAW),
+	fBrush(NULL),
+	fBrushPreview(NULL)
 {
 	SetExplicitMinSize(BSize(frame.Width(), frame.Height()));
 	SetExplicitMaxSize(BSize(frame.Width(), frame.Height()));
@@ -404,8 +396,7 @@ CurrentBrushView::CurrentBrushView(BRect frame)
 	SetToolTip(B_TRANSLATE("Brush"));
 
 	frame.InsetBy(1.0, 1.0);
-	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width(),
-		frame.Height()), B_RGBA32);
+	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width(), frame.Height()), B_RGBA32);
 	BitmapUtilities::ClearBitmap(fBrushPreview, 0xFFFFFFFF);
 
 	list_of_views.AddItem(this);
@@ -419,8 +410,7 @@ CurrentBrushView::~CurrentBrushView()
 }
 
 
-void
-CurrentBrushView::Draw(BRect)
+void CurrentBrushView::Draw(BRect)
 {
 	DrawBitmap(fBrushPreview, BPoint(1.0, 1.0));
 
@@ -439,30 +429,17 @@ CurrentBrushView::SetBrush(Brush* new_brush)
 	Draw(Bounds());
 }
 
+
 void
 CurrentBrushView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case HS_BRUSH_CHANGED: {
+		case HS_BRUSH_CHANGED:
+		{
 			SetBrush(ToolManager::Instance().GetCurrentBrush());
-		} 	break;
-//		case HS_BRUSH_DRAGGED: {
-//			int32 size;
-//			brush_info* info;
-//			message->FindData("brush data",B_ANY_TYPE,(const void**)&info,&size);
-//			if (size == sizeof(brush_info)) {
-//				fBrush->ModifyBrush(*info);
-//				fBrush->PreviewBrush(fBrushPreview);
-//				Invalidate();
-//				fBrush->CreateDiffBrushes();
-//				if (Window() && Parent())
-//					Window()->PostMessage(kBrushAltered, Parent());
-//			}
-//			break;
-//
-		default: {
+		} break;
+		default:
 			BView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -471,18 +448,16 @@ void
 CurrentBrushView::SendMessageToAll(uint32 what)
 {
 	for (int32 i = 0; i < list_of_views.CountItems(); ++i) {
-		if (CurrentBrushView* view =
-			static_cast<CurrentBrushView*> (list_of_views.ItemAt(i))) {
+		if (CurrentBrushView* view = static_cast<CurrentBrushView*>(list_of_views.ItemAt(i)))
 			view->Window()->PostMessage(what, view);
-		}
 	}
 }
 
 
 void
-CurrentBrushView::sendMessageToAll(BMessage *message)
+CurrentBrushView::sendMessageToAll(BMessage* message)
 {
-	CurrentBrushView *help;
+	CurrentBrushView* help;
 
 	for (int32 i = 0; i < list_of_views.CountItems(); ++i) {
 		help = (CurrentBrushView*)list_of_views.ItemAt(i);
@@ -500,7 +475,6 @@ CurrentBrushView::MouseDown(BPoint point)
 	GetMouse(&point, &buttons);
 
 	// here check that the point is inside the view
-	if ((buttons & B_PRIMARY_MOUSE_BUTTON) && Bounds().Contains(point)) {
+	if ((buttons & B_PRIMARY_MOUSE_BUTTON) && Bounds().Contains(point))
 		BrushStoreWindow::showWindow();
-	}
 }

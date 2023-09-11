@@ -28,8 +28,9 @@
 #define B_TRANSLATION_CONTEXT "Manipulators"
 
 
-TransparencyManipulator::TransparencyManipulator(BBitmap *bm)
-	: WindowGUIManipulator(),
+TransparencyManipulator::TransparencyManipulator(BBitmap* bm)
+	:
+	WindowGUIManipulator(),
 	ImageAdapter(),
 	preview_bitmap(NULL),
 	copy_of_the_preview_bitmap(NULL),
@@ -64,36 +65,31 @@ TransparencyManipulator::~TransparencyManipulator()
 
 
 BBitmap*
-TransparencyManipulator::ManipulateBitmap(ManipulatorSettings* set,
-	BBitmap* original, BStatusBar* status_bar)
+TransparencyManipulator::ManipulateBitmap(
+	ManipulatorSettings* set, BBitmap* original, BStatusBar* status_bar)
 {
 	return NULL;
 }
 
 
 int32
-TransparencyManipulator::PreviewBitmap(bool full_quality,
-	BRegion* updated_region)
+TransparencyManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
 	// First decide the resolution of the bitmap
-	if ((previous_transparency_change == settings->transparency)
-		&& (full_quality == FALSE)) {
+	if ((previous_transparency_change == settings->transparency) && (full_quality == FALSE)) {
 		if (last_calculated_resolution <= highest_available_quality) {
 			last_calculated_resolution = 0;
 			if (full_quality) {
 				updated_region->Set(preview_bitmap->Bounds());
 				return 1;
-			} else {
+			} else
 				return 0;
-			}
-		} else {
+		} else
 			last_calculated_resolution = last_calculated_resolution / 2;
-		}
-	} else if (full_quality == TRUE) {
+	} else if (full_quality == TRUE)
 		last_calculated_resolution = 1;
-	} else {
+	else
 		last_calculated_resolution = lowest_available_quality;
-	}
 
 	if (image == NULL)
 		return 0;
@@ -108,11 +104,10 @@ TransparencyManipulator::PreviewBitmap(bool full_quality,
 
 
 void
-TransparencyManipulator::SetPreviewBitmap(BBitmap *bm)
+TransparencyManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (image) {
-		original_transparency_coefficient =
-			image->ReturnActiveLayer()->GetTransparency();
+		original_transparency_coefficient = image->ReturnActiveLayer()->GetTransparency();
 		settings->transparency = original_transparency_coefficient * 255;
 
 		if (config_view)
@@ -134,9 +129,8 @@ TransparencyManipulator::SetTransparency(float change)
 void
 TransparencyManipulator::Reset()
 {
-	if (image && image->ContainsLayer(preview_layer)) {
+	if (image && image->ContainsLayer(preview_layer))
 		preview_layer->SetTransparency(original_transparency_coefficient);
-	}
 }
 
 
@@ -161,7 +155,6 @@ const char*
 TransparencyManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Change the transparency with the slider.");
-
 }
 
 
@@ -176,20 +169,18 @@ TransparencyManipulator::ReturnName()
 
 
 TransparencyManipulatorView::TransparencyManipulatorView(
-		TransparencyManipulator* manipulator, const BMessenger& target)
-	: WindowGUIManipulatorView()
-	, fTarget(target)
-	, fTracking(false)
-	, fManipulator(manipulator)
+	TransparencyManipulator* manipulator, const BMessenger& target)
+	:
+	WindowGUIManipulatorView(),
+	fTarget(target),
+	fTracking(false),
+	fManipulator(manipulator)
 {
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
-	fTransparency = new BSlider("transparency",
-		B_TRANSLATE("Transparency:"),
-		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_HORIZONTAL,
-		B_TRIANGLE_THUMB);
+	fTransparency = new BSlider("transparency", B_TRANSLATE("Transparency:"),
+		new BMessage(MOUSE_TRACKING_FINISHED), 0, 255, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	fTransparency->SetValue(0);
-	fTransparency->SetLimitLabels(B_TRANSLATE("Transparent"),
-		B_TRANSLATE("Opaque"));
+	fTransparency->SetLimitLabels(B_TRANSLATE("Transparent"), B_TRANSLATE("Opaque"));
 	fTransparency->SetModificationMessage(new BMessage(TRANSPARENCY_CHANGED));
 
 	AddChild(fTransparency);
@@ -212,32 +203,31 @@ TransparencyManipulatorView::AllAttached()
 
 
 void
-TransparencyManipulatorView::MessageReceived(BMessage *message)
+TransparencyManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case TRANSPARENCY_CHANGED: {
+		case TRANSPARENCY_CHANGED:
+		{
 			fManipulator->SetTransparency(fTransparency->Value());
 			if (!fTracking) {
 				fTracking = true;
 				fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
 			}
-		}	break;
-
-		case MOUSE_TRACKING_FINISHED: {
+		} break;
+		case MOUSE_TRACKING_FINISHED:
+		{
 			fTracking = false;
 			fManipulator->SetTransparency(fTransparency->Value());
 			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-		}	break;
-
-		default: {
+		} break;
+		default:
 			WindowGUIManipulatorView::MessageReceived(message);
-		}	break;
 	}
 }
 
 
 void
-TransparencyManipulatorView::ChangeSettings(TransparencyManipulatorSettings *new_set)
+TransparencyManipulatorView::ChangeSettings(TransparencyManipulatorSettings* new_set)
 {
 	settings = *new_set;
 

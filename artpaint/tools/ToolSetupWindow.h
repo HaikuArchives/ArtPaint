@@ -36,4 +36,5 @@ private:
 	static	ToolSetupWindow*	sfToolSetupWindow;
 };
 
+
 #endif	// TOOL_SETUP_WINDOW_H

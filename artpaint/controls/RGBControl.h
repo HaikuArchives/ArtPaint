@@ -11,16 +11,19 @@
 
 #include "VisualColorControl.h"
 
-class RGBControl : public VisualColorControl {
-void	CalcRamps();
 
-int32	value_at_1();
-int32	value_at_2();
-int32	value_at_3();
+class RGBControl : public VisualColorControl {
+	void	CalcRamps();
+
+	int32	value_at_1();
+	int32	value_at_2();
+	int32	value_at_3();
 
 public:
-		RGBControl(BPoint position, rgb_color c);
+			RGBControl(BPoint position, rgb_color c);
 
-void	MouseDown(BPoint point);
+	void	MouseDown(BPoint point);
 };
-#endif
+
+
+#endif // RGB_CONTROL_H

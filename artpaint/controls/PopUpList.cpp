@@ -14,15 +14,15 @@
 #include "PopUpList.h"
 
 
-PopUpList::PopUpList(BRect frame, BBitmap *down, BBitmap *up,
-		const BMessage& list, int32 messageCount, const BMessenger& target)
-	: BView("pop-up list",B_WILL_DRAW)
-	, pushed(down)
-	, not_pushed(up)
-	, current_bitmap(up)
-	, fTarget(target)
+PopUpList::PopUpList(BRect frame, BBitmap* down, BBitmap* up, const BMessage& list,
+	int32 messageCount, const BMessenger& target)
+	:
+	BView("pop-up list", B_WILL_DRAW),
+	pushed(down),
+	not_pushed(up),
+	current_bitmap(up),
+	fTarget(target)
 {
-	// Here create the menu that we control
 	the_menu = new BPopUpMenu("pop-up list menu", false, false);
 	for (int32 i = 0; i < messageCount; ++i) {
 		BMessage* message = new BMessage;
@@ -34,8 +34,9 @@ PopUpList::PopUpList(BRect frame, BBitmap *down, BBitmap *up,
 }
 
 
-PopUpList::PopUpList(BRect frame,BBitmap *down,BBitmap *up,BPopUpMenu *menu,BMessenger *targ)
-	:	BView("pop-up list",B_WILL_DRAW)
+PopUpList::PopUpList(BRect frame, BBitmap* down, BBitmap* up, BPopUpMenu* menu, BMessenger* targ)
+	:
+	BView("pop-up list", B_WILL_DRAW)
 {
 	pushed = down;
 	current_bitmap = not_pushed = up;
@@ -54,21 +55,23 @@ PopUpList::~PopUpList()
 }
 
 
-void PopUpList::Draw(BRect area)
+void
+PopUpList::Draw(BRect area)
 {
 	DrawBitmap(current_bitmap, area, area);
 }
 
 
-void PopUpList::MouseDown(BPoint point)
+void
+PopUpList::MouseDown(BPoint point)
 {
 	current_bitmap = pushed;
 	Draw(Bounds());
 
-	BMenuItem *item = the_menu->Go(ConvertToScreen(point));
-	if (item != NULL) {
+	BMenuItem* item = the_menu->Go(ConvertToScreen(point));
+	if (item != NULL)
 		fTarget.SendMessage(item->Message());
-	}
+
 	current_bitmap = not_pushed;
 	Draw(Bounds());
 }

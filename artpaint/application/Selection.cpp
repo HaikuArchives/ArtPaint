@@ -24,11 +24,13 @@
 
 
 #include <new>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+
 
 Selection::Selection(BRect imageBounds)
-	: selection_data(NULL),
+	:
+	selection_data(NULL),
 	original_selections(NULL),
 	selection_map(NULL),
 	selection_view(NULL),
@@ -54,7 +56,7 @@ Selection::~Selection()
 	if (original_selections) {
 		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		delete [] original_selections;
+		delete[] original_selections;
 		original_selections = NULL;
 	}
 
@@ -71,7 +73,7 @@ Selection::~Selection()
 
 
 void
-Selection::SetSelectionData(const SelectionData *data)
+Selection::SetSelectionData(const SelectionData* data)
 {
 	acquire_sem(selection_mutex);
 
@@ -84,8 +86,7 @@ Selection::SetSelectionData(const SelectionData *data)
 		Clear();
 	else if (selection_map == NULL) {
 		selection_map = new BBitmap(image_bounds, B_GRAY8, true);
-		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE,
-			B_WILL_DRAW);
+		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE, B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
 		selection_bits = (uint8*)selection_map->Bits();
 		selection_bpr = selection_map->BytesPerRow();
@@ -117,8 +118,8 @@ Selection::StartDrawing(BView* view, float mag_scale)
 		image_view = view;
 		view_magnifying_scale = mag_scale;
 
-		drawer_thread = spawn_thread(&thread_entry_func, "selection drawer",
-			B_NORMAL_PRIORITY, (void*)this);
+		drawer_thread
+			= spawn_thread(&thread_entry_func, "selection drawer", B_NORMAL_PRIORITY, (void*)this);
 		resume_thread(drawer_thread);
 	}
 }
@@ -142,7 +143,7 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 	if (original_selections) {
 		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		delete [] original_selections;
+		delete[] original_selections;
 		original_selections = NULL;
 	}
 
@@ -165,16 +166,14 @@ Selection::AddSelection(HSPolygon* poly, bool add_to_selection)
 				selection_data->AddSelection(bound_poly);
 			}
 		}
-	} else {
+	} else
 		poly->ChangeDirection(HS_POLYGON_CLOCKWISE);
-	}
 
 	selection_data->AddSelection(poly);
 
 	if (selection_map == NULL) {
 		selection_map = new BBitmap(image_bounds, B_GRAY8, true);
-		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE,
-			B_WILL_DRAW);
+		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE, B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
 		selection_bits = (uint8*)selection_map->Bits();
 		selection_bpr = selection_map->BytesPerRow();
@@ -242,7 +241,7 @@ Selection::AddSelection(BBitmap* bitmap, bool add_to_selection)
 	if (original_selections) {
 		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		delete [] original_selections;
+		delete[] original_selections;
 		original_selections = NULL;
 	}
 
@@ -250,8 +249,7 @@ Selection::AddSelection(BBitmap* bitmap, bool add_to_selection)
 
 	if (selection_map == NULL) {
 		selection_map = new BBitmap(image_bounds, B_GRAY8, true);
-		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE,
-			B_WILL_DRAW);
+		selection_view = new BView(image_bounds, "", B_FOLLOW_NONE, B_WILL_DRAW);
 		selection_map->AddChild(selection_view);
 		selection_bits = (uint8*)selection_map->Bits();
 		selection_bpr = selection_map->BytesPerRow();
@@ -281,16 +279,14 @@ Selection::AddSelection(BBitmap* bitmap, bool add_to_selection)
 	uint8* new_bits = (uint8*)bitmap->Bits();
 
 	int32 width = min_c(selection_bpr, new_bpr);
-	int32 height
-		= min_c(image_bounds.IntegerHeight(), bitmap->Bounds().IntegerHeight());
+	int32 height = min_c(image_bounds.IntegerHeight(), bitmap->Bounds().IntegerHeight());
 	for (int32 y = 0; y <= height; ++y) {
 		for (int32 x = 0; x < width; ++x) {
 			uint8* ptr = selection_bits + x + y * selection_bpr;
-			if (add_to_selection) {
+			if (add_to_selection)
 				*ptr = *ptr | *(new_bits + x + y * new_bpr);
-			} else {
+			else
 				*ptr = *ptr & ~(*(new_bits + x + y * new_bpr));
-			}
 		}
 	}
 
@@ -366,7 +362,7 @@ Selection::Clear()
 	if (original_selections) {
 		for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 			delete original_selections[i];
-		delete [] original_selections;
+		delete[] original_selections;
 		original_selections = NULL;
 	}
 
@@ -426,7 +422,7 @@ Selection::Dilate()
 							*(new_bits + (y + 1) * new_bpr + x) = 0xff;
 						}
 					}
-					if (x<width) {
+					if (x < width) {
 						*(new_bits + y * new_bpr + (x + 1)) = 0xff;
 						if (y > 0) {
 							*(new_bits + (y - 1) * new_bpr + (x + 1)) = 0xff;
@@ -489,9 +485,9 @@ Selection::Erode()
 				if (ContainsPoint(x, y)) {
 					// edge pixels get eroded
 					if (x == 0 || y == 0 ||
-						x == width || y == height) {
+						x == width || y == height)
 						*(new_bits + y * new_bpr + x) = 0x00;
-					} else {
+					else {
 						bool all = true;
 						for (int32 yy = y - 1; yy <= y + 1; ++yy) {
 							for (int32 xx = x - 1; xx <= x + 1; ++xx) {
@@ -564,13 +560,11 @@ Selection::Draw()
 void
 Selection::RotateTo(BPoint pivot, float angle)
 {
-	acquire_sem(selection_mutex);	// This might actually not be useful.
+	acquire_sem(selection_mutex); // This might actually not be useful.
 	if (original_selections == NULL) {
 		original_selections = new HSPolygon*[selection_data->SelectionCount()];
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
-			original_selections[i] =
-				new HSPolygon(selection_data->ReturnSelectionAt(i));
-		}
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
+			original_selections[i] = new HSPolygon(selection_data->ReturnSelectionAt(i));
 	}
 
 	int32 item_count = selection_data->SelectionCount();
@@ -592,9 +586,9 @@ Selection::Translate(int32 dx, int32 dy)
 {
 	acquire_sem(selection_mutex);
 	if (original_selections != NULL) {
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
 			delete original_selections[i];
-		}
+
 		delete[] original_selections;
 		original_selections = NULL;
 	}
@@ -614,9 +608,9 @@ Selection::ScaleBy(BPoint origin, float dx, float dy)
 {
 	acquire_sem(selection_mutex);
 	if (original_selections != NULL) {
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
 			delete original_selections[i];
-		}
+
 		delete[] original_selections;
 		original_selections = NULL;
 	}
@@ -636,9 +630,9 @@ Selection::ScaleTo(BPoint origin, float x_scale, float y_scale)
 {
 	acquire_sem(selection_mutex);
 	if (original_selections != NULL) {
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
 			delete original_selections[i];
-		}
+
 		delete[] original_selections;
 		original_selections = NULL;
 	}
@@ -666,9 +660,9 @@ Selection::FlipHorizontally()
 {
 	acquire_sem(selection_mutex);
 	if (original_selections != NULL) {
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
 			delete original_selections[i];
-		}
+
 		delete[] original_selections;
 		original_selections = NULL;
 	}
@@ -690,9 +684,9 @@ Selection::FlipVertically()
 {
 	acquire_sem(selection_mutex);
 	if (original_selections != NULL) {
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
 			delete original_selections[i];
-		}
+
 		delete[] original_selections;
 		original_selections = NULL;
 	}
@@ -716,7 +710,7 @@ Selection::Recalculate()
 		if (original_selections) {
 			for (int32 i = 0; i < selection_data->SelectionCount(); ++i)
 				delete original_selections[i];
-			delete [] original_selections;
+			delete[] original_selections;
 			original_selections = NULL;
 		}
 
@@ -739,12 +733,10 @@ Selection::Recalculate()
 						// selection
 						selection_view->FillPolygon(bPoly, B_SOLID_LOW);
 						selection_view->StrokePolygon(bPoly, true, B_SOLID_LOW);
-					} else if (p->GetDirection() ==
-						HS_POLYGON_COUNTERCLOCKWISE) {
+					} else if (p->GetDirection() == HS_POLYGON_COUNTERCLOCKWISE) {
 						// a de-selection
 						selection_view->FillPolygon(bPoly, B_SOLID_HIGH);
-						selection_view->StrokePolygon(bPoly, true,
-							B_SOLID_HIGH);
+						selection_view->StrokePolygon(bPoly, true, B_SOLID_HIGH);
 					}
 					delete bPoly;
 				}
@@ -770,8 +762,7 @@ Selection::ImageSizeChanged(BRect rect)
 		if (selection_map != NULL) {
 			BBitmap* previous_map = selection_map;
 			selection_map = new BBitmap(image_bounds, B_GRAY8, true);
-			selection_view = new BView(image_bounds, "selection view",
-				B_FOLLOW_NONE, B_WILL_DRAW);
+			selection_view = new BView(image_bounds, "selection view", B_FOLLOW_NONE, B_WILL_DRAW);
 			selection_map->AddChild(selection_view);
 			selection_bits = (uint8*)selection_map->Bits();
 			selection_bpr = selection_map->BytesPerRow();
@@ -781,18 +772,18 @@ Selection::ImageSizeChanged(BRect rect)
 				selection_map->Unlock();
 			}
 
-			int32 height = min_c(previous_map->Bounds().IntegerHeight(),
-				selection_map->Bounds().IntegerHeight());
-			int32 width = min_c(selection_bpr,
-				uint32(previous_map->BytesPerRow()));
+			int32 height = min_c(
+				previous_map->Bounds().IntegerHeight(), selection_map->Bounds().IntegerHeight());
+			int32 width = min_c(
+				selection_bpr, uint32(previous_map->BytesPerRow()));
 
 			int32 previous_bpr = previous_map->BytesPerRow();
 			uint8* previous_bits = (uint8*)previous_map->Bits();
 
 			for (int32 y = 0; y <= height; y++) {
 				for (int32 x = 0; x < width; x++) {
-					*(selection_bits + x + y * selection_bpr) =
-						*(previous_bits + x + y * previous_bpr);
+					*(selection_bits + x + y * selection_bpr)
+						= *(previous_bits + x + y * previous_bpr);
 				}
 			}
 			delete previous_map;
@@ -820,9 +811,9 @@ Selection::Invert()
 {
 	acquire_sem(selection_mutex);
 	if (original_selections != NULL) {
-		for (int32 i = 0; i < selection_data->SelectionCount(); i++) {
+		for (int32 i = 0; i < selection_data->SelectionCount(); i++)
 			delete original_selections[i];
-		}
+
 		delete[] original_selections;
 		original_selections = NULL;
 	}
@@ -866,9 +857,8 @@ Selection::calculateBoundingRect()
 			}
 		}
 		selection_bounds = selection & image_bounds;
-	} else {
+	} else
 		selection_bounds = image_bounds;
-	}
 }
 
 
@@ -886,7 +876,8 @@ Selection::thread_entry_func(void* data)
 }
 
 
-int32 Selection::thread_func()
+int32
+Selection::thread_func()
 {
 	BWindow* window = image_view->Window();
 	while (!window && continue_drawing)
@@ -901,9 +892,8 @@ int32 Selection::thread_func()
 		animation_offset = animation_offset + 1;
 	}
 
-	if (IsEmpty() == TRUE) {
+	if (IsEmpty() == TRUE)
 		continue_drawing = FALSE;
-	}
 
 	return B_OK;
 }
@@ -931,9 +921,9 @@ Selection::SimplifySelection()
 		selection_data->AddSelection(new_polygon);
 	}
 
-	if (selection_data->SelectionCount() == 0) {
+	if (selection_data->SelectionCount() == 0)
 		Clear();
-	} else if (selection_data->SelectionCount() == 1) {
+	else if (selection_data->SelectionCount() == 1) {
 		// Count the included and excluded points points
 		int32 included = 0;
 		int32 excluded = 0;
@@ -954,7 +944,6 @@ Selection::SimplifySelection()
 }
 
 
-// --------------------------
 SelectionData::SelectionData()
 {
 	selections_array_size = 4;
@@ -974,9 +963,8 @@ SelectionData::SelectionData(const SelectionData* original)
 	for (int32 i = 0; i < selections_array_size; i++)
 		selections[i] = NULL;
 
-	for (int32 i = 0; i < number_of_selections; i++) {
+	for (int32 i = 0; i < number_of_selections; i++)
 		selections[i] = new HSPolygon(original->selections[i]);
-	}
 }
 
 
@@ -994,7 +982,7 @@ SelectionData::AddSelection(HSPolygon* poly)
 		selections_array_size *= 2;
 		HSPolygon** new_array = new HSPolygon*[selections_array_size];
 		for (int32 i = 0; i < selections_array_size; i++) {
-			if (i<number_of_selections) {
+			if (i < number_of_selections) {
 				new_array[i] = selections[i];
 				selections[i] = NULL;
 			} else

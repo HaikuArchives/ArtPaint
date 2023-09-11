@@ -12,12 +12,12 @@
 
 #include "TextManipulator.h"
 
-#include "NumberSliderControl.h"
 #include "HSPolygon.h"
 #include "MessageConstants.h"
+#include "NumberSliderControl.h"
+#include "PaletteWindowClient.h"
 #include "Selection.h"
 #include "UtilityClasses.h"
-#include "PaletteWindowClient.h"
 
 
 #include <Bitmap.h>
@@ -41,22 +41,22 @@
 #define B_TRANSLATION_CONTEXT "Manipulators"
 
 
-#define TEXT_SETTINGS_VERSION	0x03
+#define TEXT_SETTINGS_VERSION 0x03
 
-
-#define TEXT_CHANGED							'Txch'
-#define	FONT_STYLE_CHANGED						'Fsch'
-#define FONT_SIZE_CHANGED						'Fsic'
-#define FONT_ROTATION_CHANGED					'Froc'
-#define	FONT_SHEAR_CHANGED						'Fshc'
-#define FONT_ANTI_ALIAS_CHANGED					'Faac'
+#define TEXT_CHANGED 'Txch'
+#define FONT_STYLE_CHANGED 'Fsch'
+#define FONT_SIZE_CHANGED 'Fsic'
+#define FONT_ROTATION_CHANGED 'Froc'
+#define FONT_SHEAR_CHANGED 'Fshc'
+#define FONT_ANTI_ALIAS_CHANGED 'Faac'
 
 
 using ArtPaint::Interface::NumberSliderControl;
 
 
-TextManipulator::TextManipulator(BBitmap *bm)
-	:	WindowGUIManipulator(),
+TextManipulator::TextManipulator(BBitmap* bm)
+	:
+	WindowGUIManipulator(),
 	selection(NULL)
 {
 	preview_bitmap = NULL;
@@ -68,6 +68,7 @@ TextManipulator::TextManipulator(BBitmap *bm)
 	lowest_allowed_quality = 1; // This must be 1.
 }
 
+
 TextManipulator::~TextManipulator()
 {
 	delete copy_of_the_preview_bitmap;
@@ -78,45 +79,44 @@ TextManipulator::~TextManipulator()
 	}
 }
 
-void TextManipulator::MouseDown(BPoint point,uint32 buttons,BView*,bool first_click)
+
+void
+TextManipulator::MouseDown(BPoint point, uint32 buttons, BView*, bool first_click)
 {
 	if (buttons & B_PRIMARY_MOUSE_BUTTON) {
 		if (first_click == FALSE) {
-			fSettings.starting_point = fSettings.starting_point + point-origo;
+			fSettings.starting_point = fSettings.starting_point + point - origo;
 			origo = point;
-		}
-		else
+		} else
 			origo = point;
-	}
-	else {
+	} else {
 		if (first_click == FALSE) {
 			float dy = point.y - fSettings.starting_point.y;
 			float dx = point.x - fSettings.starting_point.x;
-			float new_angle = atan2(dy,dx);
-			new_angle = new_angle / M_PI *180;
+			float new_angle = atan2(dy, dx);
+			new_angle = new_angle / M_PI * 180;
 			fSettings.font.SetRotation(-new_angle);
-		}
-		else
+		} else
 			origo = point;
 	}
 
 
-	if (config_view != NULL) {
+	if (config_view != NULL)
 		config_view->ChangeSettings(&fSettings);
-	}
 }
 
 
-BRegion TextManipulator::Draw(BView *view,float)
+BRegion
+TextManipulator::Draw(BView* view, float)
 {
 	return BRegion();
 }
 
 
-BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
-	BBitmap *original, BStatusBar*)
+BBitmap*
+TextManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* original, BStatusBar*)
 {
-	TextManipulatorSettings *new_settings = dynamic_cast<TextManipulatorSettings*> (set);
+	TextManipulatorSettings* new_settings = dynamic_cast<TextManipulatorSettings*>(set);
 
 	if (new_settings == NULL || original == NULL)
 		return NULL;
@@ -130,21 +130,20 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		int32 top = (int32)frame.top;
 		int32 bottom = (int32)frame.bottom;
 
-		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
-		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
-		int32 target_bpr = preview_bitmap->BytesPerRow()/4;
-		int32 source_bpr = copy_of_the_preview_bitmap->BytesPerRow()/4;
-		for (int32 y=top;y<=bottom;y++) {
-			for (int32 x=left;x<=right;x++) {
-				*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
-			}
+		uint32* target_bits = (uint32*)preview_bitmap->Bits();
+		uint32* source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
+		int32 target_bpr = preview_bitmap->BytesPerRow() / 4;
+		int32 source_bpr = copy_of_the_preview_bitmap->BytesPerRow() / 4;
+		for (int32 y = top; y <= bottom; y++) {
+			for (int32 x = left; x <= right; x++)
+				*(target_bits + x + y * target_bpr) = *(source_bits + x + y * source_bpr);
 		}
 	}
 
 	// new_bitmap should be deleted at the end of this function.
 	// This was not done properly before and it caused quite a big memory-leak.
-	BBitmap *new_bitmap = DuplicateBitmap(original,0,TRUE);
-	BView *new_view = new BView(new_bitmap->Bounds(),"new_view",B_FOLLOW_NONE,B_WILL_DRAW);
+	BBitmap* new_bitmap = DuplicateBitmap(original, 0, TRUE);
+	BView* new_view = new BView(new_bitmap->Bounds(), "new_view", B_FOLLOW_NONE, B_WILL_DRAW);
 	new_bitmap->AddChild(new_view);
 	new_bitmap->Lock();
 	new_view->SetFont(&(new_settings->font));
@@ -153,11 +152,11 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	new_view->MovePenTo(new_settings->starting_point);
 	font_height fHeight;
 	new_settings->font.GetHeight(&fHeight);
-	BPoint height_vector(0,0);
+	BPoint height_vector(0, 0);
 	height_vector.y = fHeight.ascent + fHeight.descent + fHeight.leading;
-	float alpha = new_settings->font.Rotation()/180*M_PI;
-	height_vector.x = -sin(-alpha)*height_vector.y;
-	height_vector.y = cos(-alpha)*height_vector.y;
+	float alpha = new_settings->font.Rotation() / 180 * M_PI;
+	height_vector.x = -sin(-alpha) * height_vector.y;
+	height_vector.y = cos(-alpha) * height_vector.y;
 	int32 line_number = 0;
 
 	int32 length = new_settings->text ? strlen(new_settings->text) : 0;
@@ -165,8 +164,8 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 		if (new_settings->text[i] == '\n') {
 			// Move to next line
 			line_number++;
-			new_view->MovePenTo(new_settings->starting_point +
-				BPoint(height_vector.x * line_number, height_vector.y * line_number));
+			new_view->MovePenTo(new_settings->starting_point
+				+ BPoint(height_vector.x * line_number, height_vector.y * line_number));
 		} else if (new_settings->text[i] == '\t') {
 			// Replace tabs with four spaces
 			new_view->DrawChar(' ');
@@ -181,12 +180,12 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 				new_view->DrawChar(new_settings->text[i]);
 			else {
 				int32 length = 0;
-				int32 j=0;
-				while ((j<8) && (((new_settings->text[i] << j) & 0x80) != 0x00)) {
+				int32 j = 0;
+				while ((j < 8) && (((new_settings->text[i] << j) & 0x80) != 0x00)) {
 					j++;
 					length++;
 				}
-				new_view->DrawString(&new_settings->text[i],length);
+				new_view->DrawString(&new_settings->text[i], length);
 				i += (length - 1);
 			}
 		}
@@ -196,10 +195,10 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	new_bitmap->Unlock();
 
 	// Here copy the bits back to original.
-	uint32 *target_bits = (uint32*)original->Bits();
-	uint32 *source_bits = (uint32*)new_bitmap->Bits();
-	int32 target_bpr = original->BytesPerRow()/4;
-	int32 source_bpr = new_bitmap->BytesPerRow()/4;
+	uint32* target_bits = (uint32*)original->Bits();
+	uint32* source_bits = (uint32*)new_bitmap->Bits();
+	int32 target_bpr = original->BytesPerRow() / 4;
+	int32 source_bpr = new_bitmap->BytesPerRow() / 4;
 
 	BRect bounds = original->Bounds();
 	if (selection != NULL && selection->IsEmpty() == false)
@@ -210,11 +209,10 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 	int32 top = (int32)bounds.top;
 	int32 bottom = (int32)bounds.bottom;
 
-	for (int32 y=top;y<=bottom;y++) {
-		for (int32 x=left;x<=right;x++) {
-			if (selection == NULL || selection->IsEmpty() == true ||
-				selection->ContainsPoint(x,y))
-				*(target_bits + x + y*target_bpr) = *(source_bits + x + y*source_bpr);
+	for (int32 y = top; y <= bottom; y++) {
+		for (int32 x = left; x <= right; x++) {
+			if (selection == NULL || selection->IsEmpty() == true || selection->ContainsPoint(x, y))
+				*(target_bits + x + y * target_bpr) = *(source_bits + x + y * source_bpr);
 		}
 	}
 
@@ -224,19 +222,17 @@ BBitmap* TextManipulator::ManipulateBitmap(ManipulatorSettings *set,
 }
 
 
-
-int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
+int32
+TextManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {
 	// First decide the resolution of the bitmap
 	if (previous_settings == fSettings) {
 		if (last_used_quality <= 1) {
 			last_used_quality = 0;
 			return DRAW_ONLY_GUI;
-		}
-		else
+		} else
 			last_used_quality = last_used_quality / 2;
-	}
-	else if (full_quality == TRUE)
+	} else if (full_quality == TRUE)
 		last_used_quality = 1;
 	else
 		last_used_quality = lowest_allowed_quality;
@@ -249,25 +245,24 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 	TextManipulatorSettings current_settings = fSettings;
 
 	// First reset the preview_bitmap for the part that previous settings did draw.
-	uint32 *preview_bits = (uint32*)preview_bitmap->Bits();
-	uint32 *copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
-	int32 preview_bpr = preview_bitmap->BytesPerRow()/4;
-	int32 copy_bpr = copy_of_the_preview_bitmap->BytesPerRow()/4;
+	uint32* preview_bits = (uint32*)preview_bitmap->Bits();
+	uint32* copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
+	int32 preview_bpr = preview_bitmap->BytesPerRow() / 4;
+	int32 copy_bpr = copy_of_the_preview_bitmap->BytesPerRow() / 4;
 
 	if (previously_updated_region.Frame().IsValid() == TRUE) {
 		BRegion frame_region;
 		frame_region.Set(preview_bitmap->Bounds());
 		previously_updated_region.IntersectWith(&frame_region);
 
-		for (int32 i=0;i<previously_updated_region.CountRects();i++) {
+		for (int32 i = 0; i < previously_updated_region.CountRects(); i++) {
 			int32 left = (int32)previously_updated_region.RectAt(i).left;
 			int32 top = (int32)previously_updated_region.RectAt(i).top;
 			int32 right = (int32)previously_updated_region.RectAt(i).right;
 			int32 bottom = (int32)previously_updated_region.RectAt(i).bottom;
-			for (int32 y=top;y<=bottom;y++) {
-				for (int32 x=left;x<=right;x++) {
-					*(preview_bits + x + y*preview_bpr) = *(copy_bits + x + y*copy_bpr);
-				}
+			for (int32 y = top; y <= bottom; y++) {
+				for (int32 x = left; x <= right; x++)
+					*(preview_bits + x + y * preview_bpr) = *(copy_bits + x + y * copy_bpr);
 			}
 		}
 	}
@@ -279,7 +274,7 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 
 	// Here draw the text in the copy_of_the_preview_bitmap.
 	copy_of_the_preview_bitmap->Lock();
-	BView *view = copy_of_the_preview_bitmap->ChildAt(0);
+	BView* view = copy_of_the_preview_bitmap->ChildAt(0);
 
 	if (view != NULL) {
 		BRect character_bounds[4];
@@ -291,11 +286,11 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 		view->MovePenTo(current_settings.starting_point);
 		font_height fHeight;
 		current_settings.font.GetHeight(&fHeight);
-		BPoint height_vector(0,0);
+		BPoint height_vector(0, 0);
 		height_vector.y = fHeight.ascent + fHeight.descent + fHeight.leading;
-		float alpha = current_settings.font.Rotation()/180*M_PI;
-		height_vector.x = -sin(-alpha)*height_vector.y;
-		height_vector.y = cos(-alpha)*height_vector.y;
+		float alpha = current_settings.font.Rotation() / 180 * M_PI;
+		height_vector.x = -sin(-alpha) * height_vector.y;
+		height_vector.y = cos(-alpha) * height_vector.y;
 		int32 line_number = 0;
 
 		int32 len = current_settings.text ? strlen(current_settings.text) : 0;
@@ -304,16 +299,15 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 			if (fSettings.text[i] == '\n') {
 				// Move to next line
 				line_number++;
-				view->MovePenTo(current_settings.starting_point+BPoint(height_vector.x*line_number,height_vector.y*line_number));
-			}
-			else if (fSettings.text[i] == '\t') {
+				view->MovePenTo(current_settings.starting_point
+					+ BPoint(height_vector.x * line_number, height_vector.y * line_number));
+			} else if (fSettings.text[i] == '\t') {
 				// Replace tabs with four spaces
 				view->DrawChar(' ');
 				view->DrawChar(' ');
 				view->DrawChar(' ');
 				view->DrawChar(' ');
-			}
-			else {
+			} else {
 				// Draw the next character from the string with
 				// correct color.
 				view->SetHighColor(current_settings.text_color_array[i]);
@@ -321,15 +315,16 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 					view->DrawChar(current_settings.text[i]);
 				else {
 					int32 length = 0;
-					int32 j=0;
-					while ((j<8) && (((current_settings.text[i] << j) & 0x80) != 0x00)) {
+					int32 j = 0;
+					while ((j < 8) && (((current_settings.text[i] << j) & 0x80) != 0x00)) {
 						j++;
 						length++;
 					}
-					view->DrawString(&current_settings.text[i],length);
+					view->DrawString(&current_settings.text[i], length);
 					i += (length - 1);
 				}
-				current_settings.font.GetBoundingBoxesAsString(&(current_settings.text[i]),1,B_SCREEN_METRIC,deltas,character_bounds);
+				current_settings.font.GetBoundingBoxesAsString(
+					&(current_settings.text[i]), 1, B_SCREEN_METRIC, deltas, character_bounds);
 				character_bounds[0].OffsetBy(pen_location);
 				character_bounds[0].top = floor(character_bounds[0].top);
 				character_bounds[0].bottom = ceil(character_bounds[0].bottom);
@@ -340,7 +335,6 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 					updated_rect = updated_rect | character_bounds[0];
 				else
 					updated_rect = character_bounds[0];
-
 			}
 		}
 		view->Sync();
@@ -359,7 +353,7 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 	// that are inside the selection are updated to preview_bitmap.
 	uint32 spare_value;
 	if (selection == NULL || selection->IsEmpty() == TRUE) {
-		for (int32 i=0;i<updated_region->CountRects();i++) {
+		for (int32 i = 0; i < updated_region->CountRects(); i++) {
 			preview_bits = (uint32*)preview_bitmap->Bits();
 			copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 			int32 left = (int32)updated_region->RectAt(i).left;
@@ -367,12 +361,12 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 			int32 top = (int32)updated_region->RectAt(i).top;
 			int32 bottom = (int32)updated_region->RectAt(i).bottom;
 
-			preview_bits += top*preview_bpr;
-			copy_bits += top*copy_bpr;
-			for (int32 y=top;y<=bottom;y++) {
+			preview_bits += top * preview_bpr;
+			copy_bits += top * copy_bpr;
+			for (int32 y = top; y <= bottom; y++) {
 				preview_bits += left;
 				copy_bits += left;
-				for (int32 x=left;x<=right;x++) {
+				for (int32 x = left; x <= right; x++) {
 					spare_value = *copy_bits;
 					*copy_bits++ = *preview_bits;
 					*preview_bits++ = spare_value;
@@ -382,7 +376,7 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 			}
 		}
 	} else {
-		for (int32 i=0;i<updated_region->CountRects();i++) {
+		for (int32 i = 0; i < updated_region->CountRects(); i++) {
 			preview_bits = (uint32*)preview_bitmap->Bits();
 			copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
 			int32 left = (int32)updated_region->RectAt(i).left;
@@ -390,20 +384,18 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 			int32 top = (int32)updated_region->RectAt(i).top;
 			int32 bottom = (int32)updated_region->RectAt(i).bottom;
 
-			preview_bits += top*preview_bpr;
-			copy_bits += top*copy_bpr;
-			for (int32 y=top;y<=bottom;y++) {
+			preview_bits += top * preview_bpr;
+			copy_bits += top * copy_bpr;
+			for (int32 y = top; y <= bottom; y++) {
 				preview_bits += left;
 				copy_bits += left;
-				for (int32 x=left;x<=right;x++) {
-					if (selection->ContainsPoint(x,y)) {
+				for (int32 x = left; x <= right; x++) {
+					if (selection->ContainsPoint(x, y)) {
 						spare_value = *copy_bits;
 						*copy_bits++ = *preview_bits;
 						*preview_bits++ = spare_value;
-					}
-					else {
+					} else
 						*copy_bits++ = *preview_bits++;
-					}
 				}
 				preview_bits += (preview_bpr - right - 1);
 				copy_bits += (copy_bpr - right - 1);
@@ -415,21 +407,23 @@ int32 TextManipulator::PreviewBitmap(bool full_quality,BRegion *updated_region)
 }
 
 
-void TextManipulator::SetPreviewBitmap(BBitmap *bm)
+void
+TextManipulator::SetPreviewBitmap(BBitmap* bm)
 {
 	if (bm != preview_bitmap) {
 		delete copy_of_the_preview_bitmap;
 		if (bm != NULL) {
 			preview_bitmap = bm;
-			copy_of_the_preview_bitmap = DuplicateBitmap(bm,0,TRUE);
-			BView *a_view = new BView(copy_of_the_preview_bitmap->Bounds(),"a_view",B_FOLLOW_NONE,B_WILL_DRAW);
+			copy_of_the_preview_bitmap = DuplicateBitmap(bm, 0, TRUE);
+			BView* a_view = new BView(
+				copy_of_the_preview_bitmap->Bounds(), "a_view", B_FOLLOW_NONE, B_WILL_DRAW);
 			copy_of_the_preview_bitmap->AddChild(a_view);
 			if (preview_bitmap->Bounds().Contains(fSettings.starting_point) == FALSE) {
 				fSettings.starting_point.x = preview_bitmap->Bounds().left + 20;
-				fSettings.starting_point.y = preview_bitmap->Bounds().top + (preview_bitmap->Bounds().bottom - preview_bitmap->Bounds().top) / 2;;
+				fSettings.starting_point.y = preview_bitmap->Bounds().top
+					+ (preview_bitmap->Bounds().bottom - preview_bitmap->Bounds().top) / 2;
 			}
-		}
-		else {
+		} else {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 		}
@@ -441,9 +435,9 @@ void
 TextManipulator::Reset()
 {
 	if (copy_of_the_preview_bitmap) {
-		uint32 *target_bits = (uint32*)preview_bitmap->Bits();
-		uint32 *source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
-		int32 bits_length = preview_bitmap->BitsLength()/4;
+		uint32* target_bits = (uint32*)preview_bitmap->Bits();
+		uint32* source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
+		int32 bits_length = preview_bitmap->BitsLength() / 4;
 
 		for (int32 i = 0; i < bits_length; ++i)
 			*target_bits++ = *source_bits++;
@@ -471,8 +465,7 @@ TextManipulator::MakeConfigurationView(const BMessenger& target)
 void
 TextManipulator::ChangeSettings(ManipulatorSettings* settings)
 {
-	TextManipulatorSettings* newSettings =
-		dynamic_cast<TextManipulatorSettings*> (settings);
+	TextManipulatorSettings* newSettings = dynamic_cast<TextManipulatorSettings*>(settings);
 	if (newSettings)
 		fSettings = *newSettings;
 }
@@ -486,8 +479,7 @@ TextManipulator::Save(BMessage& settings) const
 	status_t status = settings.AddString("text", fSettings.text);
 	status |= settings.AddPoint("starting_point", fSettings.starting_point);
 	status |= settings.AddInt32("text_array_length", fSettings.text_array_length);
-	status |= settings.AddData("font", B_RAW_TYPE, (const void*)&fSettings.font,
-		sizeof(BFont));
+	status |= settings.AddData("font", B_RAW_TYPE, (const void*)&fSettings.font, sizeof(BFont));
 
 	int32 length = fSettings.text ? strlen(fSettings.text) : 0;
 	for (int32 i = 0; i < length; ++i) {
@@ -502,8 +494,8 @@ TextManipulator::Save(BMessage& settings) const
 status_t
 TextManipulator::Restore(const BMessage& settings)
 {
-	delete [] fSettings.text;
-	delete [] fSettings.text_color_array;
+	delete[] fSettings.text;
+	delete[] fSettings.text_color_array;
 
 	const char* dummy;
 	status_t status = settings.FindString("text", &dummy);
@@ -549,12 +541,12 @@ TextManipulator::ReturnHelpString()
 // #pragma mark -- TextManipulatorView
 
 
-TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
-		const BMessenger& target)
-	: WindowGUIManipulatorView()
-	, fTarget(target)
-	, fTracking(false)
-	, fManipulator(manipulator)
+TextManipulatorView::TextManipulatorView(TextManipulator* manipulator, const BMessenger& target)
+	:
+	WindowGUIManipulatorView(),
+	fTarget(target),
+	fTracking(false),
+	fManipulator(manipulator)
 {
 	fTextView = new TextEditor();
 	fTextView->SetMessage(new BMessage(TEXT_CHANGED));
@@ -569,7 +561,7 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 		get_font_family(i, &families[i], &flags);
 	}
 
-	typedef int (*FP) (const void*, const void*);
+	typedef int (*FP)(const void*, const void*);
 	qsort(families, numFamilies, sizeof(font_family), reinterpret_cast<FP>(&strcmp));
 
 	char family_and_style_name[256];
@@ -583,13 +575,13 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 				font_style style;
 				uint32 flags;
 				if (get_font_style(families[i], j, &style, &flags) == B_OK) {
-					font.SetFamilyAndStyle(families[i],style);
+					font.SetFamilyAndStyle(families[i], style);
 					BMessage* message = new BMessage(FONT_STYLE_CHANGED);
 					message->AddUInt32("font_code", font.FamilyAndStyle());
 					subMenu->AddItem(new BMenuItem(style, message));
 				}
 			}
-			BMenuItem *controlling_item = new BMenuItem(subMenu);
+			BMenuItem* controlling_item = new BMenuItem(subMenu);
 			fFontMenu->AddItem(controlling_item);
 		} else {
 			font_style style;
@@ -603,27 +595,20 @@ TextManipulatorView::TextManipulatorView(TextManipulator* manipulator,
 			}
 		}
 	}
-	fFontMenuField = new BMenuField(B_TRANSLATE("Font:"),
-		fFontMenu);
+	fFontMenuField = new BMenuField(B_TRANSLATE("Font:"), fFontMenu);
 
-	BMessage *message = new BMessage(FONT_SIZE_CHANGED);
-	fSizeControl =
-		new NumberSliderControl(B_TRANSLATE("Size:"), "0",
-		message, 5, 500, false);
+	BMessage* message = new BMessage(FONT_SIZE_CHANGED);
+	fSizeControl = new NumberSliderControl(B_TRANSLATE("Size:"), "0", message, 5, 500, false);
 
 	message = new BMessage(FONT_ROTATION_CHANGED);
-	fRotationControl =
-		new NumberSliderControl(B_TRANSLATE("Rotation:"),
-		"0", message, -180, 180, false);
+	fRotationControl
+		= new NumberSliderControl(B_TRANSLATE("Rotation:"), "0", message, -180, 180, false);
 
 	message = new BMessage(FONT_SHEAR_CHANGED);
-	fShearControl =
-		new NumberSliderControl(B_TRANSLATE("Shear:"),
-		"45", message, 45, 135, false);
+	fShearControl = new NumberSliderControl(B_TRANSLATE("Shear:"), "45", message, 45, 135, false);
 
-	fAntiAliasing =
-		new BCheckBox(B_TRANSLATE("Enable antialiasing"),
-		new BMessage(FONT_ANTI_ALIAS_CHANGED));
+	fAntiAliasing
+		= new BCheckBox(B_TRANSLATE("Enable antialiasing"), new BMessage(FONT_ANTI_ALIAS_CHANGED));
 
 	BGridLayout* layout = BGridLayoutBuilder(B_USE_SMALL_SPACING, B_USE_SMALL_SPACING)
 		.Add(fSizeControl, 0, 0, 0, 0)
@@ -679,8 +664,7 @@ TextManipulatorView::AllAttached()
 
 	int32 length = fSettings.text ? strlen(fSettings.text) : 0;
 	for (int32 i = 0; i < length; ++i) {
-		fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
-			&fSettings.text_color_array[i]);
+		fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL, &fSettings.text_color_array[i]);
 	}
 
 	fSizeControl->SetValue(int32(fSettings.font.Size()));
@@ -699,12 +683,13 @@ void
 TextManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case TEXT_CHANGED: {
+		case TEXT_CHANGED:
+		{
 			const int32 textLength = fTextView->TextLength();
 			if (textLength > fSettings.text_array_length) {
 				fSettings.text_array_length = 2 * textLength;
-				delete [] fSettings.text;
-				delete [] fSettings.text_color_array;
+				delete[] fSettings.text;
+				delete[] fSettings.text_color_array;
 				fSettings.text = new char[fSettings.text_array_length];
 				fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
 			}
@@ -712,15 +697,14 @@ TextManipulatorView::MessageReceived(BMessage* message)
 
 			for (int32 i = 0; i < textLength; ++i) {
 				BFont font;
-				fTextView->GetFontAndColor(i, &font,
-					&fSettings.text_color_array[i]);
+				fTextView->GetFontAndColor(i, &font, &fSettings.text_color_array[i]);
 			}
 
 			fManipulator->ChangeSettings(&fSettings);
 			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-		}	break;
-
-		case FONT_STYLE_CHANGED: {
+		} break;
+		case FONT_STYLE_CHANGED:
+		{
 			uint32 fontCode;
 			if (message->FindUInt32("font_code", &fontCode) == B_OK) {
 				fSettings.font.SetFamilyAndStyle(fontCode);
@@ -729,12 +713,12 @@ TextManipulatorView::MessageReceived(BMessage* message)
 
 				_FontFamilyAndStyleChanged(fontCode);
 			}
-		}	break;
-
+		} break;
 		case FONT_SIZE_CHANGED:
 		case FONT_SHEAR_CHANGED:
 		case FONT_ROTATION_CHANGED:
-		{	bool final;
+		{
+			bool final;
 			int32 value;
 			if ((message->FindBool("final", &final) == B_OK)
 				&& (message->FindInt32("value", &value) == B_OK)) {
@@ -759,20 +743,18 @@ TextManipulatorView::MessageReceived(BMessage* message)
 					fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 				}
 			}
-		}	break;
-
-		case FONT_ANTI_ALIAS_CHANGED: {
+		} break;
+		case FONT_ANTI_ALIAS_CHANGED:
+		{
 			if (fAntiAliasing->Value() == B_CONTROL_ON)
 				fSettings.font.SetFlags(fSettings.font.Flags() & ~B_DISABLE_ANTIALIASING);
 			else
 				fSettings.font.SetFlags(fSettings.font.Flags() | B_DISABLE_ANTIALIASING);
 			fManipulator->ChangeSettings(&fSettings);
 			fTarget.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
-		}	break;
-
-		default: {
+		} break;
+		default:
 			WindowGUIManipulatorView::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -822,17 +804,17 @@ TextManipulatorView::ChangeSettings(TextManipulatorSettings* s)
 		_FontFamilyAndStyleChanged(s->font.FamilyAndStyle());
 
 	if (Window() && Window()->Lock()) {
-		if (strcmp(fSettings.text,s->text) != 0) {
+		if (strcmp(fSettings.text, s->text) != 0) {
 			strcpy(fSettings.text, s->text);
 			fTextView->SetText(fSettings.text);
 
 			int32 length = fSettings.text ? strlen(fSettings.text) : 0;
 			for (int32 i = 0; i < length; ++i) {
-				fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL,
-					&fSettings.text_color_array[i]);
+				fTextView->SetFontAndColor(
+					i, i + 1, NULL, B_FONT_ALL, &fSettings.text_color_array[i]);
 			}
 		} else {
-			;// Here we should set the text-colors if needed.
+			; // Here we should set the text-colors if needed.
 		}
 
 		if (fSettings.font.Size() != s->font.Size())
@@ -861,9 +843,10 @@ TextManipulatorView::ChangeSettings(TextManipulatorSettings* s)
 
 
 TextEditor::TextEditor()
-	: BTextView("text view", B_WILL_DRAW)
-	, PaletteWindowClient()
-	, fMessage(NULL)
+	:
+	BTextView("text view", B_WILL_DRAW),
+	PaletteWindowClient(),
+	fMessage(NULL)
 {
 	SetStylable(true);
 	SetWordWrap(false);
@@ -879,10 +862,9 @@ TextEditor::~TextEditor()
 
 
 void
-TextEditor::InsertText(const char *text, int32 length, int32 offset,
-	const text_run_array *runs)
+TextEditor::InsertText(const char* text, int32 length, int32 offset, const text_run_array* runs)
 {
-	BTextView::InsertText(text,length,offset,runs);
+	BTextView::InsertText(text, length, offset, runs);
 
 	_SendMessage();
 }
@@ -891,7 +873,7 @@ TextEditor::InsertText(const char *text, int32 length, int32 offset,
 void
 TextEditor::DeleteText(int32 start, int32 finish)
 {
-	BTextView::DeleteText(start,finish);
+	BTextView::DeleteText(start, finish);
 
 	_SendMessage();
 }
@@ -942,22 +924,23 @@ TextEditor::_SendMessage()
 
 
 TextManipulatorSettings::TextManipulatorSettings()
-	: ManipulatorSettings()
+	:
+	ManipulatorSettings()
 {
 	text_array_length = 256;
 	text = new char[text_array_length];
 	text_color_array = new rgb_color[text_array_length];
-	strcpy(text,"Text!");
+	strcpy(text, "Text!");
 
 	rgb_color text_color;
 	text_color.red = 0;
 	text_color.blue = 0;
 	text_color.green = 0;
 	text_color.alpha = 255;
-	for (int32 i=0;i<text_array_length;i++) {
+	for (int32 i = 0; i < text_array_length; i++)
 		text_color_array[i] = text_color;
-	}
-	starting_point = BPoint(-1,-1);
+
+	starting_point = BPoint(-1, -1);
 	font.SetSize(25);
 }
 
@@ -968,9 +951,9 @@ TextManipulatorSettings::TextManipulatorSettings(const TextManipulatorSettings& 
 	text = new char[text_array_length];
 	text_color_array = new rgb_color[text_array_length];
 
-	strcpy(text,s.text);
+	strcpy(text, s.text);
 
-	for (int32 i=0;i<text_array_length;i++)
+	for (int32 i = 0; i < text_array_length; i++)
 		text_color_array[i] = s.text_color_array[i];
 
 	starting_point = s.starting_point;
@@ -980,8 +963,8 @@ TextManipulatorSettings::TextManipulatorSettings(const TextManipulatorSettings& 
 
 TextManipulatorSettings::~TextManipulatorSettings()
 {
-	delete [] text;
-	delete [] text_color_array;
+	delete[] text;
+	delete[] text_color_array;
 }
 
 
@@ -989,15 +972,15 @@ bool
 TextManipulatorSettings::operator==(const TextManipulatorSettings& s)
 {
 	bool same = TRUE;
-	same = same && (strcmp(s.text,text)==0);
+	same = same && (strcmp(s.text, text) == 0);
 	same = same && (s.text_array_length == text_array_length);
 	same = same && (s.starting_point == starting_point);
 	same = same && (s.font == font);
 	same = same && (s.font.Flags() == font.Flags());
 
 	if (same == TRUE) {
-		for (int32 i=0;i<min_c(s.text_array_length,text_array_length);i++) {
-			same = same	&& (s.text_color_array[i].red == text_color_array[i].red)
+		for (int32 i = 0; i < min_c(s.text_array_length, text_array_length); i++) {
+			same = same && (s.text_color_array[i].red == text_color_array[i].red)
 				&& (s.text_color_array[i].green == text_color_array[i].green)
 				&& (s.text_color_array[i].blue == text_color_array[i].blue)
 				&& (s.text_color_array[i].alpha == text_color_array[i].alpha);
@@ -1018,8 +1001,8 @@ TextManipulatorSettings::operator!=(const TextManipulatorSettings& settings)
 TextManipulatorSettings&
 TextManipulatorSettings::operator=(const TextManipulatorSettings& settings)
 {
-	delete [] text;
-	delete [] text_color_array;
+	delete[] text;
+	delete[] text_color_array;
 
 	text_array_length = settings.text_array_length;
 	text = new char[text_array_length];
@@ -1027,7 +1010,7 @@ TextManipulatorSettings::operator=(const TextManipulatorSettings& settings)
 
 	strcpy(text, settings.text);
 
-	for (int32 i=0;i<text_array_length;i++)
+	for (int32 i = 0; i < text_array_length; i++)
 		text_color_array[i] = settings.text_color_array[i];
 
 	starting_point = settings.starting_point;

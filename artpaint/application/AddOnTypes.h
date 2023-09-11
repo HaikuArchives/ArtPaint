@@ -21,4 +21,4 @@ enum add_on_types {
 };
 
 
-#endif
+#endif // ADD_ON_TYPES_H

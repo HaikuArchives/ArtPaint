@@ -32,7 +32,6 @@ using ArtPaint::Interface::NumberSliderControl;
 class EraserTool : public DrawingTool {
 public:
 								EraserTool();
-	virtual						~EraserTool();
 
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -69,5 +68,6 @@ private:
 			BRadioButton*			fTransparent;
 			BCheckBox*				fUseBrush;
 };
+
 
 #endif	// ERASER_TOOL_H

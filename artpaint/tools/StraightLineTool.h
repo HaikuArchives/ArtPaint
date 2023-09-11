@@ -31,7 +31,6 @@ using ArtPaint::Interface::NumberSliderControl;
 class StraightLineTool : public DrawingTool, public ToolEventAdapter {
 public:
 								StraightLineTool();
-	virtual						~StraightLineTool();
 
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
@@ -44,18 +43,19 @@ public:
 
 class StraightLineToolConfigView : public DrawingToolConfigView {
 public:
-									StraightLineToolConfigView(DrawingTool* tool);
-	virtual							~StraightLineToolConfigView() {}
+								StraightLineToolConfigView(DrawingTool* tool);
+	virtual						~StraightLineToolConfigView() {}
 
-	virtual	void					AttachedToWindow();
-	virtual void					MessageReceived(BMessage* message);
+	virtual	void				AttachedToWindow();
+	virtual void				MessageReceived(BMessage* message);
 
 private:
-			NumberSliderControl*	fLineSize;
-			NumberSliderControl*	fPressureSlider;
-			BCheckBox*				fAntiAliasing;
-			BCheckBox*				fAdjustableWidth;
-			BCheckBox*				fUseBrush;
+			NumberSliderControl* fLineSize;
+			NumberSliderControl* fPressureSlider;
+			BCheckBox*			fAntiAliasing;
+			BCheckBox*			fAdjustableWidth;
+			BCheckBox*			fUseBrush;
 };
+
 
 #endif	// STRAIGHT_LINE_TOOL_H

@@ -12,8 +12,8 @@
 
 #include "AddOns.h"
 #include "Halftone.h"
-#include "RandomNumberGenerator.h"
 #include "ManipulatorInformer.h"
+#include "RandomNumberGenerator.h"
 #include "Selection.h"
 
 #undef B_TRANSLATION_CONTEXT
@@ -24,8 +24,8 @@
 extern "C" {
 #endif
 	char name[255] = B_TRANSLATE_MARK("Halftone");
-	char menu_help_string[255] =
-		B_TRANSLATE_MARK("Makes a halftone-pattern with fore- and background colors.");
+	char menu_help_string[255]
+		= B_TRANSLATE_MARK("Makes a halftone-pattern with fore- and background colors.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
 	add_on_types add_on_type = GENERIC_ADD_ON;
 #ifdef __cplusplus
@@ -33,15 +33,16 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap*,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap*, ManipulatorInformer* i)
 {
 	return new Halftone(i);
 }
 
 
-
-Halftone::Halftone(ManipulatorInformer *i)
-	: Manipulator(),
+Halftone::Halftone(ManipulatorInformer* i)
+	:
+	Manipulator(),
 	round_dot_size(ROUND_DOT_SIZE),
 	diagonal_line_size(DIAGONAL_LINE_SIZE),
 	ordered_matrix_size(ORDERED_MATRIX_SIZE),
@@ -182,47 +183,46 @@ Halftone::~Halftone()
 }
 
 
-BBitmap* Halftone::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
+BBitmap*
+Halftone::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
-	return round_dot_halftone(original,selection,status_bar);
-//	return diagonal_line_halftone(original,selection,status_bar);
-//	return ordered_dither_halftone(original,selection,status_bar);
-//	return fs_dither_halftone(original,selection,status_bar);
-//	return ncandidate_dither_halftone(original,selection,status_bar);
+	return round_dot_halftone(original, selection, status_bar);
 }
 
 
-const char* Halftone::ReturnHelpString()
+const char*
+Halftone::ReturnHelpString()
 {
 	return B_TRANSLATE("Makes a halftone-pattern with fore- and background colors.");
 }
 
 
-const char* Halftone::ReturnName()
+const char*
+Halftone::ReturnName()
 {
 	return B_TRANSLATE("Halftone");
 }
 
 
-BBitmap* Halftone::round_dot_halftone(BBitmap *original,Selection *selection, BStatusBar *status_bar)
+BBitmap*
+Halftone::round_dot_halftone(BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 	if (original == NULL)
 		return NULL;
 
-	uint32 *source_bits = (uint32*)original->Bits();
-	int32 source_bpr = original->BytesPerRow()/4;
-	int32 top,bottom,left,right;
+	uint32* source_bits = (uint32*)original->Bits();
+	int32 source_bpr = original->BytesPerRow() / 4;
+	int32 top, bottom, left, right;
 
 	left = original->Bounds().left;
 	right = original->Bounds().right + 1;
 	top = original->Bounds().top;
 	bottom = original->Bounds().bottom + 1;
 
-
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} color,c1,c2;
+	} color, c1, c2;
 	rgb_color c = informer->GetBackgroundColor();
 	c1.bytes[0] = c.blue;
 	c1.bytes[1] = c.green;
@@ -237,44 +237,51 @@ BBitmap* Halftone::round_dot_halftone(BBitmap *original,Selection *selection, BS
 
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
-		float normalizer = 1.0/255.0*round_dot_size*round_dot_size;
-		for (int32 y=top;y<bottom;y+=round_dot_size) {
-			for (int32 x=left;x<right;x+=round_dot_size) {
-				int32 r =min_c(x+round_dot_size,right);
-				int32 b = min_c(y+round_dot_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * round_dot_size * round_dot_size;
+		for (int32 y = top; y < bottom; y += round_dot_size) {
+			for (int32 x = left; x < right; x += round_dot_size) {
+				int32 r = min_c(x + round_dot_size, right);
+				int32 b = min_c(y + round_dot_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
 						color.word = *s_delta_bits;
-						float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+						float luminance
+							= color.bytes[0] * .114
+							+ color.bytes[1] * .587
+							+ color.bytes[2] * .299;
 						int threshold = luminance * normalizer;
-						*s_delta_bits++ = (round_dot_pattern[dy-y][dx-x]>threshold?c1.word:c2.word);
+						*s_delta_bits++
+							= (round_dot_pattern[dy - y][dx - x] > threshold ? c1.word : c2.word);
 					}
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		float normalizer = 1.0/255.0*round_dot_size*round_dot_size;
-		for (int32 y=top;y<bottom;y+=round_dot_size) {
-			for (int32 x=left;x<right;x+=round_dot_size) {
-				int32 r =min_c(x+round_dot_size,right);
-				int32 b = min_c(y+round_dot_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * round_dot_size * round_dot_size;
+		for (int32 y = top; y < bottom; y += round_dot_size) {
+			for (int32 x = left; x < right; x += round_dot_size) {
+				int32 r = min_c(x + round_dot_size, right);
+				int32 b = min_c(y + round_dot_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
-						if (selection->ContainsPoint(dx,dy)) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
+						if (selection->ContainsPoint(dx, dy)) {
 							color.word = *s_delta_bits;
-							float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+							float luminance
+								= color.bytes[0] * .114
+								+ color.bytes[1] * .587
+								+ color.bytes[2] * .299;
 							int threshold = luminance * normalizer;
-							*s_delta_bits = (round_dot_pattern[dy-y][dx-x]>threshold?c1.word:c2.word);
+							*s_delta_bits = (round_dot_pattern[dy - y][dx - x] > threshold
+								? c1.word : c2.word);
 						}
 						s_delta_bits++;
 					}
@@ -287,25 +294,25 @@ BBitmap* Halftone::round_dot_halftone(BBitmap *original,Selection *selection, BS
 }
 
 
-BBitmap* Halftone::diagonal_line_halftone(BBitmap *original,Selection *selection, BStatusBar *status_bar)
+BBitmap*
+Halftone::diagonal_line_halftone(BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 	if (original == NULL)
 		return NULL;
 
-	uint32 *source_bits = (uint32*)original->Bits();
-	int32 source_bpr = original->BytesPerRow()/4;
-	int32 top,bottom,left,right;
+	uint32* source_bits = (uint32*)original->Bits();
+	int32 source_bpr = original->BytesPerRow() / 4;
+	int32 top, bottom, left, right;
 
 	left = original->Bounds().left;
 	right = original->Bounds().right + 1;
 	top = original->Bounds().top;
 	bottom = original->Bounds().bottom + 1;
 
-
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} color,c1,c2;
+	} color, c1, c2;
 	rgb_color c = informer->GetForegroundColor();
 	c1.bytes[0] = c.blue;
 	c1.bytes[1] = c.green;
@@ -320,44 +327,51 @@ BBitmap* Halftone::diagonal_line_halftone(BBitmap *original,Selection *selection
 
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
-		float normalizer = 1.0/255.0*diagonal_line_size*diagonal_line_size;
-		for (int32 y=top;y<bottom;y+=diagonal_line_size) {
-			for (int32 x=left;x<right;x+=diagonal_line_size) {
-				int32 r =min_c(x+diagonal_line_size,right);
-				int32 b = min_c(y+diagonal_line_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * diagonal_line_size * diagonal_line_size;
+		for (int32 y = top; y < bottom; y += diagonal_line_size) {
+			for (int32 x = left; x < right; x += diagonal_line_size) {
+				int32 r = min_c(x + diagonal_line_size, right);
+				int32 b = min_c(y + diagonal_line_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
 						color.word = *s_delta_bits;
-						float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+						float luminance
+							= color.bytes[0] * .114
+							+ color.bytes[1] * .587
+							+ color.bytes[2] * .299;
 						int threshold = luminance * normalizer;
-						*s_delta_bits++ = (diagonal_line_pattern[dy-y][dx-x]>threshold?c1.word:c2.word);
+						*s_delta_bits++ = (diagonal_line_pattern[dy - y][dx - x] > threshold
+							? c1.word : c2.word);
 					}
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		float normalizer = 1.0/255.0*diagonal_line_size*diagonal_line_size;
-		for (int32 y=top;y<bottom;y+=diagonal_line_size) {
-			for (int32 x=left;x<right;x+=diagonal_line_size) {
-				int32 r =min_c(x+diagonal_line_size,right);
-				int32 b = min_c(y+diagonal_line_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * diagonal_line_size * diagonal_line_size;
+		for (int32 y = top; y < bottom; y += diagonal_line_size) {
+			for (int32 x = left; x < right; x += diagonal_line_size) {
+				int32 r = min_c(x + diagonal_line_size, right);
+				int32 b = min_c(y + diagonal_line_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
-						if (selection->ContainsPoint(dx,dy)) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
+						if (selection->ContainsPoint(dx, dy)) {
 							color.word = *s_delta_bits;
-							float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+							float luminance
+								= color.bytes[0] * .114
+								+ color.bytes[1] * .587
+								+ color.bytes[2] * .299;
 							int threshold = luminance * normalizer;
-							*s_delta_bits = (diagonal_line_pattern[dy-y][dx-x]>threshold?c1.word:c2.word);
+							*s_delta_bits = (diagonal_line_pattern[dy - y][dx - x] > threshold
+								? c1.word : c2.word);
 						}
 						s_delta_bits++;
 					}
@@ -369,25 +383,26 @@ BBitmap* Halftone::diagonal_line_halftone(BBitmap *original,Selection *selection
 	return original;
 }
 
-BBitmap* Halftone::ordered_dither_halftone(BBitmap *original,Selection *selection, BStatusBar *status_bar)
+
+BBitmap*
+Halftone::ordered_dither_halftone(BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 	if (original == NULL)
 		return NULL;
 
-	uint32 *source_bits = (uint32*)original->Bits();
-	int32 source_bpr = original->BytesPerRow()/4;
-	int32 top,bottom,left,right;
+	uint32* source_bits = (uint32*)original->Bits();
+	int32 source_bpr = original->BytesPerRow() / 4;
+	int32 top, bottom, left, right;
 
 	left = original->Bounds().left;
 	right = original->Bounds().right + 1;
 	top = original->Bounds().top;
 	bottom = original->Bounds().bottom + 1;
 
-
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} color,c1,c2;
+	} color, c1, c2;
 	rgb_color c = informer->GetForegroundColor();
 	c1.bytes[0] = c.blue;
 	c1.bytes[1] = c.green;
@@ -402,44 +417,51 @@ BBitmap* Halftone::ordered_dither_halftone(BBitmap *original,Selection *selectio
 
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
-		float normalizer = 1.0/255.0*ordered_matrix_size*ordered_matrix_size;
-		for (int32 y=top;y<bottom;y+=ordered_matrix_size) {
-			for (int32 x=left;x<right;x+=ordered_matrix_size) {
-				int32 r =min_c(x+ordered_matrix_size,right);
-				int32 b = min_c(y+ordered_matrix_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * ordered_matrix_size * ordered_matrix_size;
+		for (int32 y = top; y < bottom; y += ordered_matrix_size) {
+			for (int32 x = left; x < right; x += ordered_matrix_size) {
+				int32 r = min_c(x + ordered_matrix_size, right);
+				int32 b = min_c(y + ordered_matrix_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
 						color.word = *s_delta_bits;
-						float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+						float luminance
+							= color.bytes[0] * .114
+							+ color.bytes[1] * .587
+							+ color.bytes[2] * .299;
 						int threshold = luminance * normalizer;
-						*s_delta_bits++ = (ordered_matrix[dy-y][dx-x]>threshold?c1.word:c2.word);
+						*s_delta_bits++ = (ordered_matrix[dy - y][dx - x] > threshold
+							? c1.word : c2.word);
 					}
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		float normalizer = 1.0/255.0*ordered_matrix_size*ordered_matrix_size;
-		for (int32 y=top;y<bottom;y+=ordered_matrix_size) {
-			for (int32 x=left;x<right;x+=ordered_matrix_size) {
-				int32 r =min_c(x+ordered_matrix_size,right);
-				int32 b = min_c(y+ordered_matrix_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * ordered_matrix_size * ordered_matrix_size;
+		for (int32 y = top; y < bottom; y += ordered_matrix_size) {
+			for (int32 x = left; x < right; x += ordered_matrix_size) {
+				int32 r = min_c(x + ordered_matrix_size, right);
+				int32 b = min_c(y + ordered_matrix_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
-						if (selection->ContainsPoint(dx,dy)) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
+						if (selection->ContainsPoint(dx, dy)) {
 							color.word = *s_delta_bits;
-							float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+							float luminance
+								= color.bytes[0] * .114
+								+ color.bytes[1] * .587
+								+ color.bytes[2] * .299;
 							int threshold = luminance * normalizer;
-							*s_delta_bits = (ordered_matrix[dy-y][dx-x]>threshold?c1.word:c2.word);
+							*s_delta_bits = (ordered_matrix[dy - y][dx - x] > threshold
+								? c1.word : c2.word);
 						}
 						s_delta_bits++;
 					}
@@ -452,22 +474,23 @@ BBitmap* Halftone::ordered_dither_halftone(BBitmap *original,Selection *selectio
 }
 
 
-BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BStatusBar *status_bar)
+BBitmap*
+Halftone::fs_dither_halftone(BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 	if (original == NULL)
 		return NULL;
 
-	uint32 *source_bits = (uint32*)original->Bits();
-	int32 source_bpr = original->BytesPerRow()/4;
-	int32 top,bottom,left,right;
+	uint32* source_bits = (uint32*)original->Bits();
+	int32 source_bpr = original->BytesPerRow() / 4;
+	int32 top, bottom, left, right;
 
 	left = original->Bounds().left;
 	right = original->Bounds().right + 1;
 	top = original->Bounds().top;
 	bottom = original->Bounds().bottom + 1;
 
-	float *errors = new float[right-left+3];
-	for (int32 i=0;i<right-left+3;i++)
+	float* errors = new float[right - left + 3];
+	for (int32 i = 0; i < right - left + 3; i++)
 		errors[i] = 0;
 
 	float right_error = 0;
@@ -475,7 +498,7 @@ BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BS
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} color,c1,c2;
+	} color, c1, c2;
 	rgb_color c = informer->GetForegroundColor();
 	c1.bytes[0] = c.blue;
 	c1.bytes[1] = c.green;
@@ -490,46 +513,51 @@ BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BS
 
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
-		for (int32 y=top;y<bottom;y++) {
-			for (int32 x=left;x<right;x++) {
+		for (int32 y = top; y < bottom; y++) {
+			for (int32 x = left; x < right; x++) {
 				color.word = *source_bits;
-				float threshold = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
-				float value = min_c(255,max_c(threshold+right_error+errors[x+1],0));
-				errors[x+1] = 0;
+				float threshold
+					= color.bytes[0] * .114
+					+ color.bytes[1] * .587
+					+ color.bytes[2] * .299;
+				float value = min_c(255, max_c(threshold + right_error + errors[x + 1], 0));
+				errors[x + 1] = 0;
 				float error;
 				if (value > 127) {
 					error = -(255 - value);
 					*source_bits++ = c2.word;
-				}
-				else {
+				} else {
 					error = -(0 - value);
 					*source_bits++ = c1.word;
 				}
 				right_error = .4375 * error;
 				errors[x] += .1875 * error;
-				errors[x+1] += .3125 * error;
-				errors[x+2] += .0625 * error;
+				errors[x + 1] += .3125 * error;
+				errors[x + 2] += .0625 * error;
 			}
 		}
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		float normalizer = 1.0/255.0*ordered_matrix_size*ordered_matrix_size;
-		for (int32 y=top;y<bottom;y+=ordered_matrix_size) {
-			for (int32 x=left;x<right;x+=ordered_matrix_size) {
-				int32 r =min_c(x+ordered_matrix_size,right);
-				int32 b = min_c(y+ordered_matrix_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * ordered_matrix_size * ordered_matrix_size;
+		for (int32 y = top; y < bottom; y += ordered_matrix_size) {
+			for (int32 x = left; x < right; x += ordered_matrix_size) {
+				int32 r = min_c(x + ordered_matrix_size, right);
+				int32 b = min_c(y + ordered_matrix_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
-						if (selection->ContainsPoint(dx,dy)) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
+						if (selection->ContainsPoint(dx, dy)) {
 							color.word = *s_delta_bits;
-							float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+							float luminance
+								= color.bytes[0] * .114
+								+ color.bytes[1] * .587
+								+ color.bytes[2] * .299;
 							int threshold = luminance * normalizer;
-							*s_delta_bits = (ordered_matrix[dy-y][dx-x]>threshold?c1.word:c2.word);
+							*s_delta_bits = (ordered_matrix[dy - y][dx - x] > threshold
+								? c1.word : c2.word);
 						}
 						s_delta_bits++;
 					}
@@ -544,22 +572,24 @@ BBitmap* Halftone::fs_dither_halftone(BBitmap *original,Selection *selection, BS
 }
 
 
-BBitmap* Halftone::ncandidate_dither_halftone(BBitmap *original,Selection *selection, BStatusBar *status_bar)
+BBitmap*
+Halftone::ncandidate_dither_halftone(
+	BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 	if (original == NULL)
 		return NULL;
 
-	uint32 *source_bits = (uint32*)original->Bits();
-	int32 source_bpr = original->BytesPerRow()/4;
-	int32 top,bottom,left,right;
+	uint32* source_bits = (uint32*)original->Bits();
+	int32 source_bpr = original->BytesPerRow() / 4;
+	int32 top, bottom, left, right;
 
 	left = original->Bounds().left;
 	right = original->Bounds().right + 1;
 	top = original->Bounds().top;
 	bottom = original->Bounds().bottom + 1;
 
-	float *errors = new float[right-left+3];
-	for (int32 i=0;i<right-left+3;i++)
+	float* errors = new float[right - left + 3];
+	for (int32 i = 0; i < right - left + 3; i++)
 		errors[i] = 0;
 
 	float right_error = 0;
@@ -567,7 +597,7 @@ BBitmap* Halftone::ncandidate_dither_halftone(BBitmap *original,Selection *selec
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} color,c1,c2;
+	} color, c1, c2;
 	rgb_color c = informer->GetForegroundColor();
 	c1.bytes[0] = c.blue;
 	c1.bytes[1] = c.green;
@@ -581,43 +611,48 @@ BBitmap* Halftone::ncandidate_dither_halftone(BBitmap *original,Selection *selec
 	c2.bytes[3] = c.alpha;
 
 	float probs[256];
-	for (int32 i=0;i<256;i++) {
-		probs[i] = (float)i/256.0;	// probability to get white
-	}
+	for (int32 i = 0; i < 256; i++)
+		probs[i] = (float)i / 256.0; // probability to get white
 
-	RandomNumberGenerator *generator = new RandomNumberGenerator(1027,1000000);
+	RandomNumberGenerator* generator = new RandomNumberGenerator(1027, 1000000);
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
-		for (int32 y=top;y<bottom;y++) {
-			for (int32 x=left;x<right;x++) {
+		for (int32 y = top; y < bottom; y++) {
+			for (int32 x = left; x < right; x++) {
 				color.word = *source_bits;
-				int32 threshold = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
-				float r = generator->UniformDistribution(0.0,1.0);
+				int32 threshold
+					= color.bytes[0] * .114
+					+ color.bytes[1] * .587
+					+ color.bytes[2] * .299;
+				float r = generator->UniformDistribution(0.0, 1.0);
 				if (probs[threshold] >= r)
 					*source_bits++ = c2.word;
 				else
 					*source_bits++ = c1.word;
 			}
 		}
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
-		float normalizer = 1.0/255.0*ordered_matrix_size*ordered_matrix_size;
-		for (int32 y=top;y<bottom;y+=ordered_matrix_size) {
-			for (int32 x=left;x<right;x+=ordered_matrix_size) {
-				int32 r =min_c(x+ordered_matrix_size,right);
-				int32 b = min_c(y+ordered_matrix_size,bottom);
-				uint32 *s_delta_bits;
+		float normalizer = 1.0 / 255.0 * ordered_matrix_size * ordered_matrix_size;
+		for (int32 y = top; y < bottom; y += ordered_matrix_size) {
+			for (int32 x = left; x < right; x += ordered_matrix_size) {
+				int32 r = min_c(x + ordered_matrix_size, right);
+				int32 b = min_c(y + ordered_matrix_size, bottom);
+				uint32* s_delta_bits;
 
 				int32 number_of_pixels = 0;
-				for (int32 dy=y;dy<b;dy++) {
-					s_delta_bits = source_bits + dy*source_bpr + x;
-					for (int32 dx=x;dx<r;dx++) {
-						if (selection->ContainsPoint(dx,dy)) {
+				for (int32 dy = y; dy < b; dy++) {
+					s_delta_bits = source_bits + dy * source_bpr + x;
+					for (int32 dx = x; dx < r; dx++) {
+						if (selection->ContainsPoint(dx, dy)) {
 							color.word = *s_delta_bits;
-							float luminance = color.bytes[0] * .114 + color.bytes[1]*.587 + color.bytes[2]*.299;
+							float luminance
+								= color.bytes[0] * .114
+								+ color.bytes[1] * .587
+								+ color.bytes[2] * .299;
 							int threshold = luminance * normalizer;
-							*s_delta_bits = (ordered_matrix[dy-y][dx-x]>threshold?c1.word:c2.word);
+							*s_delta_bits = (ordered_matrix[dy - y][dx - x] > threshold
+								? c1.word : c2.word);
 						}
 						s_delta_bits++;
 					}
@@ -628,4 +663,3 @@ BBitmap* Halftone::ncandidate_dither_halftone(BBitmap *original,Selection *selec
 	delete generator;
 	return original;
 }
-

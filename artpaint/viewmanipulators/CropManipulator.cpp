@@ -38,7 +38,8 @@ using ArtPaint::Interface::NumberControl;
 
 
 CropManipulator::CropManipulator(BBitmap* bm)
-	: WindowGUIManipulator(),
+	:
+	WindowGUIManipulator(),
 	selection(NULL)
 {
 	settings = new CropManipulatorSettings();
@@ -90,22 +91,19 @@ CropManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 	point.x = floor(point.x);
 	point.y = floor(point.y);
 
-	float aspect_ratio = (previous_right - previous_left) /
-		(previous_bottom - previous_top);
+	float aspect_ratio = (previous_right - previous_left) / (previous_bottom - previous_top);
 
-	ScaleUtilities::MoveGrabbers(point, previous_point,
-		settings->left, settings->top,
-		settings->right, settings->bottom, aspect_ratio,
-		move_left, move_top, move_right, move_bottom, move_all,
-		first, lock_aspect);
+	ScaleUtilities::MoveGrabbers(point, previous_point, settings->left, settings->top,
+		settings->right, settings->bottom, aspect_ratio, move_left, move_top, move_right,
+		move_bottom, move_all, first, lock_aspect);
 
-	if ((previous_left != settings->left) ||
-		(previous_right != settings->right) ||
-		(previous_top != settings->top) ||
-		(previous_bottom != settings->bottom))
-		if (config_view != NULL)
-			config_view->SetValues(settings->left, settings->right,
-				settings->top, settings->bottom);
+	if ((previous_left != settings->left) || (previous_right != settings->right)
+		|| (previous_top != settings->top) || (previous_bottom != settings->bottom)) {
+		if (config_view != NULL) {
+			config_view->SetValues(
+				settings->left, settings->right, settings->top, settings->bottom);
+		}
+	}
 }
 
 
@@ -130,8 +128,7 @@ CropManipulator::Draw(BView* view, float mag_scale)
 	float f_left = bounds.left;
 	float f_right = bounds.right;
 
-	if ((f_bottom - f_top > 3 * DRAGGER_SIZE + 10) &&
-		(f_right - f_left > 3 * DRAGGER_SIZE + 10))
+	if ((f_bottom - f_top > 3 * DRAGGER_SIZE + 10) && (f_right - f_left > 3 * DRAGGER_SIZE + 10))
 		draw_draggers = TRUE;
 
 	rgb_color high = view->HighColor();
@@ -148,38 +145,34 @@ CropManipulator::Draw(BView* view, float mag_scale)
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.LeftTop() +
-			BPoint(width / 2 - DRAGGER_SIZE / 2, 0));
+		dragger_rect.OffsetTo(bounds.LeftTop() + BPoint(width / 2 - DRAGGER_SIZE / 2, 0));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.LeftTop() +
-			BPoint(width - DRAGGER_SIZE + 1, 0));
+		dragger_rect.OffsetTo(bounds.LeftTop() + BPoint(width - DRAGGER_SIZE + 1, 0));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.LeftTop() +
-			BPoint(0, height / 2 - DRAGGER_SIZE / 2));
+		dragger_rect.OffsetTo(bounds.LeftTop() + BPoint(0, height / 2 - DRAGGER_SIZE / 2));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.RightTop() +
-			BPoint(-DRAGGER_SIZE + 1, height / 2 - DRAGGER_SIZE / 2));
+		dragger_rect.OffsetTo(
+			bounds.RightTop() + BPoint(-DRAGGER_SIZE + 1, height / 2 - DRAGGER_SIZE / 2));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.LeftBottom() +
-			BPoint(0, -DRAGGER_SIZE + 1));
+		dragger_rect.OffsetTo(bounds.LeftBottom() + BPoint(0, -DRAGGER_SIZE + 1));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.LeftBottom() +
-			BPoint(width / 2 - DRAGGER_SIZE / 2, -DRAGGER_SIZE + 1));
+		dragger_rect.OffsetTo(
+			bounds.LeftBottom() + BPoint(width / 2 - DRAGGER_SIZE / 2, -DRAGGER_SIZE + 1));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 
-		dragger_rect.OffsetTo(bounds.LeftBottom() +
-			BPoint(width - DRAGGER_SIZE + 1, -DRAGGER_SIZE + 1));
+		dragger_rect.OffsetTo(
+			bounds.LeftBottom() + BPoint(width - DRAGGER_SIZE + 1, -DRAGGER_SIZE + 1));
 		view->FillRect(dragger_rect, B_SOLID_HIGH);
 		view->StrokeRect(dragger_rect, B_SOLID_LOW);
 	}
@@ -198,11 +191,10 @@ CropManipulator::Draw(BView* view, float mag_scale)
 
 
 BBitmap*
-CropManipulator::ManipulateBitmap(ManipulatorSettings* set,
-	BBitmap* original, BStatusBar* status_bar)
+CropManipulator::ManipulateBitmap(
+	ManipulatorSettings* set, BBitmap* original, BStatusBar* status_bar)
 {
-	CropManipulatorSettings* new_settings =
-		dynamic_cast<CropManipulatorSettings*> (set);
+	CropManipulatorSettings* new_settings = dynamic_cast<CropManipulatorSettings*>(set);
 
 	if (new_settings == NULL)
 		return NULL;
@@ -215,10 +207,10 @@ CropManipulator::ManipulateBitmap(ManipulatorSettings* set,
 	float width = right - left - 1;
 	float height = bottom - top - 1;
 
-	if (width == original->Bounds().Width() &&
-		height == original->Bounds().Height() &&
-		top == original->Bounds().top &&
-		left == original->Bounds().left)
+	if (width == original->Bounds().Width() 
+		&& height == original->Bounds().Height()
+		&& top == original->Bounds().top
+		&& left == original->Bounds().left)
 		return original;
 
 	// Create a new bitmap here and copy the appropriate part from original.
@@ -246,11 +238,10 @@ CropManipulator::ManipulateBitmap(ManipulatorSettings* set,
 	for (int32 y = (int32)top; y <= bottom; y++) {
 		int32 new_x = 0;
 		for (int32 x = (int32)left; x <= right; x++) {
-			if (x >= 0 && y >= 0 &&
-				x <= original->Bounds().right &&
-				y <= original->Bounds().bottom)
-				*(new_bits + new_x + new_y * new_bpr) =
-					*(orig_bits + x + y * original_bpr);
+			if (x >= 0 && y >= 0
+				&& x <= original->Bounds().right
+				&& y <= original->Bounds().bottom)
+				*(new_bits + new_x + new_y * new_bpr) = *(orig_bits + x + y * original_bpr);
 			else
 				*(new_bits + new_x + new_y * new_bpr) = background.word;
 			++new_x;
@@ -286,16 +277,14 @@ CropManipulator::PreviewBitmap(bool, BRegion* updated_region)
 
 	if (use_selected == TRUE && selection != NULL && !selection->IsEmpty()) {
 		BRect selection_bounds = selection->GetBoundingRect();
-		SetValues(selection_bounds.left, selection_bounds.Width(),
-			selection_bounds.top, selection_bounds.Height());
+		SetValues(selection_bounds.left, selection_bounds.Width(), selection_bounds.top,
+			selection_bounds.Height());
 	}
 
 	use_selected = FALSE;
 
-	BRect bounds = BRect(settings->left,
-		settings->top,
-		(settings->right + 1) - 1,
-		(settings->bottom + 1) - 1);
+	BRect bounds = BRect(
+		settings->left, settings->top, (settings->right + 1) - 1, (settings->bottom + 1) - 1);
 	bounds.left = floor(bounds.left);
 	bounds.top = floor(bounds.top);
 	bounds.right = ceil(bounds.right);
@@ -304,12 +293,11 @@ CropManipulator::PreviewBitmap(bool, BRegion* updated_region)
 	for (int32 y = 0; y < height; ++y) {
 		for (int32 x = 0; x < width; ++x) {
 			if (bounds.Contains(BPoint(x, y)) == TRUE)
-				*(target_bits + x + y * target_bpr) =
-					*(source_bits + x + y * source_bpr);
-			else
-				*(target_bits + x + y * target_bpr) =
-					src_over_fixed(*(source_bits + x + y * source_bpr),
-					mask_color.word);
+				*(target_bits + x + y * target_bpr) = *(source_bits + x + y * source_bpr);
+			else {
+				*(target_bits + x + y * target_bpr)
+					= src_over_fixed(*(source_bits + x + y * source_bpr), mask_color.word);
+			}
 		}
 	}
 
@@ -335,12 +323,11 @@ CropManipulator::SetPreviewBitmap(BBitmap* bm)
 		settings->bottom = max_y = 0;
 	}
 
-	if ((bm == NULL) || (preview_bitmap == NULL) ||
-		(bm->Bounds() != preview_bitmap->Bounds())) {
+	if ((bm == NULL) || (preview_bitmap == NULL) || (bm->Bounds() != preview_bitmap->Bounds())) {
 		try {
-			if (preview_bitmap != NULL) {
+			if (preview_bitmap != NULL)
 				delete copy_of_the_preview_bitmap;
-			}
+
 			if (bm != NULL) {
 				preview_bitmap = bm;
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
@@ -359,15 +346,13 @@ CropManipulator::SetPreviewBitmap(BBitmap* bm)
 		preview_bitmap = bm;
 		uint32* source = (uint32*)preview_bitmap->Bits();
 		uint32* target = (uint32*)copy_of_the_preview_bitmap->Bits();
-		int32 bitslength = min_c(preview_bitmap->BitsLength(),
-			copy_of_the_preview_bitmap->BitsLength());
+		int32 bitslength
+			= min_c(preview_bitmap->BitsLength(), copy_of_the_preview_bitmap->BitsLength());
 		memcpy(target, source, bitslength);
 	}
 
-	if (config_view != NULL) {
-		config_view->SetValues(settings->left, settings->right,
-			settings->top, settings->bottom);
-	}
+	if (config_view != NULL)
+		config_view->SetValues(settings->left, settings->right, settings->top, settings->bottom);
 }
 
 
@@ -386,10 +371,8 @@ CropManipulator::Reset()
 	previous_top = settings->top;
 	previous_bottom = settings->bottom;
 
-	if (config_view != NULL) {
-		config_view->SetValues(settings->left, settings->right,
-			settings->top, settings->bottom);
-	}
+	if (config_view != NULL)
+		config_view->SetValues(settings->left, settings->right, settings->top, settings->bottom);
 }
 
 
@@ -412,10 +395,8 @@ CropManipulator::SetValues(float x, float width, float y, float height)
 	settings->top = min_c(settings->top, settings->bottom);
 	settings->bottom = max_c(settings->top, settings->bottom);
 
-	if (config_view != NULL) {
-		config_view->SetValues(settings->left, settings->right,
-			settings->top, settings->bottom);
-	}
+	if (config_view != NULL)
+		config_view->SetValues(settings->left, settings->right, settings->top, settings->bottom);
 }
 
 
@@ -430,8 +411,7 @@ BView*
 CropManipulator::MakeConfigurationView(const BMessenger& target)
 {
 	config_view = new CropManipulatorView(this, target);
-	config_view->SetValues(settings->left, settings->right, settings->top,
-		settings->bottom);
+	config_view->SetValues(settings->left, settings->right, settings->top, settings->bottom);
 	return config_view;
 }
 
@@ -446,7 +426,8 @@ CropManipulator::ReturnName()
 const char*
 CropManipulator::ReturnHelpString()
 {
-	return B_TRANSLATE("Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.");
+	return B_TRANSLATE(
+		"Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.");
 }
 
 
@@ -455,8 +436,7 @@ CropManipulator::UpdateSettings()
 {
 	if (config_view != NULL) {
 		float left, top, width, height;
-		config_view->GetControlValues(left, top,
-			width, height);
+		config_view->GetControlValues(left, top, width, height);
 
 		settings->left = left;
 		settings->top = top;
@@ -469,20 +449,20 @@ CropManipulator::UpdateSettings()
 // #pragma mark -- CropManipulatorView
 
 
-CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
-		const BMessenger& target)
-	: WindowGUIManipulatorView(),
+CropManipulatorView::CropManipulatorView(CropManipulator* manipulator, const BMessenger& target)
+	:
+	WindowGUIManipulatorView(),
 	fTarget(target),
 	fManipulator(manipulator)
 {
-	fTopCrop = new NumberControl(B_TRANSLATE("Top:"), "",
-		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	fLeftCrop = new NumberControl(B_TRANSLATE("Left:"), "",
-		new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
-	fRightCrop = new NumberControl(B_TRANSLATE("Width:"),
-		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, false);
-	fBottomCrop = new NumberControl(B_TRANSLATE("Height:"),
-		"", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, false);
+	fTopCrop = new NumberControl(
+		B_TRANSLATE("Top:"), "", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
+	fLeftCrop = new NumberControl(
+		B_TRANSLATE("Left:"), "", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, true);
+	fRightCrop = new NumberControl(
+		B_TRANSLATE("Width:"), "", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, false);
+	fBottomCrop = new NumberControl(
+		B_TRANSLATE("Height:"), "", new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED), 5, false);
 
 	BFont font;
 	font_height height;
@@ -490,40 +470,36 @@ CropManipulatorView::CropManipulatorView(CropManipulator* manipulator,
 	BString selectString = B_TRANSLATE("Use selection");
 
 	float buttonWidth = font.StringWidth(selectString);
-	BSize buttonSize = BSize(buttonWidth * 1.5,
-		(height.ascent + height.descent + height.leading) * 1.5);
+	BSize buttonSize
+		= BSize(buttonWidth * 1.5, (height.ascent + height.descent + height.leading) * 1.5);
 
-	fSelected = new BButton(B_TRANSLATE(selectString),
-		new BMessage(CROP_TO_SELECTION));
-	fReset = new BButton(B_TRANSLATE("Reset to canvas"),
-		new BMessage(RESET_CROP));
+	fSelected = new BButton(B_TRANSLATE(selectString), new BMessage(CROP_TO_SELECTION));
+	fReset = new BButton(B_TRANSLATE("Reset to canvas"), new BMessage(RESET_CROP));
 
 	fSelected->SetExplicitMaxSize(buttonSize);
 	fSelected->SetExplicitMinSize(buttonSize);
 	fReset->SetExplicitMaxSize(buttonSize);
 	fReset->SetExplicitMinSize(buttonSize);
 
-	fLockAspect = new BCheckBox(B_TRANSLATE("Lock"),
-		new BMessage(TOGGLE_LOCK_ASPECT));
+	fLockAspect = new BCheckBox(B_TRANSLATE("Lock"), new BMessage(TOGGLE_LOCK_ASPECT));
 
 	BGridLayout* mainLayout = BLayoutBuilder::Grid<>(this, 5.0, 5.0)
-			.Add(fLeftCrop->CreateLabelLayoutItem(), 0, 0)
-			.Add(fLeftCrop->CreateTextViewLayoutItem(), 1, 0)
-			.Add(fTopCrop->CreateLabelLayoutItem(), 0, 1)
-			.Add(fTopCrop->CreateTextViewLayoutItem(), 1, 1)
-			.Add(fRightCrop->CreateLabelLayoutItem(), 0, 2)
-			.Add(fRightCrop->CreateTextViewLayoutItem(), 1, 2)
-			.Add(fBottomCrop->CreateLabelLayoutItem(), 0, 3)
-			.Add(fBottomCrop->CreateTextViewLayoutItem(), 1, 3)
-			.Add(fSelected, 2, 0)
-			.Add(fReset, 2, 1)
-			.Add(fLockAspect, 2, 2, 1, 2);
+		.Add(fLeftCrop->CreateLabelLayoutItem(), 0, 0)
+		.Add(fLeftCrop->CreateTextViewLayoutItem(), 1, 0)
+		.Add(fTopCrop->CreateLabelLayoutItem(), 0, 1)
+		.Add(fTopCrop->CreateTextViewLayoutItem(), 1, 1)
+		.Add(fRightCrop->CreateLabelLayoutItem(), 0, 2)
+		.Add(fRightCrop->CreateTextViewLayoutItem(), 1, 2)
+		.Add(fBottomCrop->CreateLabelLayoutItem(), 0, 3)
+		.Add(fBottomCrop->CreateTextViewLayoutItem(), 1, 3)
+		.Add(fSelected, 2, 0)
+		.Add(fReset, 2, 1)
+		.Add(fLockAspect, 2, 2, 1, 2);
 	mainLayout->SetMaxColumnWidth(0, font.StringWidth("LABELLABELLABEL"));
 	mainLayout->SetMinColumnWidth(1, font.StringWidth("01234"));
 	mainLayout->SetMaxColumnWidth(2, buttonWidth);
 
-	CropManipulatorSettings* settings
-		= (CropManipulatorSettings*)manipulator->ReturnSettings();
+	CropManipulatorSettings* settings = (CropManipulatorSettings*)manipulator->ReturnSettings();
 	fTopCrop->SetValue(settings->top);
 	fLeftCrop->SetValue(settings->left);
 	fRightCrop->SetValue(settings->right - settings->left);
@@ -579,8 +555,7 @@ CropManipulatorView::SetValues(float x1, float x2, float y1, float y2)
 
 
 void
-CropManipulatorView::GetControlValues(float& left, float& top,
-	float& width, float& height)
+CropManipulatorView::GetControlValues(float& left, float& top, float& width, float& height)
 {
 	left = fLeftCrop->Value();
 	top = fTopCrop->Value();
@@ -593,9 +568,11 @@ void
 CropManipulatorView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case HS_MANIPULATOR_ADJUSTING_FINISHED: {
+		case HS_MANIPULATOR_ADJUSTING_FINISHED:
+		{
 			if (fLockAspect->Value() == B_CONTROL_ON) {
-				CropManipulatorSettings* settings = (CropManipulatorSettings*)(fManipulator->ReturnSettings());
+				CropManipulatorSettings* settings
+					= (CropManipulatorSettings*)(fManipulator->ReturnSettings());
 
 				float width = settings->right - settings->left;
 				float height = settings->bottom - settings->top;
@@ -609,32 +586,30 @@ CropManipulatorView::MessageReceived(BMessage* message)
 					fRightCrop->SetValue(int32(bottomValue * aspect));
 			}
 
-			fManipulator->SetValues(fLeftCrop->Value(),
-				fRightCrop->Value(), fTopCrop->Value(),
-				fBottomCrop->Value());
+			fManipulator->SetValues(
+				fLeftCrop->Value(), fRightCrop->Value(), fTopCrop->Value(), fBottomCrop->Value());
 			fTarget.SendMessage(message);
 		} break;
-
-		case CROP_TO_SELECTION: {
+		case CROP_TO_SELECTION:
+		{
 			fManipulator->UseSelected();
-			fTarget.SendMessage(
-				new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
+			fTarget.SendMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
 		} break;
-
-		case RESET_CROP: {
+		case RESET_CROP:
+		{
 			fManipulator->Reset();
-			fTarget.SendMessage(
-				new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
+			fTarget.SendMessage(new BMessage(HS_MANIPULATOR_ADJUSTING_FINISHED));
 		} break;
-
-		case TOGGLE_LOCK_ASPECT: {
+		case TOGGLE_LOCK_ASPECT:
+		{
 			if (fLockAspect->Value() == B_CONTROL_ON)
 				fManipulator->LockAspect(TRUE);
 			else
 				fManipulator->LockAspect(FALSE);
 		}
 
-		default: {
+		default:
+		{
 			WindowGUIManipulatorView::MessageReceived(message);
 		} break;
 	}

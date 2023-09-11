@@ -35,7 +35,6 @@ public:
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-
 			BView*				ConfigView();
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
@@ -65,5 +64,6 @@ private:
 		BRadioButton*			fSpray;
 		BRadioButton*			fAirBrush;
 };
+
 
 #endif	// AIR_BRUSH_TOOL_H

@@ -11,7 +11,7 @@
 
 ColorConverter::ColorConverter()
 {
-	random_numbers = new RandomNumberGenerator(1235179,1025);
+	random_numbers = new RandomNumberGenerator(1235179, 1025);
 }
 
 
@@ -20,7 +20,9 @@ ColorConverter::~ColorConverter()
 	delete random_numbers;
 }
 
-void ColorConverter::SetColor(rgb_color &c)
+
+void
+ColorConverter::SetColor(rgb_color& c)
 {
 	color_as_rgb = c;
 	color_as_cmyk = rgb_to_cmyk(c);
@@ -35,7 +37,8 @@ void ColorConverter::SetColor(rgb_color &c)
 }
 
 
-void ColorConverter::SetColor(cmyk_color &c)
+void
+ColorConverter::SetColor(cmyk_color& c)
 {
 	color_as_cmyk = c;
 	color_as_rgb = cmyk_to_rgb(c);
@@ -49,7 +52,9 @@ void ColorConverter::SetColor(cmyk_color &c)
 	color_as_bgra = u.word;
 }
 
-void ColorConverter::SetColor(uint32 bgra_color)
+
+void
+ColorConverter::SetColor(uint32 bgra_color)
 {
 	color_as_bgra = bgra_color;
 
@@ -60,7 +65,6 @@ void ColorConverter::SetColor(uint32 bgra_color)
 	color_as_rgb.green = u.bytes[1];
 	color_as_rgb.blue = u.bytes[0];
 	color_as_rgb.alpha = u.bytes[3];
-
 
 	color_as_cmyk = rgb_to_cmyk(color_as_rgb);
 }

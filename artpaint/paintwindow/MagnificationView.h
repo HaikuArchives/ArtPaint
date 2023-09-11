@@ -11,9 +11,9 @@
 #ifndef MAGNIFICATION_VIEW_H
 #define	MAGNIFICATION_VIEW_H
 
-
 #include <Box.h>
 #include <NumberFormat.h>
+
 
 class BButton;
 class MagStringView;
@@ -24,7 +24,6 @@ public:
 								MagnificationView();
 
 	virtual	void				AttachedToWindow();
-	virtual	void				Draw(BRect updateRect);
 
 			void				SetTarget(const BMessenger& target);
 			void				SetMagnificationLevel(float magLevel);
@@ -40,4 +39,4 @@ private:
 };
 
 
-#endif
+#endif // MAGNIFICATION_VIEW_H

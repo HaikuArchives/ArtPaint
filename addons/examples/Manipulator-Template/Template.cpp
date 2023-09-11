@@ -6,8 +6,8 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include "AddOnTypes.h"
 #include "$HEADER_NAME"
+#include "AddOnTypes.h"
 
 
 #ifdef __cplusplus
@@ -24,15 +24,16 @@ extern "C" {
 #endif
 
 
-Manipulator* manipulator_creator(BBitmap*)
+Manipulator*
+manipulator_creator(BBitmap*)
 {
 	return new $MANIPULATOR_NAME();
 }
 
 
-
 $MANIPULATOR_NAME::$MANIPULATOR_NAME()
-		: Manipulator()
+	:
+	Manipulator()
 {
 }
 
@@ -42,17 +43,19 @@ $MANIPULATOR_NAME::~$MANIPULATOR_NAME()
 }
 
 
-BBitmap* $MANIPULATOR_NAME::ManipulateBitmap(BBitmap *original,Selection *selection,BStatusBar *status_bar)
+BBitmap*
+$MANIPULATOR_NAME::ManipulateBitmap(BBitmap* original, Selection* selection, BStatusBar* status_bar)
 {
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
-	}
-	else {
+	} else {
 		// Here handle only those pixels for which selection->ContainsPoint(x,y) is true.
 	}
 }
 
-const char* $MANIPULATOR_NAME::ReturnName()
+
+const char*
+$MANIPULATOR_NAME::ReturnName()
 {
 	return "Template Add-On";
 }

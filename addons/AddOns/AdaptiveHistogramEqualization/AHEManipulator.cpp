@@ -6,8 +6,8 @@
  * 		Heikki Suhonen <heikki.suhonen@gmail.com>
  *
  */
-#include "AddOns.h"
 #include "AHEManipulator.h"
+#include "AddOns.h"
 #include "ImageProcessingLibrary.h"
 #include "ManipulatorInformer.h"
 #include "Selection.h"
@@ -32,7 +32,8 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 {
 	delete i;
 	return new AHEManipulator(bm);
@@ -40,40 +41,34 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 AHEManipulator::AHEManipulator(BBitmap*)
-		: Manipulator(),
-		selection(NULL)
+	:
+	Manipulator(),
+	selection(NULL)
 {
 }
 
 
-AHEManipulator::~AHEManipulator()
-{
-}
-
-
-BBitmap* AHEManipulator::ManipulateBitmap(BBitmap *original, BStatusBar*)
+BBitmap*
+AHEManipulator::ManipulateBitmap(BBitmap* original, BStatusBar*)
 {
 	// This manipulator assumes a grayscale image
 	ImageProcessingLibrary iplib;
 
-	iplib.grayscale_clahe(original,16,5);
-
-	if (selection->IsEmpty() == true) {
-	}
-	else {
-	}
+	iplib.grayscale_clahe(original, 16, 5);
 
 	return original;
 }
 
 
-const char* AHEManipulator::ReturnHelpString()
+const char*
+AHEManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Improves the contrast by equalizing its histogram locally.");
 }
 
 
-const char* AHEManipulator::ReturnName()
+const char*
+AHEManipulator::ReturnName()
 {
 	return B_TRANSLATE("Adaptive histogram equalization");
 }

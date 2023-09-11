@@ -76,4 +76,5 @@ private:
 	}	// namespace Interface
 }	// namespace ArtPaint
 
+
 #endif	//	CONTROL_SLIDER_BOX_H

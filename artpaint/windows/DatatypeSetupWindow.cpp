@@ -28,10 +28,11 @@
 
 DatatypeSetupWindow* DatatypeSetupWindow::fDatatypeSetupWindow = NULL;
 
+
 DatatypeSetupWindow::DatatypeSetupWindow()
-	: BWindow(BRect(100.0, 120.0, 120.0, 120.0)," datatype setup",
-		B_FLOATING_WINDOW_LOOK, B_FLOATING_APP_WINDOW_FEEL,
-		B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS)
+	:
+	BWindow(BRect(100.0, 120.0, 120.0, 120.0), " datatype setup", B_FLOATING_WINDOW_LOOK,
+		B_FLOATING_APP_WINDOW_FEEL, B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS)
 {
 	BGroupLayout* layout = new BGroupLayout(B_VERTICAL);
 	SetLayout(layout);
@@ -99,17 +100,16 @@ DatatypeSetupWindow::_ChangeHandler(translator_id translatorId)
 	if (roster->MakeConfigurationView(translatorId, NULL, &view, &rect) == B_OK) {
 		if (view)
 			view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	} else {
-		view = new BStringView("no options",
-			B_TRANSLATE("No options"));
-	}
+	} else
+		view = new BStringView("no options", B_TRANSLATE("No options"));
+
 	fRootView->AddChild(view);
 
 	int32 version;
 	const char* name;
 	const char* info;
 	BString windowTitle(B_TRANSLATE("Datatype setup: %name%"));
-	if (roster->GetTranslatorInfo(translatorId, &name, &info,&version) == B_OK)
+	if (roster->GetTranslatorInfo(translatorId, &name, &info, &version) == B_OK)
 		windowTitle.ReplaceFirst("%name%", name);
 	else
 		windowTitle.ReplaceFirst("%name%", B_TRANSLATE("No data translator"));

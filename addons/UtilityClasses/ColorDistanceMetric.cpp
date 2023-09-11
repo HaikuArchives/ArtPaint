@@ -18,28 +18,31 @@ int* ColorDistanceMetric::sqr_table = NULL;
 int ColorDistanceMetric::instance_counter = 0;
 
 
-ColorDistanceMetric::ColorDistanceMetric() {
+ColorDistanceMetric::ColorDistanceMetric()
+{
 	ctr_dtr_locker.Lock();
 	instance_counter++;
 	if (sqrt_table == NULL) {
-		sqrt_table = new float[196608];	// 3*(256^2)
-		float x=0;
-		for (int32 i=0;i<196608;i++) {
+		sqrt_table = new float[196608]; // 3*(256^2)
+		float x = 0;
+		for (int32 i = 0; i < 196608; i++) {
 			sqrt_table[i] = sqrt(x);
 			x++;
 		}
 
-		sqr_table = new int[513];  // -256 to -1, 0, 1 to 256
+		sqr_table = new int[513]; // -256 to -1, 0, 1 to 256
 
-		for (int32 i=0;i<513;i++) {
-			sqr_table[i] = (i-256)*(i-256);
-		}
+		for (int32 i = 0; i < 513; i++)
+			sqr_table[i] = (i - 256) * (i - 256);
+
 		sqr_table = &sqr_table[256];
 	}
 	ctr_dtr_locker.Unlock();
 }
 
-ColorDistanceMetric::~ColorDistanceMetric() {
+
+ColorDistanceMetric::~ColorDistanceMetric()
+{
 	ctr_dtr_locker.Lock();
 	instance_counter--;
 	if ((instance_counter == 0) && (sqrt_table != NULL)) {

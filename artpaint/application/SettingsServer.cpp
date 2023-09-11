@@ -190,26 +190,24 @@ SettingsServer::GetApplicationSettings(BMessage* message)
 	if (fApplicationSettings.IsEmpty()) {
 		status = ReadSettings("application", &fApplicationSettings);
 		if (status == B_OK && !fApplicationSettings.IsEmpty()) {
-			BString path;	// Read the recent image paths
-			while (fApplicationSettings.FindString(skRecentImagePath, i++,
-				&path) == B_OK) {
+			BString path; // Read the recent image paths
+			while (fApplicationSettings.FindString(skRecentImagePath, i++, &path) == B_OK)
 				fRecentImagePaths.push_back(path);
-			}
+
 			fApplicationSettings.RemoveName(skRecentImagePath);
 
-			i = 0;	// Read the recent project paths
-			while (fApplicationSettings.FindString(skRecentProjectPath, i++,
-				&path) == B_OK) {
+			i = 0; // Read the recent project paths
+			while (fApplicationSettings.FindString(skRecentProjectPath, i++, &path) == B_OK)
 				fRecentProjectPaths.push_back(path);
-			}
+
 			fApplicationSettings.RemoveName(skRecentProjectPath);
 
 			i = 0;
 			BSize size;
 			ssize_t dataSize;
-			const BSize* data;	// Read the recent image sizes
+			const BSize* data; // Read the recent image sizes
 			while (fApplicationSettings.FindData(skRecentImageSize, B_RAW_TYPE,
-				i++, (const void**)&data, &dataSize) == B_OK) {
+					i++, (const void**)&data, &dataSize) == B_OK) {
 				if (dataSize == sizeof(BSize)) {
 					memcpy(&size, data, sizeof(BSize));
 					fRecentImageSizeList.push_back(size);
@@ -218,9 +216,8 @@ SettingsServer::GetApplicationSettings(BMessage* message)
 			fApplicationSettings.RemoveName(skRecentImageSize);
 
 			*message = fApplicationSettings;
-		} else {
+		} else
 			status = B_ERROR;
-		}
 	} else {
 		status = B_OK;
 		*message = fApplicationSettings;
@@ -308,14 +305,12 @@ SettingsServer::SetValue(Setting type, const BString& field, const BString& valu
 
 
 status_t
-SettingsServer::SetValue(Setting type, const BString& field, type_code typeCode,
-	const void* value, ssize_t size)
+SettingsServer::SetValue(
+	Setting type, const BString& field, type_code typeCode, const void* value, ssize_t size)
 {
 	if (BMessage* settings = _SettingsForType(type)) {
-		if (settings->RemoveName(field.String()) != B_ERROR) {
-			return settings->AddData(field.String(), typeCode, value,
-				size);
-		}
+		if (settings->RemoveName(field.String()) != B_ERROR)
+			return settings->AddData(field.String(), typeCode, value, size);
 	}
 	return B_ERROR;
 }
@@ -397,8 +392,8 @@ SettingsServer::Sync()
 	// restore them on the next application start
 	ImageSizeList::const_iterator si = fRecentImageSizeList.begin();
 	for (si = si; si != fRecentImageSizeList.end(); ++si) {
-		fApplicationSettings.AddData(skRecentImageSize, B_RAW_TYPE,
-			(const void*)&(*si), sizeof(BSize));
+		fApplicationSettings.AddData(
+			skRecentImageSize, B_RAW_TYPE, (const void*)&(*si), sizeof(BSize));
 	}
 
 	WriteSettings("application", fApplicationSettings);
@@ -429,17 +424,16 @@ SettingsServer::_SettingsForType(Setting type)
 {
 	BMessage* settings;
 	switch (type) {
-		case Application: {
+		case Application:
+		{
 			settings = &fApplicationSettings;
-		}	break;
-
-		case PaintWindow: {
+		} break;
+		case PaintWindow:
+		{
 			settings = &fWindowSettings;
-		}	break;
-
-		default: {
+		} break;
+		default:
 			settings = NULL;
-		}	break;
 	}
 	return settings;
 }
@@ -456,13 +450,11 @@ SettingsServer::_GetDefaultAppSettings(BMessage* message)
 	message->AddInt32(skUndoQueueDepth, 20);
 	message->AddInt32(skPaletteColorMode, HS_RGB_COLOR_MODE);
 
-	rgb_color black = { 0, 0, 0, 255 };
-	message->AddData(skPrimaryColor, B_RGB_COLOR_TYPE, (const void*)&black,
-		sizeof(rgb_color));
+	rgb_color black = {0, 0, 0, 255};
+	message->AddData(skPrimaryColor, B_RGB_COLOR_TYPE, (const void*)&black, sizeof(rgb_color));
 
-	rgb_color white = { 255, 255, 255, 255 };
-	message->AddData(skSecondaryColor, B_RGB_COLOR_TYPE, (const void*)&white,
-		sizeof(rgb_color));
+	rgb_color white = {255, 255, 255, 255};
+	message->AddData(skSecondaryColor, B_RGB_COLOR_TYPE, (const void*)&white, sizeof(rgb_color));
 
 	for (uint32 i = 0; i < gListSize; ++i) {
 		const int32 size = (i + 1) * 64;

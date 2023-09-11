@@ -13,8 +13,8 @@
 #include <Window.h>
 
 #include "AddOns.h"
-#include "ManipulatorInformer.h"
 #include "GrayscaleAddOn.h"
+#include "ManipulatorInformer.h"
 #include "Selection.h"
 
 #undef B_TRANSLATION_CONTEXT
@@ -33,7 +33,8 @@ extern "C" {
 #endif
 
 
-Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
+Manipulator*
+instantiate_add_on(BBitmap* bm, ManipulatorInformer* i)
 {
 	delete i;
 	return new GrayscaleAddOnManipulator(bm);
@@ -41,41 +42,36 @@ Manipulator* instantiate_add_on(BBitmap *bm,ManipulatorInformer *i)
 
 
 GrayscaleAddOnManipulator::GrayscaleAddOnManipulator(BBitmap*)
-		: Manipulator(),
-		selection(NULL)
+	:
+	Manipulator(),
+	selection(NULL)
 {
 }
 
 
-GrayscaleAddOnManipulator::~GrayscaleAddOnManipulator()
-{
-
-}
-
-
-BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original,
-	BStatusBar* status_bar)
+BBitmap*
+GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	// We may create another bitmap and return it instead of original, but we may
 	// also do the manipulation on the original and return it. We Should send messages
 	// to progress_view that contain B_UPDATE_STATUS_BAR as their 'what'. The sum of
 	// message deltas should equal 100*prog_step.
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
-	progress_message.AddFloat("delta",0.0);
+	progress_message.AddFloat("delta", 0.0);
 	if (status_bar != NULL) {
-		progress_message.ReplaceFloat("delta",100);
-		status_bar->Window()->PostMessage(&progress_message,status_bar);
+		progress_message.ReplaceFloat("delta", 100);
+		status_bar->Window()->PostMessage(&progress_message, status_bar);
 	}
 
-	int32 bits_length = original->BitsLength()/4;
-	uint32 *bits = (uint32*)original->Bits();
-	float blue,red,green;
+	int32 bits_length = original->BitsLength() / 4;
+	uint32* bits = (uint32*)original->Bits();
+	float blue, red, green;
 	union {
 		uint8 bytes[4];
 		uint32 word;
 	} color;
 	if ((selection == NULL) || (selection->IsEmpty() == TRUE)) {
-		for (int32 i=0;i<bits_length;i++) {
+		for (int32 i = 0; i < bits_length; i++) {
 			color.word = *bits;
 			blue = color.bytes[0] * 0.114;
 			green = color.bytes[1] * 0.587;
@@ -86,13 +82,12 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original,
 			color.bytes[2] = sum;
 			*bits++ = color.word;
 		}
-	}
-	else {
+	} else {
 		int32 width = original->Bounds().Width();
 		int32 height = original->Bounds().Height();
-		for (int32 y=0;y<=height;y++) {
-			for (int32 x=0;x<=width;x++) {
-				if (selection->ContainsPoint(x,y)) {
+		for (int32 y = 0; y <= height; y++) {
+			for (int32 x = 0; x <= width; x++) {
+				if (selection->ContainsPoint(x, y)) {
 					color.word = *bits;
 					blue = color.bytes[0] * 0.114;
 					green = color.bytes[1] * 0.587;
@@ -102,10 +97,8 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original,
 					color.bytes[1] = sum;
 					color.bytes[2] = sum;
 					*bits++ = color.word;
-				}
-				else {
+				} else
 					++bits;
-				}
 			}
 		}
 	}
@@ -113,13 +106,15 @@ BBitmap* GrayscaleAddOnManipulator::ManipulateBitmap(BBitmap* original,
 }
 
 
-const char* GrayscaleAddOnManipulator::ReturnHelpString()
+const char*
+GrayscaleAddOnManipulator::ReturnHelpString()
 {
 	return B_TRANSLATE("Converts the active layer to grayscale.");
 }
 
 
-const char*	GrayscaleAddOnManipulator::ReturnName()
+const char*
+GrayscaleAddOnManipulator::ReturnName()
 {
 	return B_TRANSLATE("Grayscale");
 }

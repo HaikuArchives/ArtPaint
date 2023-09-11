@@ -23,37 +23,31 @@ class ToolScript;
 
 class BrushTool : public DrawingTool {
 public:
-								BrushTool();
-	virtual						~BrushTool();
+							BrushTool();
 
-			int32				UseToolWithScript(ToolScript*, BBitmap*);
-			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
+		int32				UseToolWithScript(ToolScript*, BBitmap*);
+		ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
-			BView*				ConfigView();
-			const void*			ToolCursor() const;
-			const char*			HelpString(bool isInUse) const;
+		BView*				ConfigView();
+		const void*			ToolCursor() const;
+		const char*			HelpString(bool isInUse) const;
 
-			status_t			readSettings(BFile& file, bool isLittleEndian);
-			status_t			writeSettings(BFile& file);
-
-private:
-//			int32				read_coordinates();
-//	static	int32				CoordinateReader(void*);
+		status_t			readSettings(BFile& file, bool isLittleEndian);
+		status_t			writeSettings(BFile& file);
 
 private:
-			BPoint				last_point;
-			bool				reading_coordinates;
+		BPoint				last_point;
+		bool				reading_coordinates;
 
-			Selection*			selection;
-			ImageView*			image_view;
-			CoordinateQueue*	coordinate_queue;
+		Selection*			selection;
+		ImageView*			image_view;
+		CoordinateQueue*	coordinate_queue;
 };
 
 
 class BrushToolConfigView : public DrawingToolConfigView {
 public:
-								BrushToolConfigView(DrawingTool* tool);
-	virtual						~BrushToolConfigView() {}
+		BrushToolConfigView(DrawingTool* tool);
 };
 
 #endif	// BRUSH_TOOL_H

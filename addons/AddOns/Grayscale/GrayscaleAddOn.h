@@ -12,19 +12,16 @@
 #include "Manipulator.h"
 
 class GrayscaleAddOnManipulator : public Manipulator {
-Selection*	selection;
-public:
-			GrayscaleAddOnManipulator(BBitmap*);
-			~GrayscaleAddOnManipulator();
+	Selection*	selection;
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+public:
+				GrayscaleAddOnManipulator(BBitmap*);
+
+	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 #endif
-
-
-

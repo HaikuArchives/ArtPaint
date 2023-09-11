@@ -26,17 +26,17 @@ namespace ArtPaint {
 	namespace Interface {
 
 enum {
-	kNumberControlFinished		= 'kncf',
-	kSliderValueModified		= 'ksvm',
-	kSliderModificationFinished	= 'ksmf'
+	kNumberControlFinished = 'kncf',
+	kSliderValueModified = 'ksvm',
+	kSliderModificationFinished = 'ksmf'
 };
 
 
-FloatSliderControl::FloatSliderControl(const char* label, const char* text,
-		BMessage* message, float minRange, float maxRange, bool layout,
-		bool continuous, border_style borderStyle, thumb_style thumbStyle,
-		uint8 resolution)
-	: BBox(borderStyle, NULL),
+FloatSliderControl::FloatSliderControl(const char* label, const char* text, BMessage* message,
+	float minRange, float maxRange, bool layout, bool continuous, border_style borderStyle,
+	thumb_style thumbStyle, uint8 resolution)
+	:
+	BBox(borderStyle, NULL),
 	fMinRange(minRange),
 	fMaxRange(maxRange),
 	fContinuous(continuous),
@@ -49,21 +49,18 @@ FloatSliderControl::FloatSliderControl(const char* label, const char* text,
 
 	fMult = pow(10, resolution);
 
-	fFloatControl = new (std::nothrow) FloatControl(label, text,
-		new BMessage(kNumberControlFinished), 5, minRange < 0);
-	fSlider = new (std::nothrow) BSlider(NULL, NULL,
-		new BMessage(kSliderModificationFinished), (int32)minRange * fMult,
-		(int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
+	fFloatControl = new (std::nothrow)
+		FloatControl(label, text, new BMessage(kNumberControlFinished), 5, minRange < 0);
+	fSlider = new (std::nothrow) BSlider(NULL, NULL, new BMessage(kSliderModificationFinished),
+		(int32)minRange * fMult, (int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
 
 	if (fFloatControl && fSlider && layout) {
 		SetLayout(new BGroupLayout(B_VERTICAL));
 		AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
 			.Add(fFloatControl)
-			.Add(fSlider)
-		);
+			.Add(fSlider));
 
-		SetExplicitMinSize(BSize(fFloatControl->PreferredSize().Width() * 2.5,
-			MinSize().Height()));
+		SetExplicitMinSize(BSize(fFloatControl->PreferredSize().Width() * 2.5, MinSize().Height()));
 	}
 
 	if (fSlider)
@@ -92,29 +89,28 @@ void
 FloatSliderControl::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kNumberControlFinished: {
+		case kNumberControlFinished:
+		{
 			fSlider->SetValue(_FixValue(atof(fFloatControl->Text())) * fMult);
 			_SendMessage(atof(fFloatControl->Text()));
-		}	break;
-
-		case kSliderValueModified: {
+		} break;
+		case kSliderValueModified:
+		{
 			BString value;
 			value << (float)(fSlider->Value() / fMult);
 			fFloatControl->SetText(value.String());
 			if (fContinuous)
 				_SendMessage((float)(fSlider->Value() / fMult), false);
-		}	break;
-
-		case kSliderModificationFinished: {
+		} break;
+		case kSliderModificationFinished:
+		{
 			BString value;
 			value << (float)(fSlider->Value() / fMult);
 			fFloatControl->SetText(value.String());
 			_SendMessage((float)(fSlider->Value() / fMult), true);
-		}	break;
-
-		default: {
+		} break;
+		default:
 			BBox::MessageReceived(message);
-		}	break;
 	}
 }
 
@@ -138,9 +134,8 @@ FloatSliderControl::SetValue(float value)
 	if (fSlider)
 		fSlider->SetValue((int32)(value * fMult));
 
-	if (fFloatControl) {
+	if (fFloatControl)
 		fFloatControl->SetValue(value);
-	}
 }
 
 
@@ -177,8 +172,7 @@ FloatSliderControl::SetMessage(BMessage* message)
 void
 FloatSliderControl::SetMinMax(float min, float max)
 {
-	fSlider->SetLimits((int32)min * fMult,
-		(int32)max * fMult);
+	fSlider->SetLimits((int32)min * fMult, (int32)max * fMult);
 }
 
 
@@ -249,7 +243,7 @@ FloatSliderControl::_InitMessage()
 		fMessage = new BMessage;
 
 	if (fMessage) {
-		if (!fMessage->HasFloat("value"))	// may have been set by creator
+		if (!fMessage->HasFloat("value")) // may have been set by creator
 			fMessage->AddFloat("value", 0.0);
 
 		fMessage->AddBool("final", true);
@@ -280,11 +274,10 @@ FloatSliderControl::_SendMessage(float value, bool final)
 		if (!fTarget.IsValid()) {
 			if (BWindow* window = Window())
 				window->PostMessage(fMessage, window);
-		} else {
+		} else
 			fTarget.SendMessage(fMessage);
-		}
 	}
 }
 
-	}	// namespace Interface
-}	// namespace ArtPaint
+	} // namespace Interface
+} // namespace ArtPaint

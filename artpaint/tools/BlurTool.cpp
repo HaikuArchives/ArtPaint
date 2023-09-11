@@ -40,8 +40,8 @@ using ArtPaint::Interface::NumberSliderControl;
 
 
 BlurTool::BlurTool()
-	: DrawingTool(B_TRANSLATE("Blur tool"), "u",
-		BLUR_TOOL)
+	:
+	DrawingTool(B_TRANSLATE("Blur tool"), "u", BLUR_TOOL)
 {
 	fOptions = SIZE_OPTION | CONTINUITY_OPTION | USE_BRUSH_OPTION;
 	fOptionsCount = 3;
@@ -49,11 +49,6 @@ BlurTool::BlurTool()
 	SetOption(SIZE_OPTION, 1);
 	SetOption(CONTINUITY_OPTION, B_CONTROL_OFF);
 	SetOption(USE_BRUSH_OPTION, B_CONTROL_OFF);
-}
-
-
-BlurTool::~BlurTool()
-{
 }
 
 
@@ -80,14 +75,14 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BitmapDrawer* drawer = new BitmapDrawer(bitmap);
 
-	ToolScript* the_script = new ToolScript(Type(), fToolSettings,
-		((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script
+		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
 
 	selection = view->GetSelection();
 
 	BRect bounds = bitmap->Bounds();
 	uint32* bits_origin = (uint32*)bitmap->Bits();
-	int32 bpr = bitmap->BytesPerRow()/4;
+	int32 bpr = bitmap->BytesPerRow() / 4;
 
 	float width = fToolSettings.size;
 	float height = fToolSettings.size;
@@ -116,8 +111,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	}
 
 	// this is the bitmap where the blurred image will be first made
-	BBitmap* blurred = new BBitmap(BRect(0, 0, width + 1, height + 1),
-		B_RGB_32_BIT);
+	BBitmap* blurred = new BBitmap(BRect(0, 0, width + 1, height + 1), B_RGB_32_BIT);
 	int32* blurred_bits;
 	int32 blurred_bpr = blurred->BytesPerRow() / 4;
 
@@ -127,17 +121,16 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	for (int32 i = 0; i < 5500; i++)
 		sqrt_table[i] = (int32)sqrt(i);
 
-	prev_point = point - BPoint(1,1);
+	prev_point = point - BPoint(1, 1);
 	SetLastUpdatedRect(BRect(point, point));
 	while (buttons) {
 		if ((fToolSettings.continuity == B_CONTROL_ON)
 			|| (fToolSettings.size != previous_width)
-			|| (fToolSettings.use_current_brush == true &&
-				(width != previous_width || height != previous_height))
+			|| (fToolSettings.use_current_brush == true
+				&& (width != previous_width || height != previous_height))
 			|| (point != prev_point)) {
-			if ((fToolSettings.use_current_brush == false &&
-				fToolSettings.size != previous_width) ||
-				(fToolSettings.use_current_brush != prev_use_brush)) {
+			if ((fToolSettings.use_current_brush == false && fToolSettings.size != previous_width)
+				|| (fToolSettings.use_current_brush != prev_use_brush)) {
 
 				delete blurred;
 				width = fToolSettings.size;
@@ -154,9 +147,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 					half_width = (width - 1) / 2;
 					half_height = (height - 1) / 2;
 				}
-				blurred = new BBitmap(BRect(0, 0,
-					width + 1, height + 1),
-					B_RGB_32_BIT);
+				blurred = new BBitmap(BRect(0, 0, width + 1, height + 1), B_RGB_32_BIT);
 				previous_width = width;
 				previous_height = height;
 				prev_use_brush = true;
@@ -165,8 +156,8 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 			blurred_bits = (int32*)blurred->Bits();
 
-			rc = BRect(point.x - half_width, point.y - half_height,
-				point.x + half_width, point.y + half_height);
+			rc = BRect(point.x - half_width, point.y - half_height, point.x + half_width,
+				point.y + half_height);
 			rc = rc & bounds;
 
 			BPoint left_top = rc.LeftTop();
@@ -185,41 +176,42 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				y_sqr = (int32)(point.y - rc.top - y);
 				y_sqr *= y_sqr;
 				for (int32 x = 0; x < rc_width + 1; x++) {
-		 			x_dist = (int32)(point.x - rc.left - x);
+					x_dist = (int32)(point.x - rc.left - x);
 					float brush_val = 1.0;
 					if (fToolSettings.use_current_brush == true) {
 						union color_conversion brush_color;
 						brush_color.word = *(brush_bits + x + y * brush_bpr);
 						brush_val = brush_color.bytes[3];
 					}
-					if (((fToolSettings.use_current_brush == true && brush_val > 0.0) ||
-						(fToolSettings.use_current_brush == false &&
-						sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) &&
-						(selection == NULL || selection->IsEmpty() ||
-						selection->ContainsPoint(left_top + BPoint(x, y))) ) {
-						red = 0; green = 0; blue = 0; alpha = 0;
+					if (((fToolSettings.use_current_brush == true && brush_val > 0.0)
+							|| (fToolSettings.use_current_brush == false
+								&& sqrt_table[x_dist * x_dist + y_sqr] <= half_width))
+						&& (selection == NULL || selection->IsEmpty()
+							|| selection->ContainsPoint(left_top + BPoint(x, y)))) {
+						red = 0;
+						green = 0;
+						blue = 0;
+						alpha = 0;
 						for (int32 dy = -1; dy < 2; dy++) {
 							for (int32 dx = -1; dx < 2; dx++) {
-								int32 x_coord =
-									(int32)min_c(max_c(left_top.x + x + dx, 0),
-									rc.right);
-								int32 y_coord =
-									(int32)min_c(max_c(left_top.y + y + dy, 0),
-									rc.bottom);
+								int32 x_coord
+									= (int32)min_c(max_c(left_top.x + x + dx, 0), rc.right);
+								int32 y_coord
+									= (int32)min_c(max_c(left_top.y + y + dy, 0), rc.bottom);
 								new_pixel = drawer->GetPixel(x_coord, y_coord);
 
-								blue += (float)((new_pixel>>24) & 0xFF) / 9.0;
-								green += (float)((new_pixel>>16) & 0xFF) / 9.0;
-								red += (float)((new_pixel>>8) & 0xFF) / 9.0;
-								alpha += (float)((new_pixel) & 0xFF) / 9.0;
+								blue += (float)((new_pixel >> 24) & 0xFF) / 9.0;
+								green += (float)((new_pixel >> 16) & 0xFF) / 9.0;
+								red += (float)((new_pixel >> 8) & 0xFF) / 9.0;
+								alpha += (float)((new_pixel) &0xFF) / 9.0;
 							}
 						}
 						// At this point we should round the values.
 						*blurred_bits = (uint32)blue << 24 | (uint32)green << 16
 							| (uint32)red << 8 | (uint32)alpha;
-					} else {
+					} else
 						*blurred_bits = drawer->GetPixel(left_top + BPoint(x, y));
-					}
+
 					blurred_bits++;
 				}
 				blurred_bits += blurred_bpr - (int32)rc.Width();
@@ -229,8 +221,8 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			if (rc.IsValid()) {
 				for (int32 y = 0; y < rc_height + 1; y++) {
 					for (int32 x = 0; x < rc_width + 1; x++) {
-						*(bits_origin + (int32)(left_top.x + x) +
-							(int32)((left_top.y + y) * bpr)) = *blurred_bits;
+						*(bits_origin + (int32)(left_top.x + x) + (int32)((left_top.y + y) * bpr))
+							= *blurred_bits;
 						blurred_bits++;
 					}
 					blurred_bits += blurred_bpr - (int32)rc.Width();
@@ -239,9 +231,8 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 			prev_point = point;
 			the_script->AddPoint(point);
-		} else {
+		} else
 			rc = BRect(0, 0, -1, -1);
-		}
 
 		window->Lock();
 		if (rc.IsValid()) {
@@ -249,7 +240,7 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			view->Sync();
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
 		}
-		view->getCoords(&point,&buttons);
+		view->getCoords(&point, &buttons);
 		window->Unlock();
 
 		snooze(20 * 1000);
@@ -284,9 +275,7 @@ BlurTool::ToolCursor() const
 const char*
 BlurTool::HelpString(bool isInUse) const
 {
-	return (isInUse
-		? B_TRANSLATE("Blurring the image.")
-		: B_TRANSLATE("Blur tool"));
+	return (isInUse ? B_TRANSLATE("Blurring the image.") : B_TRANSLATE("Blur tool"));
 }
 
 
@@ -294,31 +283,28 @@ BlurTool::HelpString(bool isInUse) const
 
 
 BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
-	: DrawingToolConfigView(tool)
+	:
+	DrawingToolConfigView(tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("value", 0x00000000);
 		message->AddInt32("option", CONTINUITY_OPTION);
 
-		fContinuity = new BCheckBox(B_TRANSLATE("Continuous"),
-			message);
+		fContinuity = new BCheckBox(B_TRANSLATE("Continuous"), message);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", SIZE_OPTION);
 		message->AddInt32("value", tool->GetCurrentValue(SIZE_OPTION));
 
-		fBlurSize =
-			new NumberSliderControl(B_TRANSLATE("Size:"),
-			"1", message, 1, 100, false);
+		fBlurSize = new NumberSliderControl(B_TRANSLATE("Size:"), "1", message, 1, 100, false);
 
 		BGridLayout* sizeLayout = LayoutSliderGrid(fBlurSize);
 
 		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", USE_BRUSH_OPTION);
 		message->AddInt32("value", 0x00000000);
-		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"),
-			message);
+		fUseBrush = new BCheckBox(B_TRANSLATE("Use current brush"), message);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
 			.Add(sizeLayout)
@@ -336,9 +322,8 @@ BlurToolConfigView::BlurToolConfigView(DrawingTool* tool)
 			fContinuity->SetValue(B_CONTROL_ON);
 
 		fUseBrush->SetValue(tool->GetCurrentValue(USE_BRUSH_OPTION));
-		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF) {
+		if (tool->GetCurrentValue(USE_BRUSH_OPTION) != B_CONTROL_OFF)
 			fBlurSize->SetEnabled(FALSE);
-		}
 	}
 }
 
@@ -359,8 +344,9 @@ BlurToolConfigView::MessageReceived(BMessage* message)
 {
 	DrawingToolConfigView::MessageReceived(message);
 
-	switch(message->what) {
-		case OPTION_CHANGED: {
+	switch (message->what) {
+		case OPTION_CHANGED:
+		{
 			if (message->FindInt32("option") == USE_BRUSH_OPTION) {
 				if (fUseBrush->Value() == B_CONTROL_OFF)
 					fBlurSize->SetEnabled(TRUE);

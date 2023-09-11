@@ -13,30 +13,27 @@
 
 #include "GUIManipulator.h"
 
-
 #include <View.h>
 
 
 class WindowGUIManipulator : public GUIManipulator {
 public:
-							WindowGUIManipulator() {}
-	virtual					~WindowGUIManipulator() {}
+						WindowGUIManipulator() {}
 
-	virtual	BView*			MakeConfigurationView(const BMessenger& target) = 0;
-	virtual	void			SetSelection(Selection* new_selection) = 0;
-	virtual void			UpdateSettings() {};
+	virtual	BView*		MakeConfigurationView(const BMessenger& target) = 0;
+	virtual	void		SetSelection(Selection* new_selection) = 0;
+	virtual void		UpdateSettings() {};
 };
 
 
 class WindowGUIManipulatorView : public BView {
 public:
-							WindowGUIManipulatorView();
-							WindowGUIManipulatorView(BRect rect);
-	virtual					~WindowGUIManipulatorView() {}
+						WindowGUIManipulatorView();
+						WindowGUIManipulatorView(BRect rect);
 
 
-	virtual	void			AttachedToWindow();
-	virtual	void			MessageReceived(BMessage* message);
+	virtual	void		AttachedToWindow();
 };
+
 
 #endif	// WINDOW_GUI_MANIPULATOR_H

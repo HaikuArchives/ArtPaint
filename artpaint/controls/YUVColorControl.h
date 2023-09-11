@@ -9,21 +9,19 @@
 #ifndef YUV_COLOR_CONTROL_H
 #define YUV_COLOR_CONTROL_H
 
-
 #include "MultichannelColorControl.h"
 
 
 class YUVColorControl : public MultichannelColorControl {
 public:
- 		YUVColorControl(rgb_color c);
+						YUVColorControl(rgb_color c);
 
-virtual	void		SetValue(rgb_color c);
- 			rgb_color	ValueAsColor();
+	virtual	void		SetValue(rgb_color c);
+			rgb_color	ValueAsColor();
 
 private:
-virtual	void		_SetColor(float one, float two,
- 								float three, float four);
+	virtual	void		_SetColor(float one, float two, float three, float four);
 };
 
 
-#endif
+#endif // YUV_COLOR_CONTROL_H

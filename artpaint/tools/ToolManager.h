@@ -13,7 +13,6 @@
 
 #include <SupportDefs.h>
 
-
 #include "Brush.h"
 
 
@@ -52,54 +51,55 @@ enum image_view_event_type {
 
 class ToolManager {
 public:
-	static	ToolManager&			Instance();
+	static	ToolManager&		Instance();
 
-	static	status_t				CreateToolManager();
-	static	status_t				DestroyToolManager();
+	static	status_t			CreateToolManager();
+	static	status_t			DestroyToolManager();
 
-			ToolScript*				StartTool(ImageView*, uint32, BPoint, BPoint,
-										int32 toolType = 0);
+			ToolScript*			StartTool(ImageView*, uint32, BPoint, BPoint,
+									int32 toolType = 0);
 
-			status_t				MouseDown(ImageView*, BPoint, BPoint, uint32,
-										int32);
+			status_t			MouseDown(ImageView*, BPoint, BPoint, uint32,
+									int32);
 
-			status_t				KeyUp(ImageView*, const char*, int32);
-			status_t				KeyDown(ImageView*, const char*, int32);
+			status_t			KeyUp(ImageView*, const char*, int32);
+			status_t			KeyDown(ImageView*, const char*, int32);
 
-			BRect					LastUpdatedRect(ImageView*);
+			BRect				LastUpdatedRect(ImageView*);
 
-			status_t				ChangeTool(int32);
-			const void*				ReturnCursor() const;
-			DrawingTool*			ReturnTool(int32) const;
-			DrawingTool*			ReturnActiveTool() const { return fActiveTool; }
-			int32					ReturnActiveToolType() const;
-			BView*					ConfigView(int32);
-			status_t				SetCurrentBrush(brush_info*);
-			Brush*					GetCurrentBrush();
-			BPopUpMenu*				ToolPopUpMenu();
+			status_t			ChangeTool(int32);
+			const void*			ReturnCursor() const;
+			DrawingTool*		ReturnTool(int32) const;
+			DrawingTool*		ReturnActiveTool() const { return fActiveTool; }
+			int32				ReturnActiveToolType() const;
+			BView*				ConfigView(int32);
+			status_t			SetCurrentBrush(brush_info*);
+			Brush*				GetCurrentBrush();
+			BPopUpMenu*			ToolPopUpMenu();
 
 			// The next function can be used to notify the ToolManager about
 			// other view-events than what have to do with drawing.
-			status_t				NotifyViewEvent(ImageView*,
-										image_view_event_type eventType);
+			status_t			NotifyViewEvent(ImageView*,
+									image_view_event_type eventType);
 
-			status_t				ReadToolSettings(BFile& file);
-			status_t				WriteToolSettings(BFile& file);
-
-private:
-									ToolManager();
-									~ToolManager();
-
-			void					_AddTool(DrawingTool* tool);
-			ToolManagerClient*		_ReturnClientData(ImageView* imageView);
+			status_t			ReadToolSettings(BFile& file);
+			status_t			WriteToolSettings(BFile& file);
 
 private:
-			BPopUpMenu*				fToolPopUpMenu;
-			DrawingTool*			fActiveTool;
-			Brush*					fActiveBrush;
-			ToolManagerClient*		fClientListHead;
+								ToolManager();
+								~ToolManager();
 
-	static	ToolManager*			fToolManager;
+			void				_AddTool(DrawingTool* tool);
+			ToolManagerClient*	_ReturnClientData(ImageView* imageView);
+
+private:
+			BPopUpMenu*			fToolPopUpMenu;
+			DrawingTool*		fActiveTool;
+			Brush*				fActiveBrush;
+			ToolManagerClient*	fClientListHead;
+
+	static	ToolManager*		fToolManager;
 };
+
 
 #endif	// TOOL_MANAGER_H

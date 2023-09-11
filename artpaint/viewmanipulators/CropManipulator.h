@@ -14,7 +14,6 @@
 #include "WindowGUIManipulator.h"
 #include "ManipulatorSettings.h"
 
-
 #include <Button.h>
 #include <CheckBox.h>
 #include <Messenger.h>
@@ -39,67 +38,64 @@ using ArtPaint::Interface::NumberControl;
 
 
 class CropManipulator : public WindowGUIManipulator {
-		BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
-						{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
+			BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+							{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-		BBitmap*	target_bitmap;
-		BBitmap*	preview_bitmap;
-		BBitmap*	copy_of_the_preview_bitmap;
+			BBitmap*	target_bitmap;
+			BBitmap*	preview_bitmap;
+			BBitmap*	copy_of_the_preview_bitmap;
 
-		float 		min_x, max_x;
-		float		min_y, max_y;
+			float 		min_x, max_x;
+			float		min_y, max_y;
 
-		float		previous_left;
-		float		previous_right;
-		float		previous_top;
-		float		previous_bottom;
+			float		previous_left;
+			float		previous_right;
+			float		previous_top;
+			float		previous_bottom;
 
-		BPoint		previous_point;
+			BPoint		previous_point;
 
-		CropManipulatorSettings* 	settings;
-		CropManipulatorView*		config_view;
+			CropManipulatorSettings* 	settings;
+			CropManipulatorView*		config_view;
 
-		bool		move_left;
-		bool		move_right;
-		bool		move_top;
-		bool		move_bottom;
-		bool 		move_all;
+			bool		move_left;
+			bool		move_right;
+			bool		move_top;
+			bool		move_bottom;
+			bool 		move_all;
 
-		bool		use_selected;
-		bool		lock_aspect;
+			bool		use_selected;
+			bool		lock_aspect;
 
-		Selection*	selection;
+			Selection*	selection;
 public:
-					CropManipulator(BBitmap*);
-					~CropManipulator();
+						CropManipulator(BBitmap*);
+						~CropManipulator();
 
-		void		MouseDown(BPoint, uint32, BView*, bool);
+			void		MouseDown(BPoint, uint32, BView*, bool);
 
-		BRegion		Draw(BView*, float);
+			BRegion		Draw(BView*, float);
 
-		BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap* original,
-						BStatusBar*);
-		void		SetValues(float, float, float, float);
+			BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap* original, BStatusBar*);
+			void		SetValues(float, float, float, float);
 
-		int32		PreviewBitmap(bool full_quality = false,
-						BRegion* updated_region = NULL);
+			int32		PreviewBitmap(bool full_quality = false, BRegion* updated_region = NULL);
 
-		BView*		MakeConfigurationView(const BMessenger& target);
-		void		Reset();
-		void		SetPreviewBitmap(BBitmap*);
+			BView*		MakeConfigurationView(const BMessenger& target);
+			void		Reset();
+			void		SetPreviewBitmap(BBitmap*);
 
-const	char*		ReturnHelpString();
-const	char*		ReturnName();
+	const	char*		ReturnHelpString();
+	const	char*		ReturnName();
 
-		ManipulatorSettings*	ReturnSettings();
+			ManipulatorSettings*	ReturnSettings();
 
-		void		UseSelected() { use_selected = TRUE; }
-		void		LockAspect(bool lock) { lock_aspect = lock; }
+			void		UseSelected() { use_selected = TRUE; }
+			void		LockAspect(bool lock) { lock_aspect = lock; }
 
-		void		SetSelection(Selection* new_selection)
-						{ selection = new_selection; };
+			void		SetSelection(Selection* new_selection) { selection = new_selection; };
 
-		void		UpdateSettings();
+			void		UpdateSettings();
 };
 
 
@@ -128,35 +124,34 @@ public:
 
 class CropManipulatorView : public WindowGUIManipulatorView {
 public:
-							CropManipulatorView(CropManipulator* manipulator,
-								const BMessenger& target);
-virtual						~CropManipulatorView() {}
+								CropManipulatorView(CropManipulator* manipulator,
+									const BMessenger& target);
 
-virtual	void				AttachedToWindow();
-virtual	void				MessageReceived(BMessage* message);
+	virtual	void				AttachedToWindow();
+	virtual	void				MessageReceived(BMessage* message);
 
-		void				SetValues(float left, float right, float top,
-								float bottom);
-		void				GetControlValues(float& left, float& right,
-								float& top, float& bottom);
+			void				SetValues(float left, float right, float top,
+									float bottom);
+			void				GetControlValues(float& left, float& right,
+									float& top, float& bottom);
 
 private:
-		float				left;
-		float				right;
-		float				top;
-		float				bottom;
+			float				left;
+			float				right;
+			float				top;
+			float				bottom;
 
-		NumberControl*		fTopCrop;
-		NumberControl*		fLeftCrop;
-		NumberControl*		fRightCrop;
-		NumberControl*		fBottomCrop;
+			NumberControl*		fTopCrop;
+			NumberControl*		fLeftCrop;
+			NumberControl*		fRightCrop;
+			NumberControl*		fBottomCrop;
 
-		BButton*			fSelected;
-		BButton*			fReset;
-		BCheckBox*			fLockAspect;
+			BButton*			fSelected;
+			BButton*			fReset;
+			BCheckBox*			fLockAspect;
 
-		BMessenger			fTarget;
-		CropManipulator*	fManipulator;
+			BMessenger			fTarget;
+			CropManipulator*	fManipulator;
 };
 
 

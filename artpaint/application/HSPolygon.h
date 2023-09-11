@@ -9,7 +9,6 @@
 #ifndef HS_POLYGON_H
 #define HS_POLYGON_H
 
-
 #include <Point.h>
 #include <Polygon.h>
 
@@ -29,49 +28,50 @@ enum polygon_direction {
 
 */
 class HSPolygon {
-BPoint				*points;
-int32				point_count;
-polygon_direction	direction;
-BRect				boundingRect;
+			BPoint*		points;
+			int32		point_count;
+			polygon_direction	direction;
+			BRect		boundingRect;
 
 public:
-				HSPolygon(BPoint*,int32,polygon_direction dir=HS_POLYGON_ANY_DIRECTION);
-				HSPolygon(const HSPolygon*);
-				~HSPolygon();
+						HSPolygon(BPoint*, int32, polygon_direction dir = HS_POLYGON_ANY_DIRECTION);
+						HSPolygon(const HSPolygon*);
+						~HSPolygon();
 
-void			AddPoints(BPoint*,int32,bool reverse_points=FALSE);
-void			Rotate(const BPoint&,float);
-void			RotateAboutCenter(float);
+			void		AddPoints(BPoint*, int32, bool reverse_points = FALSE);
+			void		Rotate(const BPoint&, float);
+			void		RotateAboutCenter(float);
 
-void			TranslateBy(int32,int32);
+			void		TranslateBy(int32,int32);
 
-void			ScaleBy(BPoint, float, float);
+			void		ScaleBy(BPoint, float, float);
 
-void 			FlipX(float axis);
-void			FlipY(float axis);
+			void 		FlipX(float axis);
+			void		FlipY(float axis);
 
-BPolygon*		GetBPolygon();
-
-
-// This function checks that each point has follower within the parameter
-// distance. If there is no such point it will add points that are needed.
-// The distance between the points is the euclidean distance and units are
-// pixels.
-void			SetMaximumInterPointDistance(float);
+			BPolygon*	GetBPolygon();
 
 
-inline	BPoint*	GetPointList() { return points; }
-inline	int32	GetPointCount() { return point_count; }
-		void	RoundToInteger();
-		BRect	BoundingBox();
+			// This function checks that each point has follower within the parameter
+			// distance. If there is no such point it will add points that are needed.
+			// The distance between the points is the euclidean distance and units are
+			// pixels.
+			void		SetMaximumInterPointDistance(float);
 
-		void	ChangeDirection(polygon_direction);
 
-polygon_direction	GetDirection();
-		bool	Contains(BPoint test_point);
-		bool 	Contains(int32 x, int32 y);
+	inline	BPoint*		GetPointList() { return points; }
+	inline	int32		GetPointCount() { return point_count; }
+			void		RoundToInteger();
+			BRect		BoundingBox();
 
-		bool	operator==(const HSPolygon&);
+			void		ChangeDirection(polygon_direction);
+
+			polygon_direction	GetDirection();
+			bool		Contains(BPoint test_point);
+			bool 		Contains(int32 x, int32 y);
+
+			bool		operator==(const HSPolygon&);
 };
 
-#endif
+
+#endif // HS_POLYGON_H

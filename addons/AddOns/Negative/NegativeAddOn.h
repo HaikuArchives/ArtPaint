@@ -12,16 +12,16 @@
 #include "Manipulator.h"
 
 class NegativeAddOnManipulator : public Manipulator {
-Selection*	selection;
-public:
-			NegativeAddOnManipulator(BBitmap*);
-			~NegativeAddOnManipulator();
+	Selection*	selection;
 
-BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
-const char*	ReturnHelpString();
-const char*	ReturnName();
-void		SetSelection(Selection* new_selection)
-				{ selection = new_selection; };
+public:
+				NegativeAddOnManipulator(BBitmap*);
+
+	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
+	const char*	ReturnHelpString();
+	const char*	ReturnName();
+	void		SetSelection(Selection* new_selection)
+					{ selection = new_selection; };
 };
 
 #endif

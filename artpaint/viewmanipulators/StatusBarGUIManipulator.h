@@ -11,17 +11,17 @@
 
 #include "GUIManipulator.h"
 
-
 #include <Messenger.h>
 
 
 class StatusBarGUIManipulator : public GUIManipulator {
 public:
-								StatusBarGUIManipulator() {}
-	virtual						~StatusBarGUIManipulator() {}
+						StatusBarGUIManipulator() {}
+	virtual				~StatusBarGUIManipulator() {}
 
-	virtual	BView*				MakeConfigurationView(float width, float height,
-									const BMessenger& target) = 0;
+	virtual	BView*		MakeConfigurationView(float width, float height,
+							const BMessenger& target) = 0;
 };
+
 
 #endif	// STATUS_BAR_GUI_MANIPULATOR_H

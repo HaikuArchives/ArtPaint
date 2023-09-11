@@ -7,9 +7,10 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
-#include "MessageConstants.h"
+
 #include "FlipManipulator.h"
 #include "ImageView.h"
+#include "MessageConstants.h"
 #include "Selection.h"
 
 
@@ -26,24 +27,25 @@
 
 
 HorizFlipManipulator::HorizFlipManipulator()
-	:	Manipulator()
+	:
+	Manipulator()
 {
 }
 
-BBitmap* HorizFlipManipulator::ManipulateBitmap(BBitmap* original,
-	BStatusBar* status_bar)
+
+BBitmap*
+HorizFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	BRect bounds = original->Bounds();
 
-	if (selection != NULL && selection->IsEmpty() == false) {
+	if (selection != NULL && selection->IsEmpty() == false)
 		bounds = selection->GetBoundingRect();
-	}
 
 	int32 height = bounds.IntegerHeight();
 	int32 width = bounds.IntegerWidth();
 	int32 width_per_2 = width / 2;
 	uint32 left_bits, right_bits;
-	uint32 *bits = (uint32*)original->Bits();
+	uint32* bits = (uint32*)original->Bits();
 	uint32 bpr = original->BytesPerRow() / 4;
 
 	int32 left = bounds.left;
@@ -78,9 +80,8 @@ BBitmap* HorizFlipManipulator::ManipulateBitmap(BBitmap* original,
 			}
 		}
 
-		if ((y % 40 == 0) && (status_bar != NULL) &&
-			(status_bar->Window() != NULL)) {
-			BMessage *a_message = new BMessage(B_UPDATE_STATUS_BAR);
+		if ((y % 40 == 0) && (status_bar != NULL) && (status_bar->Window() != NULL)) {
+			BMessage* a_message = new BMessage(B_UPDATE_STATUS_BAR);
 			a_message->AddFloat("delta", 40.0 * 100.0 / (float)height);
 			status_bar->Window()->PostMessage(a_message, status_bar);
 			delete a_message;
@@ -93,30 +94,34 @@ BBitmap* HorizFlipManipulator::ManipulateBitmap(BBitmap* original,
 	return original;
 }
 
-const char* HorizFlipManipulator::ReturnName()
+
+const char*
+HorizFlipManipulator::ReturnName()
 {
 	return B_TRANSLATE("Flip horizontally");
 }
 
+
 VertFlipManipulator::VertFlipManipulator()
-	:	Manipulator()
+	:
+	Manipulator()
 {
 }
 
-BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap* original,
-	BStatusBar* status_bar)
+
+BBitmap*
+VertFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 {
 	BRect bounds = original->Bounds();
 
-	if (selection != NULL && selection->IsEmpty() == false) {
+	if (selection != NULL && selection->IsEmpty() == false)
 		bounds = selection->GetBoundingRect();
-	}
 
 	int32 height = bounds.IntegerHeight();
-	int32 height_per_2 = height/2;
+	int32 height_per_2 = height / 2;
 	uint32 top_bits, bottom_bits;
-	uint32 *bits = (uint32*)original->Bits();
-	uint32 bpr = original->BytesPerRow()/4;
+	uint32* bits = (uint32*)original->Bits();
+	uint32 bpr = original->BytesPerRow() / 4;
 
 	int32 left = bounds.left;
 	int32 right = bounds.right;
@@ -150,9 +155,8 @@ BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap* original,
 			}
 		}
 
-		if ((y % 40 == 0) && (status_bar != NULL) &&
-			(status_bar->Window() != NULL)) {
-			BMessage *a_message = new BMessage(B_UPDATE_STATUS_BAR);
+		if ((y % 40 == 0) && (status_bar != NULL) && (status_bar->Window() != NULL)) {
+			BMessage* a_message = new BMessage(B_UPDATE_STATUS_BAR);
 			a_message->AddFloat("delta", 40.0 * 100.0 / (float)height_per_2);
 			status_bar->Window()->PostMessage(a_message, status_bar);
 			delete a_message;
@@ -165,7 +169,9 @@ BBitmap* VertFlipManipulator::ManipulateBitmap(BBitmap* original,
 	return original;
 }
 
-const char* VertFlipManipulator::ReturnName()
+
+const char*
+VertFlipManipulator::ReturnName()
 {
 	return B_TRANSLATE("Flip vertically");
 }

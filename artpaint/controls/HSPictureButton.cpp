@@ -19,22 +19,24 @@
 #include <View.h>
 
 
-HSPictureButton::HSPictureButton(BRect frame, BPicture* off, BPicture* on,
-		BMessage* message, const char* helpMessage, const char* longHelpMessage,
-		uint32 behavior, uint32 resizingMode , uint32 flags)
-	: BPictureButton(frame, "?", off, on, message, behavior, resizingMode, flags)
-	, fLongHelpMessage(longHelpMessage)
+HSPictureButton::HSPictureButton(BRect frame, BPicture* off, BPicture* on, BMessage* message,
+	const char* helpMessage, const char* longHelpMessage, uint32 behavior, uint32 resizingMode,
+	uint32 flags)
+	:
+	BPictureButton(frame, "?", off, on, message, behavior, resizingMode, flags),
+	fLongHelpMessage(longHelpMessage)
 {
 	if (helpMessage)
 		SetToolTip(helpMessage);
 }
 
 
-HSPictureButton::HSPictureButton(BRect frame, BBitmap* off, BBitmap* on,
-		BMessage* message, const char* helpMessage, const char* longHelpMessage,
-		uint32 behavior, uint32 mode, uint32 flags)
-	: BPictureButton(frame, "?", NULL, NULL, message, behavior, mode, flags)
-	, fLongHelpMessage(longHelpMessage)
+HSPictureButton::HSPictureButton(BRect frame, BBitmap* off, BBitmap* on, BMessage* message,
+	const char* helpMessage, const char* longHelpMessage, uint32 behavior, uint32 mode,
+	uint32 flags)
+	:
+	BPictureButton(frame, "?", NULL, NULL, message, behavior, mode, flags),
+	fLongHelpMessage(longHelpMessage)
 {
 	if (helpMessage)
 		SetToolTip(helpMessage);
@@ -61,11 +63,6 @@ HSPictureButton::HSPictureButton(BRect frame, BBitmap* off, BBitmap* on,
 	offScreen->Unlock();
 
 	delete offScreen;
-}
-
-
-HSPictureButton::~HSPictureButton()
-{
 }
 
 

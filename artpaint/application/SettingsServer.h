@@ -13,7 +13,6 @@
 #include <Message.h>
 #include <String.h>
 
-
 #include <list>
 
 
@@ -165,5 +164,6 @@ private:
 	static	BLocker					fLocker;
 	static	SettingsServer*			fSettingsServer;
 };
+
 
 #endif // SETTINGSSERVER_H

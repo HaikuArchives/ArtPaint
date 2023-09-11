@@ -23,56 +23,53 @@
 
 class ThumbnailView : public BView {
 public:
-				ThumbnailView(BBitmap* image);
-	virtual		~ThumbnailView();
+							ThumbnailView(BBitmap* image);
 
-	virtual void 	Draw(BRect updateRect);
-	virtual void	MessageReceived(BMessage* message);
-	void		MouseDown(BPoint);
+	virtual void 			Draw(BRect updateRect);
+	virtual void			MessageReceived(BMessage* message);
+			void			MouseDown(BPoint);
 
-	BBitmap*	ThumbnailBitmap() { return fThumbnailBitmap; }
+			BBitmap*		ThumbnailBitmap() { return fThumbnailBitmap; }
 
-	void		Redraw() { Draw(Bounds()); }
+			void			Redraw() { Draw(Bounds()); }
 
 private:
-	BBitmap*	fThumbnailBitmap;
+			BBitmap*		fThumbnailBitmap;
 };
 
 
 class LayerView : public BBox {
-BBitmap	*the_image;		// Not to be deleted.
-Layer	*the_layer;		// Not to be deleted.
-bool	is_active;
+			BBitmap*		the_image;		// Not to be deleted.
+			Layer*			the_layer;		// Not to be deleted.
+			bool			is_active;
 
-BCheckBox*		visibility_box;
-BTextControl*	layer_name_field;
-ThumbnailView* 	thumbnail_view;
+			BCheckBox*		visibility_box;
+			BTextControl*	layer_name_field;
+			ThumbnailView* 	thumbnail_view;
 
-
-// The returned value will indicate how many positions we moved
-// up (if positive) or down (if negative)
-static	int32		reorder_thread(void *data);
-		int32		ReorderViews();
+	// The returned value will indicate how many positions we moved
+	// up (if positive) or down (if negative)
+	static	int32			reorder_thread(void* data);
+			int32			ReorderViews();
 
 public:
-			LayerView(BBitmap *image,Layer *layer);
-			~LayerView();
+							LayerView(BBitmap* image, Layer* layer);
+							~LayerView();
 
-void		AttachedToWindow();
-void		MessageReceived(BMessage*);
-void		MouseDown(BPoint);
-void		MouseMoved(BPoint where,uint32 transit,const BMessage*);
-void		Draw(BRect);
+			void			AttachedToWindow();
+			void			MessageReceived(BMessage*);
+			void			MouseDown(BPoint);
+			void			Draw(BRect);
 
 
-void		UpdateImage();
-void		Activate(bool);
-void		SetVisibility(bool);
+			void			UpdateImage();
+			void			Activate(bool);
+			void			SetVisibility(bool);
 
-Layer*		ReturnLayer() { return the_layer; }
-const char*	ReturnLayerName() { return layer_name_field->Text(); }
-void		SetName(const char* name);
+			Layer*			ReturnLayer() { return the_layer; }
+			const char*		ReturnLayerName() { return layer_name_field->Text(); }
+			void			SetName(const char* name);
 };
 
 
-#endif
+#endif // LAYER_VIEW

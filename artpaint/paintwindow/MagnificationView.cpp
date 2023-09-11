@@ -43,20 +43,19 @@ filter_result MouseDownFilter(BMessage*, BHandler**, BMessageFilter*);
 // #pragma mark - MagStringView
 
 
-class MagStringView : public BStringView {
+class MagStringView : public BStringView
+{
 public:
-							MagStringView(const char* name,
-								const char* label);
-	virtual					~MagStringView();
+	MagStringView(const char* name, const char* label);
+	virtual 		~MagStringView();
 
-	virtual	void			MouseMoved(BPoint point, uint32 transit,
-								const BMessage* message);
+	virtual void	MouseMoved(BPoint point, uint32 transit, const BMessage* message);
 };
 
 
-MagStringView::MagStringView(const char* name,
-		const char* label)
-	: BStringView(name, label)
+MagStringView::MagStringView(const char* name, const char* label)
+	:
+	BStringView(name, label)
 {
 	AddFilter(new BMessageFilter(B_MOUSE_UP, MouseUpFilter));
 	AddFilter(new BMessageFilter(B_MOUSE_DOWN, MouseDownFilter));
@@ -69,8 +68,7 @@ MagStringView::~MagStringView()
 
 
 void
-MagStringView::MouseMoved(BPoint point, uint32 transit,
-	const BMessage* message)
+MagStringView::MouseMoved(BPoint point, uint32 transit, const BMessage* message)
 {
 	if (transit == B_ENTERED_VIEW)
 		be_app->SetCursor(HS_MINUS_PLUS_HAND_CURSOR);
@@ -84,8 +82,8 @@ MagStringView::MouseMoved(BPoint point, uint32 transit,
 
 
 MagnificationView::MagnificationView()
-	: BBox("magnificationView", B_WILL_DRAW | B_FRAME_EVENTS | B_SUPPORTS_LAYOUT,
-	B_PLAIN_BORDER)
+	:
+	BBox("magnificationView", B_WILL_DRAW | B_FRAME_EVENTS | B_SUPPORTS_LAYOUT, B_PLAIN_BORDER)
 {
 	BFont font;
 	double percentValue = 1600.0;
@@ -96,14 +94,11 @@ MagnificationView::MagnificationView()
 	fSeparator = fNumberFormat.GetSeparator(B_GROUPING_SEPARATOR);
 	fPercentData.RemoveFirst(fSeparator);
 
-	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"),
-		fPercentData.String());
+	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"), fPercentData.String());
 
 	fMagStringView = new MagStringView("magStringView", fPercentString);
-	fMinusButton = new BButton("minusButton", "-",
-		new BMessage(HS_ZOOM_IMAGE_OUT));
-	fPlusButton = new BButton("plusButton", "+",
-		new BMessage(HS_ZOOM_IMAGE_IN));
+	fMinusButton = new BButton("minusButton", "-", new BMessage(HS_ZOOM_IMAGE_OUT));
+	fPlusButton = new BButton("plusButton", "+", new BMessage(HS_ZOOM_IMAGE_IN));
 
 	float button_size = font.StringWidth("XXX");
 	fMinusButton->SetExplicitMaxSize(BSize(button_size, button_size));
@@ -134,13 +129,6 @@ MagnificationView::AttachedToWindow()
 
 
 void
-MagnificationView::Draw(BRect updateRect)
-{
-	BBox::Draw(updateRect);
-}
-
-
-void
 MagnificationView::SetMagnificationLevel(float magLevel)
 {
 	double percentValue = magLevel;
@@ -150,9 +138,8 @@ MagnificationView::SetMagnificationLevel(float magLevel)
 
 	if (magLevel >= 10.0)
 		fPercentData.RemoveFirst(fSeparator);
-	
-	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"),
-		fPercentData.String());
+
+	fPercentString.SetToFormat("%s: %s", B_TRANSLATE("Zoom"), fPercentData.String());
 	fMagStringView->SetText(fPercentString);
 }
 
@@ -171,9 +158,9 @@ MagnificationView::SetTarget(const BMessenger& target)
 filter_result
 MouseUpFilter(BMessage* message, BHandler** handlers, BMessageFilter* filter)
 {
-	MagStringView* magStringView = dynamic_cast<MagStringView*> (handlers[0]);
+	MagStringView* magStringView = dynamic_cast<MagStringView*>(handlers[0]);
 	if (magStringView)
-		magStringView->SetEventMask(magStringView->EventMask() &~ B_POINTER_EVENTS);
+		magStringView->SetEventMask(magStringView->EventMask() & ~B_POINTER_EVENTS);
 
 	if (gPopUpSlider) {
 		gPopUpSlider->PostMessage(B_QUIT_REQUESTED);
@@ -188,11 +175,11 @@ MouseUpFilter(BMessage* message, BHandler** handlers, BMessageFilter* filter)
 filter_result
 MouseDownFilter(BMessage* message, BHandler** handlers, BMessageFilter* filter)
 {
-	BWindow* window = dynamic_cast<BWindow*> (filter->Looper());
+	BWindow* window = dynamic_cast<BWindow*>(filter->Looper());
 	if (window == NULL)
 		return B_DISPATCH_MESSAGE;
 
-	MagStringView* magStringView = dynamic_cast<MagStringView*> (handlers[0]);
+	MagStringView* magStringView = dynamic_cast<MagStringView*>(handlers[0]);
 	if (magStringView == NULL)
 		return B_DISPATCH_MESSAGE;
 
@@ -208,12 +195,11 @@ MouseDownFilter(BMessage* message, BHandler** handlers, BMessageFilter* filter)
 
 	magStringView->SetEventMask(B_POINTER_EVENTS);
 
-	gPopUpSlider = PopUpSlider::Instantiate(BMessenger(imageView, window),
-		new BMessage(HS_SET_MAGNIFYING_SCALE), 10, 1600);
+	gPopUpSlider = PopUpSlider::Instantiate(
+		BMessenger(imageView, window), new BMessage(HS_SET_MAGNIFYING_SCALE), 10, 1600);
 
 	// Convert nonlinear from [0.1,16] -> [10,1600]
-	float value = 1590.0 * log10((9.0 * (imageView->getMagScale() - 0.1) / 15.9)
-		+ 1.0) + 10.0;
+	float value = 1590.0 * log10((9.0 * (imageView->getMagScale() - 0.1) / 15.9) + 1.0) + 10.0;
 
 	BSlider* slider = gPopUpSlider->Slider();
 	slider->SetValue(int32(value));

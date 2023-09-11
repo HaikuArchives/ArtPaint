@@ -17,29 +17,26 @@
 
 class HSPictureButton : public BPictureButton {
 public:
-								HSPictureButton(BRect rect, BPicture* off,
-									BPicture* on, BMessage* message,
-									const char* helpMessage = NULL,
-									const char* longHelpMessage = NULL,
-									uint32 behavior = B_ONE_STATE_BUTTON,
-									uint32 mode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
-									uint32 flags = B_WILL_DRAW | B_NAVIGABLE);
-								HSPictureButton(BRect rect, BBitmap* off,
-									BBitmap* on, BMessage* message,
-									const char* helpMessage = NULL,
-									const char* longHelpMessage = NULL,
-									uint32 behavior = B_ONE_STATE_BUTTON,
-									uint32 mode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
-									uint32 flags = B_WILL_DRAW | B_NAVIGABLE);
+						HSPictureButton(BRect rect, BPicture* off,
+							BPicture* on, BMessage* message,
+							const char* helpMessage = NULL,
+							const char* longHelpMessage = NULL,
+							uint32 behavior = B_ONE_STATE_BUTTON,
+							uint32 mode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
+							uint32 flags = B_WILL_DRAW | B_NAVIGABLE);
+						HSPictureButton(BRect rect, BBitmap* off,
+							BBitmap* on, BMessage* message,
+							const char* helpMessage = NULL,
+							const char* longHelpMessage = NULL,
+							uint32 behavior = B_ONE_STATE_BUTTON,
+							uint32 mode = B_FOLLOW_LEFT | B_FOLLOW_TOP,
+							uint32 flags = B_WILL_DRAW | B_NAVIGABLE);
 
-	virtual						~HSPictureButton();
-
-	virtual	void				MouseDown(BPoint location);
-	virtual	void				MouseMoved(BPoint point, uint32 transit,
-									const BMessage* message);
+	virtual	void		MouseDown(BPoint location);
+	virtual	void		MouseMoved(BPoint point, uint32 transit, const BMessage* message);
 
 private:
-			BString				fLongHelpMessage;
+			BString		fLongHelpMessage;
 };
 
-#endif
+#endif // HS_PICTURE_BUTTON_H

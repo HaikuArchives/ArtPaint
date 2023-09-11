@@ -28,55 +28,54 @@ using ArtPaint::Interface::NumberControl;
 
 
 class TranslationManipulator : public WindowGUIManipulator {
-	BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
-	{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
+			BBitmap*	ManipulateBitmap(BBitmap* b, BStatusBar* stb)
+							{ return WindowGUIManipulator::ManipulateBitmap(b, stb); }
 
-	BBitmap*	preview_bitmap;
-	BBitmap*	copy_of_the_preview_bitmap;
+			BBitmap*	preview_bitmap;
+			BBitmap*	copy_of_the_preview_bitmap;
 
-	int32		previous_x_translation;
-	int32		previous_y_translation;
+			int32		previous_x_translation;
+			int32		previous_y_translation;
 
-	BPoint		previous_point;
+			BPoint		previous_point;
 
-	BRect		uncleared_rect;
+			BRect		uncleared_rect;
 
-	TranslationManipulatorSettings*	settings;
-	TranslationManipulatorView*		config_view;
+			TranslationManipulatorSettings*	settings;
+			TranslationManipulatorView*		config_view;
 
-	int32		last_calculated_resolution;
-	int32		lowest_available_quality;
-	int32		highest_available_quality;
+			int32		last_calculated_resolution;
+			int32		lowest_available_quality;
+			int32		highest_available_quality;
 
-	Selection*	selection;
-	bool		transform_selection_only;
+			Selection*	selection;
+			bool		transform_selection_only;
+
 public:
-	TranslationManipulator(BBitmap*);
-	~TranslationManipulator();
+						TranslationManipulator(BBitmap*);
+						~TranslationManipulator();
 
-	void			MouseDown(BPoint, uint32, BView*, bool);
+			void		MouseDown(BPoint, uint32, BView*, bool);
 
-	BBitmap*		ManipulateBitmap(ManipulatorSettings*, BBitmap *original,
-						BStatusBar*);
-	int32			PreviewBitmap(bool full_quality = FALSE,
-						BRegion* updated_region = NULL);
-	BView*			MakeConfigurationView(const BMessenger& target);
-	void			SetPreviewBitmap(BBitmap*);
-	void			Reset();
+			BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap *original, BStatusBar*);
+			int32		PreviewBitmap(bool full_quality = FALSE, BRegion* updated_region = NULL);
+			BView*		MakeConfigurationView(const BMessenger& target);
+			void		SetPreviewBitmap(BBitmap*);
+			void		Reset();
 
-	const	char*	ReturnName();
-	const	char*	ReturnHelpString();
+			const char*	ReturnName();
+			const char*	ReturnHelpString();
 
-	const	void*	ManipulatorCursor() { return HS_TRANSLATION_CURSOR; }
+			const void*	ManipulatorCursor() { return HS_TRANSLATION_CURSOR; }
 
-	ManipulatorSettings*	ReturnSettings();
-	void			SetValues(float, float);
-	void			SetSelection(Selection* new_selection)
-						{ selection = new_selection; };
-	void			SetTransformSelectionOnly(bool select_only)
-						{ transform_selection_only = select_only; }
+			ManipulatorSettings*	ReturnSettings();
+			void		SetValues(float, float);
+			void		SetSelection(Selection* new_selection)
+							{ selection = new_selection; };
+			void		SetTransformSelectionOnly(bool select_only)
+							{ transform_selection_only = select_only; }
 
-	void			UpdateSettings();
+			void		UpdateSettings();
 };
 
 
@@ -94,7 +93,6 @@ public:
 		y_translation = s->y_translation;
 	}
 
-
 	float	x_translation;
 	float	y_translation;
 };
@@ -102,23 +100,24 @@ public:
 
 class TranslationManipulatorView : public WindowGUIManipulatorView {
 public:
-										TranslationManipulatorView(
-											TranslationManipulator* manipulator,
-											const BMessenger& target);
-	virtual								~TranslationManipulatorView() {}
+							TranslationManipulatorView(
+								TranslationManipulator* manipulator,
+								const BMessenger& target);
+	virtual					~TranslationManipulatorView() {}
 
-	virtual	void						AttachedToWindow();
-	virtual	void						MessageReceived(BMessage* message);
+	virtual	void			AttachedToWindow();
+	virtual	void			MessageReceived(BMessage* message);
 
-			void						SetValues(float x, float y);
-			void						GetControlValues(float& x, float& y);
-			void						SetTarget(const BMessenger& target);
+			void			SetValues(float x, float y);
+			void			GetControlValues(float& x, float& y);
+			void			SetTarget(const BMessenger& target);
 private:
-			BMessenger					fTarget;
+			BMessenger		fTarget;
 
-			NumberControl*				fXControl;
-			NumberControl*				fYControl;
+			NumberControl*	fXControl;
+			NumberControl*	fYControl;
 			TranslationManipulator*		fManipulator;
 };
+
 
 #endif	// TRANSLATION_MANIPULATOR_H

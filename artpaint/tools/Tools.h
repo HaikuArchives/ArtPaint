@@ -30,7 +30,6 @@ enum {
 // constant here we should make also adjustments to places where tools are
 // created. We should also change the version number of the prefs-file, because
 // tool settings are stored in that file.
-
 enum drawing_tools {
 	NO_TOOL					= 999,
 	FREE_LINE_TOOL			= 1000,
@@ -52,7 +51,6 @@ enum drawing_tools {
 
 // These constants define which options a tool can have. They are combined with
 // bitwise and.
-
 enum option_constants {
 	SIZE_OPTION 				=	0x00000001,
 	PRESSURE_OPTION				=	0x00000002,
@@ -74,7 +72,6 @@ enum option_constants {
 // These constants are used when an option controller doesn't have a numerical
 // value (e.g. RadioButtons and menus). The items will have some of these
 // constants as their "values".
-
 enum controller_values {
 	HS_FREE_LINE					=	'Frln',
 	HS_RECTANGLE					=	'Reng',
@@ -96,7 +93,6 @@ enum controller_values {
 // not necessary for every tool, but it is easier to save and load. When we add
 // stuff here, we must also add corresponding cases to functions in the
 // DrawingTool-class.
-
 struct tool_settings {
 	int32	size;
 	int32	pressure;
@@ -114,4 +110,5 @@ struct tool_settings {
 	int32 	use_current_brush;
 };
 
-#endif
+
+#endif // TOOLS_H

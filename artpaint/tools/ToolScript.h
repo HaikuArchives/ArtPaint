@@ -14,26 +14,27 @@
 
 #include "Tools.h"
 
+
 class ToolScript {
 	rgb_color 		color;
 	tool_settings	settings;
 	int32			tool_type;
 
-	BPoint			*points;
+	BPoint*			points;
 	int32			point_count;
 	int32			max_points;
 
 public:
-		ToolScript(int32,tool_settings,rgb_color);
-		~ToolScript();
+					ToolScript(int32, tool_settings, rgb_color);
+					~ToolScript();
 
-void			AddPoint(BPoint);
+	void			AddPoint(BPoint);
 
-tool_settings*	ReturnSettings();
-rgb_color		ReturnColor();
-BPoint*			ReturnPoints();
-int32			PointCount();
+	tool_settings*	ReturnSettings();
+	rgb_color		ReturnColor();
+	BPoint*			ReturnPoints();
+	int32			PointCount();
 };
 
 
-#endif
+#endif // TOOL_SCRIPT_H
