@@ -208,7 +208,7 @@ ColorFloatSlider::SetResolution(uint8 resolution)
 	float maxRange = (float)max / fMult;
 
 	fMult = pow(10, resolution);
-	;
+
 	fFormat.SetToFormat("%%0.%df", resolution);
 	BString value;
 	value.SetToFormat(fFormat, (float)(fSlider->Value() / fMult));

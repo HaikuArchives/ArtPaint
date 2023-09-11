@@ -112,7 +112,7 @@
 #define HS_SHOW_TOOL_SETUP_WINDOW	'StsW'
 #define	HS_SHOW_BRUSH_STORE_WINDOW	'Sbsw'
 
-// This constantis used in the Help-menu
+// This constant is used in the Help-menu
 #define	HS_SHOW_USER_DOCUMENTATION	'Sudc'
 
 // This is the message constant that is sent from the status-view's
