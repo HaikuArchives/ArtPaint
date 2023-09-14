@@ -1,17 +1,23 @@
+v2.7
+
+* Layers: added color blend modes (hue, saturation, luminosity, color)
+* Ellipse tool:
+  - added "Enable rotation"
+
+* Many, many bug fixes and improvements
+* Updated documentation
+* Updated translations
+
+
 v2.6:
 
 * Instead of a context menu to choose a tool, use the current tool to
   draw with the background color.
-
 * New misc. setting: show brush size around mouse pointer
-
 * Added translation, rotation and scaling of selections
-
 * Added undo/redo to layer rename, alpha, blend mode, visibility, delete, merge
-
 * Use zlib to compress image data for each layer, resulting in massively smaller
   project files, esp. with many rather empty layers.
-
 * Brushes:
   - moved brush configuration into stored Brushes window
   - added current brush preview to status bar
@@ -48,9 +54,7 @@ v2.6:
   - Add X and Y spinners for position
 
 * Many bug fixes and improvements
-
 * Updated documentation
-
 * Updated translations
 
 
