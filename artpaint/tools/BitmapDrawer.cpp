@@ -329,7 +329,7 @@ BitmapDrawer::_DrawShearedEllipse(BPoint center, float width, float height, uint
 			if (anti_alias == true) {
 				float error = x - fx;
 
-                color2.word = color;
+				color2.word = color;
 
 				uint8 alpha = round((1.0 - error) * color1.bytes[3]);
 

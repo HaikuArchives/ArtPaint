@@ -144,8 +144,6 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		float brush_width_per_2;
 		float brush_height_per_2;
 		int diameter = fToolSettings.size;
-		if ((diameter % 2) == 0)
-			diameter++;
 
 		if (fToolSettings.use_current_brush == true) {
 			brush = ToolManager::Instance().GetCurrentBrush();
