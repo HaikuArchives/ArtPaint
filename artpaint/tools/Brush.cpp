@@ -193,7 +193,7 @@ Brush::make_rectangular_brush()
 
 	reserve_brush();
 	BPoint p1;
-	BPoint c = BPoint(floor(width_ / 2), floor(height_ / 2));
+	BPoint c = BPoint(ceil(width_ / 2), ceil(height_ / 2));
 	float x_distance, y_distance;
 	float x_value, y_value;
 	float value;
@@ -239,7 +239,7 @@ Brush::make_rectangular_brush()
 void
 Brush::make_elliptical_brush()
 {
-	float dimension = max_c(width_, height_) / 2.;
+	float dimension = (max_c(width_, height_) + 1.) / 2.;
 	float ratio;
 	dimension = max_c(dimension, 1.0);
 
