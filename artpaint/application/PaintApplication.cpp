@@ -147,8 +147,7 @@ PaintApplication::MessageReceived(BMessage* message)
 			PaintWindow* window = PaintWindow::CreatePaintWindow();
 			if (window)
 				window->Show();
-			break;
-		}
+		} break;
 		case HS_SHOW_IMAGE_OPEN_PANEL:
 		{
 			// issued from paint-window's menubar->"File"->"Open"->"Open Image…"
@@ -174,8 +173,7 @@ PaintApplication::MessageReceived(BMessage* message)
 
 			set_filepanel_strings(fImageOpenPanel);
 			fImageOpenPanel->Show();
-			break;
-		}
+		} break;
 		case HS_SHOW_PROJECT_OPEN_PANEL:
 		{
 			BMessage filePanelMessage(B_REFS_RECEIVED);
@@ -199,8 +197,7 @@ PaintApplication::MessageReceived(BMessage* message)
 
 			set_filepanel_strings(fProjectOpenPanel);
 			fProjectOpenPanel->Show();
-			break;
-		}
+		} break;
 		case HS_SHOW_USER_DOCUMENTATION:
 		{
 			// issued from paint-window's menubar->"ArtPaint"->"User documentation"
@@ -222,8 +219,7 @@ PaintApplication::MessageReceived(BMessage* message)
 					}
 				}
 			}
-			break;
-		}
+		} break;
 		case B_PASTE:
 		{
 			if (be_clipboard->Lock()) {
@@ -243,17 +239,14 @@ PaintApplication::MessageReceived(BMessage* message)
 				}
 				be_clipboard->Unlock();
 			}
-			break;
-		}
+		} break;
 		case B_SIMPLE_DATA:
 		case B_REFS_RECEIVED:
 		{
 			RefsReceived(message);
-			break;
-		}
+		} break;
 		default:
 			BApplication::MessageReceived(message);
-			break;
 	}
 }
 

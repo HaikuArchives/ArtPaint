@@ -466,8 +466,7 @@ HairyBrushToolConfigView::MessageReceived(BMessage* message)
 		case COLOR_AMOUNT_CHANGED:
 		{
 			Tool()->SetOption(CONTINUITY_OPTION, fColorAmount->Value());
-			break; // TODO: check since before it did fall through
-		}
+		} break; // TODO: check since before it did fall through
 		default:
 			DrawingToolConfigView::MessageReceived(message);
 	}

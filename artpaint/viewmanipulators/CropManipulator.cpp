@@ -606,11 +606,8 @@ CropManipulatorView::MessageReceived(BMessage* message)
 				fManipulator->LockAspect(TRUE);
 			else
 				fManipulator->LockAspect(FALSE);
-		}
-
-		default:
-		{
-			WindowGUIManipulatorView::MessageReceived(message);
 		} break;
+		default:
+			WindowGUIManipulatorView::MessageReceived(message);
 	}
 }
