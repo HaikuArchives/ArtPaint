@@ -130,7 +130,6 @@ class SharpnessManipulatorView : public WindowGUIManipulatorView {
 	bool		started_adjusting;
 public:
 				SharpnessManipulatorView(SharpnessManipulator*, const BMessenger&);
-				~SharpnessManipulatorView();
 
 	void		AllAttached();
 	void		AttachedToWindow();

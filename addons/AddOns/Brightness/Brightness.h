@@ -82,7 +82,6 @@ public:
 				BrightnessManipulator(BBitmap*);
 				~BrightnessManipulator();
 
-	void		MouseDown(BPoint,uint32 buttons, BView*, bool);
 	int32		PreviewBitmap(bool full_quality = FALSE, BRegion* = NULL);
 	BBitmap*	ManipulateBitmap(ManipulatorSettings*, BBitmap*, BStatusBar*);
 	void		Reset();
