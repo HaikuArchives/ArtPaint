@@ -1982,6 +1982,17 @@ ImageView::ManipulatorFinisherThread()
 			|| manipName == B_TRANSLATE("Rotate selection")
 			|| manipName == B_TRANSLATE("Scale selection")) {
 			// Add selection-change to the undo-queue.
+
+			if (gui_manipulator != NULL) {
+				ManipulatorSettings* settings = gui_manipulator->ReturnSettings();
+
+				BBitmap* new_buffer = gui_manipulator->ManipulateSelectionMap(settings);
+				delete settings;
+
+				if (new_buffer != NULL)
+					selection->ReplaceSelection(new_buffer);
+			}
+
 			if (!(undo_queue->ReturnSelectionMap() == selection->ReturnSelectionMap())) {
 				UndoEvent* new_event = undo_queue->AddUndoEvent(manipName,
 					the_image->ReturnThumbnailImage());

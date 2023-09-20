@@ -447,6 +447,124 @@ RotationManipulator::ManipulateBitmap(
 }
 
 
+BBitmap*
+RotationManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
+{
+	RotationManipulatorSettings* new_settings = cast_as(set, RotationManipulatorSettings);
+
+	if (new_settings == NULL)
+		return NULL;
+
+	if (new_settings->angle == 0)
+		return NULL;
+
+	BRect bitmap_frame;
+	if (orig_selection_map != NULL) {
+		selection->ReplaceSelection(orig_selection_map);
+		orig_selection_map->Lock();
+		bitmap_frame = orig_selection_map->Bounds();
+		orig_selection_map->Unlock();
+	}
+
+	BBitmap* selection_map = new BBitmap(selection->ReturnSelectionMap());
+	BBitmap* new_bitmap = new BBitmap(bitmap_frame, B_GRAY8);
+	if (new_bitmap->IsValid() == FALSE)
+		throw std::bad_alloc();
+
+	// We should calculate the new pixel value as weighted average from the
+	// four pixels that will be under the inverse-rotated pixel.
+	//
+	//			X X			When inverse rotated from new bitmap,
+	//			X X			the pixel will cover four pixels, each
+	//						with a different weight.
+	//
+	BPoint center = new_settings->origo;
+
+	float the_angle = new_settings->angle;
+	float sin_angle = sin(-the_angle / 360 * 2 * PI);
+	float cos_angle = cos(-the_angle / 360 * 2 * PI);
+
+	uint8* target_bits = (uint8*)new_bitmap->Bits();
+	uint8* source_bits = (uint8*)selection_map->Bits();
+	uint32 source_bpr = selection_map->BytesPerRow();
+	uint32 target_bpr = new_bitmap->BytesPerRow();
+
+	// copy the points according to angle
+	float height = new_bitmap->Bounds().Height();
+	float width = new_bitmap->Bounds().Width();
+	float left = selection_map->Bounds().left;
+	float right = selection_map->Bounds().right;
+	float top = selection_map->Bounds().top;
+	float bottom = selection_map->Bounds().bottom;
+	float center_x = center.x;
+	float center_y = center.y;
+	float source_x, source_y;
+	float y_times_sin = (-center_y) * sin_angle;
+	float y_times_cos = (-center_y) * cos_angle;
+
+	float floor_x, ceil_x, floor_y, ceil_y; // was int32 before optimization
+
+	uint8 p1, p2, p3, p4;
+
+	uint8 background = 0x00;
+
+	for (float y = 0; y <= height; y++) {
+		float x_times_sin = (-center_x) * sin_angle;
+		float x_times_cos = (-center_x) * cos_angle;
+		for (float x = 0; x <= width; x++) {
+			// rotate here around the origin
+			source_x = x_times_cos - y_times_sin;
+			source_y = x_times_sin + y_times_cos;
+			// translate back to correct position
+			source_x += center_x;
+			source_y += center_y;
+
+			floor_x = floor(source_x);
+			ceil_x = floor_x + 1;
+			floor_y = floor(source_y);
+			ceil_y = floor_y + 1;
+
+			float u = source_x - floor_x;
+			float v = source_y - floor_y;
+			// Then add the weighted sums of the four pixels.
+			if ((floor_x <= right) && (floor_y <= bottom) && (floor_x >= left)
+				&& (floor_y >= top))
+				p1 = *(source_bits + (int32)floor_x + (int32)floor_y * source_bpr);
+			else
+				p1 = background;
+
+			if ((ceil_x <= right) && (floor_y <= bottom) && (ceil_x >= left)
+				&& (floor_y >= top))
+				p2 = *(source_bits + (int32)ceil_x + (int32)floor_y * source_bpr);
+			else
+				p2 = background;
+
+			if ((floor_x <= right) && (ceil_y <= bottom) && (floor_x >= left)
+				&& (ceil_y >= top))
+				p3 = *(source_bits + (int32)floor_x + (int32)ceil_y * source_bpr);
+			else
+				p3 = background;
+
+			if ((ceil_x <= right) && (ceil_y <= bottom) && (ceil_x >= left)
+				&& (ceil_y >= top))
+				p4 = *(source_bits + (int32)ceil_x + (int32)ceil_y * source_bpr);
+			else
+				p4 = background;
+
+			*(target_bits + (int32)x + (int32)y * target_bpr) =
+				bilinear_interpolation(p1, p2, p3, p4, u, v);
+			x_times_sin += sin_angle;
+			x_times_cos += cos_angle;
+		}
+
+		y_times_sin += sin_angle;
+		y_times_cos += cos_angle;
+	}
+
+	return new_bitmap;
+}
+
+
 int32
 RotationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 {

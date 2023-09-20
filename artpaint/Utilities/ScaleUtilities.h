@@ -68,6 +68,10 @@ public:
 	static void		ScaleVertically(float width, float height, BPoint offset,
 						BBitmap* source, BBitmap* target,
 						float ratio, interpolation_type method);
+	static void		ScaleHorizontallyGray(float width, float height, BPoint offset,
+						BBitmap* source, BBitmap* target, float ratio);
+	static void		ScaleVerticallyGray(float width, float height, BPoint offset,
+						BBitmap* source, BBitmap* target, float ratio);
 };
 
 

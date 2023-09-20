@@ -119,6 +119,15 @@ inline uint32 combine_4_pixels_fixed(uint32 p1, uint32 p2, uint32 p3, uint32 p4,
 }
 
 
+inline uint8 bilinear_interpolation(uint8 p1, uint8 p2, uint8 p3, uint8 p4, float u, float v)
+{
+	float one_minus_v = 1.0 - v;
+	float one_minus_u = 1.0 - u;
+
+	return one_minus_v * (one_minus_u * p1 +  u * p2) + v * (one_minus_u * p3 + u * p4);
+}
+
+
 // Parameters u and v should be in range [0,1]
 inline uint32 bilinear_interpolation(uint32 p1, uint32 p2, uint32 p3, uint32 p4, float u, float v)
 {

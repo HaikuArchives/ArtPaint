@@ -60,6 +60,8 @@ public:
 			void		EnableWindow(bool enable) { fEnabled = enable; }
 			bool		IsWindowEnabled() { return fEnabled; }
 
+	virtual	BBitmap*	ManipulateSelectionMap(ManipulatorSettings*) { return NULL; }
+
 private:
 			bool		fEnabled;
 };
