@@ -95,6 +95,7 @@ public:
 						{ transform_selection_only = select_only; }
 
 		void		UpdateSettings();
+		BBitmap*	ManipulateSelectionMap(ManipulatorSettings*);
 };
 
 

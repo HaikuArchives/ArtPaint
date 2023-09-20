@@ -69,6 +69,18 @@ TranslationManipulator::~TranslationManipulator()
 
 
 void
+TranslationManipulator::SetSelection(Selection* new_selection)
+{
+	selection = new_selection;
+
+	if (selection != NULL && selection->IsEmpty() == false)
+		orig_selection_map = new BBitmap(selection->ReturnSelectionMap());
+	else
+		orig_selection_map = NULL;
+}
+
+
+void
 TranslationManipulator::MouseDown(BPoint point, uint32, BView*, bool first)
 {
 	if (first)
@@ -201,6 +213,75 @@ TranslationManipulator::ManipulateBitmap(
 							*(source_bits + new_x + new_y * source_bpr));
 				}
 			}
+		}
+	}
+
+	return new_bitmap;
+}
+
+
+BBitmap*
+TranslationManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
+{
+	TranslationManipulatorSettings* new_settings = cast_as(set, TranslationManipulatorSettings);
+
+	if (new_settings == NULL)
+		return NULL;
+
+	if ((new_settings->x_translation == 0) && (new_settings->y_translation == 0))
+		return NULL;
+
+	BRect bitmap_frame;
+	if (orig_selection_map != NULL) {
+		selection->ReplaceSelection(orig_selection_map);
+		orig_selection_map->Lock();
+		bitmap_frame = orig_selection_map->Bounds();
+		orig_selection_map->Unlock();
+	}
+
+	BBitmap* selection_map = selection->ReturnSelectionMap();
+	BBitmap* new_bitmap;
+
+	new_bitmap = new BBitmap(bitmap_frame, B_GRAY8);
+	if (new_bitmap->IsValid() == FALSE)
+		throw std::bad_alloc();
+
+	uint8 background = 0x00;
+
+	// This function assumes that the both bitmaps are of same size.
+	uint8* target_bits = (uint8*)new_bitmap->Bits();
+	uint8* source_bits = (uint8*)selection_map->Bits();
+	uint32 target_bpr = new_bitmap->BytesPerRow();
+	uint32 source_bpr = selection_map->BytesPerRow();
+
+	int32 width = (int32)min_c(new_bitmap->Bounds().Width() + 1, bitmap_frame.Width() + 1);
+	int32 height = (int32)min_c(new_bitmap->Bounds().Height() + 1, bitmap_frame.Height() + 1);
+
+	// We have to copy translations so that we do translation for all pixels
+	// with the same values
+	int32 x_translation_local = ((int32)new_settings->x_translation);
+	int32 y_translation_local = ((int32)new_settings->y_translation);
+
+	// First clear the target bitmap. Here the clearing of the whole bitmap is not usually
+	// necessary. Actually this loop combined with the next should only set each pixel in the
+	// bitmap exactly once.
+	for (int32 y = 0; y < height; y++) {
+		for (int32 x = 0; x < width; x++)
+			*(target_bits + x + y * target_bpr) = background;
+	}
+
+	// Copy only the points that are within the intersection of
+	// original_bitmap->Bounds() and
+	// original_bitmap->Bounds().OffsetBy(x_translation,y_translation)
+	int32 target_x_offset = max_c(0, x_translation_local);
+	int32 target_y_offset = max_c(0, y_translation_local);
+	int32 source_x_offset = max_c(0, -x_translation_local);
+	int32 source_y_offset = max_c(0, -y_translation_local);
+
+	for (int32 y = 0; y < height - abs(y_translation_local); y++) {
+		for (int32 x = 0; x < width - abs(x_translation_local); x++) {
+			*(target_bits + x + target_x_offset + (y + target_y_offset) * target_bpr)
+				= *(source_bits + x + source_x_offset + (y + source_y_offset) * source_bpr);
 		}
 	}
 

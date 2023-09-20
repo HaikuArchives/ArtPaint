@@ -160,6 +160,56 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset, BBitma
 
 
 void
+ScaleUtilities::ScaleHorizontallyGray(float width, float height, BPoint offset, BBitmap* source,
+	BBitmap* target, float ratio)
+{
+	uint8* target_bits = (uint8*)target->Bits();
+	int32 target_bpr = target->BytesPerRow();
+	uint8* source_bits = (uint8*)source->Bits();
+	int32 source_bpr = source->BytesPerRow();
+
+	for (int32 y = 0; y < (int32)ceil(height + 0.5); y++) {
+		uint8* src_bits = source_bits + (int32)offset.x + (y + (int32)offset.y) * source_bpr;
+
+		for (int32 x = 0; x < (int32)width; x++) {
+			int32 low = floor(ratio * x);
+			int32 high = ceil(ratio * x);
+			float weight = ratio * x - low;
+
+			*(target_bits + x + y * target_bpr)
+				= linear_interpolation(*(src_bits + low),
+					*(src_bits + high), weight);
+		}
+	}
+}
+
+
+void
+ScaleUtilities::ScaleVerticallyGray(float width, float height, BPoint offset, BBitmap* source,
+	BBitmap* target, float ratio)
+{
+	uint8* target_bits = (uint8*)target->Bits();
+	int32 target_bpr = target->BytesPerRow();
+	uint8* source_bits = (uint8*)source->Bits();
+	int32 source_bpr = source->BytesPerRow();
+
+	for (int32 y = 0; y <= (int32)height; y++) {
+		int32 low = floor(ratio * y);
+		int32 high = ceil(ratio * y);
+		float weight = (ratio * y) - low;
+		uint8* src_bits_low = source_bits + (int32)offset.x + (low + (int32)ceil(offset.y + 0.5)) * source_bpr;
+		uint8* src_bits_high = source_bits + (int32)offset.x + (high + (int32)ceil(offset.y + 0.5)) * source_bpr;
+
+		for (int32 x = 0; x <= width; x++) {
+			*(target_bits + x + y * target_bpr)
+				= linear_interpolation(*(src_bits_low + x),
+					*(src_bits_high + x), weight);
+		}
+	}
+}
+
+
+void
 ScaleUtilities::MoveGrabbers(BPoint point, BPoint& previous, float& left, float& top, float& right,
 	float& bottom, float aspect_ratio, bool& move_left, bool& move_top, bool& move_right,
 	bool& move_bottom, bool& move_all, bool first_click, bool lock_aspect)

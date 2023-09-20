@@ -134,6 +134,7 @@ public:
 
 	void		SetInterpolationMethod(interpolation_type newMethod) { method = newMethod; }
 	void		UpdateSettings();
+	BBitmap*	ManipulateSelectionMap(ManipulatorSettings*);
 };
 
 
