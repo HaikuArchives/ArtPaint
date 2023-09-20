@@ -17,7 +17,6 @@ class OilManipulator : public Manipulator {
 
 public:
 				OilManipulator(BBitmap*);
-				~OilManipulator();
 
 	BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 	const char*	ReturnHelpString();

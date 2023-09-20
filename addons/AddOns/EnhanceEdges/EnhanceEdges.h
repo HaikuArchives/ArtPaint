@@ -23,7 +23,6 @@ static	int32		thread_entry(void*);
 
 public:
 					EnhanceEdgesManipulator();
-					~EnhanceEdgesManipulator();
 
 		BBitmap*	ManipulateBitmap(BBitmap*, BStatusBar*);
 		const char*	ReturnHelpString();
