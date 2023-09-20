@@ -264,9 +264,7 @@ BitmapDrawer::_DrawShearedEllipse(BPoint center, float width, float height, uint
 {
 	if (shear_dx != 0) {
 		float a_squared = width * width;
-		float four_a_squared = a_squared * 4.;
 		float b_squared = height * height;
-		float four_b_squared = b_squared * 4.;
 
 		float x = 0;
 		float y = height;
@@ -397,7 +395,6 @@ BitmapDrawer::_FillShearedColumn(int32 x, int32 y, int32 dx, int32 dy0,
 	float shear_delta = ((float)dx * shear_dy) / shear_dx;
 	int32 x0 = x + dx;
 	int32 y0 = y + dy0 + floor(shear_delta);
-	int32 x1 = x + dx;
 	int32 y1 = y + dy1 + floor(shear_delta);
 
 	if (x0 < 0)

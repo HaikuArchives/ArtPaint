@@ -85,7 +85,6 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	reading_coordinates = true;
 
 	BPoint prev_point;
-	BWindow* window = view->Window();
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 	BBitmap* srcBuffer = new (std::nothrow) BBitmap(bitmap);
 	if (srcBuffer == NULL)

@@ -191,7 +191,7 @@ EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		|| (reading_coordinates == true)) {
 		if ((status_of_read == B_OK) && (prev_point != point)) {
 			the_script->AddPoint(point);
-			if (fToolSettings.use_current_brush == true) {
+			if (fToolSettings.use_current_brush == true && brush != NULL) {
 				brush->draw(tmpBuffer,
 					BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2), selection);
 				brush->draw_line(tmpBuffer, point, prev_point, selection);

@@ -114,6 +114,8 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		BitmapDrawer* drawer = new BitmapDrawer(tmpBuffer);
 		if (drawer == NULL) {
 			delete the_script;
+			delete srcBuffer;
+			delete tmpBuffer;
 
 			return NULL;
 		}
@@ -235,7 +237,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 
 			BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word, &updated_rect);
 
-			if (fToolSettings.use_current_brush == true)
+			if (fToolSettings.use_current_brush == true && brush != NULL)
 				brush->draw_line(tmpBuffer, original_point, point, selection);
 			else {
 				if (diameter != 1 && fToolSettings.mode == B_CONTROL_OFF) {
@@ -391,6 +393,9 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		delete imageUpdater;
 
 		delete drawer;
+
+		delete srcBuffer;
+		delete tmpBuffer;
 
 		the_script->AddPoint(original_point);
 		the_script->AddPoint(point);

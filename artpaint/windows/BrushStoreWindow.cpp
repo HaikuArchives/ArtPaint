@@ -102,8 +102,6 @@ BrushStoreWindow::BrushStoreWindow()
 	scroll_view->SetExplicitMinSize(BSize(BRUSH_VAULT_WIDTH * 3 + scroll_width + 2, B_SIZE_UNSET));
 
 	BFont font;
-	float brush_editor_width = font.StringWidth(B_TRANSLATE("Reset Brush"))
-		+ font.StringWidth(B_TRANSLATE("Store Brush")) + font.StringWidth(B_TRANSLATE("Rectangle"));
 	font_height fHeight;
 	font.GetHeight(&fHeight);
 	float brush_editor_height = (fHeight.ascent + fHeight.descent + fHeight.leading) * 15;
@@ -227,7 +225,6 @@ BrushStoreWindow::setFeel(window_feel feel)
 	if (brush_window != NULL) {
 		brush_window->Lock();
 		brush_window->SetFeel(feel);
-		float total_height = brush_window->store_view->Bounds().Height();
 		if (feel == B_NORMAL_WINDOW_FEEL)
 			brush_window->SetLook(B_TITLED_WINDOW_LOOK);
 		else

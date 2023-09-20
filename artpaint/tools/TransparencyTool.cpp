@@ -73,7 +73,6 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	resume_thread(coordinate_reader);
 	reading_coordinates = true;
 
-	BWindow* window = view->Window();
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
 	ToolScript* the_script

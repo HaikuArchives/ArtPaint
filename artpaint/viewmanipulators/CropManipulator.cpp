@@ -207,7 +207,7 @@ CropManipulator::ManipulateBitmap(
 	float width = right - left - 1;
 	float height = bottom - top - 1;
 
-	if (width == original->Bounds().Width() 
+	if (width == original->Bounds().Width()
 		&& height == original->Bounds().Height()
 		&& top == original->Bounds().top
 		&& left == original->Bounds().left)
@@ -584,6 +584,8 @@ CropManipulatorView::MessageReceived(BMessage* message)
 					fBottomCrop->SetValue(int32(rightValue / aspect));
 				else if ((int32)settings->bottom != bottomValue)
 					fRightCrop->SetValue(int32(bottomValue * aspect));
+
+				delete settings;
 			}
 
 			fManipulator->SetValues(

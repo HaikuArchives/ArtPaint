@@ -116,6 +116,9 @@ Brush::ModifyBrush(brush_info& info)
 			break;
 	}
 
+	if (brush_bmap == NULL)
+		return;
+
 	maximum_width = max_c(height_, width_);
 	maximum_height = maximum_width;
 
@@ -393,7 +396,7 @@ Brush::PreviewBrush(BBitmap* preview_bitmap)
 
 	uint32* bits = (uint32*)preview_bitmap->Bits();
 	int32 bpr = preview_bitmap->BytesPerRow() / 4;
-	int32 bits_length = preview_bitmap->BitsLength() / 4;
+
 	// Here we clear the bitmap.
 	union color_conversion color;
 
@@ -534,7 +537,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, Selection* selection
 	else
 		sign_y = 0;
 
-	int32 last_x, last_y;
 	int32 new_x, new_y;
 	BPoint last_point;
 
@@ -547,8 +549,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, Selection* selection
 			start.y += sign_y * y_add;
 			new_x = (int32)round(start.x);
 			new_y = (int32)round(start.y);
-			last_x = (int32)round(last_point.x);
-			last_y = (int32)round(last_point.y);
 
 			this->draw(
 				buffer, BPoint(new_x - brush_width_per_2, new_y - brush_height_per_2), selection);
@@ -562,8 +562,6 @@ Brush::draw_line(BBitmap* buffer, BPoint start, BPoint end, Selection* selection
 			start.x += sign_x * x_add;
 			new_x = (int32)round(start.x);
 			new_y = (int32)round(start.y);
-			last_x = (int32)round(last_point.x);
-			last_y = (int32)round(last_point.y);
 
 			this->draw(
 				buffer, BPoint(new_x - brush_width_per_2, new_y - brush_height_per_2), selection);

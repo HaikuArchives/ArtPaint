@@ -79,8 +79,6 @@ ScaleCanvasManipulator::ManipulateBitmap(
 	if (new_settings == NULL)
 		return NULL;
 
-	BBitmap* final_bitmap = NULL;
-
 	BRect bounds = original->Bounds();
 
 	if (bounds.IsValid() == FALSE)
@@ -93,10 +91,8 @@ ScaleCanvasManipulator::ManipulateBitmap(
 	background.bytes[2] = 0xFF;
 	background.bytes[3] = 0x00;
 
-	if (original == preview_bitmap) {
-		final_bitmap = original;
+	if (original == preview_bitmap)
 		original = copy_of_the_preview_bitmap;
-	}
 
 	uint32* source_bits;
 	uint32* target_bits;
@@ -136,7 +132,6 @@ ScaleCanvasManipulator::ManipulateBitmap(
 		float accumulation = 0;
 		int32 left = (int32)bounds.left;
 		int32 top = (int32)bounds.top;
-		int32 right = left + new_width - 1;
 		int32 bottom = (int32)bounds.bottom;
 
 		for (int32 y = 0; y < starting_height; y++) {
@@ -174,7 +169,6 @@ ScaleCanvasManipulator::ManipulateBitmap(
 		target_bits = (uint32*)scale_y_bitmap->Bits();
 		int32 target_bpr = scale_y_bitmap->BytesPerRow() / 4;
 		source_bits = (uint32*)scale_x_bitmap->Bits();
-		int32 source_bpr = scale_x_bitmap->BytesPerRow() / 4;
 
 		for (int32 y = 0; y < new_height; y++) {
 			for (int32 x = 0; x < new_width; x++)
@@ -184,7 +178,6 @@ ScaleCanvasManipulator::ManipulateBitmap(
 		int32 top = (int32)bounds.top;
 		int32 left = (int32)bounds.left;
 		int32 bottom = (int32)scale_y_bitmap->Bounds().bottom;
-		int32 right = (int32)scale_y_bitmap->Bounds().right;
 
 		if (scale_x_bitmap != original) {
 			left = 0;
@@ -270,7 +263,6 @@ ScaleCanvasManipulator::PreviewBitmap(bool, BRegion* region)
 	for (int32 y = 0; y <= preview_height; y++) {
 		int32 adj_y = y + settings->top;
 		int32 source_y = (int32)floor(y * height_coeff);
-		int32 y_times_bpr = y * bpr;
 		int32 y_adj_times_bpr = adj_y * bpr;
 		int32 source_y_times_bpr = source_y * bpr;
 		if (adj_y < 0)
