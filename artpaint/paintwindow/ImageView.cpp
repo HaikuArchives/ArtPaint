@@ -514,7 +514,6 @@ ImageView::MessageReceived(BMessage* message)
 				new_event->SetLayerData(changed_layer);
 
 			changed_layer->SetName(name);
-			name = changed_layer->ReturnLayerName();
 
 			the_image->Render();
 			Invalidate();
@@ -564,7 +563,6 @@ ImageView::MessageReceived(BMessage* message)
 			Layer* changed_layer;
 			message->FindInt32("layer_id", &changed_layer_id);
 			message->FindPointer("layer_pointer", (void**)&changed_layer);
-			bool visibility = changed_layer->IsVisible();
 
 			UndoEvent* new_event = undo_queue->AddUndoEvent(
 				B_TRANSLATE("Layer visibility"), the_image->ReturnThumbnailImage());
@@ -1273,7 +1271,7 @@ ImageView::DrawBrush(BPoint where)
 					StrokePolygon(&poly);
 				}
 
-				delete shapes;
+				delete[] shapes;
 			}
 		}
 		SetDrawingMode(old_mode);
@@ -2099,6 +2097,7 @@ ImageView::ManipulatorFinisherThread()
 	if ((new_event != NULL) && (new_event->IsEmpty() == TRUE)) {
 		undo_queue->RemoveEvent(new_event);
 		delete new_event;
+		new_event = NULL;
 	}
 
 	the_image->SetImageSize();
@@ -2198,7 +2197,6 @@ ImageView::Undo()
 					BString new_name(layer_data->ReturnLayerName());
 					float new_transparency = layer_data->GetTransparency();
 					uint8 new_blend_mode = layer_data->GetBlendMode();
-					bool new_visibility = layer_data->IsVisible();
 
 					active_layer->ActivateLayer(true);
 					the_image->ChangeActiveLayer(active_layer, 0);
@@ -2285,7 +2283,6 @@ ImageView::Redo()
 					BString new_name(layer_data->ReturnLayerName());
 					float new_transparency = layer_data->GetTransparency();
 					uint8 new_blend_mode = layer_data->GetBlendMode();
-					bool new_visibility = layer_data->IsVisible();
 
 					active_layer->ActivateLayer(true);
 					the_image->ChangeActiveLayer(active_layer, 0);

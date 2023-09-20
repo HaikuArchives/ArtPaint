@@ -1324,14 +1324,10 @@ Image::DoRender(BRect area, bool bg)
 	}
 
 	// Then mix each layer over the previous ones.
-	const uint32* FixedAlphaTable;
-
 	while (layer_number < layer_count) {
 		layer = (Layer*)layer_list->ItemAt(layer_number);
 
 		if (layer->IsVisible()) {
-			FixedAlphaTable = layer->ReturnFixedAlphaTable();
-
 			srl = layer->Bitmap()->BytesPerRow() / 4;
 			s_start_x = d_start_x;
 			s_start_y = d_start_y;

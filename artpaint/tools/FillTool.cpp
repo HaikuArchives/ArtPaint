@@ -585,7 +585,11 @@ FillTool::GradientFill(
 		view->Sync();
 		window->Unlock();
 	}
+
 	delete drawer;
+	delete srcBuffer;
+	delete tmpBuffer;
+
 	return new_point;
 }
 
@@ -986,7 +990,6 @@ FillTool::FillGradientConic(BitmapDrawer* drawer, BBitmap* binary_map, BPoint st
 	float dx = (end.x - start.x);
 	float dy = (end.y - start.y);
 
-	float total_dist = sqrt(pow(dx, 2) + pow(dy, 2));
 	float perp_angle = M_PI / 2;
 	if (dx != 0)
 		perp_angle = atan(-dy / dx);

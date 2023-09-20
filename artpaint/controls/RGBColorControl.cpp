@@ -50,7 +50,7 @@ RGBColorControl::MessageReceived(BMessage* message)
 			if (message->HasInt32("modifiers")) {
 				int32 modifiers = message->FindInt32("modifiers");
 				if (modifiers & B_SHIFT_KEY) {
-					float value;
+					float value = slider4->Value();
 
 					if (message->what == SLIDER1_CHANGED)
 						value = slider1->Value();

@@ -1015,9 +1015,9 @@ ColorPaletteWindow::showPaletteWindow(BMessage* msg)
 			ColorSet::currentSet()->setCurrentColorIndex(color_index);
 		}
 
-		ColorPaletteWindow* window = new ColorPaletteWindow(frame, mode);
+		palette_window = new ColorPaletteWindow(frame, mode);
 		for (int32 i = 0; i < master_window_list->CountItems(); ++i)
-			((BWindow*)master_window_list->ItemAt(i))->AddToSubset(window);
+			((BWindow*)master_window_list->ItemAt(i))->AddToSubset(palette_window);
 	} else {
 		if (palette_window->Lock()) {
 			palette_window->SetWorkspaces(B_CURRENT_WORKSPACE);

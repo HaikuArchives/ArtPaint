@@ -165,7 +165,6 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 					// Here we should rotate the polygon
 					window->Lock();
 					if (new_angle != prev_angle) {
-						float scale = view->getMagScale();
 						BRect eraseRect(0, 0, 1, 1);
 						float max_dim = ceil(max_c(new_rect.Width(), new_rect.Height()) / 2.);
 

@@ -360,7 +360,8 @@ IntelligentPathFinder::dp_thread_function()
 								uint16 previous_cost = ReturnTotalCost(x + dx, y + dy);
 								if ((previous_cost > 0) && (temp_cost < previous_cost))
 									active_point_list->RemovePoint(x + dx, y + dy, previous_cost);
-								if ((previous_cost == 0) || (temp_cost < previous_cost)) {
+								if (((previous_cost == 0) || (temp_cost < previous_cost))
+									&&  (x >= 0 && y >= 0)) {
 									SetTotalCost(x + dx, y + dy, temp_cost);
 									SetNextPointInPath(x + dx, y + dy, x, y);
 									active_point_list->InsertPoint(x + dx, y + dy, temp_cost);

@@ -160,8 +160,6 @@ ColorSelectorView::Draw(BRect area)
 	rgb1.alpha = rgb2.alpha = 0xFF;
 	color1 = RGBColorToBGRA(rgb1);
 	color2 = RGBColorToBGRA(rgb2);
-	color1 = RGBColorToBGRA(rgb1);
-	color2 = RGBColorToBGRA(rgb2);
 
 	if (SettingsServer* server = SettingsServer::Instance()) {
 		BMessage settings;
