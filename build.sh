@@ -127,7 +127,7 @@ case "$action" in
 		;;
 
 	debug)
-		debug="-e DEBUGGER=TRUE"
+		debug="-e DEBUGGER=TRUE COMPILER_FLAGS=-gdwarf-3"
 		debug_suffix="_debug"
 		echo "DEBUG Build!"
 		;;&
