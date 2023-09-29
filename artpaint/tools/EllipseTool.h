@@ -22,6 +22,14 @@ class ImageView;
 class ToolScript;
 
 
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
+
+
 class EllipseTool : public DrawingTool, public ToolEventAdapter {
 public:
 								EllipseTool();
@@ -41,6 +49,7 @@ public:
 	virtual						~EllipseToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
+	virtual void				MessageReceived(BMessage* message);
 
 private:
 			BCheckBox*			fFillEllipse;
@@ -48,6 +57,7 @@ private:
 			BRadioButton*		fCenter2Corner;
 			BCheckBox*			fAntiAlias;
 			BCheckBox*          fRotation;
+			NumberSliderControl* fLineWidth;
 };
 
 

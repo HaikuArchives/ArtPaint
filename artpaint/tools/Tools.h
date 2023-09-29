@@ -23,7 +23,7 @@ enum {
 };
 
 
-#define	TOOL_SETTINGS_STRUCT_VERSION	0x00000002
+#define	TOOL_SETTINGS_STRUCT_VERSION	0x00000003
 
 
 // Here is enumeration that defines the drawing tool constants. After adding a
@@ -65,7 +65,8 @@ enum option_constants {
 	CONTINUITY_OPTION			=	0x00000800,		// B_CONTROL_ON means continuous execution of tool.
 	TOLERANCE_OPTION			=	0x00001000,
 	TRANSPARENCY_OPTION			=	0x00002000,
-	USE_BRUSH_OPTION			= 	0x00004000
+	USE_BRUSH_OPTION			= 	0x00004000,
+	WIDTH_OPTION				=	0x00008000
 };
 
 
@@ -108,6 +109,7 @@ struct tool_settings {
 	int32	tolerance;
 	int32	transparency;
 	int32 	use_current_brush;
+	int32	width;
 };
 
 
