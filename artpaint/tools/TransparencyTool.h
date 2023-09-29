@@ -40,9 +40,6 @@ public:
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
 private:
-			int32				read_coordinates();
-	static	int32				CoordinateReader(void*);
-
 			bool				reading_coordinates;
 
 			ImageView*			image_view;

@@ -14,6 +14,7 @@
 
 #include "Brush.h"
 #include "CoordinateQueue.h"
+#include "CoordinateReader.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
@@ -63,14 +64,11 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-	coordinate_queue = new (std::nothrow) CoordinateQueue();
-	if (coordinate_queue == NULL)
-		return NULL;
-
 	image_view = view;
-	thread_id coordinate_reader
-		= spawn_thread(CoordinateReader, "read coordinates", B_NORMAL_PRIORITY, this);
-	resume_thread(coordinate_reader);
+	CoordinateReader* coordinate_reader
+		= new (std::nothrow) CoordinateReader(view, NO_INTERPOLATION, false);
+	if (coordinate_reader == NULL)
+		return NULL;
 	reading_coordinates = true;
 
 	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
@@ -126,77 +124,74 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	status_t status_of_read;
 
-	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
-		|| (reading_coordinates == true)) {
-		if ((status_of_read == B_OK)) {
-			if (selection == NULL || selection->IsEmpty() == true
-				|| selection->ContainsPoint(point)) {
+	while (coordinate_reader->GetPoint(point) == B_OK) {
+		if (selection == NULL || selection->IsEmpty() == true
+			|| selection->ContainsPoint(point)) {
 
-				the_script->AddPoint(point);
+			the_script->AddPoint(point);
 
-				int32 x_dist, y_sqr;
+			int32 x_dist, y_sqr;
 
-				rc = BRect(floor(point.x - half_width), floor(point.y - half_height),
-					ceil(point.x + half_width), ceil(point.y + half_height));
-				rc = rc & bounds;
+			rc = BRect(floor(point.x - half_width), floor(point.y - half_height),
+				ceil(point.x + half_width), ceil(point.y + half_height));
+			rc = rc & bounds;
 
-				int32 width = rc.IntegerWidth();
-				int32 height = rc.IntegerHeight();
-				if (fToolSettings.use_current_brush == true) {
-					width -= 1;
-					height -= 1;
-				}
+			int32 width = rc.IntegerWidth();
+			int32 height = rc.IntegerHeight();
+			if (fToolSettings.use_current_brush == true) {
+				width -= 1;
+				height -= 1;
+			}
 
-				for (int32 y = 0; y < height + 1; y++) {
-					y_sqr = (int32)(point.y - rc.top - y);
-					y_sqr *= y_sqr;
-					int32 real_y = (int32)(rc.top + y);
-					int32 real_x;
-					for (int32 x = 0; x < width + 1; x++) {
-						x_dist = (int32)(point.x - rc.left - x);
-						real_x = (int32)(rc.left + x);
-						float brush_val = 1.0;
-						if (fToolSettings.use_current_brush == true) {
-							union color_conversion brush_color;
-							brush_color.word = *(brush_bits + x + y * brush_bpr);
-							brush_val = brush_color.bytes[3];
-						}
-						if ((fToolSettings.use_current_brush == true && brush_val > 0.0)
-							|| (fToolSettings.use_current_brush == false
-								&& sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
-							color.word = *(bits_origin + real_y * bpr + real_x);
-							if (selection == NULL || selection->IsEmpty() == true
-								|| selection->ContainsPoint(real_x, real_y)) {
+			for (int32 y = 0; y < height + 1; y++) {
+				y_sqr = (int32)(point.y - rc.top - y);
+				y_sqr *= y_sqr;
+				int32 real_y = (int32)(rc.top + y);
+				int32 real_x;
+				for (int32 x = 0; x < width + 1; x++) {
+					x_dist = (int32)(point.x - rc.left - x);
+					real_x = (int32)(rc.left + x);
+					float brush_val = 1.0;
+					if (fToolSettings.use_current_brush == true) {
+						union color_conversion brush_color;
+						brush_color.word = *(brush_bits + x + y * brush_bpr);
+						brush_val = brush_color.bytes[3];
+					}
+					if ((fToolSettings.use_current_brush == true && brush_val > 0.0)
+						|| (fToolSettings.use_current_brush == false
+							&& sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
+						color.word = *(bits_origin + real_y * bpr + real_x);
+						if (selection == NULL || selection->IsEmpty() == true
+							|| selection->ContainsPoint(real_x, real_y)) {
 
-								uint8 diff = fabs(color.bytes[3] - transparency_value);
-								uint8 step = (uint8)(ceil(diff * pressure * brush_val / 2));
+							uint8 diff = fabs(color.bytes[3] - transparency_value);
+							uint8 step = (uint8)(ceil(diff * pressure * brush_val / 2));
 
-								if (color.bytes[3] < transparency_value) {
-									color.bytes[3]
-										= (uint8)min_c(color.bytes[3] + step, transparency_value);
-									*(bits_origin + real_y * bpr + real_x) = color.word;
-								} else if (color.bytes[3] > transparency_value) {
-									color.bytes[3]
-										= (uint8)max_c(color.bytes[3] - step, transparency_value);
-									*(bits_origin + real_y * bpr + real_x) = color.word;
-								}
+							if (color.bytes[3] < transparency_value) {
+								color.bytes[3]
+									= (uint8)min_c(color.bytes[3] + step, transparency_value);
+								*(bits_origin + real_y * bpr + real_x) = color.word;
+							} else if (color.bytes[3] > transparency_value) {
+								color.bytes[3]
+									= (uint8)max_c(color.bytes[3] - step, transparency_value);
+								*(bits_origin + real_y * bpr + real_x) = color.word;
 							}
 						}
 					}
 				}
-
-				imageUpdater->AddRect(rc);
-
-				SetLastUpdatedRect(LastUpdatedRect() | rc);
-				snooze(20 * 1000);
 			}
+
+			imageUpdater->AddRect(rc);
+
+			SetLastUpdatedRect(LastUpdatedRect() | rc);
+			snooze(20 * 1000);
 		}
 	}
 
 	imageUpdater->ForceUpdate();
 	delete imageUpdater;
 
-	delete coordinate_queue;
+	delete coordinate_reader;
 
 	return the_script;
 }
@@ -230,42 +225,6 @@ TransparencyTool::HelpString(bool isInUse) const
 					: B_TRANSLATE("Transparency tool"));
 }
 
-
-int32
-TransparencyTool::CoordinateReader(void* data)
-{
-	TransparencyTool* this_pointer = (TransparencyTool*)data;
-	return this_pointer->read_coordinates();
-}
-
-
-int32
-TransparencyTool::read_coordinates()
-{
-	reading_coordinates = true;
-	uint32 buttons;
-	BPoint point, prev_point;
-	BPoint view_point;
-	image_view->Window()->Lock();
-	image_view->getCoords(&point, &buttons, &view_point);
-	image_view->MovePenTo(view_point);
-	image_view->Window()->Unlock();
-	prev_point = point + BPoint(1, 1);
-
-	while (buttons) {
-		image_view->Window()->Lock();
-		if (point != prev_point) {
-			coordinate_queue->Put(point);
-			prev_point = point;
-		}
-		image_view->getCoords(&point, &buttons, &view_point);
-		image_view->Window()->Unlock();
-		snooze(20 * 1000);
-	}
-
-	reading_coordinates = false;
-	return B_OK;
-}
 
 // #pragma mark -- TransparencyToolConfigView
 

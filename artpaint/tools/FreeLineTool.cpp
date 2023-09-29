@@ -16,6 +16,7 @@
 #include "BitmapUtilities.h"
 #include "Brush.h"
 #include "CoordinateQueue.h"
+#include "CoordinateReader.h"
 #include "Cursors.h"
 #include "Image.h"
 #include "ImageUpdater.h"
@@ -63,40 +64,36 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	while (LastUpdatedRect().IsValid())
 		snooze(50000);
 
-	coordinate_queue = new (std::nothrow) CoordinateQueue();
-	if (coordinate_queue == NULL)
-		return NULL;
-
 	image_view = view;
-	thread_id coordinate_reader
-		= spawn_thread(CoordinateReader, "read coordinates", B_NORMAL_PRIORITY, this);
-	resume_thread(coordinate_reader);
-	reading_coordinates = true;
+	CoordinateReader* coordinate_reader
+		= new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false);
+	if (coordinate_reader == NULL)
+		return NULL;
 
 	ToolScript* the_script = new (std::nothrow)
 		ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
 	if (the_script == NULL) {
-		delete coordinate_queue;
+		delete coordinate_reader;
 
 		return NULL;
 	}
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	if (buffer == NULL) {
-		delete coordinate_queue;
+		delete coordinate_reader;
 		delete the_script;
 
 		return NULL;
 	}
 	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
 	if (srcBuffer == NULL) {
-		delete coordinate_queue;
+		delete coordinate_reader;
 		delete the_script;
 
 		return NULL;
 	}
 	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
 	if (tmpBuffer == NULL) {
-		delete coordinate_queue;
+		delete coordinate_reader;
 		delete the_script;
 		delete srcBuffer;
 		return NULL;
@@ -111,7 +108,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	Selection* selection = view->GetSelection();
 	BitmapDrawer* drawer = new (std::nothrow) BitmapDrawer(tmpBuffer);
 	if (drawer == NULL) {
-		delete coordinate_queue;
+		delete coordinate_reader;
 		delete the_script;
 		delete srcBuffer;
 		delete tmpBuffer;
@@ -126,7 +123,6 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	prev_point = point;
 	BRect updated_rect;
-	status_t status_of_read;
 	Brush* brush;
 	bool delete_brush = false;
 
@@ -177,9 +173,8 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	ImageUpdater* imageUpdater = new ImageUpdater(view, 2000);
 	imageUpdater->AddRect(updated_rect);
 
-	while (((status_of_read = coordinate_queue->Get(point)) == B_OK)
-		|| (reading_coordinates == true)) {
-		if ((status_of_read == B_OK) && (prev_point != point)) {
+	while (coordinate_reader->GetPoint(point) == B_OK) {
+		if (prev_point != point) {
 			the_script->AddPoint(point);
 			brush->draw(tmpBuffer,
 				BPoint(point.x - brush_width_per_2, point.y - brush_height_per_2), selection);
@@ -214,7 +209,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	delete tmpBuffer;
 
 	delete drawer;
-	delete coordinate_queue;
+	delete coordinate_reader;
 
 	if (delete_brush == true)
 		delete brush;
@@ -248,44 +243,6 @@ const char*
 FreeLineTool::HelpString(bool isInUse) const
 {
 	return (isInUse ? B_TRANSLATE("Drawing a freehand line.") : B_TRANSLATE("Freehand line tool"));
-}
-
-
-int32
-FreeLineTool::CoordinateReader(void* data)
-{
-	FreeLineTool* this_pointer = (FreeLineTool*)data;
-	return this_pointer->read_coordinates();
-}
-
-
-int32
-FreeLineTool::read_coordinates()
-{
-	reading_coordinates = true;
-	uint32 buttons;
-	BPoint point, prev_point;
-	BPoint view_point;
-	image_view->Window()->Lock();
-	image_view->getCoords(&point, &buttons, &view_point);
-	image_view->MovePenTo(view_point);
-	image_view->Window()->Unlock();
-	prev_point = point + BPoint(1, 1);
-
-	while (buttons) {
-		image_view->Window()->Lock();
-		if (point != prev_point) {
-			coordinate_queue->Put(point);
-			image_view->StrokeLine(view_point);
-			prev_point = point;
-		}
-		image_view->getCoords(&point, &buttons, &view_point);
-		image_view->Window()->Unlock();
-		snooze(20 * 1000);
-	}
-
-	reading_coordinates = false;
-	return B_OK;
 }
 
 
