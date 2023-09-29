@@ -324,13 +324,15 @@ Selection::ReplaceSelection(BBitmap* bitmap)
 	uint32 new_bpr = bitmap->BytesPerRow();
 	uint8* new_bits = (uint8*)bitmap->Bits();
 
-	int32 width = min_c(selection_bpr, new_bpr);
-	int32 height
-		= min_c(image_bounds.IntegerHeight(), bitmap->Bounds().IntegerHeight());
+	int32 width = selection_bpr;
+	int32 height = image_bounds.IntegerHeight();
 	for (int32 y = 0; y <= height; ++y) {
 		for (int32 x = 0; x < width; ++x) {
 			uint8* ptr = selection_bits + x + y * selection_bpr;
-			*ptr = *(new_bits + x + y * new_bpr);
+			if (x > new_bpr || y > bitmap->Bounds().IntegerHeight())
+				*ptr = 0;
+			else
+				*ptr = *(new_bits + x + y * new_bpr);
 		}
 	}
 
