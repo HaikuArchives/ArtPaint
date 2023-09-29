@@ -13,9 +13,12 @@
 #include "EllipseTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "Cursors.h"
 #include "Image.h"
+#include "ImageUpdater.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "Selection.h"
 #include "ToolScript.h"
@@ -24,6 +27,7 @@
 
 #include <Catalog.h>
 #include <CheckBox.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
 #include <SeparatorView.h>
@@ -40,14 +44,15 @@ EllipseTool::EllipseTool()
 {
 
 	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION | ANTI_ALIASING_LEVEL_OPTION
-	               | ROTATION_ENABLED_OPTION;
-	fOptionsCount = 5;
+	               | ROTATION_ENABLED_OPTION | WIDTH_OPTION;
+	fOptionsCount = 6;
 
 	SetOption(FILL_ENABLED_OPTION, B_CONTROL_OFF);
 	SetOption(SIZE_OPTION, 1);
 	SetOption(SHAPE_OPTION, HS_CENTER_TO_CORNER);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION, B_CONTROL_OFF);
 	SetOption(ROTATION_ENABLED_OPTION, B_CONTROL_OFF);
+	SetOption(WIDTH_OPTION, 1);
 }
 
 
@@ -60,11 +65,53 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	BWindow* window = view->Window();
 	drawing_mode old_mode;
-	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script
-		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script = new (std::nothrow)
+		ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	if (the_script == NULL) {
+		return NULL;
+	}
+	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	if (buffer == NULL) {
+		delete the_script;
+
+		return NULL;
+	}
+	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
+	if (srcBuffer == NULL) {
+		delete the_script;
+
+		return NULL;
+	}
+	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
+	if (tmpBuffer == NULL) {
+		delete the_script;
+		delete srcBuffer;
+		return NULL;
+	}
+	union color_conversion clear_color, tmp_draw_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x00;
+	tmp_draw_color.word = 0xFFFFFFFF;
+
+	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 	Selection* selection = view->GetSelection();
+	BitmapDrawer *drawer = new BitmapDrawer(tmpBuffer);
+	ImageUpdater* imageUpdater = new ImageUpdater(view, 2000);
+
+	bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
+	bool use_anti_aliasing = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
+
+	int32 width = GetCurrentValue(WIDTH_OPTION);
+
+	if (use_fill == false && width > 1)
+		use_fill = true;
+	else if (use_fill == true)
+		width = 0;
+
+	float view_width = width * view->getMagScale();
+
+	int32 half_width = floor(width / 2.);
 
 	if (window != NULL) {
 		BPoint original_point, view_point;
@@ -72,7 +119,8 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		window->Lock();
 		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
-		view->SetDrawingMode(B_OP_INVERT);
+		float old_width = view->PenSize();
+
 		window->Unlock();
 		bool use_fg_color = true;
 		if (buttons == B_SECONDARY_MOUSE_BUTTON)
@@ -82,20 +130,49 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		original_point = point;
 		bitmap_rect = BRect(point, point);
 		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
-		window->Lock();
-		view->SetHighColor(c);
-		view->StrokeEllipse(new_rect, B_SOLID_HIGH);
-		view->SetHighColor(old_color);
-		window->Unlock();
 
 		while (buttons) {
 			window->Lock();
 			if (old_rect != new_rect) {
-				view->Draw(old_rect);
-				view->SetHighColor(c);
-				view->StrokeEllipse(new_rect);
-				view->SetHighColor(old_color);
-				old_rect = new_rect;
+				BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
+				drawer->DrawEllipse(bitmap_rect.InsetByCopy(-half_width, -half_width), tmp_draw_color.word, use_fill,
+					use_anti_aliasing, selection, 0);
+				union color_conversion rev_color;
+				rev_color.word = tmp_draw_color.word;
+				rev_color.bytes[3] = 0xFF;
+				if (half_width > 0) {
+					int32 max_half_width = min_c(half_width, bitmap_rect.Width() / 2.);
+					int32 max_half_height = min_c(half_width, bitmap_rect.Height() / 2.);
+
+					drawer->DrawEllipse(bitmap_rect.InsetByCopy(max_half_width, max_half_height), rev_color.word, use_fill,
+						use_anti_aliasing, selection, 0, dst_out_fixed);
+				}
+				float max_dim = ceil(max_c(max_c(bitmap_rect.Width(), old_rect.Width()) + view_width,
+					max_c(bitmap_rect.Height(), old_rect.Height()) + view_width));
+				BPoint centroid = bitmap_rect.LeftTop() + bitmap_rect.RightTop()
+				  + bitmap_rect.RightBottom() + bitmap_rect.LeftBottom();
+				centroid.x /= 4;
+				centroid.y /= 4;
+
+				BRect updatedRect(0, 0, 1, 1);
+
+				updatedRect.top = centroid.y - max_dim;
+				updatedRect.left = centroid.x - max_dim;
+				updatedRect.bottom = centroid.y + max_dim;
+				updatedRect.right = centroid.x + max_dim;
+
+				updatedRect.InsetBy(-width, -width);
+
+				buffer->Lock();
+				BitmapUtilities::CompositeBitmapOnSource(
+					buffer, srcBuffer, tmpBuffer, updatedRect, src_over_fixed, RGBColorToBGRA(c));
+				buffer->Unlock();
+
+				imageUpdater->AddRect(updatedRect);
+				imageUpdater->ForceUpdate();
+
+				old_rect = bitmap_rect;
 			}
 			view->getCoords(&point, &buttons);
 			window->Unlock();
@@ -172,15 +249,42 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 						eraseRect.bottom = centroid.y + max_dim;
 						eraseRect.left = centroid.x - max_dim;
 						eraseRect.right = centroid.x + max_dim;
-						view->Draw(eraseRect);
-						view->PushState();
-						view->SetOrigin(centroid);
-						float newAngleRad = new_angle * M_PI / 180.;
-						view->RotateBy(newAngleRad);
-						view->SetHighColor(c);
-						view->StrokeEllipse(new_rect.OffsetByCopy(-centroid.x, -centroid.y));
-						view->SetHighColor(old_color);
-						view->PopState();
+
+						BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
+
+						drawer->DrawEllipse(bitmap_rect.InsetByCopy(-half_width, -half_width), tmp_draw_color.word, use_fill,
+							use_anti_aliasing, selection, new_angle);
+						union color_conversion rev_color;
+						rev_color.word = tmp_draw_color.word;
+						rev_color.bytes[3] = 0xFF;
+						if (half_width > 0) {
+							int32 max_half_width = min_c(half_width, bitmap_rect.Width() / 2.);
+							int32 max_half_height = min_c(half_width, bitmap_rect.Height() / 2.);
+
+							drawer->DrawEllipse(bitmap_rect.InsetByCopy(max_half_width, max_half_height), rev_color.word, use_fill,
+								use_anti_aliasing, selection, new_angle, dst_out_fixed);
+						}
+						max_dim = ceil(max_c(bitmap_rect.Width() + view_width, bitmap_rect.Height() + view_width) / 2.);
+						BPoint centroid = bitmap_rect.LeftTop() + bitmap_rect.RightTop()
+						  + bitmap_rect.RightBottom() + bitmap_rect.LeftBottom();
+						centroid.x /= 4;
+						centroid.y /= 4;
+
+						BRect updatedRect(0, 0, 1, 1);
+
+						updatedRect.top = centroid.y - max_dim;
+						updatedRect.left = centroid.x - max_dim;
+						updatedRect.bottom = centroid.y + max_dim;
+						updatedRect.right = centroid.x + max_dim;
+
+						updatedRect.InsetBy(-width, -width);
+						imageUpdater->AddRect(updatedRect);
+
+						buffer->Lock();
+						BitmapUtilities::CompositeBitmapOnSource(
+							buffer, srcBuffer, tmpBuffer, updatedRect, src_over_fixed, RGBColorToBGRA(c));
+						buffer->Unlock();
+
 						prev_angle = new_angle;
 					}
 					view->getCoords(&point, &buttons, &view_point);
@@ -203,19 +307,25 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			new_angle = 0.;
 		}
 
-		BitmapDrawer *drawer = new BitmapDrawer(bitmap);
-		bool use_fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
-		bool use_anti_aliasing = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
-		drawer->DrawEllipse(bitmap_rect, RGBColorToBGRA(c), use_fill,
+		drawer->DrawEllipse(bitmap_rect.InsetByCopy(-half_width, -half_width), tmp_draw_color.word, use_fill,
 			use_anti_aliasing, selection, new_angle);
-		delete drawer;
+		union color_conversion rev_color;
+		rev_color.word = tmp_draw_color.word;
+		rev_color.bytes[3] = 0xFF;
+		if (half_width > 0) {
+			int32 max_half_width = min_c(half_width, bitmap_rect.Width() / 2.);
+			int32 max_half_height = min_c(half_width, bitmap_rect.Height() / 2.);
+
+			drawer->DrawEllipse(bitmap_rect.InsetByCopy(max_half_width, max_half_height), rev_color.word, use_fill,
+				use_anti_aliasing, selection, new_angle, dst_out_fixed);
+		}
 
 		the_script->AddPoint(bitmap_rect.LeftTop());
 		the_script->AddPoint(bitmap_rect.RightTop());
 		the_script->AddPoint(bitmap_rect.RightBottom());
 		the_script->AddPoint(bitmap_rect.LeftBottom());
 
-        float max_dim = ceil(max_c(bitmap_rect.Width(), bitmap_rect.Height()) / 2.);
+        float max_dim = ceil(max_c(bitmap_rect.Width() + view_width, bitmap_rect.Height() + view_width) / 2.);
 		BPoint centroid = bitmap_rect.LeftTop() + bitmap_rect.RightTop()
 		  + bitmap_rect.RightBottom() + bitmap_rect.LeftBottom();
 		centroid.x /= 4;
@@ -229,14 +339,26 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		updatedRect.right = centroid.x + max_dim;
 
 		updatedRect.InsetBy(-10,-10);
+
+		buffer->Lock();
+		BitmapUtilities::CompositeBitmapOnSource(
+			buffer, srcBuffer, tmpBuffer, updatedRect, src_over_fixed, RGBColorToBGRA(c));
+		buffer->Unlock();
+
 		window->Lock();
 		view->SetHighColor(old_color);
 		view->SetDrawingMode(old_mode);
 		view->UpdateImage(updatedRect);
 		view->Sync();
 		window->Unlock();
+
 		SetLastUpdatedRect(updatedRect);
 	}
+
+	delete drawer;
+	delete imageUpdater;
+	delete tmpBuffer;
+	delete srcBuffer;
 
 	return the_script;
 }
@@ -280,6 +402,14 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", WIDTH_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(WIDTH_OPTION));
+
+		fLineWidth = new NumberSliderControl(B_TRANSLATE("Outline width:"), "1", message, 1, 100, false);
+
+		BGridLayout* lineWidthLayout = LayoutSliderGrid(fLineWidth);
+
+		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", FILL_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
 		fFillEllipse = new BCheckBox(B_TRANSLATE("Fill ellipse"), message);
@@ -299,6 +429,7 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 		fAntiAlias = new BCheckBox(B_TRANSLATE("Enable antialiasing"), message);
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(lineWidthLayout)
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFillEllipse)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
@@ -321,6 +452,9 @@ EllipseToolConfigView::EllipseToolConfigView(DrawingTool* tool)
 
 		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
 			fAntiAlias->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
+			fLineWidth->SetEnabled(FALSE);
 	}
 }
 
@@ -333,4 +467,24 @@ EllipseToolConfigView::AttachedToWindow()
 	fFillEllipse->SetTarget(this);
 	fRotation->SetTarget(this);
 	fAntiAlias->SetTarget(this);
+	fLineWidth->SetTarget(this);
 }
+
+
+void
+EllipseToolConfigView::MessageReceived(BMessage* message)
+{
+	DrawingToolConfigView::MessageReceived(message);
+
+	switch (message->what) {
+		case OPTION_CHANGED:
+		{
+			if (message->FindInt32("option") == FILL_ENABLED_OPTION)
+				if (fFillEllipse->Value() == B_CONTROL_ON)
+					fLineWidth->SetEnabled(FALSE);
+				else
+					fLineWidth->SetEnabled(TRUE);
+		} break;
+	}
+}
+

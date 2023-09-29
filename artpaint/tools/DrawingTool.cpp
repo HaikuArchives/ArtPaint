@@ -171,6 +171,10 @@ DrawingTool::SetOption(int32 option, int32 value, BHandler* source)
 				if (BControl* control = dynamic_cast<BCheckBox*>(source))
 					fToolSettings.use_current_brush = control->Value();
 			} break;
+			case WIDTH_OPTION:
+			{
+				fToolSettings.width = value;
+			} break;
 			default:
 				break;
 		}
@@ -211,6 +215,8 @@ DrawingTool::GetCurrentValue(int32 option)
 				return fToolSettings.transparency;
 			case USE_BRUSH_OPTION:
 				return fToolSettings.use_current_brush;
+			case WIDTH_OPTION:
+				return fToolSettings.width;
 			default:
 				return 0;
 		}

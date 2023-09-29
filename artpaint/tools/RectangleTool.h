@@ -22,6 +22,14 @@ class ImageView;
 class ToolScript;
 
 
+namespace ArtPaint {
+	namespace Interface {
+		class NumberSliderControl;
+	}
+}
+using ArtPaint::Interface::NumberSliderControl;
+
+
 class RectangleTool : public DrawingTool, public ToolEventAdapter {
 public:
 								RectangleTool();
@@ -41,6 +49,7 @@ public:
 	virtual						~RectangleToolConfigView() {}
 
 	virtual	void				AttachedToWindow();
+	virtual void				MessageReceived(BMessage* message);
 
 private:
 			BCheckBox*			fFillRectangle;
@@ -48,6 +57,7 @@ private:
 			BRadioButton*		fCenter2Corner;
 			BCheckBox*			fRotation;
 			BCheckBox*			fAntiAlias;
+			NumberSliderControl* fLineWidth;
 };
 
 

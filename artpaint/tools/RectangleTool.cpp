@@ -13,10 +13,13 @@
 #include "RectangleTool.h"
 
 #include "BitmapDrawer.h"
+#include "BitmapUtilities.h"
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
+#include "ImageUpdater.h"
 #include "ImageView.h"
+#include "NumberSliderControl.h"
 #include "PaintApplication.h"
 #include "ToolScript.h"
 #include "UtilityClasses.h"
@@ -24,6 +27,7 @@
 
 #include <Catalog.h>
 #include <CheckBox.h>
+#include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <RadioButton.h>
 #include <SeparatorView.h>
@@ -43,14 +47,15 @@ RectangleTool::RectangleTool()
 	DrawingTool(B_TRANSLATE("Rectangle tool"), "r", RECTANGLE_TOOL)
 {
 	fOptions = FILL_ENABLED_OPTION | SIZE_OPTION | SHAPE_OPTION | ROTATION_ENABLED_OPTION
-		| ANTI_ALIASING_LEVEL_OPTION;
-	fOptionsCount = 5;
+		| ANTI_ALIASING_LEVEL_OPTION | WIDTH_OPTION;
+	fOptionsCount = 6;
 
 	SetOption(FILL_ENABLED_OPTION, B_CONTROL_OFF);
 	SetOption(SIZE_OPTION, 1);
 	SetOption(SHAPE_OPTION, HS_CORNER_TO_CORNER);
 	SetOption(ROTATION_ENABLED_OPTION, B_CONTROL_OFF);
 	SetOption(ANTI_ALIASING_LEVEL_OPTION, B_CONTROL_OFF);
+	SetOption(WIDTH_OPTION, 1);
 }
 
 
@@ -63,23 +68,65 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 
 	BWindow* window = view->Window();
 	drawing_mode old_mode;
-	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
 
-	ToolScript* the_script
-		= new ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	ToolScript* the_script = new (std::nothrow)
+		ToolScript(Type(), fToolSettings, ((PaintApplication*)be_app)->Color(true));
+	if (the_script == NULL) {
+		return NULL;
+	}
+	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
+	if (buffer == NULL) {
+		delete the_script;
+
+		return NULL;
+	}
+	BBitmap* srcBuffer = new (std::nothrow) BBitmap(buffer);
+	if (srcBuffer == NULL) {
+		delete the_script;
+
+		return NULL;
+	}
+	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
+	if (tmpBuffer == NULL) {
+		delete the_script;
+		delete srcBuffer;
+		return NULL;
+	}
+	union color_conversion clear_color, tmp_draw_color;
+	clear_color.word = 0xFFFFFFFF;
+	clear_color.bytes[3] = 0x00;
+	tmp_draw_color.word = 0xFFFFFFFF;
+
+	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 	Selection* selection = view->GetSelection();
 
 	bool draw_rectangle = true;
 
+	bool fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
+	bool anti_a = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
+
+	int32 width = GetCurrentValue(WIDTH_OPTION);
+	float view_width = width * view->getMagScale();
+
+	if (fill == false && width > 1)
+		fill = true;
+	else if (fill == true)
+		width = 0;
+
+	int32 half_width = ceil(width / 2.);
+
 	if (window != NULL) {
-		BitmapDrawer* drawer = new BitmapDrawer(bitmap);
+		ImageUpdater* imageUpdater = new ImageUpdater(view, 10000);
+
+		BitmapDrawer* drawer = new BitmapDrawer(tmpBuffer);
 
 		BPoint original_point;
 		BRect bitmap_rect, old_rect, new_rect;
 		window->Lock();
 		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
-		view->SetDrawingMode(B_OP_INVERT);
+		float old_width = view->PenSize();
+
 		window->Unlock();
 		bool use_fg_color = true;
 		if (buttons == B_SECONDARY_MOUSE_BUTTON)
@@ -88,11 +135,10 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 		rgb_color c = ((PaintApplication*)be_app)->Color(use_fg_color);
 		original_point = point;
 		bitmap_rect = BRect(point, point);
-		old_rect = new_rect = view->convertBitmapRectToView(bitmap_rect);
-		window->Lock();
-		view->SetHighColor(c);
-		view->StrokeRect(new_rect, B_SOLID_HIGH);
-		window->Unlock();
+		old_rect = bitmap_rect;
+		new_rect = view->convertBitmapRectToView(bitmap_rect);
+
+		imageUpdater->AddRect(old_rect);
 
 		while (buttons) {
 			window->Lock();
@@ -130,15 +176,55 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 			}
 			new_rect = view->convertBitmapRectToView(bitmap_rect);
 
-			if (view->LockLooper() == true) {
-				if (old_rect != new_rect) {
-					view->Draw(old_rect);
-					view->StrokeRect(new_rect, B_SOLID_HIGH);
-					old_rect = new_rect;
-				}
-				view->UnlockLooper();
+			BRect updated_rect = old_rect.InsetByCopy(-2, -2);
+
+			BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word, &updated_rect);
+
+			int32 max_half_width = min_c(half_width, bitmap_rect.Width() / 2.);
+			int32 max_half_height = min_c(half_width, bitmap_rect.Height() / 2.);
+			BRect outerRect = bitmap_rect.InsetByCopy(-half_width, -half_width);
+			BRect innerRect = bitmap_rect.InsetByCopy(max_half_width, max_half_height);
+
+			if (innerRect.Width() < 1)
+				innerRect.InsetBy(-1, 0);
+			if (innerRect.Height() < 1)
+				innerRect.InsetBy(0, -1);
+
+			BPoint* corners = new BPoint[4];
+			corners[0] = outerRect.LeftTop();
+			corners[1] = outerRect.RightTop();
+			corners[2] = outerRect.RightBottom();
+			corners[3] = outerRect.LeftBottom();
+			HSPolygon* outerPoly = new HSPolygon(corners, 4);
+
+			corners[0] = innerRect.LeftTop();
+			corners[1] = innerRect.RightTop();
+			corners[2] = innerRect.RightBottom();
+			corners[3] = innerRect.LeftBottom();
+			HSPolygon* innerPoly = new HSPolygon(corners, 4);
+
+			drawer->DrawRectanglePolygon(outerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
+
+			if (width > 1) {
+				union color_conversion rev_color;
+				rev_color.word = tmp_draw_color.word;
+				rev_color.bytes[3] = 0xFF;
+				drawer->DrawRectanglePolygon(
+					innerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection,
+					dst_out_fixed);
 			}
-			snooze(20 * 1000);
+
+			buffer->Lock();
+			BitmapUtilities::CompositeBitmapOnSource(
+				buffer, srcBuffer, tmpBuffer, updated_rect, src_over_fixed, RGBColorToBGRA(c));
+			buffer->Unlock();
+
+			imageUpdater->AddRect(updated_rect);
+
+			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
+
+			old_rect = outerPoly->BoundingBox().InsetByCopy(-width, -width);
+			snooze(10 * 1000);
 		}
 
 		HSPolygon* poly;
@@ -149,26 +235,49 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 		corners[3] = bitmap_rect.LeftBottom();
 		poly = new HSPolygon(corners, 4);
 
-		if (GetCurrentValue(ROTATION_ENABLED_OPTION) == B_CONTROL_ON) {
-			HSPolygon* view_poly;
-			corners[0] = new_rect.LeftTop();
-			corners[1] = new_rect.RightTop();
-			corners[2] = new_rect.RightBottom();
-			corners[3] = new_rect.LeftBottom();
-			view_poly = new HSPolygon(corners, 4);
+		float new_angle, prev_angle = 0;
 
+		if (GetCurrentValue(ROTATION_ENABLED_OPTION) == B_CONTROL_ON) {
 			BPoint centroid = bitmap_rect.LeftTop() + bitmap_rect.RightTop()
 				+ bitmap_rect.RightBottom() + bitmap_rect.LeftBottom();
 			centroid.x /= 4;
 			centroid.y /= 4;
-			float new_angle, prev_angle;
 			prev_angle = new_angle = 0;
 			bool continue_rotating = true;
 			float original_angle;
 			if (centroid.x != point.x)
-				original_angle = atan((centroid.y - point.y) / (centroid.x - point.x)) * 180 / M_PI;
+				original_angle = atan((centroid.y - point.y)
+					/ (centroid.x - point.x)) * 180 / M_PI;
 			else
 				original_angle = 90;
+
+			int32 max_half_width = min_c(half_width, bitmap_rect.Width() / 2.);
+			int32 max_half_height = min_c(half_width, bitmap_rect.Height() / 2.);
+			BRect outerRect = bitmap_rect.InsetByCopy(-half_width, -half_width);
+			BRect innerRect = bitmap_rect.InsetByCopy(max_half_width, max_half_height);
+
+			if (innerRect.Width() < 1)
+				innerRect.InsetBy(-1, 0);
+			if (innerRect.Height() < 1)
+				innerRect.InsetBy(0, -1);
+
+			corners[0] = outerRect.LeftTop();
+			corners[1] = outerRect.RightTop();
+			corners[2] = outerRect.RightBottom();
+			corners[3] = outerRect.LeftBottom();
+			HSPolygon* outerPoly = new HSPolygon(corners, 4);
+
+			corners[0] = innerRect.LeftTop();
+			corners[1] = innerRect.RightTop();
+			corners[2] = innerRect.RightBottom();
+			corners[3] = innerRect.LeftBottom();
+			HSPolygon* innerPoly = new HSPolygon(corners, 4);
+
+			int32 max_dim = max_c(outerRect.Width(), outerRect.Height());
+
+			BRect updated_rect = BRect(centroid.x - max_dim, centroid.y - max_dim,
+				centroid.x + max_dim, centroid.y + max_dim);
+			updated_rect.InsetBy(-width * 1.5, -width * 1.5);
 
 			while (continue_rotating) {
 				if (is_clicks_data_valid) {
@@ -184,17 +293,35 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 					// Here we should rotate the polygon
 					window->Lock();
 					if (new_angle != prev_angle) {
-						BRect bbox = view_poly->BoundingBox();
-						view->Draw(bbox);
+						BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 
-						view_poly->RotateAboutCenter(new_angle - prev_angle);
+						outerPoly->RotateAboutCenter(new_angle - prev_angle);
+						innerPoly->RotateAboutCenter(new_angle - prev_angle);
 
-						BPolygon* draw_poly = view_poly->GetBPolygon();
-						view->StrokePolygon(draw_poly);
-						delete draw_poly;
+						drawer->DrawRectanglePolygon(outerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
+
+						if (width > 1) {
+							union color_conversion rev_color;
+							rev_color.word = tmp_draw_color.word;
+							rev_color.bytes[3] = 0xFF;
+							drawer->DrawRectanglePolygon(
+								innerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection,
+								dst_out_fixed);
+						}
+
+						buffer->Lock();
+						BitmapUtilities::CompositeBitmapOnSource(
+							buffer, srcBuffer, tmpBuffer, updated_rect, src_over_fixed, RGBColorToBGRA(c));
+						buffer->Unlock();
+
+						imageUpdater->AddRect(updated_rect);
+
+						SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 						prev_angle = new_angle;
+
+						old_rect = updated_rect;
 					}
-					view->getCoords(&point, &buttons);
+					view->getCoords(&point, &buttons, &view_point);
 					window->Unlock();
 					if (centroid.x != point.x) {
 						new_angle
@@ -212,21 +339,69 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 			}
 			poly->RotateAboutCenter(prev_angle);
 
-			delete view_poly;
 		}
 
-		bitmap->Lock();
-		bool fill = (GetCurrentValue(FILL_ENABLED_OPTION) == B_CONTROL_ON);
-		bool anti_a = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
+		buffer->Lock();
 		if (draw_rectangle == true) {
 			if (poly->GetPointCount() == 4) {
-				drawer->DrawRectanglePolygon(
-					poly->GetPointList(), RGBColorToBGRA(c), fill, anti_a, selection);
-			} else
-				drawer->DrawRectanglePolygon(corners, RGBColorToBGRA(c), fill, anti_a, selection);
+				if (width > 1) {
+					int32 max_half_width = min_c(half_width, bitmap_rect.Width() / 2.);
+					int32 max_half_height = min_c(half_width, bitmap_rect.Height() / 2.);
+					BRect outerRect = bitmap_rect.InsetByCopy(-half_width, -half_width);
+					BRect innerRect = bitmap_rect.InsetByCopy(max_half_width, max_half_height);
+
+					if (innerRect.Width() < 1)
+						innerRect.InsetBy(-1, 0);
+					if (innerRect.Height() < 1)
+						innerRect.InsetBy(0, -1);
+
+					corners[0] = outerRect.LeftTop();
+					corners[1] = outerRect.RightTop();
+					corners[2] = outerRect.RightBottom();
+					corners[3] = outerRect.LeftBottom();
+					HSPolygon* outerPoly = new HSPolygon(corners, 4);
+
+					corners[0] = innerRect.LeftTop();
+					corners[1] = innerRect.RightTop();
+					corners[2] = innerRect.RightBottom();
+					corners[3] = innerRect.LeftBottom();
+					HSPolygon* innerPoly = new HSPolygon(corners, 4);
+
+					innerPoly->RotateAboutCenter(prev_angle);
+					outerPoly->RotateAboutCenter(prev_angle);
+
+					drawer->DrawRectanglePolygon(
+						outerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
+
+					union color_conversion rev_color;
+					rev_color.word = tmp_draw_color.word;
+					rev_color.bytes[3] = 0xFF;
+					drawer->DrawRectanglePolygon(
+						innerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection,
+						dst_out_fixed);
+					BitmapUtilities::CompositeBitmapOnSource(
+						buffer, srcBuffer, tmpBuffer,
+						outerPoly->BoundingBox().InsetByCopy(-half_width, -half_width),
+						src_over_fixed, RGBColorToBGRA(c));
+				} else {
+					drawer->DrawRectanglePolygon(
+						poly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
+					BitmapUtilities::CompositeBitmapOnSource(
+						buffer, srcBuffer, tmpBuffer, poly->BoundingBox().InsetByCopy(-width, -width),
+						src_over_fixed, RGBColorToBGRA(c));
+				}
+			} else {
+				drawer->DrawRectanglePolygon(corners, tmp_draw_color.word, fill, anti_a, selection);
+				BitmapUtilities::CompositeBitmapOnSource(
+					buffer, srcBuffer, tmpBuffer, poly->BoundingBox().InsetByCopy(-half_width, -half_width),
+					src_over_fixed, RGBColorToBGRA(c));
+			}
 		}
-		bitmap->Unlock();
-		SetLastUpdatedRect(poly->BoundingBox().InsetByCopy(-1.0, -1.0));
+
+		buffer->Unlock();
+
+		SetLastUpdatedRect(poly->BoundingBox().InsetByCopy(-(1.0 + width), -(1.0 + width)));
+
 		if (poly->GetPointCount() == 4) {
 			BPoint* points = poly->GetPointList();
 			for (int32 i = 0; i < 4; i++)
@@ -246,6 +421,9 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 		window->Unlock();
 
 		delete drawer;
+		delete imageUpdater;
+		delete tmpBuffer;
+		delete srcBuffer;
 	}
 
 	return the_script;
@@ -290,6 +468,14 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 {
 	if (BLayout* layout = GetLayout()) {
 		BMessage* message = new BMessage(OPTION_CHANGED);
+		message->AddInt32("option", WIDTH_OPTION);
+		message->AddInt32("value", tool->GetCurrentValue(WIDTH_OPTION));
+
+		fLineWidth = new NumberSliderControl(B_TRANSLATE("Outline width:"), "1", message, 1, 100, false);
+
+		BGridLayout* lineWidthLayout = LayoutSliderGrid(fLineWidth);
+
+		message = new BMessage(OPTION_CHANGED);
 		message->AddInt32("option", FILL_ENABLED_OPTION);
 		message->AddInt32("value", 0x00000000);
 
@@ -312,6 +498,7 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 		view->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(lineWidthLayout)
 			.AddGroup(B_VERTICAL, kWidgetSpacing)
 				.Add(fFillRectangle)
 				.SetInsets(kWidgetInset, 0.0, 0.0, 0.0)
@@ -334,6 +521,9 @@ RectangleToolConfigView::RectangleToolConfigView(DrawingTool* tool)
 
 		if (tool->GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) != B_CONTROL_OFF)
 			fAntiAlias->SetValue(B_CONTROL_ON);
+
+		if (tool->GetCurrentValue(FILL_ENABLED_OPTION) != B_CONTROL_OFF)
+			fLineWidth->SetEnabled(FALSE);
 	}
 }
 
@@ -346,4 +536,23 @@ RectangleToolConfigView::AttachedToWindow()
 	fFillRectangle->SetTarget(this);
 	fRotation->SetTarget(this);
 	fAntiAlias->SetTarget(this);
+	fLineWidth->SetTarget(this);
+}
+
+
+void
+RectangleToolConfigView::MessageReceived(BMessage* message)
+{
+	DrawingToolConfigView::MessageReceived(message);
+
+	switch (message->what) {
+		case OPTION_CHANGED:
+		{
+			if (message->FindInt32("option") == FILL_ENABLED_OPTION)
+				if (fFillRectangle->Value() == B_CONTROL_ON)
+					fLineWidth->SetEnabled(FALSE);
+				else
+					fLineWidth->SetEnabled(TRUE);
+		} break;
+	}
 }
