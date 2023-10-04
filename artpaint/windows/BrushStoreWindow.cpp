@@ -493,7 +493,8 @@ BrushStoreView::AddBrush(Brush* brush)
 		brush_info item = *(brush_info*)brush_data->ItemAt(i);
 		if (Brush::compare_brushes(item, new_brush_info) == true) {
 			index = i;
-		} break;
+			break;
+		}
 	}
 
 	if (index < 0) {
