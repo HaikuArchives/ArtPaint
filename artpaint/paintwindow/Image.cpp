@@ -1070,9 +1070,9 @@ Image::calculate_thumbnail_image(void* data)
 	color.bytes[2] = 0xFF;
 	color.bytes[3] = 0x00;
 
-	int32 miniature_width = (int32)(
+	uint32 miniature_width = (uint32)(
 		(to->Bounds().Width() + 1) * (min_c(from->Bounds().Width() / from->Bounds().Height(), 1)));
-	int32 miniature_height = (int32)(
+	uint32 miniature_height = (uint32)(
 		(to->Bounds().Height() + 1) * (min_c(from->Bounds().Height() / from->Bounds().Width(), 1)));
 
 	// Here we copy the contents of the_bitmap to miniature image.

@@ -114,12 +114,12 @@ CropManipulator::Draw(BView* view, float mag_scale)
 	// Draw all the data that needs to be drawn
 	BRect bounds = BRect(mag_scale * settings->left,
 		mag_scale * settings->top,
-		mag_scale * (settings->right + 1) - 1,
-		mag_scale * (settings->bottom + 1) - 1);
+		mag_scale * (settings->right) - 1,
+		mag_scale * (settings->bottom) - 1);
 	bounds.left = floor(bounds.left);
 	bounds.top = floor(bounds.top);
-	bounds.right = ceil(bounds.right);
-	bounds.bottom = ceil(bounds.bottom);
+	bounds.right = ceil(bounds.right) - 1;
+	bounds.bottom = ceil(bounds.bottom) - 1;
 
 	bool draw_draggers = FALSE;
 	BRect dragger_rect = BRect(0, 0, DRAGGER_SIZE - 1, DRAGGER_SIZE - 1);
@@ -200,12 +200,12 @@ CropManipulator::ManipulateBitmap(
 		return NULL;
 
 	float left = new_settings->left;
-	float right = new_settings->right;
+	float right = new_settings->right - 1;
 	float top = new_settings->top;
-	float bottom = new_settings->bottom;
+	float bottom = new_settings->bottom - 1;
 
-	float width = right - left - 1;
-	float height = bottom - top - 1;
+	float width = ceil(right - left);
+	float height = ceil(bottom - top);
 
 	if (width == original->Bounds().Width()
 		&& height == original->Bounds().Height()
