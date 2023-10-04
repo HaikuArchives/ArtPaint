@@ -120,7 +120,7 @@ HexStringToUInt32(BString hexColor, uint32& color_word)
 ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	:
 	BWindow(frame, B_TRANSLATE("Colors"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,
-		B_NOT_V_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT
+		B_NOT_ZOOMABLE | B_WILL_ACCEPT_FIRST_CLICK | B_AVOID_FRONT
 			| B_AUTO_UPDATE_SIZE_LIMITS),
 	open_panel(NULL),
 	save_panel(NULL)
@@ -156,6 +156,11 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	color_container->SetDraggingEnabled(TRUE);
 
 	BFont font;
+	font_height fontHt;
+	font.GetHeight(&fontHt);
+
+	color_container->SetExplicitMinSize(BSize(B_SIZE_UNSET,
+		(fontHt.ascent + fontHt.descent + fontHt.leading) * 6));
 
 	// Here add the buttons that control the color-set.
 	previous_set = new BButton("\xe2\xaf\x87", new BMessage(HS_PREVIOUS_PALETTE));
@@ -172,13 +177,14 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	next_set->SetToolTip(B_TRANSLATE_COMMENT("Next color set", "In Color Palette window"));
 	next_set->SetEnabled(FALSE);
 
-	BGridLayout* colorSetGrid = BLayoutBuilder::Grid<>(container_box, 2, B_USE_SMALL_SPACING)
-		.Add(color_container, 0, 0, 1, 3)
-		.Add(previous_set, 1, 0)
-		.Add(next_set, 1, 2)
-		.SetInsets(3, 3, 8, 3);
+	colorSetName = new BTextControl("", "color-set-name", new BMessage(HS_SET_NAME_CHANGED));
 
-	colorSetGrid->SetMinColumnWidth(0, font.StringWidth("PALETTEPALETTE"));
+	BGridLayout* colorSetGrid = BLayoutBuilder::Grid<>(container_box, 2, B_USE_SMALL_SPACING)
+		.Add(previous_set, 0, 0)
+		.Add(colorSetName, 1, 0)
+		.Add(next_set, 2, 0)
+		.Add(color_container, 0, 1, 3, 1)
+		.SetInsets(3, 3, 3, 3);
 
 	BMessage* message = new BMessage(HS_RGB_CONTROL_INVOKED);
 	message->AddInt32("buttons", 0);
@@ -207,11 +213,11 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		.Add(hsvSlider)
 		.Add(color_control);
 
-	rgbSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
-	cmySlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
-	labSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
-	hsvSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
-	color_control->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDER"), B_SIZE_UNSET));
+	rgbSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDERSLI"), B_SIZE_UNSET));
+	cmySlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDERSLI"), B_SIZE_UNSET));
+	labSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDERSLI"), B_SIZE_UNSET));
+	hsvSlider->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDERSLI"), B_SIZE_UNSET));
+	color_control->SetExplicitMinSize(BSize(font.StringWidth("XX12345SLIDERSLIDERSLI"), B_SIZE_UNSET));
 
 	colorPreview = new ColorChip("chippy");
 	colorPreview->SetColor(RGBColorToBGRA(c));
@@ -247,16 +253,15 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 	hexColorField->SetTarget(this);
 
 	BGridLayout* colorLayout = BLayoutBuilder::Grid<>(5, 3)
-		.Add(container_box, 0, 0)
-		.Add(sliderLayout, 1, 0)
-		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING, 2, 0)
+		.Add(sliderLayout, 0, 0)
+		.AddGroup(B_VERTICAL, B_USE_SMALL_SPACING, 1, 0)
 			.Add(colorPreview)
 			.Add(hexColorField)
 		.End()
 		.SetInsets(5, 5, 5, 5);
 
 	BGroupLayout* mainLayout
-		= BLayoutBuilder::Group<>(this, B_VERTICAL, 0).Add(menu_bar).Add(colorLayout);
+		= BLayoutBuilder::Group<>(this, B_VERTICAL, 0).Add(menu_bar).Add(colorLayout).Add(container_box);
 
 	// call some function that initializes the views depending on the mode
 	openControlViews(mode);
@@ -264,6 +269,8 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		next_set->SetEnabled(TRUE);
 	if (ColorSet::currentSetIndex() > 0)
 		previous_set->SetEnabled(TRUE);
+
+	colorSetName->SetText(ColorSet::currentSet()->getName());
 
 	Show();
 
@@ -425,6 +432,8 @@ ColorPaletteWindow::MessageReceived(BMessage* message)
 			}
 			ColorSet::moveToSet(numSets - 1);
 			next_set->SetEnabled(FALSE);
+
+			colorSetName->SetText(ColorSet::currentSet()->getName());
 		} break;
 		// this comes from the menubar->"Set"->"Delete Current Set" and indicates that the current
 		// set should be deleted
@@ -446,6 +455,9 @@ ColorPaletteWindow::MessageReceived(BMessage* message)
 				(new BAlert("", B_TRANSLATE("Cannot delete the only color set."),
 					B_TRANSLATE("OK")))->Go();
 			}
+
+			colorSetName->SetText(ColorSet::currentSet()->getName());
+			colorSetName->MakeFocus(false);
 		} break;
 		// this comes from a button that is named "next set button", the button is in this window
 		// the message indicates that we should change the colorcontainers to display next color set
@@ -462,6 +474,15 @@ ColorPaletteWindow::MessageReceived(BMessage* message)
 
 			if (ColorSet::numberOfSets() > 1)
 				previous_set->SetEnabled(TRUE);
+
+			colorSetName->SetText(ColorSet::currentSet()->getName());
+			colorSetName->MakeFocus(false);
+
+			SelectedColorsView::sendMessageToAll(new BMessage(HS_COLOR_CHANGED));
+
+			// give the window the information that selection has changed
+			rgb_color c = ColorSet::currentSet()->currentColor();
+			ColorPaletteWindow::ChangePaletteColor(c);
 		} break;
 		// this comes from a button that is named "previous set button", the button is in this
 		// window the message indicates that we should change the colorcontainers to display
@@ -481,6 +502,13 @@ ColorPaletteWindow::MessageReceived(BMessage* message)
 				next_set->SetEnabled(TRUE);
 			else
 				next_set->SetEnabled(FALSE);
+			colorSetName->SetText(ColorSet::currentSet()->getName());
+			colorSetName->MakeFocus(false);
+			SelectedColorsView::sendMessageToAll(new BMessage(HS_COLOR_CHANGED));
+
+			// give the window the information that selection has changed
+			rgb_color c = ColorSet::currentSet()->currentColor();
+			ColorPaletteWindow::ChangePaletteColor(c);
 		} break;
 		// this is sent from ColorContainer::MouseDown and it's purpose is to
 		// let us change the corresponding color to the color-controller also
@@ -579,6 +607,15 @@ ColorPaletteWindow::MessageReceived(BMessage* message)
 		case HS_PALETTE_SAVE_REFS:
 		{
 			handlePaletteSave(message);
+		} break;
+		case HS_SET_NAME_CHANGED:
+		{
+			if (colorSetName->TextLength() > 0)
+				ColorSet::currentSet()->setName(colorSetName->Text());
+			else
+				colorSetName->SetText(ColorSet::currentSet()->getName());
+
+			colorSetName->MakeFocus(false);
 		} break;
 		// this comes from the menubar->"Mode"->"RGB-Mode" and indicates that
 		// the color selector should be changed to a RGBControl, this is used
@@ -1045,6 +1082,14 @@ ColorPaletteWindow::showPaletteWindow(BMessage* msg)
 
 
 void
+ColorPaletteWindow::WindowActivated(bool active)
+{
+	if (active == true)
+		color_container->MakeFocus(true);
+}
+
+
+void
 ColorPaletteWindow::ChangePaletteColor(rgb_color& c)
 {
 	if (palette_window != NULL) {
@@ -1172,7 +1217,7 @@ BList* ColorContainer::container_list = new BList();
 ColorContainer::ColorContainer(
 	BRect frame, int32 amount_of_colors, uint32 resizingMode, bool highlight, bool add_arrows)
 	:
-	BView("color container", B_FRAME_EVENTS | B_WILL_DRAW)
+	BView("color container", B_FRAME_EVENTS | B_WILL_DRAW | B_NAVIGABLE)
 {
 	// here initialize the important variables
 	highlight_selected = highlight;
@@ -1218,8 +1263,6 @@ ColorContainer::Draw(BRect drawRect)
 	// every instance of this class should also draw whenever
 	// a palette entry changes, how should we achieve that ????
 
-	FillRect(drawRect);
-
 	BRect rect;
 
 	for (int32 i = 0; i < color_count; i++) {
@@ -1245,6 +1288,7 @@ ColorContainer::MouseDown(BPoint point)
 	uint32 buttons = 0;
 	uint32 original_button;
 
+	MakeFocus(true);
 	GetMouse(&point, &buttons, true);
 	int32 index, prev_index = ColorSet::currentSet()->currentColorIndex();
 
@@ -1484,6 +1528,90 @@ ColorContainer::MessageReceived(BMessage* message)
 
 
 void
+ColorContainer::KeyDown(const char* bytes, int32 numBytes)
+{
+	switch(bytes[0]) {
+		case B_PAGE_UP:
+		{
+			Window()->PostMessage(new BMessage(HS_PREVIOUS_PALETTE));
+		} break;
+		case B_PAGE_DOWN:
+		{
+			Window()->PostMessage(new BMessage(HS_NEXT_PALETTE));
+		} break;
+		case B_LEFT_ARROW:
+		{
+			int32 colorIdx = ColorSet::currentSet()->currentColorIndex();
+			colorIdx = max_c(0, colorIdx - 1);
+			ColorSet::currentSet()->setCurrentColorIndex(colorIdx);
+			BMessage a_message(HS_PALETTE_SELECTION_CHANGED);
+			a_message.AddInt32("index", colorIdx);
+			ColorContainer::sendMessageToAllContainers(&a_message);
+			SelectedColorsView::sendMessageToAll(new BMessage(HS_COLOR_CHANGED));
+
+			// give the window the information that selection has changed
+			rgb_color c = ColorSet::currentSet()->currentColor();
+			ColorPaletteWindow::ChangePaletteColor(c);
+			Window()->PostMessage(HS_PALETTE_SELECTION_CHANGED, Window());
+		} break;
+		case B_RIGHT_ARROW:
+		{
+			int32 colorIdx = ColorSet::currentSet()->currentColorIndex();
+			colorIdx = min_c(ColorSet::currentSet()->sizeOfSet() - 1, colorIdx + 1);
+			ColorSet::currentSet()->setCurrentColorIndex(colorIdx);
+			BMessage a_message(HS_PALETTE_SELECTION_CHANGED);
+			a_message.AddInt32("index", colorIdx);
+			ColorContainer::sendMessageToAllContainers(&a_message);
+			SelectedColorsView::sendMessageToAll(new BMessage(HS_COLOR_CHANGED));
+
+			// give the window the information that selection has changed
+			rgb_color c = ColorSet::currentSet()->currentColor();
+			ColorPaletteWindow::ChangePaletteColor(c);
+			Window()->PostMessage(HS_PALETTE_SELECTION_CHANGED, Window());
+		} break;
+		case B_DOWN_ARROW:
+		{
+			int32 colorIdx = ColorSet::currentSet()->currentColorIndex();
+			colorIdx += column_count;
+			if (colorIdx <= ColorSet::currentSet()->sizeOfSet() - 1) {
+				ColorSet::currentSet()->setCurrentColorIndex(colorIdx);
+				BMessage a_message(HS_PALETTE_SELECTION_CHANGED);
+				a_message.AddInt32("index", colorIdx);
+				ColorContainer::sendMessageToAllContainers(&a_message);
+
+				SelectedColorsView::sendMessageToAll(new BMessage(HS_COLOR_CHANGED));
+
+				// give the window the information that selection has changed
+				rgb_color c = ColorSet::currentSet()->currentColor();
+				ColorPaletteWindow::ChangePaletteColor(c);
+				Window()->PostMessage(HS_PALETTE_SELECTION_CHANGED, Window());
+			}
+		} break;
+		case B_UP_ARROW:
+		{
+			int32 colorIdx = ColorSet::currentSet()->currentColorIndex();
+			colorIdx -= column_count;
+			if (colorIdx >= 0) {
+				ColorSet::currentSet()->setCurrentColorIndex(colorIdx);
+				BMessage a_message(HS_PALETTE_SELECTION_CHANGED);
+				a_message.AddInt32("index", colorIdx);
+				ColorContainer::sendMessageToAllContainers(&a_message);
+
+				SelectedColorsView::sendMessageToAll(new BMessage(HS_COLOR_CHANGED));
+
+				// give the window the information that selection has changed
+				rgb_color c = ColorSet::currentSet()->currentColor();
+				ColorPaletteWindow::ChangePaletteColor(c);
+				Window()->PostMessage(HS_PALETTE_SELECTION_CHANGED, Window());
+			}
+		} break;
+		default:
+			BView::KeyDown(bytes, numBytes);
+	}
+}
+
+
+void
 ColorContainer::setUpContainer(BRect frame, int32 number_of_colors, bool add_arrows)
 {
 	// This gets stuck in an infinite loop if the height of the frame
@@ -1696,13 +1824,19 @@ ColorSet::ColorSet(int32 amount_of_colors, ColorSet* copy_this_palette)
 	// store the color count
 	color_count = amount_of_colors;
 
-	// create a default name
-	strcpy(name, "default palette");
-
 	// put the current color to 0
 	current_color_index = 0;
 
 	color_set_list->AddItem(this);
+
+	int32 index = color_set_list->CountItems();
+
+	if (copy_this_palette == NULL)
+		// create a default name
+		sprintf(name, "%s %d", B_TRANSLATE("Color set"), index);
+	else
+		sprintf(name, "%s %s", copy_this_palette->getName(), "copy");
+
 }
 
 
