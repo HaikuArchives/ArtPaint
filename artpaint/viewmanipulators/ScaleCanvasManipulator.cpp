@@ -97,11 +97,11 @@ ScaleCanvasManipulator::ManipulateBitmap(
 	uint32* source_bits;
 	uint32* target_bits;
 
-	float starting_width = bounds.Width() + 1;
-	float starting_height = bounds.Height() + 1;
+	float starting_width = bounds.Width();
+	float starting_height = bounds.Height();
 
-	float new_width = round(new_settings->right - new_settings->left) + 1;
-	float new_height = round(new_settings->bottom - new_settings->top) + 1;
+	float new_width = round(new_settings->right - 1 - new_settings->left);
+	float new_height = round(new_settings->bottom - 1 - new_settings->top);
 
 	// Create a new bitmap here and copy it applying scaling.
 	// But first create an intermediate bitmap for scaling in one direction only.
@@ -128,7 +128,10 @@ ScaleCanvasManipulator::ManipulateBitmap(
 		int32 target_bpr = scale_x_bitmap->BytesPerRow() / 4;
 		source_bits = (uint32*)original->Bits();
 		int32 source_bpr = original->BytesPerRow() / 4;
-		float diff = starting_width / new_width;
+		float diff = 1.;
+		if (new_width != 0)
+			diff = starting_width / new_width;
+
 		float accumulation = 0;
 		int32 left = (int32)bounds.left;
 		int32 top = (int32)bounds.top;
@@ -169,6 +172,7 @@ ScaleCanvasManipulator::ManipulateBitmap(
 		target_bits = (uint32*)scale_y_bitmap->Bits();
 		int32 target_bpr = scale_y_bitmap->BytesPerRow() / 4;
 		source_bits = (uint32*)scale_x_bitmap->Bits();
+		int32 source_bpr = scale_x_bitmap->BytesPerRow() / 4;
 
 		for (int32 y = 0; y < new_height; y++) {
 			for (int32 x = 0; x < new_width; x++)
@@ -184,15 +188,20 @@ ScaleCanvasManipulator::ManipulateBitmap(
 			top = 0;
 		}
 
-		float diff = (starting_height - 1) / new_height;
+		float diff = 1.;
+		if (new_height != 0)
+			diff = (starting_height - 1) / new_height;
+
 		if (diff != 1) {
 			ScaleUtilities::ScaleVertically(new_width, new_height, BPoint(left, top),
 				scale_x_bitmap, scale_y_bitmap, diff, method);
 		} else {
 			for (int32 y = 0; y <= bottom; y++) {
+				uint32* src_bits = source_bits + y * source_bpr;
+
 				for (int32 x = 0; x < target_bpr; x++) {
 					// Just copy it straight
-					*target_bits++ = *source_bits++;
+					*(target_bits + x + y * target_bpr) = *(src_bits + x);
 				}
 				if ((y % 10 == 0) && (status_bar != NULL)) {
 					progress_message.ReplaceFloat("delta", 100.0 / bottom * 10.0 / 2);
@@ -354,8 +363,8 @@ ScaleCanvasManipulator::SetPreviewBitmap(BBitmap* bitmap)
 	if (bitmap) {
 		original_left = bitmap->Bounds().left;
 		original_top = bitmap->Bounds().top;
-		original_right = bitmap->Bounds().right;
-		original_bottom = bitmap->Bounds().bottom;
+		original_right = bitmap->Bounds().right + 1;
+		original_bottom = bitmap->Bounds().bottom + 1;
 
 		SetValues(original_left, original_top, original_right, original_bottom);
 
@@ -439,11 +448,11 @@ ScaleCanvasManipulator::Draw(BView* view, float mag_scale)
 	int32 DRAGGER_SIZE = 10;
 	// Draw all the data that needs to be drawn
 	BRect bounds = BRect(mag_scale * settings->left, mag_scale * settings->top,
-		mag_scale * (settings->right + 1) - 1, mag_scale * (settings->bottom + 1) - 1);
+		mag_scale * (settings->right) - 1, mag_scale * (settings->bottom) - 1);
 	bounds.left = floor(bounds.left);
 	bounds.top = floor(bounds.top);
-	bounds.right = ceil(bounds.right);
-	bounds.bottom = ceil(bounds.bottom);
+	bounds.right = ceil(bounds.right) - 1;
+	bounds.bottom = ceil(bounds.bottom) - 1;
 
 	bool draw_draggers = FALSE;
 	BRect dragger_rect = BRect(0, 0, DRAGGER_SIZE - 1, DRAGGER_SIZE - 1);
