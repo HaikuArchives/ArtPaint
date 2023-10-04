@@ -53,15 +53,16 @@ ColorFloatSlider::ColorFloatSlider(const char* label, const char* text, BMessage
 
 	fFormat.SetToFormat("%%0.%df", resolution);
 	fFloatControl = new (std::nothrow) FloatControl(label, text,
-		new BMessage(kNumberControlFinished), 5, minRange < 0);
+		new BMessage(kNumberControlFinished), 4, minRange < 0);
 	fSlider = new (std::nothrow) ColorSlider(NULL, NULL,
 		new BMessage(kSliderModificationFinished), (int32)minRange * fMult,
 		(int32)maxRange * fMult, B_HORIZONTAL, thumbStyle);
 
 	if (fFloatControl != NULL && fSlider != NULL && layout) {
 		SetLayout(new BGroupLayout(B_VERTICAL));
-		AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 10.0)
-			.Add(fFloatControl)
+		AddChild(BGroupLayoutBuilder(B_HORIZONTAL, 1.0)
+			.Add(fFloatControl->CreateLabelLayoutItem())
+			.Add(fFloatControl->CreateTextViewLayoutItem())
 			.Add(fSlider)
 		);
 

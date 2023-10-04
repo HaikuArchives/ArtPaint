@@ -99,6 +99,7 @@ private:
 
 			ColorChip*				colorPreview;
 			BTextControl*			hexColorField;
+			BTextControl*			colorSetName;
 
 			void					SetHexColor(const rgb_color c);
 
@@ -122,6 +123,7 @@ public:
 					~ColorPaletteWindow();
 			bool	QuitRequested();
 			void	MessageReceived(BMessage* message);
+			void	WindowActivated(bool active);
 
 		rgb_color	getColor(int32 index);
 
@@ -189,16 +191,17 @@ public:
 			void	AttachedToWindow();
 			void	Draw(BRect);
 			void	MouseDown(BPoint point);
-			void	MouseMoved(BPoint,uint32,const BMessage*);
-			void	MessageReceived(BMessage *message);
+			void	MouseMoved(BPoint, uint32, const BMessage*);
+			void	MessageReceived(BMessage* message);
 			void	FrameResized(float width, float height);
+			void 	KeyDown(const char* bytes, int32 numBytes);
 
 			void	colorChanged(int32 color_index);
 
 			void	SetDraggingEnabled(bool e) { dragging_enabled = e; }
 
 			// this function sends a message to all color containers
-	static	void	sendMessageToAllContainers(BMessage *message);
+	static	void	sendMessageToAllContainers(BMessage* message);
 };
 
 
