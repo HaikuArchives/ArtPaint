@@ -15,6 +15,7 @@
 #include "HSPolygon.h"
 #include "MessageConstants.h"
 #include "NumberSliderControl.h"
+#include "PaintApplication.h"
 #include "PaletteWindowClient.h"
 #include "Selection.h"
 #include "UtilityClasses.h"
@@ -140,6 +141,8 @@ TextManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* original, B
 		}
 	}
 
+	rgb_color c = ((PaintApplication*)be_app)->Color(true);
+
 	// new_bitmap should be deleted at the end of this function.
 	// This was not done properly before and it caused quite a big memory-leak.
 	BBitmap* new_bitmap = DuplicateBitmap(original, 0, TRUE);
@@ -150,6 +153,7 @@ TextManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* original, B
 	new_view->SetDrawingMode(B_OP_ALPHA);
 	new_view->SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_COMPOSITE);
 	new_view->MovePenTo(new_settings->starting_point);
+	new_view->SetHighColor(c);
 	font_height fHeight;
 	new_settings->font.GetHeight(&fHeight);
 	BPoint height_vector(0, 0);
@@ -173,9 +177,6 @@ TextManipulator::ManipulateBitmap(ManipulatorSettings* set, BBitmap* original, B
 			new_view->DrawChar(' ');
 			new_view->DrawChar(' ');
 		} else {
-			// Draw the next character from the string with
-			// correct color.
-			new_view->SetHighColor(new_settings->text_color_array[i]);
 			if ((new_settings->text[i] & 0x80) == 0x00)
 				new_view->DrawChar(new_settings->text[i]);
 			else {
@@ -244,6 +245,8 @@ TextManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 	// settings at this very moment. This might even lead to a crash.
 	TextManipulatorSettings current_settings = fSettings;
 
+	rgb_color c = ((PaintApplication*)be_app)->Color(true);
+
 	// First reset the preview_bitmap for the part that previous settings did draw.
 	uint32* preview_bits = (uint32*)preview_bitmap->Bits();
 	uint32* copy_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
@@ -284,6 +287,7 @@ TextManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 		view->SetDrawingMode(B_OP_ALPHA);
 		view->SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_COMPOSITE);
 		view->MovePenTo(current_settings.starting_point);
+		view->SetHighColor(c);
 		font_height fHeight;
 		current_settings.font.GetHeight(&fHeight);
 		BPoint height_vector(0, 0);
@@ -308,9 +312,6 @@ TextManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 				view->DrawChar(' ');
 				view->DrawChar(' ');
 			} else {
-				// Draw the next character from the string with
-				// correct color.
-				view->SetHighColor(current_settings.text_color_array[i]);
 				if ((current_settings.text[i] & 0x80) == 0x00)
 					view->DrawChar(current_settings.text[i]);
 				else {
@@ -662,11 +663,6 @@ TextManipulatorView::AllAttached()
 	fTextView->SetText(fSettings.text);
 	fTextView->SetTarget(BMessenger(this, Window()));
 
-	int32 length = fSettings.text ? strlen(fSettings.text) : 0;
-	for (int32 i = 0; i < length; ++i) {
-		fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL, &fSettings.text_color_array[i]);
-	}
-
 	fSizeControl->SetValue(int32(fSettings.font.Size()));
 	fRotationControl->SetValue(int32(fSettings.font.Rotation()));
 	fShearControl->SetValue(int32(fSettings.font.Shear()));
@@ -807,14 +803,6 @@ TextManipulatorView::ChangeSettings(TextManipulatorSettings* s)
 		if (strcmp(fSettings.text, s->text) != 0) {
 			strcpy(fSettings.text, s->text);
 			fTextView->SetText(fSettings.text);
-
-			int32 length = fSettings.text ? strlen(fSettings.text) : 0;
-			for (int32 i = 0; i < length; ++i) {
-				fTextView->SetFontAndColor(
-					i, i + 1, NULL, B_FONT_ALL, &fSettings.text_color_array[i]);
-			}
-		} else {
-			; // Here we should set the text-colors if needed.
 		}
 
 		if (fSettings.font.Size() != s->font.Size())
@@ -883,14 +871,6 @@ void
 TextEditor::PaletteColorChanged(const rgb_color& color)
 {
 	if (Window() && Window()->Lock()) {
-		int32 start, finish;
-		GetSelection(&start, &finish);
-
-		if (start != finish)
-			SetFontAndColor(NULL, B_FONT_ALL, &color);
-		else
-			SetFontAndColor(0, TextLength(), NULL, B_FONT_ALL, &color);
-
 		_SendMessage();
 
 		Window()->Unlock();
