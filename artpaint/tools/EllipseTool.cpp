@@ -119,7 +119,6 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		window->Lock();
 		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
-		float old_width = view->PenSize();
 
 		window->Unlock();
 		bool use_fg_color = true;
