@@ -15,6 +15,7 @@
 #include "HSPolygon.h"
 #include "MessageConstants.h"
 #include "NumberSliderControl.h"
+#include "PaintApplication.h"
 #include "PaletteWindowClient.h"
 #include "Selection.h"
 #include "UtilityClasses.h"
@@ -662,11 +663,6 @@ TextManipulatorView::AllAttached()
 	fTextView->SetText(fSettings.text);
 	fTextView->SetTarget(BMessenger(this, Window()));
 
-	int32 length = fSettings.text ? strlen(fSettings.text) : 0;
-	for (int32 i = 0; i < length; ++i) {
-		fTextView->SetFontAndColor(i, i + 1, NULL, B_FONT_ALL, &fSettings.text_color_array[i]);
-	}
-
 	fSizeControl->SetValue(int32(fSettings.font.Size()));
 	fRotationControl->SetValue(int32(fSettings.font.Rotation()));
 	fShearControl->SetValue(int32(fSettings.font.Shear()));
@@ -698,6 +694,11 @@ TextManipulatorView::MessageReceived(BMessage* message)
 			for (int32 i = 0; i < textLength; ++i) {
 				BFont font;
 				fTextView->GetFontAndColor(i, &font, &fSettings.text_color_array[i]);
+			}
+
+			rgb_color text_color = ((PaintApplication*)be_app)->Color(true);
+			for (int32 i = 0; i < textLength; ++i) {
+				fSettings.text_color_array[i] = text_color;
 			}
 
 			fManipulator->ChangeSettings(&fSettings);
@@ -807,14 +808,6 @@ TextManipulatorView::ChangeSettings(TextManipulatorSettings* s)
 		if (strcmp(fSettings.text, s->text) != 0) {
 			strcpy(fSettings.text, s->text);
 			fTextView->SetText(fSettings.text);
-
-			int32 length = fSettings.text ? strlen(fSettings.text) : 0;
-			for (int32 i = 0; i < length; ++i) {
-				fTextView->SetFontAndColor(
-					i, i + 1, NULL, B_FONT_ALL, &fSettings.text_color_array[i]);
-			}
-		} else {
-			; // Here we should set the text-colors if needed.
 		}
 
 		if (fSettings.font.Size() != s->font.Size())
@@ -886,10 +879,6 @@ TextEditor::PaletteColorChanged(const rgb_color& color)
 		int32 start, finish;
 		GetSelection(&start, &finish);
 
-		if (start != finish)
-			SetFontAndColor(NULL, B_FONT_ALL, &color);
-		else
-			SetFontAndColor(0, TextLength(), NULL, B_FONT_ALL, &color);
 
 		_SendMessage();
 
@@ -932,11 +921,8 @@ TextManipulatorSettings::TextManipulatorSettings()
 	text_color_array = new rgb_color[text_array_length];
 	strcpy(text, "Text!");
 
-	rgb_color text_color;
-	text_color.red = 0;
-	text_color.blue = 0;
-	text_color.green = 0;
-	text_color.alpha = 255;
+	rgb_color text_color = ((PaintApplication*)be_app)->Color(true);
+;
 	for (int32 i = 0; i < text_array_length; i++)
 		text_color_array[i] = text_color;
 
@@ -953,8 +939,10 @@ TextManipulatorSettings::TextManipulatorSettings(const TextManipulatorSettings& 
 
 	strcpy(text, s.text);
 
+	rgb_color text_color = ((PaintApplication*)be_app)->Color(true);
+;
 	for (int32 i = 0; i < text_array_length; i++)
-		text_color_array[i] = s.text_color_array[i];
+		text_color_array[i] = text_color;
 
 	starting_point = s.starting_point;
 	font = s.font;
