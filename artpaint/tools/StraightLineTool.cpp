@@ -156,6 +156,7 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 				BPoint(prev_point.x - brush_width_per_2, prev_point.y - brush_height_per_2),
 				selection);
 		} else {
+			brush = NULL;
 			brush_width_per_2 = floor(fToolSettings.size / 2);
 			brush_height_per_2 = brush_width_per_2;
 
@@ -401,6 +402,9 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		the_script->AddPoint(point);
 		return the_script;
 	}
+
+	delete srcBuffer;
+	delete tmpBuffer;
 
 	return NULL;
 }

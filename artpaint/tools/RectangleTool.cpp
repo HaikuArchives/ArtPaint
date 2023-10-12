@@ -106,7 +106,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 	bool anti_a = (GetCurrentValue(ANTI_ALIASING_LEVEL_OPTION) == B_CONTROL_ON);
 
 	int32 width = GetCurrentValue(WIDTH_OPTION);
-	float view_width = width * view->getMagScale();
 
 	if (fill == false && width > 1)
 		fill = true;
@@ -125,7 +124,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 		window->Lock();
 		rgb_color old_color = view->HighColor();
 		old_mode = view->DrawingMode();
-		float old_width = view->PenSize();
 
 		window->Unlock();
 		bool use_fg_color = true;
@@ -224,6 +222,9 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
 			old_rect = outerPoly->BoundingBox().InsetByCopy(-width, -width);
+
+			delete outerPoly;
+			delete innerPoly;
 			snooze(10 * 1000);
 		}
 
@@ -422,9 +423,10 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 
 		delete drawer;
 		delete imageUpdater;
-		delete tmpBuffer;
-		delete srcBuffer;
 	}
+
+	delete tmpBuffer;
+	delete srcBuffer;
 
 	return the_script;
 }

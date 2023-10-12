@@ -192,7 +192,6 @@ ScaleManipulator::ManipulateBitmap(
 		int32 source_bpr = original->BytesPerRow() / 4;
 		float diff = starting_width / new_width;
 		float accumulation = 0;
-		int32 left = (int32)bounds.left;
 		int32 bottom = (int32)bounds.bottom;
 
 		for (int32 y = 0; y < starting_height; y++)
@@ -410,8 +409,6 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	BBitmap* scale_y_bitmap = NULL;
 
 	if (new_width != starting_width) {
-		float bitmapWidth = new_width;
-		float bitmapHeight = starting_height;
 		scale_x_bitmap = new BBitmap(bitmap_frame, B_GRAY8);
 		if (scale_x_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
@@ -421,11 +418,6 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 		source_bits = (uint8*)selection_map->Bits();
 		int32 source_bpr = selection_map->BytesPerRow();
 		float diff = starting_width / new_width;
-
-		int32 left = (int32)new_settings->left; //bounds.left;
-		int32 top = (int32)new_settings->top; //bounds.top;
-		int32 right = left + new_width;
-		int32 bottom = (int32)bounds.bottom;
 
 		for (int32 y = 0; y < starting_height; y++)
 			for (int32 x = 0; x < target_bpr; x++)
@@ -447,9 +439,6 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	}
 
 	if (new_height != starting_height) {
-		float bitmapWidth = new_width;
-		float bitmapHeight = new_height;
-
 		scale_y_bitmap = new BBitmap(bitmap_frame, B_GRAY8);
 		if (scale_y_bitmap->IsValid() == FALSE)
 			throw std::bad_alloc();
@@ -465,8 +454,6 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 
 		int32 top = (int32)bounds.top;
 		int32 left = (int32)bounds.left;
-		int32 bottom = (int32)scale_y_bitmap->Bounds().bottom;
-		int32 right = (int32)scale_y_bitmap->Bounds().right;
 
 		if (scale_x_bitmap != selection_map) {
 			left = 0;

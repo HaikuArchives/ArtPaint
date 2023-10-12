@@ -1746,6 +1746,10 @@ PaintWindow::_SaveImage(BMessage* message)
 		BDirectory directory(&ref);
 		// store the entry-ref
 		status = fImageEntry.SetTo(&directory, name.String(), true);
+		if (status != B_OK) {
+			fImageView->UnFreeze();
+			return status;
+		}
 
 		// Only one save ref is received so we do not need to loop.
 		BFile file;

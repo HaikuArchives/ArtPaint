@@ -99,7 +99,7 @@ EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	}
 	BBitmap* tmpBuffer = new (std::nothrow) BBitmap(buffer);
 	if (tmpBuffer == NULL) {
-		delete coordinate_queue;
+		delete coordinate_reader;
 		delete the_script;
 		delete srcBuffer;
 		return NULL;
@@ -157,6 +157,7 @@ EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		brush->draw(tmpBuffer,
 			BPoint(prev_point.x - brush_width_per_2, prev_point.y - brush_height_per_2), selection);
 	} else {
+		brush = NULL;
 		brush_width_per_2 = floor(fToolSettings.size / 2);
 		brush_height_per_2 = brush_width_per_2;
 

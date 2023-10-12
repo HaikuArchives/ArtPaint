@@ -47,10 +47,6 @@ ManipulatorWindow::ManipulatorWindow(
 		settings.FindInt32(skAddOnWindowFeel, (int32*)&feel);
 	}
 
-	window_look look = B_FLOATING_WINDOW_LOOK;
-	if (feel == B_NORMAL_WINDOW_FEEL)
-		look = B_TITLED_WINDOW_LOOK;
-
 	AddToSubset(master);
 
 	acquire_sem(sfWindowListMutex);

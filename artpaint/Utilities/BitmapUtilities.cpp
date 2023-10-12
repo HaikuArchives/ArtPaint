@@ -387,7 +387,6 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds, BList* pol
 				int newCheckLocation = 0;
 				BPoint startPos = BPoint(pos);
 				int end_counter = 0;
-				int point_counter = 0;
 
 				while (true) {
 					BPoint check = pos + neighbors[checkLocation - 1];
@@ -399,7 +398,6 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds, BList* pol
 						int prevCheckLocation = checkLocation;
 						checkLocation = newCheckLocation;
 						pos = check;
-						point_counter = 0;
 
 						if (prevCheckLocation == 5) {
 							if (included_points->HasPoint(check.x - 0.5, check.y - 0.5) == false) {
@@ -499,14 +497,8 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds, BList* pol
 								break;
 							}
 						}
-					} else {
+					} else
 						checkLocation = 1 + (checkLocation % 8);
-						if (point_counter > 8) {
-							point_counter = 0;
-							break;
-						} else
-							++point_counter;
-					}
 
 					if (point_count + 5 >= max_point_count) {
 						max_point_count *= 2;
