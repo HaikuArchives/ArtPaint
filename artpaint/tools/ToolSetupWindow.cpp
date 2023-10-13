@@ -52,8 +52,6 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 		Unlock();
 	}
 
-	Show();
-
 	sfToolSetupWindow = this;
 	FloaterManager::AddFloater(this);
 
@@ -63,11 +61,11 @@ ToolSetupWindow::ToolSetupWindow(BRect frame)
 		BMessage settings;
 		server->GetApplicationSettings(&settings);
 		settings.FindInt32(skToolSetupWindowFeel, (int32*)&feel);
+		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible, true);
 	}
 	SetWindowFeel(feel);
 
-	if (server)
-		server->SetValue(SettingsServer::Application, skToolSetupWindowVisible, true);
+	Show();
 }
 
 
