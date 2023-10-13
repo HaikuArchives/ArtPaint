@@ -211,8 +211,8 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 		float new_angle, prev_angle;
         if (GetCurrentValue(ROTATION_ENABLED_OPTION) == B_CONTROL_ON) {
-			BPoint centroid = new_rect.LeftTop() + new_rect.RightTop()
-				+ new_rect.RightBottom() + new_rect.LeftBottom();
+			BPoint centroid = bitmap_rect.LeftTop() + bitmap_rect.RightTop()
+				+ bitmap_rect.RightBottom() + bitmap_rect.LeftBottom();
 			centroid.x /= 4;
 			centroid.y /= 4;
 			prev_angle = new_angle = 0;
@@ -289,8 +289,8 @@ EllipseTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 					view->getCoords(&point, &buttons, &view_point);
 					window->Unlock();
 					if (centroid.x != point.x) {
-						new_angle = atan((centroid.y - view_point.y)
-							/ (centroid.x - view_point.x)) * 180 / M_PI;
+						new_angle = atan((centroid.y - point.y)
+							/ (centroid.x - point.x)) * 180 / M_PI;
 					} else {
 						new_angle = 90;
 					}
