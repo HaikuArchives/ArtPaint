@@ -170,8 +170,12 @@ ScaleManipulator::ManipulateBitmap(
 		&& new_settings->left == original_left && new_settings->top == original_top)
 		return NULL;
 
-	if (new_width == starting_width && new_height == starting_height)
-		return preview_bitmap;
+	if (new_width == starting_width && new_height == starting_height) {
+		if (final_bitmap != NULL)
+			delete final_bitmap;
+		final_bitmap = new BBitmap(preview_bitmap, B_RGBA32);
+		return final_bitmap;
+	}
 
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta", 0.0);
