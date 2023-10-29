@@ -379,20 +379,15 @@ Brush::delete_all_data()
 float
 Brush::PreviewBrush(BBitmap* preview_bitmap)
 {
-	float preview_width = width_;
-	float preview_height = height_;
+	float bmap_width = (preview_bitmap->Bounds().Width() + 1);
+	float bmap_height = (preview_bitmap->Bounds().Height() + 1);
 
-	float bmap_width = preview_bitmap->Bounds().Width() + 1;
-	float bmap_height = preview_bitmap->Bounds().Height() + 1;
+	float preview_width = 0.9 * bmap_width;
+	float preview_height = 0.9 * bmap_height;
 
-	while ((preview_width > bmap_width) || (preview_height > bmap_height)) {
-		preview_width /= 2.0;
-		preview_height /= 2.0;
-	}
-	int32 scale = (int32)(width_ / preview_width);
+	float max_dim = max_c(width_, height_);
 
-	int32 top = (int32)((bmap_height - preview_height) / 2.0);
-	int32 left = (int32)((bmap_width - preview_width) / 2.0);
+	float scale = max_c(1.0, max_dim / preview_width);
 
 	uint32* bits = (uint32*)preview_bitmap->Bits();
 	int32 bpr = preview_bitmap->BytesPerRow() / 4;
@@ -413,11 +408,22 @@ Brush::PreviewBrush(BBitmap* preview_bitmap)
 		uint32 brush_bpr = brush_bmap->BytesPerRow() / 4;
 		brush_bmap->Unlock();
 
+		int32 draw_width = brush_bpr / scale;
+		int32 draw_height = brush_bmap->Bounds().Height() / scale;
+
+		int32 top = (int32)((bmap_height - draw_height) / 2.0);
+		int32 left = (int32)((bmap_width - draw_width) / 2.0);
+
 		// Here we draw the brush to the bitmap.
 		for (int32 y = 0; y < preview_height; ++y) {
+			if (ceil(y * scale) > brush_bmap->Bounds().Height())
+				break;
 			for (int32 x = 0; x < preview_width; ++x) {
+				if (ceil(x * scale) > brush_bpr)
+					break;
+
 				union color_conversion color;
-				color.word = *(brush_bits + (x * scale) + (y * scale * brush_bpr));
+				color.word = *(brush_bits + (int32)ceil(x * scale) + ((int32)ceil(y * scale) * brush_bpr));
 				color.bytes[0] = 255 - color.bytes[0];
 				color.bytes[1] = 255 - color.bytes[1];
 				color.bytes[2] = 255 - color.bytes[2];
@@ -428,22 +434,37 @@ Brush::PreviewBrush(BBitmap* preview_bitmap)
 		}
 	}
 
-	// Here we draw a line indicating the relative size of the brush
-	color.bytes[0] = 0x00;
-	color.bytes[1] = 0x00;
-	color.bytes[2] = 0xFF;
-	color.bytes[3] = 0xFF;
-	bits = (uint32*)preview_bitmap->Bits();
-	bits += bpr * (int32)(bmap_height - 5) + 1;
-	*(bits - bpr) = color.word;
-	*(bits + bpr) = color.word;
-	for (int32 i = 0; i < bmap_width * (preview_width / width_) - 3; i++)
-		*bits++ = color.word;
-	bits--;
-	*(bits - bpr) = color.word;
-	*(bits + bpr) = color.word;
+	// Add the brush size to the bottom of the preview
+	BFont font;
+	font.SetSize(bmap_width / 6);
+	BString brushSizeString;
+	brushSizeString.SetToFormat("%d", (int32)max_dim - 2);
 
-	return preview_width / width_;
+	int32 strWidth = font.StringWidth("000");
+	font_height strHeight;
+	font.GetHeight(&strHeight);
+	int32 strX = 0;
+	int32 strY = (int32)(bmap_height - 1);
+	BRect fontBGRect(strX - 1, strY - strHeight.ascent + 2,
+		strX + strWidth + 2, bmap_height);
+
+	preview_bitmap->Lock();
+	BView* numView = new BView(preview_bitmap->Bounds(), "", B_FOLLOW_NONE, B_WILL_DRAW);
+	preview_bitmap->AddChild(numView);
+	rgb_color highColor = numView->HighColor();
+	numView->StrokeRect(preview_bitmap->Bounds(), B_SOLID_HIGH);
+	numView->StrokeRect(fontBGRect.OffsetByCopy(1.0, -1.0), B_SOLID_HIGH);
+	numView->SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	numView->FillRect(fontBGRect, B_SOLID_HIGH);
+	numView->MovePenTo(BPoint(strX, strY));
+	numView->SetHighColor(highColor);
+	numView->SetFont(&font);
+	numView->DrawString(brushSizeString);
+
+	numView->Sync();
+	preview_bitmap->Unlock();
+
+	return preview_width / max_dim;
 }
 
 
