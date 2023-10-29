@@ -310,17 +310,18 @@ BrushStoreView::Draw(BRect area)
 	SetPenSize(1.0);
 	for (int32 i = 0; i < brush_images->CountItems(); i++) {
 		if ((area & get_bitmap_frame(i)).IsValid() == TRUE) {
-			DrawBitmapAsync((BBitmap*)brush_images->ItemAt(i), get_bitmap_frame(i));
+			SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 			BRect outer_frame = get_bitmap_frame(i);
-			outer_frame.InsetBy(-1, -1);
-			StrokeRect(outer_frame);
+			DrawBitmap((BBitmap*)brush_images->ItemAt(i), get_bitmap_frame(i));
+			StrokeRect(outer_frame.InsetByCopy(-1, -1));
+			StrokeRect(outer_frame.InsetByCopy(-2, -2));
 		}
 	}
 	if (IsFocus() && (brush_data->CountItems() > 0)) {
 		SetHighColor(ui_color(B_NAVIGATION_BASE_COLOR));
 		BRect outer_frame = get_bitmap_frame(selected_brush_index);
 		SetPenSize(1.5);
-		StrokeRect(outer_frame);
+		StrokeRect(outer_frame.InsetByCopy(-1, -1));
 	}
 	Sync();
 }
@@ -483,7 +484,7 @@ BrushStoreView::AddBrush(Brush* brush)
 	bool added = false;
 
 	BBitmap* a_bitmap
-		= new BBitmap(BRect(0, 0, BRUSH_PREVIEW_WIDTH - 1, BRUSH_PREVIEW_HEIGHT - 1), B_RGB_32_BIT);
+		= new BBitmap(BRect(0, 0, BRUSH_PREVIEW_WIDTH, BRUSH_PREVIEW_HEIGHT), B_RGB_32_BIT, true);
 
 	brush_info new_brush_info = brush->GetInfo();
 

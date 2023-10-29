@@ -374,9 +374,8 @@ BrushView::BrushView(BRect frame, Brush* brush)
 
 	SetToolTip(B_TRANSLATE("Hold SHIFT to snap to 45° angles"));
 
-	frame.InsetBy(1.0, 1.0);
 	fBrushPreview
-		= new BBitmap(BRect(0.0, 0.0, frame.Width() - 1.0, frame.Height() - 1.0), B_RGBA32);
+		= new BBitmap(BRect(0.0, 0.0, frame.Width(), frame.Height()), B_RGBA32, true);
 	fBrush->PreviewBrush(fBrushPreview);
 }
 
@@ -389,11 +388,7 @@ BrushView::~BrushView()
 
 void BrushView::Draw(BRect)
 {
-	DrawBitmap(fBrushPreview, BPoint(1.0, 1.0));
-
-	SetPenSize(1);
-	SetHighColor(0, 0, 0, 255);
-	StrokeRect(Bounds());
+	DrawBitmap(fBrushPreview, BPoint(0.0, 0.0));
 
 	if (fDrawControls) {
 		float r1 = Bounds().Width() / 2;

@@ -395,8 +395,7 @@ CurrentBrushView::CurrentBrushView(BRect frame)
 
 	SetToolTip(B_TRANSLATE("Brush"));
 
-	frame.InsetBy(1.0, 1.0);
-	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width(), frame.Height()), B_RGBA32);
+	fBrushPreview = new BBitmap(BRect(0.0, 0.0, frame.Width(), frame.Height()), B_RGBA32, true);
 	BitmapUtilities::ClearBitmap(fBrushPreview, 0xFFFFFFFF);
 
 	list_of_views.AddItem(this);
@@ -412,11 +411,7 @@ CurrentBrushView::~CurrentBrushView()
 
 void CurrentBrushView::Draw(BRect)
 {
-	DrawBitmap(fBrushPreview, BPoint(1.0, 1.0));
-
-	SetPenSize(1);
-	SetHighColor(0, 0, 0, 255);
-	StrokeRect(Bounds());
+	DrawBitmap(fBrushPreview, BPoint(0.0, 0.0));
 }
 
 
