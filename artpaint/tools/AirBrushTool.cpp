@@ -128,7 +128,7 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		int32 step_factor = max_c(1.0, fToolSettings.size / 5);
 		while (coordinate_reader->GetPoint(point, step_factor) == B_OK) {
 			the_script->AddPoint(point);
-				
+
 			float half_size = fToolSettings.size / 2;
 			// we should only consider points that are inside this rectangle
 			rc = BRect(point.x - half_size, point.y - half_size, point.x + half_size,
@@ -154,39 +154,25 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 								|| selection->ContainsPoint(left + x, top + y))) {
 							float change = (half_size - distance) / half_size;
 							change *= ((float)fToolSettings.pressure) / 100.0;
-							change *= 32768;
+							change *= 255;
+							float sel_alpha = selection->Value(left + x, top + y) / 255.;
+							if (selection->IsEmpty())
+								sel_alpha = 1.0;
 
-							// This is experimental for doing a real transparency
-							// Seems to work quite well
-							union color_conversion color1, color2, color3, color4;
-							color1.word = drawer->GetPixel(left + x, top + y);
-							color2.word = drawer->GetPixel(right - x, top + y);
-							color3.word = drawer->GetPixel(left + x, bottom - y);
-							color4.word = drawer->GetPixel(right - x, bottom - y);
-							if (color1.bytes[3] == 0x00)
-								color1.word = clear_color.word;
-							if (color2.bytes[3] == 0x00)
-								color2.word = clear_color.word;
-							if (color3.bytes[3] == 0x00)
-								color3.word = clear_color.word;
-							if (color4.bytes[3] == 0x00)
-								color4.word = clear_color.word;
-							drawer->SetPixel(left + x, top + y,
-								mix_2_pixels_fixed(
-									target_color, color1.word, (uint32)(change)),
-								selection, NULL);
+							union color_conversion target2;
+							target2.word = 0xffffff;
+							target2.bytes[3] = change * sel_alpha;
+							if (x < width && y < height)
+								drawer->SetPixel(left + x, top + y,
+									target2.word, selection);
 							drawer->SetPixel(right - x, top + y,
-								mix_2_pixels_fixed(
-									target_color, color2.word, (uint32)(change)),
-								selection, NULL);
+								target2.word, selection);
 							drawer->SetPixel(left + x, bottom - y,
-								mix_2_pixels_fixed(
-									target_color, color3.word, (uint32)(change)),
-								selection, NULL);
-							drawer->SetPixel(right - x, bottom - y,
-								mix_2_pixels_fixed(
-									target_color, color4.word, (uint32)(change)),
-								selection, NULL);								
+								target2.word, selection);
+							if (x < width && y < height)
+								drawer->SetPixel(right - x, bottom - y,
+									target2.word, selection);
+
 						}
 					}
 				}
@@ -195,7 +181,8 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			prev_point = point;
 			imageUpdater->AddRect(rc);
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
-			BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer, tmpBuffer, rc);
+			BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer, tmpBuffer, rc,
+				src_over_fixed, target_color);
 		}
 	} else if (fToolSettings.mode == HS_SPRAY_MODE) { // Do the spray
 		RandomNumberGenerator* generator = new RandomNumberGenerator(0, 10000);
