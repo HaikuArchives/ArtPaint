@@ -2353,10 +2353,7 @@ ImageView::DoCopyOrCut(int32 layers, bool cut)
 			BBitmap* to_be_archived = new BBitmap(bounds, B_RGBA32, 0); // stargater, Pete
 			uint32* target_bits = (uint32*)to_be_archived->Bits();
 			int32 bits_length = to_be_archived->BitsLength() / 4;
-			union {
-				uint8 bytes[4];
-				uint32 word;
-			} color;
+			union color_conversion color, norm_color;
 			color.bytes[0] = 0xFF;
 			color.bytes[1] = 0xFF;
 			color.bytes[2] = 0xFF;
@@ -2376,9 +2373,13 @@ ImageView::DoCopyOrCut(int32 layers, bool cut)
 
 			for (int32 y = top; y <= bottom; y++) {
 				for (int32 x = left; x <= right; x++) {
-					if (selection->ContainsPoint(x, y))
-						*target_bits = *(source_bits + x + y * source_bpr);
+					if (selection->ContainsPoint(x, y)) {
+						norm_color.word = color.word;
+						norm_color.bytes[3] = 0xFF - selection->Value(x, y);
 
+						*target_bits =
+							dst_out_fixed(*(source_bits + x + y * source_bpr), norm_color.word);
+					}
 					target_bits++;
 				}
 			}

@@ -155,8 +155,13 @@ Layer::Clear(rgb_color color)
 		int32 bpr = fLayerData->BytesPerRow() / 4;
 		for (int32 y = top; y <= bottom; ++y) {
 			for (int32 x = left; x <= right; ++x) {
-				if (selection->ContainsPoint(x, y))
-					*(bits + x + y * bpr) = color_bits;
+				if (selection->ContainsPoint(x, y)) {
+					union color_conversion norm_color;
+					norm_color.word = color_bits;
+					norm_color.bytes[3] = selection->Value(x, y);
+
+					*(bits + x + y * bpr) = dst_out_fixed(*(bits + x + y * bpr), norm_color.word);
+				}
 			}
 		}
 	}
