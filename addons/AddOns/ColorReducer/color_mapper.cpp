@@ -263,7 +263,7 @@ preserve_solids_fs_color_mapper(BBitmap* inSource, const rgb_color* inPalette, i
 		// Go from left to right.
 		for (int32 x = 0; x <= width; x++) {
 			if (analyzer->GradientMagnitude(x, y) > 0) {
-				bgra32.word = *source_bits++;
+				bgra32.word = *(source_bits + x + y * source_bpr);
 				// Add the error.
 				bgra32.bytes[0] = min_c(255, max_c(0, bgra32.bytes[0] - blue_side_error));
 				bgra32.bytes[1] = min_c(255, max_c(0, bgra32.bytes[1] - green_side_error));
@@ -282,7 +282,8 @@ preserve_solids_fs_color_mapper(BBitmap* inSource, const rgb_color* inPalette, i
 						= find_palette_index(bgra32.word, inPalette, inPaletteSize);
 				}
 
-				uint8 color_index = *destination_bits++ = (uint8)map_function[rgb15];
+				uint8 color_index = *(destination_bits + x + y * destination_bpr) 
+					= (uint8)map_function[rgb15];
 
 				int32 red_total_error = inPalette[color_index].red - bgra32.bytes[2];
 				int32 green_total_error = inPalette[color_index].green - bgra32.bytes[1];
@@ -307,7 +308,7 @@ preserve_solids_fs_color_mapper(BBitmap* inSource, const rgb_color* inPalette, i
 				green_error[x - 1] += (green_total_error * three_sixteenth);
 				blue_error[x - 1] += (blue_total_error * three_sixteenth);
 			} else {
-				bgra32.word = *source_bits++;
+				bgra32.word = *(source_bits + x + y * source_bpr);
 
 				// squeeze the 32-bit color to 15 bit index. See BeBook
 				// BScreen chapter for the reference on this.
@@ -331,8 +332,6 @@ preserve_solids_fs_color_mapper(BBitmap* inSource, const rgb_color* inPalette, i
 				blue_error[x + 1] = 0;
 			}
 		}
-		destination_bits += destination_padding;
-		source_bits += source_padding;
 	}
 
 	delete[] map_function;
