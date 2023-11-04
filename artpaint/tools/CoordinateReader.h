@@ -72,9 +72,9 @@ class CoordinateReader {
 	static	int32		thread_entry(void*);
 			int32		reader_function();
 
-			status_t	NextPointNoInterpolation(BPoint&);
-			status_t	NextPointLinearInterpolation(BPoint&);
-			status_t	NextPointCardinalSplineInterpolation(BPoint&);
+			status_t	NextPointNoInterpolation(BPoint& point);
+			status_t	NextPointLinearInterpolation(BPoint& point, int32 step_factor);
+			status_t	NextPointCardinalSplineInterpolation(BPoint& point, int32 step_factor);
 
 	inline	float		round(float);
 
@@ -83,7 +83,7 @@ public:
 						bool trace_path = FALSE, bool duplicates = FALSE, double delay = 10000.0);
 					~CoordinateReader();
 
-			status_t	GetPoint(BPoint&);
+			status_t	GetPoint(BPoint& point, int32 step_factor = 1);
 };
 
 

@@ -76,7 +76,7 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	image_view = view;
 	CoordinateReader* coordinate_reader
-		= new (std::nothrow) CoordinateReader(view, NO_INTERPOLATION, false);
+		= new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false, false, 0);
 	if (coordinate_reader == NULL)
 		return NULL;
 	reading_coordinates = true;
@@ -125,9 +125,10 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		prev_point = point - BPoint(1, 1);
 		SetLastUpdatedRect(BRect(point, point));
 		// while (buttons) {
-		while (coordinate_reader->GetPoint(point) == B_OK) {
+		int32 step_factor = max_c(1.0, fToolSettings.size / 5);
+		while (coordinate_reader->GetPoint(point, step_factor) == B_OK) {
 			the_script->AddPoint(point);
-
+				
 			float half_size = fToolSettings.size / 2;
 			// we should only consider points that are inside this rectangle
 			rc = BRect(point.x - half_size, point.y - half_size, point.x + half_size,
@@ -135,11 +136,13 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			rc = rc & bounds;
 			rc = rc & selection->GetBoundingRect();
 
-			if (rc.IsValid() == true) {
-				int32 height = rc.IntegerHeight();
-				int32 width = rc.IntegerWidth();
+			if (rc.IsValid() == true && point != prev_point) {
+				int32 height = rc.IntegerHeight() / 2;
+				int32 width = rc.IntegerWidth() / 2;
 				int32 left = (int32)rc.left;
 				int32 top = (int32)rc.top;
+				int32 right = (int32)rc.right;
+				int32 bottom = (int32)rc.bottom;
 
 				for (int32 y = 0; y <= height; y++) {
 					int32 y_sqr = (int32)((point.y - rc.top - y) * (point.y - rc.top - y));
@@ -151,37 +154,48 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 								|| selection->ContainsPoint(left + x, top + y))) {
 							float change = (half_size - distance) / half_size;
 							change *= ((float)fToolSettings.pressure) / 100.0;
+							change *= 32768;
 
 							// This is experimental for doing a real transparency
 							// Seems to work quite well
-							union {
-								uint8 bytes[4];
-								uint32 word;
-							} color;
-							color.word = drawer->GetPixel(left + x, top + y);
-							if (color.bytes[3] != 0x00) {
-								drawer->SetPixel(left + x, top + y,
-									mix_2_pixels_fixed(
-										target_color, color.word, (uint32)(32768 * change)),
-									selection, NULL);
-							} else {
-								color.word = target_color;
-								color.bytes[3] = 0x00;
-								drawer->SetPixel(left + x, top + y,
-									mix_2_pixels_fixed(
-										target_color, color.word, (uint32)(32768 * change)),
-									selection, NULL);
-							}
+							union color_conversion color1, color2, color3, color4;
+							color1.word = drawer->GetPixel(left + x, top + y);
+							color2.word = drawer->GetPixel(right - x, top + y);
+							color3.word = drawer->GetPixel(left + x, bottom - y);
+							color4.word = drawer->GetPixel(right - x, bottom - y);
+							if (color1.bytes[3] == 0x00)
+								color1.word = clear_color.word;
+							if (color2.bytes[3] == 0x00)
+								color2.word = clear_color.word;
+							if (color3.bytes[3] == 0x00)
+								color3.word = clear_color.word;
+							if (color4.bytes[3] == 0x00)
+								color4.word = clear_color.word;
+							drawer->SetPixel(left + x, top + y,
+								mix_2_pixels_fixed(
+									target_color, color1.word, (uint32)(change)),
+								selection, NULL);
+							drawer->SetPixel(right - x, top + y,
+								mix_2_pixels_fixed(
+									target_color, color2.word, (uint32)(change)),
+								selection, NULL);
+							drawer->SetPixel(left + x, bottom - y,
+								mix_2_pixels_fixed(
+									target_color, color3.word, (uint32)(change)),
+								selection, NULL);
+							drawer->SetPixel(right - x, bottom - y,
+								mix_2_pixels_fixed(
+									target_color, color4.word, (uint32)(change)),
+								selection, NULL);								
 						}
 					}
 				}
 			}
 
+			prev_point = point;
 			imageUpdater->AddRect(rc);
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
 			BitmapUtilities::CompositeBitmapOnSource(bitmap, srcBuffer, tmpBuffer, rc);
-
-			snooze(20 * 1000);
 		}
 	} else if (fToolSettings.mode == HS_SPRAY_MODE) { // Do the spray
 		RandomNumberGenerator* generator = new RandomNumberGenerator(0, 10000);

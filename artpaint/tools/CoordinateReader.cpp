@@ -57,15 +57,15 @@ CoordinateReader::~CoordinateReader()
 
 
 status_t
-CoordinateReader::GetPoint(BPoint& point)
+CoordinateReader::GetPoint(BPoint& point, int32 step_factor)
 {
 	switch (style) {
 		case NO_INTERPOLATION:
 			return NextPointNoInterpolation(point);
 		case LINEAR_INTERPOLATION:
-			return NextPointLinearInterpolation(point);
+			return NextPointLinearInterpolation(point, step_factor);
 		case CARDINAL_SPLINE_INTERPOLATION:
-			return NextPointCardinalSplineInterpolation(point);
+			return NextPointCardinalSplineInterpolation(point, step_factor);
 		default:
 			return B_ERROR;
 	}
@@ -128,8 +128,9 @@ status_t
 CoordinateReader::NextPointNoInterpolation(BPoint& point)
 {
 	while ((point_queue_length == 0) && (continue_reading))
-		snooze(50 * 1000);
-
+		//snooze(10 * 1000);
+		snooze((bigtime_t)reader_delay);
+		
 	if (point_queue_head != NULL) {
 		EnterCS();
 		queue_entry* entry = point_queue_head;
@@ -149,7 +150,7 @@ CoordinateReader::NextPointNoInterpolation(BPoint& point)
 
 
 status_t
-CoordinateReader::NextPointLinearInterpolation(BPoint& point)
+CoordinateReader::NextPointLinearInterpolation(BPoint& point, int32 step_factor)
 {
 	if (!interpolation_started) {
 		// Take the two first interpolation points.
@@ -210,7 +211,7 @@ CoordinateReader::NextPointLinearInterpolation(BPoint& point)
 	int32 new_x;
 
 	do {
-		interpolation_parameter += interpolation_step;
+		interpolation_parameter += interpolation_step * step_factor;
 		new_x = (int32)round(
 			p0.x * (1.0 - interpolation_parameter) + p1.x * interpolation_parameter);
 		new_y = (int32)round(
@@ -232,7 +233,7 @@ CoordinateReader::NextPointLinearInterpolation(BPoint& point)
 
 
 status_t
-CoordinateReader::NextPointCardinalSplineInterpolation(BPoint& point)
+CoordinateReader::NextPointCardinalSplineInterpolation(BPoint& point, int32 step_factor)
 {
 	if (!interpolation_started) {
 		// Take the four first interpolation points.
@@ -319,6 +320,7 @@ CoordinateReader::NextPointCardinalSplineInterpolation(BPoint& point)
 
 		float u = interpolation_parameter;
 
+		interpolation_step *= step_factor;
 		do {
 			u = min_c(u + interpolation_step, 1);
 			new_x
