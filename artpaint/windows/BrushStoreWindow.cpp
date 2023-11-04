@@ -248,8 +248,8 @@ BrushStoreWindow::brush_adder(void* data)
 			Brush* a_brush = new Brush(*(brush_info*)(temp_list.ItemAt(0)));
 
 			for (int32 i = 0; i < temp_list.CountItems(); i++) {
-				a_brush->ModifyBrush(*(brush_info*)(temp_list.ItemAt(i)));
-				this_pointer->store_view->AddBrush(a_brush);
+				a_brush->ModifyBrush(*(brush_info*)(temp_list.ItemAt(i)), false);
+				this_pointer->store_view->AddBrush(a_brush, false);
 			}
 
 			delete a_brush;
@@ -483,7 +483,7 @@ BrushStoreView::MouseDown(BPoint point)
 
 
 bool
-BrushStoreView::AddBrush(Brush* brush)
+BrushStoreView::AddBrush(Brush* brush, bool notify)
 {
 	bool added = false;
 
@@ -517,7 +517,7 @@ BrushStoreView::AddBrush(Brush* brush)
 		Draw(Bounds());
 	}
 
-	ToolManager::Instance().SetCurrentBrush(((brush_info*)brush_data->ItemAt(index)));
+	ToolManager::Instance().SetCurrentBrush(((brush_info*)brush_data->ItemAt(index)), notify);
 
 	ResizeBy(-1, 0);
 	ResizeBy(1, 0);

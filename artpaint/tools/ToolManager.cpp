@@ -251,13 +251,13 @@ ToolManager::ReturnActiveToolType() const
 
 
 status_t
-ToolManager::SetCurrentBrush(brush_info* binfo)
+ToolManager::SetCurrentBrush(brush_info* binfo, bool notify)
 {
 	// Set the new brush for all tools that use brushes.
 	if (fActiveBrush == NULL)
 		fActiveBrush = new Brush(*binfo);
 	else
-		fActiveBrush->ModifyBrush(*binfo);
+		fActiveBrush->ModifyBrush(*binfo, notify);
 
 	if (fActiveBrush == NULL)
 		return B_ERROR;
@@ -266,7 +266,8 @@ ToolManager::SetCurrentBrush(brush_info* binfo)
 
 	fActiveBrush->CreateDiffBrushes();
 
-	CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
+	if (notify == true)
+		CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
 
 	return B_OK;
 }
