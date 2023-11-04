@@ -240,6 +240,8 @@ BrushStoreWindow::brush_adder(void* data)
 {
 	BrushStoreWindow* this_pointer = (BrushStoreWindow*)data;
 
+	this_pointer->Lock();
+	this_pointer->BeginViewTransaction();
 	if (this_pointer != NULL) {
 		BList temp_list(*brush_data);
 		if (temp_list.CountItems() > 0) {
@@ -247,15 +249,17 @@ BrushStoreWindow::brush_adder(void* data)
 
 			for (int32 i = 0; i < temp_list.CountItems(); i++) {
 				a_brush->ModifyBrush(*(brush_info*)(temp_list.ItemAt(i)));
-				this_pointer->Lock();
 				this_pointer->store_view->AddBrush(a_brush);
-				this_pointer->Unlock();
 			}
 
 			delete a_brush;
 		}
+		this_pointer->EndViewTransaction();
+		this_pointer->Unlock();
 		return B_OK;
 	}
+	this_pointer->EndViewTransaction();
+	this_pointer->Unlock();
 	return B_ERROR;
 }
 
