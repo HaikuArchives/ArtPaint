@@ -438,7 +438,8 @@ Brush::PreviewBrush(BBitmap* preview_bitmap)
 	BFont font;
 	font.SetSize(bmap_width / 6);
 	BString brushSizeString;
-	brushSizeString.SetToFormat("%d", (int32)max_dim - 2);
+	float brushSize = max_c(actual_width, actual_height);
+	brushSizeString.SetToFormat("%d", (int32)brushSize);
 
 	int32 strWidth = font.StringWidth("000");
 	font_height strHeight;
