@@ -66,7 +66,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	image_view = view;
 	CoordinateReader* coordinate_reader
-		= new (std::nothrow) CoordinateReader(view, LINEAR_INTERPOLATION, false);
+		= new (std::nothrow) CoordinateReader(view, NO_INTERPOLATION, false);
 	if (coordinate_reader == NULL)
 		return NULL;
 
