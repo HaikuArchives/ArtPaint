@@ -160,7 +160,18 @@ ul {
 	margin-bottom: 15px;
 	margin-top: 15px;
 	min-height: 42px;
-}
-.box-info {
 	background: #e4ffde url(icons/info-box_32.png) 15px 15px no-repeat;
+}
+
+/* Image with text floating to the right */
+.floatright {
+	border:none;
+	padding:0em 1em 2em 0;
+	float:right
+}
+
+.floatright2 {
+	border:none;
+	padding:2.5em 1em 2em 0;
+	float:right
 }
