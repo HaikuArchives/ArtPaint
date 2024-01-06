@@ -41,7 +41,7 @@ Colors…	PaintWindow		Colores...
 Copies the selection of all layers.	PaintWindow		Copia la selección de todas las capas.
 Copies the selection.	PaintWindow		Copia la selección.
 Copy	PaintWindow		Copiar
-Create canvas	PaintWindow		Crear lienzo
+Create canvas	PaintWindow		ES 419
 Creates a new empty canvas.	PaintWindow		Crea un nuevo lienzo vacío.
 Crop…	PaintWindow		Recortar...
 Crops the canvas.	PaintWindow		Recorta el lienzo.

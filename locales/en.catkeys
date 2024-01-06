@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3330519304
+1	English	application/x-vnd.artpaint	1413323695
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -33,7 +33,6 @@ New color set	ColorPalette		New color set
 Change transparency…	Manipulators		Change transparency…
 Cut	PaintWindow		Cut
 OK	Windows		OK
-Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
 Drawing a straight line.	Tools		Drawing a straight line.
 Brush tool	Tools		Brush tool
 Redo	UndoQueue		Redo
@@ -56,11 +55,13 @@ Rotate +90°	PaintWindow		Rotate +90°
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
 Scale…	PaintWindow		Scale…
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
+Redo: %eventName%	UndoQueue		Redo: %eventName%
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file '%file%' is of unsupported type. You could try installing a translator for it if possible.
 Font:	Manipulators		Font:
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Layers…	PaintWindow		Layers…
+Color	PixelOperations		Color
 Rotates the canvas 90° counter-clockwise.	PaintWindow		Rotates the canvas 90° counter-clockwise.
 Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
 Translate	Manipulators		Translate
@@ -85,8 +86,8 @@ Background color	Tools		Background color
 Inverts the selection	PaintWindow		Inverts the selection
 Enable antialiasing	Tools		Enable antialiasing
 Airbrush	Tools		Airbrush
-Layer transparency	LayerWindow		Layer transparency
 Select non-transparent	ImageView		Select non-transparent
+Layer transparency	LayerWindow		Layer transparency
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Undo steps:	Windows		Undo steps:
 Scales all layers.	PaintWindow		Scales all layers.
@@ -113,7 +114,6 @@ Saves the project to disk.	PaintWindow		Saves the project to disk.
 Adjustable	Windows		Adjustable
 Don't save	ImageView		Don't save
 Radial	Tools		Radial
-Reset Brush	Windows		Reset Brush
 Cannot write to file	ColorPalette		Cannot write to file
 Closes the current window.	PaintWindow		Closes the current window.
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
@@ -127,7 +127,6 @@ Blend mode	ImageView		Blend mode
 Dissolve	PixelOperations		Dissolve
 Select none	ImageView		Select none
 Deletes the selected layer.	PaintWindow		Deletes the selected layer.
-Rectangle	Windows		Rectangle
 Rectangle	Tools		Rectangle
 Painting with a brush.	Tools		Painting with a brush.
 Cyan	ColorSliders	For CMYK color slider	Cyan
@@ -180,13 +179,13 @@ Invert selection	ImageView		Invert selection
 Change the transparency with the slider.	Manipulators		Change the transparency with the slider.
 Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Value
 Text: Position text and set its appearance.	Manipulators		Text: Position text and set its appearance.
-Grow	PaintWindow		Grow
 Previous color set	ColorPalette	In Color Palette window	Previous color set
+Grow	PaintWindow		Grow
 Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
 Width:	Manipulators		Width:
-Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
 New project…	PaintWindow		New project…
 Add	LayerWindow		Add
+Saturation	PixelOperations		Saturation
 Using the tool.	Tools		Using the tool.
 Tools…	PaintWindow		Tools…
 Divide	PixelOperations		Divide
@@ -198,19 +197,19 @@ Selection	PaintWindow		Selection
 Opens an image from disk.	PaintWindow		Opens an image from disk.
 Paste as a new project	PaintWindow		Paste as a new project
 Layers	Windows		Layers
-Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 None	PaintWindow		None
 Color dodge	PixelOperations		Color dodge
 Cursor	Windows		Cursor
 Crop…	PaintWindow		Crop…
-Bummer	UndoQueue		Bummer
 Darken	PixelOperations		Darken
+Bummer	UndoQueue		Bummer
 Cross-hair cursor	Windows		Cross-hair cursor
 Brush	StatusView		Brush
 Alpha	Tools		Alpha
 Width:	Tools		Width:
 Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Channel b
+Sets the zoom level to %s.	PaintWindow		Sets the zoom level to %s.
 Pressure:	Tools		Pressure:
 Rectangle tool	Tools		Rectangle tool
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
@@ -218,11 +217,10 @@ Click to select a painting color.	ColorPalette		Click to select a painting color
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Paste as a new layer	PaintWindow		Paste as a new layer
 Linear	Tools		Linear
-Next color set	ColorPalette	In Color Palette window	Next color set
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Next color set	ColorPalette	In Color Palette window	Next color set
 Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
 Save color set	ColorPalette		Save color set
-Store Brush	Windows		Store Brush
 Untitled	PaintWindow		Untitled
 Miscellaneous	Windows		Miscellaneous
 Settings…	FilePanels		Settings…
@@ -239,6 +237,7 @@ Drawing a freehand line.	Tools		Drawing a freehand line.
 Rotate selection	ImageView		Rotate selection
 Flip horizontally	Manipulators		Flip horizontally
 Flow:	Tools		Flow:
+Hue	PixelOperations		Hue
 Picking a color.	Tools		Picking a color.
 Opens a project from disk.	PaintWindow		Opens a project from disk.
 Flip vertically	PaintWindow		Flip vertically
@@ -313,7 +312,6 @@ Bicubic	ScaleUtilities		Bicubic
 Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Options
 Translate selection	ImageView		Translate selection
-Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
 Pin light	PixelOperations		Pin light
 Eraser tool	Tools		Eraser tool
@@ -356,6 +354,7 @@ Vivid light	PixelOperations		Vivid light
 Error reading file	ColorPalette		Error reading file
 Recent projects	PaintWindow		Recent projects
 Brushes…	PaintWindow		Brushes…
+Undo: %eventName%	UndoQueue		Undo: %eventName%
 Rotates all layers.	PaintWindow		Rotates all layers.
 Clears the selection or layer.	PaintWindow		Clears the selection or layer.
 Restore	Manipulators		Restore
@@ -363,6 +362,7 @@ Keep in front	Windows		Keep in front
 OK	Image		OK
 Red	ColorSliders	For RGB color sliders	Red
 Screen	PixelOperations		Screen
+Outline width:	Tools		Outline width:
 Colors	Windows		Colors
 Off	PaintWindow		Off
 Delete layer	Image		Delete layer
@@ -380,7 +380,6 @@ Saturation	ColorSliders	For HSV color slider	Saturation
 Select all	ImageView		Select all
 Flood fill	Tools		Flood fill
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
-Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400%.
 Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 OK	ImageView		OK
 Set zoom level	PaintWindow		Set zoom level
@@ -402,6 +401,7 @@ Overlay	PixelOperations		Overlay
 Rotate…	PaintWindow		Rotate…
 Invert	PaintWindow		Invert
 Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
+Lightness	PixelOperations		Lightness
 Open color set…	ColorPalette		Open color set…
 Rotates the canvas 90° clockwise.	PaintWindow		Rotates the canvas 90° clockwise.
 Much	Tools		Much
@@ -411,7 +411,6 @@ Unsaved changes!	ImageView		Unsaved changes!
 Un-selects all	PaintWindow		Un-selects all
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Layers	LayerWindow		Layers
-Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
 Green	ColorSliders	For RGB color sliders	Green
 Move the selection.	PaintWindow		Move the selection.
