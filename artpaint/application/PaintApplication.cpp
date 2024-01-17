@@ -130,8 +130,9 @@ PaintApplication::AboutRequested()
 	BAboutWindow* aboutW = new BAboutWindow(B_TRANSLATE_SYSTEM_NAME("ArtPaint"),
 		"application/x-vnd.artpaint");
 	aboutW->AddDescription(
-		B_TRANSLATE("ArtPaint is a painting and image-processing program for Haiku.")),
-		aboutW->AddCopyright(2003, "Heikki Suhonen");
+		B_TRANSLATE("ArtPaint is a painting and image-processing program for Haiku."));
+	aboutW->AddCopyright(2022, "Dale Cieslak");
+	aboutW->AddCopyright(2003, "Heikki Suhonen");
 	aboutW->AddAuthors(authors);
 	aboutW->Show();
 }
