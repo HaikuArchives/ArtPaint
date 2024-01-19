@@ -1,4 +1,4 @@
-1	Japanese	application/x-vnd.artpaint	3098087890
+1	Japanese	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: プロジェクトが最後に保存されてから変更があります。\n変更を保存しますか?}other{%project_name%: プロジェクトが最後に保存されてから#箇所の変更があります。\n変更を保存しますか?}}
 Blend mode	ImageView		ブレンドモード
 Cancel	ImageView		キャンセル
@@ -24,6 +24,24 @@ Select none	ImageView		選択を解除
 Shrink selection	ImageView		選択範囲を縮小
 Translate selection	ImageView		選択部を移動
 Unsaved changes!	ImageView		保存されていない変更!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d カラー
+ArtPaint: Open color set…	ColorPalette		ArtPaint: カラーセットを開く…
+Cannot delete the only color set.	ColorPalette		カラーセットはこれ以上削除できません。
+Cannot write to file	ColorPalette		ファイルに書き込めません
+Click to select a painting color.	ColorPalette		クリックしてペイントする色を選択します。
+Color model	ColorPalette		カラーモデル
+Color set	ColorPalette		カラーセット
+Colors	ColorPalette		カラー
+Delete current set	ColorPalette		現在のカラーセットを削除
+Error reading file	ColorPalette		ファイルの読み込みに失敗しました
+File structure corrupted	ColorPalette		ファイル構造が壊れています
+New color set	ColorPalette		新規カラーセット
+Next color set	ColorPalette	In Color Palette window	次のカラーセット
+Not a color set file	ColorPalette		カラーセットファイルではありません
+OK	ColorPalette		OK
+Open color set…	ColorPalette		カラーセットを開く…
+Previous color set	ColorPalette	In Color Palette window	前のカラーセット
+Save color set	ColorPalette		カラーセットを保存
 About ArtPaint	PaintWindow		ArtPaintについて
 Active layer	PaintWindow		アクティブレイヤー
 Add	PaintWindow		追加
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		キャンバスのサイズを設定ま
 Sets the grid to 2 by 2 pixels.	PaintWindow		グリッドのサイズを2*2ピクセルに設定します。
 Sets the grid to 4 by 4 pixels.	PaintWindow		グリッドのサイズを4*4ピクセルに設定します。
 Sets the grid to 8 by 8 pixels.	PaintWindow		グリッドのサイズを8*8ピクセルに設定します。
-Sets the zoom level to 100%.	PaintWindow		表示倍率を100%に設定します。
-Sets the zoom level to 200%.	PaintWindow		表示倍率を200%に設定します。
-Sets the zoom level to 25%.	PaintWindow		表示倍率を25%に設定します。
-Sets the zoom level to 400%.	PaintWindow		表示倍率を400%に設定します。
-Sets the zoom level to 50%.	PaintWindow		表示倍率を50%に設定します。
-Sets the zoom level to 800%.	PaintWindow		表示倍率を800%に設定します。
+Sets the zoom level to %s.	PaintWindow		表示倍率を%sに設定します。
 Settings…	PaintWindow		設定…
 Shrink	PaintWindow		縮小
 Shrinks the selection in all directions.	PaintWindow		選択範囲を全方向に縮小します。
@@ -195,11 +208,8 @@ No data translator	Windows		データトランスレーターがありません
 No options	Windows		オプションがありません
 Off	Windows		オフ
 OK	Windows		OK
-Rectangle	Windows		四角形
-Reset Brush	Windows		ブラシをリセット
 Settings	Windows		設定
 Show brush size	Windows		ブラシサイズを表示
-Store Brush	Windows		ブラシを保存
 Tool cursor	Windows		ツールカーソル
 Tool setup	Windows		ツール設定
 Tools	Windows		ツール
@@ -266,6 +276,7 @@ Much	Tools		多
 No configuration options available.	Tools		設定オプションは利用できません。
 None	Tools		無し
 Options	Tools		オプション
+Outline width:	Tools		アウトラインの幅:
 Painting with a brush.	Tools		ブラシを使って描きます。
 Painting with a hairy brush.	Tools		毛筆ブラシを使って描きます。
 Picking a color.	Tools		色を採取しています。
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: 画像を開く…
 ArtPaint: Open project…	PaintApplication		ArtPaint: プロジェクトを開く…
 OK	PaintApplication		OK
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		ファイル'%file%'はサポートされていないタイプです。 可能なら、トランスレーターのインストールを試してください。
-ArtPaint: Open color set…	ColorPalette		ArtPaint: カラーセットを開く…
-Cannot delete the only color set.	ColorPalette		カラーセットはこれ以上削除できません。
-Cannot write to file	ColorPalette		ファイルに書き込めません
-Click to select a painting color.	ColorPalette		クリックしてペイントする色を選択します。
-Color model	ColorPalette		カラーモデル
-Color set	ColorPalette		カラーセット
-Colors	ColorPalette		カラー
-Delete current set	ColorPalette		現在のカラーセットを削除
-Error reading file	ColorPalette		ファイルの読み込みに失敗しました
-File structure corrupted	ColorPalette		ファイル構造が壊れています
-New color set	ColorPalette		新規カラーセット
-Next color set	ColorPalette	In Color Palette window	次のカラーセット
-Not a color set file	ColorPalette		カラーセットファイルではありません
-OK	ColorPalette		OK
-Open color set…	ColorPalette		カラーセットを開く…
-Previous color set	ColorPalette	In Color Palette window	前のカラーセット
-Save color set	ColorPalette		カラーセットを保存
 ArtPaint: Save image	FilePanels		ArtPaint: 画像を保存
 Cancel	FilePanels		キャンセル
 Choose format	FilePanels		形式を選択
@@ -393,8 +387,11 @@ Brush	StatusView		ブラシ
 Left-click for color panel, right-click to switch colors.	StatusView		左クリックでカラーパネル、右クリックでカラーを変更します。
 Bummer	UndoQueue		残念
 Redo	UndoQueue		やり直し
+Redo: %eventName%	UndoQueue		やり直し: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		元に戻すためのメカニズムがメモリーを使い果たしました。\n直近のイベントがメモリーに残るようするため、元に戻す回数は制限されます。メモリーが完全に使い果たされた場合にデータの損失を避けるために、この時点で作業を保存しておくのを勧めます。\nまた、設定ウィンドウから元に戻せる回数を変更することもできます。
 Undo	UndoQueue		元に戻す
+Undo: %eventName%	UndoQueue		元に戻す: %eventName%
+Color	PixelOperations		色
 Color burn	PixelOperations		焼き込み
 Color dodge	PixelOperations		覆い焼き
 Darken	PixelOperations		比較 (暗)
@@ -404,7 +401,9 @@ Divide	PixelOperations		除算
 Exclusion	PixelOperations		除外
 Hard light	PixelOperations		ハードライト
 Hard mix	PixelOperations		ハードミックス
+Hue	PixelOperations		色相
 Lighten	PixelOperations		比較 (明)
+Lightness	PixelOperations		明るさ
 Linear burn	PixelOperations		焼き込み (リニア)
 Linear dodge	PixelOperations		覆い焼き (リニア)
 Linear light	PixelOperations		リニアライト
@@ -412,6 +411,7 @@ Multiply	PixelOperations		乗算
 Normal	PixelOperations		ノーマル
 Overlay	PixelOperations		オーバーレイ
 Pin light	PixelOperations		ピンライト
+Saturation	PixelOperations		彩度
 Screen	PixelOperations		スクリーン
 Soft light	PixelOperations		ソフトライト
 Vivid light	PixelOperations		ビビッドライト

@@ -1,0 +1,420 @@
+1	Norwegian	application/x-vnd.artpaint	1413323695
+{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Du har gjort en endring siden sist gang prosjektet ble lagret.\nVil du lagre endringen?}other{%project_name%: Du har gjort # endringer siden sist gang prosjektet ble lagret.\nVil du lagre endringene?}}
+Blend mode	ImageView		Blandingsmetode
+Cancel	ImageView		Avbryt
+Don't save	ImageView		Ikke lagre
+Drop layer to copy it to this image.	ImageView		Slipp lag for å kopiere det til dette bildet.
+Finishing	ImageView		Fullfører
+Grow selection	ImageView		Utvid utvalget
+Invert selection	ImageView		Inverter utvalget
+Layer %ld / %ld	ImageView		Lag %ld / %ld
+Layer name	ImageView		Lagnavn
+Layer transparency	ImageView		Lagtransparens
+Layer visibility	ImageView		Lagsynlighet
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Ikke nok ledig minne til å legge til et lag. Du kan frigjøre mer minne ved å deaktivere angre-funksjonen og lukke andre bilder. Det er også en god idé å lagre bildet nå, fordi å gå tom for minne senere kan gjøre lagring vanskelig eller umulig. Jeg beklager ulempen.
+Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Ikke nok ledig minne til å fullføre effekten du ba om. Du kan lukke andre bilder og prøve på nytt. Prøv også å redusere antall angre-skritt eller deaktivere angre-funksjonen helt hjelper til med å frigjøre mer minne. Hvis du har andre programmer som kjører, får du mer ledig minne ved å lukke dem. Det er også en god idé å lagre arbeidet ditt på dette tidspunktet, for hvis minnet går helt tom, kan det bli umulig å lagre. Jeg beklager ulempen.
+Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Ikke nok ledig minne til å fullføre effekten du ba om. Du kan lukke andre bilder og prøve på nytt. Prøv også å redusere antall angre-skritt eller deaktivere angre-funksjonen helt hjelper til med å frigjøre mer minne. Hvis du har andre programmer som kjører, får du mer ledig minne ved å lukke dem. Det er også en god idé å lagre arbeidet ditt på dette tidspunktet, for hvis minnet går helt tom, kan det bli umulig å lagre. Jeg beklager ulempen.
+OK	ImageView		OK
+Rotate selection	ImageView		Roter utvalg
+Save	ImageView		Lagre
+Scale selection	ImageView		Skaler utvalg
+Select all	ImageView		Velg alle
+Select non-transparent	ImageView		Velg ugjennomsiktige
+Select none	ImageView		Velg ingen
+Shrink selection	ImageView		Krymp utvalg
+Translate selection	ImageView		Oversett utvalg
+Unsaved changes!	ImageView		Ulagrede endringer!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d farger
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Åpne fargesett…
+Cannot delete the only color set.	ColorPalette		Kan ikke slette det eneste fargesettet.
+Cannot write to file	ColorPalette		Kan ikke skrive til fil
+Click to select a painting color.	ColorPalette		Klikk for å velge malefarge.
+Color model	ColorPalette		Fargemodell
+Color set	ColorPalette		Fargesett
+Colors	ColorPalette		Farger
+Delete current set	ColorPalette		Slett gjeldende sett
+Error reading file	ColorPalette		Feil ved lesing av fil
+File structure corrupted	ColorPalette		Filstrukturen er ødelagt
+New color set	ColorPalette		Nytt fargesett
+Next color set	ColorPalette	In Color Palette window	Neste fargesett
+Not a color set file	ColorPalette		Ikke en fargesettfil
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Åpne fargesett…
+Previous color set	ColorPalette	In Color Palette window	Forrige fargesett
+Save color set	ColorPalette		Lagre fargesett
+About ArtPaint	PaintWindow		Om ArtPaint
+Active layer	PaintWindow		Aktivt lag
+Add	PaintWindow		Legg til
+Add-ons	PaintWindow		Tillegg
+Adds a layer to the top of this image.	PaintWindow		Legger til et lag på toppen av dette bildet.
+All	PaintWindow		Alle
+All layers	PaintWindow		Alle lag
+All non-transparent	PaintWindow		Alle ugjennomsiktige
+Brushes…	PaintWindow		Børster…
+Canvas	PaintWindow		Lerret
+Clears the selection or layer.	PaintWindow		Fjerner utvalget eller laget.
+Close	PaintWindow		Lukk
+Closes the current window.	PaintWindow		Lukker det gjeldende vinduet.
+Colors…	PaintWindow		Farger…
+Copies the selection of all layers.	PaintWindow		Kopierer utvalget av alle lagene.
+Copies the selection.	PaintWindow		Kopierer utvalget.
+Copy	PaintWindow		Kopier
+Create canvas	PaintWindow		Opprett lerret
+Creates a new empty canvas.	PaintWindow		Oppretter et nytt tomt lerret.
+Crop…	PaintWindow		Beskjær…
+Crops the canvas.	PaintWindow		Beskjærer lerretet.
+Cut	PaintWindow		Klipp ut
+Cuts the selection from all layers to the clipboard.	PaintWindow		Klipper ut utvalget fra alle lag til utklippstavlen.
+Cuts the selection to the clipboard.	PaintWindow		Klipper ut utvalget til utklippstavlen.
+Delete	PaintWindow		Slett
+Deletes the selected layer.	PaintWindow		Sletter det valgte laget.
+Duplicate	PaintWindow		Dupliser
+Duplicates the selected layer.	PaintWindow		Dupliserer det valgte laget.
+Edit	PaintWindow		Rediger
+Empty paint window	PaintWindow		Tøm malingsvindu
+File	PaintWindow		Fil
+Flip horizontally	PaintWindow		Vend horisontalt
+Flip vertically	PaintWindow		Vend vertikalt
+Flips all layers horizontally.	PaintWindow		Vender alle lagene horisontalt.
+Flips all layers vertically.	PaintWindow		Vender alle lagene vertikalt.
+Flips the active layer horizontally.	PaintWindow		Vender det aktive laget horisontalt.
+Flips the active layer vertically.	PaintWindow		Vender det aktive laget vertikalt.
+Grow	PaintWindow		Øk
+Grows the selection in all directions.	PaintWindow		Øker utvalget i alle retninger.
+Height:	PaintWindow		Høyde:
+Hide borders	PaintWindow		Skjul omriss
+Hides the selection borders.	PaintWindow		Skjuler utvalgets omriss.
+Invert	PaintWindow		Inverter
+Inverts the selection	PaintWindow		Inverterer utvalget.
+Layer	PaintWindow		Lag
+Layers…	PaintWindow		Lag…
+Merge down	PaintWindow		Flett ned
+Merges selected layer with the layer below.	PaintWindow		Slår sammen valgt lag med laget under.
+Move the selection.	PaintWindow		Flytt utvalget.
+Moves all layers.	PaintWindow		Flytter alle lagene.
+Moves the active layer.	PaintWindow		Flytter det aktive laget.
+New project…	PaintWindow		Nytt prosjekt…
+None	PaintWindow		Ingen
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Ikke nok ledig minne til å opprette bildet. Prøv igjen med en mindre bildestørrelse.
+Off	PaintWindow		Av
+OK	PaintWindow		OK
+Open image…	PaintWindow		Åpne bilde…
+Open project…	PaintWindow		Åpne prosjekt…
+Opens a project from disk.	PaintWindow		Åpner et prosjekt fra disk.
+Opens a window with information about ArtPaint.	PaintWindow		Åpner et vindu med informasjon om ArtPaint.
+Opens an image from disk.	PaintWindow		Åpner et bilde fra disk.
+Opens the colors window.	PaintWindow		Åpner fargevinduet.
+Opens the layers window.	PaintWindow		Åpner lagvinduet.
+Opens the main documentation for ArtPaint.	PaintWindow		Åpner hoveddokumentasjonen for ArtPaint.
+Opens the settings window.	PaintWindow		Åpner innstillingsvinduet.
+Opens the tool selection window.	PaintWindow		Åpner vinduet for valg av verktøy.
+Opens the tool setup window.	PaintWindow		Åpner vinduet for verktøyoppsett.
+Opens the window of stored brushes.	PaintWindow		Åpner vinduet for lagrede børster.
+Paste as a new layer	PaintWindow		Lim inn som nytt lag
+Paste as a new project	PaintWindow		Lim inn som nytt prosjekt
+Pastes previously copied selection as a new layer.	PaintWindow		Limer inn tidligere kopiert utvalg som et nytt lag.
+Pastes previously copied selection as a new project.	PaintWindow		Limer inn tidligere kopiert utvalg som et nytt prosjekt.
+Quit	PaintWindow		Avslutt
+Quits ArtPaint.	PaintWindow		Avslutter ArtPaint.
+Recent images	PaintWindow		Nylige bilder
+Recent projects	PaintWindow		Nylige prosjekter
+Redo	PaintWindow		Gjenta
+Redos the action that was last undone.	PaintWindow		Gjentar handlingen som sist ble angret.
+Resize…	PaintWindow		Endre størrelse…
+Resizes the canvas.	PaintWindow		Endrer størrelsen på lerretet.
+Rotate -90°	PaintWindow		Roter -90°
+Rotate +90°	PaintWindow		Roter +90°
+Rotate the selection.	PaintWindow		Roter utvalget.
+Rotate…	PaintWindow		Roter…
+Rotates all layers.	PaintWindow		Roterer alle lagene.
+Rotates the active layer.	PaintWindow		Roterer det aktive laget.
+Rotates the canvas 90° clockwise.	PaintWindow		Roterer lerretet 90° med klokken.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Roterer lerretet 90° mot klokken.
+Save image	PaintWindow		Lagre bilde
+Save image as…	PaintWindow		Lagre bilde som…
+Save project	PaintWindow		Lagre prosjekt
+Save project as…	PaintWindow		Lagre prosjekt som…
+Saves the image to disk.	PaintWindow		Lagrer bildet til disk.
+Saves the image under its current name.	PaintWindow		Lagrer bildet med gjeldende navn.
+Saves the project to disk.	PaintWindow		Lagrer prosjektet til disk.
+Saves the project under its current name.	PaintWindow		Lagrer prosjektet med gjeldende navn.
+Scale the selection.	PaintWindow		Skaler utvalget.
+Scale…	PaintWindow		Skaler…
+Scales all layers.	PaintWindow		Skalerer alle lagene.
+Scales the active layer.	PaintWindow		Skalerer det aktive laget.
+Selection	PaintWindow		Utvalg
+Selects all non-transparent layer pixels	PaintWindow		Velger alle ikke-gjennomsiktige piksler i laget
+Selects entire layer	PaintWindow		Velg hele laget
+Set grid	PaintWindow		Angi rutenett
+Set zoom level	PaintWindow		Angi zoom-nivå
+Set/Select the canvas size.	PaintWindow		Angi/Velg størrelse på lerret.
+Sets the grid to 2 by 2 pixels.	PaintWindow		Setter rutenettet til 2 x 2 piksler.
+Sets the grid to 4 by 4 pixels.	PaintWindow		Setter rutenettet til 4 x 4 piksler.
+Sets the grid to 8 by 8 pixels.	PaintWindow		Setter rutenettet til 8 x 8 piksler.
+Sets the zoom level to %s.	PaintWindow		Setter zoomnivået til %s.
+Settings…	PaintWindow		Innstillinger…
+Shrink	PaintWindow		Krymp
+Shrinks the selection in all directions.	PaintWindow		Krymper utvalget i alle retninger.
+Standard sizes	PaintWindow		Standardstørrelser
+Tool setup…	PaintWindow		Verktøyoppsett…
+Tools…	PaintWindow		Verktøy…
+Translate…	PaintWindow		Flytt…
+Turns the grid off.	PaintWindow		Skrur rutenettet av.
+Un-selects all	PaintWindow		Fjerner markeringen av alt
+Undo	PaintWindow		Angre
+Undos the previous action.	PaintWindow		Angre forrige handling.
+Untitled	PaintWindow		Uten navn
+User manual…	PaintWindow		Brukermanual…
+Width:	PaintWindow		Tykkelse:
+Window	PaintWindow		Vindu
+Zoom in	PaintWindow		Zoom inn
+Zoom out	PaintWindow		Zoom ut
+Zooms into the image.	PaintWindow		Zoomer inn på bildet.
+Zooms out from the image.	PaintWindow		Zoomer ut fra bildet.
+Add	LayerWindow		Legg til
+Delete	LayerWindow		Slett
+Duplicate	LayerWindow		Dupliser
+Layer	LayerWindow		Lag
+Layer transparency	LayerWindow		Lagtransparens
+Layers	LayerWindow		Lag
+Merge down	LayerWindow		Flett ned
+Mode:	LayerWindow		Modus:
+Add layer	Image		Nytt lag
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Kan ikke slette det eneste laget. Lag et nytt bilde for å få en ny start.
+Delete	Image		Slett
+Delete layer	Image		Slett lag
+Merge down	Image		Flett ned
+Merge with layer above	Image		Flett opp
+OK	Image		OK
+Add-ons	Windows		Tillegg
+Adjustable	Windows		Tilpasset
+Application	Windows		Applikasjon
+Brush	Windows		Børste
+Brushes	Windows		Børster
+Cancel	Windows		Avbryt
+Colors	Windows		Farger
+Colors:	Windows		Farger:
+Cross-hair cursor	Windows		Hårkorsmarkør
+Cursor	Windows		Markør
+Datatype setup: %name%	Windows		Innstillinger for datatype: %name%
+Defaults	Windows		Standarder
+Delete selected brush	Windows		Slett valgte børste
+Drop a color from the Colors window	Windows		Slipp en farge fra Farge-vinduet
+Grid size:	Windows		Rutenettstørrelse:
+Keep in front	Windows		Behold foran
+Layers	Windows		Lag
+Miscellaneous	Windows		Diverse
+No data translator	Windows		Ingen oversetter for data
+No options	Windows		Ingen valg
+Off	Windows		Av
+OK	Windows		OK
+Settings	Windows		Innstillinger
+Show brush size	Windows		Vis børstestørrelse
+Tool cursor	Windows		Verktøymarkør
+Tool setup	Windows		Verktøyinnstillinger
+Tools	Windows		Verktøy
+Transparency	Windows		Gjennomsiktighet
+Undo	Windows		Angre
+Undo steps:	Windows		Angretrinn:
+Unlimited	Windows		Ubegrenset
+Windows	Windows		Vinduer
+Adjustable width	Tools		Justerbar tykkelse
+Adjusting the layer's transparency.	Tools		Justering av lagets gjennomsiktighet.
+Airbrush	Tools		Luftpensel
+Airbrush tool	Tools		Luftpenselverktøy
+Alpha	Tools		Alpha
+Amount of paint:	Tools		Mengde maling:
+Angle:	Tools		Vinkel:
+Aspect:	Tools		Aspekt:
+Background color	Tools		Bakgrunnsfarge
+Blue	Tools		Blå
+Blur tool	Tools		Uskarphetsverktøy
+Blurring the image.	Tools		Gjør bildet uskarpt.
+Brush tool	Tools		Børsteverktøy
+Click to place the text.	Tools		Klikk for å plassere teksten.
+Click to use the tool.	Tools		Klikk for å bruke verktøyet.
+Color picker tool	Tools		Fargevelgerverktøy
+Color picker window	Tools		Fargevelgervindu
+Color variance:	Tools		Fargevariasjon:
+Conic	Tools		Kjegleformet
+Continuous	Tools		Kontinuerlig
+Drag the text to correct position and set its appearance.	Tools		Dra teksten til riktig posisjon og angi utseendet.
+Drawing a freehand line.	Tools		Tegner en frihåndslinje.
+Drawing a rectangle.	Tools		Tegner et rektangel.
+Drawing a straight line.	Tools		Tegner en rett linje.
+Drawing an ellipse.	Tools		Tegner en ellipse.
+Ellipse	Tools		Ellipse
+Ellipse tool	Tools		Ellipse-verktøy
+Ellipse: SHIFT for circle, ALT for centered	Tools		Ellipse: SHIFT for sirkel, ALT for sentrert
+Enable antialiasing	Tools		Aktiver kantutjevning
+Enable gradient	Tools		Aktiver gradering
+Enable preview	Tools		Aktiver forhåndsvisning
+Enable rotation	Tools		Aktiver rotering
+Eraser tool	Tools		Viskelær
+Erasing pixels.	Tools		Sletter piksler.
+Fill ellipse	Tools		Fyll ellipse
+Fill rectangle	Tools		Fyll rektangel
+Fill tool	Tools		Fyllverktøy
+Fill tool: SHIFT locks 22.5° angles	Tools		Fyllverktøy: SHIFT låser til 22,5° vinkler
+Flood fill	Tools		Områdefylling
+Flow:	Tools		Flyt:
+Freehand	Tools		Frihånd
+Freehand line tool	Tools		Frihåndslinjeverktøy
+Green	Tools		Grønn
+Hairs:	Tools		Hår:
+Hairy brush tool	Tools		Hårete børsteverktøy
+Hardness:	Tools		Hardhet:
+Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT for å feste til 45° vinkler
+Intelligent scissors	Tools		Smart saks
+Linear	Tools		Lineær
+Little	Tools		Lite
+Magic wand	Tools		Tryllestav
+Making a fill.	Tools		Fyller.
+Making a selection.	Tools		Gjør et utvalg.
+Mode	Tools		Modus
+Much	Tools		Mye
+No configuration options available.	Tools		Ingen tilgjengelige konfigurasjonsalternativer.
+None	Tools		Ingen
+Options	Tools		Valg
+Outline width:	Tools		Bredde på omriss:
+Painting with a brush.	Tools		Tegner med en børste.
+Painting with a hairy brush.	Tools		Tegner med en hårete børste.
+Picking a color.	Tools		Velger en farge.
+Pressure:	Tools		Trykk:
+Radial	Tools		Radial
+Random	Tools		Tilfeldig
+Rectangle	Tools		Rektangel
+Rectangle tool	Tools		Rektangelverktøy
+Rectangle: SHIFT for square, ALT for centered	Tools		Rektangel: SHIFT for kvadrat, ALT for sentrert
+Red	Tools		Rød
+Replace pixels with	Tools		Erstatt piksler med
+Reset brush	Tools		Tilbakestill børste
+Selection tool	Tools		Utvalgsverktøy
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Utvalgsverktøy: SHIFT for kvadrat/sirkel, ALT sentrerer valg, OPT trekker fra
+Size:	Tools		Størrelse:
+Spray	Tools		Spray
+Square	Tools		Firkant
+Store brush	Tools		Lagre børste
+Straight line tool	Tools		Rett linjeverktøy
+Straight line: SHIFT locks 22.5° angles	Tools		Rett linje: SHIFT låser i 22,5° vinkler
+Text tool	Tools		Tekstverktøy
+Tolerance:	Tools		Toleranse:
+Tool setup	Tools		Verktøyinnstillinger
+Tools	Tools		Verktøy
+Transparency	Tools		Gjennomsiktighet
+Transparency tool	Tools		Gjennomsiktighetsverktøy
+Transparency:	Tools		Gjennomsiktighet:
+Use current brush	Tools		Bruk gjeldende børste
+Using the airbrush.	Tools		Bruker luftpensel.
+Using the tool.	Tools		Bruker verktøyet.
+Width:	Tools		Tykkelse:
+Alpha	ColorSliders	For color sliders	Alpha
+Black	ColorSliders	For CMYK color slider	Svart
+Blue	ColorSliders	For RGB color sliders	Blå
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanal a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanal b
+Cyan	ColorSliders	For CMYK color slider	Cyan
+Green	ColorSliders	For RGB color sliders	Grønn
+Hue	ColorSliders	For HSV color slider	Hue
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Lyshet
+Magenta	ColorSliders	For CMYK color slider	Magenta
+Red	ColorSliders	For RGB color sliders	Rød
+Saturation	ColorSliders	For HSV color slider	Metning
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Verdi
+Yellow	ColorSliders	For CMYK color slider	Gul
+Angle:	Manipulators		Vinkel:
+Change the transparency with the slider.	Manipulators		Endre gjennomsiktigheten med glidebryteren.
+Change transparency…	Manipulators		Endre gjennomsiktighet…
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Beskjær: Bruk knapper eller tallfelt for å sette nye rammer. SHIFT låser sideforhold.
+Crop…	Manipulators		Beskjær…
+Enable antialiasing	Manipulators		Aktiver kantutjevning
+Filter:	Manipulators		Filter:
+Flip horizontally	Manipulators		Vend horisontalt
+Flip vertically	Manipulators		Vend vertikalt
+Font:	Manipulators		Font:
+Height:	Manipulators		Høyde:
+Left:	Manipulators		Venstre:
+Lock	Manipulators	Keep the aspect ratio	Lås
+Lock	Manipulators		Lås
+Opaque	Manipulators		Ugjennomsiktig
+Reset to canvas	Manipulators		Tilbakestill til lerret
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Endre størrelse: Dra for å endre størrelse eller bruk tallfelt. Hold SHIFT for å låse aspektet
+Resize…	Manipulators		Endre størrelse…
+Restore	Manipulators		Gjennopprett
+Rotate	Manipulators		Roter
+Rotate -90°	Manipulators		Roter -90°
+Rotate +90°	Manipulators		Roter +90°
+Rotate selection	Manipulators		Roter utvalg
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Roter: Venstre-dra for å rotere, høyreklikk for å angi rotasjonssenter, SHIFT for å feste vinkel.
+Rotation:	Manipulators		Rotasjon:
+Scale	Manipulators		Skala
+Scale selection	Manipulators		Skaler utvalg
+Scale: Drag to resize or use number-fields.	Manipulators		Skaler: Dra for å endre størrelse eller bruk tallfelt.
+Shear:	Manipulators		Skjevhet:
+Size:	Manipulators		Størrelse:
+Text tool	Manipulators		Tekstverktøy
+Text: Position text and set its appearance.	Manipulators		Tekst: Plasser tekst og angi utseendet.
+Top:	Manipulators		Topp:
+Translate	Manipulators		Oversett
+Translate selection	Manipulators		Flytt utvalg
+Translate: Drag to move or use number-fields.	Manipulators		Flytt: Dra for å flytte eller bruke tallfelt.
+Transparency:	Manipulators		Transparens:
+Transparent	Manipulators		Transparent
+Use selection	Manipulators		Bruk utvalg
+Width:	Manipulators		Tykkelse:
+ArtPaint	System name		ArtPaint
+ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint er et male- og bildebehandlingsprogram for Haiku.
+ArtPaint project	PaintApplication	MIME type short description	ArtPaint-prosjekt
+ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint prosjektformat som inneholder lag etc.
+ArtPaint: Open image…	PaintApplication		ArtPaint: Åpne bilde…
+ArtPaint: Open project…	PaintApplication		ArtPaint: Åpne prosjekt…
+OK	PaintApplication		OK
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Filen '%file%' er av en type som ikke støttes. Du kan prøve å installere en oversetter hvis mulig.
+ArtPaint: Save image	FilePanels		ArtPaint: Lagre bilde
+Cancel	FilePanels		Avbryt
+Choose format	FilePanels		Velg format
+Open	FilePanels		Åpne
+Save	FilePanels		Lagre
+Save format:	FilePanels		Lagre format:
+Settings…	FilePanels		Innstillinger…
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Nærmeste nabo
+Brush	StatusView		Børste
+Left-click for color panel, right-click to switch colors.	StatusView		Venstreklikk for fargepanel, høyreklikk for å bytte farger.
+Bummer	UndoQueue		Fillern
+Redo	UndoQueue		Gjenta
+Redo: %eventName%	UndoQueue		Gjenta: %eventName%
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Angremekanismen har gått tom for minne.\nAntall operasjoner som kan angres vil være begrenset slik at de siste operasjonene kan lagres i minnet. Det anbefales å lagre arbeidet ditt på dette tidspunktet for å unngå tap av data i tilfelle minnet går helt tomt.\nDet kan også være lurt å justere angredybden i innstillingsvinduet.
+Undo	UndoQueue		Angre
+Undo: %eventName%	UndoQueue		Angre: %eventName%
+Color	PixelOperations		Farge
+Color burn	PixelOperations		Fargebrenning
+Color dodge	PixelOperations		Fargeunnvikelse
+Darken	PixelOperations		Mørkne
+Difference	PixelOperations		Forskjell
+Dissolve	PixelOperations		Dissolver
+Divide	PixelOperations		Del
+Exclusion	PixelOperations		Ekskluder
+Hard light	PixelOperations		Hardt lys
+Hard mix	PixelOperations		Hard blanding
+Hue	PixelOperations		Fargetone
+Lighten	PixelOperations		Lysne
+Lightness	PixelOperations		Lyshet
+Linear burn	PixelOperations		Lineær brenning
+Linear dodge	PixelOperations		Lineær unnvikelse
+Linear light	PixelOperations		Lineær lys
+Multiply	PixelOperations		Multipliser
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Overlegg
+Pin light	PixelOperations		Pinnelys
+Saturation	PixelOperations		Metning
+Screen	PixelOperations		Skjerm
+Soft light	PixelOperations		Mykt lys
+Vivid light	PixelOperations		Kraftig lys
+Free 2D transform	FreeTransformManipulator		Fri 2D-transformasjon
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformasjon: Dra for å rotere, flytte eller strekke.
+Zoom	MagnificationView		Zoom

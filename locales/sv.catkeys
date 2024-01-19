@@ -1,6 +1,6 @@
-1	Swedish	application/x-vnd.artpaint	3098087890
+1	Swedish	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Du har gjort en ändring sedan senast projektet sparades.\nVill du spara ändringen?}other{%project_name%: Du har gjort # ändringar sedan senast projektet sparades.\nVill du spara ändringarna?}}
-Blend mode	ImageView		Blend mode
+Blend mode	ImageView		Blandningsläge
 Cancel	ImageView		Avbryt
 Don't save	ImageView		Spara inte
 Drop layer to copy it to this image.	ImageView		Släpp lager för att kopiera det till den här bilden.
@@ -8,22 +8,40 @@ Finishing	ImageView		Efterbehandling
 Grow selection	ImageView		Öka urvalet
 Invert selection	ImageView		Invertera urval
 Layer %ld / %ld	ImageView		Lager %ld / %ld
-Layer name	ImageView		Layer name
-Layer transparency	ImageView		Layer transparency
-Layer visibility	ImageView		Layer visibility
+Layer name	ImageView		Lagrets namn
+Layer transparency	ImageView		Lagertransparens
+Layer visibility	ImageView		Lager synlighet
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att lägga till ett lager. Du kan frigöra mer minne genom att inaktivera ångra och stänga andra bilder. Det är också en bra idé att spara bilden nu eftersom att ta slut på minnet senare kan göra det svårt eller omöjligt att spara. Ursäkta besväret.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att avsluta effekten du begärde. Du kan stänga andra bilder och försöka igen. Att förkorta djupet av ångra eller inaktivera ångra helt och hållet hjälper till att uppnå mer minne. Om du har andra program igång, får du mer ledigt minne om du stänger dem. Det är också en bra idé att spara ditt arbete vid det här laget, för om minnet tar slut helt kan det bli omöjligt att spara.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att starta effekten du begärde. Du kan stänga andra bilder och försöka igen. Att förkorta djupet av ångra eller inaktivera ångra helt och hållet hjälper till att uppnå mer minne. Om du har andra program igång, får du mer ledigt minne om du stänger dem. Det är också en bra idé att spara ditt arbete vid det här laget, för om minnet tar slut helt kan det bli omöjligt att spara.
 OK	ImageView		OK
-Rotate selection	ImageView		Rotate selection
+Rotate selection	ImageView		Rotera valet
 Save	ImageView		Spara
-Scale selection	ImageView		Scale selection
+Scale selection	ImageView		Skalval
 Select all	ImageView		Välj alla
 Select non-transparent	ImageView		Välj icke-transparent
 Select none	ImageView		Välj ingen
 Shrink selection	ImageView		Krymp urval
-Translate selection	ImageView		Translate selection
+Translate selection	ImageView		Översätt urval
 Unsaved changes!	ImageView		Osparade ändringar!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d färger
+ArtPaint: Open color set…	ColorPalette		Artpaint: Öppen färguppsättning ...
+Cannot delete the only color set.	ColorPalette		Det går inte att ta bort den enda färguppsättningen.
+Cannot write to file	ColorPalette		Kan inte skriva till filen
+Click to select a painting color.	ColorPalette		Klicka för att välja en målningsfärg.
+Color model	ColorPalette		Färgmodell
+Color set	ColorPalette		Färguppsättning
+Colors	ColorPalette		Färger
+Delete current set	ColorPalette		Radera aktuell uppsättning
+Error reading file	ColorPalette		Det gick inte att läsa filen
+File structure corrupted	ColorPalette		Filstrukturen är skadad
+New color set	ColorPalette		Ny färguppsättning
+Next color set	ColorPalette	In Color Palette window	Nästa färguppsättning
+Not a color set file	ColorPalette		Inte en färguppsättningsfil
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Öppna färguppsättningen...
+Previous color set	ColorPalette	In Color Palette window	Tidigare färguppsättning
+Save color set	ColorPalette		Spara färguppsättning
 About ArtPaint	PaintWindow		Om ArtPaint
 Active layer	PaintWindow		Aktivt lager
 Add	PaintWindow		Lägg till
@@ -72,7 +90,7 @@ Layer	PaintWindow		Lager
 Layers…	PaintWindow		Skikten…
 Merge down	PaintWindow		Slå ihop
 Merges selected layer with the layer below.	PaintWindow		Slår ihop det valda lagret med lagret nedan.
-Move the selection.	PaintWindow		Move the selection.
+Move the selection.	PaintWindow		Flytta markeringen.
 Moves all layers.	PaintWindow		Flyttar alla lager.
 Moves the active layer.	PaintWindow		Flyttar det aktiva lagret.
 New project…	PaintWindow		Nytt projekt…
@@ -106,7 +124,7 @@ Resize…	PaintWindow		Ändra storlek...
 Resizes the canvas.	PaintWindow		Ändrar storleken på duken.
 Rotate -90°	PaintWindow		Rotera -90 °
 Rotate +90°	PaintWindow		Rotera +90 °
-Rotate the selection.	PaintWindow		Rotate the selection.
+Rotate the selection.	PaintWindow		Rotera markeringen.
 Rotate…	PaintWindow		Rotera…
 Rotates all layers.	PaintWindow		Roterar alla lager.
 Rotates the active layer.	PaintWindow		Roterar det aktiva skiktet.
@@ -120,7 +138,7 @@ Saves the image to disk.	PaintWindow		Sparar bilden på disken.
 Saves the image under its current name.	PaintWindow		Sparar bilden under dess nuvarande namn.
 Saves the project to disk.	PaintWindow		Sparar projektet på disken.
 Saves the project under its current name.	PaintWindow		Sparar projektet under sitt nuvarande namn.
-Scale the selection.	PaintWindow		Scale the selection.
+Scale the selection.	PaintWindow		Skala urvalet.
 Scale…	PaintWindow		Skala…
 Scales all layers.	PaintWindow		Skalar alla lager.
 Scales the active layer.	PaintWindow		Skalar det aktiva lagret.
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Ställ in/välj Canvas -storlek.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Ställer in nätet till 2 med 2 pixlar.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Ställer in nätet till 4 med 4 pixlar.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Ställer in nätet till 8 med 8 pixlar.
-Sets the zoom level to 100%.	PaintWindow		Ställer in zoomnivån till 100%.
-Sets the zoom level to 200%.	PaintWindow		Ställer in zoomnivån till 200%.
-Sets the zoom level to 25%.	PaintWindow		Ställer in zoomnivån till 25%.
-Sets the zoom level to 400%.	PaintWindow		Ställer in zoomnivån till 400%.
-Sets the zoom level to 50%.	PaintWindow		Ställer in zoomnivån till 50%.
-Sets the zoom level to 800%.	PaintWindow		Ställer in zoomnivån till 800%.
+Sets the zoom level to %s.	PaintWindow		Ställer in zoomnivån till %s.
 Settings…	PaintWindow		Inställningar…
 Shrink	PaintWindow		Krympa
 Shrinks the selection in all directions.	PaintWindow		Krymper urvalet i alla riktningar.
@@ -195,11 +208,8 @@ No data translator	Windows		Ingen datatraskare
 No options	Windows		Inga alternativ
 Off	Windows		Av
 OK	Windows		OK
-Rectangle	Windows		Rectangle
-Reset Brush	Windows		Reset Brush
 Settings	Windows		inställningar
-Show brush size	Windows		Show brush size
-Store Brush	Windows		Store Brush
+Show brush size	Windows		Visa borststorlek
 Tool cursor	Windows		Verktygsmarkör
 Tool setup	Windows		Verktygsinställning
 Tools	Windows		Verktyg
@@ -226,7 +236,7 @@ Click to use the tool.	Tools		Klicka för att använda verktyget.
 Color picker tool	Tools		Färgväljarverktyg
 Color picker window	Tools		Fönster för färgväljare
 Color variance:	Tools		Färgvarians:
-Conic	Tools		Conic
+Conic	Tools		Konisk
 Continuous	Tools		Kontinuerlig
 Drag the text to correct position and set its appearance.	Tools		Dra texten för att korrigera position och ställa in utseendet.
 Drawing a freehand line.	Tools		Rita en frihandslinje.
@@ -256,7 +266,7 @@ Hairy brush tool	Tools		Hårigt penselverktyg
 Hardness:	Tools		Hårdhet:
 Hold SHIFT to snap to 45° angles	Tools		Håll ned SHIFT för att snäppa till 45° vinklar
 Intelligent scissors	Tools		Intelligent sax
-Linear	Tools		Linear
+Linear	Tools		Linjär
 Little	Tools		Liten
 Magic wand	Tools		Trollspö
 Making a fill.	Tools		Gör en fyllning.
@@ -266,11 +276,12 @@ Much	Tools		Mycket
 No configuration options available.	Tools		Inga konfigurationsalternativ tillgängliga.
 None	Tools		Ingen
 Options	Tools		alternativ
+Outline width:	Tools		konturbredd:
 Painting with a brush.	Tools		Måla med en borste.
 Painting with a hairy brush.	Tools		Måla med en hårig borste.
 Picking a color.	Tools		Plocka en färg.
-Pressure:	Tools		Pressure:
-Radial	Tools		Radial
+Pressure:	Tools		Tryck:
+Radial	Tools		Radiell
 Random	Tools		Slumpmässig
 Rectangle	Tools		Rektangel
 Rectangle tool	Tools		Rektangelverktyg
@@ -282,7 +293,7 @@ Selection tool	Tools		Urvalsverktyg
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Markeringsverktyg: SHIFT för kvadrat/cirkel, ALT centrerar val, OPT subtraherar
 Size:	Tools		Storlek:
 Spray	Tools		Spray
-Square	Tools		Square
+Square	Tools		Fyrkant
 Store brush	Tools		Butiksborste
 Straight line tool	Tools		Rak linjeverktyg
 Straight line: SHIFT locks 22.5° angles	Tools		Rak linje: SHIFT låser 22,5° vinklar
@@ -292,8 +303,8 @@ Tool setup	Tools		Verktygsinställning
 Tools	Tools		Verktyg
 Transparency	Tools		Genomskinlighet
 Transparency tool	Tools		Transparensverktyg
-Transparency:	Tools		Transparency:
-Use current brush	Tools		Use current brush
+Transparency:	Tools		Genomskinlighet:
+Use current brush	Tools		Använd nuvarande borste
 Using the airbrush.	Tools		Med hjälp av luftborsten.
 Using the tool.	Tools		Använda verktyget.
 Width:	Tools		Bredd:
@@ -317,7 +328,7 @@ Change transparency…	Manipulators		Ändra transparens ...
 Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Beskär: Använd handtag eller nummerfält för att ställa in nya ramar. SHIFT låser bildförhållandet.
 Crop…	Manipulators		Beskära…
 Enable antialiasing	Manipulators		Aktivera antialiasing
-Filter:	Manipulators		Filter:
+Filter:	Manipulators		Filtrera:
 Flip horizontally	Manipulators		Vänd horisontellt
 Flip vertically	Manipulators		Vända vertikalt
 Font:	Manipulators		Font:
@@ -327,25 +338,25 @@ Lock	Manipulators	Keep the aspect ratio	Lås
 Lock	Manipulators		Lås
 Opaque	Manipulators		Ogenomskinlig
 Reset to canvas	Manipulators		Återställ till canvas
-Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
-Resize…	Manipulators		Resize…
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Ändra storlek: Dra för att ändra storlek eller använda nummerfält. Håll ned SHIFT för att låsa aspekten
+Resize…	Manipulators		Ändra storlek...
 Restore	Manipulators		Återställ
-Rotate	Manipulators		Rotate
+Rotate	Manipulators		Rotera
 Rotate -90°	Manipulators		Rotera -90 °
 Rotate +90°	Manipulators		Rotera +90 °
-Rotate selection	Manipulators		Rotate selection
+Rotate selection	Manipulators		Rotera valet
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotera: Vänster-dra för att rotera, högerklicka för att ställa in rotationscentrum, SKIFT för att fästa vinkeln.
 Rotation:	Manipulators		Rotation:
-Scale	Manipulators		Scale
-Scale selection	Manipulators		Scale selection
+Scale	Manipulators		Skala
+Scale selection	Manipulators		Skalval
 Scale: Drag to resize or use number-fields.	Manipulators		Skala: Dra för att ändra storlek eller använda nummerfält.
 Shear:	Manipulators		Klippa:
 Size:	Manipulators		Storlek:
 Text tool	Manipulators		Textverktyg
 Text: Position text and set its appearance.	Manipulators		Text: Placera text och ställ in dess utseende.
 Top:	Manipulators		Topp:
-Translate	Manipulators		Translate
-Translate selection	Manipulators		Translate selection
+Translate	Manipulators		Översätt
+Translate selection	Manipulators		Översätt urval
 Translate: Drag to move or use number-fields.	Manipulators		Översätt: Dra för att flytta eller använda nummerfält.
 Transparency:	Manipulators		Genomskinlighet:
 Transparent	Manipulators		Transparent
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		Artpaint: Open Image ...
 ArtPaint: Open project…	PaintApplication		Artpaint: Open Project ...
 OK	PaintApplication		OK
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Fil '%file%' är av typen som inte stöds. Du kan försöka installera en översättare för det om möjligt.
-ArtPaint: Open color set…	ColorPalette		Artpaint: Öppen färguppsättning ...
-Cannot delete the only color set.	ColorPalette		Det går inte att ta bort den enda färguppsättningen.
-Cannot write to file	ColorPalette		Kan inte skriva till filen
-Click to select a painting color.	ColorPalette		Klicka för att välja en målningsfärg.
-Color model	ColorPalette		Färgmodell
-Color set	ColorPalette		Färguppsättning
-Colors	ColorPalette		Färger
-Delete current set	ColorPalette		Radera aktuell uppsättning
-Error reading file	ColorPalette		Det gick inte att läsa filen
-File structure corrupted	ColorPalette		Filstrukturen är skadad
-New color set	ColorPalette		Ny färguppsättning
-Next color set	ColorPalette	In Color Palette window	Nästa färguppsättning
-Not a color set file	ColorPalette		Inte en färguppsättningsfil
-OK	ColorPalette		OK
-Open color set…	ColorPalette		Öppna färguppsättningen...
-Previous color set	ColorPalette	In Color Palette window	Tidigare färguppsättning
-Save color set	ColorPalette		Spara färguppsättning
 ArtPaint: Save image	FilePanels		ArtPaint: Spara bild
 Cancel	FilePanels		Avbryt
 Choose format	FilePanels		Välj format
@@ -383,18 +377,21 @@ Open	FilePanels		Öppna
 Save	FilePanels		Spara
 Save format:	FilePanels		Spara format:
 Settings…	FilePanels		Inställningar…
-Bicubic	ScaleUtilities		Bicubic
-Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
-Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
-Bilinear	ScaleUtilities		Bilinear
+Bicubic	ScaleUtilities		Bikubisk
+Bicubic (B-spline)	ScaleUtilities		Bikubisk (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bikubisk (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinjär
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
-Nearest neighbor	ScaleUtilities		Nearest neighbor
-Brush	StatusView		Brush
+Nearest neighbor	ScaleUtilities		Närmaste granne
+Brush	StatusView		Borsta
 Left-click for color panel, right-click to switch colors.	StatusView		Vänsterklicka för färgpanel, högerklicka för att byta färg.
 Bummer	UndoQueue		Besvikelse
 Redo	UndoQueue		Göra om
+Redo: %eventName%	UndoQueue		Göra om: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Undo-mekanismen har slut på minnet. \ Det djupet av ångra kommer att begränsas så att de senaste händelserna kan hållas i minnet. Det är tillrådligt att spara ditt arbete vid denna tidpunkt för att undvika eventuell förlust av data om minnet går helt ut. \ Nyou kanske också vill justera ångan i inställningarna.
 Undo	UndoQueue		Ångra
+Undo: %eventName%	UndoQueue		Ångra: %eventName%
+Color	PixelOperations		Färg
 Color burn	PixelOperations		Färg bränna
 Color dodge	PixelOperations		Färg undvika
 Darken	PixelOperations		Mörkna
@@ -404,7 +401,9 @@ Divide	PixelOperations		Dela upp
 Exclusion	PixelOperations		Uteslutning
 Hard light	PixelOperations		Hårt ljus
 Hard mix	PixelOperations		Hård mix
+Hue	PixelOperations		Nyans
 Lighten	PixelOperations		Lätta
+Lightness	PixelOperations		Lätthet
 Linear burn	PixelOperations		Linjär bränning
 Linear dodge	PixelOperations		Linjär dodge
 Linear light	PixelOperations		Linjärt ljus
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Multiplicera
 Normal	PixelOperations		Vanligt
 Overlay	PixelOperations		Täcka över
 Pin light	PixelOperations		Stiftljus
+Saturation	PixelOperations		Mättnad
 Screen	PixelOperations		Skärm
 Soft light	PixelOperations		Mjukt ljus
 Vivid light	PixelOperations		Levande ljus

@@ -1,5 +1,6 @@
-1	Finnish	application/x-vnd.artpaint	3981580643
+1	Finnish	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
+Blend mode	ImageView		Blend mode
 Cancel	ImageView		Peruuta
 Don't save	ImageView		Ei tallenna
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
@@ -7,16 +8,40 @@ Finishing	ImageView		Viimeistelee
 Grow selection	ImageView		Kasvata valintaa
 Invert selection	ImageView		Invertoi valinta
 Layer %ld / %ld	ImageView		Kerros %ld / %ld
+Layer name	ImageView		Layer name
+Layer transparency	ImageView		Layer transparency
+Layer visibility	ImageView		Layer visibility
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Ei ole tarpeeksi vapaata muistia pyytämäsi efektin viimeistelemiseen. Voit vapauttaa lisää muistia laittamalla perumisen pois päältä. Projekti kannattaa myös tallettaa tässä vaiheessa. Olen pahoillani aiheutuneesta epämukavuudesta.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Ei ole tarpeeksi vapaata muistia pyytämäsi efektin aloittamiseen. Voit vapauttaa lisää muistia laittamalla perumisen pois päältä. Projekti kannattaa myös tallettaa tässä vaiheessa. Olen pahoillani aiheutuneesta epämukavuudesta.
 OK	ImageView		OK
+Rotate selection	ImageView		Rotate selection
 Save	ImageView		Tallenna
+Scale selection	ImageView		Scale selection
 Select all	ImageView		Select all
 Select non-transparent	ImageView		Select non-transparent
 Select none	ImageView		Select none
 Shrink selection	ImageView		Kutista valintaa
+Translate selection	ImageView		Translate selection
 Unsaved changes!	ImageView		Unsaved changes!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d colors
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
+Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
+Cannot write to file	ColorPalette		Cannot write to file
+Click to select a painting color.	ColorPalette		Valitse harjan väri napsauttamalla.
+Color model	ColorPalette		Color model
+Color set	ColorPalette		Paletti
+Colors	ColorPalette		Värit
+Delete current set	ColorPalette		Tuhoa nykyinen paletti
+Error reading file	ColorPalette		Error reading file
+File structure corrupted	ColorPalette		File structure corrupted
+New color set	ColorPalette		Uusi paletti
+Next color set	ColorPalette	In Color Palette window	Next color set
+Not a color set file	ColorPalette		Not a color set file
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Avaa paletti…
+Previous color set	ColorPalette	In Color Palette window	Previous color set
+Save color set	ColorPalette		Tallenna paletti…
 About ArtPaint	PaintWindow		Tietoa ArtPaint
 Active layer	PaintWindow		Aktiivinen kerros
 Add	PaintWindow		Add
@@ -65,6 +90,7 @@ Layer	PaintWindow		Kerros
 Layers…	PaintWindow		Layers…
 Merge down	PaintWindow		Merge down
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
+Move the selection.	PaintWindow		Move the selection.
 Moves all layers.	PaintWindow		Moves all layers.
 Moves the active layer.	PaintWindow		Moves the active layer.
 New project…	PaintWindow		Uusi projekti…
@@ -98,6 +124,7 @@ Resize…	PaintWindow		Resize…
 Resizes the canvas.	PaintWindow		Resizes the canvas.
 Rotate -90°	PaintWindow		Kierrä vastapäivään
 Rotate +90°	PaintWindow		Kierrä myötäpäivään
+Rotate the selection.	PaintWindow		Rotate the selection.
 Rotate…	PaintWindow		Kierrä…
 Rotates all layers.	PaintWindow		Rotates all layers.
 Rotates the active layer.	PaintWindow		Rotates the active layer.
@@ -111,6 +138,7 @@ Saves the image to disk.	PaintWindow		Tallentaa kuvan levylle uudella nimellä.
 Saves the image under its current name.	PaintWindow		Saves the image under its current name.
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Saves the project under its current name.	PaintWindow		Saves the project under its current name.
+Scale the selection.	PaintWindow		Scale the selection.
 Scale…	PaintWindow		Skaalaa…
 Scales all layers.	PaintWindow		Scales all layers.
 Scales the active layer.	PaintWindow		Scales the active layer.
@@ -123,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Asettaa ruudukon 2*2 pikselin kokoiseksi.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Asettaa ruudukon 4*4 pikselin kokoiseksi.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Asettaa ruudukon 8*8 pikselin kokoiseksi.
-Sets the zoom level to 100%.	PaintWindow		Asettaa suurennustasoksi 100%.
-Sets the zoom level to 200%.	PaintWindow		Asettaa suurennustasoksi 200%.
-Sets the zoom level to 25%.	PaintWindow		Asettaa suurennustasoksi 25%.
-Sets the zoom level to 400%.	PaintWindow		Asettaa suurennustasoksi 400%.
-Sets the zoom level to 50%.	PaintWindow		Asettaa suurennustasoksi 50%.
-Sets the zoom level to 800%.	PaintWindow		Asettaa suurennustasoksi 800%.
+Sets the zoom level to %s.	PaintWindow		Sets the zoom level to %s.
 Settings…	PaintWindow		Asetukset…
 Shrink	PaintWindow		Shrink
 Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
@@ -186,6 +209,7 @@ No options	Windows		Ei optioita
 Off	Windows		Pois päältä
 OK	Windows		OK
 Settings	Windows		Settings
+Show brush size	Windows		Show brush size
 Tool cursor	Windows		Työkalut kohdistin
 Tool setup	Windows		Tool setup
 Tools	Windows		Tools
@@ -212,6 +236,7 @@ Click to use the tool.	Tools		Click to use the tool.
 Color picker tool	Tools		Color picker tool
 Color picker window	Tools		Color picker window
 Color variance:	Tools		Värin satunnaisuus:
+Conic	Tools		Conic
 Continuous	Tools		Jatkuva
 Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
 Drawing a freehand line.	Tools		Drawing a freehand line.
@@ -230,6 +255,7 @@ Erasing pixels.	Tools		Erasing pixels.
 Fill ellipse	Tools		Täytä ellipsi
 Fill rectangle	Tools		Täytä suorakaide
 Fill tool	Tools		Täyttötyökalu
+Fill tool: SHIFT locks 22.5° angles	Tools		Fill tool: SHIFT locks 22.5° angles
 Flood fill	Tools		Tulvatäyttö
 Flow:	Tools		Virtaus:
 Freehand	Tools		Freehand
@@ -240,6 +266,7 @@ Hairy brush tool	Tools		Hairy brush tool
 Hardness:	Tools		Hardness:
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Intelligent scissors	Tools		Älykkäät sakset
+Linear	Tools		Linear
 Little	Tools		Vähän
 Magic wand	Tools		Taikasauva
 Making a fill.	Tools		Making a fill.
@@ -249,9 +276,12 @@ Much	Tools		Paljon
 No configuration options available.	Tools		Ei käytettävissä olevia asetuksia.
 None	Tools		Ei lainkaan
 Options	Tools		Valinnat
+Outline width:	Tools		Outline width:
 Painting with a brush.	Tools		Painting with a brush.
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Picking a color.	Tools		Picking a color.
+Pressure:	Tools		Pressure:
+Radial	Tools		Radial
 Random	Tools		Satunnainen
 Rectangle	Tools		Suorakaide
 Rectangle tool	Tools		Suorakaidetyökalu
@@ -262,8 +292,8 @@ Reset brush	Tools		Reset brush
 Selection tool	Tools		Selection tool
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts
 Size:	Tools		Koko:
-Speed:	Tools		Nopeus:
 Spray	Tools		Spray
+Square	Tools		Square
 Store brush	Tools		Talleta sivellin
 Straight line tool	Tools		Straight line tool
 Straight line: SHIFT locks 22.5° angles	Tools		Straight line: SHIFT locks 22.5° angles
@@ -273,6 +303,8 @@ Tool setup	Tools		Työkalun asetus
 Tools	Tools		Työkalut
 Transparency	Tools		Transparency
 Transparency tool	Tools		Läpinäkyvyystyökalu
+Transparency:	Tools		Transparency:
+Use current brush	Tools		Use current brush
 Using the airbrush.	Tools		Using the airbrush.
 Using the tool.	Tools		Using the tool.
 Width:	Tools		Width:
@@ -309,20 +341,23 @@ Reset to canvas	Manipulators		Reset to canvas
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
 Resize…	Manipulators		Resize…
 Restore	Manipulators		Restore
+Rotate	Manipulators		Rotate
 Rotate -90°	Manipulators		Kierrä vastapäivään
 Rotate +90°	Manipulators		Kierrä myötäpäivään
+Rotate selection	Manipulators		Rotate selection
 Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.
-Rotate…	Manipulators		Kierrä…
 Rotation:	Manipulators		Kierto:
+Scale	Manipulators		Scale
+Scale selection	Manipulators		Scale selection
 Scale: Drag to resize or use number-fields.	Manipulators		Scale: Drag to resize or use number-fields.
-Scale…	Manipulators		Skaalaa…
 Shear:	Manipulators		Shear:
 Size:	Manipulators		Koko:
 Text tool	Manipulators		Tekstityökalu
 Text: Position text and set its appearance.	Manipulators		Text: Position text and set its appearance.
 Top:	Manipulators		Ylä:
+Translate	Manipulators		Translate
+Translate selection	Manipulators		Translate selection
 Translate: Drag to move or use number-fields.	Manipulators		Translate: Drag to move or use number-fields.
-Translate…	Manipulators		Liikuta…
 Transparency:	Manipulators		Läpinäkyvyystyökalu:
 Transparent	Manipulators		Läpinäkyvä
 Use selection	Manipulators		Use selection
@@ -334,24 +369,7 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 OK	PaintApplication		OK
-The file %file% is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		%file%-tiedoston tyyppiä ei tueta. Yritä asentaa kääntäjä, jos se on mahdollista.
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
-Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
-Cannot write to file	ColorPalette		Cannot write to file
-Click to select a painting color.	ColorPalette		Valitse harjan väri napsauttamalla.
-Color model	ColorPalette		Color model
-Color set	ColorPalette		Paletti
-Colors	ColorPalette		Värit
-Delete current set	ColorPalette		Tuhoa nykyinen paletti
-Error reading file	ColorPalette		Error reading file
-File structure corrupted	ColorPalette		File structure corrupted
-New color set	ColorPalette		Uusi paletti
-Next color set	ColorPalette	In Color Palette window	Next color set
-Not a color set file	ColorPalette		Not a color set file
-OK	ColorPalette		OK
-Open color set…	ColorPalette		Avaa paletti…
-Previous color set	ColorPalette	In Color Palette window	Previous color set
-Save color set	ColorPalette		Tallenna paletti…
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		'%file%'-tiedoston tyyppiä ei tueta. Yritä asentaa kääntäjä, jos se on mahdollista.
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Cancel	FilePanels		Peruuta
 Choose format	FilePanels		Choose format
@@ -365,10 +383,15 @@ Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
 Bilinear	ScaleUtilities		Bilinear
 Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
 Nearest neighbor	ScaleUtilities		Nearest neighbor
+Brush	StatusView		Brush
+Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
 Bummer	UndoQueue		Bummer
 Redo	UndoQueue		Tee uudelleen
+Redo: %eventName%	UndoQueue		Redo: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Undo	UndoQueue		Peru
+Undo: %eventName%	UndoQueue		Undo: %eventName%
+Color	PixelOperations		Color
 Color burn	PixelOperations		Color burn
 Color dodge	PixelOperations		Color dodge
 Darken	PixelOperations		Darken
@@ -378,7 +401,9 @@ Divide	PixelOperations		Divide
 Exclusion	PixelOperations		Exclusion
 Hard light	PixelOperations		Hard light
 Hard mix	PixelOperations		Hard mix
+Hue	PixelOperations		Hue
 Lighten	PixelOperations		Lighten
+Lightness	PixelOperations		Lightness
 Linear burn	PixelOperations		Linear burn
 Linear dodge	PixelOperations		Linear dodge
 Linear light	PixelOperations		Linear light
@@ -386,10 +411,10 @@ Multiply	PixelOperations		Multiply
 Normal	PixelOperations		Normal
 Overlay	PixelOperations		Overlay
 Pin light	PixelOperations		Pin light
+Saturation	PixelOperations		Saturation
 Screen	PixelOperations		Screen
 Soft light	PixelOperations		Soft light
 Vivid light	PixelOperations		Vivid light
 Free 2D transform	FreeTransformManipulator		Free 2D transform
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
-Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
 Zoom	MagnificationView		Suur

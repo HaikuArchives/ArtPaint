@@ -1,0 +1,420 @@
+1	Ukrainian	application/x-vnd.artpaint	1413323695
+{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Ви внесли зміни з моменту останнього збереження проекту.\nЗберегти зміни?}other{%project_name%: Ви внесли # змін з моменту останнього збереження проекту.\nЗберегти зміни?}}
+Blend mode	ImageView		Blend mode
+Cancel	ImageView		Скасувати
+Don't save	ImageView		Не зберігати
+Drop layer to copy it to this image.	ImageView		Перетягніть шар, щоб скопіювати його на це зображення.
+Finishing	ImageView		Завершення
+Grow selection	ImageView		Виростити виділення
+Invert selection	ImageView		Інвертувати виділення
+Layer %ld / %ld	ImageView		Шар %ld / %ld
+Layer name	ImageView		Layer name
+Layer transparency	ImageView		Layer transparency
+Layer visibility	ImageView		Layer visibility
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Недостатньо вільної пам’яті, щоб додати шар. Ви можете звільнити більше пам’яті, вимкнувши функцію скасування та закривши інші зображення. Також доцільно зберегти зображення зараз, тому що пізніше брак пам’яті може ускладнити або зробити його неможливим. Вибачте за незручності.
+Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Недостатньо вільної пам’яті, щоб завершити запитаний ефект. Ви можете закрити інші зображення та спробувати знову. Також скорочення глибини скасування або повне вимкнення скасування допомагає отримати більше пам’яті. Якщо у вас запущені інші програми, закриваючи їх, ви отримаєте більше вільної пам’яті. Також доцільно зберегти свою роботу на цьому етапі, оскільки якщо пам’ять повністю вичерпано, збереження може стати неможливим. Вибачте за незручності.
+Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Недостатньо вільної пам’яті для запуску ефекту, який ви запитували. Ви можете закрити інші зображення та спробувати знову. Також скорочення глибини скасування або повне вимкнення скасування допомагає отримати більше пам’яті. Якщо у вас запущені інші програми, закриваючи їх, ви отримаєте більше вільної пам’яті. Також доцільно зберегти свою роботу на цьому етапі, оскільки якщо пам’ять повністю вичерпано, збереження може стати неможливим. Вибачте за незручності.
+OK	ImageView		OK
+Rotate selection	ImageView		Rotate selection
+Save	ImageView		Зберегти
+Scale selection	ImageView		Scale selection
+Select all	ImageView		Виділити все
+Select non-transparent	ImageView		Select non-transparent
+Select none	ImageView		Зняти виділення
+Shrink selection	ImageView		Зменшити виділення
+Translate selection	ImageView		Translate selection
+Unsaved changes!	ImageView		Незбережені зміни!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d colors
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Відкрити набір кольорів…
+Cannot delete the only color set.	ColorPalette		Неможливо видалити єдиний набір кольорів.
+Cannot write to file	ColorPalette		Неможливо записати у файл
+Click to select a painting color.	ColorPalette		Клацніть, щоб вибрати колір малювання.
+Color model	ColorPalette		Кольорова модель
+Color set	ColorPalette		Набір кольорів
+Colors	ColorPalette		Кольори
+Delete current set	ColorPalette		Видалити поточний набір
+Error reading file	ColorPalette		Помилка читання файлу
+File structure corrupted	ColorPalette		Структура файлу пошкоджена
+New color set	ColorPalette		Новий набір кольорів
+Next color set	ColorPalette	In Color Palette window	Наступний набір кольорів
+Not a color set file	ColorPalette		Не файл із набором кольорів
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Відкрити набір кольорів…
+Previous color set	ColorPalette	In Color Palette window	Попередній набір кольорів
+Save color set	ColorPalette		Зберегти набір кольорів
+About ArtPaint	PaintWindow		Про ArtPaint
+Active layer	PaintWindow		Активний шар
+Add	PaintWindow		Додати
+Add-ons	PaintWindow		Додатки
+Adds a layer to the top of this image.	PaintWindow		Додає шар у верхній частині цього зображення.
+All	PaintWindow		All
+All layers	PaintWindow		All layers
+All non-transparent	PaintWindow		All non-transparent
+Brushes…	PaintWindow		Brushes…
+Canvas	PaintWindow		Canvas
+Clears the selection or layer.	PaintWindow		Clears the selection or layer.
+Close	PaintWindow		Close
+Closes the current window.	PaintWindow		Closes the current window.
+Colors…	PaintWindow		Colors…
+Copies the selection of all layers.	PaintWindow		Copies the selection of all layers.
+Copies the selection.	PaintWindow		Copies the selection.
+Copy	PaintWindow		Copy
+Create canvas	PaintWindow		Create canvas
+Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
+Crop…	PaintWindow		Crop…
+Crops the canvas.	PaintWindow		Crops the canvas.
+Cut	PaintWindow		Cut
+Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
+Cuts the selection to the clipboard.	PaintWindow		Cuts the selection to the clipboard.
+Delete	PaintWindow		Delete
+Deletes the selected layer.	PaintWindow		Deletes the selected layer.
+Duplicate	PaintWindow		Duplicate
+Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
+Edit	PaintWindow		Edit
+Empty paint window	PaintWindow		Empty paint window
+File	PaintWindow		File
+Flip horizontally	PaintWindow		Flip horizontally
+Flip vertically	PaintWindow		Flip vertically
+Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
+Flips all layers vertically.	PaintWindow		Flips all layers vertically.
+Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
+Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
+Grow	PaintWindow		Grow
+Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
+Height:	PaintWindow		Height:
+Hide borders	PaintWindow		Hide borders
+Hides the selection borders.	PaintWindow		Hides the selection borders.
+Invert	PaintWindow		Invert
+Inverts the selection	PaintWindow		Inverts the selection
+Layer	PaintWindow		Layer
+Layers…	PaintWindow		Layers…
+Merge down	PaintWindow		Merge down
+Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
+Move the selection.	PaintWindow		Move the selection.
+Moves all layers.	PaintWindow		Moves all layers.
+Moves the active layer.	PaintWindow		Moves the active layer.
+New project…	PaintWindow		New project…
+None	PaintWindow		None
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Not enough free memory to create the image. Please try again with a smaller image size.
+Off	PaintWindow		Off
+OK	PaintWindow		OK
+Open image…	PaintWindow		Open image…
+Open project…	PaintWindow		Open project…
+Opens a project from disk.	PaintWindow		Opens a project from disk.
+Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
+Opens an image from disk.	PaintWindow		Opens an image from disk.
+Opens the colors window.	PaintWindow		Opens the colors window.
+Opens the layers window.	PaintWindow		Opens the layers window.
+Opens the main documentation for ArtPaint.	PaintWindow		Opens the main documentation for ArtPaint.
+Opens the settings window.	PaintWindow		Opens the settings window.
+Opens the tool selection window.	PaintWindow		Opens the tool selection window.
+Opens the tool setup window.	PaintWindow		Opens the tool setup window.
+Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
+Paste as a new layer	PaintWindow		Paste as a new layer
+Paste as a new project	PaintWindow		Paste as a new project
+Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
+Pastes previously copied selection as a new project.	PaintWindow		Pastes previously copied selection as a new project.
+Quit	PaintWindow		Quit
+Quits ArtPaint.	PaintWindow		Quits ArtPaint.
+Recent images	PaintWindow		Recent images
+Recent projects	PaintWindow		Recent projects
+Redo	PaintWindow		Redo
+Redos the action that was last undone.	PaintWindow		Redos the action that was last undone.
+Resize…	PaintWindow		Resize…
+Resizes the canvas.	PaintWindow		Resizes the canvas.
+Rotate -90°	PaintWindow		Rotate -90°
+Rotate +90°	PaintWindow		Rotate +90°
+Rotate the selection.	PaintWindow		Rotate the selection.
+Rotate…	PaintWindow		Rotate…
+Rotates all layers.	PaintWindow		Rotates all layers.
+Rotates the active layer.	PaintWindow		Rotates the active layer.
+Rotates the canvas 90° clockwise.	PaintWindow		Rotates the canvas 90° clockwise.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Rotates the canvas 90° counter-clockwise.
+Save image	PaintWindow		Save image
+Save image as…	PaintWindow		Save image as…
+Save project	PaintWindow		Save project
+Save project as…	PaintWindow		Save project as…
+Saves the image to disk.	PaintWindow		Saves the image to disk.
+Saves the image under its current name.	PaintWindow		Saves the image under its current name.
+Saves the project to disk.	PaintWindow		Saves the project to disk.
+Saves the project under its current name.	PaintWindow		Saves the project under its current name.
+Scale the selection.	PaintWindow		Scale the selection.
+Scale…	PaintWindow		Scale…
+Scales all layers.	PaintWindow		Scales all layers.
+Scales the active layer.	PaintWindow		Scales the active layer.
+Selection	PaintWindow		Selection
+Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
+Selects entire layer	PaintWindow		Selects entire layer
+Set grid	PaintWindow		Set grid
+Set zoom level	PaintWindow		Set zoom level
+Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
+Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
+Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
+Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
+Sets the zoom level to %s.	PaintWindow		Sets the zoom level to %s.
+Settings…	PaintWindow		Settings…
+Shrink	PaintWindow		Shrink
+Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
+Standard sizes	PaintWindow		Standard sizes
+Tool setup…	PaintWindow		Tool setup…
+Tools…	PaintWindow		Tools…
+Translate…	PaintWindow		Translate…
+Turns the grid off.	PaintWindow		Turns the grid off.
+Un-selects all	PaintWindow		Un-selects all
+Undo	PaintWindow		Undo
+Undos the previous action.	PaintWindow		Undos the previous action.
+Untitled	PaintWindow		Untitled
+User manual…	PaintWindow		User manual…
+Width:	PaintWindow		Width:
+Window	PaintWindow		Window
+Zoom in	PaintWindow		Zoom in
+Zoom out	PaintWindow		Zoom out
+Zooms into the image.	PaintWindow		Zooms into the image.
+Zooms out from the image.	PaintWindow		Zooms out from the image.
+Add	LayerWindow		Додати
+Delete	LayerWindow		Видалити
+Duplicate	LayerWindow		Дублювати
+Layer	LayerWindow		Шар
+Layer transparency	LayerWindow		Прозорість шару
+Layers	LayerWindow		Шари
+Merge down	LayerWindow		Об'єднати вниз
+Mode:	LayerWindow		Режим:
+Add layer	Image		Додати шар
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Неможливо видалити єдиний шар. Створіть інше зображення, щоб почати все заново.
+Delete	Image		Delete
+Delete layer	Image		Видалити шар
+Merge down	Image		Об'єднати вниз
+Merge with layer above	Image		Об'єднати з шаром вище
+OK	Image		OK
+Add-ons	Windows		Add-ons
+Adjustable	Windows		Adjustable
+Application	Windows		Application
+Brush	Windows		Brush
+Brushes	Windows		Brushes
+Cancel	Windows		Cancel
+Colors	Windows		Colors
+Colors:	Windows		Colors:
+Cross-hair cursor	Windows		Cross-hair cursor
+Cursor	Windows		Cursor
+Datatype setup: %name%	Windows		Datatype setup: %name%
+Defaults	Windows		Defaults
+Delete selected brush	Windows		Delete selected brush
+Drop a color from the Colors window	Windows		Drop a color from the Colors window
+Grid size:	Windows		Grid size:
+Keep in front	Windows		Keep in front
+Layers	Windows		Layers
+Miscellaneous	Windows		Miscellaneous
+No data translator	Windows		No data translator
+No options	Windows		No options
+Off	Windows		Off
+OK	Windows		OK
+Settings	Windows		Settings
+Show brush size	Windows		Show brush size
+Tool cursor	Windows		Tool cursor
+Tool setup	Windows		Tool setup
+Tools	Windows		Tools
+Transparency	Windows		Transparency
+Undo	Windows		Undo
+Undo steps:	Windows		Undo steps:
+Unlimited	Windows		Unlimited
+Windows	Windows		Windows
+Adjustable width	Tools		Adjustable width
+Adjusting the layer's transparency.	Tools		Adjusting the layer's transparency.
+Airbrush	Tools		Airbrush
+Airbrush tool	Tools		Airbrush tool
+Alpha	Tools		Alpha
+Amount of paint:	Tools		Amount of paint:
+Angle:	Tools		Angle:
+Aspect:	Tools		Aspect:
+Background color	Tools		Background color
+Blue	Tools		Blue
+Blur tool	Tools		Blur tool
+Blurring the image.	Tools		Blurring the image.
+Brush tool	Tools		Brush tool
+Click to place the text.	Tools		Click to place the text.
+Click to use the tool.	Tools		Click to use the tool.
+Color picker tool	Tools		Color picker tool
+Color picker window	Tools		Color picker window
+Color variance:	Tools		Color variance:
+Conic	Tools		Conic
+Continuous	Tools		Continuous
+Drag the text to correct position and set its appearance.	Tools		Drag the text to correct position and set its appearance.
+Drawing a freehand line.	Tools		Drawing a freehand line.
+Drawing a rectangle.	Tools		Drawing a rectangle.
+Drawing a straight line.	Tools		Drawing a straight line.
+Drawing an ellipse.	Tools		Drawing an ellipse.
+Ellipse	Tools		Ellipse
+Ellipse tool	Tools		Ellipse tool
+Ellipse: SHIFT for circle, ALT for centered	Tools		Ellipse: SHIFT for circle, ALT for centered
+Enable antialiasing	Tools		Enable antialiasing
+Enable gradient	Tools		Enable gradient
+Enable preview	Tools		Enable preview
+Enable rotation	Tools		Enable rotation
+Eraser tool	Tools		Eraser tool
+Erasing pixels.	Tools		Erasing pixels.
+Fill ellipse	Tools		Fill ellipse
+Fill rectangle	Tools		Fill rectangle
+Fill tool	Tools		Fill tool
+Fill tool: SHIFT locks 22.5° angles	Tools		Fill tool: SHIFT locks 22.5° angles
+Flood fill	Tools		Flood fill
+Flow:	Tools		Flow:
+Freehand	Tools		Freehand
+Freehand line tool	Tools		Freehand line tool
+Green	Tools		Green
+Hairs:	Tools		Hairs:
+Hairy brush tool	Tools		Hairy brush tool
+Hardness:	Tools		Hardness:
+Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
+Intelligent scissors	Tools		Intelligent scissors
+Linear	Tools		Linear
+Little	Tools		Little
+Magic wand	Tools		Magic wand
+Making a fill.	Tools		Making a fill.
+Making a selection.	Tools		Making a selection.
+Mode	Tools		Mode
+Much	Tools		Much
+No configuration options available.	Tools		No configuration options available.
+None	Tools		None
+Options	Tools		Options
+Outline width:	Tools		Outline width:
+Painting with a brush.	Tools		Painting with a brush.
+Painting with a hairy brush.	Tools		Painting with a hairy brush.
+Picking a color.	Tools		Picking a color.
+Pressure:	Tools		Pressure:
+Radial	Tools		Radial
+Random	Tools		Random
+Rectangle	Tools		Rectangle
+Rectangle tool	Tools		Rectangle tool
+Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
+Red	Tools		Red
+Replace pixels with	Tools		Replace pixels with
+Reset brush	Tools		Reset brush
+Selection tool	Tools		Selection tool
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts
+Size:	Tools		Size:
+Spray	Tools		Spray
+Square	Tools		Square
+Store brush	Tools		Store brush
+Straight line tool	Tools		Straight line tool
+Straight line: SHIFT locks 22.5° angles	Tools		Straight line: SHIFT locks 22.5° angles
+Text tool	Tools		Text tool
+Tolerance:	Tools		Tolerance:
+Tool setup	Tools		Tool setup
+Tools	Tools		Tools
+Transparency	Tools		Transparency
+Transparency tool	Tools		Transparency tool
+Transparency:	Tools		Transparency:
+Use current brush	Tools		Use current brush
+Using the airbrush.	Tools		Using the airbrush.
+Using the tool.	Tools		Using the tool.
+Width:	Tools		Width:
+Alpha	ColorSliders	For color sliders	Альфа
+Black	ColorSliders	For CMYK color slider	Чорний
+Blue	ColorSliders	For RGB color sliders	Синій
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Канал a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Канал b
+Cyan	ColorSliders	For CMYK color slider	Ціан
+Green	ColorSliders	For RGB color sliders	Зелений
+Hue	ColorSliders	For HSV color slider	Відтінок
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Яскравість
+Magenta	ColorSliders	For CMYK color slider	Фуксин
+Red	ColorSliders	For RGB color sliders	Червоний
+Saturation	ColorSliders	For HSV color slider	Насиченість
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Значення
+Yellow	ColorSliders	For CMYK color slider	Жовтий
+Angle:	Manipulators		Кут:
+Change the transparency with the slider.	Manipulators		Змініть прозорість повзунком.
+Change transparency…	Manipulators		Змінити прозорість…
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Обрізати: використовуйте маркери або цифрові поля, щоб установити нові межі. SHIFT фіксує співвідношення сторін.
+Crop…	Manipulators		Обрізати…
+Enable antialiasing	Manipulators		Увімкнути згладжування
+Filter:	Manipulators		Filter:
+Flip horizontally	Manipulators		Перевернути горизонтально
+Flip vertically	Manipulators		Перевернути вертикально
+Font:	Manipulators		Шрифт:
+Height:	Manipulators		Висота:
+Left:	Manipulators		Ліворуч:
+Lock	Manipulators	Keep the aspect ratio	Зафіксувати
+Lock	Manipulators		Зафіксувати
+Opaque	Manipulators		Непрозорість
+Reset to canvas	Manipulators		Скинути на полотно
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
+Resize…	Manipulators		Resize…
+Restore	Manipulators		Відновити
+Rotate	Manipulators		Rotate
+Rotate -90°	Manipulators		Обертати -90°
+Rotate +90°	Manipulators		Обертати +90°
+Rotate selection	Manipulators		Rotate selection
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.
+Rotation:	Manipulators		Обертання:
+Scale	Manipulators		Scale
+Scale selection	Manipulators		Scale selection
+Scale: Drag to resize or use number-fields.	Manipulators		Масштаб: Перетягніть, щоб змінити розмір, або скористайтеся цифровими полями.
+Shear:	Manipulators		Зсув:
+Size:	Manipulators		Розмір:
+Text tool	Manipulators		Текст
+Text: Position text and set its appearance.	Manipulators		Текст: Розташуйте текст і задайте його вигляд.
+Top:	Manipulators		Зверху:
+Translate	Manipulators		Translate
+Translate selection	Manipulators		Translate selection
+Translate: Drag to move or use number-fields.	Manipulators		Перемістити: перетягніть або перемістіть за допомогою цифрової клавіатури
+Transparency:	Manipulators		Прозорість:
+Transparent	Manipulators		Прозорий
+Use selection	Manipulators		Використовувати виділення
+Width:	Manipulators		Ширина:
+ArtPaint	System name		ArtPaint
+ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint — це програма для малювання та обробки зображень в Haiku.
+ArtPaint project	PaintApplication	MIME type short description	Проєкт ArtPaint
+ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	Формат проєкту ArtPaint, що містить шари тощо.
+ArtPaint: Open image…	PaintApplication		ArtPaint: Відкрити зображення…
+ArtPaint: Open project…	PaintApplication		ArtPaint: Відкрити проєкт…
+OK	PaintApplication		OK
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Файл '%file%' має непідтримуваний тип. Ви можете спробувати встановити для нього транслятор.
+ArtPaint: Save image	FilePanels		ArtPaint: Зберегти зображення
+Cancel	FilePanels		Скасувати
+Choose format	FilePanels		Виберіть формат
+Open	FilePanels		Відкрити
+Save	FilePanels		Зберегти
+Save format:	FilePanels		Формат збереження:
+Settings…	FilePanels		Параметри…
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Nearest neighbor
+Brush	StatusView		Brush
+Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
+Bummer	UndoQueue		Bummer
+Redo	UndoQueue		Redo
+Redo: %eventName%	UndoQueue		Redo: %eventName%
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
+Undo	UndoQueue		Undo
+Undo: %eventName%	UndoQueue		Undo: %eventName%
+Color	PixelOperations		Color
+Color burn	PixelOperations		Color burn
+Color dodge	PixelOperations		Color dodge
+Darken	PixelOperations		Darken
+Difference	PixelOperations		Difference
+Dissolve	PixelOperations		Dissolve
+Divide	PixelOperations		Divide
+Exclusion	PixelOperations		Exclusion
+Hard light	PixelOperations		Hard light
+Hard mix	PixelOperations		Hard mix
+Hue	PixelOperations		Hue
+Lighten	PixelOperations		Lighten
+Lightness	PixelOperations		Lightness
+Linear burn	PixelOperations		Linear burn
+Linear dodge	PixelOperations		Linear dodge
+Linear light	PixelOperations		Linear light
+Multiply	PixelOperations		Multiply
+Normal	PixelOperations		Normal
+Overlay	PixelOperations		Overlay
+Pin light	PixelOperations		Pin light
+Saturation	PixelOperations		Saturation
+Screen	PixelOperations		Screen
+Soft light	PixelOperations		Soft light
+Vivid light	PixelOperations		Vivid light
+Free 2D transform	FreeTransformManipulator		Вільна трансформація 2D
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Трансформація: перетягніть, щоб повернути, перемістити або розтягнути.
+Zoom	MagnificationView		Масштаб

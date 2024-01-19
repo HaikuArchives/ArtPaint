@@ -1,4 +1,4 @@
-1	Turkish	application/x-vnd.artpaint	3098087890
+1	Turkish	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Projeyi son kaydetmenizden bu yana bir değişiklik yaptınız.\nDeğişikliği kaydetmek istiyor musunuz?}other{%project_name%: Projeyi son kaydetmenizden bu yana # değişiklik yaptınız.\nDeğişiklikleri kaydetmek istiyor musunuz?}}
 Blend mode	ImageView		Harman kipi
 Cancel	ImageView		İptal
@@ -24,6 +24,24 @@ Select none	ImageView		Hiçbirini seçme
 Shrink selection	ImageView		Seçimi küçült
 Translate selection	ImageView		Seçimi taşı
 Unsaved changes!	ImageView		Kaydedilmemiş değişiklikler!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d renk
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Renk kümesi aç…
+Cannot delete the only color set.	ColorPalette		Olan tek renk kümesi silinemez.
+Cannot write to file	ColorPalette		Dosyaya yazılamıyor
+Click to select a painting color.	ColorPalette		Bir boyama rengi seçmek için tıklayın.
+Color model	ColorPalette		Renk modeli
+Color set	ColorPalette		Renk kümesi
+Colors	ColorPalette		Renkler
+Delete current set	ColorPalette		Geçerli kümeyi sil
+Error reading file	ColorPalette		Dosya okunurken hata
+File structure corrupted	ColorPalette		Dosya yapısı hasarlı
+New color set	ColorPalette		Yeni renk kümesi
+Next color set	ColorPalette	In Color Palette window	Sonraki renk kümesi
+Not a color set file	ColorPalette		Bir renk kümesi dosyası değil
+OK	ColorPalette		Tamam
+Open color set…	ColorPalette		Renk kümesi aç…
+Previous color set	ColorPalette	In Color Palette window	Önceki renk kümesi
+Save color set	ColorPalette		Renk kümesini kaydet
 About ArtPaint	PaintWindow		ArtPaint hakkında
 Active layer	PaintWindow		Etkin katman
 Add	PaintWindow		Ekle
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Tuval boyutunu ayarlar/seçer.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Izgarayı 2x2 piksel olarak ayarlar.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Izgarayı 4x4 piksel olarak ayarlar.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Izgarayı 8x8 piksel olarak ayarlar.
-Sets the zoom level to 100%.	PaintWindow		Yakınlaştırma düzeyini %100 olarak ayarlar.
-Sets the zoom level to 200%.	PaintWindow		Yakınlaştırma düzeyini %200 olarak ayarlar.
-Sets the zoom level to 25%.	PaintWindow		Yakınlaştırma düzeyini %25 olarak ayarlar.
-Sets the zoom level to 400%.	PaintWindow		Yakınlaştırma düzeyini %400 olarak ayarlar.
-Sets the zoom level to 50%.	PaintWindow		Yakınlaştırma düzeyini %50 olarak ayarlar.
-Sets the zoom level to 800%.	PaintWindow		Yakınlaştırma düzeyini %800 olarak ayarlar.
+Sets the zoom level to %s.	PaintWindow		Yakınlaştırma düzeyini %%s olarak ayarlar.
 Settings…	PaintWindow		Ayarlar…
 Shrink	PaintWindow		Küçült
 Shrinks the selection in all directions.	PaintWindow		Seçimi tüm yönlerde küçültür.
@@ -195,11 +208,8 @@ No data translator	Windows		Veri çevirmeni yok
 No options	Windows		Seçenek yok
 Off	Windows		Kapalı
 OK	Windows		Tamam
-Rectangle	Windows		Dikdörtgen
-Reset Brush	Windows		Fırçayı sıfırla
 Settings	Windows		Ayarlar
 Show brush size	Windows		Fırça boyutunu göster
-Store Brush	Windows		Fırçayı depola
 Tool cursor	Windows		Araç imleci
 Tool setup	Windows		Araç ayarları
 Tools	Windows		Araçlar
@@ -266,6 +276,7 @@ Much	Tools		Çok
 No configuration options available.	Tools		Kullanılabilir yapılandırma seçeneği yok.
 None	Tools		Hiçbiri
 Options	Tools		Seçenekler
+Outline width:	Tools		Ana hat genişliği:
 Painting with a brush.	Tools		Bir fırça ile boyanıyor.
 Painting with a hairy brush.	Tools		Bir ince kıllı fırça ile boyanıyor.
 Picking a color.	Tools		Bir renk seçiliyor.
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: Görsel aç…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Proje aç…
 OK	PaintApplication		Tamam
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		'%file%' dosyası türü desteklenmiyor. Olanaklıysa bir çevirmen kurmayı deneyebilirsiniz.
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Renk kümesi aç…
-Cannot delete the only color set.	ColorPalette		Olan tek renk kümesi silinemez.
-Cannot write to file	ColorPalette		Dosyaya yazılamıyor
-Click to select a painting color.	ColorPalette		Bir boyama rengi seçmek için tıklayın.
-Color model	ColorPalette		Renk modeli
-Color set	ColorPalette		Renk kümesi
-Colors	ColorPalette		Renkler
-Delete current set	ColorPalette		Geçerli kümeyi sil
-Error reading file	ColorPalette		Dosya okunurken hata
-File structure corrupted	ColorPalette		Dosya yapısı hasarlı
-New color set	ColorPalette		Yeni renk kümesi
-Next color set	ColorPalette	In Color Palette window	Sonraki renk kümesi
-Not a color set file	ColorPalette		Bir renk kümesi dosyası değil
-OK	ColorPalette		Tamam
-Open color set…	ColorPalette		Renk kümesi aç…
-Previous color set	ColorPalette	In Color Palette window	Önceki renk kümesi
-Save color set	ColorPalette		Renk kümesini kaydet
 ArtPaint: Save image	FilePanels		ArtPaint: Görseli kaydet
 Cancel	FilePanels		İptal
 Choose format	FilePanels		Biçim seç
@@ -393,8 +387,11 @@ Brush	StatusView		Fırça
 Left-click for color panel, right-click to switch colors.	StatusView		Renk paneli için sol, renkleri birbiriyle değiştirmek için sağ tıklayın.
 Bummer	UndoQueue		Tüh
 Redo	UndoQueue		Yinele
+Redo: %eventName%	UndoQueue		Yinele: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Geri alma mekanizması için yeterli bellek yok.\nGeri alma derinliği, son gerçekleştirilen eylemlerin bellekte tutulabilmesi için sınırlıdır. Bu noktada veri kaybını önlemek için çalışmanızı kaydetmeniz önerilir.\nAyarlar penceresinde geri alma derinliğini de değiştirmek isteyebilirsiniz.
 Undo	UndoQueue		Geri al
+Undo: %eventName%	UndoQueue		Geri al: %eventName%
+Color	PixelOperations		Renk
 Color burn	PixelOperations		Renk yak
 Color dodge	PixelOperations		Renk atla
 Darken	PixelOperations		Koyulaştır
@@ -404,7 +401,9 @@ Divide	PixelOperations		Böl
 Exclusion	PixelOperations		Dışta tut
 Hard light	PixelOperations		Sert ışık
 Hard mix	PixelOperations		Sert karışım
+Hue	PixelOperations		Renk tonu
 Lighten	PixelOperations		Aydınlat
+Lightness	PixelOperations		Açıklık
 Linear burn	PixelOperations		Doğrusal yak
 Linear dodge	PixelOperations		Doğrusal atla
 Linear light	PixelOperations		Doğrusal ışık
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Çarp
 Normal	PixelOperations		Olağan
 Overlay	PixelOperations		Kapla
 Pin light	PixelOperations		Işığı sabitle
+Saturation	PixelOperations		Doygunluk
 Screen	PixelOperations		Ekran
 Soft light	PixelOperations		Yumuşak ışık
 Vivid light	PixelOperations		Keskin ışık

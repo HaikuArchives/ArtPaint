@@ -1,4 +1,4 @@
-1	English (British)	application/x-vnd.artpaint	3098087890
+1	English (British)	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
 Blend mode	ImageView		Blend mode
 Cancel	ImageView		Cancel
@@ -24,6 +24,24 @@ Select none	ImageView		Select none
 Shrink selection	ImageView		Shrink selection
 Translate selection	ImageView		Translate selection
 Unsaved changes!	ImageView		Unsaved changes!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d colours
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Open colour set…
+Cannot delete the only color set.	ColorPalette		Cannot delete the only colour set.
+Cannot write to file	ColorPalette		Cannot write to file
+Click to select a painting color.	ColorPalette		Click to select a painting colour.
+Color model	ColorPalette		Colour model
+Color set	ColorPalette		Colour set
+Colors	ColorPalette		Colours
+Delete current set	ColorPalette		Delete current set
+Error reading file	ColorPalette		Error reading file
+File structure corrupted	ColorPalette		File structure corrupted
+New color set	ColorPalette		New colour set
+Next color set	ColorPalette	In Color Palette window	Next colour set
+Not a color set file	ColorPalette		Not a colour set file
+OK	ColorPalette		Alright
+Open color set…	ColorPalette		Open colour set…
+Previous color set	ColorPalette	In Color Palette window	Previous colour set
+Save color set	ColorPalette		Save colour set
 About ArtPaint	PaintWindow		About ArtPaint
 Active layer	PaintWindow		Active layer
 Add	PaintWindow		Add
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Sets the grid to 2 by 2 pixels.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Sets the grid to 4 by 4 pixels.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Sets the grid to 8 by 8 pixels.
-Sets the zoom level to 100%.	PaintWindow		Sets the zoom level to 100%.
-Sets the zoom level to 200%.	PaintWindow		Sets the zoom level to 200%.
-Sets the zoom level to 25%.	PaintWindow		Sets the zoom level to 25%.
-Sets the zoom level to 400%.	PaintWindow		Sets the zoom level to 400%.
-Sets the zoom level to 50%.	PaintWindow		Sets the zoom level to 50%.
-Sets the zoom level to 800%.	PaintWindow		Sets the zoom level to 800%.
+Sets the zoom level to %s.	PaintWindow		Sets the zoom level to %s.
 Settings…	PaintWindow		Settings…
 Shrink	PaintWindow		Shrink
 Shrinks the selection in all directions.	PaintWindow		Shrinks the selection in all directions.
@@ -195,11 +208,8 @@ No data translator	Windows		No data translator
 No options	Windows		No options
 Off	Windows		Off
 OK	Windows		Alright
-Rectangle	Windows		Rectangle
-Reset Brush	Windows		Reset Brush
 Settings	Windows		Settings
 Show brush size	Windows		Show brush size
-Store Brush	Windows		Store Brush
 Tool cursor	Windows		Tool cursor
 Tool setup	Windows		Tool setup
 Tools	Windows		Tools
@@ -266,6 +276,7 @@ Much	Tools		Much
 No configuration options available.	Tools		No configuration options available.
 None	Tools		None
 Options	Tools		Options
+Outline width:	Tools		Outline width:
 Painting with a brush.	Tools		Painting with a brush.
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
 Picking a color.	Tools		Picking a colour.
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: Open image…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 OK	PaintApplication		Alright
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file '%file%' is of unsupported type. You could try installing a translator for it if possible.
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Open colour set…
-Cannot delete the only color set.	ColorPalette		Cannot delete the only colour set.
-Cannot write to file	ColorPalette		Cannot write to file
-Click to select a painting color.	ColorPalette		Click to select a painting colour.
-Color model	ColorPalette		Colour model
-Color set	ColorPalette		Colour set
-Colors	ColorPalette		Colours
-Delete current set	ColorPalette		Delete current set
-Error reading file	ColorPalette		Error reading file
-File structure corrupted	ColorPalette		File structure corrupted
-New color set	ColorPalette		New colour set
-Next color set	ColorPalette	In Color Palette window	Next colour set
-Not a color set file	ColorPalette		Not a colour set file
-OK	ColorPalette		Alright
-Open color set…	ColorPalette		Open colour set…
-Previous color set	ColorPalette	In Color Palette window	Previous colour set
-Save color set	ColorPalette		Save colour set
 ArtPaint: Save image	FilePanels		ArtPaint: Save image
 Cancel	FilePanels		Cancel
 Choose format	FilePanels		Choose format
@@ -393,8 +387,11 @@ Brush	StatusView		Brush
 Left-click for color panel, right-click to switch colors.	StatusView		Left-click for colour panel, right-click to switch colours.
 Bummer	UndoQueue		Bummer
 Redo	UndoQueue		Redo
+Redo: %eventName%	UndoQueue		Redo: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.
 Undo	UndoQueue		Undo
+Undo: %eventName%	UndoQueue		Undo: %eventName%
+Color	PixelOperations		Colour
 Color burn	PixelOperations		Colour burn
 Color dodge	PixelOperations		Colour dodge
 Darken	PixelOperations		Darken
@@ -404,7 +401,9 @@ Divide	PixelOperations		Divide
 Exclusion	PixelOperations		Exclusion
 Hard light	PixelOperations		Hard light
 Hard mix	PixelOperations		Hard mix
+Hue	PixelOperations		Hue
 Lighten	PixelOperations		Lighten
+Lightness	PixelOperations		Lightness
 Linear burn	PixelOperations		Linear burn
 Linear dodge	PixelOperations		Linear dodge
 Linear light	PixelOperations		Linear light
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Multiply
 Normal	PixelOperations		Normal
 Overlay	PixelOperations		Overlay
 Pin light	PixelOperations		Pin light
+Saturation	PixelOperations		Saturation
 Screen	PixelOperations		Screen
 Soft light	PixelOperations		Soft light
 Vivid light	PixelOperations		Vivid light

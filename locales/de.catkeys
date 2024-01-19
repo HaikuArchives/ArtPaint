@@ -1,4 +1,4 @@
-1	German	application/x-vnd.artpaint	3098087890
+1	German	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
 Blend mode	ImageView		Misch-Modus
 Cancel	ImageView		Abbrechen
@@ -24,7 +24,25 @@ Select none	ImageView		Auswahl aufheben
 Shrink selection	ImageView		Auswahl verkleinern
 Translate selection	ImageView		Auswahl verschieben
 Unsaved changes!	ImageView		Ungespeicherte Änderungen!
-About ArtPaint	PaintWindow		Über ArtPaint…
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d Farben
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Farbsatz öffnen …
+Cannot delete the only color set.	ColorPalette		Der einzig vorhandene Farbsatz kann nicht entfernt werden.
+Cannot write to file	ColorPalette		Datei kann nicht geschrieben werden
+Click to select a painting color.	ColorPalette		Maustaste drücken, um eine Farbe auszuwählen.
+Color model	ColorPalette		Farbmodell
+Color set	ColorPalette		Farbsatz
+Colors	ColorPalette		Farben
+Delete current set	ColorPalette		Aktuellen Farbsatz entfernen
+Error reading file	ColorPalette		Lesen der Datei fehlgeschlagen
+File structure corrupted	ColorPalette		Dateistruktur beschädigt
+New color set	ColorPalette		Neuer Farbsatz
+Next color set	ColorPalette	In Color Palette window	Nächster Farbsatz
+Not a color set file	ColorPalette		Keine Farbsatz-Datei
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Farbsatz laden …
+Previous color set	ColorPalette	In Color Palette window	Voriger Farbsatz
+Save color set	ColorPalette		Farbsatz speichern …
+About ArtPaint	PaintWindow		Über ArtPaint …
 Active layer	PaintWindow		Aktive Ebene
 Add	PaintWindow		Hinzufügen
 Add-ons	PaintWindow		Filter
@@ -32,18 +50,18 @@ Adds a layer to the top of this image.	PaintWindow		Fügt dem Bild eine Ebene hi
 All	PaintWindow		Alles
 All layers	PaintWindow		Alle Ebenen
 All non-transparent	PaintWindow		Alles nicht-transparente
-Brushes…	PaintWindow		Stifte…
+Brushes…	PaintWindow		Stifte …
 Canvas	PaintWindow		Bild
 Clears the selection or layer.	PaintWindow		Löscht die Auswahl bzw. Ebene.
 Close	PaintWindow		Fenster schließen
 Closes the current window.	PaintWindow		Schließt dieses Fenster.
-Colors…	PaintWindow		Farben…
+Colors…	PaintWindow		Farben …
 Copies the selection of all layers.	PaintWindow		Kopiert die Auswahl (alle Ebenen).
 Copies the selection.	PaintWindow		Kopiert die Auswahl.
 Copy	PaintWindow		Kopieren
 Create canvas	PaintWindow		Bild erstellen
 Creates a new empty canvas.	PaintWindow		Erzeugt ein neues, leeres Bild.
-Crop…	PaintWindow		Zuschneiden…
+Crop…	PaintWindow		Zuschneiden …
 Crops the canvas.	PaintWindow		Beschneidet das Bild
 Cut	PaintWindow		Ausschneiden
 Cuts the selection from all layers to the clipboard.	PaintWindow		Schneidet die Auswahl aller Ebenen aus.
@@ -69,19 +87,19 @@ Hides the selection borders.	PaintWindow		Blendet die Auswahlumrandung aus.
 Invert	PaintWindow		Umkehren
 Inverts the selection	PaintWindow		Auswahl invertieren
 Layer	PaintWindow		Ebene
-Layers…	PaintWindow		Ebenen…
+Layers…	PaintWindow		Ebenen …
 Merge down	PaintWindow		Nach unten vereinigen
 Merges selected layer with the layer below.	PaintWindow		Vereinigt die ausgewählte Ebene mit der darunter.
 Move the selection.	PaintWindow		Auswahl verschieben.
 Moves all layers.	PaintWindow		Alle Ebenen verschieben.
 Moves the active layer.	PaintWindow		Aktuelle Ebene verschieben.
-New project…	PaintWindow		Neues Projekt…
+New project…	PaintWindow		Neues Projekt …
 None	PaintWindow		Nichts
 Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		Der Speicher reicht nicht aus, um dieses Bild zu erstellen. Bitte mit einer kleineren Bildgröße nochmals versuchen!
 Off	PaintWindow		Aus
 OK	PaintWindow		OK
-Open image…	PaintWindow		Bild öffnen…
-Open project…	PaintWindow		Projekt öffnen…
+Open image…	PaintWindow		Bild öffnen …
+Open project…	PaintWindow		Projekt öffnen …
 Opens a project from disk.	PaintWindow		Öffnet ein Projekt.
 Opens a window with information about ArtPaint.	PaintWindow		Öffnet ein Fenster mit Informationen zu ArtPaint.
 Opens an image from disk.	PaintWindow		Öffnet ein Bild.
@@ -102,26 +120,26 @@ Recent images	PaintWindow		Zuletzt geöffnete Bilder
 Recent projects	PaintWindow		Zuletzt geöffnete Projekte
 Redo	PaintWindow		Wiederholen
 Redos the action that was last undone.	PaintWindow		Wiederholt die Aktion, die als letztes rückgängig gemacht wurde.
-Resize…	PaintWindow		Größe ändern…
+Resize…	PaintWindow		Größe ändern …
 Resizes the canvas.	PaintWindow		Ändert die Bildgröße.
 Rotate -90°	PaintWindow		Drehen -90°
 Rotate +90°	PaintWindow		Drehen +90°
 Rotate the selection.	PaintWindow		Auswahl drehen.
-Rotate…	PaintWindow		Drehen…
+Rotate…	PaintWindow		Drehen …
 Rotates all layers.	PaintWindow		Alle Ebenen drehen.
 Rotates the active layer.	PaintWindow		Aktuelle Ebene drehen.
 Rotates the canvas 90° clockwise.	PaintWindow		Dreht das Bild 90° im Uhrzeigersinn.
 Rotates the canvas 90° counter-clockwise.	PaintWindow		Dreht das Bild 90° gegen den Uhrzeigersinn.
 Save image	PaintWindow		Bild speichern
-Save image as…	PaintWindow		Bild speichern als…
+Save image as…	PaintWindow		Bild speichern als …
 Save project	PaintWindow		Projekt speichern
-Save project as…	PaintWindow		Projekt speichern als…
+Save project as…	PaintWindow		Projekt speichern als …
 Saves the image to disk.	PaintWindow		Speichert das Bild auf Festplatte.
 Saves the image under its current name.	PaintWindow		Speichert das Bild unter seinem aktuellen Namen.
 Saves the project to disk.	PaintWindow		Speichert das Projekt.
 Saves the project under its current name.	PaintWindow		Speichert das Projekt unter seinem aktuellen Namen.
 Scale the selection.	PaintWindow		Auswahl skalieren.
-Scale…	PaintWindow		Skalieren…
+Scale…	PaintWindow		Skalieren …
 Scales all layers.	PaintWindow		Skaliert alle Ebenen.
 Scales the active layer.	PaintWindow		Skaliert die aktive Ebene.
 Selection	PaintWindow		Auswahl
@@ -133,25 +151,20 @@ Set/Select the canvas size.	PaintWindow		Gewünschte Bildgröße wählen.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Setzt das Raster auf 2 x 2 Pixel.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Setzt das Raster auf 4 x 4 Pixel.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Setzt das Raster auf 8 x 8 Pixel.
-Sets the zoom level to 100%.	PaintWindow		Setzt die Zoom-Stufe auf 100%.
-Sets the zoom level to 200%.	PaintWindow		Setzt die Zoom-Stufe auf 200%.
-Sets the zoom level to 25%.	PaintWindow		Setzt die Zoom-Stufe auf 25%.
-Sets the zoom level to 400%.	PaintWindow		Setzt die Zoom-Stufe auf 400%.
-Sets the zoom level to 50%.	PaintWindow		Setzt die Zoom-Stufe auf 50%.
-Sets the zoom level to 800%.	PaintWindow		Setzt die Zoom-Stufe auf 800%.
-Settings…	PaintWindow		Einstellungen…
+Sets the zoom level to %s.	PaintWindow		Setzt die Zoom-Stufe auf %s.
+Settings…	PaintWindow		Einstellungen …
 Shrink	PaintWindow		Verkleinern
 Shrinks the selection in all directions.	PaintWindow		Verkleinert die Auswahl in alle Richtungen.
 Standard sizes	PaintWindow		Standardgrößen
-Tool setup…	PaintWindow		Werkzeugeinstellungen…
-Tools…	PaintWindow		Werkzeuge…
-Translate…	PaintWindow		Verschieben…
+Tool setup…	PaintWindow		Werkzeugeinstellungen …
+Tools…	PaintWindow		Werkzeuge …
+Translate…	PaintWindow		Verschieben …
 Turns the grid off.	PaintWindow		Schaltet das Raster aus.
 Un-selects all	PaintWindow		Alles abwählen.
 Undo	PaintWindow		Rückgängig
 Undos the previous action.	PaintWindow		Macht die vorige Aktion rückgängig.
 Untitled	PaintWindow		Unbenannt
-User manual…	PaintWindow		Dokumentation…
+User manual…	PaintWindow		Dokumentation …
 Width:	PaintWindow		Breite:
 Window	PaintWindow		Fenster
 Zoom in	PaintWindow		Vergrößern
@@ -195,11 +208,8 @@ No data translator	Windows		Kein DatenTranslator
 No options	Windows		Keine Optionen
 Off	Windows		Aus
 OK	Windows		OK
-Rectangle	Windows		Rechteck
-Reset Brush	Windows		Stift zurücksetzen
 Settings	Windows		Einstellungen
 Show brush size	Windows		Stiftgröße anzeigen
-Store Brush	Windows		Stift speichern
 Tool cursor	Windows		mit Werkzeugsymbol
 Tool setup	Windows		Werkzeugeinstellungen
 Tools	Windows		Werkzeuge
@@ -266,6 +276,7 @@ Much	Tools		Viel
 No configuration options available.	Tools		Keine Optionen verfügbar
 None	Tools		Keine
 Options	Tools		Optionen
+Outline width:	Tools		Kontur:
 Painting with a brush.	Tools		Mit Stift zeichnen.
 Painting with a hairy brush.	Tools		Mit Pinsel zeichnen.
 Picking a color.	Tools		Farbe aufnehmen.
@@ -313,9 +324,9 @@ Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 
 Yellow	ColorSliders	For CMYK color slider	Gelb
 Angle:	Manipulators		Winkel:
 Change the transparency with the slider.	Manipulators		Gewünschte Transparenz einstellen.
-Change transparency…	Manipulators		Transparenz ändern…
+Change transparency…	Manipulators		Transparenz ändern …
 Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Zuschneiden: Per Boxgriffe oder Zahlenfelder neue Größe bestimmen. SHIFT für festes Seitenverhältnis.
-Crop…	Manipulators		Zuschneiden…
+Crop…	Manipulators		Zuschneiden …
 Enable antialiasing	Manipulators		Anti-Aliasing
 Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Horizontal spiegeln
@@ -328,7 +339,7 @@ Lock	Manipulators		Fest
 Opaque	Manipulators		Deckend
 Reset to canvas	Manipulators		Ganzes Bild
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Größe ändern: Neue Größe durch Ziehen oder per Zahlenfelder. SHIFT für festes Seitenverhältnis.
-Resize…	Manipulators		Größe ändern…
+Resize…	Manipulators		Größe ändern …
 Restore	Manipulators		Reset
 Rotate	Manipulators		Drehen
 Rotate -90°	Manipulators		Drehen -90°
@@ -355,34 +366,17 @@ ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint ist ein Mal- und Bildbearbeitungsprogramm für Haiku.
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint Projekt
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint Projektformat samt Ebenen etc.
-ArtPaint: Open image…	PaintApplication		ArtPaint: Bild öffnen…
-ArtPaint: Open project…	PaintApplication		ArtPaint: Projekt öffnen…
+ArtPaint: Open image…	PaintApplication		ArtPaint: Bild öffnen …
+ArtPaint: Open project…	PaintApplication		ArtPaint: Projekt öffnen …
 OK	PaintApplication		OK
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Die Datei '%file%' hat ein nicht unterstützes Format. Wenn möglich sollten ein Translator dafür installiert werden.
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Farbsatz öffnen…
-Cannot delete the only color set.	ColorPalette		Der einzig vorhandene Farbsatz kann nicht entfernt werden.
-Cannot write to file	ColorPalette		Datei kann nicht geschrieben werden
-Click to select a painting color.	ColorPalette		Maustaste drücken, um eine Farbe auszuwählen.
-Color model	ColorPalette		Farbmodell
-Color set	ColorPalette		Farbsatz
-Colors	ColorPalette		Farben
-Delete current set	ColorPalette		Aktuellen Farbsatz entfernen
-Error reading file	ColorPalette		Lesen der Datei fehlgeschlagen
-File structure corrupted	ColorPalette		Dateistruktur beschädigt
-New color set	ColorPalette		Neuer Farbsatz
-Next color set	ColorPalette	In Color Palette window	Nächster Farbsatz
-Not a color set file	ColorPalette		Keine Farbsatz-Datei
-OK	ColorPalette		OK
-Open color set…	ColorPalette		Farbsatz laden…
-Previous color set	ColorPalette	In Color Palette window	Voriger Farbsatz
-Save color set	ColorPalette		Farbsatz speichern…
 ArtPaint: Save image	FilePanels		ArtPaint: Bild speichern
 Cancel	FilePanels		Abbrechen
 Choose format	FilePanels		Format wählen
 Open	FilePanels		Öffnen
 Save	FilePanels		Speichern
 Save format:	FilePanels		Format:
-Settings…	FilePanels		Einstellungen…
+Settings…	FilePanels		Einstellungen …
 Bicubic	ScaleUtilities		Bikubisch
 Bicubic (B-spline)	ScaleUtilities		Bikubisch (B-Spline)
 Bicubic (Catmull-Rom)	ScaleUtilities		Bikubisch (Catmull-Rom)
@@ -393,8 +387,11 @@ Brush	StatusView		Stift
 Left-click for color panel, right-click to switch colors.	StatusView		Linksklick für Farbpalette, Rechtsklick um Farben zu tauschen
 Bummer	UndoQueue		Mist
 Redo	UndoQueue		Wiederholen
+Redo: %eventName%	UndoQueue		Wiederholen: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Der Rückgängig-Funktion ist der Speicher ausgegangen.\nDie Anzahl der Rückgängig-Schritte wird begrenzt, so dass nur die letzten Schritte im Speicher gehalten werden können. Es wird empfohlen, das Projekt jetzt zu speichern, um nichts zu verlieren, falls der Speicher komplett ausgeht.\nVielleicht sollte auch mal die Anzahl der rückgängig zu machenden Schritte in den Globalen Einstellungen angepasst werden...
 Undo	UndoQueue		Rückgängig
+Undo: %eventName%	UndoQueue		Rückgängig: %eventName%
+Color	PixelOperations		Farbe
 Color burn	PixelOperations		Farbig abwedeln
 Color dodge	PixelOperations		Farbig nachbelichten
 Darken	PixelOperations		Abdunkeln
@@ -404,7 +401,9 @@ Divide	PixelOperations		Dividieren
 Exclusion	PixelOperations		Ausschluss
 Hard light	PixelOperations		Hartes Licht
 Hard mix	PixelOperations		Harter Mix
+Hue	PixelOperations		Farbton
 Lighten	PixelOperations		Aufhellen
+Lightness	PixelOperations		Helligkeit
 Linear burn	PixelOperations		Linear abwedeln
 Linear dodge	PixelOperations		Linear nachbelichten
 Linear light	PixelOperations		Lineares Licht
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Multiplizieren
 Normal	PixelOperations		Normal
 Overlay	PixelOperations		Überlagern
 Pin light	PixelOperations		Lichtpunkt
+Saturation	PixelOperations		Sättigung
 Screen	PixelOperations		Umgekehrt multiplizieren
 Soft light	PixelOperations		Weiches Licht
 Vivid light	PixelOperations		Strahlendes Licht

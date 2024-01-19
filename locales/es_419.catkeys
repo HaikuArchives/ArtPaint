@@ -1,4 +1,4 @@
-1	Spanish (Latin American)	application/x-vnd.artpaint	3098087890
+1	Spanish (Latin American)	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Ha realizado un cambio desde la última vez que se guardó el proyecto.\N¿Desea guardar el cambio?}other{%project_name%: Ha realizado # cambios desde la última vez que se guardó el proyecto.\N¿Desea guardar los cambios?}}
 Blend mode	ImageView		Modo de fusión
 Cancel	ImageView		Cancelar
@@ -24,6 +24,24 @@ Select none	ImageView		No seleccionar nada
 Shrink selection	ImageView		Reducir la selección
 Translate selection	ImageView		Trasladar selección
 Unsaved changes!	ImageView		Cambios no guardados
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d colores
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Abrir paleta de colores...
+Cannot delete the only color set.	ColorPalette		No se puede borrar la única paleta de colores.
+Cannot write to file	ColorPalette		No se puede escribir el archivo
+Click to select a painting color.	ColorPalette		Haga clic para seleccionar un color de pintura.
+Color model	ColorPalette		Modelo de color
+Color set	ColorPalette		Paleta de colores
+Colors	ColorPalette		Colores
+Delete current set	ColorPalette		Borrar la paleta actual
+Error reading file	ColorPalette		Error de lectura del archivo
+File structure corrupted	ColorPalette		Estructura del archivo dañada
+New color set	ColorPalette		Nueva paleta de colores
+Next color set	ColorPalette	In Color Palette window	Próxima paleta de colores
+Not a color set file	ColorPalette		No es un archivo de paleta de colores
+OK	ColorPalette		Aceptar
+Open color set…	ColorPalette		Abrir paleta de colores...
+Previous color set	ColorPalette	In Color Palette window	Paleta de colores anterior
+Save color set	ColorPalette		Guardar la paleta de colores
 About ArtPaint	PaintWindow		Acerca de ArtPaint
 Active layer	PaintWindow		Capa activa
 Add	PaintWindow		Añadir
@@ -41,7 +59,7 @@ Colors…	PaintWindow		Colores...
 Copies the selection of all layers.	PaintWindow		Copia la selección de todas las capas.
 Copies the selection.	PaintWindow		Copia la selección.
 Copy	PaintWindow		Copiar
-Create canvas	PaintWindow		ES 419
+Create canvas	PaintWindow		Crear lienzo
 Creates a new empty canvas.	PaintWindow		Crea un nuevo lienzo vacío.
 Crop…	PaintWindow		Recortar...
 Crops the canvas.	PaintWindow		Recorta el lienzo.
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Establecer/Seleccionar tamaño del lien
 Sets the grid to 2 by 2 pixels.	PaintWindow		Establece la cuadrícula a 2x2 píxeles.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Establece la cuadrícula a 4x4 píxeles.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Establece la cuadrícula a 8x8 píxeles.
-Sets the zoom level to 100%.	PaintWindow		Establece el nivel de zoom al 100%.
-Sets the zoom level to 200%.	PaintWindow		Ajusta el nivel de zoom al 200%.
-Sets the zoom level to 25%.	PaintWindow		Ajusta el nivel de zoom al 25%.
-Sets the zoom level to 400%.	PaintWindow		Ajusta el nivel de zoom al 400%.
-Sets the zoom level to 50%.	PaintWindow		Ajusta el nivel de zoom al 50%.
-Sets the zoom level to 800%.	PaintWindow		Ajusta el nivel de zoom al 800%.
+Sets the zoom level to %s.	PaintWindow		Establece el nivel de zoom al %s.
 Settings…	PaintWindow		Ajustes...
 Shrink	PaintWindow		Reducir
 Shrinks the selection in all directions.	PaintWindow		Reduce la selección en todas las direcciones.
@@ -195,11 +208,8 @@ No data translator	Windows		No hay traductor de datos
 No options	Windows		Sin opciones
 Off	Windows		Desactivado
 OK	Windows		Aceptar
-Rectangle	Windows		Rectángulo
-Reset Brush	Windows		Restablecer Pincel
 Settings	Windows		Ajustes
 Show brush size	Windows		Mostrar tamaño del pincel
-Store Brush	Windows		Guardar Pincel
 Tool cursor	Windows		Cursor de la herramienta
 Tool setup	Windows		Configuración de la herramienta
 Tools	Windows		Herramientas
@@ -266,6 +276,7 @@ Much	Tools		Mucho
 No configuration options available.	Tools		No hay opciones de configuración disponibles.
 None	Tools		Ninguno
 Options	Tools		Opciones
+Outline width:	Tools		Ancho del contorno:
 Painting with a brush.	Tools		Pintar con un pincel.
 Painting with a hairy brush.	Tools		Pintar con un pincel de pelo.
 Picking a color.	Tools		Elegir un color.
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: Abrir imagen...
 ArtPaint: Open project…	PaintApplication		ArtPaint: Abrir proyecto...
 OK	PaintApplication		Aceptar
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		El tipo de archivo %file% no está soportado. Puede intentar instalar un traductor para él si es posible.
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Abrir paleta de colores...
-Cannot delete the only color set.	ColorPalette		No se puede borrar la única paleta de colores.
-Cannot write to file	ColorPalette		No se puede escribir el archivo
-Click to select a painting color.	ColorPalette		Haga clic para seleccionar un color de pintura.
-Color model	ColorPalette		Modelo de color
-Color set	ColorPalette		Paleta de colores
-Colors	ColorPalette		Colores
-Delete current set	ColorPalette		Borrar la paleta actual
-Error reading file	ColorPalette		Error de lectura del archivo
-File structure corrupted	ColorPalette		Estructura del archivo dañada
-New color set	ColorPalette		Nueva paleta de colores
-Next color set	ColorPalette	In Color Palette window	Próxima paleta de colores
-Not a color set file	ColorPalette		No es un archivo de paleta de colores
-OK	ColorPalette		Aceptar
-Open color set…	ColorPalette		Abrir paleta de colores...
-Previous color set	ColorPalette	In Color Palette window	Paleta de colores anterior
-Save color set	ColorPalette		Guardar la paleta de colores
 ArtPaint: Save image	FilePanels		ArtPaint: Guardar imagen
 Cancel	FilePanels		Cancelar
 Choose format	FilePanels		Elegir formato
@@ -393,8 +387,11 @@ Brush	StatusView		Pincel
 Left-click for color panel, right-click to switch colors.	StatusView		Haga clic izquierdo para ver el panel de colores, y clic derecho para cambiar de color.
 Bummer	UndoQueue		¡Oh no!
 Redo	UndoQueue		Rehacer
+Redo: %eventName%	UndoQueue		Rehacer: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		El mecanismo de deshacer se quedó sin memoria.\NLa profundidad de deshacer se limitará para lograr mantener los eventos más recientes en memoria. Es aconsejable guardar su trabajo en este punto para evitar cualquier pérdida de datos, en caso de que la memoria se agote por completo.\NTambién puede ajustar la profundidad de deshacer en la ventana de configuración.
 Undo	UndoQueue		Deshacer
+Undo: %eventName%	UndoQueue		Deshacer: %eventName%
+Color	PixelOperations		Color
 Color burn	PixelOperations		Quemar color
 Color dodge	PixelOperations		Esquivar el color
 Darken	PixelOperations		Oscurecer
@@ -404,7 +401,9 @@ Divide	PixelOperations		Dividir
 Exclusion	PixelOperations		Exclusión
 Hard light	PixelOperations		Luz dura
 Hard mix	PixelOperations		Mezcla dura
+Hue	PixelOperations		Tono
 Lighten	PixelOperations		Aligerar
+Lightness	PixelOperations		Luminosidad
 Linear burn	PixelOperations		Quemado lineal
 Linear dodge	PixelOperations		Esquiva lineal
 Linear light	PixelOperations		Luz lineal
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Multiplicar
 Normal	PixelOperations		Normal
 Overlay	PixelOperations		Superposición
 Pin light	PixelOperations		Luz de pinza
+Saturation	PixelOperations		Saturación
 Screen	PixelOperations		Pantalla
 Soft light	PixelOperations		Luz suave
 Vivid light	PixelOperations		Luz viva

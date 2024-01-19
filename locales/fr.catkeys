@@ -1,4 +1,4 @@
-1	French	application/x-vnd.artpaint	3098087890
+1	French	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Vous avez effectué un changement depuis la dernière sauvegarde du projet.\nVoulez vous sauvegarder ce changement ?}other{%project_name%: YVous avez effectué # changements depuis la dernière sauvegarde du projet.\nVoulez vous sauvegarder ces changements ?
 Blend mode	ImageView		Blend mode
 Cancel	ImageView		Annuler
@@ -24,6 +24,24 @@ Select none	ImageView		Sélectionner aucun
 Shrink selection	ImageView		Réduire la sélection
 Translate selection	ImageView		Translate la sélection
 Unsaved changes!	ImageView		Changements non sauvegardés !
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d couleurs
+ArtPaint: Open color set…	ColorPalette		ArtPaint : Ouvrir une palette de couleurs…
+Cannot delete the only color set.	ColorPalette		Impossible de supprimer l’unique palette de couleurs.
+Cannot write to file	ColorPalette		Impossible d’écrire dans le fichier
+Click to select a painting color.	ColorPalette		Cliquer pour sélectionner la couleur du pinceau.
+Color model	ColorPalette		Mode
+Color set	ColorPalette		Palette de couleurs
+Colors	ColorPalette		Couleurs
+Delete current set	ColorPalette		Effacer la palette courante
+Error reading file	ColorPalette		Échec à la lecture du fichier
+File structure corrupted	ColorPalette		Structure du fichier corrompue
+New color set	ColorPalette		Nouvelle palette
+Next color set	ColorPalette	In Color Palette window	Palette de couleurs suivante
+Not a color set file	ColorPalette		Ce n’est pas un fichier palette de couleurs
+OK	ColorPalette		D’accord
+Open color set…	ColorPalette		Ouvrir une palette…
+Previous color set	ColorPalette	In Color Palette window	Palette de couleurs précèdente
+Save color set	ColorPalette		Sauvegarder la palette
 About ArtPaint	PaintWindow		À propos de ArtPaint
 Active layer	PaintWindow		Calque actif
 Add	PaintWindow		Ajouter
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Régler la taille de l’image.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Règle la grille à 2 par 2 pixels.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Règle la grille à 4 par 4 pixels.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Règle la grille à 8 par 8 pixels.
-Sets the zoom level to 100%.	PaintWindow		Règle le zoom à 100%.
-Sets the zoom level to 200%.	PaintWindow		Règle le zoom à 200%.
-Sets the zoom level to 25%.	PaintWindow		Règle le zoom à 25%.
-Sets the zoom level to 400%.	PaintWindow		Règle le zoom à 400%.
-Sets the zoom level to 50%.	PaintWindow		Règle le zoom à 50%.
-Sets the zoom level to 800%.	PaintWindow		Règle le zoom à 800%.
+Sets the zoom level to %s.	PaintWindow		Règle le zoom à %s.
 Settings…	PaintWindow		Préférences…
 Shrink	PaintWindow		Réduire
 Shrinks the selection in all directions.	PaintWindow		Rétrécit la sélection dans toutes les directions.
@@ -195,11 +208,8 @@ No data translator	Windows		Aucun traducteur de données
 No options	Windows		Pas d’options
 Off	Windows		Aucune
 OK	Windows		D’accord
-Rectangle	Windows		Rectangle
-Reset Brush	Windows		Réinitialiser le pinceau
 Settings	Windows		Préférences
 Show brush size	Windows		Afficher la dimension du pinceau
-Store Brush	Windows		Conserver le pinceau
 Tool cursor	Windows		Outil curseur
 Tool setup	Windows		Configuration outil
 Tools	Windows		Outils
@@ -223,7 +233,7 @@ Blurring the image.	Tools		Floutage de l’image.
 Brush tool	Tools		Pinceau
 Click to place the text.	Tools		Cliquer pour placer le texte.
 Click to use the tool.	Tools		Cliquer pour utiliser l’outil.
-Color picker tool	Tools		Outil de sélection couleur.
+Color picker tool	Tools		Outil de sélection couleur
 Color picker window	Tools		Fenêtre de sélection couleur
 Color variance:	Tools		Variance couleur:
 Conic	Tools		Conique
@@ -266,6 +276,7 @@ Much	Tools		Beaucoup
 No configuration options available.	Tools		Aucune option de configuration disponible.
 None	Tools		Aucune
 Options	Tools		Préférences
+Outline width:	Tools		Largeur du contour :
 Painting with a brush.	Tools		Peint avec un pinceau.
 Painting with a hairy brush.	Tools		Peint avec une brosse.
 Picking a color.	Tools		Choix d’une couleur.
@@ -279,7 +290,7 @@ Red	Tools		Rouge
 Replace pixels with	Tools		Remplace des pixels avec
 Reset brush	Tools		Réinitialiser
 Selection tool	Tools		Outil sélection
-Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Outil sélection: Maj pour carré/cercle, ALT pour centrer, OPT pour soustraire
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Outil sélection: MAJ pour carré/cercle, ALT pour centrer, OPT pour soustraire
 Size:	Tools		Dimension :
 Spray	Tools		Bombe
 Square	Tools		Carré
@@ -291,8 +302,8 @@ Tolerance:	Tools		Tolérance :
 Tool setup	Tools		Configuration des outils
 Tools	Tools		Outils
 Transparency	Tools		Transparence
-Transparency tool	Tools		Outil de transparence
-Transparency:	Tools		Transparency:
+Transparency tool	Tools		Transparence
+Transparency:	Tools		Transparence :
 Use current brush	Tools		Utiliser le pinceau courant
 Using the airbrush.	Tools		Usage de l’aérographe.
 Using the tool.	Tools		Usage de l'outil.
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint : Ouvrir une image…
 ArtPaint: Open project…	PaintApplication		ArtPaint : Ouvrir un projet…
 OK	PaintApplication		D’accord
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Le type du fichier « %file% » n’est pas supporté. Essayer d’installer un Traducteur si c’est possible.
-ArtPaint: Open color set…	ColorPalette		ArtPaint : Ouvrir une palette de couleurs…
-Cannot delete the only color set.	ColorPalette		Impossible de supprimer l’unique palette de couleurs.
-Cannot write to file	ColorPalette		Impossible d’écrire dans le fichier
-Click to select a painting color.	ColorPalette		Cliquer pour sélectionner la couleur du pinceau.
-Color model	ColorPalette		Mode
-Color set	ColorPalette		Palette de couleurs
-Colors	ColorPalette		Couleurs
-Delete current set	ColorPalette		Effacer la palette courante
-Error reading file	ColorPalette		Échec à la lecture du fichier
-File structure corrupted	ColorPalette		Structure du fichier corrompue
-New color set	ColorPalette		Nouvelle palette
-Next color set	ColorPalette	In Color Palette window	Palette de couleurs suivante
-Not a color set file	ColorPalette		Ce n’est pas un fichier palette de couleurs
-OK	ColorPalette		D’accord
-Open color set…	ColorPalette		Ouvrir une palette…
-Previous color set	ColorPalette	In Color Palette window	Palette de couleurs précèdente
-Save color set	ColorPalette		Sauvegarder la palette
 ArtPaint: Save image	FilePanels		ArtPaint : Sauvegarder l’image
 Cancel	FilePanels		Annuler
 Choose format	FilePanels		Choisir le format
@@ -393,8 +387,11 @@ Brush	StatusView		Pinceau
 Left-click for color panel, right-click to switch colors.	StatusView		Clic gauche pour le panneau de couleurs, clic droit pour échanger les couleurs.
 Bummer	UndoQueue		Zut
 Redo	UndoQueue		Rétablir
+Redo: %eventName%	UndoQueue		Rétablir: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Le mécanisme d’annulation a manqué de mémoire.\nLa profondeur d’annulation sera limitée de façon à garder en mémoire les évènements les plus récents. Il est conseillé de sauvegarder votre travail maintenant pour éviter toute perte de données en cas d’épuisement total de la mémoire.\nVous pourriez également ajuster la profondeur d’annulation dans la fenêtre de préférences.
 Undo	UndoQueue		Annuler
+Undo: %eventName%	UndoQueue		Annuler: %eventName%
+Color	PixelOperations		Couleur
 Color burn	PixelOperations		Densité couleur +
 Color dodge	PixelOperations		Densité couleur -
 Darken	PixelOperations		Obscurcir
@@ -404,7 +401,9 @@ Divide	PixelOperations		Division
 Exclusion	PixelOperations		Exclusion
 Hard light	PixelOperations		Lumière crue
 Hard mix	PixelOperations		Mélange maximal
+Hue	PixelOperations		Teinte
 Lighten	PixelOperations		Eclaircir
+Lightness	PixelOperations		Clarté L*
 Linear burn	PixelOperations		Densité linéaire +
 Linear dodge	PixelOperations		Densité linéaire -
 Linear light	PixelOperations		Lumière linéaire
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Produit
 Normal	PixelOperations		Normal
 Overlay	PixelOperations		Incrustation
 Pin light	PixelOperations		Lumière ponctuelle
+Saturation	PixelOperations		Saturation
 Screen	PixelOperations		Superposition
 Soft light	PixelOperations		Lumière tamisée
 Vivid light	PixelOperations		Lumière vive

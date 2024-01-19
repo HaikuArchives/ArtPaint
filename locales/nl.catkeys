@@ -1,4 +1,4 @@
-1	Dutch	application/x-vnd.artpaint	3098087890
+1	Dutch	application/x-vnd.artpaint	1413323695
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Je hebt een aanpassing gedaan sinds de laatste keer je project was opgeslagen.\nWil je de aanpassing opslaan?}other{%project_name%: Je hebt # aanpassingen gedaan sinds de laatste keer je project was opgeslagen.\nWil je deze aanpassingen opslaan?}}
 Blend mode	ImageView		Blend modus
 Cancel	ImageView		Annuleren
@@ -24,6 +24,24 @@ Select none	ImageView		Selecteer niets
 Shrink selection	ImageView		Krimp selectie
 Translate selection	ImageView		Vertaal selectie
 Unsaved changes!	ImageView		Niet opgeslagen aanpassingen!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d kleuren
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Open kleur set…
+Cannot delete the only color set.	ColorPalette		Kan niet de enige kleur set verwijderen.
+Cannot write to file	ColorPalette		Kan niet naar bestand schrijven
+Click to select a painting color.	ColorPalette		Klik om een penseelkleur te selecteren.
+Color model	ColorPalette		Kleur mode
+Color set	ColorPalette		Kleur instellen
+Colors	ColorPalette		Kleuren
+Delete current set	ColorPalette		Verwijder huidige set
+Error reading file	ColorPalette		Fout bij lezen bestand
+File structure corrupted	ColorPalette		Bestandsstructuur beschadigt
+New color set	ColorPalette		Nieuwe kleurset
+Next color set	ColorPalette	In Color Palette window	Volgende kleur set
+Not a color set file	ColorPalette		Geen kleur set bestand
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Open Kleurset…
+Previous color set	ColorPalette	In Color Palette window	Vorige kleur set
+Save color set	ColorPalette		Kleurset opslaan
 About ArtPaint	PaintWindow		Over ArtPaint
 Active layer	PaintWindow		Actieve laag
 Add	PaintWindow		Toevoegen
@@ -133,12 +151,7 @@ Set/Select the canvas size.	PaintWindow		Instellen/selecteer de canvas grootte.
 Sets the grid to 2 by 2 pixels.	PaintWindow		Instellen raster op 2 bij 2 pixels.
 Sets the grid to 4 by 4 pixels.	PaintWindow		Instellen raster op 4 bij 4 pixels.
 Sets the grid to 8 by 8 pixels.	PaintWindow		Instellen raster op 8 bij 8 pixels.
-Sets the zoom level to 100%.	PaintWindow		Stelt het zoomniveau in op 100%.
-Sets the zoom level to 200%.	PaintWindow		Stelt het zoomniveau in op 200%.
-Sets the zoom level to 25%.	PaintWindow		Stelt het zoomniveau in op 25%.
-Sets the zoom level to 400%.	PaintWindow		Stelt het zoomniveau in op 400%.
-Sets the zoom level to 50%.	PaintWindow		Stelt het zoomniveau in op 50%.
-Sets the zoom level to 800%.	PaintWindow		Stelt het zoomniveau in op 800%.
+Sets the zoom level to %s.	PaintWindow		Stelt het zoomniveau in op %s.
 Settings…	PaintWindow		Instellingen…
 Shrink	PaintWindow		Krimpen
 Shrinks the selection in all directions.	PaintWindow		Krimpt de selectie in alle richtingen.
@@ -195,11 +208,8 @@ No data translator	Windows		Geen data vertaler
 No options	Windows		Geen opties
 Off	Windows		Uit
 OK	Windows		Ok
-Rectangle	Windows		Rechthoek
-Reset Brush	Windows		Borstel opnieuw instellen
 Settings	Windows		Instellingen
 Show brush size	Windows		Toon borstel formaat
-Store Brush	Windows		Borstel opslaan
 Tool cursor	Windows		Werktuig cursor
 Tool setup	Windows		Werktuig instellen
 Tools	Windows		Werktuigen
@@ -266,6 +276,7 @@ Much	Tools		Veel
 No configuration options available.	Tools		Geen configuratie-opties beschikbaar.
 None	Tools		Geen
 Options	Tools		Opties
+Outline width:	Tools		Rand breedte:
 Painting with a brush.	Tools		Teken met een penseel.
 Painting with a hairy brush.	Tools		Teken met een kwast
 Picking a color.	Tools		Kleur kiezen.
@@ -359,23 +370,6 @@ ArtPaint: Open image…	PaintApplication		ArtPaint: Open afbeelding…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 OK	PaintApplication		Ok
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Het bestand '%file%' is niet ondersteund. Je kan proberen een vertaler hiervoor te installeren indien mogelijk.
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Open kleur set…
-Cannot delete the only color set.	ColorPalette		Kan niet de enige kleur set verwijderen.
-Cannot write to file	ColorPalette		Kan niet naar bestand schrijven
-Click to select a painting color.	ColorPalette		Klik om een penseelkleur te selecteren.
-Color model	ColorPalette		Kleur mode
-Color set	ColorPalette		Kleur instellen
-Colors	ColorPalette		Kleuren
-Delete current set	ColorPalette		Verwijder huidige set
-Error reading file	ColorPalette		Fout bij lezen bestand
-File structure corrupted	ColorPalette		Bestandsstructuur beschadigt
-New color set	ColorPalette		Nieuwe kleurset
-Next color set	ColorPalette	In Color Palette window	Volgende kleur set
-Not a color set file	ColorPalette		Geen kleur set bestand
-OK	ColorPalette		OK
-Open color set…	ColorPalette		Open Kleurset…
-Previous color set	ColorPalette	In Color Palette window	Vorige kleur set
-Save color set	ColorPalette		Kleurset opslaan
 ArtPaint: Save image	FilePanels		ArtPaint: Afbeelding opslaan
 Cancel	FilePanels		Annuleren
 Choose format	FilePanels		Kies formaat
@@ -393,8 +387,11 @@ Brush	StatusView		Borstel
 Left-click for color panel, right-click to switch colors.	StatusView		Klik met de linkermuisknop voor het kleurenpaneel, klik met de rechtermuisknop om van kleur te wisselen.
 Bummer	UndoQueue		Jammer
 Redo	UndoQueue		Opnieuw uitvoeren
+Redo: %eventName%	UndoQueue		Opnieuw uitvoeren: %eventName%
 The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Het ongedaan maken is zonder geheugen geraakt.\nDe diepte van ongedaan maken zal gelimiteerd worden zodat de meest recente aanpassingen in het geheugen kunnen blijven. Het is aangeraden om je werk op te slaan op dit punt om verlies van data te voorkomen als het geheugen helemaal vol zit.\nJe kan ook de diepte voor ongedaan maken instellen in het instellingen venster.
 Undo	UndoQueue		Ongedaan maken
+Undo: %eventName%	UndoQueue		Ongedaan maken: %eventName%
+Color	PixelOperations		Kleur
 Color burn	PixelOperations		Kleur branden
 Color dodge	PixelOperations		Kleur ontwijken
 Darken	PixelOperations		Donker maken
@@ -404,7 +401,9 @@ Divide	PixelOperations		Verdeling
 Exclusion	PixelOperations		Uitsluiten
 Hard light	PixelOperations		Hard licht
 Hard mix	PixelOperations		Hard mix
+Hue	PixelOperations		Tint
 Lighten	PixelOperations		Lichter maken
+Lightness	PixelOperations		Lichtheid
 Linear burn	PixelOperations		Lineaire verbranding
 Linear dodge	PixelOperations		Lineair ontwijken
 Linear light	PixelOperations		Lineair licht
@@ -412,6 +411,7 @@ Multiply	PixelOperations		Vermeerderen
 Normal	PixelOperations		Normaal
 Overlay	PixelOperations		Overlay
 Pin light	PixelOperations		Pin licht
+Saturation	PixelOperations		Verzadiging
 Screen	PixelOperations		Scherm
 Soft light	PixelOperations		Soft licht
 Vivid light	PixelOperations		Levendig licht
