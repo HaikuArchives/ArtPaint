@@ -1,12 +1,24 @@
 v2.7
 
 * Layers: added color blend modes (hue, saturation, luminosity, color)
+* Colors:
+  - moved palette below sliders
+  - added key control to palette:
+    + left/right/up/down to choose color
+    + page up/page down to change color set
+* Rectangle tool:
+  - added "Outline width"
 * Ellipse tool:
   - added "Enable rotation"
-
+  - added "Outline width"
+* Text tool: always use current foreground color for whole text
+* Airbrush tool: smoother performance
+* Support transparency in selections and when cut/copy/deleting
+* Removed red scale line from brush preview, instead use numerical size label
 * Many, many bug fixes and improvements
 * Updated documentation
-* Updated translations
+* Updated translations, fixed Latin American Spanish
+* Added Norwegian translation, thanks Johan Wagenheim
 
 
 v2.6:
