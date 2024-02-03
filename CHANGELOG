@@ -1,3 +1,8 @@
+v2.7.1:
+
+* Quick fix for 1-pixel width freehand tool freezing the app.
+
+
 v2.7
 
 * Layers: added color blend modes (hue, saturation, luminosity, color)
