@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	1413323695
+1	English	application/x-vnd.artpaint	3830704577
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -30,6 +30,7 @@ Mode:	LayerWindow		Mode:
 Opens the tool setup window.	PaintWindow		Opens the tool setup window.
 Making a selection.	Tools		Making a selection.
 New color set	ColorPalette		New color set
+Layer	ColorPalette		Layer
 Change transparency…	Manipulators		Change transparency…
 Cut	PaintWindow		Cut
 OK	Windows		OK
@@ -78,8 +79,8 @@ Green	Tools		Green
 Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.
 Edit	PaintWindow		Edit
 Drop a color from the Colors window	Windows		Drop a color from the Colors window
-Nearest neighbor	ScaleUtilities		Nearest neighbor
 Layer name	ImageView		Layer name
+Nearest neighbor	ScaleUtilities		Nearest neighbor
 Drawing an ellipse.	Tools		Drawing an ellipse.
 Hard mix	PixelOperations		Hard mix
 Background color	Tools		Background color
@@ -161,6 +162,7 @@ Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Light
 Selection tool	Tools		Selection tool
 Enable gradient	Tools		Enable gradient
 Cuts the selection from all layers to the clipboard.	PaintWindow		Cuts the selection from all layers to the clipboard.
+Alpha:	LayerWindow		Alpha:
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.
 Pastes previously copied selection as a new layer.	PaintWindow		Pastes previously copied selection as a new layer.
 Selects entire layer	PaintWindow		Selects entire layer
@@ -198,8 +200,8 @@ Opens an image from disk.	PaintWindow		Opens an image from disk.
 Paste as a new project	PaintWindow		Paste as a new project
 Layers	Windows		Layers
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
-None	PaintWindow		None
 Color dodge	PixelOperations		Color dodge
+None	PaintWindow		None
 Cursor	Windows		Cursor
 Crop…	PaintWindow		Crop…
 Darken	PixelOperations		Darken

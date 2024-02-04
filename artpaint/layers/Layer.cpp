@@ -48,7 +48,7 @@ Layer::Layer(
 	fBlendMode(BLEND_NORMAL)
 {
 	frame.OffsetTo(B_ORIGIN);
-	fLayerName << "Layer " << fLayerId;
+	fLayerName << B_TRANSLATE("Layer") << " " << fLayerId;
 
 	if (fLayerType == HS_NORMAL_LAYER) {
 		BRect sourceRect;
