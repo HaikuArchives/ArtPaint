@@ -208,7 +208,7 @@ LayerWindow::LayerWindow(BRect frame)
 	BMessage* message = new BMessage(HS_LAYER_TRANSPARENCY_CHANGED);
 	message->AddInt32("value", 0);
 
-	transparency_slider = new NumberSliderControl("Alpha:", "0", message, 0, 100, false, false);
+	transparency_slider = new NumberSliderControl(B_TRANSLATE("Alpha:"), "0", message, 0, 100, false, false);
 
 	BFont font;
 
