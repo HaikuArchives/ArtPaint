@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: korli/action@v0.14.0-haiku
+      - uses: korli/action@v0.23.0-haiku
         with:
           operating_system: ${{ matrix.config.os }}
           version: ${{ matrix.config.version }}
