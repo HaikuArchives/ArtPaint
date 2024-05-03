@@ -73,7 +73,7 @@ public:
 			DrawingTool*		ReturnActiveTool() const { return fActiveTool; }
 			int32				ReturnActiveToolType() const;
 			BView*				ConfigView(int32);
-			status_t			SetCurrentBrush(brush_info*);
+			status_t			SetCurrentBrush(brush_info*, bool notify = true);
 			Brush*				GetCurrentBrush();
 			BPopUpMenu*			ToolPopUpMenu();
 
