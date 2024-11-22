@@ -58,7 +58,7 @@ ImageProcessingLibrary::gaussian_blur(BBitmap* bitmap, float radius)
 		for (int32 dx = 0; dx < kernel_radius; dx++)
 			*source_array_position++ = *b_bits;
 
-		for (int32 dx = 0; dx < width; dx++) 
+		for (int32 dx = 0; dx < width; dx++)
 			*source_array_position++ = *b_bits++;
 
 		b_bits--;
@@ -400,6 +400,355 @@ ImageProcessingLibrary::convolve_1d_fixed(
 	}
 }
 
+/*
+
+Box blur and Fast Gaussian blur
+
+*/
+
+int* boxes_for_gauss(float sigma, int n)
+{
+	float wIdeal = sqrt((12. * sigma * sigma / n) + 1);
+	int wl = floor(wIdeal);
+	if (wl % 2 == 0)
+		--wl;
+	int wu = wl + 2;
+
+	float mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n)
+		/ (-4 * wl - 4);
+	int m = round(mIdeal);
+
+	int* boxes = new int[n];
+	for (int i = 0; i < n; ++i)
+		if (i < m)
+			boxes[i] = wl;
+		else
+			boxes[i] = wu;
+
+	return boxes;
+}
+
+
+status_t
+ImageProcessingLibrary::box_blur(BBitmap* bitmap, float radius, int32 threadCount)
+{
+	int32 kernel_radius = ceil(radius);
+
+	BRect bitmap_bounds = bitmap->Bounds();
+	BRect intermediate_bounds(0, 0, bitmap_bounds.Width(), bitmap_bounds.Height());
+	BBitmap* intermediate = new BBitmap(intermediate_bounds, B_RGB32, false);
+	intermediate->SetBits(bitmap->Bits(), bitmap->BitsLength(), 0, B_RGB32);
+
+	int32* s_bits = (int32*)bitmap->Bits();
+	int32 s_bpr = bitmap->BytesPerRow() / 4;
+
+	int32* d_bits = (int32*)intermediate->Bits();
+	int32 d_bpr = intermediate->BytesPerRow() / 4;
+
+	// Start the threads.
+	thread_id blur_thread_array[8]; // TODO - Was B_MAX_CPU_COUNT, find way to decide amount of
+									// threads to use based on cpu count
+	for (int32 i = 0; i < threadCount; i++) {
+		int32 height = bitmap_bounds.Height() / threadCount + 1;
+		filter_thread_data* data = new filter_thread_data();
+
+		int32 top;
+		top = data->top = min_c(bitmap_bounds.bottom, bitmap_bounds.top + i * height);
+		data->bottom = min_c(bitmap_bounds.bottom, top + height - 1);
+
+		data->s_bpr = s_bpr;
+		data->s_bits = s_bits + top * s_bpr;
+		data->d_bpr = d_bpr;
+		data->d_bits = d_bits;
+
+		data->kernel_radius = kernel_radius;
+
+		blur_thread_array[i] = spawn_thread(
+			start_filter_box_blur_thread_h, "box_blur_h_thread", B_NORMAL_PRIORITY, data);
+		resume_thread(blur_thread_array[i]);
+	}
+
+	for (int32 i = 0; i < threadCount; i++) {
+		int32 return_value;
+		wait_for_thread(blur_thread_array[i], &return_value);
+	}
+
+	s_bits = (int32*)intermediate->Bits();
+	s_bpr = intermediate->BytesPerRow() / 4;
+
+	d_bits = (int32*)bitmap->Bits();
+	d_bpr = bitmap->BytesPerRow() / 4;
+
+	// Here blur from intermediate to bitmap horizontally and rotate
+	// by 90 degrees counterclockwise
+	// Start the threads.
+	for (int32 i = 0; i < threadCount; i++) {
+		int32 height = intermediate_bounds.Height() / threadCount + 1;
+		filter_thread_data* data = new filter_thread_data();
+
+		int32 top;
+		top = data->top = min_c(intermediate_bounds.bottom, intermediate_bounds.top + i * height);
+		data->bottom = min_c(intermediate_bounds.bottom, top + height - 1);
+
+		data->s_bpr = s_bpr;
+		data->s_bits = s_bits + top * s_bpr;
+		data->d_bpr = d_bpr;
+		data->d_bits = d_bits + top * d_bpr;
+
+		data->kernel_radius = kernel_radius;
+
+		blur_thread_array[i] = spawn_thread(
+			start_filter_box_blur_thread_t, "box_blur_t_thread", B_NORMAL_PRIORITY, data);
+		resume_thread(blur_thread_array[i]);
+	}
+
+	for (int32 i = 0; i < threadCount; i++) {
+		int32 return_value;
+		wait_for_thread(blur_thread_array[i], &return_value);
+	}
+
+	delete intermediate;
+
+	return B_OK;
+}
+
+
+int32
+ImageProcessingLibrary::start_filter_box_blur_thread_h(void* d)
+{
+	filter_thread_data* data = (filter_thread_data*)d;
+
+	box_blur_h(data->s_bits, data->d_bits, data->s_bpr, data->bottom - data->top, data->kernel_radius);
+
+	delete data;
+
+	return B_OK;
+}
+
+
+int32
+ImageProcessingLibrary::start_filter_box_blur_thread_t(void* d)
+{
+	filter_thread_data* data = (filter_thread_data*)d;
+
+	box_blur_t(data->s_bits, data->d_bits, data->s_bpr, data->bottom - data->top, data->kernel_radius);
+
+	delete data;
+
+	return B_OK;
+}
+
+
+void
+ImageProcessingLibrary::box_blur_h(int32* s_bits, int32* d_bits, int32 width,
+	int32 height, int32 kernel_radius)
+{
+	union {
+		uint8 bytes[4];
+		uint32 word;
+	} first_val, last_val, tmp, tmp2, tmp3;
+
+	uint32 val[4];
+
+	float i_arr = 1. / (kernel_radius + kernel_radius + 1);
+
+	for (int i = 0; i < height; ++i) {
+		int ti = i * width;
+		int li = ti;
+		int ri = ti + kernel_radius;
+
+		first_val.word = *(s_bits + ti);
+		last_val.word = *(s_bits + ti + width - 1);
+
+		val[0] = ((kernel_radius + 1) * first_val.bytes[0]);
+		val[1] = ((kernel_radius + 1) * first_val.bytes[1]);
+		val[2] = ((kernel_radius + 1) * first_val.bytes[2]);
+		val[3] = ((kernel_radius + 1) * first_val.bytes[3]);
+
+		for (int j = 0; j < kernel_radius; ++j) {
+			tmp.word = *(s_bits + ti + j);
+			val[0] = (val[0] + tmp.bytes[0]);
+			val[1] = (val[1] + tmp.bytes[1]);
+			val[2] = (val[2] + tmp.bytes[2]);
+			val[3] = (val[3] + tmp.bytes[3]);
+		}
+
+		for (int j = 0; j <= kernel_radius; ++j) {
+			tmp.word = *(s_bits + ri);
+			val[0] = (val[0] + tmp.bytes[0] - first_val.bytes[0]);
+			val[1] = (val[1] + tmp.bytes[1] - first_val.bytes[1]);
+			val[2] = (val[2] + tmp.bytes[2] - first_val.bytes[2]);
+			val[3] = (val[3] + tmp.bytes[3] - first_val.bytes[3]);
+
+			tmp2.bytes[0] = uint32(val[0] * i_arr) & 0xff;
+			tmp2.bytes[1] = uint32(val[1] * i_arr) & 0xff;
+			tmp2.bytes[2] = uint32(val[2] * i_arr) & 0xff;
+			tmp2.bytes[3] = uint32(val[3] * i_arr) & 0xff;
+
+			*(d_bits + ti) = uint32(tmp2.word);
+			++ri;
+			++ti;
+		}
+
+		for (int j = kernel_radius + 1; j < width - kernel_radius; ++j) {
+			tmp.word = *(s_bits + ri);
+			tmp3.word = *(s_bits + li);
+			val[0] += tmp.bytes[0] - tmp3.bytes[0];
+			val[1] += tmp.bytes[1] - tmp3.bytes[1];
+			val[2] += tmp.bytes[2] - tmp3.bytes[2];
+			val[3] += tmp.bytes[3] - tmp3.bytes[3];
+
+			tmp2.bytes[0] = uint32(val[0] * i_arr) & 0xff;
+			tmp2.bytes[1] = uint32(val[1] * i_arr) & 0xff;
+			tmp2.bytes[2] = uint32(val[2] * i_arr) & 0xff;
+			tmp2.bytes[3] = uint32(val[3] * i_arr) & 0xff;
+
+			*(d_bits + ti) = uint32(tmp2.word);
+			++ri;
+			++li;
+			++ti;
+		}
+
+		for (int j = width - kernel_radius; j < width; ++j) {
+			tmp3.word = *(s_bits + li);
+
+			val[0] += last_val.bytes[0] - tmp3.bytes[0];
+			val[1] += last_val.bytes[1] - tmp3.bytes[1];
+			val[2] += last_val.bytes[2] - tmp3.bytes[2];
+			val[3] += last_val.bytes[3] - tmp3.bytes[3];
+
+			tmp2.bytes[0] = uint32(val[0] * i_arr) & 0xff;
+			tmp2.bytes[1] = uint32(val[1] * i_arr) & 0xff;
+			tmp2.bytes[2] = uint32(val[2] * i_arr) & 0xff;
+			tmp2.bytes[3] = uint32(val[3] * i_arr) & 0xff;
+
+			*(d_bits + ti) = uint32(tmp2.word);
+			++li;
+			++ti;
+		}
+	}
+}
+
+
+void
+ImageProcessingLibrary::box_blur_t(int32* s_bits, int32* d_bits, int32 width,
+	int32 height, int32 kernel_radius)
+{
+	union {
+		uint8 bytes[4];
+		uint32 word;
+	} first_val, last_val, tmp, tmp2, tmp3;
+
+	uint32 val[4];
+
+	float i_arr = 1. / (kernel_radius + kernel_radius + 1);
+
+	for (int i = 0; i < width - 1; ++i) {
+		int ti = i;
+		int li = ti;
+		int ri = ti + kernel_radius * width;
+
+		first_val.word = *(s_bits + ti);
+		last_val.word = *(s_bits + ti + width * (height - 1));
+
+		val[0] = ((kernel_radius + 1) * first_val.bytes[0]);
+		val[1] = ((kernel_radius + 1) * first_val.bytes[1]);
+		val[2] = ((kernel_radius + 1) * first_val.bytes[2]);
+		val[3] = ((kernel_radius + 1) * first_val.bytes[3]);
+
+		for (int j = 0; j < kernel_radius; ++j) {
+			tmp.word = *(s_bits + ti + j * width);
+			val[0] = (val[0] + tmp.bytes[0]);
+			val[1] = (val[1] + tmp.bytes[1]);
+			val[2] = (val[2] + tmp.bytes[2]);
+			val[3] = (val[3] + tmp.bytes[3]);
+		}
+
+		for (int j = 0; j <= kernel_radius; ++j) {
+			tmp.word = *(s_bits + ri);
+			val[0] = (val[0] + tmp.bytes[0] - first_val.bytes[0]);
+			val[1] = (val[1] + tmp.bytes[1] - first_val.bytes[1]);
+			val[2] = (val[2] + tmp.bytes[2] - first_val.bytes[2]);
+			val[3] = (val[3] + tmp.bytes[3] - first_val.bytes[3]);
+
+			tmp2.bytes[0] = uint32(val[0] * i_arr) & 0xff;
+			tmp2.bytes[1] = uint32(val[1] * i_arr) & 0xff;
+			tmp2.bytes[2] = uint32(val[2] * i_arr) & 0xff;
+			tmp2.bytes[3] = uint32(val[3] * i_arr) & 0xff;
+
+			*(d_bits + ti) = uint32(tmp2.word);
+			ri += width;
+			ti += width;
+		}
+
+		for (int j = kernel_radius + 1; j < height - kernel_radius; ++j) {
+			tmp.word = *(s_bits + ri);
+			tmp3.word = *(s_bits + li);
+			val[0] += tmp.bytes[0] - tmp3.bytes[0];
+			val[1] += tmp.bytes[1] - tmp3.bytes[1];
+			val[2] += tmp.bytes[2] - tmp3.bytes[2];
+			val[3] += tmp.bytes[3] - tmp3.bytes[3];
+
+			tmp2.bytes[0] = uint32(val[0] * i_arr) & 0xff;
+			tmp2.bytes[1] = uint32(val[1] * i_arr) & 0xff;
+			tmp2.bytes[2] = uint32(val[2] * i_arr) & 0xff;
+			tmp2.bytes[3] = uint32(val[3] * i_arr) & 0xff;
+
+			*(d_bits + ti) = uint32(tmp2.word);
+			ri += width;
+			li += width;
+			ti += width;
+		}
+
+		for (int j = height - kernel_radius; j < height; ++j) {
+			tmp3.word = *(s_bits + li);
+
+			val[0] += last_val.bytes[0] - tmp3.bytes[0];
+			val[1] += last_val.bytes[1] - tmp3.bytes[1];
+			val[2] += last_val.bytes[2] - tmp3.bytes[2];
+			val[3] += last_val.bytes[3] - tmp3.bytes[3];
+
+			tmp2.bytes[0] = uint32(val[0] * i_arr) & 0xff;
+			tmp2.bytes[1] = uint32(val[1] * i_arr) & 0xff;
+			tmp2.bytes[2] = uint32(val[2] * i_arr) & 0xff;
+			tmp2.bytes[3] = uint32(val[3] * i_arr) & 0xff;
+
+			*(d_bits + ti) = uint32(tmp2.word);
+			li += width;
+			ti += width;
+		}
+	}
+}
+
+
+status_t
+ImageProcessingLibrary::fast_gaussian_blur(BBitmap* bitmap, float radius, int32 threadCount)
+{
+	int* boxes = boxes_for_gauss(radius, 3);
+
+	box_blur(bitmap, (boxes[0] - 1.)/2., threadCount);
+	box_blur(bitmap, (boxes[1] - 1.)/2., threadCount);
+	box_blur(bitmap, (boxes[2] - 1.)/2., threadCount);
+
+	delete[] boxes;
+
+	return B_OK;
+}
+
+
+status_t
+ImageProcessingLibrary::fast_gaussian_blur(BBitmap* bitmap, float radius)
+{
+	int* boxes = boxes_for_gauss(radius, 3);
+
+	box_blur(bitmap, (boxes[0] - 1.)/2., 1);
+	box_blur(bitmap, (boxes[1] - 1.)/2., 1);
+	box_blur(bitmap, (boxes[2] - 1.)/2., 1);
+
+	delete[] boxes;
+
+	return B_OK;
+}
 
 /*
 

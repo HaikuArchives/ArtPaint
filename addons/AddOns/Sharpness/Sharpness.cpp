@@ -104,7 +104,7 @@ SharpnessManipulator::ManipulateBitmap(
 
 	delete blurred_image;
 	blurred_image = DuplicateBitmap(source_bitmap, 0);
-	ipLibrary->gaussian_blur(blurred_image, BLUR_AMOUNT);
+	ipLibrary->fast_gaussian_blur(blurred_image, BLUR_AMOUNT);
 //	CalculateLuminanceImage(source_bitmap);
 
 	start_threads();
@@ -329,7 +329,7 @@ SharpnessManipulator::SetPreviewBitmap(BBitmap* bm)
 			preview_bitmap = bm;
 			copy_of_the_preview_bitmap = DuplicateBitmap(bm, 0);
 			blurred_image = DuplicateBitmap(preview_bitmap, 0);
-			ipLibrary->gaussian_blur(blurred_image, settings.blur_size, processor_count);
+			ipLibrary->fast_gaussian_blur(blurred_image, settings.blur_size, processor_count);
 		} else {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
@@ -398,12 +398,15 @@ SharpnessManipulator::ChangeSettings(ManipulatorSettings* s)
 	new_settings = dynamic_cast<SharpnessManipulatorSettings*>(s);
 	if (new_settings != NULL) {
 		if (new_settings->blur_size != settings.blur_size) {
+			BBitmap* tmp_bitmap = DuplicateBitmap(copy_of_the_preview_bitmap, 0);
+			ipLibrary->fast_gaussian_blur(tmp_bitmap, new_settings->blur_size, processor_count);
+
 			int32* d_bits = (int32*)blurred_image->Bits();
-			int32* s_bits = (int32*)copy_of_the_preview_bitmap->Bits();
-			int32 bits_length = blurred_image->BitsLength();
+			int32* s_bits = (int32*)tmp_bitmap->Bits();
+			int32 bits_length = tmp_bitmap->BitsLength();
 
 			memcpy(d_bits, s_bits, bits_length);
-			ipLibrary->gaussian_blur(blurred_image, new_settings->blur_size, processor_count);
+			delete tmp_bitmap;
 		}
 
 		settings = *new_settings;
@@ -442,6 +445,7 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator* manip, 
 
 	blur_size_slider = new BSlider("blur_size_slider", B_TRANSLATE("Effect strength:"),
 		new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50, B_HORIZONTAL, B_TRIANGLE_THUMB);
+	blur_size_slider->SetModificationMessage(new BMessage(BLUR_ADJUSTED));
 	blur_size_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	blur_size_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	blur_size_slider->SetHashMarkCount(11);
@@ -491,8 +495,18 @@ SharpnessManipulatorView::MessageReceived(BMessage* message)
 			manipulator->ChangeSettings(&settings);
 			target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
 		} break;
+		case BLUR_ADJUSTED:
+		{
+			settings.blur_size = blur_size_slider->Value();
+			manipulator->ChangeSettings(&settings);
+			if (!started_adjusting) {
+				target.SendMessage(HS_MANIPULATOR_ADJUSTING_STARTED);
+				started_adjusting = TRUE;
+			}
+		}
 		case BLUR_ADJUSTING_FINISHED:
 		{
+			started_adjusting = FALSE;
 			settings.blur_size = blur_size_slider->Value();
 			manipulator->ChangeSettings(&settings);
 			target.SendMessage(HS_MANIPULATOR_ADJUSTING_FINISHED);
