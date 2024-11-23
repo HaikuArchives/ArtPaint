@@ -472,6 +472,7 @@ ThresholdManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 	threshold_control->SetTarget(BMessenger(this));
+	ChangeSettings(&settings);
 }
 
 

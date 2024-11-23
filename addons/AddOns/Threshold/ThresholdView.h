@@ -30,7 +30,7 @@ void	MouseDown(BPoint);
 void	MouseMoved(BPoint,uint32,const BMessage*);
 void	MouseUp(BPoint);
 
-
+void	SetValue(int32 value);
 void	SetBitmap(BBitmap *bitmap);
 
 private:
