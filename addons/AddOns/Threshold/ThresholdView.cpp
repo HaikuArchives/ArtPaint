@@ -63,6 +63,8 @@ ThresholdView::AttachedToWindow()
 		SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	modeMenu->Menu()->SetTargetForItems(this);
+
+	SetValue(0);
 }
 
 
@@ -75,7 +77,7 @@ void ThresholdView::Draw(BRect)
 	FillRect(clearRect);
 
 	if (histogramBitmap != NULL)
-		DrawBitmap(histogramBitmap, BPoint(histogramRect.left, histogramRect.top));
+		DrawBitmap(histogramBitmap, histogramRect.LeftTop());
 
 	SetHighColor(255, 0, 0, 255);
 
@@ -155,9 +157,11 @@ ThresholdView::MouseUp(BPoint point)
 void
 ThresholdView::SetValue(int32 value)
 {
-	BControl::SetValue(value);
-	Draw(histogramRect);
-	Invoke();
+	if (value != Value()) {
+		BControl::SetValue(value);
+		Draw(histogramRect);
+		Invoke();
+	}
 }
 
 
