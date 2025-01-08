@@ -63,6 +63,8 @@ ThresholdView::AttachedToWindow()
 		SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	modeMenu->Menu()->SetTargetForItems(this);
+
+	SetValue(0);
 }
 
 
@@ -75,7 +77,7 @@ void ThresholdView::Draw(BRect)
 	FillRect(clearRect);
 
 	if (histogramBitmap != NULL)
-		DrawBitmap(histogramBitmap, histogramBitmap->Bounds(), histogramRect);
+		DrawBitmap(histogramBitmap, histogramRect.LeftTop());
 
 	SetHighColor(255, 0, 0, 255);
 
@@ -129,7 +131,7 @@ ThresholdView::MouseDown(BPoint point)
 {
 	isTracking = true;
 	threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
-	Draw(histogramRect);
+	SetValue(threshold);
 }
 
 
@@ -138,7 +140,7 @@ ThresholdView::MouseMoved(BPoint point, uint32, const BMessage*)
 {
 	if (isTracking) {
 		threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
-		Draw(histogramRect);
+		SetValue(threshold);
 	}
 }
 
@@ -148,8 +150,18 @@ ThresholdView::MouseUp(BPoint point)
 {
 	isTracking = false;
 	threshold = (int32)min_c(255, max_c(0, point.x - histogramRect.left));
-	Invoke();
-	Draw(histogramRect);
+	SetValue(threshold);
+}
+
+
+void
+ThresholdView::SetValue(int32 value)
+{
+	if (value != Value()) {
+		BControl::SetValue(value);
+		Draw(histogramRect);
+		Invoke();
+	}
 }
 
 

@@ -101,7 +101,6 @@ ThresholdManipulator::ManipulateBitmap(
 		target_bitmap = new BBitmap(original->Bounds(), B_RGB32, FALSE);
 	}
 
-
 	current_resolution = 1;
 	current_settings = *new_settings;
 	progress_bar = status_bar;
@@ -252,7 +251,6 @@ ThresholdManipulator::thread_function(int32 thread_number)
 				*(target_bits + x + y_times_target_bpr)
 					= ((value < threshold) ? dark.word : light.word);
 			}
-
 
 			// Update the status-bar
 			if (((y % update_interval) == 0) && (progress_bar_window != NULL)
@@ -472,6 +470,7 @@ ThresholdManipulatorView::AttachedToWindow()
 {
 	WindowGUIManipulatorView::AttachedToWindow();
 	threshold_control->SetTarget(BMessenger(this));
+	ChangeSettings(&settings);
 }
 
 
