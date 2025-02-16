@@ -475,7 +475,7 @@ Brush::print_brush(uint32** b)
 	printf("Brush:\n");
 	for (int32 y = 0; y < height_; y++) {
 		for (int32 x = 0; x < width_; x++)
-			printf("%ld ", b[y][x]);
+			printf("%" B_PRIu32 " ", b[y][x]);
 
 		printf("\n");
 	}

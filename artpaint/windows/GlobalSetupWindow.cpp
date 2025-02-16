@@ -419,7 +419,7 @@ GlobalSetupWindow::TransparencyControlView::TransparencyControlView()
 	BRect frame(0, 0, size * 250, size * 100);
 
 	fBgContainer = new PreviewPane(frame);
-	BRect frameSwatch = (0, 0, size * 24, size * 24);
+	BRect frameSwatch(0, 0, size * 24, size * 24);
 
 	fColorSwatch1 = new ColorSwatch(frameSwatch, "color1");
 	fColorSwatch1->SetToolTip(B_TRANSLATE("Drop a color from the Colors window"));

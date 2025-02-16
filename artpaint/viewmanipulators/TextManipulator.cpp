@@ -510,14 +510,14 @@ TextManipulator::Restore(const BMessage& settings)
 	ssize_t dataSize;
 	status |= settings.FindData("font", B_RAW_TYPE, &data, &dataSize);
 	if (status == B_OK && dataSize == sizeof(BFont))
-		memcpy(&fSettings.font, data, sizeof(BFont));
+		fSettings.font = *(BFont*)data;
 
 	int32 i = 0;
 	fSettings.text_color_array = new rgb_color[fSettings.text_array_length];
 	while ((status |= settings.FindData("text_color_array", B_RGB_COLOR_TYPE, i,
 		&data, &dataSize)) == B_OK) {
 		if (dataSize == sizeof(rgb_color))
-			memcpy(&fSettings.text_color_array[i], data, sizeof(rgb_color));
+			fSettings.text_color_array[i] = *(rgb_color*)data;
 		i++;
 	}
 
@@ -982,7 +982,7 @@ TextManipulatorSettings::operator==(const TextManipulatorSettings& s)
 bool
 TextManipulatorSettings::operator!=(const TextManipulatorSettings& settings)
 {
-	return (*this != settings);
+	return !(*this == settings);
 }
 
 

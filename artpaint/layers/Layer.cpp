@@ -250,8 +250,8 @@ Layer::calc_mini_image()
 		while ((x < miniature_width) && (fLayerPreviewThreads == 0)) {
 			color.word = *(big_image + ((int32)(y * dy)) * b_bpr + (int32)(x * dx));
 
-			*small_image++ = src_over_fixed(*small_image, color.word);
-
+			*small_image = src_over_fixed(*small_image, color.word);
+			small_image++;
 			x++;
 		}
 		y++;

@@ -1099,7 +1099,7 @@ PaintWindow::openMenuBar()
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" } // separator
 	};
 
-	for (uint32 i = 0; i < (sizeof(fileMenu) / sizeof(menu_item)); ++i) {
+	for (uint32 i = 0; i < B_COUNT_OF(fileMenu); ++i) {
 		_AddMenuItems(menu, fileMenu[i].label, fileMenu[i].what, fileMenu[i].shortcut,
 			fileMenu[i].modifiers, fileMenu[i].target, fileMenu[i].help);
 	}
@@ -1121,7 +1121,7 @@ PaintWindow::openMenuBar()
 		{ "SEPARATOR", 0, 0, 0, NULL, "SEPARATOR" } // separator
 	};
 
-	for (uint32 i = 0; i < (sizeof(editMenu) / sizeof(menu_item)); ++i) {
+	for (uint32 i = 0; i < B_COUNT_OF(editMenu); ++i) {
 		_AddMenuItems(menu, editMenu[i].label, editMenu[i].what, editMenu[i].shortcut,
 			editMenu[i].modifiers, editMenu[i].target, editMenu[i].help);
 	}
@@ -1341,7 +1341,7 @@ PaintWindow::openMenuBar()
 
 	float zoomLevels[] = {0.25, 0.50, 1.0, 2.0, 4.0, 8.0, 16.0};
 
-	for (int i = 0; i < sizeof(zoomLevels) / sizeof(float); ++i) {
+	for (uint32 i = 0; i < B_COUNT_OF(zoomLevels); ++i) {
 		a_message = new BMessage(HS_SET_MAGNIFYING_SCALE);
 		a_message->AddFloat("magnifying_scale", zoomLevels[i]);
 
@@ -1654,7 +1654,7 @@ PaintWindow::_PreferredSize(Image* image) const
 	if (status == B_OK && tokens && tokenCount > 0) {
 		for (int32 i = 0; i < tokenCount; ++i) {
 			if (client_window_info* windowInfo = get_window_info(tokens[i])) {
-				if (!windowInfo->is_mini && !windowInfo->show_hide_level > 0) {
+				if (!windowInfo->is_mini && !(windowInfo->show_hide_level > 0)) {
 					tabHeight = windowInfo->tab_height;
 					borderSize = windowInfo->border_size;
 					free(windowInfo);
@@ -1779,7 +1779,7 @@ PaintWindow::_SaveImage(BMessage* message)
 		}
 		// here translate the data using a BitmapStream-object
 		BBitmap* bitmap = fImageView->ReturnImage()->ReturnRenderedImage();
-		printf("Bitmap at 0,0: 0x%8lx\n", *((uint32*)(bitmap->Bits())));
+		printf("Bitmap at 0,0: 0x%8" B_PRIx32 "\n", *((uint32*)(bitmap->Bits())));
 
 		// TODO: check if we leak here
 		BBitmapStream* bitmapStream = new BBitmapStream(bitmap);

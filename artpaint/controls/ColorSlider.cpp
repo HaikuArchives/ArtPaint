@@ -123,7 +123,7 @@ ColorSlider::SetColors(BList* colors)
 	uint32 numColors = colors->CountItems();
 	uint32 step = ceil((float)RES / (numColors - 1));
 
-	for (int i = 0; i < numColors - 1; ++i) {
+	for (uint32 i = 0; i < numColors - 1; ++i) {
 		start.word = *((uint32*)colors->ItemAt(i));
 		end.word = *((uint32*)colors->ItemAt(i + 1));
 
@@ -134,7 +134,7 @@ ColorSlider::SetColors(BList* colors)
 		float b_delta = (float)(end.bytes[0] - start.bytes[0]) / (float)step;
 		float a_delta = (float)(end.bytes[3] - start.bytes[3]) / (float)step;
 
-		for (int j = 0; j < step; ++j) {
+		for (uint32 j = 0; j < step; ++j) {
 			*bits++ = pixel.word;
 
 			pixel.bytes[0] = min_c(255, pixel.bytes[0] + ceil(b_delta));

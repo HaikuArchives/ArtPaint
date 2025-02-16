@@ -150,9 +150,9 @@ StatusView::SetCoordinates(BPoint point, BPoint reference, bool use_reference)
 	if (use_reference) {
 		int32 dx = (int32)fabs(point.x - reference.x) + 1;
 		int32 dy = (int32)fabs(point.y - reference.y) + 1;
-		sprintf(coords, "X: %ld (%ld) Y: %ld (%ld)", x, dx, y, dy);
+		sprintf(coords, "X: %" B_PRId32 " (%" B_PRId32 ") Y: %" B_PRId32 " (%" B_PRId32 ")", x, dx, y, dy);
 	} else
-		sprintf(coords, "X: %ld   Y: %ld", x, y);
+		sprintf(coords, "X: %" B_PRId32 "   Y: %" B_PRId32, x, y);
 
 	coordinate_view->SetText(coords);
 }

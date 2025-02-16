@@ -478,11 +478,12 @@ EllipseToolConfigView::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case OPTION_CHANGED:
 		{
-			if (message->FindInt32("option") == FILL_ENABLED_OPTION)
+			if (message->FindInt32("option") == FILL_ENABLED_OPTION) {
 				if (fFillEllipse->Value() == B_CONTROL_ON)
 					fLineWidth->SetEnabled(FALSE);
 				else
 					fLineWidth->SetEnabled(TRUE);
+			}
 		} break;
 	}
 }
