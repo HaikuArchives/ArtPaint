@@ -21,6 +21,9 @@
 #include "Selection.h"
 #include "Sharpness.h"
 
+
+#include <stdio.h>
+
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "AddOns_Sharpness"
 
@@ -104,7 +107,7 @@ SharpnessManipulator::ManipulateBitmap(
 
 	delete blurred_image;
 	blurred_image = DuplicateBitmap(source_bitmap, 0);
-	ipLibrary->fast_gaussian_blur(blurred_image, BLUR_AMOUNT);
+	ipLibrary->fast_gaussian_blur(blurred_image, BLUR_AMOUNT, 1);
 //	CalculateLuminanceImage(source_bitmap);
 
 	start_threads();
@@ -136,18 +139,19 @@ SharpnessManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region)
 	if (full_quality)
 		last_calculated_resolution = min_c(1, last_calculated_resolution);
 
-	previous_settings = settings;
+	//previous_settings = settings;
 
 	if (last_calculated_resolution > 0) {
 		current_resolution = last_calculated_resolution;
 		updated_region->Set(preview_bitmap->Bounds());
-
 		target_bitmap = preview_bitmap;
 		source_bitmap = copy_of_the_preview_bitmap;
 		current_settings = settings;
 
 		start_threads();
 	}
+
+	previous_settings = settings;
 
 	return last_calculated_resolution;
 }
@@ -192,13 +196,27 @@ SharpnessManipulator::thread_function(int32 thread_number)
 	// which in this case is the luminance image. The luminance image
 	// is in bitmap blurred_image, which is in B_CMAP8 color-space.
 
+	if (current_settings.sharpness == previous_settings.sharpness)
+	{
+		int32 blur_size = source_bitmap->Bounds().Width() * current_settings.blur_size / 1000;
+		if (blur_size < 1)
+			blur_size = 1;
+		BBitmap* tmp_bitmap = DuplicateBitmap(copy_of_the_preview_bitmap, 0);
+		ipLibrary->fast_gaussian_blur(tmp_bitmap, blur_size,
+			processor_count, current_resolution);
+		int32* d_bits = (int32*)blurred_image->Bits();
+		int32* s_bits = (int32*)tmp_bitmap->Bits();
+		int32 bits_length = tmp_bitmap->BitsLength();
+		memcpy(d_bits, s_bits, bits_length);
+		delete tmp_bitmap;
+	}
+
 	int32 step = current_resolution;
 	float sharpness_coeff = current_settings.sharpness / 100.0;
 
 	BWindow* progress_bar_window = NULL;
 	if (progress_bar != NULL)
 		progress_bar_window = progress_bar->Window();
-
 
 	uint32* source_bits = (uint32*)source_bitmap->Bits();
 	uint32* target_bits = (uint32*)target_bitmap->Bits();
@@ -340,15 +358,15 @@ SharpnessManipulator::SetPreviewBitmap(BBitmap* bm)
 	if (preview_bitmap != NULL) {
 		// Let's select a resolution that can handle all the pixels at least
 		// 10 times in a second while assuming that one pixel calculation takes
-		// about 50 CPU cycles.
-		double speed = GetSystemClockSpeed() / (10 * 50);
+		// about 250 CPU cycles.
+		double speed = GetSystemClockSpeed() / (10 * 250);
 		BRect bounds = preview_bitmap->Bounds();
 		float num_pixels = (bounds.Width() + 1) * (bounds.Height() + 1);
 		lowest_available_quality = 1;
-		while ((num_pixels / lowest_available_quality / lowest_available_quality) > speed)
+		while ((num_pixels / lowest_available_quality) > speed)
 			lowest_available_quality *= 2;
 
-		lowest_available_quality = min_c(lowest_available_quality, 16);
+		lowest_available_quality = min_c(lowest_available_quality, 32);
 		highest_available_quality = max_c(lowest_available_quality / 2, 1);
 	} else {
 		lowest_available_quality = 1;
@@ -396,21 +414,8 @@ SharpnessManipulator::ChangeSettings(ManipulatorSettings* s)
 {
 	SharpnessManipulatorSettings* new_settings;
 	new_settings = dynamic_cast<SharpnessManipulatorSettings*>(s);
-	if (new_settings != NULL) {
-		if (new_settings->blur_size != settings.blur_size) {
-			BBitmap* tmp_bitmap = DuplicateBitmap(copy_of_the_preview_bitmap, 0);
-			ipLibrary->fast_gaussian_blur(tmp_bitmap, new_settings->blur_size, processor_count);
-
-			int32* d_bits = (int32*)blurred_image->Bits();
-			int32* s_bits = (int32*)tmp_bitmap->Bits();
-			int32 bits_length = tmp_bitmap->BitsLength();
-
-			memcpy(d_bits, s_bits, bits_length);
-			delete tmp_bitmap;
-		}
-
+	if (new_settings != NULL)
 		settings = *new_settings;
-	}
 }
 
 
@@ -444,7 +449,7 @@ SharpnessManipulatorView::SharpnessManipulatorView(SharpnessManipulator* manip, 
 	sharpness_slider->SetHashMarkCount(11);
 
 	blur_size_slider = new BSlider("blur_size_slider", B_TRANSLATE("Effect strength:"),
-		new BMessage(BLUR_ADJUSTING_FINISHED), 1, 50, B_HORIZONTAL, B_TRIANGLE_THUMB);
+		new BMessage(BLUR_ADJUSTING_FINISHED), 1, 100, B_HORIZONTAL, B_TRIANGLE_THUMB);
 	blur_size_slider->SetModificationMessage(new BMessage(BLUR_ADJUSTED));
 	blur_size_slider->SetLimitLabels(B_TRANSLATE("Low"), B_TRANSLATE("High"));
 	blur_size_slider->SetHashMarks(B_HASH_MARKS_BOTTOM);
@@ -464,6 +469,7 @@ SharpnessManipulatorView::AttachedToWindow()
 	WindowGUIManipulatorView::AttachedToWindow();
 	sharpness_slider->SetTarget(BMessenger(this));
 	blur_size_slider->SetTarget(BMessenger(this));
+	blur_size_slider->SetSnoozeAmount(30000);
 }
 
 

@@ -18,10 +18,10 @@ public:
 status_t	gaussian_blur(BBitmap *bitmap,float radius);
 status_t	gaussian_blur(BBitmap *bitmap,float radius,int32 thread_count);
 
-status_t	box_blur(BBitmap* bitmap, float radius, int32 thread_count);
+status_t	box_blur(BBitmap* bitmap, float radius, int32 thread_count, int32 resolution);
 
-status_t	fast_gaussian_blur(BBitmap* bitmap, float radius);
-status_t	fast_gaussian_blur(BBitmap* bitmap, float radius, int32 thread_count);
+status_t	fast_gaussian_blur(BBitmap* bitmap, float radius, int32 resolution);
+status_t	fast_gaussian_blur(BBitmap* bitmap, float radius, int32 thread_count, int32 resolution);
 
 status_t	grayscale_ahe(BBitmap *bitmap,int32 regionSize);
 status_t	grayscale_clahe(BBitmap *bitmap,int32 regionSize,int32 clipLimit);
@@ -41,9 +41,9 @@ static	void		filter_1d_and_rotate_clockwise(int32 *s_bits,int32 s_bpr,int32 *d_b
 static	void		filter_1d_and_rotate_counterclockwise(int32 *s_bits,int32 s_bpr,int32 *d_bits,int32 d_bpr,int32 left,int32 right,int32 top,int32 bottom,int32 *kernel,int32 kernel_radius);
 
 static void			box_blur_h(int32* s_bits, int32* d_bits, int32 width, int32 height,
-						int32 kernel_radius);
+						int32 kernel_radius, int32 resolution);
 static void			box_blur_t(int32* s_bits, int32* d_bits, int32 width, int32 height,
-						int32 kernel_radius);
+						int32 kernel_radius, int32 resolution);
 
 
 // grayscale ahe stuff
@@ -68,6 +68,7 @@ struct filter_thread_data {
 	int32	bottom;
 	int32	*kernel;
 	int32	kernel_radius;
+	int32	resolution;
 };
 
 #endif
