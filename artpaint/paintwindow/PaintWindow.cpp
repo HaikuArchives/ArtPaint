@@ -1270,6 +1270,18 @@ PaintWindow::openMenuBar()
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Scale" B_UTF8_ELLIPSIS), a_message, 'E',
 		B_CONTROL_KEY, this, B_TRANSLATE("Scale the selection.")));
 	menu->AddSeparatorItem();
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", HORIZ_FLIP_SELECTION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip horizontally"), a_message, B_LEFT_ARROW,
+		B_OPTION_KEY, this, B_TRANSLATE("Flips the selection horizontally.")));
+	a_message = new BMessage(HS_START_MANIPULATOR);
+	a_message->AddInt32("manipulator_type", VERT_FLIP_SELECTION_MANIPULATOR);
+	a_message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Flip vertically"), a_message, B_UP_ARROW,
+		B_OPTION_KEY, this, B_TRANSLATE("Flips the selection vertically.")));
+
+	menu->AddSeparatorItem();
 	menu->AddItem(new PaintWindowMenuItem(B_TRANSLATE("Hide borders"),
 		new BMessage(HS_HIDE_SELECTION_BORDERS), 'H', 0, this,
 		B_TRANSLATE("Hides the selection borders.")));
