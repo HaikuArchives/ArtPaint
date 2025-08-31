@@ -534,6 +534,22 @@ PaintWindow::MenusBeginning()
 			else
 				item->SetEnabled(true);
 		}
+
+		item = selectionMenu->FindItem(B_TRANSLATE("Flip horizontally"));
+		if (item != NULL) {
+			if (fImageView->GetSelection()->IsEmpty())
+				item->SetEnabled(false);
+			else
+				item->SetEnabled(true);
+		}
+
+		item = selectionMenu->FindItem(B_TRANSLATE("Flip vertically"));
+		if (item != NULL) {
+			if (fImageView->GetSelection()->IsEmpty())
+				item->SetEnabled(false);
+			else
+				item->SetEnabled(true);
+		}
 	}
 
 	if ((fImageEntry.InitCheck() == B_OK) && (fCurrentHandler != 0)) {
