@@ -139,9 +139,19 @@ ManipulatorServer::ManipulatorFor(manipulator_type type, image_id imageId) const
 		{
 			manipulator = new HorizFlipManipulator();
 		} break;
+		case HORIZ_FLIP_SELECTION_MANIPULATOR:
+		{
+			manipulator = new HorizFlipManipulator();
+			((HorizFlipManipulator*)manipulator)->SetTransformSelectionOnly(true);
+		} break;
 		case VERT_FLIP_MANIPULATOR:
 		{
 			manipulator = new VertFlipManipulator();
+		} break;
+		case VERT_FLIP_SELECTION_MANIPULATOR:
+		{
+			manipulator = new VertFlipManipulator();
+			((VertFlipManipulator*)manipulator)->SetTransformSelectionOnly(true);
 		} break;
 		case ROTATE_CW_MANIPULATOR:
 		{

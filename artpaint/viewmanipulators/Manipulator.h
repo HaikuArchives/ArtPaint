@@ -47,7 +47,9 @@ enum manipulator_type {
 	VERT_FLIP_MANIPULATOR,
 	TRANSLATE_SELECTION_MANIPULATOR,
 	ROTATE_SELECTION_MANIPULATOR,
-	SCALE_SELECTION_MANIPULATOR
+	SCALE_SELECTION_MANIPULATOR,
+	HORIZ_FLIP_SELECTION_MANIPULATOR,
+	VERT_FLIP_SELECTION_MANIPULATOR
 };
 
 
@@ -66,6 +68,7 @@ public:
 	double							GetSystemClockSpeed() { return fSystemClockSpeed; }
 	int								GetSystemCpuCount() { return fCpuCount; }
 	virtual void					SetSelection(Selection* new_selection) = 0;
+	virtual BBitmap*				ManipulateSelectionMap() { return NULL; }
 
 protected:
 			BBitmap*				DuplicateBitmap(BBitmap* source,
