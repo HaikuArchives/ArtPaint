@@ -1974,7 +1974,7 @@ ImageView::ManipulatorFinisherThread()
 	if (status_bar != NULL) {
 		if (LockLooper() == TRUE) {
 			status_bar->Reset();
-			status_bar->SetText(B_TRANSLATE("Finishing"));
+			status_bar->SetText(B_TRANSLATE("Processing" B_UTF8_ELLIPSIS));
 			UnlockLooper();
 		}
 	}
