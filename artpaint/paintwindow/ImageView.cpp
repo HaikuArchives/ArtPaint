@@ -1985,7 +1985,9 @@ ImageView::ManipulatorFinisherThread()
 		BString manipName = fManipulator->ReturnName();
 		if (manipName == B_TRANSLATE("Translate selection")
 			|| manipName == B_TRANSLATE("Rotate selection")
-			|| manipName == B_TRANSLATE("Scale selection")) {
+			|| manipName == B_TRANSLATE("Scale selection")
+			|| manipName == B_TRANSLATE("Flip selection horizontally")
+			|| manipName == B_TRANSLATE("Flip selection vertically")) {
 			// Add selection-change to the undo-queue.
 
 			if (gui_manipulator != NULL) {
@@ -1994,6 +1996,10 @@ ImageView::ManipulatorFinisherThread()
 				BBitmap* new_buffer = gui_manipulator->ManipulateSelectionMap(settings);
 				delete settings;
 
+				if (new_buffer != NULL)
+					selection->ReplaceSelection(new_buffer);
+			} else {
+				BBitmap* new_buffer = fManipulator->ManipulateSelectionMap();
 				if (new_buffer != NULL)
 					selection->ReplaceSelection(new_buffer);
 			}

@@ -19,11 +19,14 @@ public:
 
 		const char*		ReturnName();
 		void			SetSelection(Selection* new_selection) { selection = new_selection; };
+        void		    SetTransformSelectionOnly(bool select_only)
+                            { transform_selection_only = select_only; }
 
 		BBitmap*		ManipulateSelectionMap();
 
 private:
 		Selection*		selection;
+        bool            transform_selection_only;
 };
 
 
@@ -34,11 +37,14 @@ public:
 
 		const char*		ReturnName();
 		void			SetSelection(Selection* new_selection) { selection = new_selection; };
+        void		    SetTransformSelectionOnly(bool select_only)
+                            { transform_selection_only = select_only; }
 
 		BBitmap*		ManipulateSelectionMap();
 
 private:
 		Selection*		selection;
+        bool            transform_selection_only;
 };
 
 
