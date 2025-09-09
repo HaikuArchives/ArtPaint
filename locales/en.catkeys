@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3830704577
+1	English	application/x-vnd.artpaint	2403250611
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -13,6 +13,7 @@ Creates a new empty canvas.	PaintWindow		Creates a new empty canvas.
 ArtPaint	System name		ArtPaint
 Ellipse: SHIFT for circle, ALT for centered	Tools		Ellipse: SHIFT for circle, ALT for centered
 Airbrush tool	Tools		Airbrush tool
+Flip selection horizontally	ImageView		Flip selection horizontally
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Not a color set file	ColorPalette		Not a color set file
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint project
@@ -58,6 +59,7 @@ Scale…	PaintWindow		Scale…
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
 Redo: %eventName%	UndoQueue		Redo: %eventName%
 The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		The file '%file%' is of unsupported type. You could try installing a translator for it if possible.
+Flip selection vertically	Manipulators		Flip selection vertically
 Font:	Manipulators		Font:
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
@@ -97,8 +99,8 @@ Tool setup…	PaintWindow		Tool setup…
 Linear burn	PixelOperations		Linear burn
 Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Copies the selection.	PaintWindow		Copies the selection.
-Colors…	PaintWindow		Colors…
 Tool setup	Windows		Tool setup
+Colors…	PaintWindow		Colors…
 Copy	PaintWindow		Copy
 Reset to canvas	Manipulators		Reset to canvas
 Rotates the active layer.	PaintWindow		Rotates the active layer.
@@ -139,8 +141,8 @@ Defaults	Windows		Defaults
 Create canvas	PaintWindow		Create canvas
 Replace pixels with	Tools		Replace pixels with
 Off	Windows		Off
-Freehand line tool	Tools		Freehand line tool
 Tools	Windows		Tools
+Freehand line tool	Tools		Freehand line tool
 Layer	LayerWindow		Layer
 Duplicate	PaintWindow		Duplicate
 Opens a window with information about ArtPaint.	PaintWindow		Opens a window with information about ArtPaint.
@@ -175,6 +177,7 @@ Transparency tool	Tools		Transparency tool
 Flip horizontally	PaintWindow		Flip horizontally
 Mode	Tools		Mode
 Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
+Flips the selection horizontally.	PaintWindow		Flips the selection horizontally.
 Quit	PaintWindow		Quit
 No configuration options available.	Tools		No configuration options available.
 Invert selection	ImageView		Invert selection
@@ -197,8 +200,9 @@ Color picker tool	Tools		Color picker tool
 Cancel	Windows		Cancel
 Selection	PaintWindow		Selection
 Opens an image from disk.	PaintWindow		Opens an image from disk.
-Paste as a new project	PaintWindow		Paste as a new project
 Layers	Windows		Layers
+Paste as a new project	PaintWindow		Paste as a new project
+Processing…	ImageView		Processing…
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Color dodge	PixelOperations		Color dodge
 None	PaintWindow		None
@@ -253,7 +257,6 @@ Opens the tool selection window.	PaintWindow		Opens the tool selection window.
 Tool setup	Tools		Tool setup
 Color model	ColorPalette		Color model
 File structure corrupted	ColorPalette		File structure corrupted
-Finishing	ImageView		Finishing
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
 Save project	PaintWindow		Save project
 Conic	Tools		Conic
@@ -313,6 +316,7 @@ Standard sizes	PaintWindow		Standard sizes
 Bicubic	ScaleUtilities		Bicubic
 Datatype setup: %name%	Windows		Datatype setup: %name%
 Options	Tools		Options
+Flip selection vertically	ImageView		Flip selection vertically
 Translate selection	ImageView		Translate selection
 Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect
 Pin light	PixelOperations		Pin light
@@ -330,6 +334,7 @@ Window	PaintWindow		Window
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
 Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
 Multiply	PixelOperations		Multiply
+Flip selection horizontally	Manipulators		Flip selection horizontally
 Merges selected layer with the layer below.	PaintWindow		Merges selected layer with the layer below.
 Brush	Windows		Brush
 Blur tool	Tools		Blur tool
@@ -400,6 +405,7 @@ Layer transparency	ImageView		Layer transparency
 Delete	PaintWindow		Delete
 Choose format	FilePanels		Choose format
 Overlay	PixelOperations		Overlay
+Flips the selection vertically.	PaintWindow		Flips the selection vertically.
 Rotate…	PaintWindow		Rotate…
 Invert	PaintWindow		Invert
 Rectangle: SHIFT for square, ALT for centered	Tools		Rectangle: SHIFT for square, ALT for centered
