@@ -17,7 +17,7 @@ ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset, BBit
 	target->Lock();
 	uint32* target_bits = (uint32*)target->Bits();
 	int32 target_bpr = target->BytesPerRow() / 4;
-	target->Unlock();
+
 	source->Lock();
 	uint32* source_bits = (uint32*)source->Bits();
 	int32 source_bpr = source->BytesPerRow() / 4;
@@ -85,6 +85,8 @@ ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset, BBit
 			}
 		}
 	}
+
+	target->Unlock();
 }
 
 
@@ -95,7 +97,7 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset, BBitma
 	target->Lock();
 	uint32* target_bits = (uint32*)target->Bits();
 	int32 target_bpr = target->BytesPerRow() / 4;
-	target->Unlock();
+
 	source->Lock();
 	uint32* source_bits = (uint32*)source->Bits();
 	int32 source_bpr = source->BytesPerRow() / 4;
@@ -168,6 +170,8 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset, BBitma
 			}
 		}
 	}
+
+	target->Unlock();
 }
 
 
