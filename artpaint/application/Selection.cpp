@@ -652,6 +652,8 @@ Selection::ScaleTo(BPoint origin, float x_scale, float y_scale)
 		p->ScaleBy(origin, dx, dy);
 	}
 
+	selection_bounds.right = selection_bounds.left + x_scale;
+	selection_bounds.bottom = selection_bounds.top + y_scale;
 	needs_recalculating = TRUE;
 	release_sem(selection_mutex);
 }
