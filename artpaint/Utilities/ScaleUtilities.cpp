@@ -14,12 +14,20 @@ void
 ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset, BBitmap* source,
 	BBitmap* target, float ratio, interpolation_type method)
 {
+	target->Lock();
 	uint32* target_bits = (uint32*)target->Bits();
 	int32 target_bpr = target->BytesPerRow() / 4;
+
+	source->Lock();
 	uint32* source_bits = (uint32*)source->Bits();
 	int32 source_bpr = source->BytesPerRow() / 4;
+	source->Unlock();
 
-	for (int32 y = 0; y < (int32)ceil(height + 0.5); y++) {
+	int32 normHeight = height;
+	if (((int32)height) % 2 == 0 && ratio > 1.0)
+		normHeight = (int32)ceil(height + 0.5);
+
+	for (int32 y = 0; y < normHeight; y++) {
 		uint32* src_bits = source_bits + (int32)offset.x + (y + (int32)offset.y) * source_bpr;
 
 		for (int32 x = 0; x <= (int32)width; x++) {
@@ -77,6 +85,8 @@ ScaleUtilities::ScaleHorizontally(float width, float height, BPoint offset, BBit
 			}
 		}
 	}
+
+	target->Unlock();
 }
 
 
@@ -84,10 +94,14 @@ void
 ScaleUtilities::ScaleVertically(float width, float height, BPoint offset, BBitmap* source,
 	BBitmap* target, float ratio, interpolation_type method)
 {
+	target->Lock();
 	uint32* target_bits = (uint32*)target->Bits();
 	int32 target_bpr = target->BytesPerRow() / 4;
+
+	source->Lock();
 	uint32* source_bits = (uint32*)source->Bits();
 	int32 source_bpr = source->BytesPerRow() / 4;
+	source->Unlock();
 
 	for (int32 y = 0; y <= (int32)height; y++) {
 		int32 low = floor(ratio * y);
@@ -156,6 +170,8 @@ ScaleUtilities::ScaleVertically(float width, float height, BPoint offset, BBitma
 			}
 		}
 	}
+
+	target->Unlock();
 }
 
 
