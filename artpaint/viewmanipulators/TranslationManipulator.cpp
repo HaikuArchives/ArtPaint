@@ -214,11 +214,17 @@ TranslationManipulator::ManipulateBitmap(
 		top = (int32)selection_bounds.top;
 		bottom = (int32)selection_bounds.bottom;
 		for (int32 y = top; y <= bottom; y++) {
+			if (y < 0)
+				continue;
 			for (int32 x = left; x <= right; x++) {
+				if (x < 0)
+					continue;
+
 				int32 new_x = (int32)(x - new_settings->x_translation);
 				int32 new_y = (int32)(y - new_settings->y_translation);
 
-				if (selection->ContainsPoint(x, y) && new_x >= 0 && new_y >= 0) {
+				if (selection->ContainsPoint(x, y) && new_x >= 0 && new_y >= 0 &&
+					new_x < right && new_y < bottom) {
 					*(target_bits + x + y * target_bpr)
 						= src_over_fixed(*(target_bits + x + y * target_bpr),
 							*(source_bits + new_x + new_y * source_bpr));
