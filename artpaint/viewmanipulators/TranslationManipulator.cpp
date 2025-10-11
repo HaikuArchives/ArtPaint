@@ -148,6 +148,8 @@ TranslationManipulator::ManipulateBitmap(
 	background.bytes[2] = 0xFF;
 	background.bytes[3] = 0x00;
 
+	new_bitmap->Lock();
+	original->Lock();
 	// This function assumes that the both bitmaps are of same size.
 	uint32* target_bits = (uint32*)new_bitmap->Bits();
 	uint32* source_bits = (uint32*)original->Bits();
@@ -203,28 +205,28 @@ TranslationManipulator::ManipulateBitmap(
 			}
 		}
 
-		BBitmap* selmap = ManipulateSelectionMap(settings);
+		BBitmap* selmap = ManipulateSelectionMap(new_settings);
 		selection->ReplaceSelection(selmap);
 		delete selmap;
 
-		selection_bounds = selection->GetBoundingRect();
-		selection_bounds = selection_bounds & original->Bounds() & new_bitmap->Bounds();
+		selection_bounds.OffsetBy(new_settings->x_translation, new_settings->y_translation);
 		left = (int32)selection_bounds.left;
 		right = (int32)selection_bounds.right;
 		top = (int32)selection_bounds.top;
 		bottom = (int32)selection_bounds.bottom;
+
 		for (int32 y = top; y <= bottom; y++) {
-			if (y < 0)
+			if (y < 0 || y > height)
 				continue;
 			for (int32 x = left; x <= right; x++) {
-				if (x < 0)
+				if (x < 0 || x > width)
 					continue;
 
 				int32 new_x = (int32)(x - new_settings->x_translation);
 				int32 new_y = (int32)(y - new_settings->y_translation);
 
 				if (selection->ContainsPoint(x, y) && new_x >= 0 && new_y >= 0 &&
-					new_x < right && new_y < bottom) {
+					new_x <= width && new_y <= height) {
 					*(target_bits + x + y * target_bpr)
 						= src_over_fixed(*(target_bits + x + y * target_bpr),
 							*(source_bits + new_x + new_y * source_bpr));
@@ -232,6 +234,9 @@ TranslationManipulator::ManipulateBitmap(
 			}
 		}
 	}
+
+	new_bitmap->Unlock();
+	original->Unlock();
 
 	return new_bitmap;
 }
@@ -271,7 +276,6 @@ TranslationManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	uint32 target_bpr = new_bitmap->BytesPerRow();
 	int32 width = (int32)min_c(new_bitmap->Bounds().Width() + 1, bitmap_frame.Width() + 1);
 	int32 height = (int32)min_c(new_bitmap->Bounds().Height() + 1, bitmap_frame.Height() + 1);
-	new_bitmap->Unlock();
 
 	selection_map->Lock();
 	uint8* source_bits = (uint8*)selection_map->Bits();
@@ -307,6 +311,8 @@ TranslationManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 				= *(source_bits + x + source_x_offset + source_y);
 		}
 	}
+
+	new_bitmap->Unlock();
 
 	delete selection_map;
 
