@@ -1,3 +1,18 @@
+v2.7.2:
+
+* Big speed-up for scaling and moving, esp. when working with large images
+* Fixed crash on resizing
+* Added commands to flip a selection horizontally/vertically
+* Treshold add-on:
+  - support live preview
+  - fixed histogram rendering
+* Updated documentation
+* Updated translations
+* New translations:
+  - Ukrainian (uk) (Alexey Lugin, stotish)
+  - Czech (cs) (theokeist)
+
+
 v2.7.1:
 
 * Quick fix for 1-pixel width freehand tool freezing the app.
