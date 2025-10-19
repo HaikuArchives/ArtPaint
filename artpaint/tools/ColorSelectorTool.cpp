@@ -281,7 +281,10 @@ ColorSelectorTool::ColorSelectorTool()
 	fOptionsCount = 2;
 
 	SetOption(SIZE_OPTION, 1);
-	SetOption(MODE_OPTION, HS_ALL_BUTTONS);
+	SetOption(MODE_OPTION, 0);
+
+	fToolSettings.size = 1;
+	fToolSettings.mode = 0;
 }
 
 
@@ -289,9 +292,14 @@ ToolScript*
 ColorSelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view_point)
 {
 	BWindow* window = view->Window();
-	BBitmap* bitmap = view->ReturnImage()->ReturnActiveBitmap();
+	BBitmap* bitmap;
 
 	if (window != NULL) {
+		if (fToolSettings.mode == 0)
+			bitmap = view->ReturnImage()->ReturnActiveBitmap();
+		else
+			bitmap = view->ReturnImage()->ReturnRenderedImage();
+
 		BitmapDrawer* drawer = new BitmapDrawer(bitmap);
 
 		BPoint original_point, original_view_point, prev_view_point;
@@ -441,9 +449,24 @@ ColorSelectorToolConfigView::ColorSelectorToolConfigView(DrawingTool* tool)
 
 		fSizeSlider = new NumberSliderControl(B_TRANSLATE("Size:"), "1", message, 1, 10, false);
 
+		BMessage* all_layers_message = new BMessage(OPTION_CHANGED);
+		all_layers_message->AddInt32("option", MODE_OPTION);
+		all_layers_message->AddInt32("value", tool->GetCurrentValue(MODE_OPTION));
+		fAllLayersCheckbox = new BCheckBox(B_TRANSLATE("Sample all layers"), all_layers_message);
+
 		BGridLayout* sizeLayout = LayoutSliderGrid(fSizeSlider);
-		layout->AddView(sizeLayout->View());
+
+		layout->AddView(BGroupLayoutBuilder(B_VERTICAL, kWidgetSpacing)
+			.Add(sizeLayout)
+			.Add(fAllLayersCheckbox)
+			.TopView()
+		);
 	}
+
+	if (tool->GetCurrentValue(MODE_OPTION) == 1)
+		fAllLayersCheckbox->SetValue(B_CONTROL_ON);
+	else
+		fAllLayersCheckbox->SetValue(B_CONTROL_OFF);
 }
 
 
@@ -453,4 +476,5 @@ ColorSelectorToolConfigView::AttachedToWindow()
 	DrawingToolConfigView::AttachedToWindow();
 
 	fSizeSlider->SetTarget(this);
+	fAllLayersCheckbox->SetTarget(this);
 }

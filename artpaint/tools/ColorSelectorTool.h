@@ -14,6 +14,9 @@
 #include "DrawingTool.h"
 
 
+#include "CheckBox.h"
+
+
 class ImageView;
 
 
@@ -45,6 +48,7 @@ public:
 
 private:
 			NumberSliderControl* fSizeSlider;
+			BCheckBox* 			 fAllLayersCheckbox;
 };
 
 
