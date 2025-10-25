@@ -1,10 +1,11 @@
-1	Japanese	application/x-vnd.artpaint	1413323695
+1	Japanese	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: プロジェクトが最後に保存されてから変更があります。\n変更を保存しますか?}other{%project_name%: プロジェクトが最後に保存されてから#箇所の変更があります。\n変更を保存しますか?}}
 Blend mode	ImageView		ブレンドモード
 Cancel	ImageView		キャンセル
 Don't save	ImageView		保存しない
 Drop layer to copy it to this image.	ImageView		レイヤーをドロップしてこの画像にコピーします。
-Finishing	ImageView		完了中
+Flip selection horizontally	ImageView		Flip selection horizontally
+Flip selection vertically	ImageView		Flip selection vertically
 Grow selection	ImageView		選択範囲を拡大
 Invert selection	ImageView		選択範囲の反転
 Layer %ld / %ld	ImageView		レイヤー %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		要求された効果を完了するのに必要な空きメモリーがありません。他の画像を閉じて再度試してみることができます。元に戻せる回数を減らすことや元に戻すことを無効にすることのどちらもメモリーを増やすことへの助けとなります。他に動いているアプリケーションがあるなら、それらを閉じることでより多くの空きメモリーが得られます。この時点で作業を保存しておくのも良い考えです。それはメモリが完全になくなると保存ができなくなるかもしれないからです。ご不便をおかけしてすみません。
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		要求された効果を開始するための十分な空きメモリがありません。他の画像を閉じて再度試してみることができます。元に戻せる回数を減らすことや元に戻すことを無効にすることのどちらもメモリを増やすことへの助けとなります。他に動いているアプリケーションがあるなら、それらを閉じることでより多くの空きメモリが得られます。この時点で作業を保存しておくのも良い考えです。それはメモリが完全になくなると保存ができなくなるかもしれないからです。ご不便をおかけしてすみません。
 OK	ImageView		OK
+Processing…	ImageView		Processing…
 Rotate selection	ImageView		選択部を回転
 Save	ImageView		保存
 Scale selection	ImageView		選択部を拡大縮小
@@ -35,6 +37,7 @@ Colors	ColorPalette		カラー
 Delete current set	ColorPalette		現在のカラーセットを削除
 Error reading file	ColorPalette		ファイルの読み込みに失敗しました
 File structure corrupted	ColorPalette		ファイル構造が壊れています
+Layer	ColorPalette		レイヤー
 New color set	ColorPalette		新規カラーセット
 Next color set	ColorPalette	In Color Palette window	次のカラーセット
 Not a color set file	ColorPalette		カラーセットファイルではありません
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		すべてのレイヤーを水平方
 Flips all layers vertically.	PaintWindow		すべてのレイヤーを垂直方向に反転します。
 Flips the active layer horizontally.	PaintWindow		アクティブレイヤーを水平方向に反転します。
 Flips the active layer vertically.	PaintWindow		アクティブレイヤーを垂直方向に反転します。
+Flips the selection horizontally.	PaintWindow		Flips the selection horizontally.
+Flips the selection vertically.	PaintWindow		Flips the selection vertically.
 Grow	PaintWindow		拡大
 Grows the selection in all directions.	PaintWindow		選択範囲を全方向に拡大します。
 Height:	PaintWindow		高さ:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		拡大
 Zooms into the image.	PaintWindow		画像を拡大表示します。
 Zooms out from the image.	PaintWindow		画像を縮小表示します。
 Add	LayerWindow		追加
+Alpha:	LayerWindow		アルファ:
 Delete	LayerWindow		削除
 Duplicate	LayerWindow		複製
 Layer	LayerWindow		レイヤー
@@ -330,6 +336,8 @@ Crop…	Manipulators		トリミング…
 Enable antialiasing	Manipulators		アンチエイリアスを有効にする
 Filter:	Manipulators		フィルター:
 Flip horizontally	Manipulators		水平方向に反転
+Flip selection horizontally	Manipulators		Flip selection horizontally
+Flip selection vertically	Manipulators		Flip selection vertically
 Flip vertically	Manipulators		垂直方向に反転
 Font:	Manipulators		フォント:
 Height:	Manipulators		高さ:

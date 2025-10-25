@@ -1,10 +1,11 @@
-1	Dutch	application/x-vnd.artpaint	1413323695
+1	Dutch	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Je hebt een aanpassing gedaan sinds de laatste keer je project was opgeslagen.\nWil je de aanpassing opslaan?}other{%project_name%: Je hebt # aanpassingen gedaan sinds de laatste keer je project was opgeslagen.\nWil je deze aanpassingen opslaan?}}
 Blend mode	ImageView		Blend modus
 Cancel	ImageView		Annuleren
 Don't save	ImageView		Niet opslaan
 Drop layer to copy it to this image.	ImageView		Sleep een laag om deze te kopiëren naar deze afbeelding.
-Finishing	ImageView		Afronden
+Flip selection horizontally	ImageView		Flip selectie horizontaal
+Flip selection vertically	ImageView		Flip selectie verticaal
 Grow selection	ImageView		Selection laten groeien
 Invert selection	ImageView		Selectie omkeren
 Layer %ld / %ld	ImageView		Laag %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Niet voldoende geheugen op het effect af te ronden welke je wil gebruiken. Ja kan andere afbeeldingen sluiten en opnieuw proberen. Inkrimpen van de diepte van ongedaan maken of volledig uitschakelen hiervan helpt bij het vrijkomen van geheugen. Als je andere toepassingen open hebt, sluiten van deze geeft meer geheugen vrij. Het is een goed idee om je werk op de slaan nu, als het geheugen helemaal op raakt kan het opslaan onmogelijk worden, We verontschuldigen ons voor dit ongemak.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Niet voldoende geheugen op het effect te starten welke je wil gebruiken. Ja kan andere afbeeldingen sluiten en opnieuw proberen. Inkrimpen van de diepte van ongedaan maken of volledig uitschakelen hiervan helpt bij het vrijkomen van geheugen. Als je andere toepassingen open hebt, sluiten van deze geeft meer geheugen vrij. Het is een goed idee om je werk op de slaan nu, als het geheugen helemaal op raakt kan het opslaan onmogelijk worden, We verontschuldigen ons voor dit ongemak.
 OK	ImageView		Ok
+Processing…	ImageView		Verwerken...
 Rotate selection	ImageView		Rotatie selectie
 Save	ImageView		Opslaan
 Scale selection	ImageView		Schaal selectie
@@ -35,6 +37,7 @@ Colors	ColorPalette		Kleuren
 Delete current set	ColorPalette		Verwijder huidige set
 Error reading file	ColorPalette		Fout bij lezen bestand
 File structure corrupted	ColorPalette		Bestandsstructuur beschadigt
+Layer	ColorPalette		Laag
 New color set	ColorPalette		Nieuwe kleurset
 Next color set	ColorPalette	In Color Palette window	Volgende kleur set
 Not a color set file	ColorPalette		Geen kleur set bestand
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Draait alle actieve lagen horizontaa
 Flips all layers vertically.	PaintWindow		Draait alle actieve lagen verticaal.
 Flips the active layer horizontally.	PaintWindow		Draait de actieve laag horizontaal.
 Flips the active layer vertically.	PaintWindow		Draait de actieve laag verticaal.
+Flips the selection horizontally.	PaintWindow		Flipt de selectie horizontaal.
+Flips the selection vertically.	PaintWindow		Flipt de selectie verticaal.
 Grow	PaintWindow		Groeien
 Grows the selection in all directions.	PaintWindow		Vergroot de selectie in alle richtingen.
 Height:	PaintWindow		Hoogte:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Zoom uit
 Zooms into the image.	PaintWindow		Zoomt in op de afbeelding.
 Zooms out from the image.	PaintWindow		Zoomt uit op de afbeelding.
 Add	LayerWindow		Toevoegen
+Alpha:	LayerWindow		Alpha:
 Delete	LayerWindow		Verwijderen
 Duplicate	LayerWindow		Dupliceren
 Layer	LayerWindow		Laag
@@ -330,6 +336,8 @@ Crop…	Manipulators		Bijsnijden…
 Enable antialiasing	Manipulators		Inschakelen anti-aliasing
 Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Draai horizontaal
+Flip selection horizontally	Manipulators		Flip selectie horizontaal
+Flip selection vertically	Manipulators		Flip selectie verticaal
 Flip vertically	Manipulators		Draai verticaal
 Font:	Manipulators		Lettertype:
 Height:	Manipulators		Hoogte:

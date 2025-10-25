@@ -1,10 +1,11 @@
-1	Spanish	application/x-vnd.artpaint	1413323695
+1	Spanish	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Se ha hecho un cambio desde la última vez que se guardó el proyecto.\n¿Desea guardar el cambio?}other{%project_name%: Se han hecho # cambios desde la última vez que se guardó el proyecto.\n¿Desea guardar los cambios?}}
 Blend mode	ImageView		Modo de fusión
 Cancel	ImageView		Cancelar
 Don't save	ImageView		No guardar
 Drop layer to copy it to this image.	ImageView		Soltar capa para copiarla en esta imagen.
-Finishing	ImageView		En progreso...
+Flip selection horizontally	ImageView		Voltear horizontalmente la selección
+Flip selection vertically	ImageView		Voltear verticalmente la selección
 Grow selection	ImageView		Expandir selección
 Invert selection	ImageView		Invertir selección
 Layer %ld / %ld	ImageView		Capa %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para terminar de aplicar este efecto. Puedes cerrar imágenes y volver a intentarlo. Reducir el nivel de cancelación o cancelar la cancelación puede restaurar la memoria. Si tiene otras aplicaciones abiertas, al cerrarlas se liberará de la memoria. También debe guardar su trabajo ahora, porque si la memoria está completamente usada, no podrá guardar. Lo siento mucho por este problema.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insuficiente para aplicar este efecto. Puedes cerrar imágenes y volver a intentarlo. Reducir el nivel de cancelación o cancelar la cancelación puede restaurar la memoria. Si tiene otras aplicaciones abiertas, al cerrarlas se liberará de la memoria. También debe guardar su trabajo ahora, porque si la memoria está completamente usada, no podrá guardar. Lo siento mucho por este problema.
 OK	ImageView		Aceptar
+Processing…	ImageView		Procesando…
 Rotate selection	ImageView		Rotar selección
 Save	ImageView		Guardar
 Scale selection	ImageView		Escalar selección
@@ -35,6 +37,7 @@ Colors	ColorPalette		Colores
 Delete current set	ColorPalette		Eliminar paleta actual
 Error reading file	ColorPalette		Error al leer archivo
 File structure corrupted	ColorPalette		Estructura de archivo dañada
+Layer	ColorPalette		Capa
 New color set	ColorPalette		Paleta de colores nueva
 Next color set	ColorPalette	In Color Palette window	Siguiente paleta de colores
 Not a color set file	ColorPalette		No es un archivo de paleta de colores
@@ -75,10 +78,12 @@ Empty paint window	PaintWindow		Ventana de dibujo vacía
 File	PaintWindow		Archivo
 Flip horizontally	PaintWindow		Voltear horizontalmente
 Flip vertically	PaintWindow		Voltear verticalmente
-Flips all layers horizontally.	PaintWindow		Invertir horizontalmente todas las capas.
-Flips all layers vertically.	PaintWindow		Invertir verticalmente todas las capas.
-Flips the active layer horizontally.	PaintWindow		Invertir horizontalmente la capa activa.
-Flips the active layer vertically.	PaintWindow		Invertir verticalmente la capa activa.
+Flips all layers horizontally.	PaintWindow		Voltea horizontalmente todas las capas.
+Flips all layers vertically.	PaintWindow		Voltea verticalmente todas las capas.
+Flips the active layer horizontally.	PaintWindow		Voltea horizontalmente la capa activa.
+Flips the active layer vertically.	PaintWindow		Voltea verticalmente la capa activa.
+Flips the selection horizontally.	PaintWindow		Voltea horizontalmente la selección
+Flips the selection vertically.	PaintWindow		Voltea verticalmente la selección
 Grow	PaintWindow		Crecer
 Grows the selection in all directions.	PaintWindow		Extiende la selección en todas las direcciones.
 Height:	PaintWindow		Alto:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Zoom de nuevo
 Zooms into the image.	PaintWindow		Zoom en la imagen.
 Zooms out from the image.	PaintWindow		Zoom de nuevo en la imagen.
 Add	LayerWindow		Agregar
+Alpha:	LayerWindow		Alfa:
 Delete	LayerWindow		Eliminar
 Duplicate	LayerWindow		Duplicar
 Layer	LayerWindow		Capa
@@ -330,6 +336,8 @@ Crop…	Manipulators		Recorte...
 Enable antialiasing	Manipulators		Habilitar anti-aliasing
 Filter:	Manipulators		Filtro:
 Flip horizontally	Manipulators		Voltear horizontalmente
+Flip selection horizontally	Manipulators		Voltear horizontalmente la selección
+Flip selection vertically	Manipulators		Voltear verticalmente la selección
 Flip vertically	Manipulators		Voltear verticalmente
 Font:	Manipulators		Fuente:
 Height:	Manipulators		Alto:

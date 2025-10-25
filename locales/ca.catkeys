@@ -1,10 +1,11 @@
-1	Catalan	application/x-vnd.artpaint	1413323695
+1	Catalan	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Heu fet un canvi des de l'última vegada que s'ha desat el projecte.\nVoleu desar el canvi?}other{%project_name%: Heu fet # canvis des de l'última vegada el projecte s'ha desat.\nVoleu desar els canvis?}}
 Blend mode	ImageView		Mode de fusió
 Cancel	ImageView		Cancel·la
 Don't save	ImageView		No ho desis
 Drop layer to copy it to this image.	ImageView		Deixeu anar la capa per copiar-la a aquesta imatge.
-Finishing	ImageView		S'acaba
+Flip selection horizontally	ImageView		Gira la selecció horitzontalment
+Flip selection vertically	ImageView		Gira la selecció verticalment
 Grow selection	ImageView		Incrementa la selecció
 Invert selection	ImageView		Inverteix la selecció
 Layer %ld / %ld	ImageView		Capa %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No hi ha prou memòria lliure per acabar l'efecte que heu sol·licitat. Podeu tancar altres imatges i tornar-ho a provar. També escurçar la profunditat de l'acció de desfer o desactivar-la totalment ajuda a aconseguir més memòria. Si teniu altres aplicacions en execució, tancar-les ofereix més memòria lliure. També és una bona idea desar la feina en aquest punt, perquè si la memòria s'esgota completament, pot ser impossible desar-la. Em sap molt greu aquest inconvenient.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		No hi ha prou memòria lliure per iniciar l'efecte que heu sol·licitat. Podeu tancar altres imatges i tornar-ho a provar. També escurçar la profunditat de l'acció de desfer o desactivar-la toalment ajuda a aconseguir més memòria. Si teniu altres aplicacions en execució, tancar-les ofereix més memòria lliure. També és una bona idea desar la feina en aquest punt, perquè si la memòria s'esgota completament, pot ser impossible desar-la. Em sap molt greu aquest inconvenient.
 OK	ImageView		D'acord
+Processing…	ImageView		Es processa...
 Rotate selection	ImageView		Gira la selecció
 Save	ImageView		Desa
 Scale selection	ImageView		Escala de la selecció
@@ -35,6 +37,7 @@ Colors	ColorPalette		Colors
 Delete current set	ColorPalette		Suprimeix-ne el conjunt actual.
 Error reading file	ColorPalette		Error en llegir el fitxer
 File structure corrupted	ColorPalette		Estructura del fitxer malmesa
+Layer	ColorPalette		Capa
 New color set	ColorPalette		Conjunt de colors nou
 Next color set	ColorPalette	In Color Palette window	Conjunt de colors següent
 Not a color set file	ColorPalette		No és un fitxer de conjunt de colors.
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Gira totes les capes horitzontalment
 Flips all layers vertically.	PaintWindow		Gira totes les capes verticalment.
 Flips the active layer horizontally.	PaintWindow		Gira la capa activa horitzontalment.
 Flips the active layer vertically.	PaintWindow		Gira la capa activa verticalment.
+Flips the selection horizontally.	PaintWindow		Gira la selecció horitzontalment.
+Flips the selection vertically.	PaintWindow		Gira la selecció verticalment.
 Grow	PaintWindow		Creix
 Grows the selection in all directions.	PaintWindow		Augmenta la selecció en totes direccions.
 Height:	PaintWindow		Alçària:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Redueix
 Zooms into the image.	PaintWindow		Apropa la imatge
 Zooms out from the image.	PaintWindow		Allunya la imatge
 Add	LayerWindow		Afegeix
+Alpha:	LayerWindow		Alfa:
 Delete	LayerWindow		Suprimeix
 Duplicate	LayerWindow		Duplica
 Layer	LayerWindow		Capa
@@ -330,6 +336,8 @@ Crop…	Manipulators		Retalla…
 Enable antialiasing	Manipulators		Habilita l'antialiasing
 Filter:	Manipulators		Filtre:
 Flip horizontally	Manipulators		Gira horitzontalment
+Flip selection horizontally	Manipulators		Gira la selecció horitzontalment
+Flip selection vertically	Manipulators		Gira la selecció verticalment
 Flip vertically	Manipulators		Gira verticalment
 Font:	Manipulators		Lletra:
 Height:	Manipulators		Alçària:
