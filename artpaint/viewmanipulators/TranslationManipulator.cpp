@@ -496,7 +496,8 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 
 							if (selection->ContainsPoint(new_x , new_y) && new_x >= 0 && new_y >= 0)
 								*(target_bits + x + y * target_bpr)
-									= *(source_bits + new_x + new_y * source_bpr);
+									= src_over_fixed(*(target_bits + x + y * target_bpr),
+										*(source_bits + new_x + new_y * source_bpr));
 						}
 					}
 				}
