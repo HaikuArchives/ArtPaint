@@ -722,7 +722,8 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 							if (source_x < width && source_y < height &&
 								source_x >= 0 && source_y >= 0) {
 								*(target_bits + x + y_times_bpr)
-									= *(source_bits + source_x + source_y_times_bpr);
+									= src_over_fixed(*(target_bits + x + y_times_bpr),
+										*(source_bits + source_x + source_y_times_bpr));
 							}
 						}
 					}
