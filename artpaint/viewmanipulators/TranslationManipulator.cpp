@@ -486,13 +486,13 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 				if (selection_bounds != preview_bitmap->Bounds() ||
 					(*orig_selection_bounds == preview_bitmap->Bounds())) {
 					for (int32 y = top; y <= bottom; y += last_calculated_resolution) {
-						int32 new_y = (int32)(y - y_translation_local);
+						int32 new_y = (int32)(y - settings->y_translation);
 
 						if (y < 0)
 							continue;
 
 						for (int32 x = left; x <= right; x += last_calculated_resolution) {
-							int32 new_x = (int32)(x - x_translation_local);
+							int32 new_x = (int32)(x - settings->x_translation);
 
 							if (x < 0)
 								continue;
