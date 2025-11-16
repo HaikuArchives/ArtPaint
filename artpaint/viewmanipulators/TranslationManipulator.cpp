@@ -42,7 +42,8 @@ TranslationManipulator::TranslationManipulator(BBitmap* bm)
 	copy_of_the_preview_bitmap(NULL),
 	selection(NULL),
 	transform_selection_only(false),
-	orig_selection_map(NULL)
+	orig_selection_map(NULL),
+	orig_selection_bounds(NULL)
 {
 	preview_bitmap = bm;
 	if (preview_bitmap != NULL)
@@ -62,6 +63,7 @@ TranslationManipulator::~TranslationManipulator()
 	delete settings;
 	delete copy_of_the_preview_bitmap;
 	delete orig_selection_map;
+	delete orig_selection_bounds;
 
 	if (config_view != NULL) {
 		config_view->RemoveSelf();
@@ -78,6 +80,7 @@ TranslationManipulator::SetSelection(Selection* new_selection)
 	if (selection != NULL && selection->IsEmpty() == false) {
 		delete orig_selection_map;
 		orig_selection_map = new BBitmap(selection->ReturnSelectionMap());
+		orig_selection_bounds = new BRect(selection->GetBoundingRect());
 	} else {
 		if (orig_selection_map != NULL)
 			delete orig_selection_map;
@@ -426,75 +429,78 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 			updated_region->Set(uncleared_rect);
 			updated_region->Include(&to_be_cleared);
 		} else {
-			BRect orig_selection_bounds = selection->GetBoundingRect();
+			int32 left = (int32)(floor((orig_selection_bounds->left + x_translation_local)
+				/ last_calculated_resolution) * last_calculated_resolution);
+			int32 top = (int32)(floor((orig_selection_bounds->top + y_translation_local)
+				/ last_calculated_resolution) * last_calculated_resolution);
+			int32 right = (int32)(ceil((left + orig_selection_bounds->Width())
+				/ last_calculated_resolution) * last_calculated_resolution);
+			int32 bottom = (int32)(ceil((top + orig_selection_bounds->Height())
+				/ last_calculated_resolution) * last_calculated_resolution);
 
-			BRegion to_be_cleared;
-			to_be_cleared.Set(uncleared_rect);
+			int32 previous_right =(int32)(ceil((previous_x_translation + orig_selection_bounds->right)
+				/ last_calculated_resolution) * last_calculated_resolution);
+			int32 previous_bottom = (int32)(ceil((previous_y_translation + orig_selection_bounds->bottom)
+				/ last_calculated_resolution) * last_calculated_resolution);
+
+			int32 sel_top = (int32)min_c(previous_y_translation, top);
+			int32 sel_left = (int32)min_c(previous_x_translation, left);
+			int32 sel_bottom = (int32)max_c(previous_bottom, bottom);
+			int32 sel_right = (int32)max_c(previous_right, right);
+			sel_top = (int32)max_c(0, sel_top);
+			sel_left = (int32)max_c(0, sel_left);
+			sel_bottom = (int32)min_c(preview_bitmap->Bounds().bottom, sel_bottom);
+			sel_right = (int32)min_c(preview_bitmap->Bounds().right, sel_right);
+
+			uncleared_rect.Set(sel_left, sel_top, sel_right, sel_bottom);
+			uncleared_rect.InsetBy(-last_calculated_resolution, -last_calculated_resolution);
+			uncleared_rect = uncleared_rect & preview_bitmap->Bounds();
 
 			if (transform_selection_only == false) {
-				// First reset the picture
-				for (int32 i = 0; i < to_be_cleared.CountRects(); i++) {
-					BRect rect = to_be_cleared.RectAt(i);
-					int32 left = (int32)(floor(rect.left
-						/ last_calculated_resolution) * last_calculated_resolution);
-					int32 top = (int32)(floor(rect.top
-						/ last_calculated_resolution) * last_calculated_resolution);
-					int32 right = (int32)(floor(rect.right
-						/ last_calculated_resolution) * last_calculated_resolution);
-					int32 bottom = (int32)(floor(rect.bottom
-						/ last_calculated_resolution) * last_calculated_resolution);
-
-					for (int32 y = top; y <= bottom; y += last_calculated_resolution) {
-						for (int32 x = left; x <= right; x += last_calculated_resolution) {
-							*(target_bits + x + y * target_bpr)
-								= *(source_bits + x + y * source_bpr);
-						}
-					}
-				}
-
-				// Then do the selection
-				BRect selection_bounds(orig_selection_bounds);
-
-				int32 left = (int32)ceil(selection_bounds.left / last_calculated_resolution)
-					* last_calculated_resolution;
-				int32 right = (int32)selection_bounds.right;
-				int32 top = (int32)ceil(selection_bounds.top / last_calculated_resolution)
-					* last_calculated_resolution;
-				int32 bottom = (int32)selection_bounds.bottom;
-				for (int32 y = top; y <= bottom; y += last_calculated_resolution)
-					for (int32 x = left; x <= right; x += last_calculated_resolution)
+				for (int32 y = sel_top; y <= sel_bottom; y += last_calculated_resolution)
+					for (int32 x = sel_left; x <= sel_right; x += last_calculated_resolution)
 						if (selection->ContainsPoint(x, y))
 							*(target_bits + x + y * target_bpr) = background.word;
+						else
+							*(target_bits + x + y * target_bpr) =
+								*(source_bits + x + y * source_bpr);
 			}
 
 			selection->Translate(x_translation_local - previous_x_translation,
 				y_translation_local - previous_y_translation);
 
-			uncleared_rect = selection->GetBoundingRect();
-			uncleared_rect.OffsetBy(settings->x_translation, settings->y_translation);
-			uncleared_rect.InsetBy(-10, -10);
-			uncleared_rect = uncleared_rect & preview_bitmap->Bounds();
-
 			if (transform_selection_only == false) {
 				BRect selection_bounds = selection->GetBoundingRect();
-				selection_bounds.OffsetBy(settings->x_translation, settings->y_translation);
-				selection_bounds = selection_bounds & preview_bitmap->Bounds();
-				int32 left = (int32)ceil(selection_bounds.left / last_calculated_resolution)
-					* last_calculated_resolution;
-				int32 right = (int32)selection_bounds.right;
-				int32 top = (int32)ceil(selection_bounds.top / last_calculated_resolution)
-					* last_calculated_resolution;
-				int32 bottom = (int32)selection_bounds.bottom;
+				left = (int32)(floor((x_translation_local + orig_selection_bounds->left)
+					/ last_calculated_resolution) * last_calculated_resolution);
+				top = (int32)(floor((y_translation_local + orig_selection_bounds->top)
+					/ last_calculated_resolution) * last_calculated_resolution);
+				right = (int32)(ceil((left + orig_selection_bounds->Width())
+					/ last_calculated_resolution) * last_calculated_resolution);
+				bottom = (int32)(ceil((top + orig_selection_bounds->Height())
+					/ last_calculated_resolution) * last_calculated_resolution);
+
+				right = min_c(right, preview_bitmap->Bounds().right);
+				bottom = min_c(bottom, preview_bitmap->Bounds().bottom);
 
 				if (selection_bounds != preview_bitmap->Bounds() ||
-					(orig_selection_bounds == preview_bitmap->Bounds()
-						&& (settings->x_translation >= 0 && settings->y_translation >= 0))) {
+					(*orig_selection_bounds == preview_bitmap->Bounds())) {
 					for (int32 y = top; y <= bottom; y += last_calculated_resolution) {
-						for (int32 x = left; x <= right; x += last_calculated_resolution) {
-							int32 new_x = (int32)(x - settings->x_translation);
-							int32 new_y = (int32)(y - settings->y_translation);
+						int32 new_y = (int32)(y - y_translation_local);
 
-							if (selection->ContainsPoint(new_x , new_y) && new_x >= 0 && new_y >= 0)
+						if (y < 0)
+							continue;
+
+						for (int32 x = left; x <= right; x += last_calculated_resolution) {
+							int32 new_x = (int32)(x - x_translation_local);
+
+							if (x < 0)
+								continue;
+
+							if (selection->ContainsPoint(new_x , new_y)
+								&& new_x >= 0 && new_y >= 0
+								&& new_x < preview_bitmap->Bounds().right
+								&& new_y < preview_bitmap->Bounds().bottom)
 								*(target_bits + x + y * target_bpr)
 									= *(source_bits + new_x + new_y * source_bpr);
 						}
@@ -503,7 +509,6 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 			}
 
 			updated_region->Set(uncleared_rect);
-			updated_region->Include(&to_be_cleared);
 		}
 		previous_x_translation = x_translation_local;
 		previous_y_translation = y_translation_local;

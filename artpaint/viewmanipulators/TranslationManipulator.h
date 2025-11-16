@@ -50,6 +50,7 @@ class TranslationManipulator : public WindowGUIManipulator {
 
 			Selection*	selection;
 			BBitmap*	orig_selection_map;
+			BRect*		orig_selection_bounds;
 			bool		transform_selection_only;
 
 public:
