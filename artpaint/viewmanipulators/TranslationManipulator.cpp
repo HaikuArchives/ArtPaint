@@ -362,6 +362,9 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 		background.bytes[2] = 0xFF;
 		background.bytes[3] = 0x00;
 
+		preview_bitmap->Lock();
+		copy_of_the_preview_bitmap->Lock();
+
 		// This function assumes that the both bitmaps are of same size.
 		uint32* target_bits = (uint32*)preview_bitmap->Bits();
 		uint32* source_bits = (uint32*)copy_of_the_preview_bitmap->Bits();
@@ -471,14 +474,6 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 
 			if (transform_selection_only == false) {
 				BRect selection_bounds = selection->GetBoundingRect();
-				left = (int32)(floor((x_translation_local + orig_selection_bounds->left)
-					/ last_calculated_resolution) * last_calculated_resolution);
-				top = (int32)(floor((y_translation_local + orig_selection_bounds->top)
-					/ last_calculated_resolution) * last_calculated_resolution);
-				right = (int32)(ceil((left + orig_selection_bounds->Width())
-					/ last_calculated_resolution) * last_calculated_resolution);
-				bottom = (int32)(ceil((top + orig_selection_bounds->Height())
-					/ last_calculated_resolution) * last_calculated_resolution);
 
 				right = min_c(right, preview_bitmap->Bounds().right);
 				bottom = min_c(bottom, preview_bitmap->Bounds().bottom);
@@ -488,21 +483,22 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 					for (int32 y = top; y <= bottom; y += last_calculated_resolution) {
 						int32 new_y = (int32)(y - settings->y_translation);
 
-						if (y < 0)
+						if (y < 0 || new_y > preview_bitmap->Bounds().bottom)
 							continue;
+
+						int32 y_times_target_bpr = y * target_bpr;
+						int32 new_y_times_source_bpr = new_y * source_bpr;
 
 						for (int32 x = left; x <= right; x += last_calculated_resolution) {
 							int32 new_x = (int32)(x - settings->x_translation);
 
-							if (x < 0)
+							if (x < 0 || new_x > preview_bitmap->Bounds().right)
 								continue;
 
 							if (selection->ContainsPoint(new_x , new_y)
-								&& new_x >= 0 && new_y >= 0
-								&& new_x < preview_bitmap->Bounds().right
-								&& new_y < preview_bitmap->Bounds().bottom)
-								*(target_bits + x + y * target_bpr)
-									= *(source_bits + new_x + new_y * source_bpr);
+								&& new_x >= 0 && new_y >= 0)
+								*(target_bits + x + y_times_target_bpr)
+									= *(source_bits + new_x + new_y_times_source_bpr);
 						}
 					}
 				}
@@ -513,6 +509,9 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 		previous_x_translation = x_translation_local;
 		previous_y_translation = y_translation_local;
 	}
+
+	preview_bitmap->Unlock();
+	copy_of_the_preview_bitmap->Unlock();
 
 	return last_calculated_resolution;
 }
