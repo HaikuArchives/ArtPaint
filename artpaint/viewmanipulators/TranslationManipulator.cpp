@@ -453,7 +453,7 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 			sel_right = (int32)min_c(preview_bitmap->Bounds().right, sel_right);
 
 			uncleared_rect.Set(sel_left, sel_top, sel_right, sel_bottom);
-			uncleared_rect.InsetBy(-last_calculated_resolution, -last_calculated_resolution);
+			uncleared_rect.InsetBy(-10, -10);
 			uncleared_rect = uncleared_rect & preview_bitmap->Bounds();
 
 			if (transform_selection_only == false) {
