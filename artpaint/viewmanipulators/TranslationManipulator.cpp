@@ -457,8 +457,8 @@ TranslationManipulator::PreviewBitmap(bool full_quality, BRegion* updated_region
 			uncleared_rect = uncleared_rect & preview_bitmap->Bounds();
 
 			if (transform_selection_only == false) {
-				for (int32 y = sel_top; y <= sel_bottom; y += last_calculated_resolution)
-					for (int32 x = sel_left; x <= sel_right; x += last_calculated_resolution)
+				for (int32 y = sel_top; y <= sel_bottom; ++y)
+					for (int32 x = sel_left; x <= sel_right; ++x)
 						if (selection->ContainsPoint(x, y))
 							*(target_bits + x + y * target_bpr) = background.word;
 						else
