@@ -32,6 +32,7 @@
 
 
 #include <new>
+#include <limits>
 #include <string.h>
 
 #include <stdio.h>
@@ -62,10 +63,10 @@ ScaleManipulator::ScaleManipulator(BBitmap* bm)
 	previous_point.x = 0;
 	previous_point.y = 0;
 
-	previous_left = -1;
-	previous_top = -1;
-	previous_bottom = -1;
-	previous_right = -1;
+	previous_left = INT_MIN;
+	previous_top = INT_MIN;
+	previous_bottom = INT_MIN;
+	previous_right = INT_MIN;
 
 	method = BILINEAR;
 }
@@ -650,7 +651,7 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 		if (reject_mouse_input == true)
 			return 1;
 
-		if (previous_left < 0 && previous_top < 0
+		if (previous_left == INT_MIN && previous_top == INT_MIN
 			&& settings->left > 0 && settings->top > 0) {
 				previous_left = settings->left;
 				previous_top = settings->top;
