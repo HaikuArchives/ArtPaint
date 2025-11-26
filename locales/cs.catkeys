@@ -1,0 +1,428 @@
+1	Czech	application/x-vnd.artpaint	2403250611
+{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Provedli jste změnu od posledního uložení projektu.\nChcete změnu uložit?}other{%project_name%: Od posledního uložení projektu jste provedli # změn.\nChcete změny uložit?}}
+Blend mode	ImageView		Režim prolnutí
+Cancel	ImageView		Zrušít
+Don't save	ImageView		Neukládat
+Drop layer to copy it to this image.	ImageView		Přetažením vrstvy ji zkopírujete do tohoto obrázku.
+Flip selection horizontally	ImageView		Překlopte výběr vodorovně
+Flip selection vertically	ImageView		Překlopte výběr svisle
+Grow selection	ImageView		Rozšiřte výběr
+Invert selection	ImageView		Invertovat výběr
+Layer %ld / %ld	ImageView		Vrstva %ld / %ld
+Layer name	ImageView		Název vrstvy
+Layer transparency	ImageView		Průhlednost vrstvy
+Layer visibility	ImageView		Viditelnost vrstvy
+Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		Pro přidání vrstvy není dostatek volné paměti. Více paměti můžete uvolnit deaktivací funkce Zpět a zavřením ostatních obrázků. Je také dobrý nápad uložit obrázek hned, protože nedostatek paměti může později ztížit nebo znemožnit ukládání. Velmi se omlouvám za tuto nepříjemnost.
+Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Nedostatek volné paměti k dokončení požadovaného efektu. Můžete zavřít další obrázky a zkusit to znovu. K dosažení větší paměti také pomáhá zkrácení hloubky zpětného chodu nebo jeho úplné zakázání. Pokud máte spuštěné jiné aplikace, jejich zavřením získáte více volné paměti. V tomto okamžiku je také dobré uložit svou práci, protože pokud se paměť zcela vyčerpá, ukládání může být nemožné. Velmi se omlouvám za tuto nepříjemnost.
+Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Nedostatek volné paměti ke spuštění požadovaného efektu. Můžete zavřít další obrázky a zkusit to znovu. K dosažení větší paměti také pomáhá zkrácení hloubky zpětného chodu nebo jeho úplné zakázání. Pokud máte spuštěné jiné aplikace, jejich zavřením získáte více volné paměti. V tomto okamžiku je také dobré uložit svou práci, protože pokud se paměť zcela vyčerpá, ukládání může být nemožné. Velmi se omlouvám za tuto nepříjemnost.
+OK	ImageView		OK
+Processing…	ImageView		Processing…
+Rotate selection	ImageView		Otočit výběr
+Save	ImageView		Uložit
+Scale selection	ImageView		Výběr měřítka
+Select all	ImageView		Vyberte vše
+Select non-transparent	ImageView		Vyberte neprůhledné
+Select none	ImageView		Vyberte žádné
+Shrink selection	ImageView		Zmenšit výběr
+Translate selection	ImageView		Přeložit výběr
+Unsaved changes!	ImageView		Neuložené změny!
+%d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d barev
+ArtPaint: Open color set…	ColorPalette		ArtPaint: Otevřít barevnou sadu…
+Cannot delete the only color set.	ColorPalette		Nelze odstranit jedinou sadu barev.
+Cannot write to file	ColorPalette		Nelze zapisovat do souboru
+Click to select a painting color.	ColorPalette		Kliknutím vyberte barvu malby.
+Color model	ColorPalette		Barevný model
+Color set	ColorPalette		Barevná sada
+Colors	ColorPalette		Barvy
+Delete current set	ColorPalette		Smazat současnou sadu
+Error reading file	ColorPalette		Error čtení souboru
+File structure corrupted	ColorPalette		Struktura souboru je poškozena
+Layer	ColorPalette		Vrstva
+New color set	ColorPalette		Nová barevná sada
+Next color set	ColorPalette	In Color Palette window	Další barevná sada
+Not a color set file	ColorPalette		Nejedná se o soubor sady barev
+OK	ColorPalette		OK
+Open color set…	ColorPalette		Otevřít sadu barev…
+Previous color set	ColorPalette	In Color Palette window	Předchozí sada barev
+Save color set	ColorPalette		Uložit sadu barev
+About ArtPaint	PaintWindow		O aplikaci ArtPaint
+Active layer	PaintWindow		Aktivní vrstva
+Add	PaintWindow		Přidat
+Add-ons	PaintWindow		Doplňky
+Adds a layer to the top of this image.	PaintWindow		Přidá vrstvu do horní části tohoto obrázku.
+All	PaintWindow		Vše
+All layers	PaintWindow		Všechny vrstvy
+All non-transparent	PaintWindow		Vše neprůhledné
+Brushes…	PaintWindow		Štětce…
+Canvas	PaintWindow		Plátno
+Clears the selection or layer.	PaintWindow		Vymaže výběr nebo vrstvu.
+Close	PaintWindow		Blízko
+Closes the current window.	PaintWindow		Zavře aktuální okno.
+Colors…	PaintWindow		Barvy…
+Copies the selection of all layers.	PaintWindow		Zkopíruje výběr všech vrstev.
+Copies the selection.	PaintWindow		Zkopíruje výběr.
+Copy	PaintWindow		Kopie
+Create canvas	PaintWindow		Vytvořte plátno
+Creates a new empty canvas.	PaintWindow		Vytvoří nové prázdné plátno.
+Crop…	PaintWindow		Oříznout…
+Crops the canvas.	PaintWindow		Ořízne plátno.
+Cut	PaintWindow		Vyjmout
+Cuts the selection from all layers to the clipboard.	PaintWindow		Vyjme výběr ze všech vrstev do schránky.
+Cuts the selection to the clipboard.	PaintWindow		Vyjme výběr do schránky.
+Delete	PaintWindow		Vymazat
+Deletes the selected layer.	PaintWindow		Odstraní vybranou vrstvu.
+Duplicate	PaintWindow		Duplikát
+Duplicates the selected layer.	PaintWindow		Duplikuje vybranou vrstvu.
+Edit	PaintWindow		Upravit
+Empty paint window	PaintWindow		Prázdné okno barvy
+File	PaintWindow		Soubor
+Flip horizontally	PaintWindow		Překlopte vodorovně
+Flip vertically	PaintWindow		Překlopte svisle
+Flips all layers horizontally.	PaintWindow		Převrátí všechny vrstvy vodorovně.
+Flips all layers vertically.	PaintWindow		Převrátí všechny vrstvy svisle.
+Flips the active layer horizontally.	PaintWindow		Převrátí aktivní vrstvu vodorovně.
+Flips the active layer vertically.	PaintWindow		Převrátí aktivní vrstvu svisle.
+Flips the selection horizontally.	PaintWindow		Převrátí výběr vodorovně.
+Flips the selection vertically.	PaintWindow		Převrátí výběr svisle.
+Grow	PaintWindow		Růst
+Grows the selection in all directions.	PaintWindow		Rozšiřuje výběr ve všech směrech.
+Height:	PaintWindow		Výška:
+Hide borders	PaintWindow		Skrýt hranice
+Hides the selection borders.	PaintWindow		Skryje hranice výběru.
+Invert	PaintWindow		Invertovat
+Inverts the selection	PaintWindow		Invertuje výběr
+Layer	PaintWindow		Vrstva
+Layers…	PaintWindow		Vrstvy…
+Merge down	PaintWindow		Sloučit dolů
+Merges selected layer with the layer below.	PaintWindow		Sloučí vybranou vrstvu s vrstvou níže.
+Move the selection.	PaintWindow		Posuňte výběr.
+Moves all layers.	PaintWindow		Přesune všechny vrstvy.
+Moves the active layer.	PaintWindow		Přesune aktivní vrstvu.
+New project…	PaintWindow		Nový projekt…
+None	PaintWindow		Žádný
+Not enough free memory to create the image. Please try again with a smaller image size.	PaintWindow		K vytvoření obrázku není dostatek volné paměti. Zkuste to prosím znovu s menší velikostí obrázku.
+Off	PaintWindow		Vypnuto
+OK	PaintWindow		OK
+Open image…	PaintWindow		Otevřít obrázek…
+Open project…	PaintWindow		Otevřít projekt…
+Opens a project from disk.	PaintWindow		Otevře projekt z disku.
+Opens a window with information about ArtPaint.	PaintWindow		Otevře okno s informacemi o ArtPaint.
+Opens an image from disk.	PaintWindow		Otevřený projekt z disku.
+Opens the colors window.	PaintWindow		Otevře okno barev.
+Opens the layers window.	PaintWindow		Otevře okno vrstev.
+Opens the main documentation for ArtPaint.	PaintWindow		Otevře hlavní dokumentaci pro ArtPaint.
+Opens the settings window.	PaintWindow		Otevře okno nastavení.
+Opens the tool selection window.	PaintWindow		Otevře okno pro výběr nástroje.
+Opens the tool setup window.	PaintWindow		Otevře okno nastavení nástroje.
+Opens the window of stored brushes.	PaintWindow		Otevře okno uložených štětců.
+Paste as a new layer	PaintWindow		Vložit jako novou vrstvu
+Paste as a new project	PaintWindow		Vložit jako nový projekt
+Pastes previously copied selection as a new layer.	PaintWindow		Vloží dříve zkopírovaný výběr jako novou vrstvu.
+Pastes previously copied selection as a new project.	PaintWindow		Vloží dříve zkopírovaný výběr jako nový projekt.
+Quit	PaintWindow		Přestat
+Quits ArtPaint.	PaintWindow		Ukončit ArtPaint.
+Recent images	PaintWindow		Nedávné obrázky
+Recent projects	PaintWindow		Nedávné projekty
+Redo	PaintWindow		Předělat
+Redos the action that was last undone.	PaintWindow		Znovu provede akci, která byla naposledy vrácena zpět.
+Resize…	PaintWindow		Změnit velikost…
+Resizes the canvas.	PaintWindow		Změní velikost plátna.
+Rotate -90°	PaintWindow		Otočit -90°
+Rotate +90°	PaintWindow		Otočit +90°
+Rotate the selection.	PaintWindow		Otočte výběr.
+Rotate…	PaintWindow		Střídat…
+Rotates all layers.	PaintWindow		Otočí všechny vrstvy.
+Rotates the active layer.	PaintWindow		Otočí aktivní vrstvu.
+Rotates the canvas 90° clockwise.	PaintWindow		Otočí plátno o 90° ve směru hodinových ručiček.
+Rotates the canvas 90° counter-clockwise.	PaintWindow		Otočí plátno o 90° proti směru hodinových ručiček.
+Save image	PaintWindow		Uložit obrázek
+Save image as…	PaintWindow		Uložit obrázek jako…
+Save project	PaintWindow		Uložit projekt
+Save project as…	PaintWindow		Uložit projekt jako...
+Saves the image to disk.	PaintWindow		Uloží obrázek na disk.
+Saves the image under its current name.	PaintWindow		Uloží obrázek pod jeho aktuálním názvem.
+Saves the project to disk.	PaintWindow		Uloží projekt na disk.
+Saves the project under its current name.	PaintWindow		Uloží projekt pod jeho aktuálním názvem.
+Scale the selection.	PaintWindow		Změňte velikost výběru.
+Scale…	PaintWindow		Měřítko…
+Scales all layers.	PaintWindow		Změní měřítko všech vrstev.
+Scales the active layer.	PaintWindow		Změní měřítko aktivní vrstvy.
+Selection	PaintWindow		Výběr
+Selects all non-transparent layer pixels	PaintWindow		Vybere všechny neprůhledné obrazové body vrstvy
+Selects entire layer	PaintWindow		Vybere celou vrstvu
+Set grid	PaintWindow		Nastavit mřížku
+Set zoom level	PaintWindow		Nastavte úroveň přiblížení
+Set/Select the canvas size.	PaintWindow		Nastavte/Vyberte velikost plátna.
+Sets the grid to 2 by 2 pixels.	PaintWindow		Nastaví mřížku na 2 x 2 pixely.
+Sets the grid to 4 by 4 pixels.	PaintWindow		Nastaví mřížku na 4 x 4 pixely.
+Sets the grid to 8 by 8 pixels.	PaintWindow		Nastaví mřížku na 8 x 8 pixelů.
+Sets the zoom level to %s.	PaintWindow		Nastaví úroveň přiblížení na %s.
+Settings…	PaintWindow		Nastavení…
+Shrink	PaintWindow		Zmenšit
+Shrinks the selection in all directions.	PaintWindow		Zmenší výběr ve všech směrech.
+Standard sizes	PaintWindow		Standardní velikosti
+Tool setup…	PaintWindow		Nastavení nástroje…
+Tools…	PaintWindow		Nástroje…
+Translate…	PaintWindow		Přeložit…
+Turns the grid off.	PaintWindow		Vypne mřížku.
+Un-selects all	PaintWindow		Zruší výběr všech
+Undo	PaintWindow		Vrátit zpět
+Undos the previous action.	PaintWindow		Vrátí předchozí akci.
+Untitled	PaintWindow		Bez názvu
+User manual…	PaintWindow		Návod k použití…
+Width:	PaintWindow		Šířka:
+Window	PaintWindow		Okno
+Zoom in	PaintWindow		Přiblížit
+Zoom out	PaintWindow		Oddálit
+Zooms into the image.	PaintWindow		Přiblíží obraz.
+Zooms out from the image.	PaintWindow		Oddálí od obrázku.
+Add	LayerWindow		Přidat
+Alpha:	LayerWindow		Alpha:
+Delete	LayerWindow		Vymazat
+Duplicate	LayerWindow		Duplikovat
+Layer	LayerWindow		Vrstva
+Layer transparency	LayerWindow		Průhlednost vrstvy
+Layers	LayerWindow		Vrstvy
+Merge down	LayerWindow		Sloučit dolů
+Mode:	LayerWindow		Režim:
+Add layer	Image		Přidat vrstvu
+Cannot delete the only layer. Create another picture to get a fresh start.	Image		Cannot delete the only layer. Create another picture to get a fresh start.
+Delete	Image		Vymazat
+Delete layer	Image		Smazat vrstvu
+Merge down	Image		Sloučit dolů
+Merge with layer above	Image		Sloučit s vrstvou nahoře
+OK	Image		OK
+Add-ons	Windows		Doplňky
+Adjustable	Windows		Nastavitelný
+Application	Windows		Aplikace
+Brush	Windows		Štětec
+Brushes	Windows		Štětce
+Cancel	Windows		Zrušit
+Colors	Windows		Barvy
+Colors:	Windows		Barvy:
+Cross-hair cursor	Windows		Cross-hair kurzor
+Cursor	Windows		Kurzor
+Datatype setup: %name%	Windows		Nastavení datového typu: %name%
+Defaults	Windows		Vychozí
+Delete selected brush	Windows		Smazat vybraný štětec
+Drop a color from the Colors window	Windows		Upustit barvu z okna Barvy
+Grid size:	Windows		Velikost mřížky:
+Keep in front	Windows		Držte se vpředu
+Layers	Windows		Vrstvy
+Miscellaneous	Windows		Smíšené
+No data translator	Windows		Žádný překladač dat
+No options	Windows		Žadné možnosti
+Off	Windows		Vypnout
+OK	Windows		OK
+Settings	Windows		Nastavení
+Show brush size	Windows		Zobrazit velikost štětce
+Tool cursor	Windows		Kurzor nástroje
+Tool setup	Windows		Nastavení nástroje
+Tools	Windows		Nástroje
+Transparency	Windows		Průhlednost
+Undo	Windows		Vrátit zpět
+Undo steps:	Windows		Kroky zpět:
+Unlimited	Windows		Neomezeně
+Windows	Windows		Okna
+Adjustable width	Tools		Nastavitelná šířka
+Adjusting the layer's transparency.	Tools		Úprava průhlednosti vrstvy.
+Airbrush	Tools		Airbrush
+Airbrush tool	Tools		Airbrush nástroj
+Alpha	Tools		Alpha
+Amount of paint:	Tools		Množství barvy:
+Angle:	Tools		Úhel:
+Aspect:	Tools		Aspekt:
+Background color	Tools		Barva pozadí
+Blue	Tools		Modrá
+Blur tool	Tools		Nástroj pro rozmazání
+Blurring the image.	Tools		Rozmazání obrazu.
+Brush tool	Tools		Nástroj štětec
+Click to place the text.	Tools		Klepnutím umístěte text.
+Click to use the tool.	Tools		Kliknutím nástroj použijete.
+Color picker tool	Tools		Nástroj pro výběr barvy
+Color picker window	Tools		Okno pro výběr barvy
+Color variance:	Tools		Barevná variace:
+Conic	Tools		Kónický
+Continuous	Tools		Kontinuální
+Drag the text to correct position and set its appearance.	Tools		Přetáhněte text do správné polohy a nastavte jeho vzhled.
+Drawing a freehand line.	Tools		Kreslení čáry od ruky.
+Drawing a rectangle.	Tools		Kreslení obdélníku.
+Drawing a straight line.	Tools		Kreslení přímky.
+Drawing an ellipse.	Tools		Kreslení elipsy.
+Ellipse	Tools		Elipsa
+Ellipse tool	Tools		Nástroj elipsy
+Ellipse: SHIFT for circle, ALT for centered	Tools		Elipsa: SHIFT pro kruh, ALT pro střed
+Enable antialiasing	Tools		Povolit vyhlazování
+Enable gradient	Tools		Povolit přechod
+Enable preview	Tools		Povolit náhled
+Enable rotation	Tools		Povolit otáčení
+Eraser tool	Tools		Guma
+Erasing pixels.	Tools		Mazání pixelů.
+Fill ellipse	Tools		Vyplňte elipsu
+Fill rectangle	Tools		Vyplňte obdélník
+Fill tool	Tools		Nástroj pro plnění
+Fill tool: SHIFT locks 22.5° angles	Tools		Nástroj pro plnění: SHIFT uzamkne úhly 22,5°
+Flood fill	Tools		Povodňová výplň
+Flow:	Tools		Tok:
+Freehand	Tools		Od ruky
+Freehand line tool	Tools		Nástroj čáry od ruky
+Green	Tools		Zelená
+Hairs:	Tools		Vlasy:
+Hairy brush tool	Tools		Nástroj chlupatý štětec
+Hardness:	Tools		Tvrdost:
+Hold SHIFT to snap to 45° angles	Tools		Podržte SHIFT pro přichycení do 45° úhlů
+Intelligent scissors	Tools		Inteligentní nůžky
+Linear	Tools		Lineární
+Little	Tools		Málo
+Magic wand	Tools		Kouzelná hůlka
+Making a fill.	Tools		Vytvoření výplně.
+Making a selection.	Tools		Provedení výběru.
+Mode	Tools		Režim
+Much	Tools		Mnoho
+No configuration options available.	Tools		Nejsou k dispozici žádné možnosti konfigurace.
+None	Tools		Žádný
+Options	Tools		Možnosti
+Outline width:	Tools		Šířka obrysu:
+Painting with a brush.	Tools		Malování štětcem.
+Painting with a hairy brush.	Tools		Malování chlupatým štětcem.
+Picking a color.	Tools		Výběr barvy.
+Pressure:	Tools		Tlak:
+Radial	Tools		Radiální
+Random	Tools		Náhodný
+Rectangle	Tools		Obdélník
+Rectangle tool	Tools		Nástroj obdélník
+Rectangle: SHIFT for square, ALT for centered	Tools		Obdélník: SHIFT pro čtverec, ALT pro střed
+Red	Tools		Červená
+Replace pixels with	Tools		Nahraďte pixely za
+Reset brush	Tools		Resetujte štětec
+Selection tool	Tools		Nástroj pro výběr
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Nástroj pro výběr: SHIFT pro čtverec/kruh, výběr středů ALT, odečtení OPT
+Size:	Tools		Velikost:
+Spray	Tools		Sprej
+Square	Tools		Čtverec
+Store brush	Tools		Uložit štětec
+Straight line tool	Tools		Nástroj pro přímku
+Straight line: SHIFT locks 22.5° angles	Tools		Přímka: SHIFT zamyká úhly 22,5°
+Text tool	Tools		Textový nástroj
+Tolerance:	Tools		Tolerance:
+Tool setup	Tools		Nastavení nástroje
+Tools	Tools		Nástroje
+Transparency	Tools		Průhlednost
+Transparency tool	Tools		Nástroj pro transparentnost
+Transparency:	Tools		Průhlednost:
+Use current brush	Tools		Použít současný štětec
+Using the airbrush.	Tools		Pomocí airbrush.
+Using the tool.	Tools		Pomocí nástroje.
+Width:	Tools		Šířka:
+Alpha	ColorSliders	For color sliders	Alfa
+Black	ColorSliders	For CMYK color slider	Černá
+Blue	ColorSliders	For RGB color sliders	Modrá
+Channel a	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanál a
+Channel b	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Kanál b
+Cyan	ColorSliders	For CMYK color slider	Tyrkysová
+Green	ColorSliders	For RGB color sliders	Zelená
+Hue	ColorSliders	For HSV color slider	Odstín
+Lightness	ColorSliders	For CIELAB color sliders - also called L*a*b* color	Světlost
+Magenta	ColorSliders	For CMYK color slider	Purpurová
+Red	ColorSliders	For RGB color sliders	Červená
+Saturation	ColorSliders	For HSV color slider	Saturace
+Value	ColorSliders	For HSV color slider - 'value' as 'color value', also called 'lightness'	Hodnota
+Yellow	ColorSliders	For CMYK color slider	Žlutá
+Angle:	Manipulators		Úhel:
+Change the transparency with the slider.	Manipulators		Změňte průhlednost pomocí posuvníku.
+Change transparency…	Manipulators		Změnit průhlednost…
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Oříznout: Pomocí úchytů nebo číselných polí nastavte nové okraje. SHIFT uzamkne poměr stran.
+Crop…	Manipulators		Oříznout…
+Enable antialiasing	Manipulators		Povolit vyhlazování
+Filter:	Manipulators		Filter:
+Flip horizontally	Manipulators		Překlopte vodorovně
+Flip selection horizontally	Manipulators		Překlopte výběr vodorovně
+Flip selection vertically	Manipulators		Překlopte výběr svisle
+Flip vertically	Manipulators		Překlopte svisle
+Font:	Manipulators		Písmo:
+Height:	Manipulators		Výška:
+Left:	Manipulators		Vlevo:
+Lock	Manipulators	Keep the aspect ratio	Zámek
+Lock	Manipulators		Zámek
+Opaque	Manipulators		Neprůhledný
+Reset to canvas	Manipulators		Obnovit na plátno
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Změna velikosti: Přetažením změníte velikost nebo použijete číselná pole. Podržením SHIFT uzamknete poměr stran
+Resize…	Manipulators		Změnit velikost…
+Restore	Manipulators		Obnovit
+Rotate	Manipulators		Střídat
+Rotate -90°	Manipulators		Otočit -90°
+Rotate +90°	Manipulators		Otočit +90°
+Rotate selection	Manipulators		Otočit výběr
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Otočit: Přetažením doleva otočíte, kliknutím pravým tlačítkem nastavíte střed otáčení, SHIFT pro úhel přichycení.
+Rotation:	Manipulators		Otáčení:
+Scale	Manipulators		Měřítko
+Scale selection	Manipulators		Výběr měřítka
+Scale: Drag to resize or use number-fields.	Manipulators		Měřítko: Přetažením změníte velikost nebo použijete číselná pole.
+Shear:	Manipulators		Stříhat:
+Size:	Manipulators		Velikost:
+Text tool	Manipulators		Textový nástroj
+Text: Position text and set its appearance.	Manipulators		Text: Umístěte text a nastavte jeho vzhled.
+Top:	Manipulators		Nahoře:
+Translate	Manipulators		Přeložit
+Translate selection	Manipulators		Přeložit výběr
+Translate: Drag to move or use number-fields.	Manipulators		Přeložit: Přetažením přesunete nebo použijete číselná pole.
+Transparency:	Manipulators		Průhlednost:
+Transparent	Manipulators		Průhlednost
+Use selection	Manipulators		Použít výběr
+Width:	Manipulators		Šířka:
+ArtPaint	System name		ArtPaint
+ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint je program pro malování a zpracování obrazu pro Haiku.
+ArtPaint project	PaintApplication	MIME type short description	Projekt ArtPaint
+ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	Formát projektu ArtPaint obsahující vrstvy atd.
+ArtPaint: Open image…	PaintApplication		ArtPaint: Otevřít obrázek…
+ArtPaint: Open project…	PaintApplication		ArtPaint: Otevřít projekt…
+OK	PaintApplication		OK
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		Soubor '%file%' je nepodporovaného typu. Pokud je to možné, můžete zkusit nainstalovat překladač.
+ArtPaint: Save image	FilePanels		ArtPaint: Uložit obrázek
+Cancel	FilePanels		Zrušit
+Choose format	FilePanels		Vybrat formát
+Open	FilePanels		Otevřít
+Save	FilePanels		Uložit
+Save format:	FilePanels		Formát uložení:
+Settings…	FilePanels		Nastavení…
+Bicubic	ScaleUtilities		Bicubic
+Bicubic (B-spline)	ScaleUtilities		Bicubic (B-spline)
+Bicubic (Catmull-Rom)	ScaleUtilities		Bicubic (Catmull-Rom)
+Bilinear	ScaleUtilities		Bilinear
+Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Nearest neighbor	ScaleUtilities		Nejbližší soused
+Brush	StatusView		Štětec
+Left-click for color panel, right-click to switch colors.	StatusView		Kliknutím levým tlačítkem zobrazíte panel barev, kliknutím pravým tlačítkem přepnete barvy.
+Bummer	UndoQueue		Bummer
+Redo	UndoQueue		Znovu
+Redo: %eventName%	UndoQueue		Znovu: %eventName%
+The undo-mechanism has run out of memory.\nThe depth of undo will be limited so that the most recent events can be kept in memory. It is advisable to save your work at this point to avoid any loss of data in case the memory runs out completely.\nYou may also want to adjust the undo-depth in the settings-window.	UndoQueue		Mechanismu zpět došlo paměť.\nHloubka vrácení bude omezena, aby bylo možné uchovat v paměti nejnovější události. V tomto okamžiku je vhodné uložit svou práci, abyste předešli jakékoli ztrátě dat v případě úplného vyčerpání paměti.\nMůžete také upravit hloubku zpět v okně nastavení.
+Undo	UndoQueue		Vrátit zpět
+Undo: %eventName%	UndoQueue		Vrátit zpět: %eventName%
+Color	PixelOperations		Barva
+Color burn	PixelOperations		Barevné vypálení
+Color dodge	PixelOperations		Color dodge
+Darken	PixelOperations		Ztmavit
+Difference	PixelOperations		Rozdíl
+Dissolve	PixelOperations		Rozpustit
+Divide	PixelOperations		Rozdělit
+Exclusion	PixelOperations		Vyloučení
+Hard light	PixelOperations		Tvrdé světlo
+Hard mix	PixelOperations		Tvrdý mix
+Hue	PixelOperations		Odstín
+Lighten	PixelOperations		Zesvětlit
+Lightness	PixelOperations		Světlost
+Linear burn	PixelOperations		Lineární burn
+Linear dodge	PixelOperations		Lineární dodge
+Linear light	PixelOperations		Lineární světlo
+Multiply	PixelOperations		Násobit
+Normal	PixelOperations		Normální
+Overlay	PixelOperations		Překryvná vrstva
+Pin light	PixelOperations		Připnout světlo
+Saturation	PixelOperations		Nasycení
+Screen	PixelOperations		Obraz
+Soft light	PixelOperations		Měkké světlo
+Vivid light	PixelOperations		Živé světlo
+Free 2D transform	FreeTransformManipulator		Volná 2D transformace
+Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transformace: Přetažením otočte, přesunete nebo roztáhněte.
+Zoom	MagnificationView		Přiblížení

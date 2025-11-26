@@ -1,10 +1,11 @@
-1	Italian	application/x-vnd.artpaint	1413323695
+1	Italian	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Hai apportato una modifica dall'ultimo salvataggio del progetto.\nVuoi salvare la modifica?}other{%project_name%: Hai apportato # modifiche dall'ultima volta il progetto è stato salvato.\nVuoi salvare le modifiche?}}
 Blend mode	ImageView		Modalità fusione
 Cancel	ImageView		Annulla
 Don't save	ImageView		Non salvare
 Drop layer to copy it to this image.	ImageView		Trascinare il livello per copiarlo in questa immagine.
-Finishing	ImageView		Completamento
+Flip selection horizontally	ImageView		Capovolgi selezione orizzontalmente
+Flip selection vertically	ImageView		Capovolgi selezione verticalmente
 Grow selection	ImageView		Espandi selezione
 Invert selection	ImageView		Inverti selezione
 Layer %ld / %ld	ImageView		Livello %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insufficiente per completare l'effetto richiesto. Puoi chiudere altre immagini e riprovare. Ridurre la profondità dell'annullamento o disabilitare del tutto l'annullamento aiuta ulteriormente a ottenere più memoria. Se hai altre applicazioni in esecuzione, chiuderle ti darà più memoria libera. È una buona idea inoltre salvare il tuo lavoro a questo punto, perché se la memoria si esaurisce completamente il salvataggio potrebbe diventare impossibile. Mi dispiace molto per questo inconveniente.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Memoria insufficiente per avviare l'effetto richiesto. Puoi chiudere altre immagini e riprovare. Ridurre  la profondità dell'annullamento o disabilitare del tutto l'annullamento aiuta ulteriormente a ottenere più memoria. Se hai altre applicazioni in esecuzione, chiuderle ti darà più memoria libera. È una buona idea inoltre salvare il tuo lavoro a questo punto, perché se la memoria si esaurisce completamente il salvataggio potrebbe diventare impossibile. Mi dispiace molto per questo inconveniente.
 OK	ImageView		OK
+Processing…	ImageView		Processing…
 Rotate selection	ImageView		Ruota selezione
 Save	ImageView		Salva
 Scale selection	ImageView		Ridimensiona selezione
@@ -35,6 +37,7 @@ Colors	ColorPalette		Colori
 Delete current set	ColorPalette		Elimina set attuale
 Error reading file	ColorPalette		Errore lettura file
 File structure corrupted	ColorPalette		Struttura file corrotta
+Layer	ColorPalette		Livello
 New color set	ColorPalette		Nuovo set colore
 Next color set	ColorPalette	In Color Palette window	Set colore seguente
 Not a color set file	ColorPalette		Non è un file set colore
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Capovolge orizzontalmente tutti i li
 Flips all layers vertically.	PaintWindow		Capovolge verticalmente tutti i livelli.
 Flips the active layer horizontally.	PaintWindow		Capovolge orizzontalmente il livello attivo.
 Flips the active layer vertically.	PaintWindow		Capovolge verticalmente il livello attivo.
+Flips the selection horizontally.	PaintWindow		Capovolge la selezione orizzontalmente.
+Flips the selection vertically.	PaintWindow		Capovolge la selezione verticalmente.
 Grow	PaintWindow		Espandi
 Grows the selection in all directions.	PaintWindow		Espande la selezione in tutte le direzioni.
 Height:	PaintWindow		Altezza:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Rimpicciolisci
 Zooms into the image.	PaintWindow		Ingrandisce l'immagine.
 Zooms out from the image.	PaintWindow		Rimpicciolisce l'immagine.
 Add	LayerWindow		Aggiungi
+Alpha:	LayerWindow		Alfa:
 Delete	LayerWindow		Elimina
 Duplicate	LayerWindow		Duplica
 Layer	LayerWindow		Livello
@@ -330,6 +336,8 @@ Crop…	Manipulators		Ritaglia…
 Enable antialiasing	Manipulators		Abilita antialias
 Filter:	Manipulators		Filtro:
 Flip horizontally	Manipulators		Capovolgi orizzontalmente
+Flip selection horizontally	Manipulators		Capovolgi selezione orizzontalmente
+Flip selection vertically	Manipulators		Capovolgi selezione verticalmente
 Flip vertically	Manipulators		Capovolgi verticalmente
 Font:	Manipulators		Font:
 Height:	Manipulators		Altezza:

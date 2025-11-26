@@ -1,10 +1,11 @@
-1	Swedish	application/x-vnd.artpaint	1413323695
+1	Swedish	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Du har gjort en ändring sedan senast projektet sparades.\nVill du spara ändringen?}other{%project_name%: Du har gjort # ändringar sedan senast projektet sparades.\nVill du spara ändringarna?}}
 Blend mode	ImageView		Blandningsläge
 Cancel	ImageView		Avbryt
 Don't save	ImageView		Spara inte
 Drop layer to copy it to this image.	ImageView		Släpp lager för att kopiera det till den här bilden.
-Finishing	ImageView		Efterbehandling
+Flip selection horizontally	ImageView		Vänd markeringen horisontellt
+Flip selection vertically	ImageView		Vänd markeringen vertikalt
 Grow selection	ImageView		Öka urvalet
 Invert selection	ImageView		Invertera urval
 Layer %ld / %ld	ImageView		Lager %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att avsluta effekten du begärde. Du kan stänga andra bilder och försöka igen. Att förkorta djupet av ångra eller inaktivera ångra helt och hållet hjälper till att uppnå mer minne. Om du har andra program igång, får du mer ledigt minne om du stänger dem. Det är också en bra idé att spara ditt arbete vid det här laget, för om minnet tar slut helt kan det bli omöjligt att spara.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Inte tillräckligt med ledigt minne för att starta effekten du begärde. Du kan stänga andra bilder och försöka igen. Att förkorta djupet av ångra eller inaktivera ångra helt och hållet hjälper till att uppnå mer minne. Om du har andra program igång, får du mer ledigt minne om du stänger dem. Det är också en bra idé att spara ditt arbete vid det här laget, för om minnet tar slut helt kan det bli omöjligt att spara.
 OK	ImageView		OK
+Processing…	ImageView		Bearbetar...
 Rotate selection	ImageView		Rotera valet
 Save	ImageView		Spara
 Scale selection	ImageView		Skalval
@@ -35,6 +37,7 @@ Colors	ColorPalette		Färger
 Delete current set	ColorPalette		Radera aktuell uppsättning
 Error reading file	ColorPalette		Det gick inte att läsa filen
 File structure corrupted	ColorPalette		Filstrukturen är skadad
+Layer	ColorPalette		Lager
 New color set	ColorPalette		Ny färguppsättning
 Next color set	ColorPalette	In Color Palette window	Nästa färguppsättning
 Not a color set file	ColorPalette		Inte en färguppsättningsfil
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Vänder alla lager horisontellt.
 Flips all layers vertically.	PaintWindow		Vänder alla lager vertikalt.
 Flips the active layer horizontally.	PaintWindow		Vänder det aktiva skiktet horisontellt.
 Flips the active layer vertically.	PaintWindow		Vänder det aktiva skiktet vertikalt.
+Flips the selection horizontally.	PaintWindow		Vänder markeringen horisontellt.
+Flips the selection vertically.	PaintWindow		Vänd markeringen vertikalt.
 Grow	PaintWindow		Växa
 Grows the selection in all directions.	PaintWindow		Växer urvalet i alla riktningar.
 Height:	PaintWindow		Höjd:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Zooma ut
 Zooms into the image.	PaintWindow		Zoomar in i bilden.
 Zooms out from the image.	PaintWindow		Zoomar ut från bilden.
 Add	LayerWindow		Lägg till
+Alpha:	LayerWindow		Alfa:
 Delete	LayerWindow		Radera
 Duplicate	LayerWindow		Duplicera
 Layer	LayerWindow		Lager
@@ -330,6 +336,8 @@ Crop…	Manipulators		Beskära…
 Enable antialiasing	Manipulators		Aktivera antialiasing
 Filter:	Manipulators		Filtrera:
 Flip horizontally	Manipulators		Vänd horisontellt
+Flip selection horizontally	Manipulators		Vänd markeringen horisontellt
+Flip selection vertically	Manipulators		Vänd markeringen vertikalt
 Flip vertically	Manipulators		Vända vertikalt
 Font:	Manipulators		Font:
 Height:	Manipulators		Höjd:

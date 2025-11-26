@@ -1,10 +1,11 @@
-1	French	application/x-vnd.artpaint	1413323695
+1	French	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Vous avez effectué un changement depuis la dernière sauvegarde du projet.\nVoulez vous sauvegarder ce changement ?}other{%project_name%: YVous avez effectué # changements depuis la dernière sauvegarde du projet.\nVoulez vous sauvegarder ces changements ?
 Blend mode	ImageView		Blend mode
 Cancel	ImageView		Annuler
 Don't save	ImageView		Ne pas sauver
 Drop layer to copy it to this image.	ImageView		Déposer le calque pour le copier dans cette image.
-Finishing	ImageView		En cours…
+Flip selection horizontally	ImageView		Retourner la sélection horizontalement
+Flip selection vertically	ImageView		Retourner la sélection verticalement
 Grow selection	ImageView		Agrandir la sélection
 Invert selection	ImageView		Inverser la sélection
 Layer %ld / %ld	ImageView		Calque %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Mémoire insuffisante pour finir d'appliquer cet effet. Vous pouvez fermer des images puis essayer à nouveau. Réduire le niveau d'annulation ou désactiver l'annulation peut faire récupérer de la mémoire. Si vous avez d'autre applications ouvertes, les fermer vous libérera de la mémoire. Vous devriez aussi sauver votre travail maintenant, car si la mémoire est entièrement utilisée, il vous sera impossible de sauver. Je suis vraiment désolé pour ce problème.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Mémoire insuffisante pour appliquer cet effet. Vous pouvez fermer des images puis essayer à nouveau. Réduire le niveau d'annulation ou désactiver l'annulation peut faire récupérer de la mémoire. Si vous avez d'autre applications ouvertes, les fermer vous libérera de la mémoire. Vous devriez aussi sauver votre travail maintenant, car si la mémoire est entièrement utilisée, il vous sera impossible de sauver. Je suis vraiment désolé pour ce problème.
 OK	ImageView		D’accord
+Processing…	ImageView		Traitement en cours…
 Rotate selection	ImageView		Faire pivoter la sélection
 Save	ImageView		Sauver
 Scale selection	ImageView		Redimensionner la sélection
@@ -35,6 +37,7 @@ Colors	ColorPalette		Couleurs
 Delete current set	ColorPalette		Effacer la palette courante
 Error reading file	ColorPalette		Échec à la lecture du fichier
 File structure corrupted	ColorPalette		Structure du fichier corrompue
+Layer	ColorPalette		Calque
 New color set	ColorPalette		Nouvelle palette
 Next color set	ColorPalette	In Color Palette window	Palette de couleurs suivante
 Not a color set file	ColorPalette		Ce n’est pas un fichier palette de couleurs
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Inverse horizontalement tous les cal
 Flips all layers vertically.	PaintWindow		Inverse verticalement tous les calques.
 Flips the active layer horizontally.	PaintWindow		Inverse horizontalement le calque actif.
 Flips the active layer vertically.	PaintWindow		Inverse verticalement le calque actif.
+Flips the selection horizontally.	PaintWindow		Retourne la sélection horizontalement
+Flips the selection vertically.	PaintWindow		Retourne la sélection verticalement
 Grow	PaintWindow		Agrandir
 Grows the selection in all directions.	PaintWindow		Agrandit la sélection dans toutes les directions.
 Height:	PaintWindow		Hauteur:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Zoom arrière
 Zooms into the image.	PaintWindow		Zoom dans l’image.
 Zooms out from the image.	PaintWindow		Zoom en arrière de l’image.
 Add	LayerWindow		Ajouter
+Alpha:	LayerWindow		Alpha:
 Delete	LayerWindow		Supprimer
 Duplicate	LayerWindow		Dupliquer
 Layer	LayerWindow		Calque
@@ -330,6 +336,8 @@ Crop…	Manipulators		Recadrage…
 Enable antialiasing	Manipulators		Activer l’anti-crénelage
 Filter:	Manipulators		Filtre :
 Flip horizontally	Manipulators		Inversement horizontal
+Flip selection horizontally	Manipulators		Retourner la sélection horizontalement
+Flip selection vertically	Manipulators		Retourner la sélection verticalement
 Flip vertically	Manipulators		Inversement vertical
 Font:	Manipulators		Police :
 Height:	Manipulators		Hauteur :

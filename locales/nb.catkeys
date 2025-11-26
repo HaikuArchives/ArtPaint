@@ -1,10 +1,11 @@
-1	Norwegian	application/x-vnd.artpaint	1413323695
+1	Norwegian	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Du har gjort en endring siden sist gang prosjektet ble lagret.\nVil du lagre endringen?}other{%project_name%: Du har gjort # endringer siden sist gang prosjektet ble lagret.\nVil du lagre endringene?}}
 Blend mode	ImageView		Blandingsmetode
 Cancel	ImageView		Avbryt
 Don't save	ImageView		Ikke lagre
 Drop layer to copy it to this image.	ImageView		Slipp lag for å kopiere det til dette bildet.
-Finishing	ImageView		Fullfører
+Flip selection horizontally	ImageView		Vend utvalg horisontalt
+Flip selection vertically	ImageView		Vend utvalg vertikalt
 Grow selection	ImageView		Utvid utvalget
 Invert selection	ImageView		Inverter utvalget
 Layer %ld / %ld	ImageView		Lag %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Ikke nok ledig minne til å fullføre effekten du ba om. Du kan lukke andre bilder og prøve på nytt. Prøv også å redusere antall angre-skritt eller deaktivere angre-funksjonen helt hjelper til med å frigjøre mer minne. Hvis du har andre programmer som kjører, får du mer ledig minne ved å lukke dem. Det er også en god idé å lagre arbeidet ditt på dette tidspunktet, for hvis minnet går helt tom, kan det bli umulig å lagre. Jeg beklager ulempen.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Ikke nok ledig minne til å fullføre effekten du ba om. Du kan lukke andre bilder og prøve på nytt. Prøv også å redusere antall angre-skritt eller deaktivere angre-funksjonen helt hjelper til med å frigjøre mer minne. Hvis du har andre programmer som kjører, får du mer ledig minne ved å lukke dem. Det er også en god idé å lagre arbeidet ditt på dette tidspunktet, for hvis minnet går helt tom, kan det bli umulig å lagre. Jeg beklager ulempen.
 OK	ImageView		OK
+Processing…	ImageView		Processing…
 Rotate selection	ImageView		Roter utvalg
 Save	ImageView		Lagre
 Scale selection	ImageView		Skaler utvalg
@@ -35,6 +37,7 @@ Colors	ColorPalette		Farger
 Delete current set	ColorPalette		Slett gjeldende sett
 Error reading file	ColorPalette		Feil ved lesing av fil
 File structure corrupted	ColorPalette		Filstrukturen er ødelagt
+Layer	ColorPalette		Lag
 New color set	ColorPalette		Nytt fargesett
 Next color set	ColorPalette	In Color Palette window	Neste fargesett
 Not a color set file	ColorPalette		Ikke en fargesettfil
@@ -71,7 +74,7 @@ Deletes the selected layer.	PaintWindow		Sletter det valgte laget.
 Duplicate	PaintWindow		Dupliser
 Duplicates the selected layer.	PaintWindow		Dupliserer det valgte laget.
 Edit	PaintWindow		Rediger
-Empty paint window	PaintWindow		Tøm malingsvindu
+Empty paint window	PaintWindow		Tomt malingsvindu
 File	PaintWindow		Fil
 Flip horizontally	PaintWindow		Vend horisontalt
 Flip vertically	PaintWindow		Vend vertikalt
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Vender alle lagene horisontalt.
 Flips all layers vertically.	PaintWindow		Vender alle lagene vertikalt.
 Flips the active layer horizontally.	PaintWindow		Vender det aktive laget horisontalt.
 Flips the active layer vertically.	PaintWindow		Vender det aktive laget vertikalt.
+Flips the selection horizontally.	PaintWindow		Vend utvalget horisontalt.
+Flips the selection vertically.	PaintWindow		Vend utvalget vertikalt.
 Grow	PaintWindow		Øk
 Grows the selection in all directions.	PaintWindow		Øker utvalget i alle retninger.
 Height:	PaintWindow		Høyde:
@@ -165,13 +170,14 @@ Undo	PaintWindow		Angre
 Undos the previous action.	PaintWindow		Angre forrige handling.
 Untitled	PaintWindow		Uten navn
 User manual…	PaintWindow		Brukermanual…
-Width:	PaintWindow		Tykkelse:
+Width:	PaintWindow		Bredde:
 Window	PaintWindow		Vindu
 Zoom in	PaintWindow		Zoom inn
 Zoom out	PaintWindow		Zoom ut
 Zooms into the image.	PaintWindow		Zoomer inn på bildet.
 Zooms out from the image.	PaintWindow		Zoomer ut fra bildet.
 Add	LayerWindow		Legg til
+Alpha:	LayerWindow		Alpha:
 Delete	LayerWindow		Slett
 Duplicate	LayerWindow		Dupliser
 Layer	LayerWindow		Lag
@@ -218,7 +224,7 @@ Undo	Windows		Angre
 Undo steps:	Windows		Angretrinn:
 Unlimited	Windows		Ubegrenset
 Windows	Windows		Vinduer
-Adjustable width	Tools		Justerbar tykkelse
+Adjustable width	Tools		Justerbar bredde
 Adjusting the layer's transparency.	Tools		Justering av lagets gjennomsiktighet.
 Airbrush	Tools		Luftpensel
 Airbrush tool	Tools		Luftpenselverktøy
@@ -307,7 +313,7 @@ Transparency:	Tools		Gjennomsiktighet:
 Use current brush	Tools		Bruk gjeldende børste
 Using the airbrush.	Tools		Bruker luftpensel.
 Using the tool.	Tools		Bruker verktøyet.
-Width:	Tools		Tykkelse:
+Width:	Tools		Bredde:
 Alpha	ColorSliders	For color sliders	Alpha
 Black	ColorSliders	For CMYK color slider	Svart
 Blue	ColorSliders	For RGB color sliders	Blå
@@ -330,6 +336,8 @@ Crop…	Manipulators		Beskjær…
 Enable antialiasing	Manipulators		Aktiver kantutjevning
 Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Vend horisontalt
+Flip selection horizontally	Manipulators		Vend utvalg horisontalt
+Flip selection vertically	Manipulators		Vend utvalg vertikalt
 Flip vertically	Manipulators		Vend vertikalt
 Font:	Manipulators		Font:
 Height:	Manipulators		Høyde:
@@ -361,7 +369,7 @@ Translate: Drag to move or use number-fields.	Manipulators		Flytt: Dra for å fl
 Transparency:	Manipulators		Transparens:
 Transparent	Manipulators		Transparent
 Use selection	Manipulators		Bruk utvalg
-Width:	Manipulators		Tykkelse:
+Width:	Manipulators		Bredde:
 ArtPaint	System name		ArtPaint
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint er et male- og bildebehandlingsprogram for Haiku.
 ArtPaint project	PaintApplication	MIME type short description	ArtPaint-prosjekt

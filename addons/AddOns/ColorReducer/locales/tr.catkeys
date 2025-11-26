@@ -5,10 +5,10 @@ Color reducer…	AddOns_ColorReducer		Renk azaltıcı…
 Dither mode:	AddOns_ColorReducer		Siyah-beyaz noktalaştırma kipi:
 Floyd-Steinberg EDD	AddOns_ColorReducer		Floyd-Steinberg EDD
 Generalized Lloyd's Algorithm	AddOns_ColorReducer		Genelleştirilmiş Lloyd'un Algoritması
-N-Candidate	AddOns_ColorReducer		N-Adayı
+N-Candidate	AddOns_ColorReducer		N adayı
 No dithering	AddOns_ColorReducer		Noktalaştırma yok
 Palette mode:	AddOns_ColorReducer		Palet kipi:
 Palette size:	AddOns_ColorReducer		Palet boyutu:
-Preserve solids FS	AddOns_ColorReducer		Katı FS'yi koru
+Preserve solids FS	AddOns_ColorReducer		Katı FS’yi koru
 Reduces the number of used colors.	AddOns_ColorReducer		Kullanılan renklerin sayısını azaltır.
 Reducing in progress	AddOns_ColorReducer		Azaltma sürüyor

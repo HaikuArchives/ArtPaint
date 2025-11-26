@@ -1,47 +1,50 @@
-1	Chinese (simplified)	application/x-vnd.artpaint	1413323695
+1	Chinese (simplified)	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: 上次保存项目后，您已进行了一次更改。\n是否要保存这次更改？}other{%project_name%:  上次保存项目后，您已进行了 # 次更改。\n是否要保存这些更改？}}
 Blend mode	ImageView		混合模式 
 Cancel	ImageView		取消
 Don't save	ImageView		不保存
-Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
-Finishing	ImageView		Finishing
+Drop layer to copy it to this image.	ImageView		拖动图层以复制它到这个图像。
+Flip selection horizontally	ImageView		Flip selection horizontally
+Flip selection vertically	ImageView		Flip selection vertically
 Grow selection	ImageView		扩展选区
 Invert selection	ImageView		反选
 Layer %ld / %ld	ImageView		图层 %ld / %ld
-Layer name	ImageView		Layer name
-Layer transparency	ImageView		Layer transparency
-Layer visibility	ImageView		Layer visibility
+Layer name	ImageView		图层名
+Layer transparency	ImageView		图层透明度
+Layer visibility	ImageView		图层可见性
 Not enough free memory to add a layer. You can free more memory by disabling the undo and closing other images. It is also a good idea to save the image now because running out of memory later on might make saving difficult or impossible. I am very sorry about this inconvenience.	ImageView		没有足够的可用内存来添加层。通过禁用撤消并关闭其他图像，可以释放更多内存。现在保存图像也是一个好主意，因为以后内存不足可能会使保存变得困难或不可能。很抱歉给您带来不便。 
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		没有足够的可用内存来完成您请求的效果。您可以关闭其他图像，然后重试。此外，缩短撤消深度或完全禁用撤消有助于获得更多内存。如果您有其他应用程序正在运行，关闭它们可以获得更多的可用内存。此时保存您的工作也是一个好主意，因为如果内存耗尽，保存可能会变得不可能。很抱歉给您带来不便。
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		没有足够的可用内存来启动您请求的效果。您可以关闭其他图像，然后重试。此外，缩短撤消深度或完全禁用撤消有助于获得更多内存。如果您有其他应用程序正在运行，关闭它们可以获得更多的可用内存。此时保存您的工作也是一个好主意，因为如果内存耗尽，保存可能会变得不可能。很抱歉给您带来不便。
 OK	ImageView		确定
-Rotate selection	ImageView		Rotate selection
+Processing…	ImageView		Processing…
+Rotate selection	ImageView		旋转选区
 Save	ImageView		保存
-Scale selection	ImageView		Scale selection
+Scale selection	ImageView		缩放选区
 Select all	ImageView		全选
 Select non-transparent	ImageView		选择非透明区域
 Select none	ImageView		不选择
 Shrink selection	ImageView		缩小选择
-Translate selection	ImageView		Translate selection
+Translate selection	ImageView		翻译选区
 Unsaved changes!	ImageView		未保存更改！ 
 %d colors	ColorPalette	The number of colors in the palette, only translate 'colors'.	%d 种颜色
-ArtPaint: Open color set…	ColorPalette		ArtPaint: Open color set…
-Cannot delete the only color set.	ColorPalette		Cannot delete the only color set.
-Cannot write to file	ColorPalette		Cannot write to file
-Click to select a painting color.	ColorPalette		Click to select a painting color.
+ArtPaint: Open color set…	ColorPalette		ArtPaint: 打开颜色组…
+Cannot delete the only color set.	ColorPalette		无法删除唯一颜色组
+Cannot write to file	ColorPalette		无法保存到文件
+Click to select a painting color.	ColorPalette		点击以选择一个填充颜色
 Color model	ColorPalette		颜色模型
-Color set	ColorPalette		Color set
+Color set	ColorPalette		颜色组
 Colors	ColorPalette		颜色
-Delete current set	ColorPalette		Delete current set
-Error reading file	ColorPalette		Error reading file
-File structure corrupted	ColorPalette		File structure corrupted
-New color set	ColorPalette		New color set
-Next color set	ColorPalette	In Color Palette window	Next color set
-Not a color set file	ColorPalette		Not a color set file
+Delete current set	ColorPalette		删除现在的组
+Error reading file	ColorPalette		读取文件错误
+File structure corrupted	ColorPalette		文件结构损坏
+Layer	ColorPalette		图层
+New color set	ColorPalette		新颜色组
+Next color set	ColorPalette	In Color Palette window	下一颜色组
+Not a color set file	ColorPalette		并非一个颜色组文件
 OK	ColorPalette		确定
-Open color set…	ColorPalette		Open color set…
-Previous color set	ColorPalette	In Color Palette window	Previous color set
-Save color set	ColorPalette		Save color set
+Open color set…	ColorPalette		打开颜色组…
+Previous color set	ColorPalette	In Color Palette window	上一颜色组
+Save color set	ColorPalette		保存颜色组
 About ArtPaint	PaintWindow		About ArtPaint
 Active layer	PaintWindow		Active layer
 Add	PaintWindow		Add
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
+Flips the selection horizontally.	PaintWindow		Flips the selection horizontally.
+Flips the selection vertically.	PaintWindow		Flips the selection vertically.
 Grow	PaintWindow		Grow
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
 Height:	PaintWindow		Height:
@@ -172,13 +177,14 @@ Zoom out	PaintWindow		Zoom out
 Zooms into the image.	PaintWindow		Zooms into the image.
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Add	LayerWindow		新增
+Alpha:	LayerWindow		Alpha:
 Delete	LayerWindow		删除
 Duplicate	LayerWindow		复制
 Layer	LayerWindow		图层
 Layer transparency	LayerWindow		图层透明度
 Layers	LayerWindow		图层
 Merge down	LayerWindow		向下合并
-Mode:	LayerWindow		Mode:
+Mode:	LayerWindow		模式:
 Add layer	Image		添加图层
 Cannot delete the only layer. Create another picture to get a fresh start.	Image		不能删除唯一的图层。可以再画一幅画，重新开始。
 Delete	Image		删除
@@ -330,6 +336,8 @@ Crop…	Manipulators		Crop…
 Enable antialiasing	Manipulators		Enable antialiasing
 Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Flip horizontally
+Flip selection horizontally	Manipulators		Flip selection horizontally
+Flip selection vertically	Manipulators		Flip selection vertically
 Flip vertically	Manipulators		Flip vertically
 Font:	Manipulators		字体:
 Height:	Manipulators		Height:
@@ -417,4 +425,4 @@ Soft light	PixelOperations		Soft light
 Vivid light	PixelOperations		Vivid light
 Free 2D transform	FreeTransformManipulator		自由 2D 变换
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		变换: 拖动以旋转、移动或拉伸
-Zoom	MagnificationView		Zoom
+Zoom	MagnificationView		缩放

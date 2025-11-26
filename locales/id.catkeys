@@ -1,10 +1,11 @@
-1	Indonesian	application/x-vnd.artpaint	1413323695
+1	Indonesian	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}
 Blend mode	ImageView		Blend mode
 Cancel	ImageView		Cancel
 Don't save	ImageView		Don't save
 Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
-Finishing	ImageView		Finishing
+Flip selection horizontally	ImageView		Flip selection horizontally
+Flip selection vertically	ImageView		Flip selection vertically
 Grow selection	ImageView		Grow selection
 Invert selection	ImageView		Invert selection
 Layer %ld / %ld	ImageView		Layer %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 OK	ImageView		OK
+Processing…	ImageView		Processing…
 Rotate selection	ImageView		Rotate selection
 Save	ImageView		Save
 Scale selection	ImageView		Scale selection
@@ -35,6 +37,7 @@ Colors	ColorPalette		Colors
 Delete current set	ColorPalette		Delete current set
 Error reading file	ColorPalette		Error reading file
 File structure corrupted	ColorPalette		File structure corrupted
+Layer	ColorPalette		Layer
 New color set	ColorPalette		New color set
 Next color set	ColorPalette	In Color Palette window	Next color set
 Not a color set file	ColorPalette		Not a color set file
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 Flips the active layer horizontally.	PaintWindow		Flips the active layer horizontally.
 Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
+Flips the selection horizontally.	PaintWindow		Flips the selection horizontally.
+Flips the selection vertically.	PaintWindow		Flips the selection vertically.
 Grow	PaintWindow		Grow
 Grows the selection in all directions.	PaintWindow		Grows the selection in all directions.
 Height:	PaintWindow		Height:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Zoom out
 Zooms into the image.	PaintWindow		Zooms into the image.
 Zooms out from the image.	PaintWindow		Zooms out from the image.
 Add	LayerWindow		Add
+Alpha:	LayerWindow		Alpha:
 Delete	LayerWindow		Delete
 Duplicate	LayerWindow		Duplicate
 Layer	LayerWindow		Layer
@@ -330,6 +336,8 @@ Crop…	Manipulators		Crop…
 Enable antialiasing	Manipulators		Enable antialiasing
 Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Flip horizontally
+Flip selection horizontally	Manipulators		Flip selection horizontally
+Flip selection vertically	Manipulators		Flip selection vertically
 Flip vertically	Manipulators		Flip vertically
 Font:	Manipulators		Font:
 Height:	Manipulators		Height:

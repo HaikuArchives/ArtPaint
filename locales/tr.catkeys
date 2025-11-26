@@ -1,10 +1,11 @@
-1	Turkish	application/x-vnd.artpaint	1413323695
+1	Turkish	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Projeyi son kaydetmenizden bu yana bir değişiklik yaptınız.\nDeğişikliği kaydetmek istiyor musunuz?}other{%project_name%: Projeyi son kaydetmenizden bu yana # değişiklik yaptınız.\nDeğişiklikleri kaydetmek istiyor musunuz?}}
 Blend mode	ImageView		Harman kipi
 Cancel	ImageView		İptal
 Don't save	ImageView		Kaydetme
 Drop layer to copy it to this image.	ImageView		Bu görsele kopyalamak için katmanı üzerine bırakın.
-Finishing	ImageView		Kaplama
+Flip selection horizontally	ImageView		Seçimi yatay olarak ters çevir
+Flip selection vertically	ImageView		Seçimi dikey olarak ters çevir
 Grow selection	ImageView		Seçimi büyüt
 Invert selection	ImageView		Seçimi ters çevir
 Layer %ld / %ld	ImageView		Katman %ld/%ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		İstediğiniz efekti tamamlamak için yeterli bellek yok. Diğer görselleri kapatıp yeniden deneyebilirsiniz. Geri al özelliğinin derinliğini kısaltmak veya geri al özelliğini devre dışı bırakmak da az bellek kullanmaya yardımcı olur. Ayrıca, görseli şimdi kaydetmek iyi bir fikir olabilir; çünkü düşük bellek miktarı daha sonra kaydetme işlemini zorlaştırabilir veya olanaksızlaştırabilir. Bu sıkıntı için özür dilerim.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		İstediğiniz efekti başlatmak için yeterli bellek yok. Diğer görselleri kapatıp yeniden deneyebilirsiniz. Geri al özelliğinin derinliğini kısaltmak veya geri al özelliğini devre dışı bırakmak da az bellek kullanmaya yardımcı olur. Ayrıca, görseli şimdi kaydetmek iyi bir fikir olabilir; çünkü düşük bellek miktarı daha sonra kaydetme işlemini zorlaştırabilir veya olanaksızlaştırabilir. Bu sıkıntı için özür dilerim.
 OK	ImageView		Tamam
+Processing…	ImageView		İşleniyor…
 Rotate selection	ImageView		Seçimi döndür
 Save	ImageView		Kaydet
 Scale selection	ImageView		Seçimi ölçekle
@@ -35,6 +37,7 @@ Colors	ColorPalette		Renkler
 Delete current set	ColorPalette		Geçerli kümeyi sil
 Error reading file	ColorPalette		Dosya okunurken hata
 File structure corrupted	ColorPalette		Dosya yapısı hasarlı
+Layer	ColorPalette		Katman
 New color set	ColorPalette		Yeni renk kümesi
 Next color set	ColorPalette	In Color Palette window	Sonraki renk kümesi
 Not a color set file	ColorPalette		Bir renk kümesi dosyası değil
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Tüm katmanları yatay yönde ters �
 Flips all layers vertically.	PaintWindow		Tüm katmanları dikey yönde ters çevirir.
 Flips the active layer horizontally.	PaintWindow		Etkin katmanı yatay yönde ters çevirir.
 Flips the active layer vertically.	PaintWindow		Etkin katmanı dikey yönde ters çevirir.
+Flips the selection horizontally.	PaintWindow		Seçimi yatay olarak ters çevirir.
+Flips the selection vertically.	PaintWindow		Seçimi dikey olarak ters çevirir.
 Grow	PaintWindow		Büyüt
 Grows the selection in all directions.	PaintWindow		Seçimi her yönde büyütür.
 Height:	PaintWindow		Yükseklik:
@@ -115,14 +120,14 @@ Paste as a new project	PaintWindow		Yeni proje olarak yapıştır
 Pastes previously copied selection as a new layer.	PaintWindow		Önceden kopyalanan seçimi yeni bir katman olarak yapıştırır.
 Pastes previously copied selection as a new project.	PaintWindow		Önceden kopyalanan seçimi yeni bir proje olarak yapıştırır.
 Quit	PaintWindow		Çık
-Quits ArtPaint.	PaintWindow		ArtPaint'ten çıkar.
+Quits ArtPaint.	PaintWindow		ArtPaint’ten çıkar.
 Recent images	PaintWindow		Son kullanılan görseller
 Recent projects	PaintWindow		Son kullanılan projeler
 Redo	PaintWindow		Yinele
 Redos the action that was last undone.	PaintWindow		Son geri alınan eylemi yeniden yapar.
 Resize…	PaintWindow		Yeniden boyutlandır…
 Resizes the canvas.	PaintWindow		Tuvali yeniden boyutlandırır.
-Rotate -90°	PaintWindow		-90° döndür
+Rotate -90°	PaintWindow		−90° döndür
 Rotate +90°	PaintWindow		+90° döndür
 Rotate the selection.	PaintWindow		Seçimi döndürün.
 Rotate…	PaintWindow		Döndür…
@@ -148,9 +153,9 @@ Selects entire layer	PaintWindow		Tüm katmanı seçer.
 Set grid	PaintWindow		Izgarayı ayarla
 Set zoom level	PaintWindow		Yakınlaştırma düzeyini ayarla
 Set/Select the canvas size.	PaintWindow		Tuval boyutunu ayarlar/seçer.
-Sets the grid to 2 by 2 pixels.	PaintWindow		Izgarayı 2x2 piksel olarak ayarlar.
-Sets the grid to 4 by 4 pixels.	PaintWindow		Izgarayı 4x4 piksel olarak ayarlar.
-Sets the grid to 8 by 8 pixels.	PaintWindow		Izgarayı 8x8 piksel olarak ayarlar.
+Sets the grid to 2 by 2 pixels.	PaintWindow		Izgarayı 2 × 2 piksel olarak ayarlar.
+Sets the grid to 4 by 4 pixels.	PaintWindow		Izgarayı 4 × 4 piksel olarak ayarlar.
+Sets the grid to 8 by 8 pixels.	PaintWindow		Izgarayı 8 × 8 piksel olarak ayarlar.
 Sets the zoom level to %s.	PaintWindow		Yakınlaştırma düzeyini %%s olarak ayarlar.
 Settings…	PaintWindow		Ayarlar…
 Shrink	PaintWindow		Küçült
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Uzaklaştır
 Zooms into the image.	PaintWindow		Görseli yakınlaştırır.
 Zooms out from the image.	PaintWindow		Görseli uzaklaştırır.
 Add	LayerWindow		Ekle
+Alpha:	LayerWindow		Alfa:
 Delete	LayerWindow		Sil
 Duplicate	LayerWindow		Çoğalt
 Layer	LayerWindow		Katman
@@ -255,7 +261,7 @@ Erasing pixels.	Tools		Pikseller siliniyor.
 Fill ellipse	Tools		Elips dolgu
 Fill rectangle	Tools		Dörtgen dolgu
 Fill tool	Tools		Dolgu aracı
-Fill tool: SHIFT locks 22.5° angles	Tools		Dolgu aracı: SHIFT, 22.5°ilk açılar kilitler.
+Fill tool: SHIFT locks 22.5° angles	Tools		Dolgu aracı: ÜST KARAKTER, 22,5°ilk açılar kilitler.
 Flood fill	Tools		Sel dolgu
 Flow:	Tools		Akış:
 Freehand	Tools		Serbest çizgi
@@ -264,7 +270,7 @@ Green	Tools		Yeşil
 Hairs:	Tools		İnce çizgiler:
 Hairy brush tool	Tools		İnce fırça aracı
 Hardness:	Tools		Sertlik:
-Hold SHIFT to snap to 45° angles	Tools		45°lik açılar kilitlemek için SHIFT düğmesini basılı tutun.
+Hold SHIFT to snap to 45° angles	Tools		45°’lik açılar kilitlemek için ÜST KARAKTER düğmesini basılı tutun.
 Intelligent scissors	Tools		Akıllı makas
 Linear	Tools		Doğrusal
 Little	Tools		Az
@@ -285,18 +291,18 @@ Radial	Tools		Radyal
 Random	Tools		Rastgele
 Rectangle	Tools		Dörtgen
 Rectangle tool	Tools		Dörtgen aracı
-Rectangle: SHIFT for square, ALT for centered	Tools		Dörtgen: Kare için SHIFT, merkezi şekil için ALT düğmelerini basılı tutun.
+Rectangle: SHIFT for square, ALT for centered	Tools		Dörtgen: Kare için ÜST KARAKTER, merkezi şekil için KOMUT düğmelerini basılı tutun.
 Red	Tools		Kırmızı
 Replace pixels with	Tools		Pikselleri şununla değiştir:
 Reset brush	Tools		Fırçayı sıfırla
 Selection tool	Tools		Seçim aracı
-Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Seçim aracı: Kare/Çember için SHIFT, seçimi merkezileştirmek için ALT, çıkarmak için OPT düğmelerini basılı tutun.
+Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Seçim aracı: Kare/Çember için ÜST KARAKTER, seçimi merkezileştirmek için KOMUT, çıkarmak için SEÇENEK düğmelerini basılı tutun.
 Size:	Tools		Boyut:
 Spray	Tools		Sprey
 Square	Tools		Kare
 Store brush	Tools		Fırçayı sakla
 Straight line tool	Tools		Düz çizgi aracı
-Straight line: SHIFT locks 22.5° angles	Tools		Düz çizgi: SHIFT, 22.5°ilk açılar kilitler.
+Straight line: SHIFT locks 22.5° angles	Tools		Düz çizgi: ÜST KARAKTER, 22,5°ilk açılar kilitler.
 Text tool	Tools		Metin aracı
 Tolerance:	Tools		Tolerans:
 Tool setup	Tools		Araç ayarları
@@ -325,11 +331,13 @@ Yellow	ColorSliders	For CMYK color slider	Sarı
 Angle:	Manipulators		Açı:
 Change the transparency with the slider.	Manipulators		Kaydırıcı ile saydamlığı değiştirin.
 Change transparency…	Manipulators		Saydamlığı değiştir…
-Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Kırp: Yeni kenarlıkla ayarlamak için tutaçları veya sayı alanlarını kullanın. SHIFT, en-boy oranını kilitler.
+Crop: Use handles or number-fields to set new borders. SHIFT locks aspect ratio.	Manipulators		Kırp: Yeni kenarlıkla ayarlamak için tutaçları veya sayı alanlarını kullanın. ÜST KARAKTER, en–boy oranını kilitler.
 Crop…	Manipulators		Kırp…
 Enable antialiasing	Manipulators		Yumuşatmayı etkinleştir
 Filter:	Manipulators		Süz:
 Flip horizontally	Manipulators		Yatay ters çevir
+Flip selection horizontally	Manipulators		Seçimi yatay olarak ters çevir
+Flip selection vertically	Manipulators		Seçimi dikey olarak ters çevir
 Flip vertically	Manipulators		Dikey ters çevir
 Font:	Manipulators		Yazıtipi:
 Height:	Manipulators		Yükseklik:
@@ -338,14 +346,14 @@ Lock	Manipulators	Keep the aspect ratio	Kilitle
 Lock	Manipulators		Kilitle
 Opaque	Manipulators		Mat
 Reset to canvas	Manipulators		Tuvale sıfırla
-Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Yeniden boyutlandır: Yeniden boyutlandırmak için sürükleyin veya sayı alanlarını kullanın. Yönü kilitlemek için SHIFT’i basılı tutun
+Resize: Drag to resize or use number-fields. Hold SHIFT to lock aspect	Manipulators		Yeniden boyutlandır: Yeniden boyutlandırmak için sürükleyin veya sayı alanlarını kullanın. Yönü kilitlemek için ÜST KARAKTER’i basılı tutun
 Resize…	Manipulators		Yeniden boyutlandır…
 Restore	Manipulators		Geri yükle
 Rotate	Manipulators		Döndür
-Rotate -90°	Manipulators		-90° döndür
+Rotate -90°	Manipulators		−90° döndür
 Rotate +90°	Manipulators		+90° döndür
 Rotate selection	Manipulators		Seçimi döndür
-Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Döndür: Döndürmek için sol sürükleyin, döndürme merkezi ayarlamak için sol tıklayın, açıya tutturmak için SHIFT düğmesini basılı tutun.
+Rotate: Left-drag to rotate, right-click to set rotation center, SHIFT to snap angle.	Manipulators		Döndür: Döndürmek için sol sürükleyin, döndürme merkezi ayarlamak için sol tıklayın, açıya tutturmak için ÜST KARAKTER düğmesini basılı tutun.
 Rotation:	Manipulators		Döndürme:
 Scale	Manipulators		Ölçekle
 Scale selection	Manipulators		Seçimi ölçekle
@@ -369,7 +377,7 @@ ArtPaint project format containing layers etc.	PaintApplication	MIME type long d
 ArtPaint: Open image…	PaintApplication		ArtPaint: Görsel aç…
 ArtPaint: Open project…	PaintApplication		ArtPaint: Proje aç…
 OK	PaintApplication		Tamam
-The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		'%file%' dosyası türü desteklenmiyor. Olanaklıysa bir çevirmen kurmayı deneyebilirsiniz.
+The file '%file%' is of unsupported type. You could try installing a translator for it if possible.	PaintApplication		“%file%” dosyası türü desteklenmiyor. Olanaklıysa bir çevirmen kurmayı deneyebilirsiniz.
 ArtPaint: Save image	FilePanels		ArtPaint: Görseli kaydet
 Cancel	FilePanels		İptal
 Choose format	FilePanels		Biçim seç
@@ -379,9 +387,9 @@ Save format:	FilePanels		Kaydetme biçimi:
 Settings…	FilePanels		Ayarlar…
 Bicubic	ScaleUtilities		Çift küpsel
 Bicubic (B-spline)	ScaleUtilities		Çift küpsel (B yivi)
-Bicubic (Catmull-Rom)	ScaleUtilities		Çift küpsel (Catmull-Rom)
+Bicubic (Catmull-Rom)	ScaleUtilities		Çift küpsel (Catmull–Rom)
 Bilinear	ScaleUtilities		Çift doğrusal
-Mitchell-Netravali	ScaleUtilities		Mitchell-Netravali
+Mitchell-Netravali	ScaleUtilities		Mitchell–Netravali
 Nearest neighbor	ScaleUtilities		En yakın komşu
 Brush	StatusView		Fırça
 Left-click for color panel, right-click to switch colors.	StatusView		Renk paneli için sol, renkleri birbiriyle değiştirmek için sağ tıklayın.

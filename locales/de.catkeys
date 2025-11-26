@@ -1,10 +1,11 @@
-1	German	application/x-vnd.artpaint	1413323695
+1	German	application/x-vnd.artpaint	2403250611
 {0, plural,one{%project_name%: You have made a change since the last time the project was saved.\nDo you want to save the change?}other{%project_name%: You have made # changes since the last time the project was saved.\nDo you want to save the changes?}}	ImageView		{0, plural,one{%project_name%: Seit dem letzten Speichern wurde eine Änderung gemacht.\nSoll sie gespeichert werden?}other{%project_name%: Seit dem letzten Speichern wurden # Änderungen gemacht.\nSollen sie gespeichert werden?}}
 Blend mode	ImageView		Misch-Modus
 Cancel	ImageView		Abbrechen
 Don't save	ImageView		Verwerfen
 Drop layer to copy it to this image.	ImageView		Ebene fallen lassen, um sie in dieses Bild zu kopieren.
-Finishing	ImageView		In Arbeit
+Flip selection horizontally	ImageView		Auswahl horizontal spiegeln
+Flip selection vertically	ImageView		Auswahl vertikal spiegeln
 Grow selection	ImageView		Auswahl vergrößern
 Invert selection	ImageView		Auswahl invertieren
 Layer %ld / %ld	ImageView		Ebene %ld / %ld
@@ -15,6 +16,7 @@ Not enough free memory to add a layer. You can free more memory by disabling the
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Es steht nicht genügen Speicher zur Verfügung, um den gewünschten Effekt zu beenden. Andere offene Bilder sollten geschlossen werden, um es dann nochmals zu versuchen. Auch kann es helfen, die mögliche Schritte zu reduzieren, etwas rückgängig machen zu können, oder die Rückgängig-Funktion ganz abzuschalten. Das Schließen anderer laufender Programme kann den freien Speicher ebenfalls erhöhen. Das Bild sollte jetzt auch gespeichert werden, denn Speichermangel kann dazu führen, dass späteres Speichern schwierig oder unmöglich wird.
 Not enough free memory to start the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Für den gewünschten Effekt steht nicht genügen Speicher zur Verfügung. Andere offene Bilder sollten geschlossen werden, um es dann nochmals zu versuchen. Auch kann es helfen, die mögliche Schritte zu reduzieren, etwas rückgängig machen zu können, oder die Rückgängig-Funktion ganz abzuschalten. Das Schließen anderer laufender Programme kann den freien Speicher ebenfalls erhöhen. Das Bild sollte jetzt auch gespeichert werden, denn Speichermangel kann dazu führen, dass späteres Speichern schwierig oder unmöglich wird.
 OK	ImageView		OK
+Processing…	ImageView		Berechnung läuft …
 Rotate selection	ImageView		Auswahl drehen
 Save	ImageView		Speichern
 Scale selection	ImageView		Auswahl skalieren
@@ -35,6 +37,7 @@ Colors	ColorPalette		Farben
 Delete current set	ColorPalette		Aktuellen Farbsatz entfernen
 Error reading file	ColorPalette		Lesen der Datei fehlgeschlagen
 File structure corrupted	ColorPalette		Dateistruktur beschädigt
+Layer	ColorPalette		Ebene
 New color set	ColorPalette		Neuer Farbsatz
 Next color set	ColorPalette	In Color Palette window	Nächster Farbsatz
 Not a color set file	ColorPalette		Keine Farbsatz-Datei
@@ -79,6 +82,8 @@ Flips all layers horizontally.	PaintWindow		Spiegelt alle Ebenen horizontal.
 Flips all layers vertically.	PaintWindow		Spiegelt alle Ebenen vertikal.
 Flips the active layer horizontally.	PaintWindow		Spiegelt die aktive Ebene horizontal.
 Flips the active layer vertically.	PaintWindow		Spiegelt die aktive Ebene vertikal.
+Flips the selection horizontally.	PaintWindow		Spiegelt die Auswahl horizontal.
+Flips the selection vertically.	PaintWindow		Spiegelt die Auswahl vertikal.
 Grow	PaintWindow		Vergrößern
 Grows the selection in all directions.	PaintWindow		Vergrößert die Auswahl in alle Richtungen.
 Height:	PaintWindow		Höhe:
@@ -172,6 +177,7 @@ Zoom out	PaintWindow		Verkleinern
 Zooms into the image.	PaintWindow		Bilddarstellung vergrößern.
 Zooms out from the image.	PaintWindow		Bilddarstellung verkleinern.
 Add	LayerWindow		Hinzufügen
+Alpha:	LayerWindow		Alpha:
 Delete	LayerWindow		Entfernen
 Duplicate	LayerWindow		Duplizieren
 Layer	LayerWindow		Ebene
@@ -330,6 +336,8 @@ Crop…	Manipulators		Zuschneiden …
 Enable antialiasing	Manipulators		Anti-Aliasing
 Filter:	Manipulators		Filter:
 Flip horizontally	Manipulators		Horizontal spiegeln
+Flip selection horizontally	Manipulators		Auswahl horizontal spiegeln
+Flip selection vertically	Manipulators		Auswahl vertikal spiegeln
 Flip vertically	Manipulators		Vertikal spiegeln
 Font:	Manipulators		Schriftart:
 Height:	Manipulators		Höhe:
