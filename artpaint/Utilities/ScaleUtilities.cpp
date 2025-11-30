@@ -378,9 +378,16 @@ ScaleUtilities::MoveGrabbers(BPoint point, BPoint& previous, float& left, float&
 		}
 	}
 
-	if (left >= right)
+	if (left >= right && move_right == TRUE) {
+		left = right;
+		right = left + 1;
+	} else if (left >= right)
 		left = right - 1;
 
-	if (top >= bottom)
+
+	if (top >= bottom && move_bottom == TRUE) {
+		top = bottom;
+		bottom = top + 1;
+	} else if (top >= bottom)
 		top = bottom - 1;
 }

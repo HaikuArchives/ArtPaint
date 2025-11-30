@@ -683,21 +683,22 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 			}
 		}
 
-		selection->Translate(settings->left - previous_left,
-			settings->top - previous_top);
+		sel_left = (int32)settings->left;
+		sel_top = (int32)settings->top;
 
-		selection->ScaleTo(BPoint(settings->left, settings->top), new_width, new_height);
+		selection->Translate(sel_left - (int32)previous_left,
+			sel_top - (int32)previous_top);
+
+		selection->ScaleTo(BPoint(sel_left, sel_top), new_width, new_height);
 		selection_bounds = selection->GetBoundingRect();
-		selection_bounds.OffsetBy(settings->left, settings->top);
+		selection_bounds.OffsetBy(sel_left, sel_top);
 
 		copy_of_the_preview_bitmap->Lock();
 		selection_bounds = selection_bounds & copy_of_the_preview_bitmap->Bounds();
 		copy_of_the_preview_bitmap->Unlock();
 
 		if (transform_selection_only == false) {
-			sel_top = (int32)settings->top;
 			sel_bottom = min_c((int32)settings->bottom, preview_bitmap->Bounds().bottom);
-			sel_left = (int32)settings->left;
 			sel_right = min_c((int32)settings->right, preview_bitmap->Bounds().right);
 
 			if (sel_right > 0 && sel_bottom > 0
