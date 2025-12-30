@@ -189,6 +189,7 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.bottom
 				= max_c(point.y + brush_height_per_2 + 1, prev_point.y + brush_height_per_2 + 1);
 
+			updated_rect = updated_rect & buffer->Bounds();
 			imageUpdater->AddRect(updated_rect);
 
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);

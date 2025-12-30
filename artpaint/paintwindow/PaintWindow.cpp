@@ -437,6 +437,7 @@ PaintWindow::Redraw()
 		ImageView* imgView = paintWin->ReturnImageView();
 		if (imgView != NULL) {
 			if (imgView->LockLooper() == true) {
+				imgView->MakeBackground();
 				imgView->ReturnImage()->Render();
 				imgView->Invalidate();
 				imgView->UnlockLooper();

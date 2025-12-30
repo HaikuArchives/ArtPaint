@@ -17,6 +17,7 @@
 #include "Cursors.h"
 #include "HSPolygon.h"
 #include "Image.h"
+#include "ImageUpdater.h"
 #include "ImageView.h"
 #include "IntelligentPathFinder.h"
 #include "NumberSliderControl.h"
@@ -54,6 +55,21 @@ SelectorTool::SelectorTool()
 	SetOption(MODE_OPTION, B_OP_ADD);
 	SetOption(SHAPE_OPTION, HS_RECTANGLE);
 	SetOption(TOLERANCE_OPTION, 10);
+
+	selectionPoints = NULL;
+	numPoints = 0;
+	activePoints = NULL;
+	numActivePoints = 0;
+}
+
+
+SelectorTool::~SelectorTool()
+{
+	if (selectionPoints != NULL)
+		delete[] selectionPoints;
+
+	if (activePoints != NULL)
+		delete[] activePoints;
 }
 
 
@@ -88,6 +104,8 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	window->Unlock();
 
+	ImageUpdater* imageUpdater = new ImageUpdater(view, 2000);
+
 	if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
 		if (buffer->Bounds().Contains(point) == FALSE) {
 			delete the_script;
@@ -103,13 +121,13 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 		bool finished = false;
 		BPoint prev_point = point;
 		BPoint seed_point = point;
-		if (view->LockLooper()) {
-			view->SetDrawingMode(B_OP_INVERT);
-			view->SetPenSize(1.0);
-			view->UnlockLooper();
-		}
+
 		BRect old_rect;
 		BRect old_bitmap_rect;
+
+		int32 size = 100;
+		numPoints = 0;
+		selectionPoints = new BPoint[size];
 
 		while (finished == false) {
 			// Add support for different zoom-levels. Currently it does not support
@@ -133,78 +151,79 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 					// dynamic programming. Then the distance-map should be
 					// cleared and new round of dynamic programming should be
 					// started with last_click_bitmap_location as a seed_point.
-					int32 num_points;
-					BPoint* point_list
-						= path_finder->ReturnPath(int32(point.x), int32(point.y), &num_points);
-					while (point_list == NULL) {
-						point_list
-							= path_finder->ReturnPath(int32(point.x), int32(point.y), &num_points);
+					if (numActivePoints > 0 && activePoints != NULL) {
+						delete[] activePoints;
+						activePoints = NULL;
+						numActivePoints = 0;
+					}
+					activePoints
+						= path_finder->ReturnPath(int32(point.x), int32(point.y), &numActivePoints);
+					while (activePoints == NULL) {
+						activePoints
+							= path_finder->ReturnPath(int32(point.x), int32(point.y), &numActivePoints);
 						snooze(50 * 1000);
 					}
-					the_polygon->AddPoints(point_list, num_points, true);
-					if (view->LockLooper()) {
-						view->SetDrawingMode(B_OP_COPY);
-						BPolygon* bpoly = the_polygon->GetBPolygon();
-						bitmap_rect = bpoly->Frame();
-						view_rect = view->convertBitmapRectToView(bitmap_rect);
-						bpoly->MapTo(bitmap_rect, view_rect);
-						view->StrokePolygon(bpoly, false, HS_ANIMATED_STRIPES_1);
-						view->SetDrawingMode(B_OP_INVERT);
-						view->UnlockLooper();
-						delete bpoly;
+					the_polygon->AddPoints(activePoints, numActivePoints, true);
+					if (numPoints + numActivePoints > size) {
+						size = numPoints + numActivePoints + 1;
+						BPoint* tmpPoints = new BPoint[size];
+						for (int i = 0; i < numPoints; ++i) {
+							tmpPoints[i] = selectionPoints[i];
+						}
+						delete[] selectionPoints;
+						selectionPoints = tmpPoints;
 					}
-					delete[] point_list;
+
+					for (int i = 0; i < numActivePoints; ++i)
+						selectionPoints[numPoints + i] = activePoints[numActivePoints - i - 1];
+
+					numPoints += numActivePoints;
+					delete activePoints;
+					activePoints = NULL;
+					numActivePoints = 0;
+
+					BRect updatedRect = the_polygon->BoundingBox();
+					imageUpdater->AddRect(updatedRect);
+					imageUpdater->ForceUpdate();
 
 					path_finder->SetSeedPoint(int32(point.x), int32(point.y));
 					seed_point = point;
-					delete active_view_polygon;
-					active_view_polygon = NULL;
+					if (numActivePoints > 0 && activePoints != NULL) {
+						delete[] activePoints;
+						activePoints = NULL;
+						numActivePoints = 0;
+					}
 				}
 			} else {
 				// We should draw the active segment to the view if necessary
-				// (i.e. point has changed).
+				// (i.e. point has changed)
 				if (point != prev_point) {
-					if (view->LockLooper()) {
-						if (active_view_polygon != NULL) {
-							bitmap_rect = active_view_polygon->Frame();
-							view_rect = view->convertBitmapRectToView(bitmap_rect);
-							view->Draw(view_rect);
-							delete active_view_polygon;
-						}
-						int32 num_points;
-						BPoint* point_list
-							= path_finder->ReturnPath(int32(point.x), int32(point.y), &num_points);
-						if (point_list != NULL) {
-							active_view_polygon = new BPolygon(point_list, num_points);
-							bitmap_rect = active_view_polygon->Frame();
-							view_rect = view->convertBitmapRectToView(bitmap_rect);
-							active_view_polygon->MapTo(bitmap_rect, view_rect);
-						} else {
-							point_list = new BPoint[3];
-							point_list[0] = seed_point;
-							point_list[1] = point;
-							point_list[2] = point;
-							active_view_polygon = new BPolygon(point_list, 3);
-							bitmap_rect = active_view_polygon->Frame();
-							view_rect = view->convertBitmapRectToView(bitmap_rect);
-							active_view_polygon->MapTo(bitmap_rect, view_rect);
-						}
-						delete[] point_list;
-						view->SetDrawingMode(B_OP_OVER);
-						view->DrawBitmap(buffer, old_bitmap_rect, old_rect);
-						view->Draw(old_rect);
-						view->SetDrawingMode(B_OP_INVERT);
-						view->StrokePolygon(active_view_polygon, false);
-						old_bitmap_rect = bitmap_rect.InsetByCopy(-1, -1);
-						old_rect = view->convertBitmapRectToView(old_bitmap_rect);
-						view->SetDrawingMode(B_OP_COPY);
-						BPolygon* bpoly = the_polygon->GetBPolygon();
-						bitmap_rect = bpoly->Frame();
-						view_rect = view->convertBitmapRectToView(bitmap_rect);
-						bpoly->MapTo(bitmap_rect, view_rect);
-						view->StrokePolygon(bpoly, false, HS_ANIMATED_STRIPES_1);
-						view->UnlockLooper();
+					if (active_view_polygon != NULL) {
+						bitmap_rect = active_view_polygon->Frame();
+						imageUpdater->AddRect(bitmap_rect);
+						imageUpdater->ForceUpdate();
+						delete active_view_polygon;
 					}
+					if (numActivePoints > 0 && activePoints != NULL) {
+						delete[] activePoints;
+						activePoints = NULL;
+						numActivePoints = 0;
+					}
+					activePoints
+						= path_finder->ReturnPath(int32(point.x), int32(point.y), &numActivePoints);
+
+					if (activePoints == NULL) {
+						activePoints = new BPoint[3];
+						activePoints[0] = seed_point;
+						activePoints[1] = point;
+						activePoints[2] = point;
+						numActivePoints = 3;
+					}
+					active_view_polygon = new BPolygon(activePoints, numActivePoints);
+					BRect updatedRect = active_view_polygon->Frame();
+					imageUpdater->AddRect(updatedRect);
+					imageUpdater->ForceUpdate();
+
 					prev_point = point;
 				}
 			}
@@ -215,17 +234,12 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 			snooze(50 * 1000);
 		}
 
-		if (view->LockLooper()) {
-			view->SetPenSize(1);
-			view->SetDrawingMode(B_OP_COPY);
-			view->UnlockLooper();
-		}
 		delete path_finder;
 		selection->AddSelection(the_polygon, addSelection);
 	} else if (fToolSettings.shape == HS_FREE_LINE) {
 		int32 size = 100;
-		BPoint* point_list = new BPoint[size];
-		int32 next_index = 0;
+		numPoints = 0;
+		selectionPoints = new BPoint[size];
 
 		while (buttons) {
 			if (modifiers() & B_OPTION_KEY)
@@ -233,27 +247,30 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 			else
 				addSelection = true;
 
-			point_list[next_index++] = point;
+			selectionPoints[numPoints++] = point;
 			the_script->AddPoint(point);
-			if (next_index == size) {
+			if (numPoints == size) {
 				BPoint* new_list = new BPoint[2 * size];
-				for (int32 i = 0; i < next_index; i++)
-					new_list[i] = point_list[i];
+				for (int32 i = 0; i < numPoints; i++)
+					new_list[i] = selectionPoints[i];
 
-				delete[] point_list;
-				point_list = new_list;
+				delete[] selectionPoints;
+				selectionPoints = new_list;
 				size = 2 * size;
 			}
 
 			view->Window()->Lock();
-			view->StrokeLine(view_point, HS_ANIMATED_STRIPES_1);
 			view->getCoords(&point, &buttons, &view_point);
 			view->Window()->Unlock();
 
+			BRect updatedRect = MakeRectFromPoints(selectionPoints[numPoints-1], selectionPoints[numPoints-2]);
+			imageUpdater->AddRect(updatedRect.InsetByCopy(-5, -5));
+			imageUpdater->ForceUpdate();
+
 			snooze(20 * 1000);
+
 		}
-		HSPolygon* poly = new HSPolygon(point_list, next_index, HS_POLYGON_CLOCKWISE);
-		delete[] point_list;
+		HSPolygon* poly = new HSPolygon(selectionPoints, numPoints, HS_POLYGON_CLOCKWISE);
 		selection->AddSelection(poly, addSelection);
 	} else if (fToolSettings.shape == HS_MAGIC_WAND) {
 		BBitmap* original_bitmap = view->ReturnImage()->ReturnActiveBitmap();
@@ -275,16 +292,9 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 		BRect old_rect, new_rect;
 		old_rect = new_rect = BRect(point, point);
 		float left, top, right, bottom;
-		view->Window()->Lock();
-		drawing_mode old_mode = view->DrawingMode();
-		view->SetDrawingMode(B_OP_INVERT);
-		if (fToolSettings.shape == HS_CIRCLE)
-			view->StrokeEllipse(view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
-		else
-			view->StrokeRect(view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
-		view->Window()->Unlock();
 
 		the_script->AddPoint(point);
+		selectionPoints = new BPoint[2];
 
 		while (buttons) {
 			if (modifiers() & B_OPTION_KEY)
@@ -292,20 +302,9 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 			else
 				addSelection = true;
 
-			if (old_rect != new_rect) {
-				view->Window()->Lock();
-				view->Draw(view->convertBitmapRectToView(old_rect));
-				if (fToolSettings.shape == HS_CIRCLE) {
-					view->StrokeEllipse(
-						view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
-				} else {
-					view->StrokeRect(
-						view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
-				}
-				view->Window()->Unlock();
-
+			if (old_rect != new_rect)
 				old_rect = new_rect;
-			}
+
 			view->Window()->Lock();
 			view->getCoords(&point, &buttons, &view_point);
 			view->Window()->Unlock();
@@ -340,14 +339,19 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 				else
 					bitmap_rect.bottom = bitmap_rect.bottom + y_distance;
 			}
+
+			selectionPoints[0] = bitmap_rect.LeftTop();
+			selectionPoints[1] = bitmap_rect.RightBottom();
+			numPoints = 2;
+
 			new_rect = bitmap_rect;
+			imageUpdater->AddRect(old_rect.InsetByCopy(-1, -1));
+
+			imageUpdater->ForceUpdate();
+
 			snooze(20 * 1000);
 		}
 		the_script->AddPoint(point);
-		view->Window()->Lock();
-		view->Draw(view->convertBitmapRectToView(old_rect));
-		view->SetDrawingMode(old_mode);
-		view->Window()->Unlock();
 
 		if (fToolSettings.shape == HS_CIRCLE) {
 			BBitmap* selection_map;
@@ -371,6 +375,18 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 			selection->AddSelection(poly, addSelection);
 		}
 	}
+
+	if (numPoints > 0 && selectionPoints != NULL) {
+		delete[] selectionPoints;
+		selectionPoints = NULL;
+		numPoints = 0;
+	}
+	if (numActivePoints > 0 && activePoints != NULL) {
+		delete[] activePoints;
+		activePoints = NULL;
+		numActivePoints = 0;
+	}
+	delete imageUpdater;
 
 	view->Window()->Lock();
 	view->Invalidate();
@@ -555,6 +571,53 @@ SelectorTool::MakeFloodBinaryMap(BitmapDrawer* drawer, int32 min_x, int32 max_x,
 
 	// Remember to NULL the attribute binary_fill_map
 	return fill_map;
+}
+
+
+void
+SelectorTool::DrawSelection(BView* view)
+{
+	if (view != NULL) { // && selectionPoints != NULL && numPoints > 0) {
+		ImageView* img_view = dynamic_cast<ImageView*>(view);
+		float scale = img_view->getMagScale();
+
+		if (fToolSettings.shape == HS_FREE_LINE && selectionPoints != NULL && numPoints > 0) {
+			for (int i = 0; i < numPoints; ++i)
+				img_view->StrokeLine(BPoint(selectionPoints[i].x * scale,
+					selectionPoints[i].y * scale), HS_ANIMATED_STRIPES_1);
+
+		} else if ((fToolSettings.shape == HS_CIRCLE || fToolSettings.shape == HS_RECTANGLE)
+			&& selectionPoints != NULL && numPoints > 0) {
+
+			BRect new_rect = MakeRectFromPoints(selectionPoints[0], selectionPoints[1]);
+			if (fToolSettings.shape == HS_RECTANGLE)
+				img_view->StrokeRect(img_view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
+			else
+				img_view->StrokeEllipse(img_view->convertBitmapRectToView(new_rect), HS_ANIMATED_STRIPES_1);
+		} else if (fToolSettings.shape == HS_INTELLIGENT_SCISSORS) {
+			if (selectionPoints != NULL && numPoints > 0) {
+				BPolygon bpoly(selectionPoints, numPoints);
+				BRect bitmap_rect = bpoly.Frame();
+				BRect view_rect = img_view->convertBitmapRectToView(bitmap_rect);
+
+				bpoly.MapTo(bitmap_rect, view_rect);
+				img_view->MovePenTo(selectionPoints[0]);
+				img_view->StrokePolygon(&bpoly, false, HS_ANIMATED_STRIPES_1);
+			}
+
+			if (activePoints != NULL && numActivePoints > 0) {
+				drawing_mode oldMode = img_view->DrawingMode();
+				img_view->SetDrawingMode(B_OP_INVERT);
+				BPolygon apoly(activePoints, numActivePoints);
+				BRect bitmap_rect = apoly.Frame();
+				BRect view_rect = img_view->convertBitmapRectToView(bitmap_rect);
+
+				apoly.MapTo(bitmap_rect, view_rect);
+				img_view->StrokePolygon(&apoly, false);
+				img_view->SetDrawingMode(oldMode);
+			}
+		}
+	}
 }
 
 

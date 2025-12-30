@@ -1490,28 +1490,11 @@ Image::DoRenderPreview(BRect area, int32 resolution)
 		int32 right = (int32)area.right;
 		int32 bottom = (int32)area.bottom;
 
-		int32 gridSize;
-		uint32 color1;
-		uint32 color2;
+		union color_conversion white_bg;
+		white_bg.word = 0xFFFFFFFF;
+		white_bg.bytes[3] = 0x00;
 
-		gridSize = 20;
-		rgb_color rgb1, rgb2;
-		rgb1.red = rgb1.green = rgb1.blue = 0xBB;
-		rgb2.red = rgb2.green = rgb2.blue = 0x99;
-		rgb1.alpha = rgb2.alpha = 0xFF;
-		color1 = RGBColorToBGRA(rgb1);
-		color2 = RGBColorToBGRA(rgb2);
-
-		if (SettingsServer* server = SettingsServer::Instance()) {
-			BMessage settings;
-			server->GetApplicationSettings(&settings);
-
-			gridSize = settings.GetInt32(skBgGridSize, gridSize);
-			color1 = settings.GetUInt32(skBgColor1, color1);
-			color2 = settings.GetUInt32(skBgColor2, color2);
-		}
-
-		BitmapUtilities::CheckerBitmap(rendered_image, color1, color2, gridSize, &area);
+		BitmapUtilities::ClearBitmap(rendered_image, white_bg.word, &area);
 
 		for (int32 y = top; y <= bottom; y += resolution) {
 			for (int32 x = left; x <= right; x += resolution) {
