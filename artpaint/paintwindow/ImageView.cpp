@@ -56,6 +56,7 @@
 
 
 #include <new>
+#include <iostream>
 
 
 #undef B_TRANSLATION_CONTEXT
@@ -136,6 +137,8 @@ ImageView::ImageView(BRect frame, float width, float height)
 	show_selection = TRUE;
 
 	AddFilter(new BMessageFilter(B_KEY_DOWN, KeyFilterFunction));
+
+	background = NULL;
 }
 
 
@@ -167,6 +170,8 @@ ImageView::~ImageView()
 	// Delete the semaphores
 	delete_sem(mouse_mutex);
 	delete_sem(action_semaphore);
+
+	delete background;
 }
 
 
@@ -191,15 +196,53 @@ ImageView::AttachedToWindow()
 	MakeFocus();
 
 	SetEventMask(B_KEYBOARD_EVENTS);
+
+	MakeBackground();
+}
+
+
+void
+ImageView::MakeBackground()
+{
+	int32 gridSize;
+	uint32 color1;
+	uint32 color2;
+
+	gridSize = 20;
+	rgb_color rgb1, rgb2;
+	rgb1.red = rgb1.green = rgb1.blue = 0xBB;
+	rgb2.red = rgb2.green = rgb2.blue = 0x99;
+	rgb1.alpha = rgb2.alpha = 0xFF;
+	color1 = RGBColorToBGRA(rgb1);
+	color2 = RGBColorToBGRA(rgb2);
+
+	if (SettingsServer* server = SettingsServer::Instance()) {
+		BMessage settings;
+		server->GetApplicationSettings(&settings);
+
+		gridSize = settings.GetInt32(skBgGridSize, gridSize);
+		color1 = settings.GetUInt32(skBgColor1, color1);
+		color2 = settings.GetUInt32(skBgColor2, color2);
+	}
+
+	if (background != NULL)
+		delete background;
+
+	background = new BBitmap(BRect(0, 0, the_image->Width(), the_image->Height()), B_RGBA32);
+	BitmapUtilities::CheckerBitmap(background, color1, color2, gridSize);
 }
 
 
 void
 ImageView::Draw(BRect updateRect)
 {
-	// copy image from bitmap to the part requiring updating
+	Window()->BeginViewTransaction();
 	SetDrawingMode(B_OP_COPY);
 
+	// draw checker background
+	DrawBitmapAsync(background, convertViewRectToBitmap(Bounds()), Bounds());
+
+	// copy image from bitmap to the part requiring updating
 	BRegion a_region;
 	GetClippingRegion(&a_region);
 	for (int32 i = 0; i < a_region.CountRects(); i++)
@@ -209,11 +252,24 @@ ImageView::Draw(BRect updateRect)
 	if (show_selection == TRUE)
 		selection->Draw();
 
-	// Make the manipulator draw it's UI here.
-	DrawManipulatorGUI(FALSE);
+	if (fManipulator == NULL) {
+		int32 mode = B_CONTROL_ON;
+		if (SettingsServer* server = SettingsServer::Instance()) {
+			BMessage settings;
+			server->GetApplicationSettings(&settings);
+			settings.FindInt32(skDrawBrushSizeMode, &mode);
+		}
+
+		// draw current brush shape if mode is set in preferences
+		if (mode == B_CONTROL_ON)
+			DrawBrush(previous_point);
+	} else
+		// Make the manipulator draw it's UI here.
+		DrawManipulatorGUI(FALSE);
 
 	// finally Flush() after drawing asynchronously
 	Flush();
+	Window()->EndViewTransaction();
 }
 
 
@@ -223,12 +279,18 @@ ImageView::BlitImage(BRect bitmap_rect)
 	BRect image_rect;
 	float mag_scale = getMagScale();
 
+	drawing_mode old_mode = DrawingMode();
+	SetDrawingMode(B_OP_ALPHA);
+	SetBlendingMode(B_PIXEL_ALPHA, B_ALPHA_OVERLAY);
+
 	BBitmap* source_bitmap;
 	if ((current_display_mode == FULL_RGB_DISPLAY_MODE)
 		|| (the_image->IsDitheredUpToDate() == FALSE))
 		source_bitmap = the_image->ReturnRenderedImage();
 	else
 		source_bitmap = the_image->ReturnDitheredImage();
+
+	bitmap_rect = bitmap_rect & source_bitmap->Bounds();
 
 	if (mag_scale == 1.0) {
 		image_rect = bitmap_rect;
@@ -237,6 +299,8 @@ ImageView::BlitImage(BRect bitmap_rect)
 		image_rect = convertBitmapRectToView(bitmap_rect);
 		DrawBitmapAsync(source_bitmap, bitmap_rect, image_rect);
 	}
+
+	SetDrawingMode(old_mode);
 }
 
 
@@ -245,7 +309,7 @@ ImageView::UpdateImage(BRect bitmap_rect)
 {
 	bitmap_rect = bitmap_rect & the_image->ReturnRenderedImage()->Bounds();
 	the_image->Render(bitmap_rect);
-	BlitImage(bitmap_rect);
+	Invalidate(convertBitmapRectToView(bitmap_rect));
 }
 
 
@@ -261,13 +325,10 @@ ImageView::DrawManipulatorGUI(bool blit_image)
 
 		BView* parent = this->Parent();
 		BRect imgFrame = ConvertToParent(Bounds());
-		parent->Draw(parent->Bounds());
-		parent->Flush();
 		parent->PushState();
 		parent->SetOrigin(imgFrame.LeftTop());
 		region_drawn_by_manipulator = gui_manipulator->Draw(parent, getMagScale());
 		parent->PopState();
-
 		region_drawn_by_manipulator = gui_manipulator->Draw(this, getMagScale());
 	} else
 		region_drawn_by_manipulator = BRegion();
@@ -368,7 +429,6 @@ ImageView::MessageReceived(BMessage* message)
 				uint32 buttons;
 				BPoint norm_point;
 
-				GetMouse(&point, &buttons);
 				getCoords(&norm_point, &buttons, &point);
 
 				float magScale = getMagScale();
@@ -418,7 +478,6 @@ ImageView::MessageReceived(BMessage* message)
 
 				if (magScale <= 16.0) {
 					setMagScale(magScale);
-
 					float delta_x = norm_point.x * scaleChange;
 					float delta_y = norm_point.y * scaleChange;
 
@@ -1017,6 +1076,7 @@ ImageView::MessageReceived(BMessage* message)
 					the_image->Render();
 					manipulated_layers = HS_MANIPULATE_NO_LAYER;
 					Parent()->Draw(Parent()->Bounds());
+					MakeBackground();
 					Invalidate();
 					start_thread(MANIPULATOR_FINISHER_THREAD);
 				}
@@ -1085,6 +1145,9 @@ ImageView::MouseDown(BPoint view_point)
 				be_app->SetCursor(fGrabbingCursor);
 
 				ScrollBy(delta_x, delta_y);
+				BRegion a_region;
+				GetClippingRegion(&a_region);
+				Invalidate(&a_region);
 				snooze(25 * 1000);
 			}
 
@@ -1115,20 +1178,6 @@ ImageView::MouseDown(BPoint view_point)
 void
 ImageView::MouseUp(BPoint where)
 {
-	if (fManipulator == NULL) {
-		where.x = floor(where.x / getMagScale());
-		where.y = floor(where.y / getMagScale());
-
-		int32 mode = B_CONTROL_ON;
-		if (SettingsServer* server = SettingsServer::Instance()) {
-			BMessage settings;
-			server->GetApplicationSettings(&settings);
-			settings.FindInt32(skDrawBrushSizeMode, &mode);
-		}
-
-		if (mode == B_CONTROL_ON)
-			DrawBrush(where);
-	}
 }
 
 
@@ -1175,48 +1224,8 @@ ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage* message)
 		// Here we set the window to display coordinates.
 		((PaintWindow*)Window())->DisplayCoordinates(where, reference_point, use_reference_point);
 
-		if (fManipulator == NULL) {
-			int32 mode = B_CONTROL_ON;
-			if (SettingsServer* server = SettingsServer::Instance()) {
-				BMessage settings;
-				server->GetApplicationSettings(&settings);
-				settings.FindInt32(skDrawBrushSizeMode, &mode);
-			}
-
-			if (mode == B_CONTROL_ON) {
-				uint32 buttons = 0;
-				BMessage* move_message = Window()->CurrentMessage();
-
-				if (move_message != NULL)
-					buttons = move_message->FindInt32("buttons");
-
-				if (buttons == 0)
-					DrawBrush(where);
-			}
-		}
-	} else {
-		where.x = the_image->Width();
-		where.y = the_image->Height();
-
-		((PaintWindow*)Window())->DisplayCoordinates(where, BPoint(0, 0), false);
-
-		Draw(Bounds());
-	}
-
-	previous_point = where;
-}
-
-
-void
-ImageView::DrawBrush(BPoint where)
-{
-	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
-
-	if (tool_type == FREE_LINE_TOOL
-		|| tool_type == AIR_BRUSH_TOOL
-		|| tool_type == ERASER_TOOL
-		|| tool_type == BLUR_TOOL
-		|| tool_type == TRANSPARENCY_TOOL) {
+		// get current brush
+		int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
 		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
 		float width = tool->GetCurrentValue(SIZE_OPTION);
 		float height = width;
@@ -1231,18 +1240,58 @@ ImageView::DrawBrush(BPoint where)
 		} else
 			brush = NULL;
 
-		float half_width = width / 2;
-		float half_height = height / 2;
+		// invalidate area where brush was drawn
+		float half_width = ceil(width / 2.);
+		float half_height = ceil(height / 2.);
 
 		BRect clear_rect;
-		clear_rect.left = min_c(previous_point.x, where.x) - width - 5;
-		clear_rect.top = min_c(previous_point.y, where.y) - height - 5;
-		clear_rect.right = max_c(previous_point.x, where.x) + width + 5;
-		clear_rect.bottom = max_c(previous_point.y, where.y) + height + 5;
+		clear_rect.left = min_c(previous_point.x, where.x) - half_width;
+		clear_rect.top = min_c(previous_point.y, where.y) - half_height;
+		clear_rect.right = max_c(previous_point.x, where.x) + half_width;
+		clear_rect.bottom = max_c(previous_point.y, where.y) + half_height;
 
-		clear_rect = convertBitmapRectToView(clear_rect);
+		Invalidate(convertBitmapRectToView(clear_rect));
+	} else {
+		where.x = the_image->Width();
+		where.y = the_image->Height();
 
-		Draw(clear_rect);
+		((PaintWindow*)Window())->DisplayCoordinates(where, BPoint(0, 0), false);
+
+		Invalidate(Bounds());
+	}
+
+	previous_point = where;
+	SetCursor();
+}
+
+
+void
+ImageView::DrawBrush(BPoint where)
+{
+	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
+
+	if (tool_type == FREE_LINE_TOOL
+		|| tool_type == AIR_BRUSH_TOOL
+		|| tool_type == ERASER_TOOL
+		|| tool_type == BLUR_TOOL
+		|| tool_type == TRANSPARENCY_TOOL
+		|| tool_type == COLOR_SELECTOR_TOOL) {
+		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
+		float width = tool->GetCurrentValue(SIZE_OPTION);
+		float height = width;
+
+		drawing_mode old_mode = DrawingMode();
+
+		Brush* brush;
+		if (tool->GetCurrentValue(USE_BRUSH_OPTION)) {
+			brush = ToolManager::Instance().GetCurrentBrush();
+			width = brush->Width();
+			height = brush->Height();
+		} else
+			brush = NULL;
+
+		float half_width = (width / 2.);
+		float half_height = (height / 2.);
 
 		SetDrawingMode(B_OP_INVERT);
 		BRect brush_rect;
@@ -1253,8 +1302,16 @@ ImageView::DrawBrush(BPoint where)
 			brush_rect.right = where.x + half_width;
 			brush_rect.bottom = where.y + half_height;
 
-			brush_rect = convertBitmapRectToView(brush_rect);
-			StrokeEllipse(brush_rect);
+			if (tool_type == COLOR_SELECTOR_TOOL) {
+				if ((int32)width % 2 == 0) {
+					brush_rect.right -= 1;
+					brush_rect.bottom -= 1;
+				} else
+					brush_rect.InsetBy(0.5, 0.5);
+
+				StrokeRect(convertBitmapRectToView(brush_rect));
+			} else
+				StrokeEllipse(convertBitmapRectToView(brush_rect));
 		} else {
 			int num_shapes = brush->GetNumShapes();
 			BPolygon** shapes = new BPolygon*[num_shapes];
@@ -1275,6 +1332,11 @@ ImageView::DrawBrush(BPoint where)
 			}
 		}
 		SetDrawingMode(old_mode);
+	} else if (tool_type == SELECTOR_TOOL) {
+		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
+		SelectorTool* selection_tool = cast_as(tool, SelectorTool);
+
+		selection_tool->DrawSelection(this);
 	}
 }
 
@@ -1810,8 +1872,10 @@ ImageView::ManipulatorMouseTrackerThread()
 					} else
 						the_image->MultiplyRenderedImagePixels(preview_quality);
 
+					Parent()->Invalidate();
+
 					for (int32 i = 0; i < updated_region->CountRects(); i++)
-						Draw(convertBitmapRectToView(updated_region->RectAt(i)));
+						Invalidate(convertBitmapRectToView(updated_region->RectAt(i)));
 				} else if (preview_quality == DRAW_ONLY_GUI) {
 					DrawManipulatorGUI(TRUE);
 					if (show_selection == TRUE)
@@ -1843,8 +1907,10 @@ ImageView::ManipulatorMouseTrackerThread()
 				the_image->MultiplyRenderedImagePixels(preview_quality);
 
 			if (LockLooper() == TRUE) {
+				Parent()->Invalidate();
+
 				for (int32 i = 0; i < updated_region->CountRects(); i++)
-					Draw(convertBitmapRectToView(updated_region->RectAt(i)));
+					Invalidate(convertBitmapRectToView(updated_region->RectAt(i)));
 				UnlockLooper();
 			}
 		} else if (preview_quality == DRAW_ONLY_GUI) {
@@ -1893,7 +1959,7 @@ ImageView::GUIManipulatorUpdaterThread()
 						the_image->MultiplyRenderedImagePixels(preview_quality);
 
 					for (int32 i = 0; i < updated_region->CountRects(); i++)
-						Draw(convertBitmapRectToView(updated_region->RectAt(i)));
+						Invalidate(convertBitmapRectToView(updated_region->RectAt(i)));
 				} else if (preview_quality == DRAW_ONLY_GUI) {
 					DrawManipulatorGUI(TRUE);
 					if (show_selection == TRUE)
@@ -1929,7 +1995,7 @@ ImageView::GUIManipulatorUpdaterThread()
 
 			if (LockLooper() == TRUE) {
 				for (int32 i = 0; i < updated_region->CountRects(); i++)
-					Draw(convertBitmapRectToView(updated_region->RectAt(i)));
+					Invalidate(convertBitmapRectToView(updated_region->RectAt(i)));
 				UnlockLooper();
 			}
 		} else if (preview_quality == DRAW_ONLY_GUI) {
@@ -2124,6 +2190,7 @@ ImageView::ManipulatorFinisherThread()
 
 	the_image->SetImageSize();
 	the_image->Render();
+	MakeBackground();
 
 	// Change the selection for the undo-queue if necessary.
 	if ((new_event != NULL)
@@ -2237,6 +2304,7 @@ ImageView::Undo()
 			}
 
 			the_image->Render();
+			MakeBackground();
 			Invalidate();
 		}
 
@@ -2323,6 +2391,7 @@ ImageView::Redo()
 			}
 
 			the_image->Render();
+			MakeBackground();
 			Invalidate();
 		}
 

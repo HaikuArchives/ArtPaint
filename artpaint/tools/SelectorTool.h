@@ -34,12 +34,14 @@ using ArtPaint::Interface::NumberSliderControl;
 class SelectorTool : public DrawingTool, public ToolEventAdapter {
 public:
 								SelectorTool();
+								~SelectorTool();
 
 			ToolScript*			UseTool(ImageView*, uint32, BPoint, BPoint);
 
 			BView*				ConfigView();
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
+			void				DrawSelection(BView* view);
 
 private:
 								// These functions handle the magic wand thing.
@@ -52,6 +54,11 @@ private:
 									uint32, int32, BBitmap*);
 			BBitmap*			MakeFloodBinaryMap(BitmapDrawer*, int32, int32,
 									int32, int32, uint32, BPoint);
+
+			BPoint*				selectionPoints;
+			int32					numPoints;
+			BPoint*				activePoints;
+			int32				numActivePoints;
 };
 
 

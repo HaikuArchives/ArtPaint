@@ -325,21 +325,6 @@ ColorSelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint
 			rc.OffsetBySelf(-half_size, -half_size);
 			rc = rc & bounds;
 
-			view_rc = view->convertBitmapRectToView(rc);
-			scale = view->getMagScale();
-			view_rc.right -= scale;
-			view_rc.bottom -= scale;
-
-			if (view->LockLooper() == true) {
-				if (old_rc != view_rc) {
-					old_rc.InsetBySelf(-2, -2);
-					view->Draw(old_rc);
-					view->StrokeRect(view_rc, B_SOLID_HIGH);
-					view->StrokeRect(view_rc.InsetByCopy(-1, -1), B_SOLID_LOW);
-					old_rc = view_rc;
-				}
-				view->UnlockLooper();
-			}
 			int32 x_dist, y_sqr;
 
 			int32 width = rc.IntegerWidth();
@@ -397,11 +382,6 @@ ColorSelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint
 			}
 			window->Unlock();
 			snooze(20 * 1000);
-		}
-
-		if (view->LockLooper() == true) {
-			view->Draw(view_rc.InsetByCopy(-1, -1));
-			view->UnlockLooper();
 		}
 
 		// Close the color picker window

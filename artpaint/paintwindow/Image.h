@@ -92,8 +92,8 @@ public:
 						Image(ImageView*, float, float, UndoQueue*);
 						~Image();
 
-			void		Render(bool bg = true);
-			void		Render(BRect, bool bg = true);
+			void		Render(bool bg = false);
+			void		Render(BRect, bool bg = false);
 			void		RenderPreview(BRect, int32);
 			void		RenderPreview(BRegion&, int32);
 			void		MultiplyRenderedImagePixels(int32);
