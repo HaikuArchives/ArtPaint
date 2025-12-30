@@ -72,6 +72,7 @@ class ImageView : public BView {
 private:
 	friend filter_result KeyFilterFunction(BMessage*, BHandler**, BMessageFilter*);
 			Image*		the_image;
+			BBitmap*	background;
 
 			int32		mag_scale_array_length;
 			int32		mag_scale_array_index;
@@ -249,6 +250,7 @@ public:
 	const	char*		ReturnImageName() { return image_name; }
 
 			bool		ShowSelection() { return show_selection; }
+			void		MakeBackground();
 };
 
 filter_result KeyFilterFunction(BMessage*, BHandler**, BMessageFilter*);

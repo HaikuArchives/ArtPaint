@@ -222,6 +222,8 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.right = ceil(updated_rect.right);
 			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1, -1);
+			updated_rect = updated_rect & buffer->Bounds();
+
 			imageUpdater->AddRect(updated_rect);
 			SetLastUpdatedRect(updated_rect);
 		} else
@@ -340,6 +342,7 @@ HairyBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			updated_rect.bottom = ceil(updated_rect.bottom);
 			updated_rect.InsetBy(-1, -1);
 
+			updated_rect = updated_rect & buffer->Bounds();
 			SetLastUpdatedRect(LastUpdatedRect() | updated_rect);
 
 			imageUpdater->AddRect(updated_rect);
