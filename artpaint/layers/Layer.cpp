@@ -63,10 +63,7 @@ Layer::Layer(
 			throw std::bad_alloc();
 
 		union color_conversion color;
-		color.bytes[0] = 0xFF;
-		color.bytes[1] = 0xFF;
-		color.bytes[2] = 0xFF;
-		color.bytes[3] = 0x00;
+		color.word = 0x00000000;
 
 		int32 bits_length = fLayerData->BitsLength() / 4;
 		uint32* target_bits = (uint32*)fLayerData->Bits();
