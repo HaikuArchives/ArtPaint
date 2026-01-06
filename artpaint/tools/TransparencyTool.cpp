@@ -147,6 +147,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 				y_sqr = (int32)(point.y - rc.top - y);
 				y_sqr *= y_sqr;
 				int32 real_y = (int32)(rc.top + y);
+				int32 real_y_times_bpr = real_y * bpr;
 				int32 real_x;
 				for (int32 x = 0; x < width + 1; x++) {
 					x_dist = (int32)(point.x - rc.left - x);
@@ -155,26 +156,26 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 					if (fToolSettings.use_current_brush == true) {
 						union color_conversion brush_color;
 						brush_color.word = *(brush_bits + x + y * brush_bpr);
-						brush_val = brush_color.bytes[3];
+						brush_val = brush_color.bytes[3] / 255.;
 					}
 					if ((fToolSettings.use_current_brush == true && brush_val > 0.0)
 						|| (fToolSettings.use_current_brush == false
 							&& sqrt_table[x_dist * x_dist + y_sqr] <= half_width)) {
-						color.word = *(bits_origin + real_y * bpr + real_x);
+						color.word = *(bits_origin + real_y_times_bpr + real_x);
 						if (selection == NULL || selection->IsEmpty() == true
 							|| selection->ContainsPoint(real_x, real_y)) {
 
 							uint8 diff = fabs(color.bytes[3] - transparency_value);
-							uint8 step = (uint8)(ceil(diff * pressure * brush_val / 2));
+							uint8 step = (uint8)(ceil(diff * pressure * brush_val));
 
 							if (color.bytes[3] < transparency_value) {
 								color.bytes[3]
 									= (uint8)min_c(color.bytes[3] + step, transparency_value);
-								*(bits_origin + real_y * bpr + real_x) = color.word;
+								*(bits_origin + real_y_times_bpr + real_x) = color.word;
 							} else if (color.bytes[3] > transparency_value) {
 								color.bytes[3]
 									= (uint8)max_c(color.bytes[3] - step, transparency_value);
-								*(bits_origin + real_y * bpr + real_x) = color.word;
+								*(bits_origin + real_y_times_bpr + real_x) = color.word;
 							}
 						}
 					}
@@ -184,7 +185,7 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 			imageUpdater->AddRect(rc);
 
 			SetLastUpdatedRect(LastUpdatedRect() | rc);
-			snooze(20 * 1000);
+			snooze(500);
 		}
 	}
 
