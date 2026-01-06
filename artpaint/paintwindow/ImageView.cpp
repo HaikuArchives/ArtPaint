@@ -308,8 +308,10 @@ void
 ImageView::UpdateImage(BRect bitmap_rect)
 {
 	bitmap_rect = bitmap_rect & the_image->ReturnRenderedImage()->Bounds();
-	the_image->Render(bitmap_rect);
-	Invalidate(convertBitmapRectToView(bitmap_rect));
+	if (bitmap_rect.IsValid()) {
+		the_image->Render(bitmap_rect);
+		Invalidate(convertBitmapRectToView(bitmap_rect));
+	}
 }
 
 
