@@ -89,7 +89,7 @@ Brush::~Brush()
 
 
 void
-Brush::ModifyBrush(brush_info& info)
+Brush::ModifyBrush(brush_info& info, bool notify)
 {
 	delete_all_data();
 
@@ -135,7 +135,8 @@ Brush::ModifyBrush(brush_info& info)
 		shapes[i] = new_polygon;
 	}
 
-	CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
+	if (notify == true)
+		CurrentBrushView::SendMessageToAll(HS_BRUSH_CHANGED);
 }
 
 
