@@ -1271,6 +1271,7 @@ void
 ImageView::DrawBrush(BPoint where)
 {
 	int32 tool_type = ToolManager::Instance().ReturnActiveToolType();
+	DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
 
 	if (tool_type == FREE_LINE_TOOL
 		|| tool_type == AIR_BRUSH_TOOL
@@ -1278,7 +1279,6 @@ ImageView::DrawBrush(BPoint where)
 		|| tool_type == BLUR_TOOL
 		|| tool_type == TRANSPARENCY_TOOL
 		|| tool_type == COLOR_SELECTOR_TOOL) {
-		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
 		float width = tool->GetCurrentValue(SIZE_OPTION);
 		float height = width;
 
@@ -1335,10 +1335,13 @@ ImageView::DrawBrush(BPoint where)
 		}
 		SetDrawingMode(old_mode);
 	} else if (tool_type == SELECTOR_TOOL) {
-		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
 		SelectorTool* selection_tool = cast_as(tool, SelectorTool);
 
 		selection_tool->DrawSelection(this);
+	} else if (tool_type == FILL_TOOL) {
+		FillTool* fill_tool = cast_as(tool, FillTool);
+
+		fill_tool->DrawTool(this);
 	}
 }
 

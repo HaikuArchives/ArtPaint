@@ -41,6 +41,7 @@ using ArtPaint::Interface::NumberSliderControl;
 class FillTool : public DrawingTool {
 public:
 								FillTool();
+								~FillTool();
 
 			BView*				ConfigView();
 			int32				UseToolWithScript(ToolScript*, BBitmap*);
@@ -56,6 +57,7 @@ public:
 
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
+			void				DrawTool(BView* view);
 
 private:
 			uint32				gradient_color1;
@@ -95,6 +97,8 @@ private:
 									uint32, uint8 skip = 1, Selection* sel = NULL);
 
 			BRect				calcBinaryMapBounds(BBitmap *boolean_map);
+			BPoint*				orig_view_point;
+			BPoint*				new_view_point;
 };
 
 

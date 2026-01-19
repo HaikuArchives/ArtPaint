@@ -18,6 +18,7 @@
 #include "ColorView.h"
 #include "Cursors.h"
 #include "Image.h"
+#include "ImageUpdater.h"
 #include "ImageView.h"
 #include "NumberSliderControl.h"
 #include "PaintApplication.h"
@@ -70,6 +71,23 @@ FillTool::FillTool()
 
 	gradient_color1 = 0x00000000;
 	gradient_color2 = 0xFFFFFFFF;
+
+	orig_view_point = NULL;
+	new_view_point = NULL;
+}
+
+
+FillTool::~FillTool()
+{
+	if (orig_view_point != NULL) {
+		delete orig_view_point;
+		orig_view_point = NULL;
+	}
+
+	if (new_view_point != NULL) {
+		delete new_view_point;
+		new_view_point = NULL;
+	}
 }
 
 
@@ -386,7 +404,7 @@ FillTool::FillSpan(BPoint span_start, BitmapDrawer* drawer, int32 min_x, int32 m
 
 BPoint
 FillTool::GradientFill(
-	ImageView* view, uint32 buttons, BPoint start, BPoint orig_view_point, Selection* sel)
+	ImageView* view, uint32 buttons, BPoint start, BPoint start_view_point, Selection* sel)
 {
 	// First calculate points that are to be included in the fill to
 	// a separate binary mask. Then go through the filled areas bounds
@@ -417,12 +435,10 @@ FillTool::GradientFill(
 	clear_color.word = 0xFFFFFFFF;
 	clear_color.bytes[3] = 0x00;
 
-	window->Lock();
-	drawing_mode old_mode = view->DrawingMode();
-	view->SetDrawingMode(B_OP_INVERT);
-	window->Unlock();
 	BPoint original_point = start;
 	BPoint new_point = start;
+
+	ImageUpdater* imageUpdater = new ImageUpdater(view, 2000);
 
 	if (bitmap_bounds.Contains(start) == TRUE) {
 
@@ -457,19 +473,17 @@ FillTool::GradientFill(
 		// change the min and max coordinates to those edges of the rect.
 		BRect filled_area_bounds = calcBinaryMapBounds(binary_map);
 
-		BRect ellipse_rect = BRect(orig_view_point - BPoint(3, 3), orig_view_point + BPoint(3, 3));
-		BPoint new_view_point = orig_view_point;
-		BPoint prev_view_point = new_view_point;
-		window->Lock();
-		view->StrokeEllipse(ellipse_rect);
-		window->Unlock();
+		orig_view_point = new BPoint(start_view_point);
+
+		BPoint prev_view_point = BPoint();
+		new_view_point = new BPoint(*orig_view_point);
 
 		// Do not do the preview. Just read the coordinates.
 		while (buttons) {
 			float scale = view->getMagScale();
 
 			window->Lock();
-			view->getCoords(&new_point, &buttons, &new_view_point);
+			view->getCoords(&new_point, &buttons, new_view_point);
 			window->Unlock();
 
 			if (modifiers() & B_SHIFT_KEY) {
@@ -485,34 +499,34 @@ FillTool::GradientFill(
 				y_diff = len * sin(angle * M_PI / 180.);
 				x_diff = len * cos(angle * M_PI / 180.);
 
-				float signed_x_diff = (new_view_point.x - orig_view_point.x);
-				float signed_y_diff = (new_view_point.y - orig_view_point.y);
+				float signed_x_diff = (new_view_point->x - orig_view_point->x);
+				float signed_y_diff = (new_view_point->y - orig_view_point->y);
 				if (signed_x_diff != 0) {
-					new_view_point.x
-						= orig_view_point.x + x_diff * signed_x_diff * scale / fabs(signed_x_diff);
+					new_view_point->x
+						= orig_view_point->x + x_diff * signed_x_diff * scale / fabs(signed_x_diff);
 					new_point.x = original_point.x + x_diff * signed_x_diff / fabs(signed_x_diff);
 				}
 
 				if (signed_y_diff != 0) {
-					new_view_point.y
-						= orig_view_point.y + y_diff * signed_y_diff * scale / fabs(signed_y_diff);
+					new_view_point->y
+						= orig_view_point->y + y_diff * signed_y_diff * scale / fabs(signed_y_diff);
 					new_point.y = original_point.y + y_diff * signed_y_diff / fabs(signed_y_diff);
 				}
 			}
 
-			if (new_view_point != prev_view_point) {
+			if (*new_view_point != prev_view_point) {
 				if (fToolSettings.preview_enabled == B_CONTROL_OFF) {
-					window->Lock();
+					// if preview is not checked just clear where we draw the tool
 					BRect clear_rect;
-					clear_rect.left = min_c(orig_view_point.x, prev_view_point.x);
-					clear_rect.top = min_c(orig_view_point.y, prev_view_point.y);
-					clear_rect.right = max_c(orig_view_point.x, prev_view_point.x);
-					clear_rect.bottom = max_c(orig_view_point.y, prev_view_point.y);
-					BPoint delta = prev_view_point - new_view_point;
+					clear_rect.left = min_c(orig_view_point->x, prev_view_point.x);
+					clear_rect.top = min_c(orig_view_point->y, prev_view_point.y);
+					clear_rect.right = max_c(orig_view_point->x, prev_view_point.x);
+					clear_rect.bottom = max_c(orig_view_point->y, prev_view_point.y);
+
+					BPoint delta = prev_view_point - *new_view_point;
 					clear_rect.InsetBy(-abs(delta.x), -abs(delta.y));
-					view->Draw(clear_rect);
-					view->StrokeEllipse(ellipse_rect);
-					view->StrokeLine(orig_view_point, new_view_point);
+					window->Lock();
+					view->Invalidate(clear_rect);
 					window->Unlock();
 				} else {
 					// There should actually be a separate function (and maybe even a thread) that
@@ -540,16 +554,9 @@ FillTool::GradientFill(
 						bitmap, srcBuffer, tmpBuffer, bitmap_bounds, src_over_fixed);
 					bitmap->Unlock();
 
-					window->Lock();
-					view->SetDrawingMode(old_mode);
-					view->UpdateImage(bitmap_bounds);
-					view->Sync();
-					view->SetDrawingMode(B_OP_INVERT);
-					view->StrokeEllipse(ellipse_rect);
-					view->StrokeLine(orig_view_point, new_view_point);
-					window->Unlock();
+					imageUpdater->AddRect(bitmap_bounds);
 				}
-				prev_view_point = new_view_point;
+				prev_view_point = *new_view_point;
 			}
 
 			snooze(20 * 1000);
@@ -579,11 +586,27 @@ FillTool::GradientFill(
 
 		delete binary_map;
 		SetLastUpdatedRect(filled_area_bounds);
+		// account for tool ui circle
+		filled_area_bounds.InsetBy(-5, -5);
+		imageUpdater->AddRect(filled_area_bounds);
+		BRect clear_rect;
+		clear_rect.left = min_c(orig_view_point->x, prev_view_point.x);
+		clear_rect.top = min_c(orig_view_point->y, prev_view_point.y);
+		clear_rect.right = max_c(orig_view_point->x, prev_view_point.x);
+		clear_rect.bottom = max_c(orig_view_point->y, prev_view_point.y);
+		BPoint delta = prev_view_point - *new_view_point;
+		clear_rect.InsetBy(-abs(delta.x), -abs(delta.y));
+
+		delete orig_view_point;
+		orig_view_point = NULL;
+		delete new_view_point;
+		new_view_point = NULL;
+
 		window->Lock();
-		view->SetDrawingMode(old_mode);
-		view->UpdateImage(LastUpdatedRect());
-		view->Sync();
+		view->Invalidate(clear_rect);
 		window->Unlock();
+		imageUpdater->ForceUpdate();
+		delete imageUpdater;
 	}
 
 	delete drawer;
@@ -1140,6 +1163,22 @@ FillTool::HelpString(bool isInUse) const
 {
 	return (isInUse ? B_TRANSLATE("Making a fill.")
 					: B_TRANSLATE("Fill tool: SHIFT locks 22.5° angles"));
+}
+
+
+void
+FillTool::DrawTool(BView* view)
+{
+	if (orig_view_point != NULL && new_view_point != NULL && view != NULL) {
+		if (fToolSettings.gradient_enabled == B_CONTROL_ON) {
+			drawing_mode old_mode = view->DrawingMode();
+			view->SetDrawingMode(B_OP_INVERT);
+			BRect ellipse_rect = BRect(*orig_view_point - BPoint(3, 3), *orig_view_point + BPoint(3, 3));
+			view->StrokeEllipse(ellipse_rect);
+			view->StrokeLine(*orig_view_point, *new_view_point);
+			view->SetDrawingMode(old_mode);
+		}
+	}
 }
 
 
