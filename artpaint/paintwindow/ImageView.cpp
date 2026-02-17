@@ -734,7 +734,7 @@ ImageView::MessageReceived(BMessage* message)
 				Invalidate();
 				AddChange();
 			}
-			catch (std::bad_alloc) {
+			catch (const std::bad_alloc&) {
 				ShowAlert(CANNOT_ADD_LAYER_ALERT);
 			}
 		} break;
@@ -758,7 +758,7 @@ ImageView::MessageReceived(BMessage* message)
 					AddChange();
 				}
 			}
-			catch (std::bad_alloc e) {
+			catch (const std::bad_alloc&) {
 				ShowAlert(CANNOT_ADD_LAYER_ALERT);
 			}
 		} break;
@@ -778,7 +778,7 @@ ImageView::MessageReceived(BMessage* message)
 							AddChange();
 						}
 					}
-					catch (std::bad_alloc) {
+					catch (const std::bad_alloc&) {
 						ShowAlert(CANNOT_ADD_LAYER_ALERT);
 					}
 				}
@@ -1042,7 +1042,7 @@ ImageView::MessageReceived(BMessage* message)
 					}
 				}
 			}
-			catch (std::bad_alloc) {
+			catch (const std::bad_alloc&) {
 				ShowAlert(CANNOT_START_MANIPULATOR_ALERT);
 				delete fManipulator;
 				fManipulator = NULL;
@@ -1231,8 +1231,6 @@ ImageView::MouseMoved(BPoint where, uint32 transit, const BMessage* message)
 		DrawingTool* tool = ToolManager::Instance().ReturnTool(tool_type);
 		float width = tool->GetCurrentValue(SIZE_OPTION);
 		float height = width;
-
-		drawing_mode old_mode = DrawingMode();
 
 		Brush* brush;
 		if (tool->GetCurrentValue(USE_BRUSH_OPTION)) {
@@ -1494,8 +1492,6 @@ ImageView::setMagScale(float scale)
 int32
 ImageView::findClosestMagIndex(float scale)
 {
-	int32 index = 0;
-
 	for (int i = 1; i <= mag_scale_array_length; ++i) {
 		if (mag_scale_array[i] > scale) {
 			float prev_scale = mag_scale_array[i - 1];
@@ -2070,7 +2066,7 @@ ImageView::ManipulatorFinisherThread()
 				if (new_buffer != NULL)
 					selection->ReplaceSelection(new_buffer);
 			} else {
-				BBitmap* new_buffer = fManipulator->ManipulateSelectionMap();
+				BBitmap* new_buffer = fManipulator->ManipulateSelectionBitmap();
 				if (new_buffer != NULL)
 					selection->ReplaceSelection(new_buffer);
 			}
@@ -2176,7 +2172,7 @@ ImageView::ManipulatorFinisherThread()
 				}
 			}
 		}
-	} catch (std::bad_alloc e) {
+	} catch (const std::bad_alloc& e) {
 		ShowAlert(CANNOT_FINISH_MANIPULATOR_ALERT);
 		// The manipulator should be asked to reset the preview-bitmap, if it is
 		// a GUIManipulator.
@@ -2410,7 +2406,6 @@ ImageView::DoCopyOrCut(int32 layers, bool cut)
 {
 	if (acquire_sem_etc(action_semaphore, 1, B_TIMEOUT, 0) == B_OK) {
 		BBitmap* buffer;
-		BRect* offset;
 		bool ok_to_archive = TRUE;
 		if (layers == HS_MANIPULATE_CURRENT_LAYER)
 			buffer = the_image->ReturnActiveBitmap();
@@ -2514,7 +2509,7 @@ ImageView::DoPaste()
 							AddChange();
 						}
 					}
-					catch (std::bad_alloc e) {
+					catch (const std::bad_alloc& e) {
 						ShowAlert(CANNOT_ADD_LAYER_ALERT);
 					}
 				}

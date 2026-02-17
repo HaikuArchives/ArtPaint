@@ -42,10 +42,10 @@ NumberSliderControl::NumberSliderControl(const char* label, const char* text, BM
 	fMaxRange(maxRange),
 	fContinuous(continuous),
 	fSlider(NULL),
-	fMessage(message),
-	fNumberControl(NULL),
 	fProportional(proportional),
-	fExp(4)
+	fExp(4),
+	fMessage(message),
+	fNumberControl(NULL)
 {
 	_InitMessage();
 

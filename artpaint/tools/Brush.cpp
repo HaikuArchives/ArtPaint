@@ -75,7 +75,7 @@ Brush::Brush(brush_info& info)
 	num_shapes = polygons.CountItems();
 	shapes = new HSPolygon*[num_shapes];
 
-	for (uint32 i = 0; i < polygons.CountItems(); ++i) {
+	for (int32 i = 0; i < polygons.CountItems(); ++i) {
 		HSPolygon* new_polygon = (HSPolygon*)polygons.ItemAt(i);
 		shapes[i] = new_polygon;
 	}
@@ -130,7 +130,7 @@ Brush::ModifyBrush(brush_info& info)
 	num_shapes = polygons.CountItems();
 	shapes = new HSPolygon*[num_shapes];
 
-	for (uint32 i = 0; i < polygons.CountItems(); ++i) {
+	for (int32 i = 0; i < polygons.CountItems(); ++i) {
 		HSPolygon* new_polygon = (HSPolygon*)polygons.ItemAt(i);
 		shapes[i] = new_polygon;
 	}
@@ -439,7 +439,7 @@ Brush::PreviewBrush(BBitmap* preview_bitmap)
 	font.SetSize(bmap_width / 6);
 	BString brushSizeString;
 	float brushSize = max_c(actual_width, actual_height);
-	brushSizeString.SetToFormat("%d", (int32)brushSize);
+	brushSizeString.SetToFormat("%" B_PRId32, (int32)brushSize);
 
 	int32 strWidth = font.StringWidth("000");
 	font_height strHeight;

@@ -91,8 +91,8 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	float half_height = fToolSettings.size / 2;
 	Brush* brush;
 	BBitmap* brush_bmap;
-	uint32* brush_bits;
-	uint32 brush_bpr;
+	uint32* brush_bits = NULL;
+	uint32 brush_bpr = 0;
 
 	if (fToolSettings.use_current_brush == true) {
 		brush = ToolManager::Instance().GetCurrentBrush();
@@ -121,8 +121,6 @@ TransparencyTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 	float pressure = (float)fToolSettings.pressure / 100.;
 
 	uint8 transparency_value = ((100. - (float)fToolSettings.transparency) / 100.) * 255;
-
-	status_t status_of_read;
 
 	while (coordinate_reader->GetPoint(point) == B_OK) {
 		if (selection == NULL || selection->IsEmpty() == true

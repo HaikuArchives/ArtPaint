@@ -98,10 +98,9 @@ FreeLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 		delete srcBuffer;
 		return NULL;
 	}
-	union color_conversion clear_color, tmp_draw_color;
+	union color_conversion clear_color;
 	clear_color.word = 0xFFFFFFFF;
 	clear_color.bytes[3] = 0x00;
-	tmp_draw_color.word = 0xFFFFFFFF;
 
 	BitmapUtilities::ClearBitmap(tmpBuffer, clear_color.word);
 

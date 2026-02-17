@@ -251,7 +251,6 @@ SaturationManipulator::thread_function(int32 thread_number)
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
-		uint32 sum;
 		saturation *= 3;
 		for (int32 y = top; y <= bottom; y += step) {
 			int32 y_times_source_bpr = y * source_bpr;

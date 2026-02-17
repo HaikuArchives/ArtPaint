@@ -244,7 +244,6 @@ Halftone::round_dot_halftone(BBitmap* original, Selection* selection, BStatusBar
 				int32 b = min_c(y + round_dot_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -253,7 +252,7 @@ Halftone::round_dot_halftone(BBitmap* original, Selection* selection, BStatusBar
 							= color.bytes[0] * .114
 							+ color.bytes[1] * .587
 							+ color.bytes[2] * .299;
-						int threshold = luminance * normalizer;
+						uint threshold = luminance * normalizer;
 						*s_delta_bits++
 							= (round_dot_pattern[dy - y][dx - x] > threshold ? c1.word : c2.word);
 					}
@@ -269,7 +268,6 @@ Halftone::round_dot_halftone(BBitmap* original, Selection* selection, BStatusBar
 				int32 b = min_c(y + round_dot_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -279,7 +277,7 @@ Halftone::round_dot_halftone(BBitmap* original, Selection* selection, BStatusBar
 								= color.bytes[0] * .114
 								+ color.bytes[1] * .587
 								+ color.bytes[2] * .299;
-							int threshold = luminance * normalizer;
+							uint threshold = luminance * normalizer;
 							*s_delta_bits = (round_dot_pattern[dy - y][dx - x] > threshold
 								? c1.word : c2.word);
 						}
@@ -334,7 +332,6 @@ Halftone::diagonal_line_halftone(BBitmap* original, Selection* selection, BStatu
 				int32 b = min_c(y + diagonal_line_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -343,7 +340,7 @@ Halftone::diagonal_line_halftone(BBitmap* original, Selection* selection, BStatu
 							= color.bytes[0] * .114
 							+ color.bytes[1] * .587
 							+ color.bytes[2] * .299;
-						int threshold = luminance * normalizer;
+						uint threshold = luminance * normalizer;
 						*s_delta_bits++ = (diagonal_line_pattern[dy - y][dx - x] > threshold
 							? c1.word : c2.word);
 					}
@@ -359,7 +356,6 @@ Halftone::diagonal_line_halftone(BBitmap* original, Selection* selection, BStatu
 				int32 b = min_c(y + diagonal_line_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -369,7 +365,7 @@ Halftone::diagonal_line_halftone(BBitmap* original, Selection* selection, BStatu
 								= color.bytes[0] * .114
 								+ color.bytes[1] * .587
 								+ color.bytes[2] * .299;
-							int threshold = luminance * normalizer;
+							uint threshold = luminance * normalizer;
 							*s_delta_bits = (diagonal_line_pattern[dy - y][dx - x] > threshold
 								? c1.word : c2.word);
 						}
@@ -424,7 +420,6 @@ Halftone::ordered_dither_halftone(BBitmap* original, Selection* selection, BStat
 				int32 b = min_c(y + ordered_matrix_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -433,7 +428,7 @@ Halftone::ordered_dither_halftone(BBitmap* original, Selection* selection, BStat
 							= color.bytes[0] * .114
 							+ color.bytes[1] * .587
 							+ color.bytes[2] * .299;
-						int threshold = luminance * normalizer;
+						uint threshold = luminance * normalizer;
 						*s_delta_bits++ = (ordered_matrix[dy - y][dx - x] > threshold
 							? c1.word : c2.word);
 					}
@@ -449,7 +444,6 @@ Halftone::ordered_dither_halftone(BBitmap* original, Selection* selection, BStat
 				int32 b = min_c(y + ordered_matrix_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -459,7 +453,7 @@ Halftone::ordered_dither_halftone(BBitmap* original, Selection* selection, BStat
 								= color.bytes[0] * .114
 								+ color.bytes[1] * .587
 								+ color.bytes[2] * .299;
-							int threshold = luminance * normalizer;
+							uint threshold = luminance * normalizer;
 							*s_delta_bits = (ordered_matrix[dy - y][dx - x] > threshold
 								? c1.word : c2.word);
 						}
@@ -545,7 +539,6 @@ Halftone::fs_dither_halftone(BBitmap* original, Selection* selection, BStatusBar
 				int32 b = min_c(y + ordered_matrix_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -555,7 +548,7 @@ Halftone::fs_dither_halftone(BBitmap* original, Selection* selection, BStatusBar
 								= color.bytes[0] * .114
 								+ color.bytes[1] * .587
 								+ color.bytes[2] * .299;
-							int threshold = luminance * normalizer;
+							uint threshold = luminance * normalizer;
 							*s_delta_bits = (ordered_matrix[dy - y][dx - x] > threshold
 								? c1.word : c2.word);
 						}
@@ -591,8 +584,6 @@ Halftone::ncandidate_dither_halftone(
 	float* errors = new float[right - left + 3];
 	for (int32 i = 0; i < right - left + 3; i++)
 		errors[i] = 0;
-
-	float right_error = 0;
 
 	union {
 		uint8 bytes[4];
@@ -640,7 +631,6 @@ Halftone::ncandidate_dither_halftone(
 				int32 b = min_c(y + ordered_matrix_size, bottom);
 				uint32* s_delta_bits;
 
-				int32 number_of_pixels = 0;
 				for (int32 dy = y; dy < b; dy++) {
 					s_delta_bits = source_bits + dy * source_bpr + x;
 					for (int32 dx = x; dx < r; dx++) {
@@ -650,7 +640,7 @@ Halftone::ncandidate_dither_halftone(
 								= color.bytes[0] * .114
 								+ color.bytes[1] * .587
 								+ color.bytes[2] * .299;
-							int threshold = luminance * normalizer;
+							uint threshold = luminance * normalizer;
 							*s_delta_bits = (ordered_matrix[dy - y][dx - x] > threshold
 								? c1.word : c2.word);
 						}

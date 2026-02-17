@@ -116,8 +116,6 @@ AirBrushTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	ImageUpdater* imageUpdater = new ImageUpdater(view, 20000);
 
-	status_t status_of_read;
-
 	if (fToolSettings.mode == HS_AIRBRUSH_MODE) { // Do the airbrush
 		BRect bounds = bitmap->Bounds();
 		BRect rc;

@@ -225,7 +225,7 @@ LayerWindow::LayerWindow(BRect frame)
 
 	transparency_slider->Slider()->SetToolTip(B_TRANSLATE("Layer transparency"));
 
-	BGroupLayout* topLayout = BLayoutBuilder::Group<>(top_part, B_VERTICAL)
+	BLayoutBuilder::Group<>(top_part, B_VERTICAL)
 		.Add(transparencyLayout)
 		.SetInsets(B_USE_SMALL_INSETS, B_USE_SMALL_INSETS, B_USE_SMALL_INSETS, B_USE_SMALL_INSETS);
 
@@ -236,7 +236,7 @@ LayerWindow::LayerWindow(BRect frame)
 		= new BScrollView("scroller", list_view, B_FRAME_EVENTS, false, true, B_NO_BORDER);
 	scroll_view->ScrollBar(B_VERTICAL)->SetSteps(8.0, 32.0);
 
-	BGroupLayout* mainLayout = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(menu)
 		.Add(top_part)
 		.Add(scroll_view)

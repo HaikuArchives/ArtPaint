@@ -111,7 +111,7 @@ RotationManipulator::SetPreviewBitmap(BBitmap* bitmap)
 				copy_of_the_preview_bitmap = NULL;
 			}
 		}
-		catch (std::bad_alloc e) {
+		catch (const std::bad_alloc& e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 			throw e;
@@ -892,7 +892,6 @@ void
 RotationManipulatorConfigurationView::GetControlValues(float& angle)
 {
 	BTextView* text_view = fTextControl->TextView();
-	char float_text[256];
 	const char* text = text_view->Text();
 	int decimal_place = 0;
 	float sign = 1;

@@ -94,10 +94,6 @@ BlurManipulator::ManipulateBitmap(
 		return NULL;
 	}
 
-	BBitmap* source_bitmap;
-	BBitmap* target_bitmap;
-	BBitmap* new_bitmap = NULL;
-
 	return original;
 }
 

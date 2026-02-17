@@ -331,13 +331,12 @@ CropManipulator::SetPreviewBitmap(BBitmap* bm)
 			if (bm != NULL) {
 				preview_bitmap = bm;
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
-				BRect bounds = preview_bitmap->Bounds();
 			} else {
 				preview_bitmap = NULL;
 				copy_of_the_preview_bitmap = NULL;
 			}
 		}
-		catch (std::bad_alloc e) {
+		catch (const std::bad_alloc& e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 			throw e;

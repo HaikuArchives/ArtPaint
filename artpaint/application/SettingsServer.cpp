@@ -209,7 +209,7 @@ SettingsServer::GetApplicationSettings(BMessage* message)
 			while (fApplicationSettings.FindData(skRecentImageSize, B_RAW_TYPE,
 					i++, (const void**)&data, &dataSize) == B_OK) {
 				if (dataSize == sizeof(BSize)) {
-					memcpy(&size, data, sizeof(BSize));
+					size = *data;
 					fRecentImageSizeList.push_back(size);
 				}
 			}

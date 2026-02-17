@@ -65,10 +65,10 @@ private:
 			int32				fMinRange;
 			int32				fMaxRange;
 			bool				fContinuous;
+			BSlider*			fSlider;
 			bool				fProportional;
 			int8				fExp;
 
-			BSlider*			fSlider;
 			BMessage*			fMessage;
 			NumberControl*		fNumberControl;
 };

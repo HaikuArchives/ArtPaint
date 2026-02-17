@@ -92,7 +92,7 @@ HorizFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar
 	}
 
 	if (has_selection == true) {
-		BBitmap* sel_map = ManipulateSelectionMap();
+		BBitmap* sel_map = ManipulateSelectionBitmap();
 		selection->ReplaceSelection(sel_map);
 	}
 
@@ -101,12 +101,12 @@ HorizFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar
 
 
 BBitmap*
-HorizFlipManipulator::ManipulateSelectionMap()
+HorizFlipManipulator::ManipulateSelectionBitmap()
 {
 	BRect bounds = selection->GetBoundingRect();
 	BBitmap* selection_map = new BBitmap(selection->ReturnSelectionMap());
 
-	int32 height = bounds.IntegerHeight();
+	//int32 height = bounds.IntegerHeight();
 	int32 width = bounds.IntegerWidth();
 	int32 width_per_2 = width / 2;
 	uint8 left_bits, right_bits;
@@ -219,7 +219,7 @@ VertFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 	}
 
 	if (has_selection == true) {
-		BBitmap* sel_map = ManipulateSelectionMap();
+		BBitmap* sel_map = ManipulateSelectionBitmap();
 		selection->ReplaceSelection(sel_map);
 	}
 
@@ -228,7 +228,7 @@ VertFlipManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 
 
 BBitmap*
-VertFlipManipulator::ManipulateSelectionMap()
+VertFlipManipulator::ManipulateSelectionBitmap()
 {
 	BRect bounds = selection->GetBoundingRect();
 

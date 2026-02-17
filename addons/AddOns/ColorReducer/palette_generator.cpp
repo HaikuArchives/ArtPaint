@@ -122,7 +122,7 @@ gla_palette(BBitmap* inBitmap, int paletteSize)
 			list_count++;
 		}
 	}
-	printf("Number of lists is %d, average length %f\n", list_count,
+	printf("Number of lists is %" B_PRId32 ", average length %f\n", list_count,
 		total_length / (float)list_count);
 
 	// Initialize the palette.
@@ -218,7 +218,7 @@ gla_palette(BBitmap* inBitmap, int paletteSize)
 			palette_still_improving = true;
 	}
 
-	printf("Number of iterations %d\n", number_of_iterations);
+	printf("Number of iterations %" B_PRId32 "\n", number_of_iterations);
 
 	delete[] previous_palette;
 	delete color_metric;

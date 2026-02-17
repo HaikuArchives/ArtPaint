@@ -58,7 +58,6 @@ OilManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_bar)
 	if (status_bar != NULL)
 		status_bar_window = status_bar->Window();
 
-	BRect a_rect = original->Bounds();
 	BBitmap* spare_buffer = DuplicateBitmap(original);
 
 	BitmapDrawer* target = new BitmapDrawer(original);

@@ -92,8 +92,6 @@ EmbossManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* progress_view
 	// here we can start doing the actual convolution
 	spare_bits += spare_bpr + 1;
 
-	int32 target_value;
-
 	BMessage progress_message = BMessage(B_UPDATE_STATUS_BAR);
 	progress_message.AddFloat("delta", 0.0);
 

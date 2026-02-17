@@ -774,7 +774,7 @@ ImageProcessingLibrary::calculate_local_mapping_function_clip(
 	top = clipLimit;
 	bottom = 0;
 	int32 middle;
-	int32 S;
+	int32 S = 0;
 	while ((top - bottom) > 1) {
 		middle = (top + bottom) / 2;
 		S = 0;

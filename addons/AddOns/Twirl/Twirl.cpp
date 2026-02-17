@@ -156,7 +156,6 @@ TwirlManipulator::ManipulateBitmap(
 			for (float x = 0; x < source_bpr; x++) {
 				real_x = x - cx;
 				real_y = y - cy;
-				uint32 target_value = 0x00000000;
 				distance = sqrt(real_x * real_x + real_y * real_y);
 
 				if (distance <= center_distance_from_edges) {
@@ -218,7 +217,6 @@ TwirlManipulator::ManipulateBitmap(
 				if (selection->ContainsPoint(x, y)) {
 					real_x = x - cx;
 					real_y = y - cy;
-					uint32 target_value = 0x00000000;
 					distance = sqrt(real_x * real_x + real_y * real_y);
 
 					if (distance <= center_distance_from_edges) {

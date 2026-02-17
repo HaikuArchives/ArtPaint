@@ -180,7 +180,7 @@ ScaleManipulator::ManipulateBitmap(
 	if (new_width == starting_width && new_height == starting_height) {
 		if (final_bitmap != NULL)
 			delete final_bitmap;
-		final_bitmap = new BBitmap(preview_bitmap, B_RGBA32);
+		final_bitmap = new BBitmap(preview_bitmap);
 		return final_bitmap;
 	}
 
@@ -202,7 +202,6 @@ ScaleManipulator::ManipulateBitmap(
 		source_bits = (uint32*)original->Bits();
 		int32 source_bpr = original->BytesPerRow() / 4;
 		float diff = starting_width / new_width;
-		float accumulation = 0;
 		int32 bottom = (int32)bounds.bottom;
 
 		for (int32 y = 0; y < starting_height; y++)
@@ -277,7 +276,7 @@ ScaleManipulator::ManipulateBitmap(
 	}
 
 	source_bits = NULL;
-	uint32 source_bpr;
+	int32 source_bpr;
 	BRect final_bounds(orig_bounds);
 	BRect source_bounds;
 
@@ -412,7 +411,7 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	if (new_width == starting_width && new_height == starting_height) {
 		if (final_bitmap != NULL)
 			delete final_bitmap;
-		final_bitmap = new BBitmap(selection_map, B_GRAY8);
+		final_bitmap = new BBitmap(selection_map);
 		return final_bitmap;
 	}
 
@@ -501,7 +500,7 @@ ScaleManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 	}
 
 	source_bits = NULL;
-	uint32 source_bpr;
+	int32 source_bpr;
 	BRect final_bounds(selection_map->Bounds());
 	BRect source_bounds;
 
@@ -572,10 +571,10 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 
 	preview_bitmap->Lock();
 	// Here do a DDA-scaling from copy_of_the_preview_bitmap to preview_bitmap.
-	uint32 width = preview_bitmap->Bounds().IntegerWidth();
-	uint32 height = preview_bitmap->Bounds().IntegerHeight();
-	uint32 source_width = copy_of_the_preview_bitmap->Bounds().IntegerWidth();
-	uint32 source_height = copy_of_the_preview_bitmap->Bounds().IntegerHeight();
+	int32 width = preview_bitmap->Bounds().IntegerWidth();
+	int32 height = preview_bitmap->Bounds().IntegerHeight();
+	int32 source_width = copy_of_the_preview_bitmap->Bounds().IntegerWidth();
+	int32 source_height = copy_of_the_preview_bitmap->Bounds().IntegerHeight();
 
 	if (width == 0 || height == 0)
 		return 0;
@@ -645,9 +644,6 @@ ScaleManipulator::PreviewBitmap(bool, BRegion* region)
 
 		delete[] source_x_table;
 	} else {
-		float new_x = new_width;
-		float new_y = new_height;
-
 		if (reject_mouse_input == true)
 			return 1;
 
@@ -916,7 +912,7 @@ ScaleManipulator::SetPreviewBitmap(BBitmap* bitmap)
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
 			}
 		}
-		catch (std::bad_alloc e) {
+		catch (const std::bad_alloc& e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 			throw e;

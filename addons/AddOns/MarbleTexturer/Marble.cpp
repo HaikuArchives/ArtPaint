@@ -154,7 +154,6 @@ MarbleManipulator::thread_function(int32 thread_number)
 		// Loop through all pixels in original.
 		float one_per_width = 1.0 / 128;
 		float one_per_height = 1.0 / 128;
-		float one_per_depth = 1.0 / 1024;
 		source += (int32)top * source_bpr;
 
 		for (float y = top; y <= bottom; ++y) {
@@ -201,7 +200,6 @@ MarbleManipulator::thread_function(int32 thread_number)
 		// Loop through all pixels in original.
 		float one_per_width = 1.0 / 128;
 		float one_per_height = 1.0 / 128;
-		float one_per_depth = 1.0 / 1024;
 
 		// Loop through all pixels in original.
 		for (int32 y = top; y <= bottom; ++y) {

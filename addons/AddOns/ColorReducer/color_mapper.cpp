@@ -218,9 +218,6 @@ preserve_solids_fs_color_mapper(BBitmap* inSource, const rgb_color* inPalette, i
 	int32 width = inSource->Bounds().IntegerWidth();
 	int32 height = inSource->Bounds().IntegerHeight();
 
-	int32 source_padding = source_bpr - width - 1;
-	int32 destination_padding = destination_bpr - width - 1;
-
 	// We use three error arrays and three side error variables.
 	// The error arrays are a little bit wider than the image to
 	// avoid cheking for border conditions

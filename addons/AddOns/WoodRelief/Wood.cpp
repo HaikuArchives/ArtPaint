@@ -135,7 +135,7 @@ WoodManipulator::thread_function(int32 thread_number)
 	union {
 		uint8 bytes[4];
 		uint32 word;
-	} color, color1, color2, color3;
+	} color1, color2, color3;
 
 	if (selection->IsEmpty()) {
 		// Here handle the whole image.
@@ -161,7 +161,6 @@ WoodManipulator::thread_function(int32 thread_number)
 		source += (int32)top * source_bpr;
 
 		for (float y = top; y <= bottom; ++y) {
-			int32 y_times_bpr = y * source_bpr;
 			for (float x = left; x <= right; ++x) {
 
 				color1.word = *(spare_bits - spare_bpr - 1);

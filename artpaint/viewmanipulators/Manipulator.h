@@ -68,7 +68,7 @@ public:
 	double							GetSystemClockSpeed() { return fSystemClockSpeed; }
 	int								GetSystemCpuCount() { return fCpuCount; }
 	virtual void					SetSelection(Selection* new_selection) = 0;
-	virtual BBitmap*				ManipulateSelectionMap() { return NULL; }
+	virtual BBitmap*				ManipulateSelectionBitmap() { return NULL; }
 
 protected:
 			BBitmap*				DuplicateBitmap(BBitmap* source,

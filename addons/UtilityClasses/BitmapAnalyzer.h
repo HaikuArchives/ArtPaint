@@ -68,9 +68,9 @@ float BitmapAnalyzer::GradientMagnitude(BPoint point)
 float BitmapAnalyzer::GradientMagnitude(int32 x,int32 y)
 {
 	// The eight surrounding pixel-values (luminance)
-	float lt,t,rt;
-	float l,r;
-	float lb,b,rb;
+	float lt = 0, t = 0, rt = 0;
+	float l = 0, r = 0;
+	float lb = 0, b = 0, rb = 0;
 
 	if (!buffered) {
 		int32 left_x = x-1;

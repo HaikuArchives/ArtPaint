@@ -630,7 +630,6 @@ ColorSwatch::MessageReceived(BMessage* message)
 		case B_PASTE:
 		{
 			if (message->WasDropped()) {
-				BPoint dropPoint = ConvertFromScreen(message->DropPoint());
 				ssize_t size;
 				const void* data;
 				if (message->FindData("RGBColor", B_RGB_COLOR_TYPE, &data, &size) == B_OK

@@ -814,7 +814,7 @@ FillTool::FillGradientLinear(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 	float cos_angle = cos(perp_angle);
 	float sin_angle = sin(perp_angle);
 
-	union color_conversion source, dest, begin, temp;
+	union color_conversion source, dest;
 
 	source.word = new_color;
 	dest.word = gradient_color;
@@ -882,7 +882,7 @@ FillTool::FillGradientRadial(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 
 	float total_dist = sqrt(pow(dx, 2) + pow(dy, 2));
 
-	union color_conversion source, dest, begin, temp;
+	union color_conversion source, dest;
 
 	source.word = new_color;
 	dest.word = gradient_color;
@@ -950,7 +950,7 @@ FillTool::FillGradientSquare(BitmapDrawer* drawer, BBitmap* binary_map, BPoint s
 		perp_angle = atan(-dx / dy);
 	float cos_angle = cos(perp_angle);
 	float sin_angle = sin(perp_angle);
-	union color_conversion source, dest, begin, temp;
+	union color_conversion source, dest;
 
 	source.word = new_color;
 	dest.word = gradient_color;
@@ -1022,7 +1022,7 @@ FillTool::FillGradientConic(BitmapDrawer* drawer, BBitmap* binary_map, BPoint st
 	float cos_angle = cos(perp_angle);
 	float sin_angle = sin(perp_angle);
 
-	union color_conversion source, dest, begin, temp;
+	union color_conversion source, dest;
 
 	source.word = new_color;
 	dest.word = gradient_color;

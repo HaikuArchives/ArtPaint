@@ -122,7 +122,7 @@ LOCAL_INCLUDE_PATHS =
 
 #	specify the level of optimization that you desire
 #	NONE, SOME, FULL
-OPTIMIZE=
+OPTIMIZE= FULL
 
 # 	specify here the codes for languages you are going
 # 	to support in this application. The default "en"
@@ -143,7 +143,7 @@ DEFINES=
 #	if unspecified default warnings will be used
 #	NONE = supress all warnings
 #	ALL = enable all warnings
-WARNINGS =
+WARNINGS = ALL
 
 #	specify whether image symbols will be created
 #	so that stack crawls in the debugger are meaningful
@@ -156,7 +156,7 @@ SYMBOLS =
 DEBUGGER =
 
 #	specify additional compiler flags for all files
-COMPILER_FLAGS =
+COMPILER_FLAGS = -Werror
 
 #	specify additional linker flags
 LINKER_FLAGS =
