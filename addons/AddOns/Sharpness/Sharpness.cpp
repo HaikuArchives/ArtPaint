@@ -235,7 +235,6 @@ SharpnessManipulator::thread_function(int32 thread_number)
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
-		uint32 sum;
 		for (int32 y = top; y <= bottom; y += step) {
 			int32 y_times_source_bpr = y * source_bpr;
 			int32 y_times_target_bpr = y * target_bpr;

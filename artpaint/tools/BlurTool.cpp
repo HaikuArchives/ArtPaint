@@ -93,8 +93,8 @@ BlurTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	Brush* brush;
 	BBitmap* brush_bmap;
-	uint32* brush_bits;
-	uint32 brush_bpr;
+	uint32* brush_bits = NULL;
+	uint32 brush_bpr = 0;
 
 	if (fToolSettings.use_current_brush == true) {
 		brush = ToolManager::Instance().GetCurrentBrush();

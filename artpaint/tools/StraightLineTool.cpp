@@ -75,7 +75,6 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		snooze(50000);
 
 	BWindow* window = view->Window();
-	drawing_mode old_mode;
 
 	BBitmap* buffer = view->ReturnImage()->ReturnActiveBitmap();
 	if (buffer == NULL)
@@ -265,7 +264,6 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 		angle = atan2((point.y - original_point.y), (point.x - original_point.x)) * 180 / M_PI;
 
 		int32 size = GetCurrentValue(SIZE_OPTION);
-		bool draw_line = true;
 		BRect old_bbox;
 
 		if (fToolSettings.mode == B_CONTROL_ON
@@ -301,7 +299,6 @@ StraightLineTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint 
 				} else if (is_keys_data_valid) {
 					if (last_key_event_bytes[0] == B_ESCAPE) {
 						continue_adjusting_width = false;
-						draw_line = false;
 					}
 					is_keys_data_valid = false;
 				} else {

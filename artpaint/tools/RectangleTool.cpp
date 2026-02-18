@@ -204,9 +204,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 			drawer->DrawRectanglePolygon(outerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
 
 			if (width > 1) {
-				union color_conversion rev_color;
-				rev_color.word = tmp_draw_color.word;
-				rev_color.bytes[3] = 0xFF;
 				drawer->DrawRectanglePolygon(
 					innerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection,
 					dst_out_fixed);
@@ -302,9 +299,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 						drawer->DrawRectanglePolygon(outerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
 
 						if (width > 1) {
-							union color_conversion rev_color;
-							rev_color.word = tmp_draw_color.word;
-							rev_color.bytes[3] = 0xFF;
 							drawer->DrawRectanglePolygon(
 								innerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection,
 								dst_out_fixed);
@@ -374,9 +368,6 @@ RectangleTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint vie
 					drawer->DrawRectanglePolygon(
 						outerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection);
 
-					union color_conversion rev_color;
-					rev_color.word = tmp_draw_color.word;
-					rev_color.bytes[3] = 0xFF;
 					drawer->DrawRectanglePolygon(
 						innerPoly->GetPointList(), tmp_draw_color.word, fill, anti_a, selection,
 						dst_out_fixed);
@@ -550,11 +541,12 @@ RectangleToolConfigView::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case OPTION_CHANGED:
 		{
-			if (message->FindInt32("option") == FILL_ENABLED_OPTION)
+			if (message->FindInt32("option") == FILL_ENABLED_OPTION) {
 				if (fFillRectangle->Value() == B_CONTROL_ON)
 					fLineWidth->SetEnabled(FALSE);
 				else
 					fLineWidth->SetEnabled(TRUE);
+			}
 		} break;
 	}
 }

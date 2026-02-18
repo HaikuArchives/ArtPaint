@@ -78,7 +78,6 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 {
 	// these are used when drawing the preview to the view
 	BPoint original_point = point;
-	BPoint view_original_point = view_point;
 
 	Selection* selection = view->GetSelection();
 
@@ -291,7 +290,6 @@ SelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint view
 	} else if (fToolSettings.shape == HS_CIRCLE || fToolSettings.shape == HS_RECTANGLE) {
 		BRect old_rect, new_rect;
 		old_rect = new_rect = BRect(point, point);
-		float left, top, right, bottom;
 
 		the_script->AddPoint(point);
 		selectionPoints = new BPoint[2];

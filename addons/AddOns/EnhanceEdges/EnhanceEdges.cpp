@@ -75,7 +75,7 @@ EnhanceEdgesManipulator::ManipulateBitmap(BBitmap* original, BStatusBar* status_
 		// convolution to work properly.
 		duplicate = DuplicateBitmap(original, -1);
 	}
-	catch (std::bad_alloc e) {
+	catch (const std::bad_alloc& e) {
 		// Here we could clean up if there was need for that.
 		return NULL; // Returning NULL means that the image did not change.
 	}

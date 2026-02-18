@@ -85,16 +85,6 @@ FreeTransformManipulator::PreviewBitmap(bool, BRegion* region)
 	if (current_settings == previous_settings)
 		return 0;
 
-	union {
-		uint8 bytes[4];
-		uint32 word;
-	} white;
-
-	white.bytes[0] = 0xFF;
-	white.bytes[1] = 0xFF;
-	white.bytes[2] = 0xFF;
-	white.bytes[3] = 0x00;
-
 	return 1;
 }
 
@@ -178,7 +168,7 @@ FreeTransformManipulator::SetPreviewBitmap(BBitmap* bitmap)
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
 			}
 		}
-		catch (std::bad_alloc e) {
+		catch (const std::bad_alloc& e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 			throw e;

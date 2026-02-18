@@ -128,7 +128,6 @@ WaveManipulator::ManipulateBitmap(
 	float dx = 0;
 	float dy = 0;
 	float sqrt_x_plus_y;
-	float one_per_sqrt_x_plus_y;
 	float cx, cy;
 	int32 top, bottom;
 	top = start_y;
@@ -161,7 +160,6 @@ WaveManipulator::ManipulateBitmap(
 			for (float x = 0; x < float_target_bpr; x++) {
 				real_x = x - cx;
 				real_y = y - cy;
-				uint32 target_value = 0x00000000;
 				if ((real_x != 0) && (real_y != 0)) {
 					sqrt_x_plus_y = sqrt(real_x * real_x + real_y * real_y);
 					dx = real_x / sqrt_x_plus_y * A
@@ -209,7 +207,6 @@ WaveManipulator::ManipulateBitmap(
 						sqrt_x_plus_y = sqrt(real_x * real_x);
 						dx = real_x / sqrt_x_plus_y * A * sin(sqrt_x_plus_y * two_pi_per_s);
 						dx = dx * (1 - k * sqrt_x_plus_y / R);
-						int32 ceil_y = ceil(y + dy);
 						int32 floor_x = floor(x + dx);
 						int32 ceil_x = floor_x + 1;
 						float x_mix_right = (x + dx) - floor_x;
@@ -229,7 +226,6 @@ WaveManipulator::ManipulateBitmap(
 						dy = dy * (1 - k * sqrt_x_plus_y / R);
 						int32 ceil_y = ceil(y + dy);
 						int32 floor_y = ceil_y - 1;
-						int32 floor_x = floor(x + dx);
 						float y_mix_upper = ceil(y + dy) - (y + dy);
 						if ((ceil_y <= bottom) && (ceil_y >= top))
 							p1 = *(source_bits + (int32)x + ceil_y * target_bpr);
@@ -259,7 +255,6 @@ WaveManipulator::ManipulateBitmap(
 				if (selection->ContainsPoint(x, y) == TRUE) {
 					real_x = x - cx;
 					real_y = y - cy;
-					uint32 target_value = 0x00000000;
 					if ((real_x != 0) && (real_y != 0)) {
 						sqrt_x_plus_y = sqrt(real_x * real_x + real_y * real_y);
 						dx = real_x / sqrt_x_plus_y * A

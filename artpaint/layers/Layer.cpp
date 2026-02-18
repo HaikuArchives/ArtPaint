@@ -459,7 +459,7 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id, bool is_little
 			layer->SetTransparency(coeff);
 			length -= sizeof(float);
 
-			if (length > sizeof(int32)) {
+			if (length > (int32)sizeof(int32)) {
 				int32 nameLen;
 				if (file.Read(&nameLen, sizeof(int32)) == sizeof(int32)) {
 					char name[nameLen + 1];

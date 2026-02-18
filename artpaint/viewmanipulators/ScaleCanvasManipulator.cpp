@@ -132,7 +132,6 @@ ScaleCanvasManipulator::ManipulateBitmap(
 		if (new_width != 0)
 			diff = starting_width / new_width;
 
-		float accumulation = 0;
 		int32 left = (int32)bounds.left;
 		int32 top = (int32)bounds.top;
 		int32 bottom = (int32)bounds.bottom;
@@ -234,10 +233,10 @@ ScaleCanvasManipulator::PreviewBitmap(bool, BRegion* region)
 	white.bytes[3] = 0x00;
 
 	// Here do a DDA-scaling from copy_of_the_preview_bitmap to preview_bitmap.
-	uint32 width = preview_bitmap->Bounds().IntegerWidth();
-	uint32 height = preview_bitmap->Bounds().IntegerHeight();
-	uint32 source_width = copy_of_the_preview_bitmap->Bounds().IntegerWidth();
-	uint32 source_height = copy_of_the_preview_bitmap->Bounds().IntegerHeight();
+	int32 width = preview_bitmap->Bounds().IntegerWidth();
+	int32 height = preview_bitmap->Bounds().IntegerHeight();
+	int32 source_width = copy_of_the_preview_bitmap->Bounds().IntegerWidth();
+	int32 source_height = copy_of_the_preview_bitmap->Bounds().IntegerHeight();
 
 	if (width == 0 || height == 0)
 		return 0;
@@ -387,7 +386,7 @@ ScaleCanvasManipulator::SetPreviewBitmap(BBitmap* bitmap)
 				copy_of_the_preview_bitmap = DuplicateBitmap(preview_bitmap);
 			}
 		}
-		catch (std::bad_alloc e) {
+		catch (const std::bad_alloc& e) {
 			preview_bitmap = NULL;
 			copy_of_the_preview_bitmap = NULL;
 			throw e;

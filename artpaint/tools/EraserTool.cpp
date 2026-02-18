@@ -140,7 +140,6 @@ EraserTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint)
 
 	prev_point = point;
 	BRect updated_rect;
-	status_t status_of_read;
 	Brush* brush;
 
 	float brush_width_per_2;

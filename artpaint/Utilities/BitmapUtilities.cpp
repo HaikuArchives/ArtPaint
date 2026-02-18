@@ -108,7 +108,6 @@ BitmapUtilities::ConvertColorSpace(BBitmap* inBitmap, color_space wantSpace)
 				union color_conversion c;
 
 				out_map->LockBits();
-				uint32 pos = 0;
 				for (int32 y = 0; y <= out_map->Bounds().IntegerHeight(); y++) {
 					for (int32 x = 0; x <= out_map->Bounds().IntegerWidth(); x++) {
 						c.word = *(in_bits + x + y * in_bpr);
@@ -145,7 +144,6 @@ BitmapUtilities::ConvertToMask(BBitmap* inBitmap, uint8 color)
 	union color_conversion c;
 
 	out_map->LockBits();
-	uint32 pos = 0;
 	for (int32 y = 0; y < out_map->Bounds().IntegerHeight() + 1; y++) {
 		for (int32 x = 0; x < out_map->Bounds().IntegerWidth() + 1; x++) {
 			c.word = *(in_bits + x + y * in_bpr);
@@ -201,9 +199,9 @@ BitmapUtilities::CompositeBitmapOnSource(BBitmap* toBuffer, BBitmap* srcBuffer, 
 void
 BitmapUtilities::ClearBitmap(BBitmap* bitmap, uint32 color, BRect* area)
 {
-	uint32 width = bitmap->Bounds().IntegerWidth() + 1;
-	uint32 height = bitmap->Bounds().IntegerHeight() + 1;
-	uint32 bpr = bitmap->BytesPerRow() / 4;
+	int32 width = bitmap->Bounds().IntegerWidth() + 1;
+	int32 height = bitmap->Bounds().IntegerHeight() + 1;
+	int32 bpr = bitmap->BytesPerRow() / 4;
 
 	int32 start_x = 0;
 	int32 start_y = 0;
@@ -237,9 +235,9 @@ void
 BitmapUtilities::CheckerBitmap(
 	BBitmap* bitmap, uint32 color1, uint32 color2, uint32 grid_size, BRect* area)
 {
-	uint32 width = bitmap->Bounds().IntegerWidth() + 1;
-	uint32 height = bitmap->Bounds().IntegerHeight() + 1;
-	uint32 bpr = bitmap->BytesPerRow() / 4;
+	int32 width = bitmap->Bounds().IntegerWidth() + 1;
+	int32 height = bitmap->Bounds().IntegerHeight() + 1;
+	int32 bpr = bitmap->BytesPerRow() / 4;
 
 	int32 start_x = 0;
 	int32 start_y = 0;
@@ -261,7 +259,7 @@ BitmapUtilities::CheckerBitmap(
 
 	uint32* bits = (uint32*)bitmap->Bits();
 	bits += start_x + bpr * start_y;
-	uint32 row_size = bpr - width;
+	int32 row_size = bpr - width;
 
 	for (int y = start_y; y < height + start_y; ++y) {
 		int rowMod2 = (y / grid_size) % 2;
@@ -283,7 +281,6 @@ uint32
 BitmapUtilities::GetPixel(BBitmap* bitmap, int32 x, int32 y)
 {
 	uint32 bpr;
-	uint32 value;
 
 	if (bitmap->Bounds().Contains(BPoint(x, y)) == false)
 		return 0;
@@ -380,7 +377,6 @@ BitmapUtilities::RasterToPolygonsMoore(BBitmap* bitmap, BRect bounds, BList* pol
 				point_list[point_count++] = BPoint(x - 0.5, y - 0.5);
 
 				int checkLocation = 1;
-				int newCheckLocation = 0;
 				BPoint startPos = BPoint(pos);
 				int end_counter = 0;
 				int point_counter = 0;

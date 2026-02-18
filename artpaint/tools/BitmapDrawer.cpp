@@ -55,8 +55,6 @@ BitmapDrawer::DrawHairLine(BPoint start, BPoint end, uint32 color, bool anti_ali
 		else
 			sign_x = 0;
 	}
-	uint32 old_value;
-	uint32 new_value;
 
 	if (anti_alias == TRUE) {
 		// Here we should take the line's equation and draw with Wu's algorithm.
@@ -409,7 +407,7 @@ BitmapDrawer::_FillShearedColumn(int32 x, int32 y, int32 dx, int32 dy0,
 		y0 = temp;
 	}
 
-	for (uint32 yy = y0; yy <= y1; ++yy)
+	for (int32 yy = y0; yy <= y1; ++yy)
 		SetPixel(x0, yy, color, sel, composite_func);
 }
 

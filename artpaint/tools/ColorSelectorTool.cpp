@@ -323,7 +323,6 @@ ColorSelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint
 		BRect view_rc = view->convertBitmapRectToView(rc);
 		view_rc.right -= scale;
 		view_rc.bottom -= scale;
-		BRect old_rc = view_rc;
 		BRect bounds = bitmap->Bounds();
 		rc = rc & bounds;
 
@@ -332,8 +331,6 @@ ColorSelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint
 				point.x, point.y, point.x + fToolSettings.size, point.y + fToolSettings.size);
 			rc.OffsetBySelf(-half_size, -half_size);
 			rc = rc & bounds;
-
-			int32 x_dist, y_sqr;
 
 			int32 width = rc.IntegerWidth();
 			int32 height = rc.IntegerHeight();
@@ -381,7 +378,6 @@ ColorSelectorTool::UseTool(ImageView* view, uint32 buttons, BPoint point, BPoint
 				if (color != old_color) {
 					cs_window->ChangeValue(color);
 					old_color = color;
-					rgb_color c = BGRAColorToRGB(color);
 				}
 				if (cs_window->Frame().Contains(view->ConvertToScreen(view_point)))
 					cs_window->Move(view->ConvertToScreen(view_point));

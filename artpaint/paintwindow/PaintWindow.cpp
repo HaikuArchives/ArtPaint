@@ -109,14 +109,16 @@ PaintWindow::PaintWindow(BRect frame, const char* name, uint32 views, const BMes
 	fHorizontalScrollbar(NULL),
 	fMenubar(NULL),
 	fStatusView(NULL),
+	fRecentImages(NULL),
+	fRecentProjects(NULL),
 	fContainerBox(NULL),
 	fSetSizeButton(NULL),
 	fWidthNumberControl(NULL),
 	fHeightNumberControl(NULL),
 	fImageSavePanel(NULL),
 	fProjectSavePanel(NULL),
-	fCurrentHandler(0),
-	fImageSizeWindow(NULL)
+	fImageSizeWindow(NULL),
+	fCurrentHandler(0)
 {
 	sgPaintWindowCount++;
 	SetSizeLimits(500, 10000, 400, 10000);
@@ -625,7 +627,7 @@ PaintWindow::MessageReceived(BMessage* message)
 				fImageView->ReturnImage()->InsertLayer();
 				success = true;
 			}
-			catch (std::bad_alloc) {
+			catch (const std::bad_alloc& e) {
 				delete fImageView;
 				fImageView = NULL;
 				BAlert* alert = new BAlert("", B_TRANSLATE(

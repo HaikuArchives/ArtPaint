@@ -31,7 +31,7 @@ Manipulator::Manipulator()
 	if (topoCount > 0) {
 		cpu_topology_node_info topology[topoCount];
 		get_cpu_topology_info(topology, &topoCount);
-		for (int i = 0; i < topoCount; ++i) {
+		for (uint i = 0; i < topoCount; ++i) {
 			if (topology[i].type == B_TOPOLOGY_CORE)
 				fSystemClockSpeed += topology[i].data.core.default_frequency;
 		}

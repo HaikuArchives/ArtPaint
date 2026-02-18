@@ -40,9 +40,11 @@ TranslationManipulator::TranslationManipulator(BBitmap* bm)
 	:
 	WindowGUIManipulator(),
 	copy_of_the_preview_bitmap(NULL),
+	settings(NULL),
+	config_view(NULL),
 	selection(NULL),
-	transform_selection_only(false),
-	orig_selection_map(NULL)
+	orig_selection_map(NULL),
+	transform_selection_only(false)
 {
 	preview_bitmap = bm;
 	if (preview_bitmap != NULL)
@@ -279,7 +281,6 @@ TranslationManipulator::ManipulateSelectionMap(ManipulatorSettings* set)
 
 	selection_map->Lock();
 	uint8* source_bits = (uint8*)selection_map->Bits();
-	uint32 source_bpr = selection_map->BytesPerRow();
 	selection_map->Unlock();
 
 	// We have to copy translations so that we do translation for all pixels

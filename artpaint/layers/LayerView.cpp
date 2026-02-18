@@ -50,7 +50,7 @@ LayerView::LayerView(BBitmap* image, Layer* layer)
 	a_message.what = HS_LAYER_NAME_CHANGED;
 	layer_name_field = new BTextControl("", "Layer", new BMessage(a_message));
 
-	BGroupLayout* layerLayout = BLayoutBuilder::Group<>(this, B_HORIZONTAL, B_USE_SMALL_SPACING)
+	BLayoutBuilder::Group<>(this, B_HORIZONTAL, B_USE_SMALL_SPACING)
 		.Add(visibility_box)
 		.Add(thumbnail_view)
 		.Add(layer_name_field)
@@ -121,7 +121,6 @@ LayerView::MouseDown(BPoint location)
 
 	uint32 buttons;
 	Window()->CurrentMessage()->FindInt32("buttons", (int32*) &buttons);
-	BRect mini_image_frame = thumbnail_view->Frame();
 
 	if (image_window != NULL) {
 		a_message.what = HS_LAYER_ACTIVATED;

@@ -198,7 +198,7 @@ UndoAction::StoreUndo(BBitmap* bitmap)
 			success = TRUE;
 			tries++;
 		}
-		catch (std::bad_alloc e) {
+		catch (const std::bad_alloc& e) {
 			queue->HandleLowMemorySituation();
 		}
 	}
@@ -315,7 +315,7 @@ UndoAction::ApplyUndo(BBitmap* bitmap, BRect& updated_rect)
 		}
 		return NULL;
 	}
-	catch (std::bad_alloc e) {
+	catch (const std::bad_alloc& e) {
 		queue->HandleLowMemorySituation();
 		throw e;
 	}
@@ -425,7 +425,7 @@ UndoAction::StoreDifferences(BBitmap* old, BBitmap* current, BRect area)
 			StoreDifferences(old, current, rect4);
 		}
 	}
-	catch (std::bad_alloc e) {
+	catch (const std::bad_alloc& e) {
 		throw e;
 	}
 }

@@ -463,7 +463,7 @@ PaintApplication::Color(bool foreground) const
 		if (settings.FindData((foreground ? skPrimaryColor : skSecondaryColor), B_RGB_COLOR_TYPE,
 				(const void**)&data, &dataSize) == B_OK) {
 			if (dataSize == sizeof(rgb_color))
-				memcpy(color, data, sizeof(rgb_color));
+				*color = *data;
 		}
 	}
 

@@ -22,7 +22,7 @@ public:
         void		    SetTransformSelectionOnly(bool select_only)
                             { transform_selection_only = select_only; }
 
-		BBitmap*		ManipulateSelectionMap();
+		BBitmap*		ManipulateSelectionBitmap();
 
 private:
 		Selection*		selection;
@@ -40,7 +40,7 @@ public:
         void		    SetTransformSelectionOnly(bool select_only)
                             { transform_selection_only = select_only; }
 
-		BBitmap*		ManipulateSelectionMap();
+		BBitmap*		ManipulateSelectionBitmap();
 
 private:
 		Selection*		selection;

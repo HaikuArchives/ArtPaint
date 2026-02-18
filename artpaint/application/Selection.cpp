@@ -329,7 +329,7 @@ Selection::ReplaceSelection(BBitmap* bitmap)
 	for (int32 y = 0; y <= height; ++y) {
 		for (int32 x = 0; x < width; ++x) {
 			uint8* ptr = selection_bits + x + y * selection_bpr;
-			if (x > new_bpr || y > bitmap->Bounds().IntegerHeight())
+			if (x > (int32)new_bpr || y > bitmap->Bounds().IntegerHeight())
 				*ptr = 0;
 			else
 				*ptr = *(new_bits + x + y * new_bpr);
@@ -925,7 +925,7 @@ Selection::SimplifySelection()
 	BList polygons;
 	BitmapUtilities::RasterToPolygonsMoore(selection_map, bounds, &polygons);
 
-	for (uint32 i = 0; i < polygons.CountItems(); ++i) {
+	for (int32 i = 0; i < polygons.CountItems(); ++i) {
 		HSPolygon* new_polygon = (HSPolygon*)polygons.ItemAt(i);
 		selection_data->AddSelection(new_polygon);
 	}

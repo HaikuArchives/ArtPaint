@@ -353,7 +353,7 @@ Image::AddLayer(BBitmap* bitmap, Layer* next_layer, bool add_to_front,
 		new_layer = new Layer(BRect(0, 0, image_width - 1, image_height - 1),
 			layer_id, image_view, HS_NORMAL_LAYER, bitmap, offset);
 	}
-	catch (std::bad_alloc e) {
+	catch (const std::bad_alloc& e) {
 		delete bitmap;
 		throw e;
 	}
@@ -1070,9 +1070,9 @@ Image::calculate_thumbnail_image(void* data)
 	color.bytes[2] = 0xFF;
 	color.bytes[3] = 0x00;
 
-	uint32 miniature_width = (uint32)(
+	int32 miniature_width = (int32)(
 		(to->Bounds().Width() + 1) * (min_c(from->Bounds().Width() / from->Bounds().Height(), 1)));
-	uint32 miniature_height = (uint32)(
+	int32 miniature_height = (int32)(
 		(to->Bounds().Height() + 1) * (min_c(from->Bounds().Height() / from->Bounds().Width(), 1)));
 
 	// Here we copy the contents of the_bitmap to miniature image.
@@ -1340,9 +1340,6 @@ Image::DoRender(BRect area, bool bg)
 			// adjust the pointers to correct starting-positions
 			s_bits += srl * s_start_y + s_start_x;
 			d_bits += drl * d_start_y + d_start_x;
-
-			uint32 As;
-			uint32 Ad;
 
 			// Alpha-value is presence of pixel, hence 0x00 is transparent and 0xff for alpha
 			// is fully visible.

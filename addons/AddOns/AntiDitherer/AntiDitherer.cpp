@@ -155,9 +155,6 @@ AntiDithererManipulator::anti_dither()
 	if (selection != NULL && selection->IsEmpty() == false)
 		bounds = selection->GetBoundingRect();
 
-	int32 width = bounds.IntegerWidth();
-	int32 height = bounds.IntegerHeight();
-
 	float bounds_left = bounds.left;
 	float bounds_right = bounds.right;
 	float bounds_top = bounds.top;

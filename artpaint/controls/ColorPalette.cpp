@@ -73,14 +73,14 @@ HexStringToUInt32(BString hexColor, uint32& color_word)
 			char digit = hexColor.ByteAt(i);
 			uint32 byte = 0;
 			byteStr.SetToFormat("%c%c", digit, digit);
-			byteStr.ScanWithFormat("%X", &byte);
+			byteStr.ScanWithFormat("%" B_PRIX32, &byte);
 			color.bytes[2 - i] = (uint8)byte;
 		}
 		if (hexColor.Length() == 4) {
 			char digit = hexColor.ByteAt(3);
 			uint32 byte = 0;
 			byteStr.SetToFormat("%c%c", digit, digit);
-			byteStr.ScanWithFormat("%X", &byte);
+			byteStr.ScanWithFormat("%" B_PRIX32, &byte);
 			color.bytes[3] = (uint8)byte;
 		} else
 			color.bytes[3] = (uint8)0xFF;
@@ -96,7 +96,7 @@ HexStringToUInt32(BString hexColor, uint32& color_word)
 			char digit2 = hexColor.ByteAt(j + 1);
 			uint32 byte = 0;
 			byteStr.SetToFormat("%c%c", digit1, digit2);
-			byteStr.ScanWithFormat("%X", &byte);
+			byteStr.ScanWithFormat("%" B_PRIX32, &byte);
 			color.bytes[2 - i] = (uint8)byte;
 		}
 		if (hexColor.Length() == 8) {
@@ -104,7 +104,7 @@ HexStringToUInt32(BString hexColor, uint32& color_word)
 			char digit2 = hexColor.ByteAt(7);
 			uint32 byte = 0;
 			byteStr.SetToFormat("%c%c", digit1, digit2);
-			byteStr.ScanWithFormat("%X", &byte);
+			byteStr.ScanWithFormat("%" B_PRIX32, &byte);
 			color.bytes[3] = (uint8)byte;
 		} else
 			color.bytes[3] = 0xFF;
@@ -179,7 +179,7 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 
 	colorSetName = new BTextControl("", "color-set-name", new BMessage(HS_SET_NAME_CHANGED));
 
-	BGridLayout* colorSetGrid = BLayoutBuilder::Grid<>(container_box, 2, B_USE_SMALL_SPACING)
+	BLayoutBuilder::Grid<>(container_box, 2, B_USE_SMALL_SPACING)
 		.Add(previous_set, 0, 0)
 		.Add(colorSetName, 1, 0)
 		.Add(next_set, 2, 0)
@@ -260,8 +260,7 @@ ColorPaletteWindow::ColorPaletteWindow(BRect frame, int32 mode)
 		.End()
 		.SetInsets(5, 5, 5, 5);
 
-	BGroupLayout* mainLayout
-		= BLayoutBuilder::Group<>(this, B_VERTICAL, 0).Add(menu_bar).Add(colorLayout).Add(container_box);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0).Add(menu_bar).Add(colorLayout).Add(container_box);
 
 	// call some function that initializes the views depending on the mode
 	openControlViews(mode);
@@ -1833,7 +1832,7 @@ ColorSet::ColorSet(int32 amount_of_colors, ColorSet* copy_this_palette)
 
 	if (copy_this_palette == NULL)
 		// create a default name
-		sprintf(name, "%s %d", B_TRANSLATE("Color set"), index);
+		sprintf(name, "%s %" B_PRId32, B_TRANSLATE("Color set"), index);
 	else
 		sprintf(name, "%s %s", copy_this_palette->getName(), "copy");
 

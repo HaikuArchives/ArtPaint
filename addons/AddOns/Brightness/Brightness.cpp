@@ -212,7 +212,6 @@ BrightnessManipulator::thread_function(int32 thread_number)
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
-		uint32 sum;
 		brightness *= 3;
 		uint8 brighness_array[256];
 		for (int32 i = 0; i < 256; i++)

@@ -78,7 +78,7 @@ BrushStoreWindow::BrushStoreWindow()
 
 	BView* brush_editor = BrushEditor::CreateBrushEditor(ToolManager::Instance().GetCurrentBrush());
 
-	BGroupLayout* mainLayout = BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(menu_bar, 0.0)
 		.AddGroup(B_VERTICAL)
 			.Add(brush_editor)
@@ -285,9 +285,8 @@ BrushStoreView::~BrushStoreView()
 		delete a_bitmap;
 	}
 
-	brush_info* info;
 	while (brush_data->CountItems() > 0) {
-		info = (brush_info*)brush_data->RemoveItem((int32)0);
+		brush_data->RemoveItem((int32)0);
 	}
 
 	delete brush_images;

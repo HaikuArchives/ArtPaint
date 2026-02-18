@@ -147,7 +147,7 @@ ContrastManipulator::CalculateAverageLuminance(BBitmap* bitmap)
 		uint32 word;
 	} color;
 
-	for (int32 i = 0; i < bits_length; i++) {
+	for (uint32 i = 0; i < bits_length; i++) {
 		color.word = *bits++;
 		luminance_sum += 0.299 * color.bytes[0] + 0.587 * color.bytes[1] + 0.144 * color.bytes[2];
 	}
@@ -245,7 +245,6 @@ ContrastManipulator::thread_function(int32 thread_number)
 		float missed_update = 0;
 
 		// Loop through all pixels in original.
-		uint32 sum;
 		contrast *= 3;
 		for (int32 y = top; y <= bottom; y += step) {
 			int32 y_times_source_bpr = y * source_bpr;

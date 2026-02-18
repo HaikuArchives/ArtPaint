@@ -53,7 +53,7 @@ StatusView::StatusView()
 	coordinate_view = new BStringView("coordinate_view", "X: , Y:");
 
 	coordinate_box = new BBox("coordinate box");
-	BGroupLayout* boxLayout = BLayoutBuilder::Group<>(coordinate_box, B_HORIZONTAL)
+	BLayoutBuilder::Group<>(coordinate_box, B_HORIZONTAL)
 		.Add(coordinate_view)
 		.SetInsets(3.0, 5.0, 3.0, 5.0);
 
