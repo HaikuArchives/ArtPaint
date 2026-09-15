@@ -578,17 +578,17 @@ Layer::readLayerOldStyle(BFile& file, ImageView* imageView, int32 new_id)
 
 	int8* bits = (int8*)layer->Bitmap()->Bits();
 	// align the file pointer to four-byte boundary.
-	int32 alignment_offset;
+	size_t alignment_offset;
 	alignment_offset = (4 - (file.Position() % 4)) % 4;
 
-	if (file.Read(bits, alignment_offset) != alignment_offset) {
+	if (file.Read(bits, alignment_offset) != static_cast<ssize_t>(alignment_offset)) {
 		delete layer;
 		return NULL;
 	}
 	bits += alignment_offset;
 
-	if (file.Read(bits, layer->Bitmap()->BitsLength() - alignment_offset)
-		!= (layer->Bitmap()->BitsLength() - alignment_offset)) {
+	size_t remaining_length = layer->Bitmap()->BitsLength() - alignment_offset;
+	if (file.Read(bits, remaining_length) != static_cast<ssize_t>(remaining_length)) {
 		delete layer;
 		return NULL;
 	}
