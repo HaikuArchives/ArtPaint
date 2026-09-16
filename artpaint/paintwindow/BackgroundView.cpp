@@ -40,6 +40,20 @@ void BackgroundView::Draw(BRect)
 
 
 void
+BackgroundView::DoLayout()
+{
+	BScrollView::DoLayout();
+
+	ImageView* image = static_cast<ImageView*>(FindView("image_view"));
+	if (image != NULL) {
+		image->adjustSize();
+		image->adjustPosition();
+		image->adjustScrollBars();
+	}
+}
+
+
+void
 BackgroundView::FrameResized(float width, float height)
 {
 	// Here we should resize the image-view. It is better to do it here

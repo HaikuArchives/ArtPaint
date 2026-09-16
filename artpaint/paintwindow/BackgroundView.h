@@ -19,6 +19,7 @@ class BackgroundView : public BScrollView {
 public:
 				BackgroundView(BRect frame);
 		void	Draw(BRect);
+		void	DoLayout();
 		void	FrameResized(float, float);
 		void	MouseDown(BPoint);
 };
