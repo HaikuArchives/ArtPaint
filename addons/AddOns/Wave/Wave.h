@@ -219,29 +219,6 @@ init_sqrt_tab()
 }
 
 
-double
-fsqrt(double f)
-{
-	unsigned int e;
-	unsigned int* fi = (unsigned int *) &f + MOST_SIG_OFFSET;
-
-	if (f == 0.0)
-		return (0.0);
-
-	e = (*fi >> EXP_SHIFTS) - EXP_BIAS;
-	*fi &= MANT_MASK;
-
-	if (e & 1)
-		*fi |= EXP_LSB;
-
-	e >>= 1;
-	*fi = (sqrt_tab[*fi >> MANT_SHIFTS])
-		| ((e + EXP_BIAS) << EXP_SHIFTS);
-
-	return(f);
-}
-
-
 void
 dump_sqrt_tab()
 {

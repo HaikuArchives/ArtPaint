@@ -428,7 +428,7 @@ inline uint32 colorblend(uint32 dst, uint32 src, uint32 mode)
 		hsl2rgb(dh, ss, dl, tr, tg, tb);
 	else if (mode == BLEND_LIGHTNESS)
 		hsl2rgb(dh, ds, sl, tr, tg, tb);
-	else if (mode == BLEND_COLOR)
+	else // BLEND_COLOR
 		hsl2rgb(sh, ss, dl, tr, tg, tb);
 
 	target_rgb.bytes[0] = (uint8)max_c(0, min_c(255, tb));

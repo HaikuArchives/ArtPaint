@@ -161,6 +161,12 @@ COMPILER_FLAGS = -Werror
 #	specify additional linker flags
 LINKER_FLAGS =
 
+# Linux does not export executable symbols to dlopen()ed add-ons by default.
+# The add-ons use ArtPaint's Manipulator and WindowGUIManipulatorView APIs.
+ifeq ($(shell uname -s),Linux)
+LINKER_FLAGS += -Wl,--export-dynamic
+endif
+
 #	specify the version of this particular item
 #	(for example, -app 3 4 0 d 0 -short 340 -long "340 "`echo -n -e '\302\251'`"1999 GNU GPL")
 #	This may also be specified in a resource.

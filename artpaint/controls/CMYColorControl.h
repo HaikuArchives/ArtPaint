@@ -26,6 +26,8 @@ public:
 
 			void		AttachedToWindow();
 			void		MessageReceived(BMessage* message);
+
+	using MultichannelColorControl::SetValue;
 	virtual	void		SetValue(rgb_color c);
 	virtual	void		SetValue(float one, float two, float three, float four, float five);
 			rgb_color	ValueAsColor();

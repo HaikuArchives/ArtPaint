@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/bin/env bash
+set -e
 
 # Build script for ArtPaint
 #
@@ -30,7 +31,12 @@ builder() {
 				if [ "$action" = "catkeys" ] ; then
 					make -f Makefile OBJ_DIR="objects_addons$debug_suffix" catkeys
 				fi
-				make OBJ_DIR="objects_addons$debug_suffix" bindcatalogs
+				if [ "$(uname)" = "Haiku" ] ; then
+					make OBJ_DIR="objects_addons$debug_suffix" bindcatalogs
+				else
+					# Non-Haiku platforms cannot add resources to an already-linked binary.
+					make OBJ_DIR="objects_addons$debug_suffix" catalogsinstall
+				fi
 				popd > /dev/null
 			done
 
@@ -45,7 +51,13 @@ builder() {
 			if [ "$action" = "catkeys" ] ; then
 				make -f Makefile OBJ_DIR="objects_artpaint$debug_suffix" catkeys
 			fi
-			make -f Makefile OBJ_DIR="objects_artpaint$debug_suffix" bindcatalogs
+
+			if [ "$(uname)" = "Haiku" ] ; then
+				make OBJ_DIR="objects_artpaint$debug_suffix" bindcatalogs
+			else
+				# Non-Haiku platforms cannot add resources to an already-linked binary.
+				make OBJ_DIR="objects_artpaint$debug_suffix" catalogsinstall
+			fi
 
 			echo "Moving final executable into dist folder"
 			mkdir -p dist
