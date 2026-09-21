@@ -23,6 +23,8 @@ public:
 							bool allowNegative = false, bool continuous = true);
 
 			float		Value() const;
+
+	using BTextControl::SetValue;
 	virtual	void		SetValue(float value);
 			void		SetWidthInBytes(uint32 bytes);
 
