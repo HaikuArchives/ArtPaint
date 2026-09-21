@@ -34,6 +34,8 @@ public:
 
 			void		AttachedToWindow();
 			void 		MessageReceived(BMessage* message);
+			
+	using BControl::SetValue;
 			void		SetValue(uint32 val);
 	virtual void		SetValue(rgb_color c);
 	virtual void		SetValue(float one, float two, float three, float four);
