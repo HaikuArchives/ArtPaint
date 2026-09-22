@@ -116,6 +116,7 @@ public:
 #define	SHARPNESS_ADJUSTED				'Shad'
 #define	SHARPNESS_ADJUSTING_FINISHED	'Shaf'
 
+#define	BLUR_ADJUSTED					'Blad'
 #define	BLUR_ADJUSTING_FINISHED			'Blaf'
 
 
