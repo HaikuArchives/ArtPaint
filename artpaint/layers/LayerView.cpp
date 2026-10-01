@@ -102,6 +102,14 @@ void
 LayerView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
+		case B_KEY_DOWN:
+		case B_UNMAPPED_KEY_DOWN:
+		{
+			// if a user is editing the layer name, don't let keypress
+			// messages fall through to the window
+			if (layer_name_field->TextView()->IsFocus() == true)
+				message->MakeEmpty();
+		} break;
 		default:
 			BBox::MessageReceived(message);
 	}
@@ -128,6 +136,10 @@ LayerView::MouseDown(BPoint location)
 		if (layer_window)
 			layer_window->SetActiveLayer(the_layer);
 	}
+
+	layer_name_field->TextView()->MakeFocus(false);
+	the_layer->SetName(layer_name_field->TextView()->Text());
+
 	// We start reordering the layers.
 	thread_id reorder = spawn_thread(
 		LayerView::reorder_thread, "reorder layers", B_NORMAL_PRIORITY, (void*)this);
