@@ -9,15 +9,22 @@
 #ifndef ADD_ON_TYPES_H
 #define	ADD_ON_TYPES_H
 
+#include <Catalog.h>
 
-enum add_on_types {
-	BLUR_FILTER_ADD_ON,
-	SHARPEN_FILTER_ADD_ON,
-	EFFECT_FILTER_ADD_ON,
-	DISTORT_ADD_ON,
-	COLOR_ADD_ON,
-	ANALYZER_ADD_ON,
-	GENERIC_ADD_ON
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AddOns_Categories"
+
+
+inline const char* add_on_category[GENERIC_ADD_ON + 1] = {
+	B_TRANSLATE("Artistic"),
+	B_TRANSLATE("Blur"),
+	B_TRANSLATE("Color"),
+	B_TRANSLATE("Distort"),
+	B_TRANSLATE("Edges"),
+	B_TRANSLATE("Enhance"),
+	B_TRANSLATE("Noise"),
+	B_TRANSLATE("Render"),
+	B_TRANSLATE("Generic")
 };
 
 

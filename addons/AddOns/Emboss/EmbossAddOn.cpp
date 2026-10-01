@@ -27,7 +27,7 @@ extern "C" {
 	char name[255] = B_TRANSLATE_MARK("Emboss");
 	char menu_help_string[255] = B_TRANSLATE_MARK("Creates an emboss effect.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
-	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
+	add_on_types add_on_type = DISTORT_ADD_ON;
 #ifdef __cplusplus
 }
 #endif

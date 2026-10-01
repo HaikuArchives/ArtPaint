@@ -31,7 +31,7 @@ extern "C" {
 	char name[255] = B_TRANSLATE_MARK("Anti-Dither" B_UTF8_ELLIPSIS);
 	char menu_help_string[255] = B_TRANSLATE_MARK("Attempts to reverse the effects of dithering.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
-	add_on_types add_on_type = COLOR_ADD_ON;
+	add_on_types add_on_type = BLUR_FILTER_ADD_ON;
 #ifdef __cplusplus
 }
 #endif
