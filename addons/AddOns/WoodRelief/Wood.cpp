@@ -29,7 +29,7 @@ extern "C" {
 	char name[255] = B_TRANSLATE_MARK("Wood");
 	char menu_help_string[255] = B_TRANSLATE_MARK("Puts a wood-like texture over the image.");
 	int32 add_on_api_version = ADD_ON_API_VERSION;
-	add_on_types add_on_type = EFFECT_FILTER_ADD_ON;
+	add_on_types add_on_type = RENDERING_FILTER_ADD_ON;
 #ifdef __cplusplus
 }
 #endif
@@ -236,7 +236,7 @@ WoodManipulator::thread_function(int32 thread_number)
 					color2.word = *(spare_bits + spare_bpr + 1);
 					color3.word = *source;
 
-					float difference 
+					float difference
 						= .144 * (color1.bytes[0] - color2.bytes[0])
 						+ .587 * (color1.bytes[1] - color2.bytes[1])
 						+ .299 * (color1.bytes[2] - color2.bytes[2]);

@@ -1,4 +1,4 @@
-1	English	application/x-vnd.artpaint	3460213630
+1	English	application/x-vnd.artpaint	939005880
 Angle:	Manipulators		Angle:
 Lighten	PixelOperations		Lighten
 Enable antialiasing	Manipulators		Enable antialiasing
@@ -25,14 +25,15 @@ Lock	Manipulators		Lock
 Open	FilePanels		Open
 Rotate -90°	PaintWindow		Rotate -90°
 Save project as…	PaintWindow		Save project as…
+Color	AddOns_Categories		Color
 Opens the window of stored brushes.	PaintWindow		Opens the window of stored brushes.
 Random	Tools		Random
 Mode:	LayerWindow		Mode:
 Opens the tool setup window.	PaintWindow		Opens the tool setup window.
 Making a selection.	Tools		Making a selection.
+Change transparency…	Manipulators		Change transparency…
 New color set	ColorPalette		New color set
 Layer	ColorPalette		Layer
-Change transparency…	Manipulators		Change transparency…
 Cut	PaintWindow		Cut
 OK	Windows		OK
 Drawing a straight line.	Tools		Drawing a straight line.
@@ -65,10 +66,10 @@ Font:	Manipulators		Font:
 Opens the settings window.	PaintWindow		Opens the settings window.
 Unlimited	Windows		Unlimited
 Layers…	PaintWindow		Layers…
+Translate	Manipulators		Translate
 Color	PixelOperations		Color
 Rotates the canvas 90° counter-clockwise.	PaintWindow		Rotates the canvas 90° counter-clockwise.
 Left-click for color panel, right-click to switch colors.	StatusView		Left-click for color panel, right-click to switch colors.
-Translate	Manipulators		Translate
 Windows	Windows		Windows
 Making a fill.	Tools		Making a fill.
 Close	PaintWindow		Close
@@ -98,12 +99,13 @@ Scales all layers.	PaintWindow		Scales all layers.
 OK	ColorPalette		OK
 Tool setup…	PaintWindow		Tool setup…
 Linear burn	PixelOperations		Linear burn
-Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Copies the selection.	PaintWindow		Copies the selection.
+Flips all layers horizontally.	PaintWindow		Flips all layers horizontally.
 Tool setup	Windows		Tool setup
 Colors…	PaintWindow		Colors…
 Copy	PaintWindow		Copy
 Reset to canvas	Manipulators		Reset to canvas
+Enhance	AddOns_Categories		Enhance
 Rotates the active layer.	PaintWindow		Rotates the active layer.
 All layers	PaintWindow		All layers
 No data translator	Windows		No data translator
@@ -113,6 +115,7 @@ Zooms into the image.	PaintWindow		Zooms into the image.
 Blue	Tools		Blue
 Height:	PaintWindow		Height:
 Use current brush	Tools		Use current brush
+Edges	AddOns_Categories		Edges
 Open image…	PaintWindow		Open image…
 Saves the project to disk.	PaintWindow		Saves the project to disk.
 Cloning part of the image.	Tools		Cloning part of the image.
@@ -120,6 +123,7 @@ Adjustable	Windows		Adjustable
 Don't save	ImageView		Don't save
 Radial	Tools		Radial
 Cannot write to file	ColorPalette		Cannot write to file
+Noise	AddOns_Categories		Noise
 Closes the current window.	PaintWindow		Closes the current window.
 Hold SHIFT to snap to 45° angles	Tools		Hold SHIFT to snap to 45° angles
 Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts	Tools		Selection tool: SHIFT for square/circle, ALT centers selection, OPT subtracts
@@ -177,6 +181,7 @@ Canvas	PaintWindow		Canvas
 Cancel	FilePanels		Cancel
 Transparency tool	Tools		Transparency tool
 Flip horizontally	PaintWindow		Flip horizontally
+Render	AddOns_Categories		Render
 Mode	Tools		Mode
 Duplicates the selected layer.	PaintWindow		Duplicates the selected layer.
 Flips the selection horizontally.	PaintWindow		Flips the selection horizontally.
@@ -204,6 +209,7 @@ Selection	PaintWindow		Selection
 Opens an image from disk.	PaintWindow		Opens an image from disk.
 Layers	Windows		Layers
 Paste as a new project	PaintWindow		Paste as a new project
+Distort	AddOns_Categories		Distort
 Processing…	ImageView		Processing…
 Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.	ImageView		Not enough free memory to finish the effect you requested. You may close other images and try again. Also shortening the depth of undo or disabling undo altogether helps in achieving more memory. If you have other applications running, closing them gives you more free memory. It is also a good idea to save your work at this point, because if the memory runs out completely saving might become impossible. I am very sorry about this inconvenience.
 Color dodge	PixelOperations		Color dodge
@@ -231,6 +237,7 @@ Redos the action that was last undone.	PaintWindow		Redos the action that was la
 Save color set	ColorPalette		Save color set
 Untitled	PaintWindow		Untitled
 Miscellaneous	Windows		Miscellaneous
+Blur	AddOns_Categories		Blur
 Settings…	FilePanels		Settings…
 Set/Select the canvas size.	PaintWindow		Set/Select the canvas size.
 Use selection	Manipulators		Use selection
@@ -265,8 +272,8 @@ Save project	PaintWindow		Save project
 Conic	Tools		Conic
 Save format:	FilePanels		Save format:
 None	Tools		None
-Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Translate selection	Manipulators		Translate selection
+Drop layer to copy it to this image.	ImageView		Drop layer to copy it to this image.
 Red	Tools		Red
 Opens the main documentation for ArtPaint.	PaintWindow		Opens the main documentation for ArtPaint.
 Size:	Manipulators		Size:
@@ -279,8 +286,8 @@ Adjustable width	Tools		Adjustable width
 Transparency:	Manipulators		Transparency:
 Shear:	Manipulators		Shear:
 Opaque	Manipulators		Opaque
-Moves all layers.	PaintWindow		Moves all layers.
 Hue	ColorSliders	For HSV color slider	Hue
+Moves all layers.	PaintWindow		Moves all layers.
 Scale selection	Manipulators		Scale selection
 Relative to cursor	Tools		Relative to cursor
 Click to place the text.	Tools		Click to place the text.
@@ -288,8 +295,8 @@ Resizes the canvas.	PaintWindow		Resizes the canvas.
 Open project…	PaintWindow		Open project…
 Store brush	Tools		Store brush
 Painting with a hairy brush.	Tools		Painting with a hairy brush.
-Merge down	PaintWindow		Merge down
 Translate: Drag to move or use number-fields.	Manipulators		Translate: Drag to move or use number-fields.
+Merge down	PaintWindow		Merge down
 Resize…	Manipulators		Resize…
 Straight line tool	Tools		Straight line tool
 Shrink selection	ImageView		Shrink selection
@@ -337,6 +344,7 @@ Merge down	Image		Merge down
 Color burn	PixelOperations		Color burn
 Window	PaintWindow		Window
 ArtPaint project format containing layers etc.	PaintApplication	MIME type long description	ArtPaint project format containing layers etc.
+Generic	AddOns_Categories		Generic
 Selects all non-transparent layer pixels	PaintWindow		Selects all non-transparent layer pixels
 Multiply	PixelOperations		Multiply
 Flip selection horizontally	Manipulators		Flip selection horizontally
@@ -388,12 +396,13 @@ Layer	PaintWindow		Layer
 No options	Windows		No options
 ArtPaint: Open project…	PaintApplication		ArtPaint: Open project…
 Freehand	Tools		Freehand
+Artistic	AddOns_Categories		Artistic
 Saturation	ColorSliders	For HSV color slider	Saturation
 Select all	ImageView		Select all
 Flood fill	Tools		Flood fill
 ArtPaint is a painting and image-processing program for Haiku.	PaintApplication		ArtPaint is a painting and image-processing program for Haiku.
-Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 OK	ImageView		OK
+Flips all layers vertically.	PaintWindow		Flips all layers vertically.
 Set zoom level	PaintWindow		Set zoom level
 Continuous	Tools		Continuous
 Enable rotation	Tools		Enable rotation
@@ -422,8 +431,8 @@ Aspect:	Tools		Aspect:
 Top:	Manipulators		Top:
 Unsaved changes!	ImageView		Unsaved changes!
 Un-selects all	PaintWindow		Un-selects all
-Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Layers	LayerWindow		Layers
+Flips the active layer vertically.	PaintWindow		Flips the active layer vertically.
 Transform: Drag to rotate, move or stretch.	FreeTransformManipulator		Transform: Drag to rotate, move or stretch.
 Green	ColorSliders	For RGB color sliders	Green
 Move the selection.	PaintWindow		Move the selection.

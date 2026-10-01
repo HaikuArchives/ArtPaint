@@ -12,6 +12,8 @@
 
 #include "PaintWindow.h"
 
+#include "AddOns.h"
+#include "AddOnTypes.h"
 #include "BackgroundView.h"
 #include "BrushStoreWindow.h"
 #include "ColorPalette.h"
@@ -1470,7 +1472,7 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 			if (paintWindow->Lock()) {
 				ImageList::const_iterator it;
 				const ImageList& imageList = server->AddOnImageList();
-				std::map<BString, int32> manip_map;
+				std::map<BString, std::map<BString, int32>> manip_map;
 
 				for (it = imageList.begin(); it != imageList.end(); ++it) {
 					int32* add_on_version;
@@ -1485,11 +1487,20 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 						status_t status = get_image_symbol(
 							*it, "instantiate_add_on", B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
 						if (status == B_OK) {
+							const char* category;
+							int32* add_on_type;
+							status = get_image_symbol(
+								*it, "add_on_type", B_SYMBOL_TYPE_DATA, (void**)&add_on_type);
+
+							if (status != B_OK)
+								category = add_on_category[GENERIC_ADD_ON];
+							else
+								category = add_on_category[*add_on_type];
+
 							Manipulator* manipulator = Instantiate(NULL, NULL);
 
 							if (manipulator != NULL) {
-								manip_map.insert(std::pair<BString,
-									int32>(BString(manipulator->ReturnName()), *it));
+								manip_map[BString(category)][BString(manipulator->ReturnName())] = *it;
 
 								delete manipulator;
 								manipulator = NULL;
@@ -1499,24 +1510,42 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 				}
 
 				for (auto it = manip_map.begin(); it != manip_map.end(); ++it) {
-					int32 id = it->second;
-					Manipulator* (*Instantiate)(BBitmap*, ManipulatorInformer*);
-					status_t status = get_image_symbol(
-						id, "instantiate_add_on", B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
-					if (status == B_OK) {
-						Manipulator* manipulator = Instantiate(NULL, NULL);
+					BString category = it->first;
+					BMenuItem* category_menu_item = addOnMenu->FindItem(category);
+					BMenu* category_submenu;
+					if (category_menu_item == NULL) {
+						category_submenu = new BMenu(category);
+						addOnMenu->AddItem(category_submenu);
+					} else
+						category_submenu = category_menu_item->Submenu();
 
-						if (manipulator != NULL) {
-							BMessage* message = new BMessage(HS_START_MANIPULATOR);
-							message->AddInt32("image_id", id);
-							message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
-							message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
+					std::map<BString, int32> manipValue = it->second;
 
-							addOnMenu->AddItem(new PaintWindowMenuItem(manipulator->ReturnName(),
-								message, 0, 0, paintWindow, manipulator->ReturnHelpString()));
+					for (auto itInner = manipValue.begin(); itInner != manipValue.end(); ++itInner) {
+						int32 id = itInner->second;
+						Manipulator* (*Instantiate)(BBitmap*, ManipulatorInformer*);
+						status_t status = get_image_symbol(
+							id, "instantiate_add_on", B_SYMBOL_TYPE_TEXT, (void**)&Instantiate);
+						if (status == B_OK) {
+							Manipulator* manipulator = Instantiate(NULL, NULL);
+							if (manipulator != NULL) {
+								BMessage* message = new BMessage(HS_START_MANIPULATOR);
+								message->AddInt32("image_id", id);
+								message->AddInt32("layers", HS_MANIPULATE_CURRENT_LAYER);
+								message->AddInt32("manipulator_type", ADD_ON_MANIPULATOR);
 
-							delete manipulator;
-							manipulator = NULL;
+								category_submenu->AddItem(new PaintWindowMenuItem(
+									manipulator->ReturnName(),
+									message, 0, 0, paintWindow,
+									manipulator->ReturnHelpString()));
+
+								category_submenu->SetTargetForItems(paintWindow);
+								if (paintWindow->fImageView)
+									category_submenu->SetTargetForItems(paintWindow->fImageView);
+
+								delete manipulator;
+								manipulator = NULL;
+							}
 						}
 					}
 				}
@@ -1529,6 +1558,7 @@ PaintWindow::_AddAddOnsToMenu(void* data)
 			return B_OK;
 		}
 	}
+
 	return B_ERROR;
 }
 
