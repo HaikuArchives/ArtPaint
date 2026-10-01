@@ -89,6 +89,7 @@ public:
 							~LayerListView();
 
 			void			DetachedFromWindow();
+			void			MouseDown(BPoint where);
 };
 
 

@@ -7,7 +7,7 @@
  *		Dale Cieslak <dcieslak@yahoo.com>
  *
  */
- 
+
 #include "LayerWindow.h"
 
 #include "CustomGridLayout.h"
@@ -606,4 +606,11 @@ LayerListView::DetachedFromWindow()
 		view->RemoveSelf();
 		delete view;
 	}
+}
+
+
+void
+LayerListView::MouseDown(BPoint where)
+{
+	MakeFocus(true);
 }
