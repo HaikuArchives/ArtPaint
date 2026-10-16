@@ -18,6 +18,7 @@ class BCheckBox;
 class BitmapDrawer;
 class BRadioButton;
 class BSeparatorView;
+class Gradient;
 class ImageView;
 class PointStack;
 class Selection;
@@ -50,16 +51,14 @@ public:
 			status_t			readSettings(BFile&, bool);
 			status_t			writeSettings(BFile&);
 
-			void				SetGradient(uint32 c1, uint32 c2) {
-									gradient_color1 = c1;
-									gradient_color2 = c2;
-								}
+			void				SetGradient(uint32 c1, uint32 c2);
 
 			const void*			ToolCursor() const;
 			const char*			HelpString(bool isInUse) const;
 			void				DrawTool(BView* view);
 
 private:
+			Gradient*			gradient;
 			uint32				gradient_color1;
 			uint32				gradient_color2;
 
@@ -84,17 +83,17 @@ private:
 									int32, int32, uint32, BPoint,
 									Selection* = NULL);
 			void				FillGradientLinear(BitmapDrawer*, BBitmap*, BPoint,
-									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1, Selection* sel = NULL);
+									BPoint, int32, int32, int32, int32,
+									uint8 skip = 1, Selection* sel = NULL);
 			void				FillGradientRadial(BitmapDrawer*, BBitmap*, BPoint,
-									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1, Selection* sel = NULL);
+									BPoint, int32, int32, int32, int32,
+									uint8 skip = 1, Selection* sel = NULL);
 			void				FillGradientSquare(BitmapDrawer*, BBitmap*, BPoint,
-									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1, Selection* sel = NULL);
+									BPoint, int32, int32, int32, int32,
+									uint8 skip = 1, Selection* sel = NULL);
 			void				FillGradientConic(BitmapDrawer*, BBitmap*, BPoint,
-									BPoint, int32, int32, int32, int32, uint32,
-									uint32, uint8 skip = 1, Selection* sel = NULL);
+									BPoint, int32, int32, int32, int32,
+									uint8 skip = 1, Selection* sel = NULL);
 
 			BRect				calcBinaryMapBounds(BBitmap *boolean_map);
 			BPoint*				orig_view_point;
@@ -115,6 +114,7 @@ private:
 			BCheckBox*				fFloodFill;
 			BCheckBox*				fGradient;
 			BCheckBox*				fPreview;
+			BCheckBox*				fAntiAlias;
 
 	class	GradientView;
 			GradientView*			fGradientView;
