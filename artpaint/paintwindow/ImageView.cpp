@@ -241,7 +241,9 @@ ImageView::Draw(BRect updateRect)
 	SetDrawingMode(B_OP_COPY);
 
 	// draw checker background
-	DrawBitmapAsync(background, convertViewRectToBitmap(Bounds()), Bounds());
+	BRect viewBounds = convertViewRectToBitmap(Bounds());
+	BRect bitmapBounds = convertBitmapRectToView(viewBounds);
+	DrawBitmapAsync(background, viewBounds, bitmapBounds);
 
 	// copy image from bitmap to the part requiring updating
 	BRegion a_region;
