@@ -2,3 +2,4 @@ objects*/
 dist/
 addons/AddOns/*/*/objects*
 .genio
+.genio.yaml
