@@ -40,7 +40,7 @@ public:
 			void		KeyDown(const char* bytes, int32);
 			void		MouseDown(BPoint);
 
-			bool		AddBrush(Brush*);
+			bool		AddBrush(Brush*, bool notify = true);
 };
 
 
@@ -63,7 +63,7 @@ public:
 
 	static	void		writeBrushes(BFile&);
 	static	void		readBrushes(BFile&);
-	static	void		AddBrush(Brush*);
+	static	void		AddBrush(Brush* brush);
 	static	void		DeleteBrush(int32);
 
 	static	void		showWindow();
