@@ -49,7 +49,7 @@ artpaint/controls/FloatControl.cpp artpaint/controls/FloatSliderControl.cpp \
 artpaint/controls/VisualColorControl.cpp artpaint/layers/Layer.cpp \
 artpaint/controls/MultichannelColorControl.cpp artpaint/controls/YUVColorControl.cpp \
 artpaint/controls/HSVColorControl.cpp artpaint/controls/CMYColorControl.cpp artpaint/controls/RGBColorControl.cpp \
-artpaint/controls/LABColorControl.cpp artpaint/controls/ColorSlider.cpp artpaint/controls/ColorFloatSlider.cpp \
+artpaint/controls/LABColorControl.cpp artpaint/controls/ColorSlider.cpp artpaint/controls/ColorFloatSlider.cpp artpaint/controls/MultiSlider.h artpaint/controls/ColorMultiSlider.cpp \
 artpaint/layers/LayerView.cpp artpaint/layers/LayerWindow.cpp artpaint/paintwindow/BackgroundView.cpp artpaint/paintwindow/Image.cpp \
 artpaint/paintwindow/ImageUpdater.cpp artpaint/paintwindow/ImageView.cpp artpaint/paintwindow/MagnificationView.cpp \
 artpaint/paintwindow/PaintWindow.cpp artpaint/paintwindow/PaintWindowMenuItem.cpp artpaint/paintwindow/StatusView.cpp \
