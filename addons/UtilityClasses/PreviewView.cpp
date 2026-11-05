@@ -7,6 +7,8 @@
  *
  */
 #include <Bitmap.h>
+#include <ControlLook.h>
+
 
 #include "PreviewView.h"
 
@@ -43,12 +45,11 @@ PreviewView::Draw(BRect rect)
 	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_DARKEN_2_TINT));
 	SetPenSize(1.0);
 	BRect bound = Bounds();
-	StrokeRect(bound);
+	RedisplayBitmap();
+	be_control_look->DrawBorder(this, bound, rect, HighColor(), B_PLAIN_BORDER);
 	SetHighColor(tint_color(ui_color(B_PANEL_BACKGROUND_COLOR), B_LIGHTEN_2_TINT));
 	StrokeLine(bound.LeftBottom(), bound.RightBottom());
 	StrokeLine(bound.RightBottom(), bound.RightTop());
-
-	RedisplayBitmap();
 }
 
 
