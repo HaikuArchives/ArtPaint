@@ -386,11 +386,14 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id, bool is_little
 		length = B_BENDIAN_TO_HOST_INT64(length);
 	}
 
-	Layer* layer = new Layer(BRect(0, 0, width - 1, height - 1), new_id, imageView, layerType);
+	uint32 layerWidth = max_c(imageView->ReturnImage()->Width(), width);
+	uint32 layerHeight = max_c(imageView->ReturnImage()->Height(), height);
+	Layer* layer = new Layer(BRect(0, 0, layerWidth, layerHeight), new_id, imageView, layerType);
 	layer->SetVisibility((uint32(layer_visibility) == 0xFFFFFFFF));
 
-	int8* bits = (int8*)layer->Bitmap()->Bits();
-
+	BBitmap* tmpBitmap = new BBitmap(BRect(0, 0, width - 1, height - 1), B_RGBA32);
+	int8* tmpBits = (int8*)tmpBitmap->Bits();
+		
 	uint8* compressedBits = NULL;
 
 	uint64 old_length = length;
@@ -404,7 +407,7 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id, bool is_little
 			return NULL;
 		}
 	} else {
-		if (file.Read(bits, length) != length) {
+		if (file.Read(tmpBits, length) != length) {
 			delete layer;
 			return NULL;
 		}
@@ -493,7 +496,7 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id, bool is_little
 
 				free(compressedBits);
 				if (z_result == Z_OK) {
-					memcpy(bits, uncompressedBits, actual_length);
+					memcpy(tmpBits, uncompressedBits, actual_length);
 					free(uncompressedBits);
 				} else {
 					delete layer;
@@ -526,6 +529,18 @@ Layer::readLayer(BFile& file, ImageView* imageView, int32 new_id, bool is_little
 		}
 	}
 
+	// blit temporary/uncompressed bitmap into layer bitmap
+	BBitmap* layerBitmap = layer->Bitmap();
+	uint32* dstBits = (uint32*)layerBitmap->Bits();
+	uint32 dstBpr = layerBitmap->BytesPerRow() / 4;
+	
+	uint32* srcBits = (uint32*)tmpBitmap->Bits();
+	uint32 srcBpr = tmpBitmap->BytesPerRow() / 4;
+	
+	for (int32 y = 0; y < height; ++y) 
+		for (int32 x = 0; x < width; ++x) 
+			*(dstBits + x + y * dstBpr) = *(srcBits + x + y * srcBpr);
+			
 	// Before returning calculate the layer's miniature image.
 	layer->calc_mini_image();
 

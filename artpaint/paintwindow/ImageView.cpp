@@ -38,6 +38,7 @@
 
 
 #include <Alert.h>
+#include <BitmapStream.h>
 #include <Catalog.h>
 #include <ClassInfo.h>
 #include <Clipboard.h>
@@ -45,6 +46,8 @@
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
+#include <NodeInfo.h>
+#include <Path.h>
 #include <Polygon.h>
 #include <PopUpMenu.h>
 #include <Screen.h>
@@ -52,6 +55,7 @@
 #include <Slider.h>
 #include <StatusBar.h>
 #include <StringFormat.h>
+#include <TranslationUtils.h>
 #include <Window.h>
 
 
@@ -1098,6 +1102,12 @@ ImageView::MessageReceived(BMessage* message)
 			if (message->what == HS_MANIPULATOR_ADJUSTING_STARTED)
 				continue_manipulator_updating = true;
 			start_thread(MANIPULATOR_UPDATER_THREAD);
+		} break;
+		case B_SIMPLE_DATA:
+		case B_REFS_RECEIVED:
+		{
+			if (RefsReceived(message) == false)
+				BView::MessageReceived(message);
 		} break;
 		default:
 			BView::MessageReceived(message);
@@ -2754,6 +2764,143 @@ ImageView::PostponeMessageAndFinishManipulator(bool status)
 		return true;
 	}
 	return false;
+}
+
+
+bool
+ImageView::RefsReceived(BMessage* message)
+{
+	uint32 type;
+	int32 count;
+	bool status = false;
+
+	message->GetInfo("refs", &type, &count);
+	if (type != B_REF_TYPE)
+		return status;
+
+	for (int32 i = --count; i >= 0; --i) {
+		entry_ref ref;
+		if (message->FindRef("refs", i, &ref) != B_OK)
+			continue;
+
+		BFile file;
+		if (file.SetTo(&ref, B_READ_ONLY) != B_OK)
+			continue;
+
+		char mimeType[B_MIME_TYPE_LENGTH];
+		memset(mimeType, 0, B_MIME_TYPE_LENGTH);
+		BNodeInfo(&file).GetType(mimeType);
+
+		BPath path;
+		BEntry(&ref).GetPath(&path);
+
+		if (strncmp(mimeType, "image/", 6) == 0 || strcmp(mimeType, "") == 0) {
+			BBitmap* bitmap = BTranslationUtils::GetBitmapFile(path.Path());
+			if (bitmap) {
+				// The returned bitmap might be in 8-bit format. If that is
+				// the case, we should convert to 32-bit.
+				bitmap = BitmapUtilities::ConvertColorSpace(bitmap, B_RGBA32);
+				BitmapUtilities::FixMissingAlpha(bitmap);
+
+				try {
+					if (the_image->AddLayer(bitmap, NULL, TRUE) != NULL) {
+						LockLooper();
+						Invalidate();
+						LayerWindow::ActiveWindowChanged(Window(), the_image->LayerList(),
+							the_image->ReturnThumbnailImage());
+						AddChange();
+						UnlockLooper();
+					}
+
+					// at least one layer was added
+					status = true;
+				}
+				catch (const std::bad_alloc& e) {
+					ShowAlert(CANNOT_ADD_LAYER_ALERT);
+				}
+			}
+		} else if ((strcmp(mimeType, HS_PROJECT_MIME_STRING) == 0)
+			|| (strcmp(mimeType, _OLD_HS_PROJECT_MIME_STRING) == 0)) {
+
+			if (ReadProject(file, ref) == B_OK)
+				status = true;
+			
+			LockLooper();
+			Invalidate();
+			LayerWindow::ActiveWindowChanged(Window(), the_image->LayerList(),
+							the_image->ReturnThumbnailImage());
+			AddChange();
+			UnlockLooper();
+		}
+	}
+
+	return status;
+}
+
+
+status_t
+ImageView::ReadProject(BFile& file, entry_ref& ref)
+{
+	// We should read the project file and open a new window. Read the first
+	// four bytes from the file to see if it is really a project file.
+	int32 lendian;
+	if (file.Read(&lendian, sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	bool isLittleEndian = true;
+	if (lendian == 0x00000000)
+		isLittleEndian = false;
+	else if (uint32(lendian) == 0xFFFFFFFF)
+		isLittleEndian = true;
+	else
+		return B_ERROR;
+
+	int32 fileId;
+	if (file.Read(&fileId, sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	if (isLittleEndian)
+		fileId = B_LENDIAN_TO_HOST_INT32(fileId);
+	else
+		fileId = B_BENDIAN_TO_HOST_INT32(fileId);
+
+	file.Seek(0, SEEK_SET);
+	if (fileId != PROJECT_FILE_ID)
+		return B_ERROR;
+
+	// This is the new way of reading a structured project file. The possibility
+	// to read old project files is still maintained through ReadProjectOldStyle.
+	int64 length = FindProjectFileSection(file, PROJECT_FILE_DIMENSION_SECTION_ID);
+	if (length != (2 * sizeof(int32)))
+		return B_ERROR;
+
+	int32 width;
+	if (file.Read(&width, sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	int32 height;
+	if (file.Read(&height, sizeof(int32)) != sizeof(int32))
+		return B_ERROR;
+
+	if (isLittleEndian) {
+		width = B_LENDIAN_TO_HOST_INT32(width);
+		height = B_LENDIAN_TO_HOST_INT32(height);
+	} else {
+		width = B_BENDIAN_TO_HOST_INT32(width);
+		height = B_BENDIAN_TO_HOST_INT32(height);
+	}
+
+	if (LockLooper() == TRUE) {
+		ReturnImage()->ReadLayers(file);
+		ReturnImage()->Render();
+		LayerWindow::ActiveWindowChanged(
+			Window(), the_image->LayerList(), the_image->ReturnThumbnailImage());
+		ActiveLayerChanged();
+		Invalidate();
+		UnlockLooper();
+	}
+
+	return B_OK;
 }
 
 
