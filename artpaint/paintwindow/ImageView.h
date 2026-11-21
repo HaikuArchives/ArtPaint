@@ -253,6 +253,7 @@ public:
 
 			bool		ShowSelection() { return show_selection; }
 			void		MakeBackground();
+			void		RefsReceived(BMessage* message);
 };
 
 filter_result KeyFilterFunction(BMessage*, BHandler**, BMessageFilter*);
