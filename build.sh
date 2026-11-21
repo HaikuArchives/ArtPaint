@@ -75,6 +75,10 @@ cleaner() {
 				rm -rf ./addons/AddOns/Working
 			fi
 
+			if [ -d ./dist/add-ons ] ; then
+				rm -rf ./dist/add-ons
+			fi
+
 			for addonDir in $(find ./addons/AddOns/* -maxdepth 0 -type d) ; do
 				pushd "$addonDir" > /dev/null
 				rm -rf objects_addons*
