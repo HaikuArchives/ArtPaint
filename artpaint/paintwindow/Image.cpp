@@ -53,7 +53,7 @@ Image::Image(ImageView* view, float width, float height, UndoQueue* q)
 	undo_queue = q;
 	rendered_image = NULL;
 	next_layer_id = 0;
-	current_layer_index = 0;
+	current_layer_index = -1;
 	thumbnail_image = new BBitmap(BRect(0, 0, 64, 64), B_RGB32);
 	layer_list = new BList(10);
 	layer_id_list = NULL;
@@ -428,7 +428,7 @@ Image::AddLayer(BBitmap* bitmap, Layer* next_layer, bool add_to_front,
 bool
 Image::ChangeActiveLayer(Layer* activated_layer, int32)
 {
-	if (((Layer*)(layer_list->ItemAt(current_layer_index))) != activated_layer) {
+	if (layer_list->CountItems() != 0 && ((Layer*)(layer_list->ItemAt(current_layer_index))) != activated_layer) {
 		if (layer_list->IndexOf(activated_layer) >= 0) {
 			((Layer*)(layer_list->ItemAt(current_layer_index)))->ActivateLayer(FALSE);
 			current_layer_index = layer_list->IndexOf(activated_layer);
@@ -950,8 +950,10 @@ Image::ReadLayers(BFile& file)
 	if (layer_list->CountItems() == 0)
 		return B_ERROR;
 	else {
-		((Layer*)layer_list->ItemAt(0))->ActivateLayer(TRUE);
-		current_layer_index = 0;
+		if (current_layer_index < 0) {
+			((Layer*)layer_list->ItemAt(0))->ActivateLayer(TRUE);
+			current_layer_index = 0;
+		}
 		return B_OK;
 	}
 }

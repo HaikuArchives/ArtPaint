@@ -9,7 +9,12 @@
 #ifndef IMAGE_VIEW_H
 #define IMAGE_VIEW_H
 
+
+#include "FileIdentificationStrings.h"
+
+
 #include <Cursor.h>
+#include <File.h>
 #include <MessageFilter.h>
 #include <Region.h>
 #include <View.h>
@@ -253,6 +258,8 @@ public:
 
 			bool		ShowSelection() { return show_selection; }
 			void		MakeBackground();
+			bool		RefsReceived(BMessage* message);
+			status_t	ReadProject(BFile& file, entry_ref& ref);
 };
 
 filter_result KeyFilterFunction(BMessage*, BHandler**, BMessageFilter*);
