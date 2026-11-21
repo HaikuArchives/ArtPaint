@@ -369,6 +369,14 @@ LayerWindow::MessageReceived(BMessage* message)
 				}
 			}
 		} break;
+		case B_SIMPLE_DATA:
+		case B_REFS_RECEIVED:
+		{
+			if (active_layer != NULL && active_layer->IsActive()) {
+				ImageView* image_view = active_layer->GetImageView();
+				image_view->RefsReceived(message);
+			}
+		} break;
 		default:
 			BWindow::MessageReceived(message);
 	}

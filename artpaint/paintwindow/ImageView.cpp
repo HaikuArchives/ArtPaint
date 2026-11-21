@@ -38,6 +38,7 @@
 
 
 #include <Alert.h>
+#include <BitmapStream.h>
 #include <Catalog.h>
 #include <ClassInfo.h>
 #include <Clipboard.h>
@@ -45,6 +46,8 @@
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Message.h>
+#include <NodeInfo.h>
+#include <Path.h>
 #include <Polygon.h>
 #include <PopUpMenu.h>
 #include <Screen.h>
@@ -52,6 +55,7 @@
 #include <Slider.h>
 #include <StatusBar.h>
 #include <StringFormat.h>
+#include <TranslationUtils.h>
 #include <Window.h>
 
 
@@ -1098,6 +1102,11 @@ ImageView::MessageReceived(BMessage* message)
 			if (message->what == HS_MANIPULATOR_ADJUSTING_STARTED)
 				continue_manipulator_updating = true;
 			start_thread(MANIPULATOR_UPDATER_THREAD);
+		} break;
+		case B_SIMPLE_DATA:
+		case B_REFS_RECEIVED:
+		{
+			RefsReceived(message);
 		} break;
 		default:
 			BView::MessageReceived(message);
@@ -2754,6 +2763,58 @@ ImageView::PostponeMessageAndFinishManipulator(bool status)
 		return true;
 	}
 	return false;
+}
+
+
+void
+ImageView::RefsReceived(BMessage* message)
+{
+	uint32 type;
+	int32 count;
+	message->GetInfo("refs", &type, &count);
+	if (type != B_REF_TYPE)
+		return;
+
+	for (int32 i = --count; i >= 0; --i) {
+		entry_ref ref;
+		if (message->FindRef("refs", i, &ref) != B_OK)
+			continue;
+
+		BFile file;
+		if (file.SetTo(&ref, B_READ_ONLY) != B_OK)
+			continue;
+
+		char mimeType[B_MIME_TYPE_LENGTH];
+		memset(mimeType, 0, B_MIME_TYPE_LENGTH);
+		BNodeInfo(&file).GetType(mimeType);
+
+		BPath path;
+		BEntry(&ref).GetPath(&path);
+
+		if (strncmp(mimeType, "image/", 6) == 0 || strcmp(mimeType, "") == 0) {
+			BBitmap* bitmap = BTranslationUtils::GetBitmapFile(path.Path());
+			if (bitmap) {
+				// The returned bitmap might be in 8-bit format. If that is
+				// the case, we should convert to 32-bit.
+				bitmap = BitmapUtilities::ConvertColorSpace(bitmap, B_RGBA32);
+				BitmapUtilities::FixMissingAlpha(bitmap);
+
+				try {
+					if (the_image->AddLayer(bitmap, NULL, TRUE) != NULL) {
+						LockLooper();
+						Invalidate();
+						LayerWindow::ActiveWindowChanged(Window(), the_image->LayerList(),
+							the_image->ReturnThumbnailImage());
+						AddChange();
+						UnlockLooper();
+					}
+				}
+				catch (const std::bad_alloc& e) {
+					ShowAlert(CANNOT_ADD_LAYER_ALERT);
+				}
+			}
+		}
+	}
 }
 
 
