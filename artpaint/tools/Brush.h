@@ -97,7 +97,7 @@ public:
 						Brush(brush_info &info);
 						~Brush();
 
-			void		ModifyBrush(brush_info &info);
+			void		ModifyBrush(brush_info &info, bool notify = true);
 			void		CreateDiffBrushes();
 
 			float		PreviewBrush(BBitmap*);
